@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.mapper.UserModelMapper">
+
+  <!-- insert user -->
+  <insert id="insertUser" parameterType="com.cascv.oas.core.model.UserModel">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_info(name,nickname,password) 
+     	values 
+     (#{name,jdbcType=VARCHAR},#{nickname,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR})
+  </insert>
+
+  <!-- delete user -->
+  <delete id="deleteUser">
+    delete from user_info where id = #{id}
+  </delete>
+	
+</mapper>
+

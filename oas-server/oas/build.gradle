@@ -1,0 +1,22 @@
+archivesBaseName = 'oas-server'
+
+apply plugin : 'war'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+
+repositories {
+  mavenCentral()
+}
+
+dependencies{
+  compile project(':core')
+  
+
+  
+  
+
+}
+
+

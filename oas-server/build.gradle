@@ -1,0 +1,63 @@
+allprojects{
+  group = 'com.cascv'
+  version='0.0.1-SNAPSHOT'
+}
+
+subprojects {
+  apply plugin : 'java'
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+  buildscript {
+    ext {
+      springBootVersion = '2.0.3.RELEASE'
+    }
+    repositories {
+      mavenCentral()
+    }
+    dependencies {
+      classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+  }
+  repositories{
+  	mavenCentral()
+  }
+  dependencies{
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.springframework:spring-context-support')
+    compile('com.alibaba:fastjson:1.2.47')
+    compile('org.apache.commons:commons-lang3')
+    compile('commons-io:commons-io:2.5')
+    compile('net.sourceforge.nekohtml:nekohtml')
+  	compile('mysql:mysql-connector-java')
+  	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2')
+  	compile('com.github.pagehelper:pagehelper-spring-boot-starter:1.2.5')			
+  	compile('com.alibaba:druid-spring-boot-starter:1.1.10')
+  	compile('commons-fileupload:commons-fileupload:1.3.3')          
+  	compile('org.apache.shiro:shiro-core:1.4.0')
+  	compile('org.apache.shiro:shiro-spring:1.4.0')
+  	compile('org.apache.shiro:shiro-ehcache:1.4.0')			
+  	compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
+  	compile('eu.bitwalker:UserAgentUtils:1.19')
+    compile("org.projectlombok:lombok:1.16.20")
+    compile('org.quartz-scheduler:quartz'){
+      exclude (group:'com.mchange', module:'c3p0')
+    }
+    compile('org.apache.velocity:velocity:1.7')
+  
+    compile('com.github.penggle:kaptcha:2.3.2') {
+      exclude (group: 'javax.servlet-api', module:'javax.servlet')
+    }
+    compile ('io.springfox:springfox-swagger2:2.7.0')
+    compile ('io.springfox:springfox-swagger-ui:2.7.0')
+  
+    compile('org.jsoup:jsoup:1.11.3')
+    compile('org.apache.poi:poi-ooxml:3.9')
+  
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+  }
+}
+
+
