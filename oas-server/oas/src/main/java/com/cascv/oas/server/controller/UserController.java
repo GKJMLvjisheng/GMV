@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.model.UserModel;
 import com.cascv.oas.core.utils.StringUtils;
+import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController {
 
-	@RequestMapping(value="/login", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	@RequestMapping(value="/userCenter/login", method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	@ResponseBody
 	public ResponseEntity<?> login(@RequestBody UserModel userModel,HttpServletResponse response) {
 		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
@@ -30,7 +31,7 @@ public class UserController {
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
-            response.addHeader("token", subject.getSession().getId().toString());
+            response.addHeader("token", ShiroUtils.getSessionId());
             return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("ok").build();
         } catch (AuthenticationException e)  {
             String msg = "用户或密码错误";

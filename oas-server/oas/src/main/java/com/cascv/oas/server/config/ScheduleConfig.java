@@ -6,9 +6,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-/**
- * 定时任务配置
- */
+// * 定时任务配置
 @Configuration
 public class ScheduleConfig
 {

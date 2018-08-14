@@ -75,12 +75,10 @@ public class ShiroConfig {
 	    @Value("${shiro.user.unauthorizedUrl}")
 	    private String unauthorizedUrl;
 
-	    /**
-	     * 缓存管理器 使用Ehcache实现
-	     */
+	    
+	    // * 缓存管理器 使用Ehcache实现
 	    @Bean
-	    public EhCacheManager getEhCacheManager()
-	    {
+	    public EhCacheManager getEhCacheManager()  {
 	        net.sf.ehcache.CacheManager cacheManager = net.sf.ehcache.CacheManager.getCacheManager("app");
 	        EhCacheManager em = new EhCacheManager();
 	        if (StringUtils.isNull(cacheManager)) {
@@ -92,33 +90,25 @@ public class ShiroConfig {
 	        }
 	    }
 
-	    /**
-	     * 自定义Realm
-	     */
+	    
+	    // 自定义Realm
 	    @Bean
-	    public UserRealm userRealm(EhCacheManager cacheManager)
-	    {
+	    public UserRealm userRealm(EhCacheManager cacheManager) {
 	        UserRealm userRealm = new UserRealm();
 	        userRealm.setCacheManager(cacheManager);
 	        return userRealm;
 	    }
 
-	    /**
-	     * 自定义sessionDAO会话
-	     */
+	    // 自定义sessionDAO会话
 	    @Bean
-	    public OnlineSessionDAO sessionDAO()
-	    {
+	    public OnlineSessionDAO sessionDAO() {
 	        OnlineSessionDAO sessionDAO = new OnlineSessionDAO();
 	        return sessionDAO;
 	    }
 
-	    /**
-	     * 自定义sessionFactory会话
-	     */
+	    // 自定义sessionFactory会话
 	    @Bean
-	    public OnlineSessionFactory sessionFactory()
-	    {
+	    public OnlineSessionFactory sessionFactory() {
 	        OnlineSessionFactory sessionFactory = new OnlineSessionFactory();
 	        return sessionFactory;
 	    }
@@ -205,11 +195,9 @@ public class ShiroConfig {
 	        return securityManager;
 	    }
 
-	    /**
-	     * 退出过滤器
-	     */
-	    public LogoutFilter logoutFilter()
-	    {
+	    
+	    // 退出过滤器
+	    public LogoutFilter logoutFilter() {
 	        LogoutFilter logoutFilter = new LogoutFilter();
 	        logoutFilter.setLoginUrl(loginUrl);
 	        return logoutFilter;
@@ -232,28 +220,21 @@ public class ShiroConfig {
 	        LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 	        // 对静态资源设置匿名访问
 	        filterChainDefinitionMap.put("/favicon.ico**", "anon");
-	        filterChainDefinitionMap.put("/ruoyi.png**", "anon");
 	        filterChainDefinitionMap.put("/css/**", "anon");
-	        filterChainDefinitionMap.put("/docs/**", "anon");
 	        filterChainDefinitionMap.put("/fonts/**", "anon");
 	        filterChainDefinitionMap.put("/img/**", "anon");
 	        filterChainDefinitionMap.put("/ajax/**", "anon");
 	        filterChainDefinitionMap.put("/js/**", "anon");
-	        filterChainDefinitionMap.put("/app/**", "anon");
 	        filterChainDefinitionMap.put("/druid/**", "anon");
-	        filterChainDefinitionMap.put("/userCenter/register", "anon");
-	        filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
+	        
 	        // 退出 logout地址，shiro去清除session
 	        filterChainDefinitionMap.put("/logout", "logout");
-	        // 不需要拦截的访问
-	        filterChainDefinitionMap.put("/login", "anon,captchaValidate");
-	        // 系统权限列表
-	        // filterChainDefinitionMap.putAll(SpringUtils.getBean(IMenuService.class).selectPermsAll());
+	        filterChainDefinitionMap.put("/userCenter/register", "anon");
+	        filterChainDefinitionMap.put(loginUrl, "anon");		// 不需要拦截的访问
 
 	        Map<String, Filter> filters = new LinkedHashMap<>();
 	        filters.put("onlineSession", onlineSessionFilter());
 	        filters.put("syncOnlineSession", syncOnlineSessionFilter());
-	        filters.put("captchaValidate", captchaValidateFilter());
 	        // 注销成功，则跳转到指定页面
 	        filters.put("logout", logoutFilter());
 	        shiroFilterFactoryBean.setFilters(filters);
@@ -265,23 +246,17 @@ public class ShiroConfig {
 	        return shiroFilterFactoryBean;
 	    }
 
-	    /**
-	     * 自定义在线用户处理过滤器
-	     */
+	    // * 自定义在线用户处理过滤器
 	    @Bean
-	    public OnlineSessionFilter onlineSessionFilter()
-	    {
+	    public OnlineSessionFilter onlineSessionFilter()  {
 	        OnlineSessionFilter onlineSessionFilter = new OnlineSessionFilter();
 	        onlineSessionFilter.setLoginUrl(loginUrl);
 	        return onlineSessionFilter;
 	    }
 
-	    /**
-	     * 自定义在线用户同步过滤器
-	     */
+	    // * 自定义在线用户同步过滤器
 	    @Bean
-	    public SyncOnlineSessionFilter syncOnlineSessionFilter()
-	    {
+	    public SyncOnlineSessionFilter syncOnlineSessionFilter()  {
 	        SyncOnlineSessionFilter syncOnlineSessionFilter = new SyncOnlineSessionFilter();
 	        return syncOnlineSessionFilter;
 	    }
@@ -322,18 +297,16 @@ public class ShiroConfig {
 	        return cookieRememberMeManager;
 	    }
 
-	    /**
-	     * thymeleaf模板引擎和shiro框架的整合
-	     */
+	    
+	    // thymeleaf模板引擎和shiro框架的整合
 	    @Bean
 	    public ShiroDialect shiroDialect()
 	    {
 	        return new ShiroDialect();
 	    }
 
-	    /**
-	     * 开启Shiro注解通知器
-	     */
+	    
+	    // 开启Shiro注解通知器
 	    @Bean
 	    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
 	            @Qualifier("securityManager") SecurityManager securityManager)

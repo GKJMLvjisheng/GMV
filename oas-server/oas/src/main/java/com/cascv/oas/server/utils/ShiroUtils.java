@@ -12,12 +12,9 @@ import com.cascv.oas.core.utils.BeanUtils;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.server.shiro.UserRealm;
 
-/**
- */
-public class ShiroUtils
-{
-    public static Subject getSubjct()
-    {
+
+public class ShiroUtils {
+    public static Subject getSubjct() {
         return SecurityUtils.getSubject();
     }
 
