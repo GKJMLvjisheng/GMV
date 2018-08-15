@@ -17,15 +17,23 @@ import com.cascv.oas.core.model.UserModel;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
 public class UserController {
-
+	
+	@ApiOperation(value="用户登录", notes="")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String"),
+        @ApiImplicitParam(name = "password", value = "用户密码", required = true, dataType = "String")
+	})
 	@RequestMapping(value="/userCenter/login", method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	@ResponseBody
-	public ResponseEntity<?> login(@RequestBody UserModel userModel,HttpServletResponse response) {
+	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel,HttpServletResponse response) {
 		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
 		UsernamePasswordToken token = new UsernamePasswordToken(userModel.getName(), userModel.getPassword(), false);
         Subject subject = SecurityUtils.getSubject();
@@ -41,7 +49,11 @@ public class UserController {
             return new ResponseEntity.Builder<Integer>().setData(0).setStatus(1).setMessage(msg).build();
         }
 	}
-	
+	@ApiOperation(value="用户注册", notes="")
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String"),
+        @ApiImplicitParam(name = "password", value = "用户密码", required = true, dataType = "String")
+	})
 	@RequestMapping(value="/userCenter/register", method=RequestMethod.POST, consumes="application/json", produces="application/json")
 	@ResponseBody
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
