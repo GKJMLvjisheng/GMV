@@ -1,4 +1,4 @@
-package com.cascv.oas.server.service;
+package com.cascv.oas.server.user.service;
 
 import java.util.Date;
 import java.util.List;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.StringUtils;
-import com.cascv.oas.server.mapper.UserOnlineMapper;
 import com.cascv.oas.core.model.UserOnline;
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
+import com.cascv.oas.server.user.mapper.UserOnlineMapper;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.cascv.oas.server.controller;
+package com.cascv.oas.server.user.controller;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -6,24 +6,27 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.model.UserModel;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
+@RestController
 @Slf4j
+@Api(value="用户操作接口")
+@RequestMapping(value="/userCenter")
 public class UserController {
 	
 	@ApiOperation(value="用户登录", notes="")
@@ -31,7 +34,7 @@ public class UserController {
         @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String"),
         @ApiImplicitParam(name = "password", value = "用户密码", required = true, dataType = "String")
 	})
-	@RequestMapping(value="/userCenter/login", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel,HttpServletResponse response) {
 		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
@@ -49,15 +52,21 @@ public class UserController {
             return new ResponseEntity.Builder<Integer>().setData(0).setStatus(1).setMessage(msg).build();
         }
 	}
+	
 	@ApiOperation(value="用户注册", notes="")
 	@ApiImplicitParams({
         @ApiImplicitParam(name = "name", value = "用户名", required = true, dataType = "String"),
         @ApiImplicitParam(name = "password", value = "用户密码", required = true, dataType = "String")
 	})
-	@RequestMapping(value="/userCenter/register", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	@RequestMapping(value="/register", method=RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 		log.info("register name {}, password {}", userModel.getName(), userModel.getPassword());
 		return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("ok").build();
+	}
+
+	@RequestMapping(value="/inquireName", method=RequestMethod.POST)
+	public ResponseEntity<?> inquireName(String name) {
+	  return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("ok").build();
 	}
 }

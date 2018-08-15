@@ -4,9 +4,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import com.cascv.oas.core.utils.StringUtils;
 
-/**
- * 字符集工具类
- */
+// 字符集工具类
 public class CharsetKit
 {
     /** ISO-8859-1 */
@@ -74,9 +72,7 @@ public class CharsetKit
         return new String(source.getBytes(srcCharset), destCharset);
     }
 
-    /**
-     * @return 系统字符集编码
-     */
+    // @return 系统字符集编码
     public static String systemCharset()
     {
         return Charset.defaultCharset().name();

@@ -6,11 +6,9 @@ public class BaseException extends RuntimeException
     private static final long serialVersionUID = 1L;
     private String module;
     private String code;
-    // 错误码对应的参数
-    private Object[] args;
-
-    // 错误消息
-    private String defaultMessage;
+    
+    private Object[] args;        // 错误码对应的参数
+    private String defaultMessage;// 错误消息
 
     public BaseException(String module, String code, Object[] args, String defaultMessage)
     {

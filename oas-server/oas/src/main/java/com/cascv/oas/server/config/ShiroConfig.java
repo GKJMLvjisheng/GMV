@@ -210,29 +210,26 @@ public class ShiroConfig {
 	    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager)
 	    {
 	        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-	        // Shiro的核心安全接口,这个属性是必须的
-	        shiroFilterFactoryBean.setSecurityManager(securityManager);
-	        // 身份认证失败，则跳转到登录页面的配置
-	        shiroFilterFactoryBean.setLoginUrl(loginUrl);
-	        // 权限认证失败，则跳转到指定页面
-	        shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
+	        shiroFilterFactoryBean.setSecurityManager(securityManager);	// 这个属性是必须的
+	        shiroFilterFactoryBean.setLoginUrl(loginUrl);	        	// 认证失败则跳转到登录页面的配置
+	        shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);	// 权限认证失败，则跳转到指定页面
 	        // Shiro连接约束配置，即过滤链的定义
 	        LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 	        // 对静态资源设置匿名访问
-//	        filterChainDefinitionMap.put("/favicon.ico**", "anon");
-//	        filterChainDefinitionMap.put("/css/**", "anon");
-//	        filterChainDefinitionMap.put("/fonts/**", "anon");
-//	        filterChainDefinitionMap.put("/img/**", "anon");
-//	        filterChainDefinitionMap.put("/ajax/**", "anon");
-//	        filterChainDefinitionMap.put("/js/**", "anon");
-//	        filterChainDefinitionMap.put("/druid/**", "anon");
-//	        filterChainDefinitionMap.put("/webjars/**", "anon");
-//	        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
-//
-//	        filterChainDefinitionMap.put("/logout", "logout");
-//	        filterChainDefinitionMap.put("/userCenter/register", "anon");
-//	        filterChainDefinitionMap.put(loginUrl, "anon");		
-	        filterChainDefinitionMap.put("/**", "anon");
+	        filterChainDefinitionMap.put("/favicon.ico**", "anon");
+	        filterChainDefinitionMap.put("/css/**", "anon");
+	        filterChainDefinitionMap.put("/fonts/**", "anon");
+	        filterChainDefinitionMap.put("/img/**", "anon");
+	        filterChainDefinitionMap.put("/ajax/**", "anon");
+	        filterChainDefinitionMap.put("/js/**", "anon");
+	        filterChainDefinitionMap.put("/druid/**", "anon");
+	        filterChainDefinitionMap.put("/webjars/**", "anon");
+	        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
+
+	        filterChainDefinitionMap.put("/logout", "logout");
+	        filterChainDefinitionMap.put("/userCenter/register", "anon");
+	        filterChainDefinitionMap.put(loginUrl, "anon");		
+	        
 	        Map<String, Filter> filters = new LinkedHashMap<>();
 	        filters.put("onlineSession", onlineSessionFilter());
 	        filters.put("syncOnlineSession", syncOnlineSessionFilter());
@@ -241,7 +238,7 @@ public class ShiroConfig {
 	        shiroFilterFactoryBean.setFilters(filters);
 
 	        // 所有请求需要认证
-	        //filterChainDefinitionMap.put("/**", "user,onlineSession,syncOnlineSession");
+	        filterChainDefinitionMap.put("/**", "user,onlineSession,syncOnlineSession");
 	        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
 	        return shiroFilterFactoryBean;

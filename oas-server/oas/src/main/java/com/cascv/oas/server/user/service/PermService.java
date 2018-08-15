@@ -1,4 +1,4 @@
-package com.cascv.oas.server.service;
+package com.cascv.oas.server.user.service;
 
 import java.util.HashSet;
 import java.util.Set;

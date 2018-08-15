@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.cascv.oas.core.model.OnlineSession;
 import com.cascv.oas.core.model.UserOnline;
-import com.cascv.oas.server.service.UserOnlineService;
+import com.cascv.oas.server.user.service.UserOnlineService;
 
 import lombok.extern.slf4j.Slf4j;
 

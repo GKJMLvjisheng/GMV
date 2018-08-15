@@ -1,4 +1,4 @@
-package com.cascv.oas.server.mapper;
+package com.cascv.oas.server.user.mapper;
 
 import java.util.List;
 import com.cascv.oas.core.model.UserOnline;

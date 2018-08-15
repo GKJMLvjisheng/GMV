@@ -24,9 +24,9 @@ import com.cascv.oas.core.exception.UserNotExistsException;
 import com.cascv.oas.core.exception.UserPasswordNotMatchException;
 import com.cascv.oas.core.exception.UserPasswordRetryLimitExceedException;
 import com.cascv.oas.core.model.UserModel;
-import com.cascv.oas.server.service.PermService;
-import com.cascv.oas.server.service.RoleService;
-import com.cascv.oas.server.service.UserService;
+import com.cascv.oas.server.user.service.PermService;
+import com.cascv.oas.server.user.service.RoleService;
+import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;

@@ -1,13 +1,8 @@
 package com.cascv.oas.server.common;
 
-/**
- * Shiro通用常量
- */
-public interface ShiroConstants
-{
-    /**
-     * 当前登录的用户
-     */
+public interface ShiroConstants {
+    
+    // * 当前登录的用户
     public static final String CURRENT_USER = "currentUser";
 
     /**

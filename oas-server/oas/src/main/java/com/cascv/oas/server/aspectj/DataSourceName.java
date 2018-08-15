@@ -1,11 +1,11 @@
 package com.cascv.oas.server.aspectj;
 
-// 多数据源别名
+// multiple data source
 public class DataSourceName
 {
-    // 主库 
+    // main 
     public static final String MASTER = "master";
 
-    // 从库 
+    // slave 
     public static final String SLAVE = "slave";
 }

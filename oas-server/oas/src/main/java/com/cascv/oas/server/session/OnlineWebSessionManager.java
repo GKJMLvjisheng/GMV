@@ -21,10 +21,10 @@ import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cascv.oas.server.common.ShiroConstants;
+import com.cascv.oas.server.user.service.UserOnlineService;
 import com.cascv.oas.core.model.OnlineSession;
 import com.cascv.oas.core.model.UserOnline;
 import com.cascv.oas.core.utils.StringUtils;
-import com.cascv.oas.server.service.UserOnlineService;
 
 import lombok.extern.slf4j.Slf4j;
 
