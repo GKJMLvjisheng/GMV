@@ -11,16 +11,20 @@ import com.cascv.oas.core.model.UserOnline;
 import com.cascv.oas.core.utils.IpUtils;
 import com.cascv.oas.core.utils.StringUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 自定义sessionFactory会话
  */
 @Component
+@Slf4j
 public class OnlineSessionFactory implements SessionFactory
 {
     public Session createSession(UserOnline userOnline) {
+    	log.info("factory create session, loginName-{}, session-{}", userOnline.getLoginName(), userOnline.getSessionId());
         OnlineSession onlineSession = userOnline.getSession();
-        if (StringUtils.isNotNull(onlineSession) && onlineSession.getId() == null)
-        {
+        if (StringUtils.isNotNull(onlineSession) && onlineSession.getId() == null) {
+        	log.info("factory create session set id");
             onlineSession.setId(userOnline.getSessionId());
         }
         return userOnline.getSession();
@@ -28,15 +32,15 @@ public class OnlineSessionFactory implements SessionFactory
 
     @Override
     public Session createSession(SessionContext initData) {
-        OnlineSession session = new OnlineSession();
-        if (initData != null && initData instanceof WebSessionContext)
-        {
-            WebSessionContext sessionContext = (WebSessionContext) initData;
-            HttpServletRequest request = (HttpServletRequest) sessionContext.getServletRequest();
-            if (request != null) {
-                session.setHost(IpUtils.getIpAddr(request));
-            }
-        }
-        return session;
-    }
+      OnlineSession session = new OnlineSession();
+      if (initData != null && initData instanceof WebSessionContext) {
+    	log.info("create session initData not null");
+		WebSessionContext sessionContext = (WebSessionContext) initData;
+		HttpServletRequest request = (HttpServletRequest) sessionContext.getServletRequest();
+		if (request != null) {
+		    session.setHost(IpUtils.getIpAddr(request));
+		}
+      }
+      return session;
+   }
 }

@@ -1,4 +1,4 @@
-package com.cascv.oas.core.utils;
+package com.cascv.oas.server.utils;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cascv.oas.core.support.Convert;
+import com.cascv.oas.core.utils.StringUtils;
 
 
 /**

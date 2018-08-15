@@ -82,6 +82,5 @@ gen:
   # 表前缀(类名不会包含表前缀)
   tablePrefix: sys_
 server:
-  host: 10.0.0.19
-  port: 8081
+  port: 8080
   session-timeout: 1800

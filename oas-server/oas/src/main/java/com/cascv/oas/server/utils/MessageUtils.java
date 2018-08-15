@@ -1,4 +1,4 @@
-package com.cascv.oas.core.utils;
+package com.cascv.oas.server.utils;
 
 import org.springframework.context.MessageSource;
 

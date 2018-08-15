@@ -1,4 +1,4 @@
-package com.cascv.oas.core.config;
+package com.cascv.oas.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

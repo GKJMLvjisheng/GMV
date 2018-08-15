@@ -13,9 +13,9 @@ public class ResponseEntity<T> implements Serializable{
 	@Getter @Setter private String message;
 	@Getter @Setter private T data;
 	
-    public ResponseEntity() {
-      this.code = 0;
-      this.message = "";
+  public ResponseEntity() {
+    this.code = 0;
+    this.message = "";
   }
 
   public ResponseEntity(Builder<T> builder) {

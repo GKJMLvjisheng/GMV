@@ -1,15 +1,14 @@
 archivesBaseName = 'oas-core'
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
+tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
 
 repositories {
   mavenCentral()
 }
 
 dependencies{
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
+

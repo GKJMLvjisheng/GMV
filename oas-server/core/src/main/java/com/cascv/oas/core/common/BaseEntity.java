@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    private String searchValue;    /** 搜索值 */
-    private String createBy;       /** 创建者 */
+    private String searchValue;    // 搜索值
+    private String createBy;       // 创建者 
 
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

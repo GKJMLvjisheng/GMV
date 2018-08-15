@@ -39,135 +39,106 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
     private UserOnlineService userOnlineService;
     
     @Override
-    public void setAttribute(SessionKey sessionKey, Object attributeKey, Object value) throws InvalidSessionException
-    {
-        super.setAttribute(sessionKey, attributeKey, value);
-        if (value != null && needMarkAttributeChanged(attributeKey))
-        {
-            OnlineSession s = (OnlineSession) doGetSession(sessionKey);
-            s.markAttributeChanged();
-        }
+    public void setAttribute(SessionKey sessionKey, Object attributeKey, Object value) 
+          throws InvalidSessionException {
+      super.setAttribute(sessionKey, attributeKey, value);
+      if (value != null && needMarkAttributeChanged(attributeKey)){
+        OnlineSession s = (OnlineSession) doGetSession(sessionKey);
+        s.markAttributeChanged();
+      }
     }
 
-    private boolean needMarkAttributeChanged(Object attributeKey)
-    {
-        if (attributeKey == null)
-        {
-            return false;
-        }
-        String attributeKeyStr = attributeKey.toString();
-        // 优化 flash属性没必要持久化
-        if (attributeKeyStr.startsWith("org.springframework"))
-        {
-            return false;
-        }
-        if (attributeKeyStr.startsWith("javax.servlet"))
-        {
-            return false;
-        }
-        if (attributeKeyStr.equals(ShiroConstants.CURRENT_USERNAME))
-        {
-            return false;
-        }
-        return true;
+    private boolean needMarkAttributeChanged(Object attributeKey) {
+      if (attributeKey == null) {
+        return false;
+      }
+      String attributeKeyStr = attributeKey.toString();
+      // 优化 flash属性没必要持久化
+      if (attributeKeyStr.startsWith("org.springframework")){
+        return false;
+      }
+      if (attributeKeyStr.startsWith("javax.servlet")){
+        return false;
+      }
+      if (attributeKeyStr.equals(ShiroConstants.CURRENT_USERNAME)) {
+        return false;
+      }
+      return true;
     }
 
     @Override
-    public Object removeAttribute(SessionKey sessionKey, Object attributeKey) throws InvalidSessionException
-    {
+    public Object removeAttribute(SessionKey sessionKey, Object attributeKey) 
+        throws InvalidSessionException {
         Object removed = super.removeAttribute(sessionKey, attributeKey);
-        if (removed != null)
-        {
+        if (removed != null) {
             OnlineSession s = (OnlineSession) doGetSession(sessionKey);
             s.markAttributeChanged();
         }
-
         return removed;
     }
 
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response){
         String id = WebUtils.toHttp(request).getHeader(HEADER_TOKEN_NAME);
-        //System.out.println("id："+id);
+        
         if(StringUtils.isEmpty(id)){
-            // 如果没有携带id参数则按照父类的方式在cookie进行获取
-        	// System.out.println("super："+super.getSessionId(request, response));
-            return super.getSessionId(request, response);
+        	log.info("not use {} information", HEADER_TOKEN_NAME);
+          return super.getSessionId(request, response);
         }else{
-            //如果请求头中有 authToken 则其值为sessionId
+          log.info("use {} information", HEADER_TOKEN_NAME);
+          //如果请求头中有 authToken 则其值为sessionId
         	request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,REFERENCED_SESSION_ID_SOURCE);
-            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID,id);
-            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID,Boolean.TRUE);
-            return id;
+          request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID,id);
+          request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID,Boolean.TRUE);
+          return id;
         }
     }
-
     
-    
-    /**
-     * 验证session是否有效 用于删除过期session
-     */
+    // * 验证session是否有效 用于删除过期session
     @Override
     public void validateSessions()
     {
-        if (log.isInfoEnabled())  {
-            log.info("invalidation sessions...");
-        }
-        int invalidCount = 0;
+      log.info("invalidation sessions...");
+      int invalidCount = 0;
 
-        int timeout = (int) this.getGlobalSessionTimeout();
-        Date expiredDate = DateUtils.addMilliseconds(new Date(), 0 - timeout);
-        List<UserOnline> userOnlineList = userOnlineService.selectOnlineByExpired(expiredDate);
-        // 批量过期删除
-        List<String> needOfflineIdList = new ArrayList<String>();
-        for (UserOnline userOnline : userOnlineList)
-        {
-            try
-            {
-                SessionKey key = new DefaultSessionKey(userOnline.getSessionId());
-                Session session = retrieveSession(key);
-                if (session != null)
-                {
-                    throw new InvalidSessionException();
-                }
-            }
-            catch (InvalidSessionException e)
-            {
-                if (log.isDebugEnabled())
-                {
-                    boolean expired = (e instanceof ExpiredSessionException);
-                    String msg = "Invalidated session with id [" + userOnline.getSessionId() + "]"
-                            + (expired ? " (expired)" : " (stopped)");
-                    log.debug(msg);
-                }
-                invalidCount++;
-                needOfflineIdList.add(userOnline.getSessionId());
-            }
+      int timeout = (int) this.getGlobalSessionTimeout();
+      Date expiredDate = DateUtils.addMilliseconds(new Date(), 0 - timeout);
+      List<UserOnline> userOnlineList = userOnlineService.selectOnlineByExpired(expiredDate);
+      // 批量过期删除
+      List<String> needOfflineIdList = new ArrayList<String>();
+      for (UserOnline userOnline : userOnlineList) {
+        try {
+          SessionKey key = new DefaultSessionKey(userOnline.getSessionId());
+          Session session = retrieveSession(key);
+          if (session != null) {
+            throw new InvalidSessionException();
+          }
+        } catch (InvalidSessionException e) {
+          if (log.isDebugEnabled()) {
+            boolean expired = (e instanceof ExpiredSessionException);
+            String s = expired ? " (expired)" : " (stopped)";
+            log.debug("Invalidated session with id [{}] {}", userOnline.getSessionId(), s);
+          }
+          invalidCount++;
+          needOfflineIdList.add(userOnline.getSessionId());
+        }
+      }
+      if (needOfflineIdList.size() > 0)  {
+        try {
+          userOnlineService.batchDeleteOnline(needOfflineIdList);
+        } catch (Exception e) {
+          log.error("batch delete db session error.", e);
+        }
+      }
 
+      if (log.isInfoEnabled()) {
+        if (invalidCount > 0) {
+            log.info("Finished invalidation session.[{}] sessions were stopped.", 
+            invalidCount);
+        } else {
+          log.info("Finished invalidation session. No sessions were stopped.");
         }
-        if (needOfflineIdList.size() > 0)  {
-            try {
-                userOnlineService.batchDeleteOnline(needOfflineIdList);
-            }
-            catch (Exception e)
-            {
-                log.error("batch delete db session error.", e);
-            }
-        }
-
-        if (log.isInfoEnabled())
-        {
-            String msg = "Finished invalidation session.";
-            if (invalidCount > 0)
-            {
-                msg += " [" + invalidCount + "] sessions were stopped.";
-            }
-            else
-            {
-                msg += " No sessions were stopped.";
-            }
-            log.info(msg);
-        }
+      }
 
     }
 

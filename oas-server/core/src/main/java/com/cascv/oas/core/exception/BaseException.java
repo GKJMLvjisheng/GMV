@@ -1,34 +1,15 @@
 package com.cascv.oas.core.exception;
 
-import org.springframework.util.StringUtils;
-import com.cascv.oas.core.utils.MessageUtils;
-
-/**
- * 基础异常
- */
+// basic exception
 public class BaseException extends RuntimeException
 {
-
     private static final long serialVersionUID = 1L;
-
-    /**
-     * 所属模块
-     */
     private String module;
-
-    /**
-     * 错误码
-     */
     private String code;
-
-    /**
-     * 错误码对应的参数
-     */
+    // 错误码对应的参数
     private Object[] args;
 
-    /**
-     * 错误消息
-     */
+    // 错误消息
     private String defaultMessage;
 
     public BaseException(String module, String code, Object[] args, String defaultMessage)
@@ -62,15 +43,7 @@ public class BaseException extends RuntimeException
     @Override
     public String getMessage()
     {
-        String message = null;
-        if (!StringUtils.isEmpty(code))
-        {
-            message = MessageUtils.message(code, args);
-        }
-        if (message == null)
-        {
-            message = defaultMessage;
-        }
+        String message = defaultMessage;
         return message;
     }
 
@@ -94,9 +67,8 @@ public class BaseException extends RuntimeException
         return defaultMessage;
     }
 
-    @Override
-    public String toString()
-    {
-        return this.getClass() + "{" + "module='" + module + '\'' + ", message='" + getMessage() + '\'' + '}';
-    }
+  @Override
+  public String toString() {
+    return this.getClass() + "{" + "module='" + module + '\'' + ", message='" + getMessage() + '\'' + '}';
+  }
 }
