@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<insert id="saveOnline" parameterType="com.cascv.oas.server.user.model.UserOnline">
-		replace into user_online(sessionId, login_name, status, start_time, last_access_time, expire_time)
+		replace into user_online(session_id, login_name, status, start_time, last_access_time, expire_time)
         values (#{sessionId}, #{loginName}, #{status}, #{startTime}, #{lastAccessTime}, #{expireTime})
 	</insert>
 	

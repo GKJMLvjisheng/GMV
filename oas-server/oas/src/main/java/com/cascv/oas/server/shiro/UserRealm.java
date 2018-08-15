@@ -64,11 +64,11 @@ public class UserRealm extends AuthorizingRealm
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException
     {
-    	log.info("a");
+    	
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         String username = upToken.getUsername();
         String password = "";
-        log.info("b");
+      
         if (upToken.getPassword() != null) {
             password = new String(upToken.getPassword());
         }
@@ -78,13 +78,12 @@ public class UserRealm extends AuthorizingRealm
         	userModel = userService.findUserByName(username);
         	String calcPassword=new Md5Hash(username + password + userModel.getSalt()).toHex().toString();
         	log.info("password {} calc {}", userModel.getPassword(), calcPassword);
+        	log.info("name {} password {} salt {}", username, password, userModel.getSalt());
         	if (!userModel.getPassword().equals(calcPassword)) {
         		throw new UserNotExistsException();
         	}
-        	log.info("d");
         } catch (CaptchaException e) {
-        	log.info("e");
-            throw new AuthenticationException(e.getMessage(), e);
+           throw new AuthenticationException(e.getMessage(), e);
         }
         catch (UserNotExistsException e)
         {

@@ -14,7 +14,7 @@ public class UserModel extends BaseEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@Getter @Setter private Long id;       
+	@Getter @Setter private Integer id;       
 	@Getter @Setter private String name;   
 	@Getter @Setter private String nickname;
 	@Getter @Setter private String password;

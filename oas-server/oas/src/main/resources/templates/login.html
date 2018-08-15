@@ -43,6 +43,11 @@
 	   cache: false,
 	   success: function (res) {
 	     alert(JSON.stringify(res));
+	     if (res.code == 0) {
+	     	window.location.replace("/swagger-ui.html");
+	     } else {
+	    	 alert(res.message);
+	     }
 	   },
 	   error: function (res) {
 		  alert(JSON.stringify(res));

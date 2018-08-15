@@ -59,10 +59,10 @@ public class UserController {
         }
 	}
 	
-	@ApiOperation(value="鐢ㄦ埛娉ㄥ唽", notes="")
+	@ApiOperation(value="user register", notes="")
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "name", value = "鐢ㄦ埛鍚�", required = true, dataType = "String"),
-        @ApiImplicitParam(name = "password", value = "鐢ㄦ埛瀵嗙爜", required = true, dataType = "String")
+        @ApiImplicitParam(name = "name", value = "user name", required = true, dataType = "String"),
+        @ApiImplicitParam(name = "password", value = "user password", required = true, dataType = "String")
 	})
 	@RequestMapping(value="/register", method=RequestMethod.POST)
 	@ResponseBody

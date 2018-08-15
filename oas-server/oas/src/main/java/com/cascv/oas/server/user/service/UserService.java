@@ -24,7 +24,7 @@ public class UserService {
       return 2;
     }
     if (userModel.getNickname() == null) {
-      userModel.setName(userModel.getName());
+      userModel.setNickname(userModel.getName());
     }
     return userModelMapper.insertUser(userModel);
   }

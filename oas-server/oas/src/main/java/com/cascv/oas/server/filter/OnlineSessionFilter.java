@@ -29,7 +29,6 @@ public class OnlineSessionFilter extends AccessControlFilter
     private OnlineSessionDAO onlineSessionDAO;
 
     /**
-     * 琛ㄧず鏄惁鍏佽璁块棶锛沵appedValue灏辨槸[urls]閰嶇疆涓嫤鎴櫒鍙傛暟閮ㄥ垎锛屽鏋滃厑璁歌闂繑鍥瀟rue锛屽惁鍒檉alse锛�
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)
@@ -48,8 +47,7 @@ public class OnlineSessionFilter extends AccessControlFilter
             if (isGuest == true)
             {
                 UserModel user = ShiroUtils.getUser();
-                if (user != null)
-                {
+                if (user != null) {
                     onlineSession.setUserId(user.getId());
                     onlineSession.setLoginName(user.getName());
                     onlineSession.markAttributeChanged();

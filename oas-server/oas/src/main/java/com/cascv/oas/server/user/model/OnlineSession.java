@@ -5,16 +5,15 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import lombok.Getter;
 import lombok.Setter;
 
-// * 在线会话
+// 
 public class OnlineSession extends SimpleSession {
 
   private static final long serialVersionUID = 1L;
 
-  @Setter @Getter private Long userId;      // 用户ID 
-  @Setter @Getter private String loginName; // 用户�?
-  @Setter @Getter private OnlineStatus status = OnlineStatus.on_line;//状�??
+  @Setter @Getter private Integer userId;     
+  @Setter @Getter private String loginName; 
+  @Setter @Getter private OnlineStatus status = OnlineStatus.on_line;
 
-  // 属�?�是否改�?,session数据同步
   private transient boolean attributeChanged = false;
 
   public void markAttributeChanged() {
@@ -40,7 +39,7 @@ public class OnlineSession extends SimpleSession {
   }
 
   public static enum OnlineStatus {
-    on_line("在线"), off_line("离线");
+    on_line("online"), off_line("offline");
     private final String info;
 
     private OnlineStatus(String info){
