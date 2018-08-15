@@ -1,8 +1,7 @@
-package com.cascv.oas.core.model;
+package com.cascv.oas.server.user.model;
 
 import com.cascv.oas.core.common.BaseEntity;
-import com.cascv.oas.core.model.OnlineSession.OnlineStatus;
-
+import com.cascv.oas.server.user.model.OnlineSession.OnlineStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,10 +17,10 @@ public class UserOnline extends BaseEntity {
     @Getter @Setter private String sessionId;	    /** 用户会话id */
     @Getter @Setter private String loginName;
     @Getter @Setter private String startTime;		/** session创建时间 */
-    @Getter @Setter private String lastAccessTime;	/** session最后访问时间 */
+    @Getter @Setter private String lastAccessTime;	/** session�?后访问时�? */
     @Getter @Setter private Long expireTime;		/** 超时时间，单位为分钟 */
-    @Getter @Setter private OnlineStatus status = OnlineStatus.on_line;/** 在线状态 */
-    @Getter @Setter private OnlineSession session;	/** 备份的当前用户会话 */
+    @Getter @Setter private OnlineStatus status = OnlineStatus.on_line;/** 在线状�?? */
+    @Getter @Setter private OnlineSession session;	/** 备份的当前用户会�? */
 
     
     // session对象

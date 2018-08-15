@@ -22,13 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cascv.oas.server.common.ShiroConstants;
 import com.cascv.oas.server.user.service.UserOnlineService;
-import com.cascv.oas.core.model.OnlineSession;
-import com.cascv.oas.core.model.UserOnline;
+import com.cascv.oas.server.user.model.OnlineSession;
+import com.cascv.oas.server.user.model.UserOnline;
 import com.cascv.oas.core.utils.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-// 主要是在此如果会话的属性修改了 就标识下其修改了 然后方便 OnlineSessionDao同步
+// 
 @Slf4j
 public class OnlineWebSessionManager extends DefaultWebSessionManager
 {
@@ -53,7 +53,6 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
         return false;
       }
       String attributeKeyStr = attributeKey.toString();
-      // 优化 flash属性没必要持久化
       if (attributeKeyStr.startsWith("org.springframework")){
         return false;
       }
@@ -86,15 +85,14 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
           return super.getSessionId(request, response);
         }else{
           log.info("use {} information", HEADER_TOKEN_NAME);
-          //如果请求头中有 authToken 则其值为sessionId
-        	request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,REFERENCED_SESSION_ID_SOURCE);
+       	  request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,REFERENCED_SESSION_ID_SOURCE);
           request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID,id);
           request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID,Boolean.TRUE);
           return id;
         }
     }
     
-    // * 验证session是否有效 用于删除过期session
+
     @Override
     public void validateSessions()
     {
@@ -104,7 +102,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
       int timeout = (int) this.getGlobalSessionTimeout();
       Date expiredDate = DateUtils.addMilliseconds(new Date(), 0 - timeout);
       List<UserOnline> userOnlineList = userOnlineService.selectOnlineByExpired(expiredDate);
-      // 批量过期删除
+      // 
       List<String> needOfflineIdList = new ArrayList<String>();
       for (UserOnline userOnline : userOnlineList) {
         try {

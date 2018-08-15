@@ -7,7 +7,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cascv.oas.core.model.UserModel;
+import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.core.utils.StringUtils;
 

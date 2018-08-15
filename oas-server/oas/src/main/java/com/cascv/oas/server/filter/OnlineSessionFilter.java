@@ -11,17 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.cascv.oas.server.common.ShiroConstants;
-import com.cascv.oas.core.model.OnlineSession;
-import com.cascv.oas.core.model.UserModel;
+import com.cascv.oas.server.user.model.OnlineSession;
+import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 import com.cascv.oas.server.utils.ShiroUtils;
 
-// 自定义访问控制
+// 
 public class OnlineSessionFilter extends AccessControlFilter
 {
 
     
-    // * 强制退出后重定向的地址
+    // 
     @Value("${shiro.user.loginUrl}")
     private String loginUrl;
 
@@ -29,7 +29,7 @@ public class OnlineSessionFilter extends AccessControlFilter
     private OnlineSessionDAO onlineSessionDAO;
 
     /**
-     * 表示是否允许访问；mappedValue就是[urls]配置中拦截器参数部分，如果允许访问返回true，否则false；
+     * 琛ㄧず鏄惁鍏佽璁块棶锛沵appedValue灏辨槸[urls]閰嶇疆涓嫤鎴櫒鍙傛暟閮ㄥ垎锛屽鏋滃厑璁歌闂繑鍥瀟rue锛屽惁鍒檉alse锛�
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)
@@ -43,7 +43,7 @@ public class OnlineSessionFilter extends AccessControlFilter
         if (session != null && session instanceof OnlineSession)  {
             OnlineSession onlineSession = (OnlineSession) session;
             request.setAttribute(ShiroConstants.ONLINE_SESSION, onlineSession);
-            // 把user对象设置进去
+            // 
             boolean isGuest = onlineSession.getUserId() == null || onlineSession.getUserId() == 0L;
             if (isGuest == true)
             {
@@ -65,7 +65,6 @@ public class OnlineSessionFilter extends AccessControlFilter
     }
 
     
-    // 表示当访问拒绝时是否已经处理了；如果返回true表示需要继续处理；如果返回false表示该拦截器实例已经处理了，将直接返回即可。
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception
     {
@@ -78,7 +77,6 @@ public class OnlineSessionFilter extends AccessControlFilter
         return true;
     }
 
-    // 跳转到登录页
     @Override
     protected void redirectToLogin(ServletRequest request, ServletResponse response) throws IOException
     {

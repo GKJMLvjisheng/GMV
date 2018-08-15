@@ -9,13 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.StringUtils;
-import com.cascv.oas.core.model.UserOnline;
+import com.cascv.oas.server.user.model.UserOnline;
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 import com.cascv.oas.server.user.mapper.UserOnlineMapper;
 
 
 /**
- * 在线用户 服务层
  */
 @Service
 public class UserOnlineService {
@@ -25,23 +24,11 @@ public class UserOnlineService {
     @Autowired
     private OnlineSessionDAO onlineSessionDAO;
 
-    /**
-     * 通过会话序号查询信息
-     * 
-     * @param sessionId 会话ID
-     * @return 在线用户信息
-     */
     public UserOnline selectOnlineById(String sessionId)
     {
         return userOnlineDao.selectOnlineById(sessionId);
     }
 
-    /**
-     * 通过会话序号删除信息
-     * 
-     * @param sessionId 会话ID
-     * @return 在线用户信息
-     */
     public void deleteOnlineById(String sessionId)
     {
         UserOnline userOnline = selectOnlineById(sessionId);
@@ -51,12 +38,6 @@ public class UserOnlineService {
         }
     }
 
-    /**
-     * 通过会话序号删除信息
-     * 
-     * @param sessions 会话ID集合
-     * @return 在线用户信息
-     */
     
     public void batchDeleteOnline(List<String> sessions)
     {
@@ -70,34 +51,16 @@ public class UserOnlineService {
         }
     }
 
-    /**
-     * 保存会话信息
-     * 
-     * @param online 会话信息
-     */
-    
     public void saveOnline(UserOnline online)
     {
     	userOnlineDao.saveOnline(online);
     }
 
-    /**
-     * 查询会话集合
-     * 
-     * @param pageUtilEntity 分页参数
-     */
-    
     public List<UserOnline> selectUserOnlineList(UserOnline userOnline)
     {
         return userOnlineDao.selectUserOnlineList(userOnline);
     }
 
-    /**
-     * 强退用户
-     * 
-     * @param sessionId 会话ID
-     */
-    
     public void forceLogout(String sessionId)
     {
         Session session = onlineSessionDAO.readSession(sessionId);
@@ -109,7 +72,6 @@ public class UserOnlineService {
     }
 
     
-    // 查询会话集合
     public List<UserOnline> selectOnlineByExpired(Date expiredDate)
     {
         String lastAccessTime = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, expiredDate);

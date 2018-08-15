@@ -1,4 +1,4 @@
-package com.cascv.oas.core.model;
+package com.cascv.oas.server.user.model;
 
 import com.cascv.oas.core.common.BaseEntity;
 

@@ -7,7 +7,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.subject.Subject;
 
-import com.cascv.oas.core.model.UserModel;
+import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.utils.BeanUtils;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.server.shiro.UserRealm;

@@ -23,7 +23,7 @@ import com.cascv.oas.core.exception.UserBlockedException;
 import com.cascv.oas.core.exception.UserNotExistsException;
 import com.cascv.oas.core.exception.UserPasswordNotMatchException;
 import com.cascv.oas.core.exception.UserPasswordRetryLimitExceedException;
-import com.cascv.oas.core.model.UserModel;
+import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.PermService;
 import com.cascv.oas.server.user.service.RoleService;
 import com.cascv.oas.server.user.service.UserService;
@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
- * 自定义Realm 处理登录 权限
  */
 @Slf4j
 public class UserRealm extends AuthorizingRealm
@@ -48,21 +47,20 @@ public class UserRealm extends AuthorizingRealm
 	private PermService permService;
 
     /**
-     * 授权
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
         Long userId = ShiroUtils.getUserId();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        // 角色加入AuthorizationInfo认证对象
+        // 
         info.setRoles(roleService.getRolesByUserId(userId));
-        // 权限加入AuthorizationInfo认证对象
+        // 
         info.setStringPermissions(permService.getPermsByUserId(userId));
         return info;
     }
 
-    // * 登录认证
+    // 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException
     {
@@ -115,7 +113,6 @@ public class UserRealm extends AuthorizingRealm
         }
         catch (Exception e)
         {
-            log.info("对用户[" + username + "]进行登录验证..验证未通过{}", e.getMessage());
             throw new AuthenticationException(e.getMessage(), e);
         }
         log.info("k");
@@ -125,7 +122,7 @@ public class UserRealm extends AuthorizingRealm
     }
 
     /**
-     * 清理缓存权限
+     * 娓呯悊缂撳瓨鏉冮檺
      */
     public void clearCachedAuthorizationInfo()
     {

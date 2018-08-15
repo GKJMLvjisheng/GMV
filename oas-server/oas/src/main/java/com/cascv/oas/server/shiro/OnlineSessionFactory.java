@@ -6,8 +6,8 @@ import org.apache.shiro.session.mgt.SessionContext;
 import org.apache.shiro.session.mgt.SessionFactory;
 import org.apache.shiro.web.session.mgt.WebSessionContext;
 import org.springframework.stereotype.Component;
-import com.cascv.oas.core.model.OnlineSession;
-import com.cascv.oas.core.model.UserOnline;
+import com.cascv.oas.server.user.model.OnlineSession;
+import com.cascv.oas.server.user.model.UserOnline;
 import com.cascv.oas.core.utils.IpUtils;
 import com.cascv.oas.core.utils.StringUtils;
 

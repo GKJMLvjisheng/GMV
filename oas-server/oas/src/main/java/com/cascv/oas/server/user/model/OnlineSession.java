@@ -1,4 +1,4 @@
-package com.cascv.oas.core.model;
+package com.cascv.oas.server.user.model;
 
 import org.apache.shiro.session.mgt.SimpleSession;
 
@@ -11,10 +11,10 @@ public class OnlineSession extends SimpleSession {
   private static final long serialVersionUID = 1L;
 
   @Setter @Getter private Long userId;      // 用户ID 
-  @Setter @Getter private String loginName; // 用户名
-  @Setter @Getter private OnlineStatus status = OnlineStatus.on_line;//状态
+  @Setter @Getter private String loginName; // 用户�?
+  @Setter @Getter private OnlineStatus status = OnlineStatus.on_line;//状�??
 
-  // 属性是否改变,session数据同步
+  // 属�?�是否改�?,session数据同步
   private transient boolean attributeChanged = false;
 
   public void markAttributeChanged() {
