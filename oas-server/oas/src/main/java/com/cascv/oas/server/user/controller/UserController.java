@@ -72,7 +72,10 @@ public class UserController {
 		userModel.setSalt(Integer.toHexString((int)(Math.random() * 10)));
 		String password = new Md5Hash(userModel.getName() + userModel.getPassword() + userModel.getSalt()).toHex().toString();
 		userModel.setPassword(password);
-		Integer ret = userService.addUser(userModel);
+		Integer ret = 1;
+		if (userService.addUser(userModel) > 0) {
+			ret = 0;
+		}
 		return new ResponseEntity.Builder<Integer>().setData(0).setStatus(ret).setMessage("complete").build();
 	}
 

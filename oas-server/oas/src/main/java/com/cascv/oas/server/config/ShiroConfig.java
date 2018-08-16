@@ -210,9 +210,9 @@ public class ShiroConfig {
 	    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager)
 	    {
 	        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-	        shiroFilterFactoryBean.setSecurityManager(securityManager);	// 这个属性是必须的
-	        shiroFilterFactoryBean.setLoginUrl(loginUrl);	        	// 认证失败则跳转到登录页面的配置
-	        shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);	// 权限认证失败，则跳转到指定页面
+	        shiroFilterFactoryBean.setSecurityManager(securityManager);	
+	        shiroFilterFactoryBean.setLoginUrl(loginUrl);	        	
+	        shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);	
 	        // Shiro连接约束配置，即过滤链的定义
 	        LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 	        // 对静态资源设置匿名访问
@@ -224,7 +224,6 @@ public class ShiroConfig {
 	        filterChainDefinitionMap.put("/js/**", "anon");
 	        filterChainDefinitionMap.put("/druid/**", "anon");
 	        filterChainDefinitionMap.put("/webjars/**", "anon");
-	        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
 
 	        filterChainDefinitionMap.put("/logout", "logout");
 	        filterChainDefinitionMap.put("/userCenter/register", "anon");
@@ -233,11 +232,11 @@ public class ShiroConfig {
 	        Map<String, Filter> filters = new LinkedHashMap<>();
 	        filters.put("onlineSession", onlineSessionFilter());
 	        filters.put("syncOnlineSession", syncOnlineSessionFilter());
-	        // 注销成功，则跳转到指定页面
+
 	        filters.put("logout", logoutFilter());
 	        shiroFilterFactoryBean.setFilters(filters);
 
-	        // 所有请求需要认证
+
 	        filterChainDefinitionMap.put("/**", "user,onlineSession,syncOnlineSession");
 	        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
@@ -259,9 +258,7 @@ public class ShiroConfig {
 	        return syncOnlineSessionFilter;
 	    }
 
-	    /**
-	     * 自定义验证码过滤器
-	     */
+	    // captcha filter
 	    @Bean
 	    public CaptchaValidateFilter captchaValidateFilter()
 	    {
