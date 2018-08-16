@@ -19,7 +19,6 @@ import javax.net.ssl.X509TrustManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// * 通用http发送方法
 public class HttpUtils
 {
 
