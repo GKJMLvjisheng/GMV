@@ -8,6 +8,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,12 +36,8 @@ public class UserController {
   @Autowired
   private UserService userService;
   
-	@ApiOperation(value="", notes="")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "name", value = "user name", required = true, dataType = "String"),
-        @ApiImplicitParam(name = "password", value = "user password", required = true, dataType = "String")
-	})
-	@RequestMapping(value="/login", method=RequestMethod.POST)
+	@ApiOperation(value="Login", notes="")
+	@PostMapping(value="/login")
 	@ResponseBody
 	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel,HttpServletResponse response) {
 		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
@@ -59,12 +56,8 @@ public class UserController {
         }
 	}
 	
-	@ApiOperation(value="user register", notes="")
-	@ApiImplicitParams({
-        @ApiImplicitParam(name = "name", value = "user name", required = true, dataType = "String"),
-        @ApiImplicitParam(name = "password", value = "user password", required = true, dataType = "String")
-	})
-	@RequestMapping(value="/register", method=RequestMethod.POST)
+	@ApiOperation(value="Register", notes="")
+	@PostMapping(value="/register")
 	@ResponseBody
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 		log.info("register name {}, password {}", userModel.getName(), userModel.getPassword());
@@ -81,6 +74,11 @@ public class UserController {
 
 	@RequestMapping(value="/inquireName", method=RequestMethod.POST)
 	public ResponseEntity<?> inquireName(String name) {
-	  return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("ok").build();
+	  if (userService.findUserByName(name) == null) {
+		  return new ResponseEntity.Builder<Integer>().setData(0).setStatus(1).setMessage("ok").build(); 
+	  } else {
+		  return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("ok").build();
+	  }
+	  
 	}
 }
