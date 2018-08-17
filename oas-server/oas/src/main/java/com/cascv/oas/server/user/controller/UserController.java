@@ -1,5 +1,8 @@
 package com.cascv.oas.server.user.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.SecurityUtils;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.user.model.RegisterResult;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.core.utils.DateUtils;
@@ -29,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @Api(value="User Interface")
-@RequestMapping(value="/userCenter")
+@RequestMapping(value="/api/v1/userCenter")
 public class UserController {
 	
   @Autowired
@@ -77,12 +81,19 @@ public class UserController {
 		userModel.setCreated(now);
 		userModel.setUpdated(now);
 		
+		RegisterResult registerResult = new RegisterResult();
 		Integer ret = ErrorCode.GENERAL_ERROR;
 		if (userService.addUser(userModel) > 0) {
+	    List<String> mnemonicList = new ArrayList<>();
+	    String [] mnemonicConst = {"pepper", "remember", "cover", "poet", "account", "month", "concert", "basic", "leisure", "side", "tape", "drift"};
+	    for (String s : mnemonicConst) {
+	      mnemonicList.add(s);
+	    }
+	    registerResult.setMnemonicList(mnemonicList);
 			ret = ErrorCode.SUCCESS;
 		}
-		return new ResponseEntity.Builder<Integer>()
-		      .setData(0)
+		return new ResponseEntity.Builder<RegisterResult>()
+		      .setData(registerResult)
 		      .setStatus(ret)
 		      .setMessage("complete").build();
 	}

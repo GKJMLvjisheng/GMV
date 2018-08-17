@@ -14,13 +14,13 @@ import io.swagger.annotations.ApiOperation;
 
 @Controller
 @Api(value="user interface")
-@RequestMapping(value="/userCenter")
+@RequestMapping(value="/api/v1/userCenter")
 public class LoginController {
 	@ApiOperation(value="user login", notes="")
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, HttpServletResponse response) {
 		if (ServletUtils.isAjaxRequest(request)){
-			return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"鏈櫥褰曟垨鐧诲綍瓒呮椂銆傝閲嶆柊鐧诲綍\"}");
+			return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"aaa\"}");
 		}
 		return "login";
 	}

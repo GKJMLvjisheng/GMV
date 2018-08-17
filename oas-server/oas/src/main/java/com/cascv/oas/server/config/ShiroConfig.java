@@ -226,7 +226,7 @@ public class ShiroConfig {
 	        filterChainDefinitionMap.put("/webjars/**", "anon");
 
 	        filterChainDefinitionMap.put("/logout", "logout");
-	        filterChainDefinitionMap.put("/userCenter/register", "anon");
+	        filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
 	        filterChainDefinitionMap.put(loginUrl, "anon");		
 	        
 	        Map<String, Filter> filters = new LinkedHashMap<>();
