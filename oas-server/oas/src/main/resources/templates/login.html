@@ -33,7 +33,6 @@
 		"name": $('#nameId').val(),
 	    "password": $('#passwordId').val(),
 	};
-	alert(JSON.stringify(data))
 	$.ajax({
 	   type: 'post',
 	   url: '/api/v1/userCenter/login',
@@ -42,7 +41,6 @@
 	   dataType: 'json',
 	   cache: false,
 	   success: function (res) {
-	     alert(JSON.stringify(res));
 	     if (res.code == 0) {
 	     	window.location.replace("/");
 	     } else {

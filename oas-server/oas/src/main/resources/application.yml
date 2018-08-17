@@ -84,3 +84,6 @@ gen:
 server:
   port: 8080
   session-timeout: 1800
+
+web3j:
+  url: https://mainnet.infura.io/0xf5d2724b3e3c66996110c5f81005bb3e7e66c3a3
