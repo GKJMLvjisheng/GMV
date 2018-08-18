@@ -49,20 +49,18 @@ public class UserController {
 		    Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
+            
             loginResult.setToken(ShiroUtils.getSessionId());
+            loginResult.fromUserModel(ShiroUtils.getUser());
             return new ResponseEntity.Builder<LoginResult>()
                   .setData(loginResult)
                   .setStatus(ErrorCode.SUCCESS)
-                  .setMessage("ok").build();
+                  .setMessage("认证成功").build();
         } catch (AuthenticationException e)  {
-            String msg = "xxxx";
-            if (StringUtils.isNotEmpty(e.getMessage())) {
-                msg = e.getMessage();
-            }
             return new ResponseEntity.Builder<LoginResult>()
                   .setData(loginResult)
                   .setStatus(ErrorCode.GENERAL_ERROR)
-                  .setMessage(msg).build();
+                  .setMessage("认证失败").build();
         }
 	}
 	
