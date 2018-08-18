@@ -3,8 +3,6 @@ package com.cascv.oas.server.user.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -19,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.user.model.LoginResult;
-import com.cascv.oas.server.user.model.RegisterResult;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.response.LoginResult;
+import com.cascv.oas.server.user.response.RegisterResult;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.StringUtils;

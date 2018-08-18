@@ -1,4 +1,4 @@
-package com.cascv.oas.server.user.model;
+package com.cascv.oas.server.user.response;
 
 import java.io.Serializable;
 import java.util.List;
