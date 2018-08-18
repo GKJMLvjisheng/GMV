@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.admin.Admin;
-import org.web3j.protocol.http.HttpService;
+import org.web3j.protocol.infura.InfuraHttpService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,12 +20,12 @@ public class BlockChainConfig {
   @Bean
   public Web3j getWeb3j() {
     log.info("blockchain url is {}", url);
-    return Web3j.build(new HttpService(url));
+    return Web3j.build(new InfuraHttpService(url));
   }
   
-  @Bean
-  public Admin getAdmin() {
-    return Admin.build(new HttpService(url));
-  }
+//  @Bean
+//  public Admin getAdmin() {
+//    return Admin.build(new InfuraHttpService(url));
+//  }
   
 }

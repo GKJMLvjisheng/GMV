@@ -30,7 +30,9 @@ repositories {
 }
 
 dependencies{
-  compile project(':core')
+  
+  compile project(':oas-core')
+  
   compile('org.springframework.boot:spring-boot-starter')
   compile('org.springframework.boot:spring-boot-starter-web')
   compile('org.springframework.boot:spring-boot-starter-aop')
@@ -45,7 +47,8 @@ dependencies{
   compile('org.webjars:bootstrap:3.3.7')
   compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
   compile('eu.bitwalker:UserAgentUtils:1.19')
-  compile('org.web3j:core:3.4.0')
+  compile('org.web3j:core:3.5.0')
+  compile('org.web3j:infura:3.5.0')
   compile('org.bitcoinj:bitcoinj-core:0.14.6')
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }

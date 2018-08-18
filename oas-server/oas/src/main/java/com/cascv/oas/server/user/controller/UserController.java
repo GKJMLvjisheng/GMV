@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.user.model.LoginResult;
 import com.cascv.oas.server.user.model.RegisterResult;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
@@ -43,15 +44,16 @@ public class UserController {
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
-	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel,HttpServletResponse response) {
+	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel) {
 		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
 		UsernamePasswordToken token = new UsernamePasswordToken(userModel.getName(), userModel.getPassword(), false);
-        Subject subject = SecurityUtils.getSubject();
+        LoginResult loginResult = new LoginResult();
+		    Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
-            response.addHeader("token", ShiroUtils.getSessionId());
-            return new ResponseEntity.Builder<Integer>()
-                  .setData(0)
+            loginResult.setToken(ShiroUtils.getSessionId());
+            return new ResponseEntity.Builder<LoginResult>()
+                  .setData(loginResult)
                   .setStatus(ErrorCode.SUCCESS)
                   .setMessage("ok").build();
         } catch (AuthenticationException e)  {
@@ -59,8 +61,8 @@ public class UserController {
             if (StringUtils.isNotEmpty(e.getMessage())) {
                 msg = e.getMessage();
             }
-            return new ResponseEntity.Builder<Integer>()
-                  .setData(0)
+            return new ResponseEntity.Builder<LoginResult>()
+                  .setData(loginResult)
                   .setStatus(ErrorCode.GENERAL_ERROR)
                   .setMessage(msg).build();
         }
