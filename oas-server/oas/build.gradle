@@ -48,7 +48,6 @@ dependencies{
   compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
   compile('eu.bitwalker:UserAgentUtils:1.19')
   compile('org.web3j:core:3.5.0')
-  compile('org.web3j:infura:3.5.0')
   compile('org.bitcoinj:bitcoinj-core:0.14.6')
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }

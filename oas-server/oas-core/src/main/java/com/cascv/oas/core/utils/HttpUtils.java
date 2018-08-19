@@ -16,14 +16,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class HttpUtils
-{
+import lombok.extern.slf4j.Slf4j;
 
-    private static final Logger log = LoggerFactory.getLogger(HttpUtils.class);
-
+@Slf4j
+public class HttpUtils {
     /**
      * 向指定 URL 发送GET方法的请求
      *

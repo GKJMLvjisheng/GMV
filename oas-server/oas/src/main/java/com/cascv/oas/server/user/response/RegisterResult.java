@@ -9,4 +9,5 @@ import lombok.Setter;
 public class RegisterResult implements Serializable{
   private static final long serialVersionUID = 1L;
   @Getter @Setter List<String> mnemonicList;
+  
 }

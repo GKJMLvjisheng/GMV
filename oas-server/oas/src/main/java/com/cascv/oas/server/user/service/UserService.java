@@ -19,10 +19,6 @@ public class UserService {
   }
   
   public Integer addUser(UserModel userModel) {
-    UserModel searchUser = userModelMapper.selectByName(userModel.getName());
-    if (searchUser != null) {
-      return 2;
-    }
     if (userModel.getNickname() == null) {
       userModel.setNickname(userModel.getName());
     }

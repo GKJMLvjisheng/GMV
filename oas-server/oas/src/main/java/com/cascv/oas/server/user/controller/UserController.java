@@ -1,8 +1,5 @@
 package com.cascv.oas.server.user.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -17,12 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.model.EthHdWallet;
+import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.response.LoginResult;
 import com.cascv.oas.server.user.response.RegisterResult;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import io.swagger.annotations.Api;
@@ -38,6 +36,9 @@ public class UserController {
   @Autowired
   private UserService userService;
   
+  @Autowired
+  private EthWalletService ethWalletService;
+  
   // Login 
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
@@ -49,7 +50,6 @@ public class UserController {
 		    Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
-            
             loginResult.setToken(ShiroUtils.getSessionId());
             loginResult.fromUserModel(ShiroUtils.getUser());
             return new ResponseEntity.Builder<LoginResult>()
@@ -69,31 +69,27 @@ public class UserController {
 	@PostMapping(value="/register")
 	@ResponseBody
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
-		
-	  log.info("register name {}, password {}", userModel.getName(), userModel.getPassword());
-		
-		userModel.setSalt(DateUtils.YYYYMMDDHHMMSS);
-		String password = new Md5Hash(userModel.getName() + userModel.getPassword() + userModel.getSalt()).toHex().toString();
-		userModel.setPassword(password);
+	  String password = userModel.getPassword();
+	  log.info("register name {}, password {}", userModel.getName(), password);
+		userModel.setSalt(DateUtils.dateTimeNow());
+		userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 		String now = DateUtils.dateTimeNow();
 		userModel.setCreated(now);
 		userModel.setUpdated(now);
-		
 		RegisterResult registerResult = new RegisterResult();
-		Integer ret = ErrorCode.GENERAL_ERROR;
-		if (userService.addUser(userModel) > 0) {
-	    List<String> mnemonicList = new ArrayList<>();
-	    String [] mnemonicConst = {"pepper", "remember", "cover", "poet", "account", "month", "concert", "basic", "leisure", "side", "tape", "drift"};
-	    for (String s : mnemonicConst) {
-	      mnemonicList.add(s);
-	    }
-	    registerResult.setMnemonicList(mnemonicList);
-			ret = ErrorCode.SUCCESS;
-		}
-		return new ResponseEntity.Builder<RegisterResult>()
+  	Integer ret = ErrorCode.GENERAL_ERROR;
+  	String msg = "用户已经存在";
+  	if (userService.findUserByName(userModel.getName()) == null) {
+  	  userService.addUser(userModel);
+  	  EthHdWallet ethHdWallet = ethWalletService.create(userModel.getId(), password);
+  	  registerResult.setMnemonicList(EthHdWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
+  	  ret = ErrorCode.SUCCESS;
+  	  msg = "用户注册成功";
+  	}
+  	return new ResponseEntity.Builder<RegisterResult>()
 		      .setData(registerResult)
 		      .setStatus(ret)
-		      .setMessage("complete").build();
+		      .setMessage(msg).build();
 	}
 
 	// inquireName

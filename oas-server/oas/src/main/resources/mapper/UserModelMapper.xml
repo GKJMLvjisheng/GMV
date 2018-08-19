@@ -8,7 +8,7 @@
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
   </resultMap>
-  
+ 
   <!-- insert user -->
   <insert id="insertUser" parameterType="com.cascv.oas.server.user.model.UserModel">
     <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">

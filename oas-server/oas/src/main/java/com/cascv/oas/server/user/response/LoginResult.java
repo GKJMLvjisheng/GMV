@@ -19,14 +19,16 @@ public class LoginResult implements Serializable {
   @Getter @Setter private String birthday;
   @Getter @Setter private String mobile;
   @Getter @Setter private String email;
+  @Getter @Setter private Integer inviteCode;
   
   public void fromUserModel(UserModel userModel) {
     this.setName(userModel.getName());
     this.setNickname(userModel.getNickname());
-    this.setGender("ÄÐ");
+    this.setGender("ç”·");
     this.setBirthday("2018-09-01");
     this.setMobile("13564537890");
     this.setEmail("owner@oases.com");
+    this.setInviteCode(userModel.getId());
   }
 }
 
