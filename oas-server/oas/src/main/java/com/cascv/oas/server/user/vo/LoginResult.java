@@ -19,16 +19,35 @@ public class LoginResult implements Serializable {
   @Getter @Setter private String birthday;
   @Getter @Setter private String mobile;
   @Getter @Setter private String email;
-  @Getter @Setter private Integer inviteCode;
+  @Getter @Setter private String inviteCode;
   
   public void fromUserModel(UserModel userModel) {
     this.setName(userModel.getName());
     this.setNickname(userModel.getNickname());
-    this.setGender("男");
-    this.setBirthday("2018-09-01");
-    this.setMobile("13564537890");
-    this.setEmail("owner@oases.com");
-    this.setInviteCode(userModel.getId());
+
+    this.setGender(userModel.getGender());
+    if (this.getGender() == null) {
+      this.setGender("未设置");  
+    }
+     
+    this.setBirthday(userModel.getBirthday());
+    if (this.getBirthday() == null) {
+      this.setBirthday("未设置");
+    }
+    this.setMobile(userModel.getMobile());
+    if (this.getMobile() == null) {
+      this.setMobile("未设置");  
+    }
+    this.setEmail(userModel.getEmail());
+    if (this.getEmail() == null) {
+      this.setEmail("未设置");  
+    }
+    
+    this.setAddress(userModel.getAddress());
+    if (this.getAddress() == null) {
+      this.setAddress("未设置");  
+    }
+    this.setInviteCode(userModel.getInviteCode());
   }
 }
 
