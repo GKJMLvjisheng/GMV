@@ -77,10 +77,10 @@
       </if>
       
       <if test="inviteFrom != null">
-        #{inviteFrom,jdbcType=INTEGER},
+        #{inviteFrom,jdbcType=VARCHAR},
       </if>
       <if test="inviteCode != null">
-        #{inviteCode,jdbcType=INTEGER},
+        #{inviteCode,jdbcType=VARCHAR},
       </if>
       <if test="gender != null">
         #{gender,jdbcType=VARCHAR},
