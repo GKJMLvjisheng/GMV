@@ -7,25 +7,73 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
+	<result column="salt" property="salt"/>
+	<result column="uuid" property="uuid"/>
+	<result column="created" property="created"/>
+	<result column="updated" property="updated"/>
   </resultMap>
  
+  <sql id="Base_Column_List">
+    id, name, nickname,password,salt,uuid,created,updated
+  </sql>
+  
   <!-- insert user -->
   <insert id="insertUser" parameterType="com.cascv.oas.server.user.model.UserModel">
     <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into user_info(name,nickname,password,salt) 
-     	values 
-     (#{name,jdbcType=VARCHAR},#{nickname,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{salt,jdbcType=VARCHAR})
-  </insert>
+    insert into user_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      name,
+      password,
+      salt,
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="uuid != null">
+        uuid,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	  name,
+      password,
+      salt,
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null">
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=VARCHAR}
+      </if>
+      <if test="created != null">
+        #{created,jdbcType=VARCHAR}
+      </if>
+    </trim>
+   </insert>
 
   <!-- delete user -->
-  <delete id="deleteUser">
+  <delete id="deleteUser" parameterType="java.lang.Integer">
     delete from user_info where id = #{id}
   </delete>
 
   <select id="selectByName" parameterType="java.lang.String" resultType="com.cascv.oas.server.user.model.UserModel">
-  	select id,name,nickname,password,salt from user_info where name=#{name}
+  	select 
+  	<include refid="Base_Column_List" />
+  	from user_info where name=#{name}
+  </select>
+
+  <select id="selectByUuid" parameterType="java.lang.String" resultType="com.cascv.oas.server.user.model.UserModel">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from user_info where uuid=#{uuid}
   </select>
 
 </mapper>

@@ -1,4 +1,4 @@
-package com.cascv.oas.server.user.response;
+package com.cascv.oas.server.user.vo;
 
 import java.io.Serializable;
 

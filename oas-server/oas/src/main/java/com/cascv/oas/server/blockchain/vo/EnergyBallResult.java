@@ -1,4 +1,4 @@
-package com.cascv.oas.server.blockchain.response;
+package com.cascv.oas.server.blockchain.vo;
 
 import java.io.Serializable;
 import java.util.List;

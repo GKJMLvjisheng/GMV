@@ -3,9 +3,9 @@ package com.cascv.oas.server.user.controller;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.model.EthHdWallet;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.user.model.UserModel;
-import com.cascv.oas.server.user.response.LoginResult;
-import com.cascv.oas.server.user.response.RegisterResult;
 import com.cascv.oas.server.user.service.UserService;
-import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.user.vo.LoginResult;
+import com.cascv.oas.server.user.vo.RegisterConfirm;
+import com.cascv.oas.server.user.vo.RegisterResult;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import io.swagger.annotations.Api;
@@ -68,21 +68,19 @@ public class UserController {
 	@ApiOperation(value="Register", notes="")
 	@PostMapping(value="/register")
 	@ResponseBody
+	@Transactional
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
+	  
 	  String password = userModel.getPassword();
 	  log.info("register name {}, password {}", userModel.getName(), password);
-		userModel.setSalt(DateUtils.dateTimeNow());
-		userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
-		String now = DateUtils.dateTimeNow();
-		userModel.setCreated(now);
-		userModel.setUpdated(now);
 		RegisterResult registerResult = new RegisterResult();
-  	Integer ret = ErrorCode.GENERAL_ERROR;
-  	String msg = "用户已经存在";
-  	if (userService.findUserByName(userModel.getName()) == null) {
-  	  userService.addUser(userModel);
+  	
+		String msg = "用户已经存在";
+		Integer ret = userService.addUser(userModel);
+  	if (ret == ErrorCode.SUCCESS) {
   	  EthHdWallet ethHdWallet = ethWalletService.create(userModel.getId(), password);
   	  registerResult.setMnemonicList(EthHdWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
+  	  registerResult.setUuid(userModel.getUuid());
   	  ret = ErrorCode.SUCCESS;
   	  msg = "用户注册成功";
   	}
@@ -92,6 +90,18 @@ public class UserController {
 		      .setMessage(msg).build();
 	}
 
+  @PostMapping(value="/registerConfirm")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
+    UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
+    if (userModel != null && registerConfirm.getCode() != ErrorCode.SUCCESS) {
+      userService.deleteUserById(userModel.getId());
+    }
+    return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("成功").build();
+	}
+	
+	
 	// inquireName
 	@PostMapping(value="/inquireName")
 	@ResponseBody

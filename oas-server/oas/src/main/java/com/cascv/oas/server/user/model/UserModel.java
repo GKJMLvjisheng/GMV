@@ -14,7 +14,8 @@ public class UserModel extends BaseEntity {
 	@Getter @Setter private String name;   
 	@Getter @Setter private String nickname;
 	@Getter @Setter private String password;
-	@Getter @Setter private String salt;    
+	@Getter @Setter private String salt;
+	@Getter @Setter private String uuid;   
 	@Getter @Setter private String created;   
 	@Getter @Setter private String updated;
 	@Getter @Setter private Set<String> roles = new HashSet<>();

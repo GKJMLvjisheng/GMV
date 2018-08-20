@@ -1,4 +1,4 @@
-package com.cascv.oas.server.user.response;
+package com.cascv.oas.server.user.vo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,5 +9,5 @@ import lombok.Setter;
 public class RegisterResult implements Serializable{
   private static final long serialVersionUID = 1L;
   @Getter @Setter List<String> mnemonicList;
-  
+  @Getter @Setter String uuid;
 }

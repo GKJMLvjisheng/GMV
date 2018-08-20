@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.model.EnergyBall;
-import com.cascv.oas.server.blockchain.response.BonusPointCheckinResult;
-import com.cascv.oas.server.blockchain.response.EnergyBallResult;
-import com.cascv.oas.server.blockchain.response.EnergyBallTakenResult;
+import com.cascv.oas.server.blockchain.vo.BonusPointCheckinResult;
+import com.cascv.oas.server.blockchain.vo.EnergyBallResult;
+import com.cascv.oas.server.blockchain.vo.EnergyBallTakenResult;
 
 @RestController
 @RequestMapping(value="/api/v1/bonusPoint")
