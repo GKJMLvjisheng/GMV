@@ -14,6 +14,12 @@ public class UserModel extends BaseEntity {
 	@Getter @Setter private String name;   
 	@Getter @Setter private String nickname;
 	@Getter @Setter private String password;
+	@Getter @Setter private String inviteCode; //邀请码
+	@Getter @Setter private String gender; //性别
+	@Getter @Setter private String birthday; //生日
+	@Getter @Setter private String address; //地址
+	@Getter @Setter private String mobile; //手机号
+	@Getter @Setter private String email; //邮箱
 	@Getter @Setter private String salt;
 	@Getter @Setter private String uuid;   
 	@Getter @Setter private String created;   

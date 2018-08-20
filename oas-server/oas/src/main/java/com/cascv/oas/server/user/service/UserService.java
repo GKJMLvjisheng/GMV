@@ -39,6 +39,11 @@ public class UserService {
     String password = userModel.getPassword();
     userModel.setSalt(DateUtils.dateTimeNow());
     userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
+	
+  //随机产生6位邀请码，没有判断是否重复
+	long i = (int)((Math.random()*9+1)*10000000);
+    String inviteCode = Long.toString(i, 36);
+	userModel.setInviteCode(inviteCode);
     
     String now = DateUtils.dateTimeNow();
     userModel.setUuid(UUIDUtils.getUUID());

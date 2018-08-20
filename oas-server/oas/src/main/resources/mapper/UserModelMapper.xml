@@ -7,6 +7,12 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
+	<result column="inviteCode" property="inviteCode"/>
+	<result column="gender" property="gender"/>
+	<result column="birthday" property="birthday"/>
+	<result column="address" property="address"/>
+	<result column="mobile" property="mobile"/>
+	<result column="email" property="email"/>
 	<result column="salt" property="salt"/>
 	<result column="uuid" property="uuid"/>
 	<result column="created" property="created"/>
@@ -14,7 +20,7 @@
   </resultMap>
  
   <sql id="Base_Column_List">
-    id, name, nickname,password,salt,uuid,created,updated
+    id, name, nickname,password,inviteCode, gender, birthday, address, mobile, email, salt,uuid,created,updated
   </sql>
   
   <!-- insert user -->
@@ -29,6 +35,24 @@
       salt,
       <if test="nickname != null">
         nickname,
+      </if>
+      <if test="nickname != null">
+        inviteCode,
+      </if>
+      <if test="nickname != null">
+        gender,
+      </if>
+      <if test="nickname != null">
+        birthday,
+      </if>
+      <if test="nickname != null">
+        address,
+      </if>
+      <if test="nickname != null">
+        mobile,
+      </if>
+      <if test="nickname != null">
+        email,
       </if>
       <if test="uuid != null">
         uuid,
@@ -46,6 +70,24 @@
       #{salt,jdbcType=VARCHAR},
       <if test="nickname != null">
         #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{inviteCode,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{email,jdbcType=VARCHAR},
       </if>
       <if test="uuid != null">
         #{uuid,jdbcType=VARCHAR},

@@ -70,7 +70,7 @@ public class UserController {
 	@ResponseBody
 	@Transactional
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
-	  
+
 	  String password = userModel.getPassword();
 	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
