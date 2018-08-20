@@ -51,7 +51,7 @@
         #{uuid,jdbcType=VARCHAR},
       </if>
       <if test="updated != null">
-        #{updated,jdbcType=VARCHAR}
+        #{updated,jdbcType=VARCHAR},
       </if>
       <if test="created != null">
         #{created,jdbcType=VARCHAR}
