@@ -41,9 +41,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-	  name,
-      password,
-      salt,
+      #{name,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR},
+      #{salt,jdbcType=VARCHAR},
       <if test="nickname != null">
         #{nickname,jdbcType=VARCHAR},
       </if>

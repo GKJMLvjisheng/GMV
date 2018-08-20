@@ -19,8 +19,6 @@ import com.cascv.oas.server.blockchain.vo.EnergyBallTakenResult;
 @RequestMapping(value="/api/v1/bonusPoint")
 public class BonusPointController {
   
-
-  
   
   @PostMapping(value="/checkin")
   public ResponseEntity<?> checkin(){
