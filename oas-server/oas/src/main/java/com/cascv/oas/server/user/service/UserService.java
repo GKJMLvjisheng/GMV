@@ -37,13 +37,13 @@ public class UserService {
     }
     
     String password = userModel.getPassword();
+    userModel.setSalt(DateUtils.dateTimeNow());
     userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
     
     String now = DateUtils.dateTimeNow();
     userModel.setUuid(UUIDUtils.getUUID());
     userModel.setCreated(now);
     userModel.setUpdated(now);
-    userModel.setSalt(DateUtils.dateTimeNow());
     userModelMapper.insertUser(userModel);
     return ErrorCode.SUCCESS;
   }
