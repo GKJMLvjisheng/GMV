@@ -7,7 +7,8 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-	<result column="inviteCode" property="inviteCode"/>
+  <result column="invite_from" property="inviteFrom"/>
+	<result column="invite_code" property="inviteCode"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
 	<result column="address" property="address"/>
@@ -20,7 +21,7 @@
   </resultMap>
  
   <sql id="Base_Column_List">
-    id, name, nickname,password,inviteCode, gender, birthday, address, mobile, email, salt,uuid,created,updated
+    id, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, email, salt,uuid,created,updated
   </sql>
   
   <!-- insert user -->
@@ -36,22 +37,25 @@
       <if test="nickname != null">
         nickname,
       </if>
-      <if test="nickname != null">
-        inviteCode,
+      <if test="inviteFrom != null">
+        invite_from,
       </if>
-      <if test="nickname != null">
+      <if test="inviteCode != null">
+        invite_code,
+      </if>
+      <if test="gender != null">
         gender,
       </if>
-      <if test="nickname != null">
+      <if test="birthday != null">
         birthday,
       </if>
-      <if test="nickname != null">
+      <if test="address != null">
         address,
       </if>
-      <if test="nickname != null">
+      <if test="mobile != null">
         mobile,
       </if>
-      <if test="nickname != null">
+      <if test="email != null">
         email,
       </if>
       <if test="uuid != null">
@@ -71,22 +75,26 @@
       <if test="nickname != null">
         #{nickname,jdbcType=VARCHAR},
       </if>
-      <if test="nickname != null">
-        #{inviteCode,jdbcType=VARCHAR},
+      
+      <if test="inviteFrom != null">
+        #{inviteFrom,jdbcType=INTEGER},
       </if>
-      <if test="nickname != null">
+      <if test="inviteCode != null">
+        #{inviteCode,jdbcType=INTEGER},
+      </if>
+      <if test="gender != null">
         #{gender,jdbcType=VARCHAR},
       </if>
-      <if test="nickname != null">
+      <if test="birthday != null">
         #{birthday,jdbcType=VARCHAR},
       </if>
-      <if test="nickname != null">
+      <if test="address != null">
         #{address,jdbcType=VARCHAR},
       </if>
-      <if test="nickname != null">
+      <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
       </if>
-      <if test="nickname != null">
+      <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
       <if test="uuid != null">
