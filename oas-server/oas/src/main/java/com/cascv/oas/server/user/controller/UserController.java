@@ -1,14 +1,11 @@
 package com.cascv.oas.server.user.controller;
 
-<<<<<<< HEAD
 import javax.servlet.http.HttpServletRequest;
-=======
+
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
->>>>>>> bcc2edfdcdcdc802837221d968513a9b42985f00
+
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -138,11 +135,7 @@ public class UserController {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
 		        .setStatus(ErrorCode.GENERAL_ERROR)
-<<<<<<< HEAD
-		        .setMessage("no").build(); 
-=======
-		        .setMessage("已使用").build(); 
->>>>>>> bcc2edfdcdcdc802837221d968513a9b42985f00
+		        .setMessage("已使用").build();
 	  } else {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
