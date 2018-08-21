@@ -1,7 +1,6 @@
 package com.cascv.oas.server.blockchain.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 import lombok.Getter;
 import lombok.Setter;
