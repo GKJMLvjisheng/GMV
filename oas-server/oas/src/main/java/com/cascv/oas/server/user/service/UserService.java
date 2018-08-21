@@ -18,6 +18,7 @@ public class UserService {
   private UserModelMapper userModelMapper;
 	
   public UserModel findUserByName(String name){
+	  System.out.println(name);
     UserModel userModel = userModelMapper.selectByName(name); 
     return userModel;
   }
@@ -29,16 +30,24 @@ public class UserService {
   
   
   public Integer addUser(UserModel userModel) {
-    UserModel searchUserModel = findUserByName(userModel.getName());
-    if (searchUserModel != null)
-      return ErrorCode.USER_ALREADY_EXISTS;
-    if (userModel.getNickname() == null) {
-      userModel.setNickname(userModel.getName());
-    }
+	  String s = userModel.getName();
+	  System.out.println(s + "1234");
+	  if(s == "")
+		  return ErrorCode.USERNAME_NULL;
+	  else {
+	    UserModel searchUserModel = findUserByName(userModel.getName());
+	    if (searchUserModel != null)
+	      return ErrorCode.USER_ALREADY_EXISTS;
+	    if (userModel.getNickname() == null) {
+	      userModel.setNickname(userModel.getName());}
+	  }
     
     String password = userModel.getPassword();
-    userModel.setSalt(DateUtils.dateTimeNow());
-    userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
+    if(password == "")
+    	return ErrorCode.PASSWORD_NULL;
+    else {
+	    userModel.setSalt(DateUtils.dateTimeNow());
+	    userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());}
 	
     //随机产生6位邀请码，没有判断是否重复
     long i = (int)((Math.random()*9+1)*10000000);
