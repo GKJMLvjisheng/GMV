@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.blockchain.mapper.UserWalletMapper">
+
+  <resultMap id="userWalletMap" type="com.cascv.oas.server.blockchain.model.UserWallet">
+	<id column="id" property="id" />
+	<result column="user_id" property="userId"/>
+	<result column="balance" property="balance"/>
+	<result column="created" property="created"/>
+	<result column="updated" property="updated"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, user_id, balance,created,updated
+  </sql>
+  
+  
+  <!-- insert user -->
+  <insert id="insertSelective" parameterType="com.cascv.oas.server.blockchain.model.UserWallet">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_wallet(
+    	user_id,
+    	balance,
+    	created,
+    	updated
+	)  values (
+		#{userId,jdbcType=INTEGER},
+		#{balance,jdbcType=DECIMAL},
+		#{created,jdbcType=VARCHAR},
+		#{updated,jdbcType=VARCHAR}
+	)
+  </insert>
+
+  <!-- delete by id -->
+  <delete id="deleteById">
+    delete from user_wallet where id = #{id}
+  </delete>
+
+  <!-- delete by userId -->
+  <delete id="deleteByUserId">
+    delete from user_wallet where user_id = #{userId}
+  </delete>
+  
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="userWalletMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from user_wallet where id = #{id}
+  </select>
+
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="userWalletMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from user_wallet where user_id = #{userId}
+  </select>
+  
+  <update id="increaseBalance">
+  	update user_wallet set balance=balance + #{value} where id = #{id}
+  </update>
+  
+  <update id="decreaseBalance">
+  	update user_wallet set balance=balance - #{value} where id = #{id}
+  </update>
+  
+</mapper>

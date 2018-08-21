@@ -1,6 +1,14 @@
 package com.cascv.oas.server.user.controller;
 
+<<<<<<< HEAD
 import javax.servlet.http.HttpServletRequest;
+=======
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+>>>>>>> bcc2edfdcdcdc802837221d968513a9b42985f00
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -8,6 +16,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +32,7 @@ import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.vo.LoginResult;
 import com.cascv.oas.server.user.vo.RegisterConfirm;
 import com.cascv.oas.server.user.vo.RegisterResult;
+import com.cascv.oas.server.utils.ServletUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import io.swagger.annotations.Api;
@@ -42,6 +52,15 @@ public class UserController {
   private EthWalletService ethWalletService;
   
   // Login 
+  @ApiOperation(value="user login", notes="")
+  @GetMapping("/login")
+  public String login(HttpServletRequest request, HttpServletResponse response) {
+    if (ServletUtils.isAjaxRequest(request)){
+      return ServletUtils.renderString(response, "{\"code\":\"1\",\"message\":\"未认证\"}");
+    }
+    return "login";
+  }
+  
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
@@ -119,12 +138,33 @@ public class UserController {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
 		        .setStatus(ErrorCode.GENERAL_ERROR)
+<<<<<<< HEAD
 		        .setMessage("no").build(); 
+=======
+		        .setMessage("已使用").build(); 
+>>>>>>> bcc2edfdcdcdc802837221d968513a9b42985f00
 	  } else {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
 		        .setStatus(ErrorCode.SUCCESS)
-		        .setMessage("ok").build();
+		        .setMessage("未使用").build();
 	  }
+	}
+	
+	@PostMapping(value="/inquireUserInfo")
+	@ResponseBody
+	public ResponseEntity<?> inquireUserInfo(){
+	  Map<String, String> info = new HashMap<>();
+	  UserModel userModel = ShiroUtils.getUser();
+	  info.put("name", userModel.getName());
+	  info.put("nickname", userModel.getNickname());
+	  info.put("inviteCode", userModel.getInviteCode());
+	  info.put("gender", userModel.getGender());
+	  info.put("address", userModel.getAddress());
+	  info.put("birthday", userModel.getBirthday());
+	  info.put("email", userModel.getEmail());
+	  info.put("mobile", userModel.getMobile());
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info).setStatus(ErrorCode.SUCCESS).setMessage("成功").build();
 	}
 }
