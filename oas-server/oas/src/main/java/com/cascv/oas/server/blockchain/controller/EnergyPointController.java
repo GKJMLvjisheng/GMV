@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.model.EnergyBall;
 import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
 import com.cascv.oas.server.blockchain.vo.EnergyBallResult;
 import com.cascv.oas.server.blockchain.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.blockchain.vo.EnergyNews;
 import com.cascv.oas.server.blockchain.vo.EnergyPointCategory;
 
 @RestController
@@ -91,10 +93,36 @@ public class EnergyPointController {
   }
   
   @PostMapping(value="/inquireNews")
-  public ResponseEntity<?> inquireNews() {
+  public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo) {
     
-    return new ResponseEntity.Builder<Integer>()
-        .setData(0)
+    String [] titleArray = {"A", "B", "C"};
+    String [] summaryArray = {"中国人民大学宿舍起火 目击者：楼顶几乎烧没了", "国内核心互联网软件无一幸免", "你的微信或已被操控"};
+    String [] newsArray = {
+          "http://news.sina.com.cn/gov/xlxw/2018-08-21/doc-ihhzsnea3430780.shtml",
+          "http://news.sina.com.cn/o/2018-08-21/doc-ihhzsnea4009465.shtml",
+          "http://news.sina.com.cn/c/2018-08-21/doc-ihhzsnea0935440.shtml"
+    };
+        
+    List<EnergyNews> energyNewsList = new ArrayList<> ();   
+    for (Integer i = 0 ; i < 3; i++) {
+      EnergyNews energyNews = new EnergyNews();
+      energyNews.setId(i+1);
+      energyNews.setTitle(titleArray[i]);
+      energyNews.setSummary(summaryArray[i]);
+      energyNews.setImageLink("/images/"+String.valueOf(i)+".jpg");
+      energyNews.setNewsLink(newsArray[i]);
+      energyNewsList.add(energyNews);
+    }
+    PageDomain<EnergyNews> pageEnergyNews= new PageDomain<>();
+    pageEnergyNews.setTotal(3);
+    pageEnergyNews.setAsc("asc");
+    pageEnergyNews.setOffset(0);
+    pageEnergyNews.setPageNum(1);
+    pageEnergyNews.setPageSize(3);
+    pageEnergyNews.setRows(energyNewsList);
+    
+    return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
+        .setData(pageEnergyNews)
         .setErrorCode(ErrorCode.SUCCESS)
         .build();
   }
