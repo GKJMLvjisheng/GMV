@@ -11,4 +11,6 @@ public class UserWallet implements Serializable{
   @Getter @Setter private Integer id;
   @Getter @Setter private Integer useId;
   @Getter @Setter private BigDecimal balance;
+  @Getter @Setter private String created;
+  @Getter @Setter private String updated;
 }

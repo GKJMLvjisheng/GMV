@@ -1,5 +1,8 @@
 package com.cascv.oas.server.user.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -110,12 +113,29 @@ public class UserController {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
 		        .setStatus(ErrorCode.GENERAL_ERROR)
-		        .setMessage("ok").build(); 
+		        .setMessage("已使用").build(); 
 	  } else {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
 		        .setStatus(ErrorCode.SUCCESS)
-		        .setMessage("ok").build();
+		        .setMessage("未使用").build();
 	  }
+	}
+	
+	@PostMapping(value="/inquireUserInfo")
+	@ResponseBody
+	public ResponseEntity<?> inquireUserInfo(){
+	  Map<String, String> info = new HashMap<>();
+	  UserModel userModel = ShiroUtils.getUser();
+	  info.put("name", userModel.getName());
+	  info.put("nickname", userModel.getNickname());
+	  info.put("inviteCode", userModel.getInviteCode());
+	  info.put("gender", userModel.getGender());
+	  info.put("address", userModel.getAddress());
+	  info.put("birthday", userModel.getBirthday());
+	  info.put("email", userModel.getEmail());
+	  info.put("mobile", userModel.getMobile());
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info).setStatus(ErrorCode.SUCCESS).setMessage("成功").build();
 	}
 }

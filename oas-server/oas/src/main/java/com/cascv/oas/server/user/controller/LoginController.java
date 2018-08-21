@@ -20,7 +20,7 @@ public class LoginController {
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, HttpServletResponse response) {
 		if (ServletUtils.isAjaxRequest(request)){
-			return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"aaa\"}");
+			return ServletUtils.renderString(response, "{\"code\":\"1\",\"message\":\"未认证\"}");
 		}
 		return "login";
 	}
