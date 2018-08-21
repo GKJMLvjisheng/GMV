@@ -29,7 +29,7 @@ public class UserService {
   }
   
   
-  public Integer addUser(UserModel userModel) {
+  public ErrorCode addUser(UserModel userModel) {
 	  String s = userModel.getName();
 	  System.out.println(s + "1234");
 	  if(s == "")
@@ -62,7 +62,7 @@ public class UserService {
     return ErrorCode.SUCCESS;
   }
   
-  public Integer deleteUserById(Integer id) {
+  public ErrorCode deleteUserById(Integer id) {
     userModelMapper.deleteUser(id);
     return ErrorCode.SUCCESS;
   }

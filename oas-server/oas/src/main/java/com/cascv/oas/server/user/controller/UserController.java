@@ -71,14 +71,12 @@ public class UserController {
             loginResult.setToken(ShiroUtils.getSessionId());
             loginResult.fromUserModel(ShiroUtils.getUser());
             return new ResponseEntity.Builder<LoginResult>()
-                  .setData(loginResult)
-                  .setStatus(ErrorCode.SUCCESS)
-                  .setMessage("认证成功").build();
+                .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
+                .build();
         } catch (AuthenticationException e)  {
             return new ResponseEntity.Builder<LoginResult>()
                   .setData(loginResult)
-                  .setStatus(ErrorCode.GENERAL_ERROR)
-                  .setMessage("认证失败").build();
+                  .setErrorCode(ErrorCode.GENERAL_ERROR).build();
         }
 	}
 	
@@ -92,20 +90,17 @@ public class UserController {
 	  String password = userModel.getPassword();
 	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
-  	
-		String msg = "用户已经存在";
-		Integer ret = userService.addUser(userModel);
-  	if (ret == ErrorCode.SUCCESS) {
+		ErrorCode ret = userService.addUser(userModel);
+  	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
   	  EthHdWallet ethHdWallet = ethWalletService.create(userModel.getId(), password);
   	  registerResult.setMnemonicList(EthHdWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
   	  ret = ErrorCode.SUCCESS;
-  	  msg = "用户注册成功";
+  	} else {
+  	  ret = ErrorCode.GENERAL_ERROR;
   	}
   	return new ResponseEntity.Builder<RegisterResult>()
-		      .setData(registerResult)
-		      .setStatus(ret)
-		      .setMessage(msg).build();
+		      .setData(registerResult).setErrorCode(ret).build();
 	}
 
   @PostMapping(value="/registerConfirm")
@@ -113,10 +108,10 @@ public class UserController {
   @Transactional
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
     UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
-    if (userModel != null && registerConfirm.getCode() != ErrorCode.SUCCESS) {
+    if (userModel != null && registerConfirm.getCode() != 0) {
       userService.deleteUserById(userModel.getId());
     }
-    return new ResponseEntity.Builder<Integer>().setData(0).setStatus(0).setMessage("成功").build();
+    return new ResponseEntity.Builder<Integer>().setData(0).setErrorCode(ErrorCode.SUCCESS).build();
 	}
 	
 	
@@ -129,18 +124,24 @@ public class UserController {
 		
 		System.out.println(name);
 		
-		//System.out.println(userService.findUserByName(name));
-		
 	  if (userService.findUserByName(name) == null) {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
-		        .setStatus(ErrorCode.SUCCESS)
-		        .setMessage("未使用").build();
+		        .setErrorCode(ErrorCode.SUCCESS).build();
 	  } else {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
-		        .setStatus(ErrorCode.GENERAL_ERROR)
-		        .setMessage("已使用").build();
+		        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		  }
+	}
+	public ResponseEntity<?> inquireName(String name) {
+		
+	  if (userService.findUserByName(name) == null) {
+		  return new ResponseEntity.Builder<Integer>()
+		        .setData(0).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+	  } else {
+		  return new ResponseEntity.Builder<Integer>()
+		        .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
 	  }
 	}
 	
@@ -158,6 +159,6 @@ public class UserController {
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
 	  return new ResponseEntity.Builder<Map<String, String>>()
-	      .setData(info).setStatus(ErrorCode.SUCCESS).setMessage("成功").build();
+	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 	}
 }
