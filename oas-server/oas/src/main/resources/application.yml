@@ -47,7 +47,7 @@ pagehelper:
 shiro:
   user:
     # 登录地址/userCenter/login
-    loginUrl: /api/v1/userCenter/login
+    loginUrl: /login
     # 权限认证失败地址
     unauthorizedUrl: /unauth
     # 首页地址

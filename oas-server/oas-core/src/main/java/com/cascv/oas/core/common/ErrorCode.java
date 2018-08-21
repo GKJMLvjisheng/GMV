@@ -17,8 +17,10 @@ public enum ErrorCode {
   GENERAL_ERROR(10001, "错误"),
   USER_ALREADY_EXISTS(10002, "用户已存在"),
   USERNAME_NULL(10003, "用户名空"),
-  PASSWORD_NULL(10004, "密码空");
-  
+  PASSWORD_NULL(10004, "密码空"),
+  USER_NOT_EXISTS(10005, "用户不存在"),
+  BALANCE_NOT_ENOUGH(10005, "余额不足");
+
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

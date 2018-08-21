@@ -12,21 +12,22 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.model.EnergyBall;
-import com.cascv.oas.server.blockchain.vo.BonusPointCheckinResult;
+import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
 import com.cascv.oas.server.blockchain.vo.EnergyBallResult;
 import com.cascv.oas.server.blockchain.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.blockchain.vo.EnergyPointCategory;
 
 @RestController
-@RequestMapping(value="/api/v1/bonusPoint")
-public class BonusPointController {
+@RequestMapping(value="/api/v1/energyPoint")
+public class EnergyPointController {
   
   
   @PostMapping(value="/checkin")
   public ResponseEntity<?> checkin(){
-    BonusPointCheckinResult bonusPointCheckinResult = new BonusPointCheckinResult();
+    EnergyPointCheckinResult bonusPointCheckinResult = new EnergyPointCheckinResult();
     bonusPointCheckinResult.setNewBonusPoint(15);
     bonusPointCheckinResult.setNewPower(10);
-    return new ResponseEntity.Builder<BonusPointCheckinResult>().setData(bonusPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
+    return new ResponseEntity.Builder<EnergyPointCheckinResult>().setData(bonusPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   
@@ -63,8 +64,39 @@ public class BonusPointController {
     return new ResponseEntity.Builder<Integer>().setData(10).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
-  @PostMapping(value="/inquireBonusPoint")
+  @PostMapping(value="/inquireEnergyPoint")
   public ResponseEntity<?> inquireBonusPoint(){
     return new ResponseEntity.Builder<Integer>().setData(15).setErrorCode(ErrorCode.SUCCESS).build();
   }
+  
+  
+  @PostMapping(value="/inquireEnergyPointByCategory")
+  public ResponseEntity<?> inquireEnergyPointByCategory(String periodType) {
+    List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
+    
+    String [] nameArray = {"手机","手表","家电"};
+    Integer [] valueArray = {10000,5000,0};
+    
+    for (Integer i = 0; i < 3; i++) {
+      EnergyPointCategory energyPointCategory = new EnergyPointCategory();
+      energyPointCategory.setId(i);
+      energyPointCategory.setName(nameArray[i]);
+      energyPointCategory.setValue(valueArray[i]);
+      energyPointCategoryList.add(energyPointCategory);
+    }
+    return new ResponseEntity.Builder<List<EnergyPointCategory>>()
+        .setData(energyPointCategoryList)
+        .setErrorCode(ErrorCode.SUCCESS)
+        .build();
+  }
+  
+  @PostMapping(value="/inquireNews")
+  public ResponseEntity<?> inquireNews() {
+    
+    return new ResponseEntity.Builder<Integer>()
+        .setData(0)
+        .setErrorCode(ErrorCode.SUCCESS)
+        .build();
+  }
+  
 }

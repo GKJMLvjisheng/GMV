@@ -5,8 +5,9 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-public class BonusPointCheckinResult implements Serializable {
+public class EnergyPointCategory implements Serializable{
   private static final long serialVersionUID = 1L;
-  @Setter @Getter private Integer newBonusPoint;
-  @Setter @Getter private Integer newPower;
+  @Getter @Setter private Integer id;
+  @Getter @Setter private String name;
+  @Getter @Setter private Integer value;
 }

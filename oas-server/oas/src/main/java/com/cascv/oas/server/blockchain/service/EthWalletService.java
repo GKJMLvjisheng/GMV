@@ -18,6 +18,7 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
+import org.web3j.protocol.Web3j;
 import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.utils.DateUtils;
@@ -38,6 +39,8 @@ public class EthWalletService {
   @Autowired
   private EthHdWalletMapper ethHdWalletMapper;
   
+  @Autowired
+  private Web3j web3j;
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
     try {
@@ -115,6 +118,8 @@ public class EthWalletService {
       e.printStackTrace();
       return null;
     }
-    
+  }
+  public void testWeb() {
+    //web3j.
   }
 }

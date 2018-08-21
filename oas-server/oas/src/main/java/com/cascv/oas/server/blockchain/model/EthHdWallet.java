@@ -41,4 +41,5 @@ public class EthHdWallet implements Serializable {
     }
     return x;
   }
+
 }
