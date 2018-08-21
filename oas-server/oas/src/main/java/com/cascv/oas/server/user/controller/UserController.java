@@ -123,24 +123,24 @@ public class UserController {
 	// inquireName
 	@PostMapping(value="/inquireName")
 	@ResponseBody
-	public ResponseEntity<?> inquireName(HttpServletRequest request) {
+	public ResponseEntity<?> inquireName(@RequestBody UserModel userModel) {
 		
-		String name = request.getParameter("name");
+		String name = userModel.getName();
 		
 		System.out.println(name);
 		
-		System.out.println(userService.findUserByName(name));
+		//System.out.println(userService.findUserByName(name));
 		
 	  if (userService.findUserByName(name) == null) {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
-		        .setStatus(ErrorCode.GENERAL_ERROR)
-		        .setMessage("已使用").build();
+		        .setStatus(ErrorCode.SUCCESS)
+		        .setMessage("未使用").build();
 	  } else {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
-		        .setStatus(ErrorCode.SUCCESS)
-		        .setMessage("未使用").build();
+		        .setStatus(ErrorCode.GENERAL_ERROR)
+		        .setMessage("已使用").build();
 	  }
 	}
 	
