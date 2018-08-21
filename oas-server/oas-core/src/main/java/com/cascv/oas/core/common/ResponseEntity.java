@@ -19,8 +19,8 @@ public class ResponseEntity<T> implements Serializable{
   }
 
   public ResponseEntity(Builder<T> builder) {
-      this.code = builder.code;
-      this.message = builder.message;
+      this.code = builder.getErrorCode().getCode();
+      this.message = builder.getErrorCode().getMessage();
       this.data = builder.data;
   }
 
@@ -35,22 +35,15 @@ public class ResponseEntity<T> implements Serializable{
   }
 
   public static class Builder<T>{
-      private Integer code;
-      private String message;
+      @Getter private ErrorCode errorCode;
       private T data;
 
       public Builder() {
-          this.code= 0;
-          this.message = "";
+          this.errorCode = ErrorCode.SUCCESS;
       }
 
-      public Builder<?> setStatus(Integer code) {
-          this.code = code;
-          return this;
-      }
-
-      public Builder<?> setMessage(String message) {
-          this.message = message;
+      public Builder<?> setErrorCode(ErrorCode errorCode) {
+          this.errorCode = errorCode;
           return this;
       }
 

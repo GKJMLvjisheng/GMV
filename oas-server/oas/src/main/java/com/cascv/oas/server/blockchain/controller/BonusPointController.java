@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.model.EnergyBall;
@@ -25,7 +26,7 @@ public class BonusPointController {
     BonusPointCheckinResult bonusPointCheckinResult = new BonusPointCheckinResult();
     bonusPointCheckinResult.setNewBonusPoint(15);
     bonusPointCheckinResult.setNewPower(10);
-    return new ResponseEntity.Builder<BonusPointCheckinResult>().setData(bonusPointCheckinResult).setStatus(0).setMessage("成功").build();
+    return new ResponseEntity.Builder<BonusPointCheckinResult>().setData(bonusPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   
@@ -46,7 +47,7 @@ public class BonusPointController {
     }
     energyBallResult.setEnergyBallList(energyBallList);
     energyBallResult.setOngoingEnergySummary(236);
-    return new ResponseEntity.Builder<EnergyBallResult>().setData(energyBallResult).setStatus(0).setMessage("成功").build();
+    return new ResponseEntity.Builder<EnergyBallResult>().setData(energyBallResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   @PostMapping(value="/takeEnergyBall")
@@ -54,16 +55,16 @@ public class BonusPointController {
     EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
     energyBallTakenResult.setNewBonusPonit(15);
     energyBallTakenResult.setNewPower(0);
-    return new ResponseEntity.Builder<EnergyBallTakenResult>().setData(energyBallTakenResult).setStatus(0).setMessage("成功").build();
+    return new ResponseEntity.Builder<EnergyBallTakenResult>().setData(energyBallTakenResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   @PostMapping(value="/inquirePower")
   public ResponseEntity<?> inquirePower(){
-    return new ResponseEntity.Builder<Integer>().setData(10).setStatus(0).setMessage("成功").build();
+    return new ResponseEntity.Builder<Integer>().setData(10).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   @PostMapping(value="/inquireBonusPoint")
   public ResponseEntity<?> inquireBonusPoint(){
-    return new ResponseEntity.Builder<Integer>().setData(15).setStatus(0).setMessage("成功").build();
+    return new ResponseEntity.Builder<Integer>().setData(15).setErrorCode(ErrorCode.SUCCESS).build();
   }
 }
