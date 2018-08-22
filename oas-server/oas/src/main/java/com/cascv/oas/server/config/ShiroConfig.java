@@ -226,6 +226,8 @@ public class ShiroConfig {
 	        filterChainDefinitionMap.put("/webjars/**", "anon");
 	        filterChainDefinitionMap.put("/web3j/**", "anon");
 	        filterChainDefinitionMap.put("/logout", "logout");
+	        
+	        filterChainDefinitionMap.put("/api/v1/userCenter/login", "anon");
 	        filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
 	        filterChainDefinitionMap.put("/api/v1/userCenter/registerConfirm", "anon");
 	        filterChainDefinitionMap.put("/api/v1/userCenter/inquireName", "anon");

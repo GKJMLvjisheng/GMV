@@ -1,11 +1,8 @@
 package com.cascv.oas.server.user.controller;
 
-import javax.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletResponse;
-
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -13,7 +10,6 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +25,6 @@ import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.vo.LoginResult;
 import com.cascv.oas.server.user.vo.RegisterConfirm;
 import com.cascv.oas.server.user.vo.RegisterResult;
-import com.cascv.oas.server.utils.ServletUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import io.swagger.annotations.Api;
@@ -47,16 +42,6 @@ public class UserController {
   
   @Autowired
   private EthWalletService ethWalletService;
-  
-  // Login 
-  @ApiOperation(value="user login", notes="")
-  @GetMapping("/login")
-  public String login(HttpServletRequest request, HttpServletResponse response) {
-    if (ServletUtils.isAjaxRequest(request)){
-      return ServletUtils.renderString(response, "{\"code\":\"1\",\"message\":\"未认证\"}");
-    }
-    return "login";
-  }
   
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")

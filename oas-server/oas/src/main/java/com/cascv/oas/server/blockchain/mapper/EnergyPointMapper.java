@@ -2,13 +2,13 @@ package com.cascv.oas.server.blockchain.mapper;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.cascv.oas.server.blockchain.model.BonusPoint;
+import com.cascv.oas.server.blockchain.model.EnergyPoint;
 
-public interface BonusPointMapper {
-  Integer insertSelective(BonusPoint bonusPoint);
+public interface EnergyPointMapper {
+  Integer insertSelective(EnergyPoint bonusPoint);
   
-  BonusPoint selectById(Integer id);
-  BonusPoint selectByUserId(Integer userId);
+  EnergyPoint selectById(Integer id);
+  EnergyPoint selectByUserId(Integer userId);
   
   Integer increaseBalance(@Param("id")  Integer id, @Param("value")  Integer value);
   Integer decreaseBalance(@Param("id")  Integer id, @Param("value")  Integer value);
