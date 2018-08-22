@@ -2,7 +2,7 @@ package com.cascv.oas.core.utils;
 
 
 public class InviteCodeUtils {
-  public static final String SA="0123456pqrstuvwxy789ABCDEFNOPQRSTUGHIJKLMVWXYZabcdefghijklmnoz";
+  public static final String SA="01456pq23rsvtuCDwxy78NOP9ABEFQRSTUGHIJKLMVWefgXYZabcdhijklmnoz";
   
   public static String getFromUuid(String uuid)
   {
