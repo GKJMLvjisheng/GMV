@@ -34,7 +34,7 @@ public class EnergyPointService {
   }
   
   //deposit
-  public Integer deposit(Integer userId, Integer value) {
+  public Integer deposit(String category, String source, String activity, Integer userId, Integer value) {
     EnergyPoint bonusPoint = energyPointMapper.selectByUserId(userId);
     if (bonusPoint == null) {
       return 0;

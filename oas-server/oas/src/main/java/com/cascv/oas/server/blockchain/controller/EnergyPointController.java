@@ -26,10 +26,10 @@ public class EnergyPointController {
   
   @PostMapping(value="/checkin")
   public ResponseEntity<?> checkin(){
-    EnergyPointCheckinResult bonusPointCheckinResult = new EnergyPointCheckinResult();
-    bonusPointCheckinResult.setNewBonusPoint(15);
-    bonusPointCheckinResult.setNewPower(10);
-    return new ResponseEntity.Builder<EnergyPointCheckinResult>().setData(bonusPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
+    EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
+    energyPointCheckinResult.setNewBonusPoint(15);
+    energyPointCheckinResult.setNewPower(10);
+    return new ResponseEntity.Builder<EnergyPointCheckinResult>().setData(energyPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   

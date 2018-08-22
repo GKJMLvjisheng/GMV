@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class UserWalletDetail {
-  @Getter @Setter private Integer id;
-  @Getter @Setter private Integer userWalletId;
+  @Getter @Setter private String uuid;
+  @Getter @Setter private Integer userId;
   @Getter @Setter private BigDecimal value;
-  @Getter @Setter private String datetime;
+  @Getter @Setter private String scope;
   @Getter @Setter private String name;
+  @Getter @Setter private String comment;
+  @Getter @Setter private String created;
+  
 }
