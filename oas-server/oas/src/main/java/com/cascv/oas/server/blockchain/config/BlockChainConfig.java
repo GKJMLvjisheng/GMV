@@ -15,6 +15,8 @@ public class BlockChainConfig {
   @Value("${web3j.url}")
   private String url;
   
+  @Value("${web3j.contractAddress}")
+  private String contractAddress;
   
   @Bean
   public Web3j getWeb3j() {

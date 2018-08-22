@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.UUIDUtils;
+import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -20,7 +20,7 @@ public class UserWalletService {
   
   public UserWallet create(String userUuid){
     UserWallet userWallet = new UserWallet();
-    userWallet.setUuid(UUIDUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
+    userWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
     userWallet.setUserUuid(userUuid);
     userWallet.setBalance(new BigDecimal(0));
     String now = DateUtils.dateTimeNow();

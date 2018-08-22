@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.UUIDUtils;
+import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EnergyPointMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.EnergyPoint;
@@ -26,7 +26,7 @@ public class EnergyPointService {
   
   public EnergyPoint create(String userUuid){
     EnergyPoint energyPoint = new EnergyPoint();
-    energyPoint.setUuid(UUIDUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+    energyPoint.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
     energyPoint.setUserUuid(userUuid);
     energyPoint.setBalance(0);
     energyPoint.setPower(0);

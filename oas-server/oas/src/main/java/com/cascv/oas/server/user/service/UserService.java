@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
-import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.core.utils.InviteCodeUtils;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 
 @Service
@@ -33,16 +33,16 @@ public class UserService {
 	  return userModel;
   }
   
-  //随机产生六位邀请码，已判断重复
-  public String GenerateInviteCode() {
-	  long i = (int)((Math.random()*9+1)*10000000);
-	  String inviteCode = Long.toString(i, 36);
-	  if (findUserByInviteCode(inviteCode) == null) {
-		  return inviteCode;		  
-	  } else {
-		  return GenerateInviteCode();		  
-		  }	  
-  }
+//  //随机产生六位邀请码，已判断重复
+//  public String GenerateInviteCode() {
+//	  long i = (int)((Math.random()*9+1)*10000000);
+//	  String inviteCode = Long.toString(i, 36);
+//	  if (findUserByInviteCode(inviteCode) == null) {
+//		  return inviteCode;		  
+//	  } else {
+//		  return GenerateInviteCode();		  
+//		  }	  
+//  }
   
   
   public ErrorCode addUser(String uuid, UserModel userModel) {
@@ -66,8 +66,8 @@ public class UserService {
     userModel.setSalt(DateUtils.dateTimeNow());
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
-    //随机产生6位邀请码       
-    userModel.setInviteCode(GenerateInviteCode());
+    //产生邀请码       
+    userModel.setInviteCode(InviteCodeUtils.getFromUuid(uuid));
     String now = DateUtils.dateTimeNow();
     
     userModel.setCreated(now);
