@@ -120,16 +120,15 @@ public class ShiroConfig {
 	    public SpringSessionValidationScheduler sessionValidationScheduler()
 	    {
 	        SpringSessionValidationScheduler sessionValidationScheduler = new SpringSessionValidationScheduler();
-	        // 相隔多久检查一次session的有效性，单位毫秒，默认就是10分钟
+	        // interval(in ms, default 10 minutes) to validate session
 	        sessionValidationScheduler.setSessionValidationInterval(validationInterval * 60 * 1000);
 	        // 设置会话验证调度器进行会话验证时的会话管理器
 	        sessionValidationScheduler.setSessionManager(sessionValidationManager());
 	        return sessionValidationScheduler;
 	    }
 
-	    /**
-	     * 会话管理器
-	     */
+	    
+	    // session manager
 	    @Bean
 	    public OnlineWebSessionManager sessionValidationManager()
 	    {

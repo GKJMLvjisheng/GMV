@@ -31,9 +31,6 @@ import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-/**
- */
 @Slf4j
 public class UserRealm extends AuthorizingRealm
 {
@@ -51,12 +48,12 @@ public class UserRealm extends AuthorizingRealm
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
-        Long userId = ShiroUtils.getUserId();
+        String userUuid = ShiroUtils.getUserUuid();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         // 
-        info.setRoles(roleService.getRolesByUserId(userId));
+        info.setRoles(roleService.getRolesByUserUuid(userUuid));
         // 
-        info.setStringPermissions(permService.getPermsByUserId(userId));
+        info.setStringPermissions(permService.getPermsByUserUuid(userUuid));
         return info;
     }
 
@@ -120,9 +117,6 @@ public class UserRealm extends AuthorizingRealm
         return info;
     }
 
-    /**
-     * 娓呯悊缂撳瓨鏉冮檺
-     */
     public void clearCachedAuthorizationInfo()
     {
         this.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());

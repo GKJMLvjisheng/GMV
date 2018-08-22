@@ -10,7 +10,7 @@ public class OnlineSession extends SimpleSession {
 
   private static final long serialVersionUID = 1L;
 
-  @Setter @Getter private Integer userId;     
+  @Setter @Getter private String userUuid;     
   @Setter @Getter private String loginName; 
   @Setter @Getter private OnlineStatus status = OnlineStatus.on_line;
 

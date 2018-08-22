@@ -18,6 +18,16 @@ public class UUIDUtils {
         return timeBasedGenerator.generate().toString();
     }
 
+    public static String getPrefixUUID(String prefix){
+      if (prefix == null) {
+        prefix="X";
+      }
+      if (prefix.length() > 3) {
+        prefix = prefix.substring(0, 3);
+      }
+      return prefix+"-"+getRawUUID().replaceAll("-","");
+    }
+    
     public static void main(String[] args) {
         String str = getUUID();
         System.out.println(str.substring(0,8));

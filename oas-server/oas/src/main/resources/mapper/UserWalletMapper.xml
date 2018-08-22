@@ -3,64 +3,60 @@
 <mapper namespace="com.cascv.oas.server.blockchain.mapper.UserWalletMapper">
 
   <resultMap id="userWalletMap" type="com.cascv.oas.server.blockchain.model.UserWallet">
-	<id column="id" property="id" />
-	<result column="user_id" property="userId"/>
+	<id column="uuid" property="uuid" />
+	<result column="user_uuid" property="userUuid"/>
 	<result column="balance" property="balance"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, user_id, balance,created,updated
+    uuid, user_uuid, balance,created,updated
   </sql>
   
   
   <!-- insert user -->
   <insert id="insertSelective" parameterType="com.cascv.oas.server.blockchain.model.UserWallet">
-    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into user_wallet(
-    	user_id,
+      uuid,
+    	user_uuid,
     	balance,
     	created,
     	updated
 	)  values (
-		#{userId,jdbcType=INTEGER},
+    #{uuid,jdbcType=VARCHAR},
+		#{userUuid,jdbcType=VARCHAR},
 		#{balance,jdbcType=DECIMAL},
 		#{created,jdbcType=VARCHAR},
 		#{updated,jdbcType=VARCHAR}
 	)
   </insert>
 
-  <!-- delete by id -->
-  <delete id="deleteById">
-    delete from user_wallet where id = #{id}
+  <!-- delete by uuid -->
+  <delete id="deleteByUuid">
+    delete from user_wallet where uuid = #{uuid}
   </delete>
 
-  <!-- delete by userId -->
-  <delete id="deleteByUserId">
-    delete from user_wallet where user_id = #{userId}
+  <!-- delete by userUuid -->
+  <delete id="deleteByUserUuid">
+    delete from user_wallet where user_uuid = #{userUuid}
   </delete>
   
-  <select id="selectById" parameterType="java.lang.Integer" resultMap="userWalletMap">
+  <select id="selectByUuid" parameterType="java.lang.String" resultMap="userWalletMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet where id = #{id}
+    from user_wallet where uuid = #{uuid}
   </select>
 
-  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="userWalletMap">
+  <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet where user_id = #{userId}
+    from user_wallet where user_uuid = #{userUuid}
   </select>
-  
   <update id="increaseBalance">
-  	update user_wallet set balance=balance + #{value} where id = #{id}
+  	update user_wallet set balance=balance + #{value} where uuid = #{uuid}
   </update>
-  
   <update id="decreaseBalance">
-  	update user_wallet set balance=balance - #{value} where id = #{id}
+  	update user_wallet set balance=balance - #{value} where uuid = #{uuid}
   </update>
-  
 </mapper>

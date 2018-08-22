@@ -27,7 +27,7 @@ public class EnergyPointController {
   @PostMapping(value="/checkin")
   public ResponseEntity<?> checkin(){
     EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
-    energyPointCheckinResult.setNewBonusPoint(15);
+    energyPointCheckinResult.setNewEnergyPoint(15);
     energyPointCheckinResult.setNewPower(10);
     return new ResponseEntity.Builder<EnergyPointCheckinResult>().setData(energyPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
@@ -39,7 +39,7 @@ public class EnergyPointController {
     List<EnergyBall> energyBallList = new ArrayList<>();
     for (Integer i = 0; i < 16; i++) {
       EnergyBall energyBall = new EnergyBall();
-      energyBall.setId(i+1);
+      energyBall.setUuid(String.valueOf(i+1));
       energyBall.setType(1);
       energyBall.setValue(i + 6);
       energyBall.setName("daily");
@@ -56,7 +56,7 @@ public class EnergyPointController {
   @PostMapping(value="/takeEnergyBall")
   public ResponseEntity<?> takeEnergyBall(Integer ballId){
     EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
-    energyBallTakenResult.setNewBonusPonit(15);
+    energyBallTakenResult.setNewEnergyPonit(15);
     energyBallTakenResult.setNewPower(0);
     return new ResponseEntity.Builder<EnergyBallTakenResult>().setData(energyBallTakenResult).setErrorCode(ErrorCode.SUCCESS).build();
   }
@@ -67,7 +67,7 @@ public class EnergyPointController {
   }
   
   @PostMapping(value="/inquireEnergyPoint")
-  public ResponseEntity<?> inquireBonusPoint(){
+  public ResponseEntity<?> inquireEnergyPoint(){
     return new ResponseEntity.Builder<Integer>().setData(15).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
@@ -109,7 +109,7 @@ public class EnergyPointController {
       energyNews.setId(i+1);
       energyNews.setTitle(titleArray[i]);
       energyNews.setSummary(summaryArray[i]);
-      energyNews.setImageLink("/images/"+String.valueOf(i)+".jpg");
+      energyNews.setImageLink("/img/"+String.valueOf(i+1)+".jpg");
       energyNews.setNewsLink(newsArray[i]);
       energyNewsList.add(energyNews);
     }
@@ -126,5 +126,4 @@ public class EnergyPointController {
         .setErrorCode(ErrorCode.SUCCESS)
         .build();
   }
-  
 }

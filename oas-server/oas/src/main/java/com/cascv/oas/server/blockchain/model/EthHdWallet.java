@@ -10,8 +10,8 @@ import lombok.Setter;
 public class EthHdWallet implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  @Getter @Setter private Integer id;
-  @Getter @Setter private Integer userId;
+  @Getter @Setter private String uuid;
+  @Getter @Setter private String userUuid;
   @Getter @Setter private String privateKey;
   @Getter @Setter private String publicKey;
   @Getter @Setter private String mnemonicList;

@@ -29,25 +29,26 @@ public class UserService {
   }
   
   
-  public ErrorCode addUser(UserModel userModel) {
+  public ErrorCode addUser(String uuid, UserModel userModel) {
 	  String s = userModel.getName();
-	  System.out.println(s + "1234");
-	  if(s == "")
-		  return ErrorCode.USERNAME_NULL;
-	  else {
-	    UserModel searchUserModel = findUserByName(userModel.getName());
-	    if (searchUserModel != null)
-	      return ErrorCode.USER_ALREADY_EXISTS;
-	    if (userModel.getNickname() == null) {
-	      userModel.setNickname(userModel.getName());}
-	  }
-    
-    String password = userModel.getPassword();
-    if(password == "")
-    	return ErrorCode.PASSWORD_NULL;
-    else {
-	    userModel.setSalt(DateUtils.dateTimeNow());
-	    userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());}
+	  if(s == "") {
+      return ErrorCode.USERNAME_NULL;
+    }
+	  String password = userModel.getPassword();
+    if(password == "") {
+      return ErrorCode.PASSWORD_NULL;
+    }
+
+    UserModel searchUserModel = findUserByName(userModel.getName());
+    if (searchUserModel != null) {
+      return ErrorCode.USER_ALREADY_EXISTS;
+    }
+    if (userModel.getNickname() == null) {
+      userModel.setNickname(userModel.getName());
+    }
+    userModel.setUuid(uuid);
+    userModel.setSalt(DateUtils.dateTimeNow());
+	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
     //随机产生6位邀请码，没有判断是否重复
     long i = (int)((Math.random()*9+1)*10000000);
@@ -55,15 +56,15 @@ public class UserService {
 	  userModel.setInviteCode(inviteCode);
     
     String now = DateUtils.dateTimeNow();
-    userModel.setUuid(UUIDUtils.getUUID());
+    
     userModel.setCreated(now);
     userModel.setUpdated(now);
     userModelMapper.insertUser(userModel);
     return ErrorCode.SUCCESS;
   }
   
-  public ErrorCode deleteUserById(Integer id) {
-    userModelMapper.deleteUser(id);
+  public ErrorCode deleteUserByUuid(String uuid) {
+    userModelMapper.deleteUser(uuid);
     return ErrorCode.SUCCESS;
   }
   

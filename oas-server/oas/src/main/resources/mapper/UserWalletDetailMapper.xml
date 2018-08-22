@@ -4,7 +4,7 @@
 
   <resultMap id="userWalletDetailMap" type="com.cascv.oas.server.blockchain.model.EnergyPointDetail">
 	<id column="uuid" property="uuid" />
-	<result column="user_id" property="userId"/>
+	<result column="user_uuid" property="userUuid"/>
 	<result column="value" property="value"/>
 	<result column="scope" property="scope"/>
 	<result column="name" property="name"/>
@@ -14,7 +14,7 @@
   
   
   <sql id="Base_Column_List">
-    uuid, user_id, value, scope, name,comment, created
+    uuid, user_uuid, value, scope, name,comment, created
   </sql>
   
   
@@ -23,7 +23,7 @@
     insert into user_wallet_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
     	uuid,
-    	user_id,
+    	user_uuid,
     	value,
     	<if test="scope != null">
     		scope,
@@ -37,9 +37,9 @@
     	created
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{uuid,jdbcType=VARCHAR},
-        #{userId,jdbcType=INTEGER},
-		#{value,jdbcType=INTEGER},
+      #{uuid,jdbcType=VARCHAR},
+      #{userUuid,jdbcType=INTEGER},
+		  #{value,jdbcType=INTEGER},
     	<if test="scope != null">
     		#{scope,jdbcType=VARCHAR},
     	</if>
@@ -59,20 +59,20 @@
   </delete>
 
   <!-- delete by userId -->
-  <delete id="deleteByUserId">
-    delete from user_wallet_detail where user_id = #{userId}
+  <delete id="deleteByUserUuid">
+    delete from user_wallet_detail where user_uuid = #{userUuid}
   </delete>
   
-  <select id="selectByDateRange" parameterType="java.lang.Integer" resultMap="userWalletDetailMap">
+  <select id="selectByDateRange" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_id = #{userId} and created between #{fromDate} and #{toDate} ordered by created desc;
+    from user_wallet_detail where user_uuid = #{userUuid} and created between #{fromDate} and #{toDate} ordered by created desc;
   </select>
 
-  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="userWalletDetailMap">
+  <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_id = #{userId}
+    from user_wallet_detail where user_uuid = #{userUuid}
   </select>
   
 </mapper>

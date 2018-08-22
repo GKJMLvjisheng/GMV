@@ -3,34 +3,33 @@
 <mapper namespace="com.cascv.oas.server.user.mapper.UserModelMapper">
 
   <resultMap id="userModelMap" type="com.cascv.oas.server.user.model.UserModel">
-	<id column="id" property="id" />
+	<id column="uuid" property="uuid" />
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-    <result column="invite_from" property="inviteFrom"/>
+  <result column="invite_from" property="inviteFrom"/>
 	<result column="invite_code" property="inviteCode"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
 	<result column="address" property="address"/>
 	<result column="mobile" property="mobile"/>
 	<result column="email" property="email"/>
+  <result column="mobile_checked" property="mobileChecked"/>
+	<result column="email_checked" property="emailChecked"/>
 	<result column="salt" property="salt"/>
-	<result column="uuid" property="uuid"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
   </resultMap>
  
   <sql id="Base_Column_List">
-    id, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, email, salt,uuid,created,updated
+    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, salt,created,updated
   </sql>
   
   <!-- insert user -->
   <insert id="insertUser" parameterType="com.cascv.oas.server.user.model.UserModel">
-    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      uuid,
       name,
       password,
       salt,
@@ -55,11 +54,14 @@
       <if test="mobile != null">
         mobile,
       </if>
+      <if test="mobileChecked != null">
+        mobile_checked,
+      </if>
       <if test="email != null">
         email,
       </if>
-      <if test="uuid != null">
-        uuid,
+      <if test="emailChecked != null">
+        email_checked,
       </if>
       <if test="updated != null">
         updated,
@@ -69,13 +71,13 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{uuid,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR},
       #{password,jdbcType=VARCHAR},
       #{salt,jdbcType=VARCHAR},
       <if test="nickname != null">
         #{nickname,jdbcType=VARCHAR},
       </if>
-      
       <if test="inviteFrom != null">
         #{inviteFrom,jdbcType=VARCHAR},
       </if>
@@ -94,12 +96,18 @@
       <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
       </if>
+      <if test="mobileChecked != null">
+        #{mobile_checked,jdbcType=INTEGER},
+      </if>
+
       <if test="email != null">
         #{email,jdbcType=VARCHAR},
       </if>
-      <if test="uuid != null">
-        #{uuid,jdbcType=VARCHAR},
+      
+      <if test="emailChecked != null">
+        #{email_checked,jdbcType=INTEGER},
       </if>
+
       <if test="updated != null">
         #{updated,jdbcType=VARCHAR},
       </if>
@@ -110,8 +118,8 @@
    </insert>
 
   <!-- delete user -->
-  <delete id="deleteUser" parameterType="java.lang.Integer">
-    delete from user_info where id = #{id}
+  <delete id="deleteUser" parameterType="java.lang.String">
+    delete from user_info where uuid = #{uuid}
   </delete>
 
   <select id="selectByName" parameterType="java.lang.String" resultType="com.cascv.oas.server.user.model.UserModel">

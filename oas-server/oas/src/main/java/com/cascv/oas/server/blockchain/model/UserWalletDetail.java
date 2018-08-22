@@ -7,7 +7,7 @@ import lombok.Setter;
 
 public class UserWalletDetail {
   @Getter @Setter private String uuid;
-  @Getter @Setter private Integer userId;
+  @Getter @Setter private String userUuid;
   @Getter @Setter private BigDecimal value;
   @Getter @Setter private String scope;
   @Getter @Setter private String name;

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public class EnergyPointDetail {
   @Getter @Setter private String uuid;
-  @Getter @Setter private Integer userId;
+  @Getter @Setter private String userUuid;
   @Getter @Setter private Integer value;
   @Getter @Setter private String category;
   @Getter @Setter private String source;

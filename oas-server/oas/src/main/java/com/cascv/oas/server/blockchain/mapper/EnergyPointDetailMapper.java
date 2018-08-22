@@ -8,8 +8,8 @@ import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 
 public interface EnergyPointDetailMapper {
   Integer insertSelective(EnergyPointDetail energyPointDetail);
-  List<EnergyPointDetail> selectByUserId(Integer userId);
-  List<EnergyPointDetail> selectByDateRange(@Param("userId") Integer userId, @Param("fromDate") String fromDate, @Param("toDate")String toDate);
-  Integer deleteByUserId(Integer userId);
+  List<EnergyPointDetail> selectByUserUuid(String userUuid);
+  List<EnergyPointDetail> selectByDateRange(@Param("userUuid") String userUuid, @Param("fromDate") String fromDate, @Param("toDate")String toDate);
+  Integer deleteByUserUuid(String userUuid);
   Integer deleteByUuid(Integer uuid);
 }

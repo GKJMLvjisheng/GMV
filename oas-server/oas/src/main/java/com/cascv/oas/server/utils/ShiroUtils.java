@@ -56,9 +56,9 @@ public class ShiroUtils {
         realm.clearCachedAuthorizationInfo();
     }
 
-    public static Long getUserId()
+    public static String getUserUuid()
     {
-        return getUser().getId().longValue();
+        return getUser().getUuid();
     }
 
     public static String getLoginName()

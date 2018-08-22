@@ -22,6 +22,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.core.utils.UUIDUtils;
 import com.cascv.oas.server.blockchain.mapper.EthHdWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthHdWallet;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,8 +66,12 @@ public class EthWalletService {
     return true;
   }
   
-  
-  public EthHdWallet create(Integer userId, String password){
+  public Integer destroy(String userUuid){
+    ethHdWalletMapper.deleteByUserUuid(userUuid);
+    return 0;
+  }
+
+  public EthHdWallet create(String userUuid, String password){
     
     String passphrase = "";
     long creationTimeSeconds = System.currentTimeMillis() / 1000;
@@ -102,7 +107,8 @@ public class EthWalletService {
       ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
       String jsonStr = objectMapper.writeValueAsString(walletFile);
       EthHdWallet ethHdWallet =  new EthHdWallet();
-      ethHdWallet.setUserId(userId);
+      ethHdWallet.setUuid(UUIDUtils.getPrefixUUID("EW"));
+      ethHdWallet.setUserUuid(userUuid);
       ethHdWallet.setMnemonicList(EthHdWallet.toMnemonicList(ds.getMnemonicCode()));
       ethHdWallet.setPublicKey(keyPair.getPublicKey().toString(16));
       ethHdWallet.setPrivateKey(keyPair.getPrivateKey().toString(16));
@@ -112,6 +118,7 @@ public class EthWalletService {
       String datetime = DateUtils.dateTimeNow();
       ethHdWallet.setCreated(datetime);
       ethHdWallet.setUpdated(datetime);
+      ethHdWalletMapper.deleteByUserUuid(userUuid);
       ethHdWalletMapper.insertSelective(ethHdWallet);
       return ethHdWallet;
     } catch (CipherException | JsonProcessingException e) {

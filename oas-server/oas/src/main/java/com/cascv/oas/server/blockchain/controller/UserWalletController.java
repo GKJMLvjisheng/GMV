@@ -35,7 +35,7 @@ public class UserWalletController {
         .setErrorCode(ErrorCode.USER_NOT_EXISTS)
         .build();
     }
-    ErrorCode errorCode = userWalletService.transfer(fromUser.getId(), toUser.getId(), value);
+    ErrorCode errorCode = userWalletService.transfer(fromUser.getUuid(), toUser.getUuid(), value);
     return new ResponseEntity.Builder<Integer>()
         .setData(1)
         .setErrorCode(errorCode)

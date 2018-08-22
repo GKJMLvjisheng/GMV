@@ -5,17 +5,17 @@ import org.apache.ibatis.annotations.Param;
 import com.cascv.oas.server.blockchain.model.EnergyPoint;
 
 public interface EnergyPointMapper {
-  Integer insertSelective(EnergyPoint bonusPoint);
+  Integer insertSelective(EnergyPoint energyPoint);
   
-  EnergyPoint selectById(Integer id);
-  EnergyPoint selectByUserId(Integer userId);
+  EnergyPoint selectByUuid(String uuid);
+  EnergyPoint selectByUserUuid(String userUuid);
   
-  Integer increaseBalance(@Param("id")  Integer id, @Param("value")  Integer value);
-  Integer decreaseBalance(@Param("id")  Integer id, @Param("value")  Integer value);
+  Integer increaseBalance(@Param("uuid")  String uuid, @Param("value")  Integer value);
+  Integer decreaseBalance(@Param("uuid")  String uuid, @Param("value")  Integer value);
   
-  Integer increasePower(@Param("id")  Integer id, @Param("value") Integer value);
-  Integer decreasePower(@Param("id")  Integer id, @Param("value") Integer value);
+  Integer increasePower(@Param("uuid") String uuid, @Param("value") Integer value);
+  Integer decreasePower(@Param("uuid") String uuid, @Param("value") Integer value);
   
-  Integer deleteById(Integer id);
-  Integer deleteByUserId(Integer userId);
+  Integer deleteByUuid(String uuid);
+  Integer deleteByUserUuid(String userUuid);
 }

@@ -6,8 +6,8 @@ import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 
 public interface UserWalletDetailMapper {
   Integer insertSelective(UserWalletDetail userWalletDetail);
-  List<UserWalletDetail> selectByUserId(Integer userId);
-  List<UserWalletDetail> selectByDateRange(@Param("userId") Integer userId, @Param("fromDate") String fromDate, @Param("toDate")String toDate);
-  Integer deleteByUserId(Integer userId);
-  Integer deleteByUuid(Integer uuid);
+  List<UserWalletDetail> selectByUserUuid(String useruuid);
+  List<UserWalletDetail> selectByDateRange(@Param("userUuid") String userUuid, @Param("fromDate") String fromDate, @Param("toDate")String toDate);
+  Integer deleteByUserUuid(String userUuid);
+  Integer deleteByUuid(String uuid);
 }

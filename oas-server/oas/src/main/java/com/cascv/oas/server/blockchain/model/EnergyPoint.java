@@ -7,8 +7,8 @@ import lombok.Setter;
 
 public class EnergyPoint implements Serializable{
   private static final long serialVersionUID = 1L;
-  @Getter @Setter private Integer id;
-  @Getter @Setter private Integer useId;
+  @Getter @Setter private String uuid;
+  @Getter @Setter private String userUuid;
   @Getter @Setter private Integer balance;
   @Getter @Setter private Integer power;
   @Getter @Setter private String created;

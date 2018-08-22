@@ -62,7 +62,7 @@ public class OnlineSessionDAO extends EnterpriseCacheSessionDAO
                 // 
                 needSync = false;
             }
-            boolean isGuest = onlineSession.getUserId() == null || onlineSession.getUserId() == 0L;
+            boolean isGuest = onlineSession.getUserUuid() == null;
             // 
             if (isGuest == false && onlineSession.isAttributeChanged()) {
                 needSync = true;

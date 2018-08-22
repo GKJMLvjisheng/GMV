@@ -43,12 +43,11 @@ public class OnlineSessionFilter extends AccessControlFilter
             OnlineSession onlineSession = (OnlineSession) session;
             request.setAttribute(ShiroConstants.ONLINE_SESSION, onlineSession);
             // 
-            boolean isGuest = onlineSession.getUserId() == null || onlineSession.getUserId() == 0L;
-            if (isGuest == true)
-            {
+            boolean isGuest = onlineSession.getUserUuid() == null;
+            if (isGuest == true) {
                 UserModel user = ShiroUtils.getUser();
                 if (user != null) {
-                    onlineSession.setUserId(user.getId());
+                    onlineSession.setUserUuid(user.getUuid());
                     onlineSession.setLoginName(user.getName());
                     onlineSession.markAttributeChanged();
                 }
