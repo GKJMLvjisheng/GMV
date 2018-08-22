@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UUIDUtils;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
@@ -28,11 +29,26 @@ public class UserService {
     return userModel;
   }
   
+  public UserModel findUserByInviteCode(String inviteCode) {
+	  UserModel userModel = userModelMapper.selectByInviteCode(inviteCode);
+	  return userModel;
+  }
+  
+  //随机产生六位邀请码，已判断重复
+  public String GenerateInviteCode() {
+	  long i = (int)((Math.random()*9+1)*10000000);
+	  String inviteCode = Long.toString(i, 36);
+	  if (findUserByInviteCode(inviteCode) == null) {
+		  return inviteCode;		  
+	  } else {
+		  return GenerateInviteCode();		  
+		  }	  
+  }
+  
   
   public ErrorCode addUser(UserModel userModel) {
-	  String s = userModel.getName();
-	  System.out.println(s + "1234");
-	  if(s == "")
+	  String name = userModel.getName();
+	  if(name == "")
 		  return ErrorCode.USERNAME_NULL;
 	  else {
 	    UserModel searchUserModel = findUserByName(userModel.getName());
@@ -41,6 +57,10 @@ public class UserService {
 	    if (userModel.getNickname() == null) {
 	      userModel.setNickname(userModel.getName());}
 	  }
+	  
+	//六位邀请码
+	 userModel.setInviteCode(GenerateInviteCode());
+	  
     
     String password = userModel.getPassword();
     if(password == "")
@@ -48,12 +68,7 @@ public class UserService {
     else {
 	    userModel.setSalt(DateUtils.dateTimeNow());
 	    userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());}
-	
-    //随机产生6位邀请码，没有判断是否重复
-    long i = (int)((Math.random()*9+1)*10000000);
-    String inviteCode = Long.toString(i, 36);
-	  userModel.setInviteCode(inviteCode);
-    
+	   
     String now = DateUtils.dateTimeNow();
     userModel.setUuid(UUIDUtils.getUUID());
     userModel.setCreated(now);

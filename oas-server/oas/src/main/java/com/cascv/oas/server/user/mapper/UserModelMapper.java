@@ -9,5 +9,6 @@ public interface UserModelMapper {
 	 Integer insertUser(UserModel userModel);
 	 UserModel selectByName(@Param("name") String name);
 	 UserModel selectByUuid(@Param("uuid") String uuid);
+	 UserModel selectByInviteCode(@Param("inviteCode") String inviteCode);
 	 Integer deleteUser(Integer id);
 }
