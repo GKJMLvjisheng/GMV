@@ -140,8 +140,6 @@ public class UserController {
 		
 		String name = userModel.getName();
 		
-		System.out.println(name);
-		
 	  if (userService.findUserByName(name) == null) {
 		  return new ResponseEntity.Builder<Integer>()
 		        .setData(0)
@@ -152,16 +150,8 @@ public class UserController {
 		        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		  }
 	}
-	public ResponseEntity<?> inquireName(String name) {
-		
-	  if (userService.findUserByName(name) == null) {
-		  return new ResponseEntity.Builder<Integer>()
-		        .setData(0).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-	  } else {
-		  return new ResponseEntity.Builder<Integer>()
-		        .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
-	  }
-	}
+	
+	
 	
 	@PostMapping(value="/inquireUserInfo")
 	@ResponseBody

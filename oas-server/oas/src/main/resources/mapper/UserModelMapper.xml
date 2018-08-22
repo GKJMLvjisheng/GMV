@@ -133,6 +133,12 @@
   	<include refid="Base_Column_List" />
   	from user_info where uuid=#{uuid}
   </select>
+  
+  <select id="selectByInviteCode" parameterType="java.lang.String" resultMap="userModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from user_info where invite_code=#{inviteCode}
+  </select>
 
 </mapper>
 
