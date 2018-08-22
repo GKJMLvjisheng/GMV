@@ -4,8 +4,10 @@ package com.cascv.oas.server.blockchain.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
@@ -25,6 +27,8 @@ public class EnergyPointController {
   
   
   @PostMapping(value="/checkin")
+  @ResponseBody
+  @Transactional
   public ResponseEntity<?> checkin(){
     EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
     energyPointCheckinResult.setNewEnergyPoint(15);
@@ -34,6 +38,7 @@ public class EnergyPointController {
   
   
   @PostMapping(value="/inquireEnergyBall")
+  @ResponseBody
   public ResponseEntity<?> inquireEnergyBall(){
     EnergyBallResult energyBallResult = new EnergyBallResult();
     List<EnergyBall> energyBallList = new ArrayList<>();
@@ -54,6 +59,8 @@ public class EnergyPointController {
   }
   
   @PostMapping(value="/takeEnergyBall")
+  @ResponseBody
+  @Transactional
   public ResponseEntity<?> takeEnergyBall(Integer ballId){
     EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
     energyBallTakenResult.setNewEnergyPonit(15);
@@ -62,17 +69,20 @@ public class EnergyPointController {
   }
   
   @PostMapping(value="/inquirePower")
+  @ResponseBody
   public ResponseEntity<?> inquirePower(){
     return new ResponseEntity.Builder<Integer>().setData(10).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   @PostMapping(value="/inquireEnergyPoint")
+  @ResponseBody
   public ResponseEntity<?> inquireEnergyPoint(){
     return new ResponseEntity.Builder<Integer>().setData(15).setErrorCode(ErrorCode.SUCCESS).build();
   }
   
   
   @PostMapping(value="/inquireEnergyPointByCategory")
+  @ResponseBody
   public ResponseEntity<?> inquireEnergyPointByCategory(String periodType) {
     List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
     
@@ -93,6 +103,7 @@ public class EnergyPointController {
   }
   
   @PostMapping(value="/inquireNews")
+  @ResponseBody
   public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo) {
     
     String [] titleArray = {"A", "B", "C"};

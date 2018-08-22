@@ -9,7 +9,6 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.UUIDUtils;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 
 @Service
@@ -67,8 +66,8 @@ public class UserService {
     userModel.setSalt(DateUtils.dateTimeNow());
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
-    //随机产生6位邀请码
-    userModel.setInviteCode(GenerateinvitedCode()) ;   
+    //随机产生6位邀请码       
+    userModel.setInviteCode(GenerateInviteCode());
     String now = DateUtils.dateTimeNow();
     
     userModel.setCreated(now);
