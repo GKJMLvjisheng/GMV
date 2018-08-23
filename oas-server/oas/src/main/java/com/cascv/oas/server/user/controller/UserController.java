@@ -119,9 +119,7 @@ public class UserController {
   @ResponseBody
 //  @Transactional
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
-    System.out.println(registerConfirm.getUuid());
 	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
-    System.out.println(userModel);
     if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
 			String uuid = userModel.getUuid();
 			System.out.println(uuid);
