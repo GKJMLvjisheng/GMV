@@ -1,6 +1,7 @@
 package com.cascv.oas.server.blockchain.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UUIDUtils;
+import com.cascv.oas.server.blockchain.config.TokenClient;
 import com.cascv.oas.server.blockchain.mapper.EthHdWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthHdWallet;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,7 +43,8 @@ public class EthWalletService {
   private EthHdWalletMapper ethHdWalletMapper;
   
   @Autowired
-  private Web3j web3j;
+  private TokenClient tokenClient;
+
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
     try {
@@ -126,7 +129,19 @@ public class EthWalletService {
       return null;
     }
   }
-  public void testWeb() {
-    //web3j.
+
+  public EthHdWallet getEthWalletByUserUuid(String userUuid)
+  {
+    return ethHdWalletMapper.selectByUserUuid(userUuid);
+  }
+
+  public void testWeb(EthHdWallet ethHdWallet) {
+    BigDecimal balance = tokenClient.getTokenBalance(ethHdWallet.getAddress());
+    log.info("my address {}", ethHdWallet.getAddress());
+    log.info("balance {}", balance);
+    log.info("token name {}", tokenClient.getTokenName());
+    log.info("token symbol {}", tokenClient.getTokenSymbol());
+    log.info("token decimal {}", tokenClient.getTokenDecimals());
+    log.info("token decimal {}", tokenClient.getTokenTotalSupply());
   }
 }

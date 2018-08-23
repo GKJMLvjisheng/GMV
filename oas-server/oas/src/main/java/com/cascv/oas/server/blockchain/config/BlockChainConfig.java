@@ -12,13 +12,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BlockChainConfig {
   
-  @Value("${web3j.url}")
+  @Value("${tokenClient.url}")
   private String url;
   
+  @Value("${tokenClient.contractAddress}")
+  private String contractAddress;
+
   
   @Bean
-  public Web3j getWeb3j() {
+  public TokenClient getTokenClient() {
     log.info("blockchain url is {}", url);
-    return Web3j.build(new HttpService(url));
+    Web3j web3j =  Web3j.build(new HttpService(url));
+    TokenClient tokenClient = new TokenClient();
+    tokenClient.setWeb3j(web3j);
+    tokenClient.setContractAddress(contractAddress);
+    return tokenClient;
   }
 }

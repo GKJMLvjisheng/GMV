@@ -85,5 +85,6 @@ server:
   port: 8080
   session-timeout: 1800
 
-web3j:
+tokenClient:
   url: https://ropsten.infura.io/16897256b61d42689d088039a362a61b
+  contractAddress: 0x4b62105d5e55956ec81696dce8faf810823d61f6
