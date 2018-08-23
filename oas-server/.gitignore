@@ -4,4 +4,6 @@
 /.settings/
 .project
 .classpath
+/test/*.pyc
+
 

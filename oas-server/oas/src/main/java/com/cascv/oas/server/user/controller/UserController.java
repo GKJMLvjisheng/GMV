@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.core.utils.UUIDUtils;
-import com.cascv.oas.server.blockchain.model.EnergyPoint;
+import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.model.EthHdWallet;
-import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
@@ -87,7 +85,7 @@ public class UserController {
 	  String password = userModel.getPassword();
 	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
-		String uuid = UUIDUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
 		EthHdWallet ethHdWallet = ethWalletService.create(uuid, password);
 		userWalletService.create(uuid);
 		energyPointService.create(uuid);
@@ -119,17 +117,21 @@ public class UserController {
 
   @PostMapping(value="/registerConfirm")
   @ResponseBody
-  @Transactional
+//  @Transactional
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
-    UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
-    if (userModel != null && registerConfirm.getCode() != 0) {
+	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
+    if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
 			String uuid = userModel.getUuid();
+			System.out.println(uuid);
 			ethWalletService.destroy(uuid);
 			userWalletService.destroy(uuid);
 			energyPointService.destroy(uuid);
       userService.deleteUserByUuid(uuid);
     }
-    return new ResponseEntity.Builder<Integer>().setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+    return new ResponseEntity.Builder<Integer>()
+          .setData(0)
+          .setErrorCode(ErrorCode.SUCCESS)
+          .build();
 	}
 	
 	

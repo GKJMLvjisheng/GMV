@@ -300,10 +300,11 @@ public class ShiroConfig {
 	    @Bean
 	    public ShiroDialect shiroDialect()
 	    {
-	        return new ShiroDialect();
+			return new ShiroDialect();
 	    }
 
-	    
+		
+		
 	    // 开启Shiro注解通知器
 	    @Bean
 	    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(

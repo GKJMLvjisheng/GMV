@@ -38,25 +38,3 @@ else:
 
 
 
-'''# login
-url=HOST+"/userCenter/login"
-data={"name":name, "password":password}
-res=jsonapi.post(url,data)
-if res.get('code') == 0:
-  data=res.get('data')
-  token=data.get('token')
-  print( "[PASS] /userCenter/login token=%s successfully" % token)
-else:
-  raise Exception('[FAIL] /userCenter/login')
-
-
-# destroy
-url=HOST+"/userCenter/destroy"
-data={}
-res=jsonapi.post(url,data,token)
-if res.get('code') == 0:
-  print ("[PASS] /userCenter/destroy")
-else:
-  raise Exception('[FAIL] /userCenter/destroy')'''
-
-

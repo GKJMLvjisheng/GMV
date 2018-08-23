@@ -23,8 +23,8 @@ import org.web3j.protocol.Web3j;
 import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.UUIDUtils;
 import com.cascv.oas.server.blockchain.config.TokenClient;
+import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthHdWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthHdWallet;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -110,7 +110,7 @@ public class EthWalletService {
       ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
       String jsonStr = objectMapper.writeValueAsString(walletFile);
       EthHdWallet ethHdWallet =  new EthHdWallet();
-      ethHdWallet.setUuid(UUIDUtils.getPrefixUUID("EW"));
+      ethHdWallet.setUuid(UuidUtils.getPrefixUUID("EW"));
       ethHdWallet.setUserUuid(userUuid);
       ethHdWallet.setMnemonicList(EthHdWallet.toMnemonicList(ds.getMnemonicCode()));
       ethHdWallet.setPublicKey(keyPair.getPublicKey().toString(16));

@@ -18,7 +18,6 @@ public class BlockChainConfig {
   @Value("${tokenClient.contractAddress}")
   private String contractAddress;
 
-  
   @Bean
   public TokenClient getTokenClient() {
     log.info("blockchain url is {}", url);
