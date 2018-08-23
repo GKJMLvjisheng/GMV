@@ -67,7 +67,8 @@ public class UserService {
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
     //产生邀请码       
-    userModel.setInviteCode(InviteCodeUtils.getFromUuid(uuid));
+	  String inviteCode = InviteCodeUtils.getFromUuid(uuid);
+    userModel.setInviteCode(inviteCode);
     String now = DateUtils.dateTimeNow();
     
     userModel.setCreated(now);

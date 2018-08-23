@@ -7,14 +7,14 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-  <result column="invite_from" property="inviteFrom"/>
-	<result column="invite_code" property="inviteCode"/>
+    <result column="invite_from" property="inviteFrom" jdbcType="VARCHAR"/>
+	<result column="invite_code" property="inviteCode" jdbcType="VARCHAR"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
 	<result column="address" property="address"/>
 	<result column="mobile" property="mobile"/>
 	<result column="email" property="email"/>
-  <result column="mobile_checked" property="mobileChecked"/>
+    <result column="mobile_checked" property="mobileChecked"/>
 	<result column="email_checked" property="emailChecked"/>
 	<result column="salt" property="salt"/>
 	<result column="created" property="created"/>
