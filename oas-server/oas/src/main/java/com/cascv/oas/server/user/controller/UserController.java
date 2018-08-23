@@ -117,11 +117,14 @@ public class UserController {
 
   @PostMapping(value="/registerConfirm")
   @ResponseBody
-  @Transactional
+//  @Transactional
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
-    UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
-    if (userModel != null && registerConfirm != null && registerConfirm.getCode() != 0) {
+    System.out.println(registerConfirm.getUuid());
+	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
+    System.out.println(userModel);
+    if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
 			String uuid = userModel.getUuid();
+			System.out.println(uuid);
 			ethWalletService.destroy(uuid);
 			userWalletService.destroy(uuid);
 			energyPointService.destroy(uuid);
