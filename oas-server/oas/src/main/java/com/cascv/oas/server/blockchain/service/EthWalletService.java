@@ -1,7 +1,7 @@
 package com.cascv.oas.server.blockchain.service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,6 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.protocol.Web3j;
 import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.utils.DateUtils;
@@ -136,9 +135,13 @@ public class EthWalletService {
   }
 
   public void testWeb(EthHdWallet ethHdWallet) {
-    BigDecimal balance = tokenClient.getTokenBalance(ethHdWallet.getAddress());
+    
     log.info("my address {}", ethHdWallet.getAddress());
+    log.info("contractAddress {}",tokenClient.getContractAddress());
+    
+    BigInteger balance = tokenClient.getTokenBalance(ethHdWallet.getAddress());
     log.info("balance {}", balance);
+
     log.info("token name {}", tokenClient.getTokenName());
     log.info("token symbol {}", tokenClient.getTokenSymbol());
     log.info("token decimal {}", tokenClient.getTokenDecimals());

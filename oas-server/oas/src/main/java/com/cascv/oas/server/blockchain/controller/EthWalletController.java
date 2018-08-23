@@ -21,10 +21,10 @@ public class EthWalletController {
   @Autowired
   private EthWalletService ethWalletService;
 
-  @PostMapping(value="/testAPi")
+  @PostMapping(value="/testApi")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> testAPi(){
+  public ResponseEntity<?> testApi(){
     UserModel userModel=ShiroUtils.getUser();
     EthHdWallet ethHdWallet = ethWalletService.getEthWalletByUserUuid(userModel.getUuid());
     ethWalletService.testWeb(ethHdWallet);

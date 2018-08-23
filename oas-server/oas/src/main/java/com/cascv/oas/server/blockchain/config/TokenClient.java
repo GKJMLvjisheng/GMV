@@ -31,7 +31,7 @@ public class TokenClient {
   /**
    * 查询代币余额
    */
-  public BigDecimal getTokenBalance(String fromAddress) {
+  public BigInteger getTokenBalance(String fromAddress) {
 
     String methodName = "balanceOf";
     List<Type> inputParameters = new ArrayList<>();
@@ -47,11 +47,11 @@ public class TokenClient {
     Transaction transaction = Transaction.createEthCallTransaction(fromAddress, contractAddress, data);
 
     EthCall ethCall;
-    BigDecimal balanceValue = new BigDecimal(0);
+    BigInteger balanceValue = BigInteger.ZERO;
     try {
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
-      balanceValue = (BigDecimal) results.get(0).getValue();
+      balanceValue = (BigInteger) results.get(0).getValue();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -146,10 +146,10 @@ public class TokenClient {
   /**
    * 查询代币发行总量
    */
-  public BigDecimal getTokenTotalSupply() {
+  public BigInteger getTokenTotalSupply() {
     String methodName = "totalSupply";
     String fromAddr = EmptyAddress;
-    BigDecimal totalSupply = new BigDecimal(0);
+    BigInteger totalSupply = BigInteger.ZERO;
     List<Type> inputParameters = new ArrayList<>();
     List<TypeReference<?>> outputParameters = new ArrayList<>();
 
@@ -166,7 +166,7 @@ public class TokenClient {
     try {
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
-      totalSupply = (BigDecimal) results.get(0).getValue();
+      totalSupply = (BigInteger) results.get(0).getValue();
     } catch (InterruptedException | ExecutionException e) {
       e.printStackTrace();
     }
