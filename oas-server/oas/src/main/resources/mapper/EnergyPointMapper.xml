@@ -28,7 +28,7 @@
 	)  values (
     #{uuid,jdbcType=VARCHAR},
 		#{userUuid,jdbcType=VARCHAR},
-		#{balance,jdbcType=DECIMAL},
+		#{balance,jdbcType=BIGINT},
 		#{power,jdbcType=INTEGER},
 		#{created,jdbcType=VARCHAR},
 		#{updated,jdbcType=VARCHAR}

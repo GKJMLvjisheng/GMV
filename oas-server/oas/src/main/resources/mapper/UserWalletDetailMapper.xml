@@ -39,7 +39,7 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       #{uuid,jdbcType=VARCHAR},
       #{userUuid,jdbcType=INTEGER},
-		  #{value,jdbcType=INTEGER},
+      #{value,jdbcType=INTEGER},
     	<if test="scope != null">
     		#{scope,jdbcType=VARCHAR},
     	</if>
