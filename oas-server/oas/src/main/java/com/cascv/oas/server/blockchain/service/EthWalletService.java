@@ -24,8 +24,8 @@ import org.web3j.utils.Numeric;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.TokenClient;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.mapper.EthHdWalletMapper;
-import com.cascv.oas.server.blockchain.model.EthHdWallet;
+import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
+import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,7 +39,7 @@ public class EthWalletService {
   private static SecureRandom secureRandom = new SecureRandom();
   
   @Autowired
-  private EthHdWalletMapper ethHdWalletMapper;
+  private EthWalletMapper ethWalletMapper;
   
   @Autowired
   private TokenClient tokenClient;
@@ -69,11 +69,11 @@ public class EthWalletService {
   }
   
   public Integer destroy(String userUuid){
-    ethHdWalletMapper.deleteByUserUuid(userUuid);
+    ethWalletMapper.deleteByUserUuid(userUuid);
     return 0;
   }
 
-  public EthHdWallet create(String userUuid, String password){
+  public EthWallet create(String userUuid, String password){
     
     String passphrase = "";
     long creationTimeSeconds = System.currentTimeMillis() / 1000;
@@ -105,13 +105,12 @@ public class EthWalletService {
     
     try {
       WalletFile walletFile = Wallet.createLight(password, keyPair);
-      System.out.println("eth address " + "0x" + walletFile.getAddress());
       ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
       String jsonStr = objectMapper.writeValueAsString(walletFile);
-      EthHdWallet ethHdWallet =  new EthHdWallet();
+      EthWallet ethHdWallet =  new EthWallet();
       ethHdWallet.setUuid(UuidUtils.getPrefixUUID("EW"));
       ethHdWallet.setUserUuid(userUuid);
-      ethHdWallet.setMnemonicList(EthHdWallet.toMnemonicList(ds.getMnemonicCode()));
+      ethHdWallet.setMnemonicList(EthWallet.toMnemonicList(ds.getMnemonicCode()));
       ethHdWallet.setPublicKey(keyPair.getPublicKey().toString(16));
       ethHdWallet.setPrivateKey(keyPair.getPrivateKey().toString(16));
       ethHdWallet.setMnemonicPath(dkKey.getPathAsString());
@@ -120,8 +119,8 @@ public class EthWalletService {
       String datetime = DateUtils.dateTimeNow();
       ethHdWallet.setCreated(datetime);
       ethHdWallet.setUpdated(datetime);
-      ethHdWalletMapper.deleteByUserUuid(userUuid);
-      ethHdWalletMapper.insertSelective(ethHdWallet);
+      ethWalletMapper.deleteByUserUuid(userUuid);
+      ethWalletMapper.insertSelective(ethHdWallet);
       return ethHdWallet;
     } catch (CipherException | JsonProcessingException e) {
       e.printStackTrace();
@@ -129,12 +128,12 @@ public class EthWalletService {
     }
   }
 
-  public EthHdWallet getEthWalletByUserUuid(String userUuid)
+  public EthWallet getEthWalletByUserUuid(String userUuid)
   {
-    return ethHdWalletMapper.selectByUserUuid(userUuid);
+    return ethWalletMapper.selectByUserUuid(userUuid);
   }
 
-  public void testWeb(EthHdWallet ethHdWallet) {
+  public void testWeb(EthWallet ethHdWallet) {
     
     log.info("my address {}", ethHdWallet.getAddress());
     log.info("contractAddress {}",tokenClient.getContractAddress());

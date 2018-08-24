@@ -7,7 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import lombok.Getter;
 import lombok.Setter;
 
-public class EthHdWallet implements Serializable {
+public class EthWallet implements Serializable {
 
   private static final long serialVersionUID = 1L;
   @Getter @Setter private String uuid;

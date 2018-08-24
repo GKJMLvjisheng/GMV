@@ -2,7 +2,7 @@
 
 import jsonapi
 
-HOST='http://localhost:8080/api/v1'
+HOST='http://52.14.161.120:8080/api/v1'
 NAME="zzz"
 PASSWORD="123456"
 token=""
@@ -67,38 +67,27 @@ def destroy(token):
   res=jsonapi.post(url,data,token)
   return res.get('code') == 0
 
-if inquireName(NAME) is False:
-  print "user already exists, delete it"
-  token=login(NAME, PASSWORD)  
+def destroyUser(name, password):
+  if inquireName(name) is False:
+    print "user already exists, delete it"
+    token=login(name, password)  
+    if token is None:
+      raise Exception("[FAIL] user login")
+    destroy(token)
+
+
+def testEthWallet(name, password):
+  destroyUser(name, password)
+  data=register(name, password)
+  if data is None:
+    raise Exception('[FAIL] user register')
+  token = login(name, password)
   if token is None:
-    raise Exception("[FAIL] user login")
-  destroy(token)
+    raise Exception('[FAIL] user login')
+  testapi(token)
+  if destroy(token):
+    print "[PASS] user destroy "
 
+testEthWallet(NAME, PASSWORD)
 
-data=register(NAME, PASSWORD)
-print data
-if data:
-  print "[PASS] user register"
-else:
-  raise Exception('[FAIL] user register')
-
-token = login(NAME, PASSWORD)
-if token is not None:
-  print "[PASS] user login "
-else:
-  raise Exception('[FAIL] user login')
-
-userInfo=inquireUserInfo(token)
-print userInfo
-if userInfo:
-  print "[PASS] inquireUserInfo"
-
-#testapi(token)
-
-#if destroy(token):
-#  print "[PASS] user destroy "
-
-
-
-  
 

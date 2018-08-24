@@ -6,14 +6,12 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-// * 定时任务配置
+// * timer task
 @Configuration
-public class ScheduleConfig
-{
+public class ScheduleConfig {
 
     @Bean
-    public SchedulerFactoryBean schedulerFactoryBean(DataSource dataSource)
-    {
+    public SchedulerFactoryBean schedulerFactoryBean(DataSource dataSource) {
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
         factory.setDataSource(dataSource);
 
@@ -46,7 +44,6 @@ public class ScheduleConfig
         factory.setOverwriteExistingJobs(true);
         // 设置自动启动，默认为true
         factory.setAutoStartup(true);
-
         return factory;
     }
 }

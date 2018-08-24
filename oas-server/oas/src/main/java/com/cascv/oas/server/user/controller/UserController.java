@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.model.EthHdWallet;
+import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
@@ -86,12 +86,12 @@ public class UserController {
 	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-		EthHdWallet ethHdWallet = ethWalletService.create(uuid, password);
+		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		userWalletService.create(uuid);
 		energyPointService.create(uuid);
 		ErrorCode ret = userService.addUser(uuid, userModel);
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
-  	  registerResult.setMnemonicList(EthHdWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
+  	  registerResult.setMnemonicList(EthWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
   	  ret = ErrorCode.SUCCESS;
   	}
@@ -158,6 +158,24 @@ public class UserController {
 	@PostMapping(value="/inquireUserInfo")
 	@ResponseBody
 	public ResponseEntity<?> inquireUserInfo(){
+	  Map<String, String> info = new HashMap<>();
+		UserModel userModel = ShiroUtils.getUser();
+		log.info("invideCode {}", userModel.getInviteCode());
+	  info.put("name", userModel.getName());
+	  info.put("nickname", userModel.getNickname());
+	  info.put("inviteCode", userModel.getInviteCode());
+	  info.put("gender", userModel.getGender());
+	  info.put("address", userModel.getAddress());
+	  info.put("birthday", userModel.getBirthday());
+	  info.put("email", userModel.getEmail());
+	  info.put("mobile", userModel.getMobile());
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+	}
+
+	@PostMapping(value="/listWallet")
+	@ResponseBody
+	public ResponseEntity<?> listWallet(){
 	  Map<String, String> info = new HashMap<>();
 		UserModel userModel = ShiroUtils.getUser();
 		log.info("invideCode {}", userModel.getInviteCode());
