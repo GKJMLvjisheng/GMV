@@ -48,7 +48,7 @@ def testapi(token):
   res=jsonapi.post(url,data,token)
   if res.get('code') == 0:
     data=res.get('data')
-    print  "[PASS] /ethWallet/testApi"
+    print  ("[PASS] /ethWallet/testApi")
   else:
     raise Exception('[FAIL] /ethWallet/testApi')
 
@@ -69,7 +69,7 @@ def destroy(token):
 
 def destroyUser(name, password):
   if inquireName(name) is False:
-    print "user already exists, delete it"
+    print ("user already exists, delete it")
     token=login(name, password)  
     if token is None:
       raise Exception("[FAIL] user login")
@@ -86,7 +86,7 @@ def testEthWallet(name, password):
     raise Exception('[FAIL] user login')
   testapi(token)
   if destroy(token):
-    print "[PASS] user destroy "
+    print ("[PASS] user destroy ")
 
 testEthWallet(NAME, PASSWORD)
 

@@ -33,11 +33,11 @@ public class UserWalletController {
     UserModel fromUser=ShiroUtils.getUser();
     UserModel toUser =  userService.findUserByName(userWalletTransfer.getToUserName());
     if (fromUser == null || toUser == null) {
-    	System.out.println("--start--");
-      return new ResponseEntity.Builder<Integer>()
+        return new ResponseEntity.Builder<Integer>()
         .setData(1)
         .setErrorCode(ErrorCode.USER_NOT_EXISTS)
-        .build();}
+        .build();
+      }
     String fromUserName = fromUser.getName();
     String toUserName = toUser.getName();
     if(fromUserName.equals(toUserName)) {
