@@ -19,23 +19,24 @@ if res.get('code') == 0:
 else:
   raise Exception('[FAIL] /userCenter/login')
 
-# inquireUserInfo 
-url=HOST+"/userCenter/inquireUserInfo"
+# inquireEnergyPointByCategory 
+url=HOST +"/energyPoint/inquireEnergyPointByCategory "
 data={}
 res=jsonapi.post(url,data,token)
 print(res)
 if res.get('code') == 0:
-    print("[PSAA] /userCenter/inquireUserInfo")
+    print ("[PASS] /energyPoint/inquireEnergyPointByCategory ")
 else:
-    raise Exception('[FAIL] /userCenter/inquireUserInfo')
+    raise Exception('[FAIL] /energyPoint/inquireEnergyPointByCategory ')
 
-# destroy
-url=HOST+"/userCenter/destroy"
+# inquireNews 
+url=HOST +"/energyPoint/inquireNews "
 data={}
 res=jsonapi.post(url,data,token)
+print(res)
 if res.get('code') == 0:
-  print ("[PASS] /userCenter/destroy")
+    print ("[PASS] /energyPoint/inquireNews ")
 else:
-  raise Exception('[FAIL] /userCenter/destroy')
+    raise Exception('[FAIL] /energyPoint/inquireNews ')
 
 

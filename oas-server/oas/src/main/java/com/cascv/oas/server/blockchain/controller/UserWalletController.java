@@ -31,15 +31,16 @@ public class UserWalletController {
   @Transactional
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
     UserModel fromUser=ShiroUtils.getUser();
-    String fromUserName = fromUser.getName();
     UserModel toUser =  userService.findUserByName(userWalletTransfer.getToUserName());
-    String toUserName = toUser.getName();
     if (fromUser == null || toUser == null) {
+    	System.out.println("--start--");
       return new ResponseEntity.Builder<Integer>()
         .setData(1)
         .setErrorCode(ErrorCode.USER_NOT_EXISTS)
-        .build();
-    }else if(fromUserName.equals(toUserName)) {
+        .build();}
+    String fromUserName = fromUser.getName();
+    String toUserName = toUser.getName();
+    if(fromUserName.equals(toUserName)) {
     	return new ResponseEntity.Builder<Integer>()
     			.setData(1)
     			.setErrorCode(ErrorCode.CAN_NOT_TRANSFER_TO_SELF)
