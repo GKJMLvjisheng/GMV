@@ -2,7 +2,7 @@
 
 import jsonapi
 
-HOST='http://52.14.161.120:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
 NAME="zzz"
 PASSWORD="123456"
 token=""
@@ -43,14 +43,14 @@ def login(name, password):
 
 # testapi
 def testapi(token):
-  url=HOST+"/ethHdWallet/testApi"
+  url=HOST+"/ethWallet/testApi"
   data={}
   res=jsonapi.post(url,data,token)
   if res.get('code') == 0:
     data=res.get('data')
-    print  "[PASS] /ethHdWallet/"
+    print  "[PASS] /ethWallet/testApi"
   else:
-    raise Exception('[FAIL] /ethHdWallet/login')
+    raise Exception('[FAIL] /ethWallet/testApi')
 
 def inquireUserInfo(token):
   url=HOST+"/userCenter/inquireUserInfo"
