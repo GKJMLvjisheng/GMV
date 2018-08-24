@@ -7,14 +7,14 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-    <result column="invite_from" property="inviteFrom" jdbcType="VARCHAR"/>
+  <result column="invite_from" property="inviteFrom" jdbcType="VARCHAR"/>
 	<result column="invite_code" property="inviteCode" jdbcType="VARCHAR"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
 	<result column="address" property="address"/>
 	<result column="mobile" property="mobile"/>
 	<result column="email" property="email"/>
-    <result column="mobile_checked" property="mobileChecked"/>
+  <result column="mobile_checked" property="mobileChecked"/>
 	<result column="email_checked" property="emailChecked"/>
 	<result column="salt" property="salt"/>
 	<result column="created" property="created"/>
@@ -122,13 +122,13 @@
     delete from user_info where uuid = #{uuid}
   </delete>
 
-  <select id="selectByName" parameterType="java.lang.String" resultType="com.cascv.oas.server.user.model.UserModel">
+  <select id="selectByName" parameterType="java.lang.String" resultMap="userModelMap">
   	select 
   	<include refid="Base_Column_List" />
   	from user_info where name=#{name}
   </select>
 
-  <select id="selectByUuid" parameterType="java.lang.String" resultType="com.cascv.oas.server.user.model.UserModel">
+  <select id="selectByUuid" parameterType="java.lang.String" resultMap="userModelMap">
   	select 
   	<include refid="Base_Column_List" />
   	from user_info where uuid=#{uuid}

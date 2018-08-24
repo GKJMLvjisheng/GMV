@@ -2,7 +2,7 @@
 
 import jsonapi
 
-HOST='http://52.14.161.120:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
 NAME="zzz"
 PASSWORD="123456"
 token=""
@@ -14,13 +14,15 @@ def inquireName(name):
   data={"name": name}
   res=jsonapi.post(url,data)
   return res.get('code') == 0
+    
 
 # register
 def register(name, password):
   url=HOST+"/userCenter/register"
   data={"name":name, "password":password}
   res=jsonapi.post(url,data)
-  return res.get('code') == 0
+  if res.get('code') == 0:
+    return res.get('data')
 
 # registerConfirm
 def registerConfirm(uuid, code):
@@ -44,13 +46,18 @@ def testapi(token):
   url=HOST+"/ethHdWallet/testApi"
   data={}
   res=jsonapi.post(url,data,token)
-  print res
   if res.get('code') == 0:
     data=res.get('data')
     print  "[PASS] /ethHdWallet/"
   else:
     raise Exception('[FAIL] /ethHdWallet/login')
 
+def inquireUserInfo(token):
+  url=HOST+"/userCenter/inquireUserInfo"
+  data={}
+  res=jsonapi.post(url,data,token)
+  if res.get('code') == 0:
+    return res.get('data')
 
   
 # destroy
@@ -60,12 +67,17 @@ def destroy(token):
   res=jsonapi.post(url,data,token)
   return res.get('code') == 0
 
-if inquireName(NAME) is True:
+if inquireName(NAME) is False:
   print "user already exists, delete it"
   token=login(NAME, PASSWORD)  
+  if token is None:
+    raise Exception("[FAIL] user login")
   destroy(token)
 
-if register(NAME, PASSWORD):
+
+data=register(NAME, PASSWORD)
+print data
+if data:
   print "[PASS] user register"
 else:
   raise Exception('[FAIL] user register')
@@ -75,8 +87,16 @@ if token is not None:
   print "[PASS] user login "
 else:
   raise Exception('[FAIL] user login')
-if destroy(token):
-  print "[PASS] user destroy "
+
+userInfo=inquireUserInfo(token)
+print userInfo
+if userInfo:
+  print "[PASS] inquireUserInfo"
+
+#testapi(token)
+
+#if destroy(token):
+#  print "[PASS] user destroy "
 
 
 

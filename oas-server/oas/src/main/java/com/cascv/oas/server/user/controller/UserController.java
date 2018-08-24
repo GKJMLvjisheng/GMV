@@ -99,21 +99,21 @@ public class UserController {
 		      .setData(registerResult).setErrorCode(ret).build();
 	}
 
-		// Destroy
-		@ApiOperation(value="Destroy", notes="")
-		@PostMapping(value="/destroy")
-		@ResponseBody
-		@Transactional
-		public ResponseEntity<?> destroy() {
-			UserModel userModel = ShiroUtils.getUser();
-			String uuid = userModel.getUuid();
-			ethWalletService.destroy(uuid);
-			userWalletService.destroy(uuid);
-			energyPointService.destroy(uuid);
-			userService.deleteUserByUuid(uuid);
-			return new ResponseEntity.Builder<Integer>()
-						.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
-		}
+	// Destroy
+	@ApiOperation(value="Destroy", notes="")
+	@PostMapping(value="/destroy")
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<?> destroy() {
+		UserModel userModel = ShiroUtils.getUser();
+		String uuid = userModel.getUuid();
+		ethWalletService.destroy(uuid);
+		userWalletService.destroy(uuid);
+		energyPointService.destroy(uuid);
+		userService.deleteUserByUuid(uuid);
+		return new ResponseEntity.Builder<Integer>()
+					.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+	}
 
   @PostMapping(value="/registerConfirm")
   @ResponseBody
@@ -159,7 +159,8 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> inquireUserInfo(){
 	  Map<String, String> info = new HashMap<>();
-	  UserModel userModel = ShiroUtils.getUser();
+		UserModel userModel = ShiroUtils.getUser();
+		log.info("invideCode {}", userModel.getInviteCode());
 	  info.put("name", userModel.getName());
 	  info.put("nickname", userModel.getNickname());
 	  info.put("inviteCode", userModel.getInviteCode());
