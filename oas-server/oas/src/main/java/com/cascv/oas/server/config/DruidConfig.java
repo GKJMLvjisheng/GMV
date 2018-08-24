@@ -12,29 +12,25 @@ import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import com.cascv.oas.server.aspectj.DataSourceName;
 import com.cascv.oas.server.datasource.DynamicDataSource;
 
-// druid 配置多数据源
+// druid multiple source
 @Configuration
-public class DruidConfig
-{
+public class DruidConfig {
     @Bean
     @ConfigurationProperties("spring.datasource.druid.master")
-    public DataSource masterDataSource()
-    {
+    public DataSource masterDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
     @ConfigurationProperties("spring.datasource.druid.slave")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "open", havingValue = "true")
-    public DataSource slaveDataSource()
-    {
+    public DataSource slaveDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean(name = "dynamicDataSource")
     @Primary
-    public DynamicDataSource dataSource(DataSource masterDataSource, DataSource slaveDataSource)
-    {
+    public DynamicDataSource dataSource(DataSource masterDataSource, DataSource slaveDataSource) {
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceName.MASTER, masterDataSource);
         targetDataSources.put(DataSourceName.SLAVE, slaveDataSource);

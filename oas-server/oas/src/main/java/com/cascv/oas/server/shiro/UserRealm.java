@@ -32,8 +32,7 @@ import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class UserRealm extends AuthorizingRealm
-{
+public class UserRealm extends AuthorizingRealm {
 	@Autowired
 	private UserService userService;
 	
@@ -43,8 +42,6 @@ public class UserRealm extends AuthorizingRealm
 	@Autowired
 	private PermService permService;
 
-    /**
-     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
@@ -69,7 +66,6 @@ public class UserRealm extends AuthorizingRealm
         if (upToken.getPassword() != null) {
             password = new String(upToken.getPassword());
         }
-        log.info("c");
         UserModel userModel = null;
         try  {
         	userModel = userService.findUserByName(username);

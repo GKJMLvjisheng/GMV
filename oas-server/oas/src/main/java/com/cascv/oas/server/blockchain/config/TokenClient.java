@@ -1,7 +1,6 @@
 package com.cascv.oas.server.blockchain.config;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,8 @@ public class TokenClient {
   public static final String EmptyAddress = "0x0000000000000000000000000000000000000000";
   @Getter @Setter private Web3j web3j;
   @Getter @Setter private String contractAddress;
-  /**
-   * 查询代币余额
-   */
+  
+  // balance
   public BigInteger getTokenBalance(String fromAddress) {
 
     String methodName = "balanceOf";
@@ -58,9 +56,8 @@ public class TokenClient {
     return balanceValue;
   }
 
-  /**
-   * 查询代币名称
-   */
+  
+  // name
   public String getTokenName() {
     String methodName = "name";
     String name = null;
@@ -89,7 +86,7 @@ public class TokenClient {
   }
 
   
-  // 查询代币符号
+  // symbol
   public String getTokenSymbol() {
     String methodName = "symbol";
     String symbol = null;
@@ -116,7 +113,7 @@ public class TokenClient {
     return symbol;
   }
 
-  // * 查询代币精度
+  // Decimal
   public int getTokenDecimals() {
     String methodName = "decimals";
     int decimal = 0;
@@ -143,9 +140,8 @@ public class TokenClient {
     return decimal;
   }
 
-  /**
-   * 查询代币发行总量
-   */
+  
+  // total supply
   public BigInteger getTokenTotalSupply() {
     String methodName = "totalSupply";
     String fromAddr = EmptyAddress;
@@ -173,7 +169,7 @@ public class TokenClient {
     return totalSupply;
   }
   
-  // 代币转账 todo
+  // transfer todo
   public String sendTokenTransaction(String fromAddress, String password, String toAddress, String contractAddress, BigInteger amount) {
     return null;
   }

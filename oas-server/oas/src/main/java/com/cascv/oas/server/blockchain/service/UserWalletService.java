@@ -1,6 +1,6 @@
 package com.cascv.oas.server.blockchain.service;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class UserWalletService {
     UserWallet userWallet = new UserWallet();
     userWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
     userWallet.setUserUuid(userUuid);
-    userWallet.setBalance(new BigDecimal(0));
+    userWallet.setBalance(BigInteger.ZERO);
     String now = DateUtils.dateTimeNow();
     userWallet.setCreated(now);
     userWallet.setUpdated(now);
@@ -36,7 +36,7 @@ public class UserWalletService {
     return 0;
   }
 
-  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value) {
+  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigInteger value) {
     UserWallet fromUserWallet = userWalletMapper.selectByUserUuid(fromUserUuid);
     UserWallet toUserWallet = userWalletMapper.selectByUserUuid(toUserUuid);
     if (fromUserWallet == null || toUserWallet== null || fromUserWallet.getBalance().compareTo(value) < 0) {

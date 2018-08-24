@@ -5,7 +5,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
- * 动态数据源
+ * synamic data source
  */
 public class DynamicDataSource extends AbstractRoutingDataSource
 {

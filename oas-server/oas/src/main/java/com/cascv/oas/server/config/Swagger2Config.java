@@ -19,12 +19,9 @@ public class Swagger2Config {
 					.apis(RequestHandlerSelectors.basePackage("com.cascv.oas"))
 					.paths(PathSelectors.any())
 					.build();
-					
-				
 	}
 	
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("OAS API").description("for phase 1").version("1.0").build();
-		
 	}
 }
