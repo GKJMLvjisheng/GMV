@@ -2,9 +2,9 @@
 
 import jsonapi
 
-HOST='http://localhost:8080/api/v1'
+HOST='http://52.14.161.120:8080/api/v1'
 NAME="zzz"
-PASSWORD="123456"
+PASSWORD="12345678"
 token=""
 
 # inquireName
@@ -81,10 +81,14 @@ def testEthWallet(name, password):
   data=register(name, password)
   if data is None:
     raise Exception('[FAIL] user register')
+  else:
+    print "[PASS] user register"
   token = login(name, password)
   if token is None:
     raise Exception('[FAIL] user login')
-  testapi(token)
+  else :
+    print "[PASS] user login"
+
   if destroy(token):
     print ("[PASS] user destroy ")
 

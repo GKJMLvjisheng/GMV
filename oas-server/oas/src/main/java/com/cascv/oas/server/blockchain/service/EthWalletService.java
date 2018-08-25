@@ -67,7 +67,6 @@ public class EthWalletService {
       ECKeyPair ecKeyPair = Wallet.decrypt(password, checkWalletFile);
       byte[] checkMnemonicSeedBytes = Numeric.hexStringToByteArray(ecKeyPair.getPrivateKey().toString(16));
       List<String> checkMnemonic = MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
-      System.out.println("验证助记词 " + Arrays.toString(checkMnemonic.toArray()));
     } catch (MnemonicException.MnemonicLengthException 
           | MnemonicException.MnemonicWordException 
           | MnemonicException.MnemonicChecksumException 
@@ -80,6 +79,7 @@ public class EthWalletService {
   }
   
   public Integer destroy(String userUuid){
+    userCoinMapper.deleteAll(userUuid);
     ethWalletMapper.deleteByUserUuid(userUuid);
     return 0;
   }
@@ -94,7 +94,6 @@ public class EthWalletService {
       log.error("check Mnemonic failure\n");
       return null;
     }
-
     byte[] seedBytes = ds.getSeedBytes();
     if (seedBytes == null) {
       return null;
@@ -141,7 +140,6 @@ public class EthWalletService {
   }
 
   public void import_token(String userUuid, String address, String contract){
-
     DigitalCoin digitalCoin = digitalCoinService.find(contract);
     UserCoin userCoin = new UserCoin();
     userCoin.setAddress(address);
@@ -151,7 +149,8 @@ public class EthWalletService {
     userCoin.setWidth(width);
     BigDecimal balance = coinClient.getBalance(address, contract);
     while (width > 0) {
-      balance= balance.divide(BigDecimal.TEN);
+      balance=balance.divide(BigDecimal.TEN);
+      width--;
     }
     userCoin.setBalance(balance);
     userCoinMapper.insertSelective(userCoin);

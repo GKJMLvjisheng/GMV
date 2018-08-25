@@ -50,5 +50,7 @@
     delete from user_coin where user_uuid = #{userUuid} and contract = #{contract}
   </delete>
 
-
+  <delete id="deleteAll">
+    delete from user_coin where user_uuid = #{userUuid}
+  </delete>
 </mapper>

@@ -86,10 +86,15 @@ public class UserController {
 	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+		log.info("to create eth wallet");
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
+		log.info("create eth wallet done");
 		userWalletService.create(uuid);
+		log.info("create user wallet done");
 		energyPointService.create(uuid);
+		log.info("create energy point done");
 		ErrorCode ret = userService.addUser(uuid, userModel);
+		log.info("add user done");
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
   	  registerResult.setMnemonicList(EthWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
