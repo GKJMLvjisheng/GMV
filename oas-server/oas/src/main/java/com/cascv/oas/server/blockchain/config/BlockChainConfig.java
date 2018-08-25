@@ -2,17 +2,22 @@ package com.cascv.oas.server.blockchain.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.http.HttpService;
+
+import com.cascv.oas.server.blockchain.service.DigitalCoinService;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-class ContractConfig {
+class CoinContract {
   @Setter @Getter private String address;
 };
 
@@ -21,20 +26,35 @@ class ContractConfig {
 @ConfigurationProperties(prefix = "wallet")
 public class BlockChainConfig {
   
+  @Autowired 
+  private DigitalCoinService digitalCoinService;
   
   @Setter @Getter private String provider;
-  @Setter @Getter private List<ContractConfig> contracts;
+  @Setter @Getter private String token;
+  @Setter @Getter private List<CoinContract> contracts;
   
   @Bean
-  public TokenClient getTokenClient() {
+  @Lazy
+  public CoinClient getCoinClient() {
     
-    String address = contracts.get(0).getAddress();
     log.info("blockchain url is {}", provider);
-    log.info("blockchain contractAddress is {}", address);
+    log.info("blockchain token is {}", token);
+
+    
+    CoinClient coinClient = new CoinClient();
+    
     Web3j web3j =  Web3j.build(new HttpService(provider));
-    TokenClient tokenClient = new TokenClient();
-    tokenClient.setWeb3j(web3j);
-    tokenClient.setContractAddress(address);
-    return tokenClient;
+    coinClient.setWeb3j(web3j);
+
+    Admin admin = Admin.build(new HttpService(provider));
+    coinClient.setAdmin(admin);
+    
+    coinClient.setToken(token);
+    
+    for (CoinContract s : contracts) {
+      log.info("suport coin '{}'", s.getAddress());
+      digitalCoinService.create(coinClient, s.getAddress());
+    }
+    return coinClient;
   }
 }

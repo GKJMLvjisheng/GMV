@@ -1,7 +1,11 @@
 package com.cascv.oas.server.blockchain.controller;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.vo.UserWalletTransfer;
 import com.cascv.oas.server.user.model.UserModel;
@@ -25,6 +29,19 @@ public class UserWalletController {
 
   @Autowired
   private UserService userService;
+
+  @PostMapping(value="/balance")
+  @ResponseBody()
+  public ResponseEntity<?> balance(){
+    BigDecimal balance = BigDecimal.ZERO;
+    UserWallet userWallet = userWalletService.find(ShiroUtils.getUserUuid());
+    if (userWallet != null) {
+      balance =  userWallet.getBalance();
+    }
+    return new ResponseEntity.Builder<BigDecimal>()
+        .setData(balance)
+        .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
+  }
 
   @PostMapping(value="/transfer")
   @ResponseBody

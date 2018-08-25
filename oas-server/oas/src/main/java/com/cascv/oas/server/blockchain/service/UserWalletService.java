@@ -1,5 +1,6 @@
 package com.cascv.oas.server.blockchain.service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,15 @@ public class UserWalletService {
   @Autowired
   private UserWalletMapper userWalletMapper;
   
+  public UserWallet find(String userUuid){
+    return userWalletMapper.selectByUserUuid(userUuid);
+  }
+  
   public UserWallet create(String userUuid){
     UserWallet userWallet = new UserWallet();
     userWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
     userWallet.setUserUuid(userUuid);
-    userWallet.setBalance(BigInteger.ZERO);
+    userWallet.setBalance(BigDecimal.ZERO);
     String now = DateUtils.dateTimeNow();
     userWallet.setCreated(now);
     userWallet.setUpdated(now);
@@ -36,7 +41,7 @@ public class UserWalletService {
     return 0;
   }
 
-  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigInteger value) {
+  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value) {
     UserWallet fromUserWallet = userWalletMapper.selectByUserUuid(fromUserUuid);
     UserWallet toUserWallet = userWalletMapper.selectByUserUuid(toUserUuid);
     if (fromUserWallet == null || toUserWallet== null || fromUserWallet.getBalance().compareTo(value) < 0) {

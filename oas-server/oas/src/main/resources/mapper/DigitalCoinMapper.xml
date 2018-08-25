@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.blockchain.mapper.DigitalCoinMapper">
+
+  <resultMap id="digitalCoinMap" type="com.cascv.oas.server.blockchain.model.DigitalCoin">
+	<id column="contract" property="contract" />
+	<result column="name" property="name"/>
+	<result column="symbol" property="symbol"/>
+	<result column="width" property="width"/>
+	<result column="supply" property="supply" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    contract, name, symbol, width, supply
+  </sql>
+
+  <!-- insert user -->
+  <insert id="insertSelective" parameterType="com.cascv.oas.server.blockchain.model.DigitalCoin">
+    insert into digital_coin
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        contract,
+        <if test="name != null">
+          name,
+        </if>
+        <if test="symbol != null">
+          symbol,
+        </if>
+        
+        <if test="width != null">
+          width,
+        </if>
+        
+        <if test="supply != null">
+          supply,
+        </if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        #{contract,jdbcType=VARCHAR},
+        <if test="name != null">
+		      #{name,jdbcType=VARCHAR},
+        </if>
+        <if test="symbol != null">
+  		    #{symbol,jdbcType=VARCHAR},
+        </if>
+        <if test="width != null">
+		      #{width,jdbcType=INTEGER},
+        </if>
+		<if test="supply != null">
+          #{supply,jdbcType=DECIMAL},
+        </if>
+      </trim>
+  </insert>
+
+  <select id="selectByContract" parameterType="java.lang.String" resultMap="digitalCoinMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from digital_coin where contract = #{contract}
+  </select>
+
+  <select id="selectAll" resultMap="digitalCoinMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from digital_coin
+  </select>
+
+  <!-- delete by contract -->
+  <delete id="deleteByContract">
+    delete from digital_coin where contract = #{contract}
+  </delete>
+
+
+</mapper>
