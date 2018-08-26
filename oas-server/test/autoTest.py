@@ -87,15 +87,11 @@ def testEthWallet(name, password):
   else :
     print "[PASS] user login"
 
-#  if destroy(token):
-#    print ("[PASS] user destroy ")
+  if destroy(token):
+    print ("[PASS] user destroy ")
 
-#testEthWallet(NAME, PASSWORD)
+testEthWallet("test12345678", "12345678")
 
 
-data=register("caikov", "cai12345678")
-
-if data:
-  print res
 
 
