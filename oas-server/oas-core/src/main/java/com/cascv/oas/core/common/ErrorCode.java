@@ -22,7 +22,8 @@ public enum ErrorCode {
   BALANCE_NOT_ENOUGH(10006, "余额不足"),
   CAN_NOT_TRANSFER_TO_SELF(10007, "不能转账给自己"),
   NO_ONLINE_ACCOUNT(10008, "没有创建在线子钱包"),
-  NO_ETH_WALLET(10009, "没有创建交易账号");
+  NO_ETH_WALLET(10009, "没有创建交易账号"),
+  NO_ENERGY_POINT_ACCOUNT(10009, "没有积分帐户");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

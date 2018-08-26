@@ -4,6 +4,7 @@ package com.cascv.oas.server.blockchain.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,10 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.model.EnergyBall;
+import com.cascv.oas.server.blockchain.model.EnergyPoint;
+import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
+import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.blockchain.vo.EnergyBallResult;
 import com.cascv.oas.server.blockchain.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.blockchain.vo.EnergyNews;
@@ -25,7 +29,9 @@ import com.cascv.oas.server.blockchain.vo.EnergyPointCategory;
 @RequestMapping(value="/api/v1/energyPoint")
 public class EnergyPointController {
   
-  
+  @Autowired
+  private EnergyPointService energyPointService;
+	
   @PostMapping(value="/checkin")
   @ResponseBody
   @Transactional
@@ -71,13 +77,35 @@ public class EnergyPointController {
   @PostMapping(value="/inquirePower")
   @ResponseBody
   public ResponseEntity<?> inquirePower(){
-    return new ResponseEntity.Builder<Integer>().setData(10).setErrorCode(ErrorCode.SUCCESS).build();
+	EnergyPoint energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
+	if (energyPoint != null) {
+		return new ResponseEntity.Builder<Integer>()
+				.setData(energyPoint.getPower())
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	} else { 
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.NO_ENERGY_POINT_ACCOUNT)
+				.build();
+	}
   }
   
   @PostMapping(value="/inquireEnergyPoint")
   @ResponseBody
   public ResponseEntity<?> inquireEnergyPoint(){
-    return new ResponseEntity.Builder<Integer>().setData(15).setErrorCode(ErrorCode.SUCCESS).build();
+    EnergyPoint energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
+	if (energyPoint != null) {
+		return new ResponseEntity.Builder<Integer>()
+				.setData(energyPoint.getBalance())
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	} else { 
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.NO_ENERGY_POINT_ACCOUNT)
+				.build();
+	}
   }
   
   

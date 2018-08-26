@@ -74,6 +74,44 @@ def destroyUser(name, password):
     destroy(token)
 
 
+# inquirePower
+def inquirePower(token):
+  url=HOST+"/energyPoint/inquirePower"
+  data={}
+  res=jsonapi.post(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+# inquireEnergyPoint
+def inquireEnergyPoint(token):
+  url=HOST+"/energyPoint/inquireEnergyPoint"
+  data={}
+  res=jsonapi.post(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+# userWalletBalance
+def userWalletBalance(token):
+  url=HOST+"/userWallet/balance"
+  data={}
+  res=jsonapi.post(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+# ethWalletListCoin
+def ethWalletListCoin(token):
+  url=HOST+"/ethWallet/listCoin"
+  data={}
+  res=jsonapi.post(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+    
+    
+    
 def testEthWallet(name, password):
   destroyUser(name, password)
   data=register(name, password)
@@ -90,7 +128,33 @@ def testEthWallet(name, password):
   if destroy(token):
     print ("[PASS] user destroy ")
 
-testEthWallet("test12345678", "12345678")
+token=login("caikov","cai120501")
+if not token:
+  raise Exception("[FAIL] login failure")
+
+power=inquirePower(token)
+if power is not None:
+  print "power is %d" % power
+else:
+  raise Exception("inquire power failure")
+
+energyPoint=inquireEnergyPoint(token)
+if energyPoint is not None:
+  print "energy point is %d" % energyPoint
+else:
+  raise Exception("inquire energypoint failure")
+
+s=userWalletBalance(token)
+if s is not None:
+  print s
+else:
+  raise Exception("userWallet balance failure")
+
+coin=ethWalletListCoin(token)
+if coin is not None:
+  print coin
+else:
+  raise Exception("eWallet coin failure")
 
 
 

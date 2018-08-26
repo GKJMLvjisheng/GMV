@@ -35,10 +35,14 @@ public class UserWalletController {
     UserWallet userWallet = userWalletService.find(ShiroUtils.getUserUuid());
     if (userWallet != null) {
       balance =  userWallet.getBalance();
+      return new ResponseEntity.Builder<BigDecimal>()
+      		.setData(balance)
+              .setErrorCode(ErrorCode.SUCCESS).build();
+    } else {
+    	return new ResponseEntity.Builder<BigDecimal>()
+    		.setData(balance)
+            .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
     }
-    return new ResponseEntity.Builder<BigDecimal>()
-        .setData(balance)
-        .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
   }
 
   @PostMapping(value="/transfer")
