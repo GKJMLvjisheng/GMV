@@ -1,8 +1,6 @@
 package com.cascv.oas.server.blockchain.controller;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.model.UserWallet;
@@ -61,7 +59,7 @@ public class UserWalletController {
     	return new ResponseEntity.Builder<Integer>()
     			.setData(1)
     			.setErrorCode(ErrorCode.CAN_NOT_TRANSFER_TO_SELF)
-    	        .build();
+    	    .build();
     }
     ErrorCode errorCode = userWalletService.transfer(fromUser.getUuid(), toUser.getUuid(), userWalletTransfer.getValue());
     return new ResponseEntity.Builder<Integer>()

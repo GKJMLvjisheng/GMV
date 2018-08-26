@@ -7,8 +7,8 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-  <result column="invite_from" property="inviteFrom" jdbcType="VARCHAR"/>
-	<result column="invite_code" property="inviteCode" jdbcType="VARCHAR"/>
+    <result column="invite_from" property="inviteFrom" jdbcType="INTEGER"/>
+	<result column="invite_code" property="inviteCode" jdbcType="INTEGER"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
 	<result column="address" property="address"/>
@@ -27,6 +27,9 @@
   
   <!-- insert user -->
   <insert id="insertUser" parameterType="com.cascv.oas.server.user.model.UserModel">
+    <selectKey keyProperty="inviteCode" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       uuid,
@@ -79,10 +82,10 @@
         #{nickname,jdbcType=VARCHAR},
       </if>
       <if test="inviteFrom != null">
-        #{inviteFrom,jdbcType=VARCHAR},
+        #{inviteFrom,jdbcType=INTEGER},
       </if>
       <if test="inviteCode != null">
-        #{inviteCode,jdbcType=VARCHAR},
+        #{inviteCode,jdbcType=INTEGER},
       </if>
       <if test="gender != null">
         #{gender,jdbcType=VARCHAR},
@@ -134,7 +137,7 @@
   	from user_info where uuid=#{uuid}
   </select>
   
-  <select id="selectByInviteCode" parameterType="java.lang.String" resultMap="userModelMap">
+  <select id="selectByInviteCode" parameterType="java.lang.Integer" resultMap="userModelMap">
   	select 
   	<include refid="Base_Column_List" />
   	from user_info where invite_code=#{inviteCode}

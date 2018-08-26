@@ -4,9 +4,6 @@ import jsonapi
 
 #HOST='http://52.14.161.120:8080/api/v1'
 HOST='http://localhost:8080/api/v1'
-NAME="zzz"
-PASSWORD="12345678"
-token=""
 
 # inquireName
 
@@ -90,9 +87,15 @@ def testEthWallet(name, password):
   else :
     print "[PASS] user login"
 
-  if destroy(token):
-    print ("[PASS] user destroy ")
+#  if destroy(token):
+#    print ("[PASS] user destroy ")
 
-testEthWallet(NAME, PASSWORD)
+#testEthWallet(NAME, PASSWORD)
+
+
+data=register("caikov", "cai12345678")
+
+if data:
+  print res
 
 
