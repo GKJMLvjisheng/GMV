@@ -53,4 +53,21 @@ public class EthWalletController {
             .setErrorCode(ErrorCode.SUCCESS)
             .build();
   }
+
+  @PostMapping(value="/summary")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> summary(@RequestBody EthWalletTransfer ethWalletTransfer){
+    ErrorCode errorCode=ethWalletService.transfer(
+        ShiroUtils.getUserUuid(), 
+        ethWalletTransfer.getPassword(),
+        ethWalletTransfer.getContract(),
+        ethWalletTransfer.getToUserAddress(),
+        ethWalletTransfer.getAmount());
+
+    return new ResponseEntity.Builder<Integer>()
+        .setData(1)
+        .setErrorCode(errorCode)
+        .build();
+  }
 }

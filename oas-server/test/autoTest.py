@@ -2,7 +2,7 @@
 
 import jsonapi
 
-#HOST='http://52.14.161.120:8080/api/v1'
+#HOST='http://18.219.19.160:8080/api/v1'
 HOST='http://localhost:8080/api/v1'
 
 # inquireName
@@ -94,7 +94,7 @@ def inquireEnergyPoint(token):
 
 # userWalletBalance
 def userWalletBalance(token):
-  url=HOST+"/userWallet/balance"
+  url=HOST+"/userWallet/balanceDetail"
   data={}
   res=jsonapi.post(url,data,token)
   print res

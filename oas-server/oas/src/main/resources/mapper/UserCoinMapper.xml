@@ -5,13 +5,14 @@
   <resultMap id="userCoinMap" type="com.cascv.oas.server.blockchain.model.UserCoin">
   <id column="user_uuid" property="userUuid" />
 	<id column="contract" property="contract" />
+  <result column="coin_name" property="coinName" />
 	<result column="width" property="width"/>
 	<result column="address" property="address"/>
 	<result column="balance" property="balance" jdbcType="DECIMAL"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    user_uuid, contract, width, address, balance
+    user_uuid, contract, coin_name, width, address, balance
   </sql>
 
   <!-- insert selective -->
@@ -20,13 +21,15 @@
       <trim prefix="(" suffix=")" suffixOverrides=",">
         user_uuid,
         contract,
+        coin_name,
         width,
         address,
         balance
       </trim>
       <trim prefix="values (" suffix=")" suffixOverrides=",">
         #{userUuid,jdbcType=VARCHAR},
-		    #{contract,jdbcType=VARCHAR},
+		#{contract,jdbcType=VARCHAR},
+        #{coinName,jdbcType=VARCHAR},
         #{width,jdbcType=INTEGER},
         #{address,jdbcType=VARCHAR},
         #{balance,jdbcType=DECIMAL},

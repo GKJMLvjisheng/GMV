@@ -144,6 +144,7 @@ public class EthWalletService {
     userCoin.setAddress(address);
     userCoin.setContract(contract);
     userCoin.setUserUuid(userUuid);
+    userCoin.setCoinName(digitalCoin.getName());
     Integer width = digitalCoin.getWidth();
     userCoin.setWidth(width);
     BigDecimal balance = coinClient.getBalance(address, contract);
