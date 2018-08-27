@@ -43,8 +43,10 @@ public class UserWalletService {
   public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value) {
     UserWallet fromUserWallet = userWalletMapper.selectByUserUuid(fromUserUuid);
     UserWallet toUserWallet = userWalletMapper.selectByUserUuid(toUserUuid);
-    if (fromUserWallet == null || toUserWallet== null || fromUserWallet.getBalance().compareTo(value) < 0) {
+    if (fromUserWallet == null || toUserWallet== null) {
       return ErrorCode.BALANCE_NOT_ENOUGH;
+    }else if(fromUserWallet.getBalance().compareTo(value) <= 0){
+    	return ErrorCode.VALUE_CAN_NOT_BE_NULL;
     }
     userWalletMapper.decreaseBalance(fromUserWallet.getUuid(), value);
     userWalletMapper.increaseBalance(toUserWallet.getUuid(), value);

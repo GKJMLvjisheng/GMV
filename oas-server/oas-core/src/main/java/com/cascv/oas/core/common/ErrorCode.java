@@ -20,6 +20,7 @@ public enum ErrorCode {
   PASSWORD_NULL(10004, "密码空"),
   USER_NOT_EXISTS(10005, "用户不存在"),
   BALANCE_NOT_ENOUGH(10006, "余额不足"),
+  VALUE_CAN_NOT_BE_NULL(10006,"转账不能为0"),
   CAN_NOT_TRANSFER_TO_SELF(10007, "不能转账给自己"),
   NO_ONLINE_ACCOUNT(10008, "没有创建在线子钱包"),
   NO_ETH_WALLET(10009, "没有创建交易账号"),
