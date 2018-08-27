@@ -26,10 +26,10 @@ import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
-import com.cascv.oas.server.user.vo.LoginResult;
-import com.cascv.oas.server.user.vo.LoginVo;
-import com.cascv.oas.server.user.vo.RegisterConfirm;
-import com.cascv.oas.server.user.vo.RegisterResult;
+import com.cascv.oas.server.user.wrapper.LoginResult;
+import com.cascv.oas.server.user.wrapper.LoginVo;
+import com.cascv.oas.server.user.wrapper.RegisterConfirm;
+import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import io.swagger.annotations.Api;

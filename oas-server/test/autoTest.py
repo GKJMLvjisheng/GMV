@@ -2,8 +2,8 @@
 
 import jsonapi
 
-#HOST='http://18.219.19.160:8080/api/v1'
-HOST='http://localhost:8080/api/v1'
+HOST='http://18.219.19.160:8080/api/v1'
+#HOST='http://localhost:8080/api/v1'
 
 # inquireName
 

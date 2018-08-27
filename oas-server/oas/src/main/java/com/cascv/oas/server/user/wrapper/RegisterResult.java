@@ -1,4 +1,4 @@
-package com.cascv.oas.server.user.vo;
+package com.cascv.oas.server.user.wrapper;
 
 import java.io.Serializable;
 import java.util.List;

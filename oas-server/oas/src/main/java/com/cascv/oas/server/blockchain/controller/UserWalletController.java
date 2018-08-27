@@ -11,11 +11,12 @@ import java.util.List;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
-import com.cascv.oas.server.blockchain.vo.UserWalletBalanceSummary;
-import com.cascv.oas.server.blockchain.vo.UserWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -38,6 +39,9 @@ public class UserWalletController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private ExchangeParam exchangeParam;
+
   @PostMapping(value="/balanceDetail")
   @ResponseBody()
   public ResponseEntity<?> balanceDetail(){
@@ -46,12 +50,18 @@ public class UserWalletController {
     
     userWalletBalanceSummary.setOngoingBalance(BigDecimal.ZERO);
     if (userWallet != null) {
-      userWalletBalanceSummary.setAvailableBalance(userWallet.getBalance());
+      BigDecimal balance = userWallet.getBalance();
+      
+      BigDecimal factor = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
+      BigDecimal value=balance.multiply(factor);
+      userWalletBalanceSummary.setAvailableBalance(balance);
+      userWalletBalanceSummary.setValue(value);
       return new ResponseEntity.Builder<UserWalletBalanceSummary>()
       		.setData(userWalletBalanceSummary)
               .setErrorCode(ErrorCode.SUCCESS).build();
     } else {
       userWalletBalanceSummary.setAvailableBalance(BigDecimal.ZERO);
+      userWalletBalanceSummary.setValue(BigDecimal.ZERO);
     	return new ResponseEntity.Builder<UserWalletBalanceSummary>()
     		.setData(userWalletBalanceSummary)
             .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();

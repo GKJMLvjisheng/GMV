@@ -26,15 +26,16 @@ import com.cascv.oas.server.blockchain.model.EnergyBall;
 import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
-import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
-import com.cascv.oas.server.blockchain.vo.EnergyPointRedeem;
+import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
+import com.cascv.oas.server.blockchain.wrapper.EnergyBallResult;
+import com.cascv.oas.server.blockchain.wrapper.EnergyBallTakenResult;
+import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointCategory;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointCheckinResult;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactor;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointRedeem;
 import com.cascv.oas.server.utils.ShiroUtils;
-import com.cascv.oas.server.blockchain.vo.CurrentPeriodEnergyPoint;
-import com.cascv.oas.server.blockchain.vo.EnergyBallResult;
-import com.cascv.oas.server.blockchain.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.blockchain.vo.EnergyNews;
-import com.cascv.oas.server.blockchain.vo.EnergyPointCategory;
-import com.cascv.oas.server.blockchain.vo.EnergyPointFactor;
 @RestController
 @RequestMapping(value="/api/v1/energyPoint")
 public class EnergyPointController {
@@ -267,10 +268,10 @@ public class EnergyPointController {
   
   @PostMapping(value="/inquirePointFactor")
   @ResponseBody
-  public ResponseEntity<?> inquireEnergyPointFactor(String date){
-
+  public ResponseEntity<?> inquireEnergyPointFactor(@RequestBody EnergyPointFactorRequest energyPointFactorRequest){
+    String date = energyPointFactorRequest.getDate();
     EnergyPointFactor energyPointFactor = new EnergyPointFactor();
-    energyPointFactor.setFactor(0.00001);
+    energyPointFactor.setFactor(exchangeParam.getEnergyPointRate());
     energyPointFactor.setDate(date);
     energyPointFactor.setAmount(156);
     return new ResponseEntity.Builder<EnergyPointFactor>()

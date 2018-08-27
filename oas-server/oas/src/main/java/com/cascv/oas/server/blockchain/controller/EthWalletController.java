@@ -4,7 +4,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
-import com.cascv.oas.server.blockchain.vo.EthWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import java.util.List;

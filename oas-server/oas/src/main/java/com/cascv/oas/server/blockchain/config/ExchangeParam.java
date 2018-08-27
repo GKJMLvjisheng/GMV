@@ -7,4 +7,5 @@ public class ExchangeParam{
   @Getter @Setter private Integer energyPointDaily;
   @Getter @Setter private Integer energyPowerDaily;
   @Getter @Setter private Double energyPointRate;
+  @Getter @Setter private Double tokenRmbRate;
 }
