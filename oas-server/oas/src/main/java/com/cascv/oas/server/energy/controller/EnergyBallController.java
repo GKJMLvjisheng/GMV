@@ -3,7 +3,6 @@ package com.cascv.oas.server.energy.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
-import com.cascv.oas.server.energy.vo.EnergyPointAndPower;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
@@ -23,8 +22,8 @@ import java.util.List;
 public class EnergyBallController {
     @Autowired
     private EnergyService energyService;
-    private static final Integer HAVE_ENERGYBALLS = 1;
-    private static final Integer HAVE_NO_ENERGYBALLS = 0;
+    private static final Integer STATUS_OF_NEW_BORN_ENERGYBALL = 1;
+    private static final Integer SOURCE_OF_CHECKIN = 1;
 
     /**
      * 签到功能
@@ -35,25 +34,36 @@ public class EnergyBallController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> checkin(Integer userId) {
-//        EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
-//        energyPointCheckinResult = energyService.getCurrentEnergyResult(userId);
-//        Boolean checkin = (Boolean) this.isCheckin(userId).getData();
-//        if (checkin){
-//            EnergyPointAndPower checkinEnergy = energyService.getCheckinEnergy();
+        EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
+        // 第1步，检查当日是否已经签过到
+        Boolean checkin = (Boolean) this.isCheckin(userId).getData();
+        if (checkin){
+            // 如果没有签过到，则允许进行签到操作
+            // 第2-1步，签到
+            // 第3步，签到时，先在数据库中生成签到“能量球”
+            EnergyBall energyBallOfCheckin = new EnergyBall();
+            energyBallOfCheckin.setUserId(userId);
+            energyBallOfCheckin.setPointSource(SOURCE_OF_CHECKIN);
+            energyBallOfCheckin.setPowerSource(SOURCE_OF_CHECKIN);
+            energyBallOfCheckin.setStatus(STATUS_OF_NEW_BORN_ENERGYBALL);
+            EnergyPointCheckinResult checkinEnergy = energyService.getCheckinEnergy();
+//            energyBallOfCheckin.setPoint(checkinEnergy.getNewEnergyPoint());
 //            energyPointCheckinResult.setNewPower(energyPointCheckinResult.getNewPower() + checkinEnergy.getPower());
 //            energyPointCheckinResult.setNewEnergyPoint(energyPointCheckinResult.getNewEnergyPoint() + checkinEnergy.getPoint());
-//            return new ResponseEntity
-//                    .Builder<EnergyPointCheckinResult>()
-//                    .setData(energyPointCheckinResult)
-//                    .setErrorCode(ErrorCode.SUCCESS)
-//                    .build();
-//        }
-//        return new ResponseEntity
-//                .Builder<EnergyPointCheckinResult>()
-//                .setData(energyPointCheckinResult)
-//                .setErrorCode(ErrorCode.GENERAL_ERROR)
-//                .build();
-        return null;
+            return new ResponseEntity
+                    .Builder<EnergyPointCheckinResult>()
+                    .setData(energyPointCheckinResult)
+                    .setErrorCode(ErrorCode.SUCCESS)
+                    .build();
+        }else {
+            // 已经签过到，不允许再次签到
+            // 第2-2步，返回结果
+            return new ResponseEntity
+                    .Builder<EnergyPointCheckinResult>()
+                    .setData(energyPointCheckinResult)
+                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+                    .build();
+        }
     }
 
     /**

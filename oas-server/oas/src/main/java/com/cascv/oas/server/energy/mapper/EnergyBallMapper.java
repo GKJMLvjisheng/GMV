@@ -1,8 +1,5 @@
 package com.cascv.oas.server.energy.mapper;
 
-import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
-import com.cascv.oas.server.energy.model.UserEnergy;
-import com.cascv.oas.server.energy.vo.EnergyPointAndPower;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
 import org.springframework.stereotype.Component;

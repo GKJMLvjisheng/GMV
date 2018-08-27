@@ -1,9 +1,10 @@
 package com.cascv.oas.server.energy.service;
 
 import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
+import com.cascv.oas.server.energy.mapper.EnergySourcePointMapper;
+import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.UserEnergyMapper;
 import com.cascv.oas.server.energy.model.UserEnergy;
-import com.cascv.oas.server.energy.vo.EnergyPointAndPower;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
@@ -20,6 +21,10 @@ public class EnergyService {
     private EnergyBallMapper energyBallMapper;
     @Autowired
     private UserEnergyMapper userEnergyMapper;
+    @Autowired
+    private EnergySourcePointMapper energySourcePointMapper;
+    @Autowired
+    private EnergySourcePowerMapper energySourcePowerMapper;
 
     /**
      * 查询当日是否已有签到记录
@@ -31,26 +36,17 @@ public class EnergyService {
         return CollectionUtils.isEmpty(energyBalls) ? null : energyBalls.get(0);
     }
 
-    public int saveEnergyBallOnCheckin() {
-
-        return 0;
-    }
-
-    /**
-     * 获得未被获取过能量的能量球列表
-     * @return
-     */
-    public List<EnergyBall> listEnergyBallByStatus() {
-        List<EnergyBall> energyBalls = energyBallMapper.selectByStatus();
-        return energyBalls;
-    }
-
     /**
      * 获取签到的属性：增加积分、算力的数值
      * @return
      */
-    public UserEnergy getCheckinEnergy() {
-        return userEnergyMapper.selectByCheckinSource();
+    public EnergyPointCheckinResult getCheckinEnergy() {
+        Integer point = energySourcePointMapper.queryPointSingle().getPointSingle();
+        Integer power = energySourcePowerMapper.queryPowerSingle().getPowerSingle();
+        EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
+        energyPointCheckinResult.setNewEnergyPoint(point);
+        energyPointCheckinResult.setNewPower(power);
+        return energyPointCheckinResult;
     }
 
     /**
@@ -60,5 +56,14 @@ public class EnergyService {
      */
     public UserEnergy getCurrentEnergyResult(Integer userId) {
         return userEnergyMapper.selectByUserId(userId);
+    }
+
+    /**
+     * 获得未被获取过能量的能量球列表
+     * @return
+     */
+    public List<EnergyBall> listEnergyBallByStatus() {
+        List<EnergyBall> energyBalls = energyBallMapper.selectByStatus();
+        return energyBalls;
     }
 }

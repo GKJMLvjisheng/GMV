@@ -11,10 +11,4 @@ public interface UserEnergyMapper {
      * @return
      */
     UserEnergy selectByUserId(Integer userId);
-
-    /**
-     * 查询签到能获得的积分、算力值
-     * @return
-     */
-    UserEnergy selectByCheckinSource();
 }
