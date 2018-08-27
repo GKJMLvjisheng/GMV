@@ -124,12 +124,14 @@ public class EnergyPointController {
     
     String [] nameArray = {"手机","手表","家电"};
     Integer [] valueArray = {10000,5000,0};
+    Integer [] maxValueArray = {20000, 20000, 20000};
     
     for (Integer i = 0; i < 3; i++) {
       EnergyPointCategory energyPointCategory = new EnergyPointCategory();
       energyPointCategory.setId(i);
       energyPointCategory.setName(nameArray[i]);
       energyPointCategory.setValue(valueArray[i]);
+      energyPointCategory.setMaxValue(maxValueArray[i]);
       energyPointCategoryList.add(energyPointCategory);
     }
     return new ResponseEntity.Builder<List<EnergyPointCategory>>()

@@ -10,4 +10,5 @@ public class EnergyPointCategory implements Serializable{
   @Getter @Setter private Integer id;
   @Getter @Setter private String name;
   @Getter @Setter private Integer value;
+  @Getter @Setter private Integer maxValue;
 }
