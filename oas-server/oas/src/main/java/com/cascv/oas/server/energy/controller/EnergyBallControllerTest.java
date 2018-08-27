@@ -18,7 +18,5 @@ public class EnergyBallControllerTest {
     @Test
     public void isCheckin() {
         Integer userId = 1;
-        Boolean ischeckin = energyBallController.isCheckin(userId);
-        System.out.println("尚未签到？ " + ischeckin);
     }
 }
