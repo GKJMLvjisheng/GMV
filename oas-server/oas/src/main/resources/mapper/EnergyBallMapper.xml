@@ -91,6 +91,17 @@
     -->
     id, user_id, point_source, point, power_source, power, status
   </sql>
+
+  <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.vo.EnergyBallWithTime" resultMap="BaseResultMap">
+    select * FROM energy_ball
+    <where>
+      user_id = #{id} and time_created like #{time}"%"
+    </where>
+  </select>
+  <select id="selectByStatus" resultMap="BaseResultMap">
+    select * from energy_ball where status = 1
+  </select>
+
   <select id="selectByExample" parameterType="com.cascv.oas.server.energy.model.EnergyBallExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
@@ -310,10 +321,4 @@
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.vo.EnergyBallWithTimeVo" resultMap="BaseResultMap">
-    select * FROM energy_ball
-    <where>
-      user_id = #{id} and time_created like #{time}"%"
-    </where>
-  </select>
 </mapper>
