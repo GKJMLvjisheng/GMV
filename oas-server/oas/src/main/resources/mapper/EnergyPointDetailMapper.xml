@@ -69,16 +69,27 @@
     delete from energy_point_detail where user_uuid = #{userUuid}
   </delete>
   
-  <select id="selectByDateRange" resultMap="energyPonitDetailMap">
+  <select id="selectByOffset" resultMap="energyPonitDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from energy_point_detail where user_uuid = #{userUuid} and created between #{fromDate} and #{toDate} ordered by created desc;
+    from energy_point_detail 
+		where user_uuid = #{userUuid} 
+		ordered by created desc
+		limit #{offset}, #{limit}
   </select>
+	<select id="selectActivityByDate" resultMap="energyPonitDetailMap">
+		select 
+      <include refid="Base_Column_List" />
+    from energy_point_detail 
+		where user_uuid = #{userUuid} 
+		and activity=#{activity}
+		and created between #{dateFrom} and #{dateEnd}
+	</select>
 
-  <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="energyPonitDetailMap">
+  <select id="selectByUuid" parameterType="java.lang.String" resultMap="energyPonitDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from energy_point_detail where user_uuid = #{userUuid}
+    from energy_point_detail where uuid = #{uuid}
   </select>
   
 </mapper>

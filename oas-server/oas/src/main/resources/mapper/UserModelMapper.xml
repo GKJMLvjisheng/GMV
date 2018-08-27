@@ -7,7 +7,8 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-    <result column="invite_from" property="inviteFrom" jdbcType="INTEGER"/>
+  <result column="confirmed" property="confirmed"/>
+  <result column="invite_from" property="inviteFrom" jdbcType="INTEGER"/>
 	<result column="invite_code" property="inviteCode" jdbcType="INTEGER"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
@@ -22,7 +23,7 @@
   </resultMap>
  
   <sql id="Base_Column_List">
-    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, salt,created,updated
+    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated
   </sql>
   
   <!-- insert user -->
@@ -119,7 +120,7 @@
       </if>
     </trim>
    </insert>
-
+  
   <!-- delete user -->
   <delete id="deleteUser" parameterType="java.lang.String">
     delete from user_info where uuid = #{uuid}
