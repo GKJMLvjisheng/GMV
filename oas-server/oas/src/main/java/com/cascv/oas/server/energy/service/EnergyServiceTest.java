@@ -26,5 +26,8 @@ public class EnergyServiceTest {
 
     @Test
     public void getCurrentEnergyResult() {
+        int userId = 1;
+        UserEnergy currentEnergyResult = energyService.getCurrentEnergyResult(userId);
+        System.out.println(currentEnergyResult);
     }
 }
