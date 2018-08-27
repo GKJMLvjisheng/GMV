@@ -26,6 +26,7 @@ public class UserModel extends BaseEntity {
 	@Getter @Setter private String updated;
 	@Getter @Setter private Integer mobileChecked;
 	@Getter @Setter private Integer emailChecked;
+	@Getter @Setter private Integer confirmed;
 	@Getter @Setter private Set<String> roles = new HashSet<>();
 	@Getter @Setter private Set<String> perms = new HashSet<>();
 }

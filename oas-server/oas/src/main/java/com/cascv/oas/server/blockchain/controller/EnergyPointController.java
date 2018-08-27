@@ -39,15 +39,38 @@ public class EnergyPointController {
   
   @Autowired
   private EnergyPointService energyPointService;
-	
+  
+  @Autowired
+  private ExchangeParam exchangeParam;
+
   @PostMapping(value="/checkin")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> checkin(){
+    String userUuid = ShiroUtils.getUserUuid();
+    String today = DateUtils.dateTimeNow(DateUtil.YYYY_MM_DD_HH_MM);
+    
+    List<EnergyPointDetail> energyPointDetailList = energyPointService.searchEnergyPointDetail(
+        userUuid, 
+        EnergyActivity.CHECKIN.getCode(), 
+        today, 
+        today);
+
     EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
-    energyPointCheckinResult.setNewEnergyPoint(15);
-    energyPointCheckinResult.setNewPower(10);
-    return new ResponseEntity.Builder<EnergyPointCheckinResult>().setData(energyPointCheckinResult).setErrorCode(ErrorCode.SUCCESS).build();
+
+    ErrorCode errorCode = ErrorCode.SUCCESS;
+
+    if (energyPointDetailList != null && energyPointDetailList.size() > 0){
+      errorCode=ErrorCode.ALREADY_CHECKIN_TODAY;
+      energyPointCheckinResult.setNewEnergyPoint(0);
+      energyPointCheckinResult.setNewPower(0);  
+    } else {
+      energyPointCheckinResult.setNewEnergyPoint(exchangeParam.getEnergyPointDaily());
+      energyPointCheckinResult.setNewPower(exchangeParam.getEnergyPowerDaily());  
+    }
+    return new ResponseEntity.Builder<EnergyPointCheckinResult>()
+      .setData(energyPointCheckinResult)
+      .setErrorCode(errorCode).build();
   }
   
   
@@ -65,7 +88,6 @@ public class EnergyPointController {
       energyBall.setStartDate(DateUtils.getDate());
       energyBall.setEndDate(DateUtils.getDate());
       energyBallList.add(energyBall);
-      
     }
     energyBallResult.setEnergyBallList(energyBallList);
     energyBallResult.setOngoingEnergySummary(236);

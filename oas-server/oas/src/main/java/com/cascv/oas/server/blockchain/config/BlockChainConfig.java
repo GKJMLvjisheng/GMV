@@ -32,7 +32,8 @@ public class BlockChainConfig {
   @Setter @Getter private String provider;
   @Setter @Getter private String token;
   @Setter @Getter private List<CoinContract> contracts;
-  
+  @Setter @Getter private ExchangeParam exchangeParam;
+
   @Bean
   @Lazy
   public CoinClient getCoinClient() {
@@ -57,4 +58,10 @@ public class BlockChainConfig {
     }
     return coinClient;
   }
+
+  @Bean
+  public ExchangeParam getExchangeParam(){
+    return exchangeParam;
+  }
+
 }

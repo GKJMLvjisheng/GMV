@@ -38,6 +38,10 @@ public class EnergyPointService {
     return energyPoint;
   }
 
+  List<EnergyPointDetail> searchEnergyPointDetail(String userUuid, Integer activity, String dateFrom, String dateEnd){
+    return energyPointMapper.selectActivityByDate(userUuid, activity, dateFrom, dateEnd);
+  }
+
   public Integer destroy(String userUuid){
     energyPointMapper.deleteByUserUuid(userUuid);
     return 0;
@@ -68,4 +72,6 @@ public class EnergyPointService {
   public EnergyPoint findByUserUuid(String userUuid) {
 	  return energyPointMapper.selectByUserUuid(userUuid);
   }
+
+
 }
