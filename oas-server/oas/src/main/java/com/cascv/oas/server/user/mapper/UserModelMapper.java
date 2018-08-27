@@ -10,6 +10,6 @@ public interface UserModelMapper {
 	 UserModel selectByName(@Param("name") String name);
 	 UserModel selectByUuid(@Param("uuid") String uuid);
 	 Integer deleteUser(String uuid);
-	 UserModel selectByInviteCode(@Param("inviteCode") String inviteCode);
+	 UserModel selectByInviteCode(@Param("inviteCode") Integer inviteCode);
 }
 

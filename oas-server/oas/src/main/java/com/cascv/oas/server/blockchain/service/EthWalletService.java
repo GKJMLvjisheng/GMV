@@ -1,8 +1,9 @@
 package com.cascv.oas.server.blockchain.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bitcoinj.crypto.ChildNumber;
@@ -18,13 +19,17 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.protocol.Web3j;
 import org.web3j.utils.Numeric;
 
+import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.mapper.EthHdWalletMapper;
-import com.cascv.oas.server.blockchain.model.EthHdWallet;
+import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
+import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
+import com.cascv.oas.server.blockchain.model.DigitalCoin;
+import com.cascv.oas.server.blockchain.model.EthWallet;
+import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,10 +43,17 @@ public class EthWalletService {
   private static SecureRandom secureRandom = new SecureRandom();
   
   @Autowired
-  private EthHdWalletMapper ethHdWalletMapper;
+  private EthWalletMapper ethWalletMapper;
   
   @Autowired
-  private Web3j web3j;
+  private CoinClient coinClient;
+
+  @Autowired
+  private DigitalCoinService digitalCoinService;
+  
+  @Autowired
+  private UserCoinMapper userCoinMapper;
+  
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
     try {
@@ -54,7 +66,6 @@ public class EthWalletService {
       ECKeyPair ecKeyPair = Wallet.decrypt(password, checkWalletFile);
       byte[] checkMnemonicSeedBytes = Numeric.hexStringToByteArray(ecKeyPair.getPrivateKey().toString(16));
       List<String> checkMnemonic = MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
-      System.out.println("验证助记词 " + Arrays.toString(checkMnemonic.toArray()));
     } catch (MnemonicException.MnemonicLengthException 
           | MnemonicException.MnemonicWordException 
           | MnemonicException.MnemonicChecksumException 
@@ -67,11 +78,12 @@ public class EthWalletService {
   }
   
   public Integer destroy(String userUuid){
-    ethHdWalletMapper.deleteByUserUuid(userUuid);
+    userCoinMapper.deleteAll(userUuid);
+    ethWalletMapper.deleteByUserUuid(userUuid);
     return 0;
   }
 
-  public EthHdWallet create(String userUuid, String password){
+  public EthWallet create(String userUuid, String password){
     
     String passphrase = "";
     long creationTimeSeconds = System.currentTimeMillis() / 1000;
@@ -81,7 +93,6 @@ public class EthWalletService {
       log.error("check Mnemonic failure\n");
       return null;
     }
-
     byte[] seedBytes = ds.getSeedBytes();
     if (seedBytes == null) {
       return null;
@@ -103,30 +114,93 @@ public class EthWalletService {
     
     try {
       WalletFile walletFile = Wallet.createLight(password, keyPair);
-      System.out.println("eth address " + "0x" + walletFile.getAddress());
       ObjectMapper objectMapper = ObjectMapperFactory.getObjectMapper();
       String jsonStr = objectMapper.writeValueAsString(walletFile);
-      EthHdWallet ethHdWallet =  new EthHdWallet();
-      ethHdWallet.setUuid(UuidUtils.getPrefixUUID("EW"));
-      ethHdWallet.setUserUuid(userUuid);
-      ethHdWallet.setMnemonicList(EthHdWallet.toMnemonicList(ds.getMnemonicCode()));
-      ethHdWallet.setPublicKey(keyPair.getPublicKey().toString(16));
-      ethHdWallet.setPrivateKey(keyPair.getPrivateKey().toString(16));
-      ethHdWallet.setMnemonicPath(dkKey.getPathAsString());
-      ethHdWallet.setAddress("0x" + walletFile.getAddress());
-      ethHdWallet.setKeystore(jsonStr);
+      EthWallet ethWallet =  new EthWallet();
+      ethWallet.setUuid(UuidUtils.getPrefixUUID("EW"));
+      ethWallet.setUserUuid(userUuid);
+      ethWallet.setMnemonicList(EthWallet.toMnemonicList(ds.getMnemonicCode()));
+      ethWallet.setPublicKey(keyPair.getPublicKey().toString(16));
+      ethWallet.setPrivateKey(keyPair.getPrivateKey().toString(16));
+      ethWallet.setMnemonicPath(dkKey.getPathAsString());
+      ethWallet.setAddress("0x" + walletFile.getAddress());
+      ethWallet.setKeystore(jsonStr);
       String datetime = DateUtils.dateTimeNow();
-      ethHdWallet.setCreated(datetime);
-      ethHdWallet.setUpdated(datetime);
-      ethHdWalletMapper.deleteByUserUuid(userUuid);
-      ethHdWalletMapper.insertSelective(ethHdWallet);
-      return ethHdWallet;
+      ethWallet.setCreated(datetime);
+      ethWallet.setUpdated(datetime);
+      ethWalletMapper.deleteByUserUuid(userUuid);
+      ethWalletMapper.insertSelective(ethWallet);
+      import_token(userUuid, ethWallet.getAddress(),coinClient.getToken());
+      return ethWallet;
     } catch (CipherException | JsonProcessingException e) {
       e.printStackTrace();
       return null;
     }
   }
-  public void testWeb() {
-    //web3j.
+
+  public void import_token(String userUuid, String address, String contract){
+    DigitalCoin digitalCoin = digitalCoinService.find(contract);
+    UserCoin userCoin = new UserCoin();
+    userCoin.setAddress(address);
+    userCoin.setContract(contract);
+    userCoin.setUserUuid(userUuid);
+    userCoin.setCoinName(digitalCoin.getName());
+    Integer width = digitalCoin.getWidth();
+    userCoin.setWidth(width);
+    BigDecimal balance = coinClient.getBalance(address, contract);
+    while (width > 0) {
+      balance=balance.divide(BigDecimal.TEN);
+      width--;
+    }
+    userCoin.setBalance(balance);
+    userCoinMapper.insertSelective(userCoin);
+  }
+
+  public EthWallet getEthWalletByUserUuid(String userUuid)
+  {
+    return ethWalletMapper.selectByUserUuid(userUuid);
+  }
+
+  public BigDecimal getBalance(String userUuid, String contract) {
+    BigDecimal balance = BigDecimal.ZERO;
+    try {
+      EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
+      String token = coinClient.getToken();
+      balance = coinClient.getBalance(ethWallet.getAddress(), token);
+    } catch (Exception e) {
+
+    }
+    return balance;
+  }
+  
+  public UserCoin getUserCoin(String userUuid, String contract){
+    UserCoin userCoin = userCoinMapper.selectOne(userUuid, contract);
+    if (userCoin == null)
+      return null;
+    userCoin.setBalance(this.getBalance(userUuid, userCoin.getContract()));
+    return userCoin;
+  }
+
+  public List<UserCoin> listCoin(String userUuid){
+    List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
+    for (UserCoin coin:userCoinList) {
+      coin.setBalance(this.getBalance(userUuid, coin.getContract()));
+    }
+    return userCoinList;
+  }
+
+  public ErrorCode transfer(String userUuid, String password, String contract, String toAddress, BigInteger amount) {
+
+    EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
+    if (ethWallet == null)
+      return ErrorCode.NO_ETH_WALLET;
+    if (contract == null)
+      contract = coinClient.getToken();
+    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
+    if (userCoin.getBalance().compareTo(new BigDecimal(amount)) < 0)
+      return ErrorCode.BALANCE_NOT_ENOUGH;
+    String txHash=coinClient.sendTransaction(ethWallet.getAddress(), password, toAddress, contract, amount);
+    log.info("txhash {}", txHash);
+    return ErrorCode.SUCCESS;
   }
 }

@@ -32,8 +32,7 @@ import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class UserRealm extends AuthorizingRealm
-{
+public class UserRealm extends AuthorizingRealm {
 	@Autowired
 	private UserService userService;
 	
@@ -43,8 +42,6 @@ public class UserRealm extends AuthorizingRealm
 	@Autowired
 	private PermService permService;
 
-    /**
-     */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
     {
@@ -69,7 +66,6 @@ public class UserRealm extends AuthorizingRealm
         if (upToken.getPassword() != null) {
             password = new String(upToken.getPassword());
         }
-        log.info("c");
         UserModel userModel = null;
         try  {
         	userModel = userService.findUserByName(username);
@@ -82,38 +78,25 @@ public class UserRealm extends AuthorizingRealm
         } catch (CaptchaException e) {
            throw new AuthenticationException(e.getMessage(), e);
         }
-        catch (UserNotExistsException e)
-        {
-        	log.info("f");
+        catch (UserNotExistsException e) {
             throw new UnknownAccountException(e.getMessage(), e);
         }
-        catch (UserPasswordNotMatchException e)
-        {
-        	log.info("g");
+        catch (UserPasswordNotMatchException e) {
             throw new IncorrectCredentialsException(e.getMessage(), e);
         }
-        catch (UserPasswordRetryLimitExceedException e)
-        {
-        	log.info("h");
+        catch (UserPasswordRetryLimitExceedException e) {
             throw new ExcessiveAttemptsException(e.getMessage(), e);
         }
-        catch (UserBlockedException e)
-        {
-        	log.info("i");
+        catch (UserBlockedException e) {
             throw new LockedAccountException(e.getMessage(), e);
         }
-        catch (RoleBlockedException e)
-        {
-        	log.info("j");
+        catch (RoleBlockedException e)  {
             throw new LockedAccountException(e.getMessage(), e);
         }
-        catch (Exception e)
-        {
+        catch (Exception e)   {
             throw new AuthenticationException(e.getMessage(), e);
         }
-        log.info("k");
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(userModel, password, getName());
-        log.info("l");
         return info;
     }
 

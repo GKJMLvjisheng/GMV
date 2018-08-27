@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.model.EthHdWallet;
+import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
@@ -27,6 +27,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.vo.LoginResult;
+import com.cascv.oas.server.user.vo.LoginVo;
 import com.cascv.oas.server.user.vo.RegisterConfirm;
 import com.cascv.oas.server.user.vo.RegisterResult;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -56,23 +57,24 @@ public class UserController {
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
-	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel) {
-		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
-		UsernamePasswordToken token = new UsernamePasswordToken(userModel.getName(), userModel.getPassword(), false);
-        LoginResult loginResult = new LoginResult();
-		    Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(token);
-            loginResult.setToken(ShiroUtils.getSessionId());
-            loginResult.fromUserModel(ShiroUtils.getUser());
-            return new ResponseEntity.Builder<LoginResult>()
-                .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
-                .build();
-        } catch (AuthenticationException e)  {
-            return new ResponseEntity.Builder<LoginResult>()
-                  .setData(loginResult)
-                  .setErrorCode(ErrorCode.GENERAL_ERROR).build();
-        }
+	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo) {
+		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
+		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
+		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
+      LoginResult loginResult = new LoginResult();
+	    Subject subject = SecurityUtils.getSubject();
+      try {
+          subject.login(token);
+          loginResult.setToken(ShiroUtils.getSessionId());
+          loginResult.fromUserModel(ShiroUtils.getUser());
+          return new ResponseEntity.Builder<LoginResult>()
+              .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
+              .build();
+      } catch (AuthenticationException e)  {
+          return new ResponseEntity.Builder<LoginResult>()
+                .setData(loginResult)
+                .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+      }
 	}
 	
 	// Register
@@ -83,15 +85,15 @@ public class UserController {
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 
 	  String password = userModel.getPassword();
-	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-		EthHdWallet ethHdWallet = ethWalletService.create(uuid, password);
+		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		userWalletService.create(uuid);
 		energyPointService.create(uuid);
 		ErrorCode ret = userService.addUser(uuid, userModel);
+		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
-  	  registerResult.setMnemonicList(EthHdWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
+  	  registerResult.setMnemonicList(EthWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
   	  ret = ErrorCode.SUCCESS;
   	}
@@ -99,21 +101,21 @@ public class UserController {
 		      .setData(registerResult).setErrorCode(ret).build();
 	}
 
-		// Destroy
-		@ApiOperation(value="Destroy", notes="")
-		@PostMapping(value="/destroy")
-		@ResponseBody
-		@Transactional
-		public ResponseEntity<?> destroy() {
-			UserModel userModel = ShiroUtils.getUser();
-			String uuid = userModel.getUuid();
-			ethWalletService.destroy(uuid);
-			userWalletService.destroy(uuid);
-			energyPointService.destroy(uuid);
-			userService.deleteUserByUuid(uuid);
-			return new ResponseEntity.Builder<Integer>()
-						.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
-		}
+	// Destroy
+	@ApiOperation(value="Destroy", notes="")
+	@PostMapping(value="/destroy")
+	@ResponseBody
+	@Transactional
+	public ResponseEntity<?> destroy() {
+		UserModel userModel = ShiroUtils.getUser();
+		String uuid = userModel.getUuid();
+		ethWalletService.destroy(uuid);
+		userWalletService.destroy(uuid);
+		energyPointService.destroy(uuid);
+		userService.deleteUserByUuid(uuid);
+		return new ResponseEntity.Builder<Integer>()
+					.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+	}
 
   @PostMapping(value="/registerConfirm")
   @ResponseBody
@@ -159,10 +161,11 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> inquireUserInfo(){
 	  Map<String, String> info = new HashMap<>();
-	  UserModel userModel = ShiroUtils.getUser();
+		UserModel userModel = ShiroUtils.getUser();
+		log.info("invideCode {}", userModel.getInviteCode());
 	  info.put("name", userModel.getName());
 	  info.put("nickname", userModel.getNickname());
-	  info.put("inviteCode", userModel.getInviteCode());
+	  info.put("inviteCode", userModel.getInviteCode().toString());
 	  info.put("gender", userModel.getGender());
 	  info.put("address", userModel.getAddress());
 	  info.put("birthday", userModel.getBirthday());

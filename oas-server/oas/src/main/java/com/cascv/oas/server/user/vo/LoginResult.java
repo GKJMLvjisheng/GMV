@@ -19,7 +19,7 @@ public class LoginResult implements Serializable {
   @Getter @Setter private String birthday;
   @Getter @Setter private String mobile;
   @Getter @Setter private String email;
-  @Getter @Setter private String inviteCode;
+  @Getter @Setter private Integer inviteCode;
   
   public void fromUserModel(UserModel userModel) {
     this.setName(userModel.getName());

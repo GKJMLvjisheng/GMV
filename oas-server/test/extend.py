@@ -1,0 +1,42 @@
+# -*- coding: utf-8 -*-
+
+import jsonapi
+
+HOST='http://52.14.161.120:8080/api/v1'
+name="123456"
+password="123456"
+token=""
+
+# login
+url=HOST+"/userCenter/login"
+data={"name":name, "password":password}
+res=jsonapi.post(url,data)
+print(res)
+if res.get('code') == 0:
+  data=res.get('data')
+  token=data.get('token')
+  print( "[PASS] /userCenter/login token=%s successfully" % token)
+else:
+  raise Exception('[FAIL] /userCenter/login')
+
+# inquireEnergyPointByCategory 
+url=HOST +"/energyPoint/inquireEnergyPointByCategory "
+data={}
+res=jsonapi.post(url,data,token)
+print(res)
+if res.get('code') == 0:
+    print ("[PASS] /energyPoint/inquireEnergyPointByCategory ")
+else:
+    raise Exception('[FAIL] /energyPoint/inquireEnergyPointByCategory ')
+
+# inquireNews 
+url=HOST +"/energyPoint/inquireNews "
+data={}
+res=jsonapi.post(url,data,token)
+print(res)
+if res.get('code') == 0:
+    print ("[PASS] /energyPoint/inquireNews ")
+else:
+    raise Exception('[FAIL] /energyPoint/inquireNews ')
+
+

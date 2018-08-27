@@ -65,4 +65,7 @@ public class EnergyPointService {
     return value;
   }
   
+  public EnergyPoint findByUserUuid(String userUuid) {
+	  return energyPointMapper.selectByUserUuid(userUuid);
+  }
 }

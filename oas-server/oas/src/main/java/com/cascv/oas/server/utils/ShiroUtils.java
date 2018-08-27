@@ -11,8 +11,9 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.utils.BeanUtils;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.server.shiro.UserRealm;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 public class ShiroUtils {
     public static Subject getSubjct() {
         return SecurityUtils.getSubject();
@@ -35,6 +36,10 @@ public class ShiroUtils {
         if (StringUtils.isNotNull(obj)) {
         	userModel = new UserModel();
           BeanUtils.copyBeanProp(userModel, obj);
+          log.info("name {}", userModel.getName());
+          log.info("password {}", userModel.getPassword());
+          log.info("inviteCode {}", userModel.getInviteCode());
+          log.info("salt {}", userModel.getSalt());
         }
         return userModel;
     }

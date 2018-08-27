@@ -11,7 +11,8 @@ public class InviteCodeUtils {
       return "0";
     StringBuffer stringBuffer = new StringBuffer();
     for (int i=0; i < 6; i++) {
-      int index = Integer.parseInt(uuid.substring(length-30 + i * 5, length-25 + i * 5)) % SA.length();
+      String substr = uuid.substring(length-30 + i * 5, length-25 + i * 5);
+      int index = Integer.parseInt(substr, 16) % SA.length();
       stringBuffer.append(SA.charAt(index));
     }
     return stringBuffer.toString();

@@ -25,9 +25,6 @@ subprojects {
     
     compile("org.projectlombok:lombok:1.16.20")
     
-    compile('org.quartz-scheduler:quartz:2.3.0'){
-      exclude (group:'com.mchange', module:'c3p0')
-    }
     compile('org.apache.velocity:velocity:1.7')
     compile('com.github.penggle:kaptcha:2.3.2') {
       exclude (group: 'javax.servlet-api', module:'javax.servlet')
