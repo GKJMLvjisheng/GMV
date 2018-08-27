@@ -20,6 +20,8 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.config.ExchangeParam;
+import com.cascv.oas.server.blockchain.constant.EnergyActivity;
 import com.cascv.oas.server.blockchain.model.EnergyBall;
 import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
@@ -48,7 +50,7 @@ public class EnergyPointController {
   @Transactional
   public ResponseEntity<?> checkin(){
     String userUuid = ShiroUtils.getUserUuid();
-    String today = DateUtils.dateTimeNow(DateUtil.YYYY_MM_DD_HH_MM);
+    String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM);
     
     List<EnergyPointDetail> energyPointDetailList = energyPointService.searchEnergyPointDetail(
         userUuid, 

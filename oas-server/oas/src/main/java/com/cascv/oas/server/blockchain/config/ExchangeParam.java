@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ExchangeParam{
-  @Getter @Setter private Integer checkin;
-  @Getter @Setter private Double energyOas;
+  @Getter @Setter private Integer energyPointDaily;
+  @Getter @Setter private Integer energyPowerDaily;
+  @Getter @Setter private Double energyPointRate;
 }
