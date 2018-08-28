@@ -253,8 +253,8 @@ def testUserWallet():
 #  else:
 #    raise Exception("eWallet coin failure")
 
-#testRegisterDestroy()
-#testEnergyPoint()
+testRegisterDestroy()
+testEnergyPoint()
 testUserWallet()
 #testEthWallet()
 
