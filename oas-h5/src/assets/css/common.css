@@ -1,0 +1,28 @@
+* {box-sizing: border-box; -webkit-tap-highlight-color: rgba(0,0,0,0);}
+body {
+  font-size: 24px;
+  color: #000;
+}
+h1,h2,h3,h4,h5,h6,ul,ol,li,p {
+  margin: 0;
+  padding: 0;
+}
+
+ul,ol,li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  font-size: 24px;
+  color: #8E8E93;
+}
+
+img {
+  vertical-align: middle;
+}
+
+button,input[type="button"] {
+  border: none;
+  outline: none;
+}
