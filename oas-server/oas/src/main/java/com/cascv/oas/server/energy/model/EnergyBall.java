@@ -15,5 +15,5 @@ public class EnergyBall {
     @Getter @Setter private BigDecimal power;
     @Getter @Setter private Integer status;
     @Getter @Setter private Date timeCreated;
-    @Getter @Setter private Date timeUpdate;
+    @Getter @Setter private Date timeUpdated;
 }

@@ -9,11 +9,12 @@ import java.math.BigDecimal;
 public class EnergySourcePoint {
     @Getter @Setter private Integer id;
     @Getter @Setter private Integer sourceCode;
+    @Getter @Setter String sourceName;
     @Getter @Setter private String type;
-    @Getter @Setter private Integer pointSingle;
-    @Getter @Setter Integer pointTotal;
+    @Getter @Setter private BigDecimal pointSingle;
+    @Getter @Setter BigDecimal pointTotal;
     @Getter @Setter BigDecimal pointIncreaseSpeed;
     @Getter @Setter String pointIncreaseSpeedUnitName;
-    @Getter @Setter Integer pointIncreaseSpeedUnitValue;
-    @Getter @Setter Integer pointMaxEachBall;
+    @Getter @Setter BigDecimal pointIncreaseSpeedUnitValue;
+    @Getter @Setter BigDecimal pointMaxEachBall;
 }
