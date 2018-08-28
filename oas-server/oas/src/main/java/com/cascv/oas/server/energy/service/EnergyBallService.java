@@ -18,8 +18,7 @@ public class EnergyBallService {
      * @return
      */
     public int saveEnergyBall(EnergyBall energyBall) {
-        int success = energyBallMapper.insertEnergyBall(energyBall);
-        return energyBall.getId();
+        return energyBallMapper.insertEnergyBall(energyBall);
     }
 
     /**
@@ -27,11 +26,16 @@ public class EnergyBallService {
      * @param id
      * @return
      */
-    public EnergyBall getEnergyBallById(Integer id) {
+    public EnergyBall getEnergyBallById(String id) {
         return energyBallMapper.selectById(id);
     }
 
-    public int updateEnergyBallStatusById(Integer id) {
+    /**
+     * 根据能量球 id 更新其状态，将状态
+     * @param id
+     * @return
+     */
+    public int updateEnergyBallStatusById(String id) {
         return energyBallMapper.updateEnergyBallStatusById(id);
     }
 

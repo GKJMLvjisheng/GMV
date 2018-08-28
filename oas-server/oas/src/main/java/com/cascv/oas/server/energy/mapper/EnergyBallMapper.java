@@ -33,12 +33,12 @@ public interface EnergyBallMapper {
      * @param id
      * @return
      */
-    int updateEnergyBallStatusById(Integer id);
+    int updateEnergyBallStatusById(String id);
 
     /**
      * 根据能量球id，查询能量球信息
      * @param id
      * @return
      */
-    EnergyBall selectById(Integer id);
+    EnergyBall selectById(String id);
 }
