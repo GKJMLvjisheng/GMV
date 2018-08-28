@@ -218,8 +218,11 @@ public class EthWalletService {
       amount = amount.multiply(BigInteger.TEN);
       width--;
     }
-    String txHash=coinClient.sendTransaction(ethWallet.getAddress(), password, toAddress, contract, amount);
+    String txHash=coinClient.transfer(ethWallet.getAddress(), password, toAddress, contract, amount);
     log.info("txhash {}", txHash);
     return ErrorCode.SUCCESS;
   }
 }
+
+
+

@@ -2,6 +2,8 @@ package com.cascv.oas.server.energy.service;
 
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointCheckinResult;
 import com.cascv.oas.server.energy.model.UserEnergy;
+import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +21,14 @@ public class EnergyServiceTest {
 
     @Test
     public void getCheckinEnergy() {
-        EnergyPointCheckinResult checkinEnergy = energyService.getCheckinEnergy();
+    	EnergyCheckinResult checkinEnergy = energyService.getCheckinEnergy();
         System.out.println("签到增加值: " + checkinEnergy);
     }
 
     @Test
     public void getCurrentEnergyResult() {
-        int userId = 1;
+        /*int userId = 1;
         UserEnergy currentEnergyResult = energyService.getCurrentEnergyResult(userId);
-        System.out.println("当前用户能量值：" + currentEnergyResult);
+        System.out.println("当前用户能量值：" + currentEnergyResult);*/
     }
 }
