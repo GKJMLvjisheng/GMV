@@ -1,16 +1,38 @@
 # -*- coding: utf-8 -*-
 
+import time
 import jsonapi
+import codecs
 
-HOST='http://18.219.19.160:8080/api/v1'
-#HOST='http://localhost:8080/api/v1'
+#HOST='http://18.219.19.160:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
+
+filename=str(time.time())
+print "filename %s" % filename
+
+#file = open(filename,'w+') 
+file = codecs.open(filename,'w+','utf-8') 
+
+
+def callRpc(url, data, token=None):
+  file.write('#########################\n')
+  file.write(url+'\n')
+  file.write(str(data)+'\n')
+  res=None
+  if token is not None:
+    file.write("token : %s\n" % token)
+    res=jsonapi.post(url,data,token)
+  else:
+    res=jsonapi.post(url,data)
+  file.write(str(res)+'\n')
+  file.write('#########################')
+  return res
 
 # inquireName
-
 def inquireName(name):
   url=HOST +"/userCenter/inquireName"
   data={"name": name}
-  res=jsonapi.post(url,data)
+  res=callRpc(url,data)
   return res.get('code') == 0
     
 
@@ -18,7 +40,7 @@ def inquireName(name):
 def register(name, password):
   url=HOST+"/userCenter/register"
   data={"name":name, "password":password}
-  res=jsonapi.post(url,data)
+  res=callRpc(url,data)
   if res.get('code') == 0:
     return res.get('data')
 
@@ -27,15 +49,16 @@ def registerConfirm(uuid, code):
 
   url=HOST +"/userCenter/registerConfirm"
   data={"uuid": uuid, "code": code}
-  res=jsonapi.post(url,data)
+  res=callRpc(url,data)
   return res.get('code') == 0
 
 # login
 def login(name, password):
   url=HOST+"/userCenter/login"
   data={"name":name, "password":password}
-  res=jsonapi.post(url,data)
+  res=callRpc(url,data)
   if res.get('code') == 0:
+    print res
     data=res.get('data')
     return data.get('token')
 
@@ -43,7 +66,7 @@ def login(name, password):
 def testapi(token):
   url=HOST+"/ethWallet/testApi"
   data={}
-  res=jsonapi.post(url,data,token)
+  res=callRpc(url,data,token)
   if res.get('code') == 0:
     data=res.get('data')
     print  ("[PASS] /ethWallet/testApi")
@@ -53,7 +76,7 @@ def testapi(token):
 def inquireUserInfo(token):
   url=HOST+"/userCenter/inquireUserInfo"
   data={}
-  res=jsonapi.post(url,data,token)
+  res=callRpc(url,data,token)
   if res.get('code') == 0:
     return res.get('data')
 
@@ -62,8 +85,10 @@ def inquireUserInfo(token):
 def destroy(token):
   url=HOST+"/userCenter/destroy"
   data={}
-  res=jsonapi.post(url,data,token)
-  return res.get('code') == 0
+  res=callRpc(url,data,token)
+  print res
+  if res is not None and res.get('code') == 0:
+    return res.get('data')
 
 def destroyUser(name, password):
   if inquireName(name) is False:
@@ -78,7 +103,7 @@ def destroyUser(name, password):
 def inquirePower(token):
   url=HOST+"/energyPoint/inquirePower"
   data={}
-  res=jsonapi.post(url,data,token)
+  res=callRpc(url,data,token)
   print res
   if res.get('code') == 0:
     return res.get('data')
@@ -87,7 +112,7 @@ def inquirePower(token):
 def inquireEnergyPoint(token):
   url=HOST+"/energyPoint/inquireEnergyPoint"
   data={}
-  res=jsonapi.post(url,data,token)
+  res=callRpc(url,data,token)
   print res
   if res.get('code') == 0:
     return res.get('data')
@@ -96,7 +121,7 @@ def inquireEnergyPoint(token):
 def userWalletBalance(token):
   url=HOST+"/userWallet/balanceDetail"
   data={}
-  res=jsonapi.post(url,data,token)
+  res=callRpc(url,data,token)
   print res
   if res.get('code') == 0:
     return res.get('data')
@@ -105,57 +130,133 @@ def userWalletBalance(token):
 def ethWalletListCoin(token):
   url=HOST+"/ethWallet/listCoin"
   data={}
-  res=jsonapi.post(url,data,token)
+  res=callRpc(url,data,token)
   print res
   if res.get('code') == 0:
     return res.get('data')
-    
-    
-    
-def testEthWallet(name, password):
-  destroyUser(name, password)
-  data=register(name, password)
-  if data is None:
-    raise Exception('[FAIL] user register')
-  else:
+
+def energyPointCheckin(token):
+  url=HOST+"/energyPoint/checkin"
+  data={}
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+def inquireEnergyBall(token):
+  url=HOST+"/energyPoint/inquireEnergyBall"
+  data={}
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+
+def takeEnergyBall(token, ballId):
+  url=HOST+"/energyPoint/takeEnergyBall"
+  data={"ballId" : ballId}
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+def testRegisterDestroy():
+  NAME="oases"
+  PASSWORD="12345678"
+  registerInfo=register(NAME, PASSWORD)
+  if registerInfo is not None:
     print "[PASS] user register"
-  token = login(name, password)
+  else:
+    print "[FALURE] user register"
+  token=login(NAME,PASSWORD)
+  if not token:
+    raise Exception("[FAIL] login failure")
+  userInfo=inquireUserInfo(token)
+  if userInfo is not None:
+    print "[PASS] inquireUserInfo"
+  else:
+    raise Exception("[Fail] inquireUserInfo")
+  destroy(token)
+
+
+
+def testEnergyPoint():
+  NAME="caikov"
+  PASSWORD="cai120501"
+  token=login(NAME,PASSWORD)
   if token is None:
-    raise Exception('[FAIL] user login')
-  else :
-    print "[PASS] user login"
+    raise Exception("[Fail] user login")
+  power=inquirePower(token)
+  if power is not None:
+    print "power is %d" % power
+  else:
+    raise Exception("inquire power failure")
 
-  if destroy(token):
-    print ("[PASS] user destroy ")
+  energyPoint=inquireEnergyPoint(token)
+  if energyPoint is not None:
+    print "energy point is %d" % energyPoint
+  else:
+    raise Exception("inquire energypoint failure")
+  checkin=energyPointCheckin(token)
+  if checkin is not None:
+    print "[PASS] energyPoint checkin"
+  else:
+    raise Exception("[Fail] energyPont checkin")
 
-token=login("caikov","cai120501")
-if not token:
-  raise Exception("[FAIL] login failure")
+  res=inquireEnergyBall(token)
+  if res is not None:
+    print "[PASS] inquireEnergyBall"
+  else:
+    raise Exception("[Fail] inquireEnergyBall")
 
-power=inquirePower(token)
-if power is not None:
-  print "power is %d" % power
-else:
-  raise Exception("inquire power failure")
+  res=takeEnergyBall(token, 1)
+  if res is not None:
+    print "[PASS] takeEnergyBall"
+  else:
+    raise Exception("[Fail] takeEnergyBall")
 
-energyPoint=inquireEnergyPoint(token)
-if energyPoint is not None:
-  print "energy point is %d" % energyPoint
-else:
-  raise Exception("inquire energypoint failure")
+def userWalletInquireAddress(token):
+  url=HOST+"/userWallet/inquireAddress"
+  data={}
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
 
-s=userWalletBalance(token)
-if s is not None:
-  print s
-else:
-  raise Exception("userWallet balance failure")
+def testUserWallet():
+  NAME="caikov"
+  PASSWORD="cai120501"
+  token=login(NAME,PASSWORD)
+  if token is None:
+    raise Exception("[Fail] user login")
+  res=userWalletInquireAddress(token)
+  if res is not None:
+    print "[PASS] userWalletInquireAddress"
+  else:
+    raise Exception("[Fail] userWalletInquireAddress")
+  
+  res=userWalletBalance(token)
+  if res is not None:
+    print "[PASS] userWalletBalance"
+  else:
+    raise Exception("[Fail] userWalletBalance")
 
-coin=ethWalletListCoin(token)
-if coin is not None:
-  print coin
-else:
-  raise Exception("eWallet coin failure")
+#def testEthWallet():
+#  NAME="caikov"
+#  PASSWORD="cai120501"
+#  token=login(NAME,PASSWORD)
+#  if token is None:
+#    raise Exception("[Fail] user login")
+#  coin=ethWalletListCoin(token)
+#  if coin is not None:
+#    print coin
+#  else:
+#    raise Exception("eWallet coin failure")
 
+#testRegisterDestroy()
+#testEnergyPoint()
+testUserWallet()
+#testEthWallet()
 
-
+file.close()
 

@@ -29,6 +29,7 @@ import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
 import com.cascv.oas.server.blockchain.wrapper.EnergyBallResult;
 import com.cascv.oas.server.blockchain.wrapper.EnergyBallTakenResult;
+import com.cascv.oas.server.blockchain.wrapper.EnergyBallTokenRequest;
 import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointCategory;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointCheckinResult;
@@ -100,7 +101,7 @@ public class EnergyPointController {
   @PostMapping(value="/takeEnergyBall")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> takeEnergyBall(Integer ballId){
+  public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest){
     EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
     energyBallTakenResult.setNewEnergyPonit(15);
     energyBallTakenResult.setNewPower(0);

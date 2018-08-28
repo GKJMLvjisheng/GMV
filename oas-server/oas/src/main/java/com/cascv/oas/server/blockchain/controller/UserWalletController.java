@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
@@ -42,6 +44,23 @@ public class UserWalletController {
   @Autowired
   private ExchangeParam exchangeParam;
 
+  @PostMapping(value="/inquireAddress")
+  @ResponseBody()
+  public ResponseEntity<?> inquireAddress(){
+	Map<String, String> map = new HashMap<>();
+    UserWallet userWallet = userWalletService.find(ShiroUtils.getUserUuid());
+    ErrorCode errorCode= ErrorCode.NO_ONLINE_ACCOUNT;
+    if (userWallet != null) {
+    	map.put("address", ShiroUtils.getUser().getName());
+    	errorCode= ErrorCode.SUCCESS;
+    } 
+    
+    return new ResponseEntity.Builder<Map<String, String>>()
+    	  .setData(map)
+          .setErrorCode(errorCode).build();
+  }
+  
+  
   @PostMapping(value="/balanceDetail")
   @ResponseBody()
   public ResponseEntity<?> balanceDetail(){

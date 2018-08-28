@@ -167,8 +167,7 @@ public class EthWalletService {
     BigDecimal balance = BigDecimal.ZERO;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
-      String token = coinClient.getToken();
-      balance = coinClient.getBalance(ethWallet.getAddress(), token);
+      balance = coinClient.getBalance(ethWallet.getAddress(), contract);
       while(width > 0) {
         balance = balance.divide(BigDecimal.TEN);
         width--;
