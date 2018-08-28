@@ -5,15 +5,14 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @ToString
 public class UserEnergy {
-    @Getter @Setter private Integer id;
-    @Getter @Setter private Integer userId;
-    @Getter @Setter private Integer energyBallId;
+    @Getter @Setter private String uuid;
+    @Getter @Setter private String userUuid;
+    @Getter @Setter private String energyBallUuid;
     @Getter @Setter private BigDecimal balancePoint;
     @Getter @Setter private BigDecimal balancePower;
-    @Getter @Setter private Date timeCreated;
-    @Getter @Setter private Date timeUpdated;
+    @Getter @Setter private String timeCreated;
+    @Getter @Setter private String timeUpdated;
 }

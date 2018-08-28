@@ -1,5 +1,6 @@
 package com.cascv.oas.server.energy.controller;
 
+import com.cascv.oas.core.common.ResponseEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,9 @@ public class EnergyBallControllerTest {
     private EnergyBallController energyBallController;
     @Test
     public void checkin() {
-    }
-
-    @Test
-    public void isCheckin() {
-        Integer userId = 1;
+        ResponseEntity<?> checkin = energyBallController.checkin("1");
+        System.out.println("data: " + checkin.getData());
+        System.out.println("code: " + checkin.getCode());
+        System.out.println("message: " + checkin.getMessage());
     }
 }

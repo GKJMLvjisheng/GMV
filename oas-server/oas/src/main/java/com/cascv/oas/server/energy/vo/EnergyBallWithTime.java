@@ -11,11 +11,11 @@ import java.io.Serializable;
 @ToString
 public class EnergyBallWithTime implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Getter @Setter private int id;
+    @Getter @Setter private String userUuid;
     @Getter @Setter private String time;
 
-    public EnergyBallWithTime(int id, String time) {
-        this.id = id;
+    public EnergyBallWithTime(String userUuid, String time) {
+        this.userUuid = userUuid;
         this.time = time;
     }
 
