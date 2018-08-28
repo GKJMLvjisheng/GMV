@@ -1,6 +1,6 @@
 package com.cascv.oas.server.blockchain.wrapper;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +13,5 @@ public class EthWalletTransfer implements Serializable {
   @Getter @Setter private String password;
   @Getter @Setter private String contract;
   @Getter @Setter private String toUserAddress;
-  @Getter @Setter private BigInteger amount;
+  @Getter @Setter private BigDecimal amount;
 }

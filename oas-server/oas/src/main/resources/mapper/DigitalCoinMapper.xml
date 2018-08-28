@@ -6,12 +6,12 @@
 	<id column="contract" property="contract" />
 	<result column="name" property="name"/>
 	<result column="symbol" property="symbol"/>
-	<result column="width" property="width"/>
+	<result column="wei_factor" property="weiFactor" jdbcType="DECIMAL" />
 	<result column="supply" property="supply" jdbcType="DECIMAL" />
   </resultMap>
   
   <sql id="Base_Column_List">
-    contract, name, symbol, width, supply
+    contract, name, symbol, wei_factor, supply
   </sql>
 
   <!-- insert user -->
@@ -26,8 +26,8 @@
           symbol,
         </if>
         
-        <if test="width != null">
-          width,
+        <if test="weiFactor != null">
+          wei_factor,
         </if>
         
         <if test="supply != null">
@@ -42,8 +42,8 @@
         <if test="symbol != null">
   		    #{symbol,jdbcType=VARCHAR},
         </if>
-        <if test="width != null">
-		      #{width,jdbcType=INTEGER},
+        <if test="weiFactor != null">
+		      #{weiFactor,jdbcType=DECIMAL},
         </if>
 		<if test="supply != null">
           #{supply,jdbcType=DECIMAL},

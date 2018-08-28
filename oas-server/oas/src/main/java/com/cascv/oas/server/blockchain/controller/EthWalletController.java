@@ -4,6 +4,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -41,6 +42,27 @@ public class EthWalletController {
         .build();
   }
 
+  @PostMapping(value="/multiTtransfer")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
+    ErrorCode errorCode=ethWalletService.multiTransfer(
+        ShiroUtils.getUserUuid(), 
+        ethWalletMultiTransfer.getPassword(),
+        ethWalletMultiTransfer.getContract(),
+        ethWalletMultiTransfer.getQuota());
+
+    return new ResponseEntity.Builder<Integer>()
+        .setData(1)
+        .setErrorCode(errorCode)
+        .build();
+  }
+  
+  
+  
+  
+  
+  
   @PostMapping(value="/listCoin")
   @ResponseBody
   @Transactional
