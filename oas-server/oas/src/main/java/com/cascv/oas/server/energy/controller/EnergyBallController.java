@@ -2,7 +2,7 @@ package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointCheckinResult;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.UserEnergy;
 import com.cascv.oas.server.energy.service.EnergyBallService;

@@ -1,6 +1,6 @@
 package com.cascv.oas.server.energy.service;
 
-import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
+import com.cascv.oas.server.blockchain.wrapper.EnergyPointCheckinResult;
 import com.cascv.oas.server.energy.model.UserEnergy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
