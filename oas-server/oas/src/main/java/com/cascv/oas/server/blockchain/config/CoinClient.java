@@ -178,7 +178,7 @@ public class CoinClient {
   }
   
   // transfer todo
-  public String sendTransaction(String fromAddress, String password, String toAddress, String contract, BigInteger amount) {
+  public String transfer(String fromAddress, String password, String toAddress, String contract, BigInteger amount) {
     String txHash = null;
 
 		try {
@@ -218,5 +218,60 @@ public class CoinClient {
 
 		return txHash;
   }
+  
+//  public String multiTransfer(String fromAddress, String password, String [] toAddress, String contract, BigInteger[] amount) {
+//	String txHash = null;
+//    try {
+//      PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(
+//		  fromAddress, password, BigInteger.valueOf(10)).send();
+//      if (personalUnlockAccount.accountUnlocked()) {
+//	    String methodName = "multiTransfer";
+//	    List<Type> inputParameters = new ArrayList<>();
+//	    List<TypeReference<?>> outputParameters = new ArrayList<>();
+//	    Address [] tAddress = new Address [toAddress.length];
+//	    for (Integer i = 0; i < toAddress.length; i++) {
+//		  tAddress[i] = new Address(toAddress[i]);
+//	    }
+//        Uint256 [] value = new  Uint256 [amount.length];
+//        for (Integer j = 0; j < amount.length; j++) {
+//    	  value[j] =new Uint256(amount[j]); 
+//        }
+//        inputParameters.add(tAddress);
+//	    inputParameters.add(value);
+//  	    TypeReference<Bool> typeReference = new TypeReference<Bool>() {
+//      };
+//      outputParameters.add(typeReference);
+//	  Function function = new Function(methodName, inputParameters, outputParameters);
+//					String data = FunctionEncoder.encode(function);
+//
+//					EthGetTransactionCount ethGetTransactionCount = web3j
+//							.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).sendAsync().get();
+//					BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+//					BigInteger gasPrice = Convert.toWei(BigDecimal.valueOf(5), Convert.Unit.GWEI).toBigInteger();
+//
+//					Transaction transaction = Transaction.createFunctionCallTransaction(fromAddress, nonce, gasPrice,
+//							BigInteger.valueOf(60000), contract, data);
+//
+//					EthSendTransaction ethSendTransaction = web3j.ethSendTransaction(transaction).sendAsync().get();
+//					txHash = ethSendTransaction.getTransactionHash();
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//
+//			return txHash;
+//  }
+/// @return Whether the transfer was successful or not
+//function multiTransfer(address[] _to, uint256[] _value) returns (bool success) {}
+
+/// @notice send `_value` token to `_to` from `msg.sender`
+/// @param _to The address of the recipient
+/// @param _value The amount of token to be transferred
+/// @return Whether the transfer was successful or not
+//function transfer(address _to, uint256 _value) returns (bool success) {}
+
+
+
+
 }
   

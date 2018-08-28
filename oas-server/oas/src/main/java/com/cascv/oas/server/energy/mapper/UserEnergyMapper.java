@@ -3,18 +3,16 @@ package com.cascv.oas.server.energy.mapper;
 import com.cascv.oas.server.energy.model.UserEnergy;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public interface UserEnergyMapper {
     /**
-     * 查询用户当前积分、算力值
+     * 根据userId 查询userEnergy列表
      * @param userId
      * @return
      */
-    UserEnergy selectByUserId(Integer userId);
+    List<UserEnergy> selectByUserId(String userId);
 
-    /**
-     * 查询签到能获得的积分、算力值
-     * @return
-     */
-    UserEnergy selectByCheckinSource();
+    int insertUserEnergy(UserEnergy userEnergy);
 }

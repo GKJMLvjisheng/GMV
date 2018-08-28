@@ -6,16 +6,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
-import com.cascv.oas.server.blockchain.vo.UserWalletBalanceSummary;
-import com.cascv.oas.server.blockchain.vo.UserWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -38,6 +41,26 @@ public class UserWalletController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private ExchangeParam exchangeParam;
+
+  @PostMapping(value="/inquireAddress")
+  @ResponseBody()
+  public ResponseEntity<?> inquireAddress(){
+	Map<String, String> map = new HashMap<>();
+    UserWallet userWallet = userWalletService.find(ShiroUtils.getUserUuid());
+    ErrorCode errorCode= ErrorCode.NO_ONLINE_ACCOUNT;
+    if (userWallet != null) {
+    	map.put("address", ShiroUtils.getUser().getName());
+    	errorCode= ErrorCode.SUCCESS;
+    } 
+    
+    return new ResponseEntity.Builder<Map<String, String>>()
+    	  .setData(map)
+          .setErrorCode(errorCode).build();
+  }
+  
+  
   @PostMapping(value="/balanceDetail")
   @ResponseBody()
   public ResponseEntity<?> balanceDetail(){
@@ -46,12 +69,18 @@ public class UserWalletController {
     
     userWalletBalanceSummary.setOngoingBalance(BigDecimal.ZERO);
     if (userWallet != null) {
-      userWalletBalanceSummary.setAvailableBalance(userWallet.getBalance());
+      BigDecimal balance = userWallet.getBalance();
+      
+      BigDecimal factor = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
+      BigDecimal value=balance.multiply(factor);
+      userWalletBalanceSummary.setAvailableBalance(balance);
+      userWalletBalanceSummary.setValue(value);
       return new ResponseEntity.Builder<UserWalletBalanceSummary>()
       		.setData(userWalletBalanceSummary)
               .setErrorCode(ErrorCode.SUCCESS).build();
     } else {
       userWalletBalanceSummary.setAvailableBalance(BigDecimal.ZERO);
+      userWalletBalanceSummary.setValue(BigDecimal.ZERO);
     	return new ResponseEntity.Builder<UserWalletBalanceSummary>()
     		.setData(userWalletBalanceSummary)
             .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();

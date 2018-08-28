@@ -12,6 +12,8 @@ public class UserCoin implements Serializable{
   @Setter @Getter private String contract;
   @Setter @Getter private Integer width;
   @Setter @Getter private String address;
-  @Setter @Getter private String coinName;
+  @Setter @Getter private String name;
+  @Setter @Getter private String symbol;
   @Setter @Getter private BigDecimal balance;
+  @Setter @Getter private BigDecimal value;
 }

@@ -1,8 +1,5 @@
 package com.cascv.oas.server.energy.mapper;
 
-import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
-import com.cascv.oas.server.energy.model.UserEnergy;
-import com.cascv.oas.server.energy.vo.EnergyPointAndPower;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
 import org.springframework.stereotype.Component;
@@ -24,6 +21,24 @@ public interface EnergyBallMapper {
      */
     List<EnergyBall> selectByStatus();
 
+    /**
+     * 插入新鲜的能量球
+     * @param energyBall
+     * @return
+     */
+    int insertEnergyBall(EnergyBall energyBall);
 
+    /**
+     * 修改能量球的状态，由1-0，表示该球已被获取过能量
+     * @param id
+     * @return
+     */
+    int updateEnergyBallStatusById(String id);
 
+    /**
+     * 根据能量球id，查询能量球信息
+     * @param id
+     * @return
+     */
+    EnergyBall selectById(String id);
 }

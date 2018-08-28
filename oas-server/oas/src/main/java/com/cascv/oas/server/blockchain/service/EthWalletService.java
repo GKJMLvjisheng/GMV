@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bitcoinj.crypto.ChildNumber;
@@ -24,6 +25,7 @@ import org.web3j.utils.Numeric;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
+import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
@@ -53,6 +55,9 @@ public class EthWalletService {
   
   @Autowired
   private UserCoinMapper userCoinMapper;
+  
+  @Autowired
+  private ExchangeParam exchangeParam;
   
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
@@ -144,14 +149,11 @@ public class EthWalletService {
     userCoin.setAddress(address);
     userCoin.setContract(contract);
     userCoin.setUserUuid(userUuid);
-    userCoin.setCoinName(digitalCoin.getName());
+    userCoin.setName(digitalCoin.getName());
+    userCoin.setSymbol(digitalCoin.getSymbol());
     Integer width = digitalCoin.getWidth();
     userCoin.setWidth(width);
-    BigDecimal balance = coinClient.getBalance(address, contract);
-    while (width > 0) {
-      balance=balance.divide(BigDecimal.TEN);
-      width--;
-    }
+    BigDecimal balance = this.getBalance(address, contract, width);
     userCoin.setBalance(balance);
     userCoinMapper.insertSelective(userCoin);
   }
@@ -161,30 +163,42 @@ public class EthWalletService {
     return ethWalletMapper.selectByUserUuid(userUuid);
   }
 
-  public BigDecimal getBalance(String userUuid, String contract) {
+  public BigDecimal getBalance(String userUuid, String contract, Integer width) {
     BigDecimal balance = BigDecimal.ZERO;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
-      String token = coinClient.getToken();
-      balance = coinClient.getBalance(ethWallet.getAddress(), token);
+      balance = coinClient.getBalance(ethWallet.getAddress(), contract);
+      while(width > 0) {
+        balance = balance.divide(BigDecimal.TEN);
+        width--;
+      }
     } catch (Exception e) {
 
     }
     return balance;
   }
   
+  public BigDecimal getValue(BigDecimal balance) {
+    BigDecimal rate = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
+    return balance.multiply(rate);
+  }
+  
   public UserCoin getUserCoin(String userUuid, String contract){
     UserCoin userCoin = userCoinMapper.selectOne(userUuid, contract);
     if (userCoin == null)
       return null;
-    userCoin.setBalance(this.getBalance(userUuid, userCoin.getContract()));
+    BigDecimal balance =this.getBalance(userUuid, userCoin.getContract(),userCoin.getWidth());
+    userCoin.setBalance(balance);
+    userCoin.setValue(this.getValue(balance));
     return userCoin;
   }
 
   public List<UserCoin> listCoin(String userUuid){
     List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
     for (UserCoin coin:userCoinList) {
-      coin.setBalance(this.getBalance(userUuid, coin.getContract()));
+      BigDecimal balance =this.getBalance(userUuid, coin.getContract(),coin.getWidth()); 
+      coin.setBalance(balance);
+      coin.setValue(this.getValue(balance));
     }
     return userCoinList;
   }
@@ -199,8 +213,16 @@ public class EthWalletService {
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
     if (userCoin.getBalance().compareTo(new BigDecimal(amount)) < 0)
       return ErrorCode.BALANCE_NOT_ENOUGH;
-    String txHash=coinClient.sendTransaction(ethWallet.getAddress(), password, toAddress, contract, amount);
+    Integer width = userCoin.getWidth();
+    while(width > 0) {
+      amount = amount.multiply(BigInteger.TEN);
+      width--;
+    }
+    String txHash=coinClient.transfer(ethWallet.getAddress(), password, toAddress, contract, amount);
     log.info("txhash {}", txHash);
     return ErrorCode.SUCCESS;
   }
 }
+
+
+

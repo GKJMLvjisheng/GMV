@@ -2,11 +2,11 @@ package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.blockchain.vo.EnergyPointCheckinResult;
-import com.cascv.oas.server.energy.vo.EnergyPointAndPower;
 import com.cascv.oas.server.energy.model.EnergyBall;
+import com.cascv.oas.server.energy.service.EnergyBallService;
 import com.cascv.oas.server.energy.service.EnergyService;
-import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
+import com.cascv.oas.server.energy.service.UserEnergyService;
+import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping(value="/api/energyPoint")
 public class EnergyBallController {
     @Autowired
     private EnergyService energyService;
-    private static final Integer HAVE_ENERGYBALLS = 1;
-    private static final Integer HAVE_NO_ENERGYBALLS = 0;
+    @Autowired
+    private EnergyBallService energyBallService;
+    @Autowired
+    private UserEnergyService userEnergyService;
 
     /**
      * 签到功能
@@ -34,56 +34,30 @@ public class EnergyBallController {
     @PostMapping(value="/checkin")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> checkin(Integer userId) {
-//        EnergyPointCheckinResult energyPointCheckinResult = new EnergyPointCheckinResult();
-//        energyPointCheckinResult = energyService.getCurrentEnergyResult(userId);
-//        Boolean checkin = (Boolean) this.isCheckin(userId).getData();
-//        if (checkin){
-//            EnergyPointAndPower checkinEnergy = energyService.getCheckinEnergy();
-//            energyPointCheckinResult.setNewPower(energyPointCheckinResult.getNewPower() + checkinEnergy.getPower());
-//            energyPointCheckinResult.setNewEnergyPoint(energyPointCheckinResult.getNewEnergyPoint() + checkinEnergy.getPoint());
-//            return new ResponseEntity
-//                    .Builder<EnergyPointCheckinResult>()
-//                    .setData(energyPointCheckinResult)
-//                    .setErrorCode(ErrorCode.SUCCESS)
-//                    .build();
-//        }
-//        return new ResponseEntity
-//                .Builder<EnergyPointCheckinResult>()
-//                .setData(energyPointCheckinResult)
-//                .setErrorCode(ErrorCode.GENERAL_ERROR)
-//                .build();
-        return null;
-    }
+    public ResponseEntity<?> checkin(String userId) {
+        EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
+        ErrorCode errorCode = ErrorCode.SUCCESS;
 
-    /**
-     * 当日已签到返回false，当日尚未签到返回true
-     * @param userId
-     * @return
-     */
-    @PostMapping(value = "/isCheckin")
-    @ResponseBody
-    public ResponseEntity<?> isCheckin(Integer userId){
-        Boolean checkin = false;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String time = sdf.format(new Date());
-        EnergyBallWithTime energyBallWithTime = new EnergyBallWithTime(userId, time);
-        EnergyBall energyBall = energyService.getEnergyBallByFuzzyTime(energyBallWithTime);
-        checkin = energyBall == null ? true : false;
-        return new ResponseEntity.Builder<Boolean>().setData(checkin).setErrorCode(ErrorCode.SUCCESS).build();
-    }
+        // 检查当日是否已经签过到
+        Boolean checkin = energyService.isCheckin(userId);
+        if (!checkin){
+            // 在数据库中生成签到记录以供签到
+            EnergyBall energyBallCheckin = energyService.setEnergyBallCheckin(userId);
+            energyBallService.saveEnergyBall(energyBallCheckin);
+            // 添加用户能量记录
+            energyCheckinResult = userEnergyService.saveUserEnergy(userId, energyBallCheckin.getUuid());
+            // 将签到记录的状态更新为已被获取
+            energyBallService.updateEnergyBallStatusById(userId);
 
-    @PostMapping(value="/inquireEnergyBall")
-    @ResponseBody
-    public List<EnergyBall> inquireEnergyBall() {
-        return null;
-    }
-
-    @PostMapping(value = "/takeEnergyBall")
-    @ResponseBody
-    @Transactional
-    public String takeEnergyBall() {
-        List<EnergyBall> energyBalls = energyService.listEnergyBallByStatus();
-        return null;
+        }else {
+            energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
+            energyCheckinResult.setNewPower(BigDecimal.ZERO);
+            errorCode = ErrorCode.ALREADY_CHECKIN_TODAY;
+        }
+        return new ResponseEntity
+                .Builder<EnergyCheckinResult>()
+                .setData(energyCheckinResult)
+                .setErrorCode(errorCode)
+                .build();
     }
 }
