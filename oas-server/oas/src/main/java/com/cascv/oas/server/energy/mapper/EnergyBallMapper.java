@@ -22,7 +22,7 @@ public interface EnergyBallMapper {
     int insertEnergyBall(EnergyBall energyBall);
 
     /**
-     * 修改能量球的状态，由1-0，表示该球已被获取过能量
+     * 修改能量球的状态，表示该球已被获取过能量
      * @param energyBall
      * @return
      */
@@ -30,10 +30,10 @@ public interface EnergyBallMapper {
 
     /**
      * 根据能量球id，查询能量球信息
-     * @param id
+     * @param energyBall
      * @return
      */
-    EnergyBall selectById(String id);
+    List<EnergyBall> selectByPointSourceCode(EnergyBall energyBall);
 
     /**
      * 查询出所有未被获取过能量的能量球

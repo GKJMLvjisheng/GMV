@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
-import com.cascv.oas.server.blockchain.model.EnergyBall;
 import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
@@ -54,7 +53,6 @@ public class EnergyPointController {
 
     /**
      * 签到功能
-     *
      * @return
      */
     @PostMapping(value = "/checkin")
@@ -88,21 +86,16 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyBall() {
+    public ResponseEntity<?> inquireEnergyBall(String userUuid) {
         EnergyBallResult energyBallResult = new EnergyBallResult();
-        List<EnergyBall> energyBallList = new ArrayList<>();
-        for (Integer i = 0; i < 16; i++) {
-            EnergyBall energyBall = new EnergyBall();
-            energyBall.setUuid(String.valueOf(i + 1));
-            energyBall.setType(1);
-            energyBall.setValue(i + 6);
-            energyBall.setName("daily");
-            energyBall.setStartDate(DateUtils.getDate());
-            energyBall.setEndDate(DateUtils.getDate());
-            energyBallList.add(energyBall);
+        List<EnergyBall> energyBallList = energyService.listEnergyBall(userUuid);
+        BigDecimal ongoingEnergySummary = new BigDecimal("0");
+        for (int i = 0; i < energyBallList.size(); i++) {
+            System.out.println(energyBallList.get(i).getPoint());
+            ongoingEnergySummary = ongoingEnergySummary.add(energyBallList.get(i).getPoint());
         }
         energyBallResult.setEnergyBallList(energyBallList);
-        energyBallResult.setOngoingEnergySummary(236);
+        energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
         return new ResponseEntity.Builder<EnergyBallResult>().setData(energyBallResult).setErrorCode(ErrorCode.SUCCESS).build();
     }
 

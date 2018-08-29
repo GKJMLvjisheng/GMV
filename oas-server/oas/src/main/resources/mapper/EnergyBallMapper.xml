@@ -24,12 +24,12 @@
       select * from energy_ball where status = #{status}
     </select>
 
-    <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select * from energy_ball where id = #{id}
+    <select id="selectByPointSourceCode" parameterType="com.cascv.oas.server.energy.model.EnergyBall" resultMap="BaseResultMap">
+        select * from energy_ball where user_uuid = #{userUuid} and point_source = #{pointSource}
     </select>
 
     <update id="updateEnergyBallStatusById" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-        update energy_ball set `status` = #{status} WHERE uuid = #{uuid}
+        update energy_ball set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
     </update>
 
     <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
