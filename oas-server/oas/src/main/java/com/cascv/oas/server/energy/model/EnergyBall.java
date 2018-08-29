@@ -3,7 +3,6 @@ package com.cascv.oas.server.energy.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 @ToString
