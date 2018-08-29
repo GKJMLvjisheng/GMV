@@ -5,9 +5,11 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.utils.ShiroUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,6 @@ public class EthWalletController {
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
     ErrorCode errorCode=ethWalletService.transfer(
         ShiroUtils.getUserUuid(), 
-        ethWalletTransfer.getPassword(),
         ethWalletTransfer.getContract(),
         ethWalletTransfer.getToUserAddress(),
         ethWalletTransfer.getAmount());
@@ -48,7 +49,6 @@ public class EthWalletController {
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
     ErrorCode errorCode=ethWalletService.multiTransfer(
         ShiroUtils.getUserUuid(), 
-        ethWalletMultiTransfer.getPassword(),
         ethWalletMultiTransfer.getContract(),
         ethWalletMultiTransfer.getQuota());
 
@@ -75,16 +75,14 @@ public class EthWalletController {
   @PostMapping(value="/summary")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> summary(@RequestBody EthWalletTransfer ethWalletTransfer){
-    ErrorCode errorCode=ethWalletService.transfer(
-        ShiroUtils.getUserUuid(), 
-        ethWalletTransfer.getPassword(),
-        ethWalletTransfer.getContract(),
-        ethWalletTransfer.getToUserAddress(),
-        ethWalletTransfer.getAmount());
-
-    return new ResponseEntity.Builder<Integer>()
-        .setData(1)
+  public ResponseEntity<?> summary(){
+    ErrorCode errorCode=ErrorCode.SUCCESS;
+    EthWalletSummary ethWalletSummary = new EthWalletSummary();
+    ethWalletSummary.setTotalBalance(BigDecimal.valueOf(2311.67));
+    ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);
+    ethWalletSummary.setTotalValue(BigDecimal.valueOf(67896.11));
+    return new ResponseEntity.Builder<EthWalletSummary>()
+        .setData(ethWalletSummary)
         .setErrorCode(errorCode)
         .build();
   }
