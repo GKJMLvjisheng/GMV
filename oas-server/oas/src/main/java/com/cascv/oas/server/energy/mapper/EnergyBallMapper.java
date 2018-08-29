@@ -1,7 +1,7 @@
 package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
+import com.cascv.oas.server.energy.dto.EnergyBallWithTime;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

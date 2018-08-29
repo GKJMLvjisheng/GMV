@@ -12,7 +12,7 @@
         <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
         <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
     </resultMap>
-    <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.vo.EnergyBallWithTime"
+    <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.dto.EnergyBallWithTime"
             resultMap="BaseResultMap">
         select * FROM energy_ball
         <where>

@@ -6,19 +6,15 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergySourcePointMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.UserEnergyMapper;
-import com.cascv.oas.server.energy.model.UserEnergy;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
+import com.cascv.oas.server.energy.dto.EnergyBallWithTime;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
-import com.cascv.oas.server.utils.ShiroUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Service
