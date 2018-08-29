@@ -59,10 +59,6 @@ public class EthWalletController {
   }
   
   
-  
-  
-  
-  
   @PostMapping(value="/listCoin")
   @ResponseBody
   @Transactional

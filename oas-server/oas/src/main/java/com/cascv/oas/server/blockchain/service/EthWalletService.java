@@ -170,6 +170,7 @@ public class EthWalletService {
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
       balance = coinClient.balanceOf(ethWallet.getAddress(), contract, weiFactor);
+      log.info("getBalance of {}", balance);
     } catch (Exception e) {
 
     }
@@ -217,7 +218,7 @@ public class EthWalletService {
     return ErrorCode.SUCCESS;
   }
   
-  public ErrorCode multiTransfer(String userUuid, String password, String contract, List<TransferQuota> quota) {
+  public ErrorCode multiTransfer(String userUuid, String privateKey, String contract, List<TransferQuota> quota) {
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     if (ethWallet == null)
       return ErrorCode.NO_ETH_WALLET;
@@ -236,7 +237,9 @@ public class EthWalletService {
     }
     if (userCoin.getBalance().compareTo(total) < 0)
       return ErrorCode.BALANCE_NOT_ENOUGH;
-    if (coinClient.multiTransfer(ethWallet.getAddress(), password, addressList, contract, amountIntList)!=null)
+    String txHash=coinClient.multiTransfer(ethWallet.getAddress(), privateKey, addressList, contract, amountIntList);
+    log.info("txhash {}", txHash);
+    if (txHash!=null)
       return ErrorCode.SUCCESS;
     else
       return ErrorCode.MULTIPLE_TRANSFER_FAILURE;
