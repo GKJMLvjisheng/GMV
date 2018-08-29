@@ -10,7 +10,11 @@ public interface EnergyPointDetailMapper {
   Integer insertSelective(EnergyPointDetail energyPointDetail);
   List<EnergyPointDetail> selectByUuid(String uuid);
   List<EnergyPointDetail> selectByOffset(@Param("userUuid") String userUuid, @Param("offset") Integer offfset, @Param("limit")String limit);
-  List<EnergyPointDetail> selectActivityByDate(String userUuid, Integer activity, String dateFrom, String dateEnd);
+  List<EnergyPointDetail> selectActivityByDate(
+        @Param("userUuid") String userUuid, 
+        @Param("activity") Integer activity, 
+        @Param("dateFrom") String dateFrom, 
+        @Param("dateEnd") String dateEnd);
   Integer deleteByUserUuid(String userUuid);
   Integer deleteByUuid(Integer uuid);
 }

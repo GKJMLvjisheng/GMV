@@ -1,7 +1,6 @@
 package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.vo.EnergyBallWithTime;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,16 +9,10 @@ import java.util.List;
 public interface EnergyBallMapper {
     /**
      * 根据 id 与时间模糊查询
-     * @param energyBallWithTime
+     * @param energyBall
      * @return
      */
-    List<EnergyBall> selectByTimeFuzzyQuery(EnergyBallWithTime energyBallWithTime);
-
-    /**
-     * 查询出所有未被获取过能量的能量球
-     * @return
-     */
-    List<EnergyBall> selectByStatus();
+    List<EnergyBall> selectByTimeFuzzyQuery(EnergyBall energyBall);
 
     /**
      * 插入新鲜的能量球
@@ -30,15 +23,21 @@ public interface EnergyBallMapper {
 
     /**
      * 修改能量球的状态，由1-0，表示该球已被获取过能量
-     * @param id
+     * @param energyBall
      * @return
      */
-    int updateEnergyBallStatusById(Integer id);
+    int updateEnergyBallStatusById(EnergyBall energyBall);
 
     /**
      * 根据能量球id，查询能量球信息
      * @param id
      * @return
      */
-    EnergyBall selectById(Integer id);
+    EnergyBall selectById(String id);
+
+    /**
+     * 查询出所有未被获取过能量的能量球
+     * @return
+     */
+    List<EnergyBall> selectByStatus();
 }

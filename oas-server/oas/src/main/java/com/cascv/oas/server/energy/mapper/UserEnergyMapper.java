@@ -12,7 +12,7 @@ public interface UserEnergyMapper {
      * @param userId
      * @return
      */
-    List<UserEnergy> selectByUserId(Integer userId);
+    List<UserEnergy> selectByUserId(String userId);
 
     int insertUserEnergy(UserEnergy userEnergy);
 }

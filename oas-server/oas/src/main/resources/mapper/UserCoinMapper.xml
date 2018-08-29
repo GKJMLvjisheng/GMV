@@ -7,13 +7,13 @@
 	<id column="contract" property="contract" />
   	<result column="coin_name" property="name" />
   	<result column="coin_symbol" property="symbol" />
-	<result column="width" property="width"/>
+	<result column="wei_factor" property="weiFactor" jdbcType="DECIMAL" />
 	<result column="address" property="address"/>
 	<result column="balance" property="balance" jdbcType="DECIMAL"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    user_uuid, contract, coin_name, coin_symbol, width, address, balance
+    user_uuid, contract, coin_name, coin_symbol, wei_factor, address, balance
   </sql>
 
   <!-- insert selective -->
@@ -24,7 +24,7 @@
         contract,
         coin_name,
         coin_symbol,
-        width,
+        wei_factor,
         address,
         balance
       </trim>
@@ -33,7 +33,7 @@
 		#{contract,jdbcType=VARCHAR},
         #{name,jdbcType=VARCHAR},
         #{symbol,jdbcType=VARCHAR},
-        #{width,jdbcType=INTEGER},
+        #{weiFactor,jdbcType=DECIMAL},
         #{address,jdbcType=VARCHAR},
         #{balance,jdbcType=DECIMAL},
       </trim>

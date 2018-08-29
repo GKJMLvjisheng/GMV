@@ -7,7 +7,7 @@ import lombok.ToString;
 import java.math.BigDecimal;
 @ToString
 public class EnergySourcePower {
-    @Getter @Setter Integer id;
+    @Getter @Setter String uuid;
     @Getter @Setter Integer sourceCode;
     @Getter @Setter String sourceName;
     @Getter @Setter String type;
