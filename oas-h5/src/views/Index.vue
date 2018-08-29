@@ -116,7 +116,7 @@ const bottom = require("@/assets/images/bottom_logo@2x.png");
 const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
 
-import { randomNum, createPositionArr, getArrItems } from '@/utils/utils.js'
+import { randomNum } from '@/utils/utils.js'
 export default {
   name: "index",
   data() {
@@ -135,7 +135,8 @@ export default {
       articleList:[],
       analysis:'',
       analysisCount:0,
-    };
+      tempArr:[],
+    }
   },
   created() {
     this.getEnergyBall()
@@ -147,52 +148,59 @@ export default {
   filters: {
   },
   methods: {
+    // 签到按钮点击事件
     handleAttendance () {
-      this.$axios.post('takeEnergyBall').then(({data}) => {
-        console.log(data)
-      })
+      // this.$axios.post('takeEnergyBall').then(({data}) => {
+      //   console.log(data)
+      // })
       this.isShowMask = true
     },
+    // 签到弹窗确认按钮
     handleAttendanceConfirm () {
       this.isShowMask = false
     },
+    // 获取悬浮能量球数据
     getEnergyBall () {
       this.$axios.post('/inquireEnergyBall').then(({data:{data}}) => {
-        let pArr = createPositionArr()
+        // let pArr = createPositionArr()
         this.energyBallList = data.energyBallList.map(el => {
-          let randomIdx = randomNum(0,pArr.length - 1)
-          let p = pArr[randomIdx]
-          pArr.splice(randomIdx,1)
+          // let randomIdx = randomNum(0,pArr.length - 1)
+          let p = this.randomPoint()
+          // pArr.splice(randomIdx,1)
           el.x = p.x / 75 + 'rem'
           el.y = p.y / 75 + 'rem'
           return el
         })
       })
     },
+    // 获取当前能量
     getCurrentEnergy () {
       this.$axios.post('inquireEnergyPoint').then(({data:{data}}) => {
         this.currentEnergy = data
       })
     },
+    // 获取当前算力
     getCurrentPower () {
       this.$axios.post('inquirePower').then(({data:{data}}) => {
         this.currentPower = data
       })
     },
+    // 获取能量分析
     getEnergyAnalysis () {
       this.$axios.post('inquireEnergyPointByCategory').then(({data:{data}}) => {
         this.analysis = data
-        console.log(this.analysis)
         data.forEach(el => {
           this.analysisCount += el.value
         })
       })
     },
+    // 获取新闻文章列表
     getArticleList () {
       this.$axios.post('inquireNews').then(({data:{data}}) =>{
         this.articleList = data.rows
       })
     },
+    // 根据能量数格式化能量球大小
     formatSize: function (value) {
       if (value > 9999) {
         return 75 / 75 + 'rem'
@@ -204,15 +212,32 @@ export default {
         return 52 / 75 + 'rem'
       }
     },
+    // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
       let ele = event.currentTarget
-      this.$axios.post('takeEnergyBall').then(({data:{data}}) => {
+      this.$axios.post('takeEnergyBall',{}).then(({data:{data}}) => {
         console.log(data)
       })
       ele.classList.add('fadeOutUp')
       ele.classList.remove('flash')
       ele.classList.remove('infinite')
       this.currentEnergy += data.value
+    },
+    // 随机生成不重复坐标点方法
+    randomPoint() {
+      let p = {x:randomNum(20,650),y: randomNum(50, 550)}
+      if(this.tempArr.length == 0) {
+        this.tempArr.push(p)
+        return p
+      }
+      let len = this.tempArr.length
+      for (let i = 0; i < len; i++){
+        if(Math.abs(p.x - this.tempArr[i].x) < 75 && Math.abs(p.y - this.tempArr[i].y) < 75) {
+          return this.randomPoint()
+        }
+      }
+      this.tempArr.push(p)
+      return p
     }
   }
 };
@@ -276,6 +301,7 @@ header {
     width: 100%;
     height: 624px;
     background-image: url("../assets/images/background@2x.png");
+    background-repeat: no-repeat;
     background-size: 750px 624px;
     .energy-ball {
       // animation: 1.5s twinkling infinite;
@@ -357,6 +383,7 @@ header {
   .bar {
     position: relative;
     width: 400px;
+    height: 12px;
     div {
       position: absolute;
       top: 0;
