@@ -1,4 +1,4 @@
-package com.cascv.oas.server.energy.vo;
+package com.cascv.oas.server.energy.dto;
 
 import lombok.Getter;
 import lombok.Setter;
