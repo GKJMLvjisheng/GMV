@@ -33,16 +33,20 @@ public class EnergyService {
     private static EnergyBall checkinEnergyBall = new EnergyBall();
 
     private static final Integer STATUS_OF_NEW_BORN_ENERGYBALL = 1;
+    private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;
     private static final Integer SOURCE_CODE_OF_CHECKIN = 1;
     /**
      * 查询当日是否签过到，已签到返回 true，当日尚未签到返回 false
-     * @param userId
+     * @param userUuid
      * @return
      */
-    public Boolean isCheckin(String userId) {
+    public Boolean isCheckin(String userUuid) {
         String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
-        EnergyBallWithTime energyBallWithTime = new EnergyBallWithTime(userId, today);
-        List<EnergyBall> energyBalls = energyBallMapper.selectByTimeFuzzyQuery(energyBallWithTime);
+        EnergyBall energyBall = new EnergyBall();
+        energyBall.setUserUuid(userUuid);
+        energyBall.setTimeCreated(today);
+        energyBall.setStatus(STATUS_OF_NEW_BORN_ENERGYBALL);
+        List<EnergyBall> energyBalls = energyBallMapper.selectByTimeFuzzyQuery(energyBall);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
     }
 
@@ -84,12 +88,12 @@ public class EnergyService {
     }
 
     /**
-     * 根据能量球 id 更新其状态，将状态
-     * @param id
+     * 根据能量球uuid 更新其状态，将状态
      * @return
      */
-    public int updateEnergyBallStatusById(String id) {
-        return energyBallMapper.updateEnergyBallStatusById(id);
+    public int updateEnergyBallStatusById() {
+        checkinEnergyBall.setStatus(STATUS_OF_DIE_ENERGYBALL);
+        return energyBallMapper.updateEnergyBallStatusById(checkinEnergyBall);
     }
 
     /**

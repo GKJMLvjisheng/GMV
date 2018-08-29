@@ -72,7 +72,7 @@ public class EnergyPointController {
             // 添加用户能量记录
             energyCheckinResult = energyService.saveUserEnergy(userUuid);
             // 将签到记录的状态更新为已被获取
-            energyService.updateEnergyBallStatusById(userUuid);
+            energyService.updateEnergyBallStatusById();
         } else {
             energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
             energyCheckinResult.setNewPower(BigDecimal.ZERO);

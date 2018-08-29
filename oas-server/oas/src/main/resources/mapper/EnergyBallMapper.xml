@@ -12,24 +12,24 @@
         <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
         <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
     </resultMap>
-    <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.dto.EnergyBallWithTime"
+    <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.model.EnergyBall"
             resultMap="BaseResultMap">
         select * FROM energy_ball
         <where>
-            user_uuid = #{userUuid} and point_source = 1 and time_created like #{time}"%"
+            user_uuid = #{userUuid} and point_source = #{status} and time_created like #{timeCreated}"%"
         </where>
     </select>
 
     <select id="selectByStatus" resultMap="BaseResultMap">
-      select * from energy_ball where status = 1
+      select * from energy_ball where status = #{status}
     </select>
 
     <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
         select * from energy_ball where id = #{id}
     </select>
 
-    <update id="updateEnergyBallStatusById" parameterType="java.lang.String">
-        update energy_ball set `status` = 0 WHERE uuid = #{uuid}
+    <update id="updateEnergyBallStatusById" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
+        update energy_ball set `status` = #{status} WHERE uuid = #{uuid}
     </update>
 
     <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
