@@ -9,12 +9,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class EnergyBallControllerTest {
+public class EnergyPointControllerTest {
     @Autowired
-    private EnergyBallController energyBallController;
+    private EnergyPointController energyPointController;
     @Test
     public void checkin() {
-        ResponseEntity<?> checkin = energyBallController.checkin("1");
+        ResponseEntity<?> checkin = energyPointController.checkin("1");
         System.out.println("data: " + checkin.getData());
         System.out.println("code: " + checkin.getCode());
         System.out.println("message: " + checkin.getMessage());
