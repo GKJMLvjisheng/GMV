@@ -9,9 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import com.cascv.oas.server.energy.service.EnergyBallService;
 import com.cascv.oas.server.energy.service.EnergyService;
-import com.cascv.oas.server.energy.service.UserEnergyService;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,7 @@ import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
-import com.cascv.oas.server.blockchain.wrapper.EnergyBallResult;
+import com.cascv.oas.server.energy.vo.EnergyBallResult;
 import com.cascv.oas.server.blockchain.wrapper.EnergyBallTakenResult;
 import com.cascv.oas.server.blockchain.wrapper.EnergyBallTokenRequest;
 import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
@@ -53,10 +51,6 @@ public class EnergyPointController {
 
     @Autowired
     private EnergyService energyService;
-    @Autowired
-    private EnergyBallService energyBallService;
-    @Autowired
-    private UserEnergyService userEnergyService;
 
     /**
      * 签到功能
@@ -66,24 +60,19 @@ public class EnergyPointController {
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> checkin() {
-        String userUuid = ShiroUtils.getUserUuid();
+    public ResponseEntity<?> checkin(String userUuid) {
+//        String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
-
         ErrorCode errorCode = ErrorCode.SUCCESS;
-
         // 检查当日是否已经签过到
         Boolean checkin = energyService.isCheckin(userUuid);
         if (!checkin) {
             // 在数据库中生成签到记录以供签到
-
-            com.cascv.oas.server.energy.model.EnergyBall energyBallCheckin = energyService.setEnergyBallCheckin(userUuid);
-            energyBallService.saveEnergyBall(energyBallCheckin);
+            energyService.saveCheckinEnergyBall(userUuid);
             // 添加用户能量记录
-            energyCheckinResult = userEnergyService.saveUserEnergy(userUuid, energyBallCheckin.getUuid());
+            energyCheckinResult = energyService.saveUserEnergy(userUuid);
             // 将签到记录的状态更新为已被获取
-            energyBallService.updateEnergyBallStatusById(userUuid);
-
+            energyService.updateEnergyBallStatusById(userUuid);
         } else {
             energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
             energyCheckinResult.setNewPower(BigDecimal.ZERO);
