@@ -5,15 +5,20 @@ import 'normalize.css' // 去除默认样式
 import './assets/css/common.css' // 动画css
 import 'animate.css'
 import Axios from 'axios'
-var token = sessionStorage.getItem('token')
+var token = null
+if(window.Android) {
+  token = window.Android.getToken()
+  alert(token)
+}
+console.log(token)
 Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 Axios.interceptors.request.use(config => {
-  // config.headers['Content-type'] = 'application/json;charset=UTF-8'
-  // config.headers['token'] = 'b8e3fdbe-8ce5-4688-af6f-c5daac056c5b'
-  config.headers = {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    'token': token || '11b63c85-55cf-4aab-9c89-b87572c6c326',
-  }
+  config.headers['Content-type'] = 'application/json;charset=UTF-8'
+  config.headers['token'] = 'de97ef47-0ce5-4af0-985a-6703718d50e9'
+  // config.headers = {
+  //   'Content-Type': 'application/json;charset=utf-8',
+  //   'token': token || 'de97ef47-0ce5-4af0-985a-6703718d50e9',
+  // }
   return config
 })
 
