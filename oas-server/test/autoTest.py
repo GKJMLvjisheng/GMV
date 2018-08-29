@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-HOST='http://18.219.19.160:8080/api/v1'
-#HOST='http://localhost:8080/api/v1'
+#HOST='http://18.219.19.160:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -126,15 +126,6 @@ def userWalletBalance(token):
   if res.get('code') == 0:
     return res.get('data')
 
-# ethWalletListCoin
-def ethWalletListCoin(token):
-  url=HOST+"/ethWallet/listCoin"
-  data={}
-  res=callRpc(url,data,token)
-  print res
-  if res.get('code') == 0:
-    return res.get('data')
-
 def energyPointCheckin(token):
   url=HOST+"/energyPoint/checkin"
   data={}
@@ -241,21 +232,72 @@ def testUserWallet():
   else:
     raise Exception("[Fail] userWalletBalance")
 
-#def testEthWallet():
-#  NAME="caikov"
-#  PASSWORD="cai120501"
-#  token=login(NAME,PASSWORD)
-#  if token is None:
-#    raise Exception("[Fail] user login")
-#  coin=ethWalletListCoin(token)
-#  if coin is not None:
-#    print coin
-#  else:
-#    raise Exception("eWallet coin failure")
+def testEthWallet():
+  NAME="caikov"
+  PASSWORD="cai120501"
+  token=login(NAME,PASSWORD)
+  if token is None:
+    raise Exception("[Fail] user login")
+  coin=ethWalletListCoin(token)
+  if coin is not None:
+    print coin
+  else:
+    raise Exception("eWallet coin failure")
 
-testRegisterDestroy()
-testEnergyPoint()
-testUserWallet()
+# ethWalletListCoin
+def ethWalletListCoin(token):
+  url=HOST+"/ethWallet/listCoin"
+  data={}
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+def ethWalletTransfer(token):
+  url=HOST+"/ethWallet/transfer"
+  data={
+    "password":"de4aeffa0d09799523973aae39e5d1dd7e756b87e7b56bd50962d333865b9aa5",
+    "contract":"0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF",
+    "toUserAddress":"0xb2158c7cf8472bff7145435623f3f8243608da0d",
+    "amount":0.001
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+def ethWalletMultiTransfer(token):
+  url=HOST+"/ethWallet/multiTtransfer"
+  data={
+    "password":"de4aeffa0d09799523973aae39e5d1dd7e756b87e7b56bd50962d333865b9aa5",
+    "contract":"0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF",
+    "quota":[
+      {"toUserAddress":"0xb2158c7cf8472bff7145435623f3f8243608da0d","amount":0.001},
+      {"toUserAddress":"0x762be26b248c3e0a0720ed829af178325198ad4f","amount":0.001}
+    ]
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+NAME="cai001"
+PASSWORD="cai120501"
+token=login(NAME,PASSWORD)
+if token is not None:
+  print "[PASS] user login"
+else:
+  raise Exception("[FAIL] user login")
+
+coin=ethWalletListCoin(token)
+if coin is not None:
+  print coin
+else:
+  raise Exception("[FAIL] list coin")
+    
+#testRegisterDestroy()
+#testEnergyPoint()
+#testUserWallet()
 #testEthWallet()
 
 file.close()

@@ -10,7 +10,6 @@ import lombok.Setter;
 
 public class EthWalletMultiTransfer implements Serializable {
   private static final long serialVersionUID = 1L;
-  @Getter @Setter private String password;
   @Getter @Setter private String contract;
   @Getter @Setter private List<TransferQuota> quota;
 }
