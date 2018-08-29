@@ -8,7 +8,6 @@ import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.UserEnergyMapper;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.dto.EnergyBallWithTime;
 import com.cascv.oas.server.energy.model.UserEnergy;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.apache.commons.collections.CollectionUtils;

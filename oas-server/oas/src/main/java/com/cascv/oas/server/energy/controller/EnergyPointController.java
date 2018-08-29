@@ -60,8 +60,8 @@ public class EnergyPointController {
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> checkin(String userUuid) {
-//        String userUuid = ShiroUtils.getUserUuid();
+    public ResponseEntity<?> checkin() {
+        String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         ErrorCode errorCode = ErrorCode.SUCCESS;
         // 检查当日是否已经签过到
