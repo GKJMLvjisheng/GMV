@@ -11,5 +11,5 @@ public class UserWalletBalanceSummary implements Serializable {
 	private static final long serialVersionUID = 1L;
     @Getter @Setter private BigDecimal availableBalance;
     @Getter @Setter private BigDecimal ongoingBalance;
-    @Getter @Setter private BigDecimal value;
+    @Getter @Setter private BigDecimal availableBalanceValue;
 }
