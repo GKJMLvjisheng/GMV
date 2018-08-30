@@ -6,6 +6,7 @@ import java.util.List;
 import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.server.blockchain.mapper.DigitalCoinMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
+import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,9 +22,14 @@ public class DigitalCoinService {
     public List<DigitalCoin> listDigitalCoins() {
       return digitalCoinMapper.selectAll();
     }
+    
 
     public DigitalCoin find(String contract) {
       return digitalCoinMapper.selectByContract(contract);
+    }
+    
+    public ContractSymbol selectContractSymbol(String userUuid) {
+		return digitalCoinMapper.selectContractSymbol(userUuid);
     }
 
     public Integer create(CoinClient coinClient, String contract){
