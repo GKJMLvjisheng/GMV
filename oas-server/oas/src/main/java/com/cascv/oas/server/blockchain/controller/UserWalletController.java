@@ -57,7 +57,7 @@ public class UserWalletController {
     
     return new ResponseEntity.Builder<Map<String, String>>()
     	  .setData(map)
-          .setErrorCode(errorCode).build();
+        .setErrorCode(errorCode).build();
   }
   
   

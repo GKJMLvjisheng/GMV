@@ -201,6 +201,10 @@ public class EthWalletService {
     return userCoin;
   }
   
+  public UserCoin getTokenCoin(String userUuid){
+    return this.getUserCoin(userUuid, coinClient.getToken());
+  }
+
 
   public List<UserCoin> listCoin(String userUuid){
     List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);

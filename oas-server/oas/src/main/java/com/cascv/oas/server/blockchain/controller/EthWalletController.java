@@ -104,10 +104,18 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> summary(){
     ErrorCode errorCode=ErrorCode.SUCCESS;
+    UserCoin tokenCoin = ethWalletService.getTokenCoin(ShiroUtils.getUserUuid());
+    
     EthWalletSummary ethWalletSummary = new EthWalletSummary();
-    ethWalletSummary.setTotalBalance(BigDecimal.valueOf(2311.67));
     ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);
-    ethWalletSummary.setTotalValue(BigDecimal.valueOf(67896.11));
+
+    if (tokenCoin != null) {
+      ethWalletSummary.setTotalBalance(tokenCoin.getBalance());
+      ethWalletSummary.setTotalValue(tokenCoin.getValue());
+    } else {
+      ethWalletSummary.setTotalBalance(BigDecimal.ZERO);
+      ethWalletSummary.setTotalValue(BigDecimal.ZERO);
+    }
     return new ResponseEntity.Builder<EthWalletSummary>()
         .setData(ethWalletSummary)
         .setErrorCode(errorCode)
