@@ -26,9 +26,10 @@ import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
-import com.cascv.oas.server.user.vo.LoginResult;
-import com.cascv.oas.server.user.vo.RegisterConfirm;
-import com.cascv.oas.server.user.vo.RegisterResult;
+import com.cascv.oas.server.user.wrapper.LoginResult;
+import com.cascv.oas.server.user.wrapper.LoginVo;
+import com.cascv.oas.server.user.wrapper.RegisterConfirm;
+import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import io.swagger.annotations.Api;
@@ -56,23 +57,24 @@ public class UserController {
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
-	public ResponseEntity<?> userLogin(@RequestBody UserModel userModel) {
-		log.info("authentication name {}, password {}", userModel.getName(), userModel.getPassword());
-		UsernamePasswordToken token = new UsernamePasswordToken(userModel.getName(), userModel.getPassword(), false);
-        LoginResult loginResult = new LoginResult();
-		    Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(token);
-            loginResult.setToken(ShiroUtils.getSessionId());
-            loginResult.fromUserModel(ShiroUtils.getUser());
-            return new ResponseEntity.Builder<LoginResult>()
-                .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
-                .build();
-        } catch (AuthenticationException e)  {
-            return new ResponseEntity.Builder<LoginResult>()
-                  .setData(loginResult)
-                  .setErrorCode(ErrorCode.GENERAL_ERROR).build();
-        }
+	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo) {
+		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
+		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
+		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
+      LoginResult loginResult = new LoginResult();
+	    Subject subject = SecurityUtils.getSubject();
+      try {
+          subject.login(token);
+          loginResult.setToken(ShiroUtils.getSessionId());
+          loginResult.fromUserModel(ShiroUtils.getUser());
+          return new ResponseEntity.Builder<LoginResult>()
+              .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
+              .build();
+      } catch (AuthenticationException e)  {
+          return new ResponseEntity.Builder<LoginResult>()
+                .setData(loginResult)
+                .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+      }
 	}
 	
 	// Register
@@ -83,18 +85,13 @@ public class UserController {
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 
 	  String password = userModel.getPassword();
-	  log.info("register name {}, password {}", userModel.getName(), password);
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-		log.info("to create eth wallet");
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
-		log.info("create eth wallet done");
 		userWalletService.create(uuid);
-		log.info("create user wallet done");
 		energyPointService.create(uuid);
-		log.info("create energy point done");
 		ErrorCode ret = userService.addUser(uuid, userModel);
-		log.info("add user done");
+		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
   	  registerResult.setMnemonicList(EthWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
@@ -168,25 +165,7 @@ public class UserController {
 		log.info("invideCode {}", userModel.getInviteCode());
 	  info.put("name", userModel.getName());
 	  info.put("nickname", userModel.getNickname());
-	  info.put("inviteCode", userModel.getInviteCode());
-	  info.put("gender", userModel.getGender());
-	  info.put("address", userModel.getAddress());
-	  info.put("birthday", userModel.getBirthday());
-	  info.put("email", userModel.getEmail());
-	  info.put("mobile", userModel.getMobile());
-	  return new ResponseEntity.Builder<Map<String, String>>()
-	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-	}
-
-	@PostMapping(value="/listWallet")
-	@ResponseBody
-	public ResponseEntity<?> listWallet(){
-	  Map<String, String> info = new HashMap<>();
-		UserModel userModel = ShiroUtils.getUser();
-		log.info("invideCode {}", userModel.getInviteCode());
-	  info.put("name", userModel.getName());
-	  info.put("nickname", userModel.getNickname());
-	  info.put("inviteCode", userModel.getInviteCode());
+	  info.put("inviteCode", userModel.getInviteCode().toString());
 	  info.put("gender", userModel.getGender());
 	  info.put("address", userModel.getAddress());
 	  info.put("birthday", userModel.getBirthday());

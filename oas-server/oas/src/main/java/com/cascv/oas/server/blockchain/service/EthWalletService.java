@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bitcoinj.crypto.ChildNumber;
@@ -25,6 +25,8 @@ import org.web3j.utils.Numeric;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
+import com.cascv.oas.server.blockchain.config.ExchangeParam;
+import com.cascv.oas.server.blockchain.config.TransferQuota;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
@@ -54,6 +56,9 @@ public class EthWalletService {
   
   @Autowired
   private UserCoinMapper userCoinMapper;
+  
+  @Autowired
+  private ExchangeParam exchangeParam;
   
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
@@ -145,13 +150,12 @@ public class EthWalletService {
     userCoin.setAddress(address);
     userCoin.setContract(contract);
     userCoin.setUserUuid(userUuid);
-    Integer width = digitalCoin.getWidth();
-    userCoin.setWidth(width);
-    BigDecimal balance = coinClient.getBalance(address, contract);
-    while (width > 0) {
-      balance=balance.divide(BigDecimal.TEN);
-      width--;
-    }
+    userCoin.setName(digitalCoin.getName());
+    userCoin.setSymbol(digitalCoin.getSymbol());
+    
+    BigDecimal weiFactor = digitalCoin.getWeiFactor();
+    userCoin.setWeiFactor(weiFactor);
+    BigDecimal balance = this.getBalance(address, contract, weiFactor);
     userCoin.setBalance(balance);
     userCoinMapper.insertSelective(userCoin);
   }
@@ -161,35 +165,44 @@ public class EthWalletService {
     return ethWalletMapper.selectByUserUuid(userUuid);
   }
 
-  public BigDecimal getBalance(String userUuid, String contract) {
+  public BigDecimal getBalance(String userUuid, String contract, BigDecimal weiFactor) {
     BigDecimal balance = BigDecimal.ZERO;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
-      String token = coinClient.getToken();
-      balance = coinClient.getBalance(ethWallet.getAddress(), token);
+      balance = coinClient.balanceOf(ethWallet.getAddress(), contract, weiFactor);
+      log.info("getBalance of {}", balance);
     } catch (Exception e) {
 
     }
     return balance;
   }
   
+  public BigDecimal getValue(BigDecimal balance) {
+    BigDecimal rate = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
+    return balance.multiply(rate);
+  }
+  
   public UserCoin getUserCoin(String userUuid, String contract){
     UserCoin userCoin = userCoinMapper.selectOne(userUuid, contract);
     if (userCoin == null)
       return null;
-    userCoin.setBalance(this.getBalance(userUuid, userCoin.getContract()));
+    BigDecimal balance=this.getBalance(userUuid, userCoin.getContract(),userCoin.getWeiFactor());
+    userCoin.setBalance(balance);
+    userCoin.setValue(this.getValue(balance));
     return userCoin;
   }
 
   public List<UserCoin> listCoin(String userUuid){
     List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
     for (UserCoin coin:userCoinList) {
-      coin.setBalance(this.getBalance(userUuid, coin.getContract()));
+      BigDecimal balance =this.getBalance(userUuid, coin.getContract(),coin.getWeiFactor()); 
+      coin.setBalance(balance);
+      coin.setValue(this.getValue(balance));
     }
     return userCoinList;
   }
 
-  public ErrorCode transfer(String userUuid, String password, String contract, String toAddress, BigInteger amount) {
+  public ErrorCode transfer(String userUuid, String contract, String toAddress, BigDecimal amount) {
 
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     if (ethWallet == null)
@@ -197,10 +210,41 @@ public class EthWalletService {
     if (contract == null)
       contract = coinClient.getToken();
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
-    if (userCoin.getBalance().compareTo(new BigDecimal(amount)) < 0)
+    if (userCoin.getBalance().compareTo(amount) < 0)
       return ErrorCode.BALANCE_NOT_ENOUGH;
-    String txHash=coinClient.sendTransaction(ethWallet.getAddress(), password, toAddress, contract, amount);
+    amount = amount.multiply(userCoin.getWeiFactor());
+    String txHash=coinClient.transfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), toAddress, contract, amount.toBigInteger());
     log.info("txhash {}", txHash);
     return ErrorCode.SUCCESS;
   }
+  
+  public ErrorCode multiTransfer(String userUuid, String contract, List<TransferQuota> quota) {
+    EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
+    if (ethWallet == null)
+      return ErrorCode.NO_ETH_WALLET;
+    if (contract == null)
+      contract = coinClient.getToken();
+    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
+    
+    List<BigInteger> amountIntList= new ArrayList<>();
+    List<String> addressList = new ArrayList<>();
+    BigDecimal total = BigDecimal.ZERO;
+    for (TransferQuota q : quota) {
+      total=total.add(q.getAmount());
+      addressList.add(q.getToUserAddress());
+      BigInteger amountInt=q.getAmount().multiply(userCoin.getWeiFactor()).toBigInteger();
+      amountIntList.add(amountInt);
+    }
+    if (userCoin.getBalance().compareTo(total) < 0)
+      return ErrorCode.BALANCE_NOT_ENOUGH;
+    String txHash=coinClient.multiTransfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), addressList, contract, amountIntList);
+    log.info("txhash {}", txHash);
+    if (txHash!=null)
+      return ErrorCode.SUCCESS;
+    else
+      return ErrorCode.MULTIPLE_TRANSFER_FAILURE;
+  }
 }
+
+
+

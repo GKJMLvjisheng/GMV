@@ -7,7 +7,6 @@ import com.cascv.oas.server.filter.LogoutFilter;
 import com.cascv.oas.server.filter.OnlineSessionFilter;
 import com.cascv.oas.server.filter.SyncOnlineSessionFilter;
 import com.cascv.oas.server.session.OnlineWebSessionManager;
-import com.cascv.oas.server.session.SpringSessionValidationScheduler;
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 import com.cascv.oas.server.shiro.OnlineSessionFactory;
 import com.cascv.oas.server.shiro.UserRealm;
@@ -113,21 +112,7 @@ public class ShiroConfig {
 	        return sessionFactory;
 	    }
 
-	    /**
-	     * 自定义sessionFactory调度器
-	     */
-	    @Bean
-	    public SpringSessionValidationScheduler sessionValidationScheduler()
-	    {
-	        SpringSessionValidationScheduler sessionValidationScheduler = new SpringSessionValidationScheduler();
-	        // interval(in ms, default 10 minutes) to validate session
-	        sessionValidationScheduler.setSessionValidationInterval(validationInterval * 60 * 1000);
-	        // 设置会话验证调度器进行会话验证时的会话管理器
-	        sessionValidationScheduler.setSessionManager(sessionValidationManager());
-	        return sessionValidationScheduler;
-	    }
-
-	    
+    
 	    // session manager
 	    @Bean
 	    public OnlineWebSessionManager sessionValidationManager()
@@ -163,8 +148,6 @@ public class ShiroConfig {
 		manager.setGlobalSessionTimeout(expireTime * 60 * 1000);
 		// remove JSESSIONID
 		manager.setSessionIdUrlRewritingEnabled(false);
-		// 定义要使用的无效的Session定时调度器
-		manager.setSessionValidationScheduler(sessionValidationScheduler());
 		// 是否定时检查session
 		manager.setSessionValidationSchedulerEnabled(true);
 		// customized SessionDao

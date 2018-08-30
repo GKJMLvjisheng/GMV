@@ -10,7 +10,10 @@ public class UserCoin implements Serializable{
   private static final long serialVersionUID = 1L;
   @Setter @Getter private String userUuid;
   @Setter @Getter private String contract;
-  @Setter @Getter private Integer width;
+  @Setter @Getter private BigDecimal weiFactor;
   @Setter @Getter private String address;
+  @Setter @Getter private String name;
+  @Setter @Getter private String symbol;
   @Setter @Getter private BigDecimal balance;
+  @Setter @Getter private BigDecimal value;
 }

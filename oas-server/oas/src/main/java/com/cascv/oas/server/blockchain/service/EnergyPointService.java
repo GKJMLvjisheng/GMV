@@ -1,15 +1,18 @@
 package com.cascv.oas.server.blockchain.service;
 
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EnergyPointMapper;
+import com.cascv.oas.server.blockchain.mapper.EnergyPointDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.UserWallet;
+import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.common.UuidPrefix;
 
 @Service
@@ -23,6 +26,10 @@ public class EnergyPointService {
   
   @Autowired
   private PowerService powerService;
+
+  @Autowired
+  private EnergyPointDetailMapper energyPointDetailMapper;
+  
   
   public EnergyPoint create(String userUuid){
     EnergyPoint energyPoint = new EnergyPoint();
@@ -36,6 +43,14 @@ public class EnergyPointService {
     energyPointMapper.deleteByUserUuid(userUuid);
     energyPointMapper.insertSelective(energyPoint);
     return energyPoint;
+  }
+
+  public List<EnergyPointDetail> searchEnergyPointDetail(
+		  String userUuid, 
+		  Integer activity, 
+		  String dateFrom, 
+		  String dateEnd){
+    return energyPointDetailMapper.selectActivityByDate(userUuid, activity, dateFrom, dateEnd);
   }
 
   public Integer destroy(String userUuid){
@@ -65,4 +80,9 @@ public class EnergyPointService {
     return value;
   }
   
+  public EnergyPoint findByUserUuid(String userUuid) {
+	  return energyPointMapper.selectByUserUuid(userUuid);
+  }
+
+
 }

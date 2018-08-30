@@ -30,7 +30,7 @@ public class UserService {
     return userModel;
   }
   
-  public UserModel findUserByInviteCode(String inviteCode) {
+  public UserModel findUserByInviteCode(Integer inviteCode) {
 	  UserModel userModel = userModelMapper.selectByInviteCode(inviteCode);
 	  return userModel;
   }
@@ -69,14 +69,15 @@ public class UserService {
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
     //产生邀请码       
-    String inviteCode = InviteCodeUtils.getFromUuid(uuid);
-    log.info("inviteCode {}", inviteCode);
-    userModel.setInviteCode(inviteCode);
+//    String inviteCode = InviteCodeUtils.getFromUuid(uuid);
+//    log.info("inviteCode {}", inviteCode);
+//    userModel.setInviteCode(inviteCode);
     String now = DateUtils.dateTimeNow();
     
     userModel.setCreated(now);
     userModel.setUpdated(now);
     userModelMapper.insertUser(userModel);
+    log.info("inviteCode {}", userModel.getInviteCode());
     return ErrorCode.SUCCESS;
   }
   

@@ -36,22 +36,17 @@ public class DigitalCoinService {
         }
         digitalCoin = new DigitalCoin();
         digitalCoin.setContract(contract);
-        Integer width = coinClient.getDecimals(contract);
-        digitalCoin.setWidth(width);
-        digitalCoin.setName(coinClient.getName(contract));
-        digitalCoin.setSymbol(coinClient.getSymbol(contract));
-        
-        BigDecimal supply = coinClient.getTotalSupply(contract);
-        while (width > 0) {
-          supply=supply.divide(BigDecimal.TEN);
-          width--;
-        }
+        BigDecimal weiFactor = coinClient.weiFactorOf(contract);
+        digitalCoin.setWeiFactor(weiFactor);
+        digitalCoin.setName(coinClient.nameOf(contract));
+        digitalCoin.setSymbol(coinClient.symbolOf(contract));
+        BigDecimal supply = coinClient.supplyOf(contract, weiFactor);
         digitalCoin.setSupply(supply);
         ret=digitalCoinMapper.insertSelective(digitalCoin);
-        log.info("new coin name {} symbol {} decimal {} contract {} total supply {} loaded",
+        log.info("new coin name {} symbol {} weiFactor {} contract {} supply {} loaded",
               digitalCoin.getName(), 
               digitalCoin.getSymbol(),
-              digitalCoin.getWidth(),
+              digitalCoin.getWeiFactor(),
               digitalCoin.getContract(), 
               digitalCoin.getSupply());
       } catch (Exception e) {
