@@ -19,6 +19,7 @@ import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
+import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -99,8 +100,9 @@ public class UserWalletController {
       userWalletDetail.setUuid(String.valueOf(i+1));
       userWalletDetail.setUserUuid(ShiroUtils.getUserUuid());
       userWalletDetail.setValue(BigDecimal.valueOf(i+100));
-      userWalletDetail.setScope("手机");
-
+      userWalletDetail.setTitle(UserWalletDetailScope.COIN_REDEEM.getTitle());
+      userWalletDetail.setSubTitle(UserWalletDetailScope.COIN_REDEEM.getSubTitle());
+      
       calendar.add(Calendar.DATE,1+i);
       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
       String str = formatter.format(calendar.getTime());
