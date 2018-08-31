@@ -42,7 +42,6 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> selectContractSymbol(){
-	  System.out.println("--start--");
 	  String userUuid = ShiroUtils.getUserUuid();
 	  System.out.println(userUuid);
 	  ContractSymbol conractSymbol = ethWalletService.selectContractSymbol(userUuid);

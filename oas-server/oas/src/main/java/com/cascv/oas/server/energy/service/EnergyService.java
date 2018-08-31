@@ -107,7 +107,7 @@ public class EnergyService {
      */
     public List<EnergyBall> listEnergyBall(String userUuid) {
         // 如果此用户该类型能量球还没有，则生成
-        this.miningEnergyBallGenerate();
+        this.miningEnergyBallGenerate(userUuid);
         // 查询所有挖矿能量球信息
         EnergyBall energyBall = new EnergyBall();
         energyBall.setUserUuid(userUuid);
@@ -165,10 +165,10 @@ public class EnergyService {
     /**
      * 产生不足数的能量球原球
      */
-    public void miningEnergyBallGenerate() {
+    public void miningEnergyBallGenerate(String userUuid) {
         // 查询该用户是否产生挖矿能量球
         EnergyBall energyBall = new EnergyBall();
-        energyBall.setUserUuid("USR-0178ea59a6ab11e883290a1411382ce0");
+        energyBall.setUserUuid(userUuid);
         energyBall.setPointSource(SOURCE_CODE_OF_MINING);
         List<EnergyBall> energyBalls = energyBallMapper.selectByPointSourceCode(energyBall);
         // 能量球数不足，则产生至需要数目
@@ -177,7 +177,7 @@ public class EnergyService {
             for (int i = 0; i < countOfGenerate; i++) {
                 String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
                 energyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-                energyBall.setUserUuid("USR-0178ea59a6ab11e883290a1411382ce0");
+                energyBall.setUserUuid(userUuid);
                 energyBall.setPointSource(SOURCE_CODE_OF_MINING);
                 energyBall.setPoint(BigDecimal.ZERO);
                 energyBall.setPower(BigDecimal.ZERO);

@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigDecimal;
-
+//USR-9590d7f9a5c811e883290a1411382ce0
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class EnergyPointControllerTest {
@@ -24,7 +24,7 @@ public class EnergyPointControllerTest {
 
     @Test
     public void inquireEnergyBall() {
-        ResponseEntity<?> energyBallResult = energyPointController.inquireEnergyBall("USR-0178ea59a6ab11e883290a1411382ce0");
+        ResponseEntity<?> energyBallResult = energyPointController.inquireEnergyBall();
         System.out.println("data: " + energyBallResult.getData());
         System.out.println("code: " + energyBallResult.getCode());
         System.out.println("message: " + energyBallResult.getMessage());
