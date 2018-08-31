@@ -37,6 +37,7 @@ public class UserWalletService {
 	  userWalletDetail.setTitle(userWalletDetailScope.getTitle());
 	  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
 	  userWalletDetail.setValue(value);
+	  userWalletDetail.setCreated(DateUtils.getTime());
 	  userWalletDetail.setComment(comment);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
