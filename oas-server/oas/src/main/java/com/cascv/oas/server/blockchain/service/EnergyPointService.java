@@ -2,15 +2,16 @@ package com.cascv.oas.server.blockchain.service;
 
 
 import java.util.List;
+
+import com.cascv.oas.server.energy.model.EnergyWallet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.mapper.EnergyPointMapper;
+import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.EnergyPointDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
-import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -19,7 +20,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 public class EnergyPointService {
   
   @Autowired
-  private EnergyPointMapper energyPointMapper;
+  private EnergyWalletMapper energyWalletMapper;
   
   @Autowired
   private UserWalletMapper userWalletMapper;
@@ -31,18 +32,18 @@ public class EnergyPointService {
   private EnergyPointDetailMapper energyPointDetailMapper;
   
   
-  public EnergyPoint create(String userUuid){
-    EnergyPoint energyPoint = new EnergyPoint();
-    energyPoint.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-    energyPoint.setUserUuid(userUuid);
-    energyPoint.setBalance(0);
-    energyPoint.setPower(0);
+  public EnergyWallet create(String userUuid){
+    EnergyWallet energyWallet = new EnergyWallet();
+    energyWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+    energyWallet.setUserUuid(userUuid);
+    energyWallet.setBalance(0);
+    energyWallet.setPower(0);
     String now = DateUtils.dateTimeNow();
-    energyPoint.setCreated(now);
-    energyPoint.setUpdated(now);
-    energyPointMapper.deleteByUserUuid(userUuid);
-    energyPointMapper.insertSelective(energyPoint);
-    return energyPoint;
+    energyWallet.setCreated(now);
+    energyWallet.setUpdated(now);
+    energyWalletMapper.deleteByUserUuid(userUuid);
+    energyWalletMapper.insertSelective(energyWallet);
+    return energyWallet;
   }
 
   public List<EnergyPointDetail> searchEnergyPointDetail(
@@ -54,34 +55,34 @@ public class EnergyPointService {
   }
 
   public Integer destroy(String userUuid){
-    energyPointMapper.deleteByUserUuid(userUuid);
+    energyWalletMapper.deleteByUserUuid(userUuid);
     return 0;
   }
 
   //redeem
   public Integer redeem(String userUuid, Integer value) {
-    EnergyPoint energyPoint = energyPointMapper.selectByUserUuid(userUuid);
+    EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
     UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
-    if (energyPoint == null || userWallet == null || energyPoint.getBalance().compareTo(value) < 0) {
+    if (energyWallet == null || userWallet == null || energyWallet.getBalance().compareTo(value) < 0) {
       return 0;
     }
-    energyPointMapper.decreaseBalance(energyPoint.getUuid(), value);
-    userWalletMapper.increaseBalance(userWallet.getUuid(), powerService.exchange(energyPoint.getPower(), value));
+    energyWalletMapper.decreaseBalance(energyWallet.getUuid(), value);
+    userWalletMapper.increaseBalance(userWallet.getUuid(), powerService.exchange(energyWallet.getPower(), value));
     return value;
   }
   
   //deposit
   public Integer deposit(String category, String source, String activity, String userUuid, Integer value) {
-    EnergyPoint energyPoint = energyPointMapper.selectByUserUuid(userUuid);
-    if (energyPoint == null) {
+    EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
+    if (energyWallet == null) {
       return 0;
     }
-    energyPointMapper.increaseBalance(energyPoint.getUuid(), value);
+    energyWalletMapper.increaseBalance(energyWallet.getUuid(), value);
     return value;
   }
   
-  public EnergyPoint findByUserUuid(String userUuid) {
-	  return energyPointMapper.selectByUserUuid(userUuid);
+  public EnergyWallet findByUserUuid(String userUuid) {
+	  return energyWalletMapper.selectByUserUuid(userUuid);
   }
 
 

@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.cascv.oas.server.energy.model.EnergyBall;
+import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
-import com.cascv.oas.server.blockchain.model.EnergyPoint;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
@@ -112,10 +112,10 @@ public class EnergyPointController {
     @PostMapping(value = "/inquirePower")
     @ResponseBody
     public ResponseEntity<?> inquirePower() {
-        EnergyPoint energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
-        if (energyPoint != null) {
+        EnergyWallet energyWallet = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
+        if (energyWallet != null) {
             return new ResponseEntity.Builder<Integer>()
-                    .setData(energyPoint.getPower())
+                    .setData(energyWallet.getPower())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
@@ -129,7 +129,7 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyPoint")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPoint() {
-        EnergyPoint energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
+        EnergyWallet energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
             return new ResponseEntity.Builder<Integer>()
                     .setData(energyPoint.getBalance())

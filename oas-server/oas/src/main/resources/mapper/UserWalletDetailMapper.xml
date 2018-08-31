@@ -6,15 +6,15 @@
 	<id column="uuid" property="uuid" />
 	<result column="user_uuid" property="userUuid"/>
 	<result column="value" property="value"/>
-	<result column="scope" property="scope"/>
-	<result column="name" property="name"/>
+	<result column="title" property="title"/>
+	<result column="subTitle" property="subTitle"/>
 	<result column="comment" property="comment"/>
 	<result column="created" property="created"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, scope, name,comment, created
+    uuid, user_uuid, value, title, subTitle,comment, created
   </sql>
   
   
@@ -25,11 +25,11 @@
     	uuid,
     	user_uuid,
     	value,
-    	<if test="scope != null">
-    		scope,
+    	<if test="title != null">
+    		title,
     	</if>
-    	<if test="name != null">
-    		name,
+    	<if test="subTitle != null">
+    		subTitle,
     	</if>
     	<if test="comment != null">
     		comment,
@@ -40,11 +40,11 @@
       #{uuid,jdbcType=VARCHAR},
       #{userUuid,jdbcType=INTEGER},
       #{value,jdbcType=INTEGER},
-    	<if test="scope != null">
-    		#{scope,jdbcType=VARCHAR},
+    	<if test="title != null">
+    		#{title,jdbcType=VARCHAR},
     	</if>
-    	<if test="name != null">
-    		#{name,jdbcType=VARCHAR},
+    	<if test="subTitle != null">
+    		#{subTitle,jdbcType=VARCHAR},
     	</if>
     	<if test="comment != null">
     		#{comment,jdbcType=VARCHAR},
