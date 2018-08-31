@@ -36,9 +36,9 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> selectContractSymbol(){
 	  String userUuid = ShiroUtils.getUserUuid();
-	  ContractSymbol conractSymbol = ethWalletService.selectContractSymbol(userUuid);
-	return new ResponseEntity.Builder<ContractSymbol>()
-			.setData(conractSymbol)
+	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(userUuid);
+	return new ResponseEntity.Builder<List<ContractSymbol>>()
+			.setData(conractSymbolList)
 			.setErrorCode(ErrorCode.SUCCESS)
 			.build();
 	  

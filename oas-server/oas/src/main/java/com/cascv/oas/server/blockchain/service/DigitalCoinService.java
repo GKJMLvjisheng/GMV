@@ -28,7 +28,7 @@ public class DigitalCoinService {
       return digitalCoinMapper.selectByContract(contract);
     }
     
-    public ContractSymbol selectContractSymbol(String userUuid) {
+    public List<ContractSymbol> selectContractSymbol(String userUuid) {
 		return digitalCoinMapper.selectContractSymbol(userUuid);
     }
 

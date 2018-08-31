@@ -145,7 +145,7 @@ public class EthWalletService {
     }
   }
   
-  public ContractSymbol selectContractSymbol(String userUuid) {
+  public List<ContractSymbol> selectContractSymbol(String userUuid) {
 	  return digitalCoinService.selectContractSymbol(userUuid);
   }
 
