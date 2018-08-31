@@ -40,4 +40,20 @@
       #{status,jdbcType=INTEGER}, #{timeCreated,jdbcType=VARCHAR}, #{timeUpdated,jdbcType=VARCHAR}
       )
     </insert>
+
+    <select id="selectCheckinEnergyBalls" parameterType="com.cascv.oas.server.energy.model.EnergyBall" resultMap="EnergyBallWrapper">
+        select b.uuid, b.point, b.time_created, b.time_updated, p.source_code, p.source_name
+        from energy_ball b inner join energy_source_point p
+        <where>
+            point_source = source_code and point_source = #{pointSource} and user_uuid = #{userUuid}
+        </where>
+    </select>
+    <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="point" jdbcType="DECIMAL" property="value"/>
+        <result column="time_created" jdbcType="VARCHAR" property="startDate"/>
+        <result column="time_updated" jdbcType="VARCHAR" property="endDate"/>
+        <result column="source_code" property="type" />
+        <result column="source_name" property="name" />
+    </resultMap>
 </mapper>

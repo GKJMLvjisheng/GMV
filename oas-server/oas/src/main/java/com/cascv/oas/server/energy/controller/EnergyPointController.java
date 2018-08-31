@@ -12,6 +12,7 @@ import java.util.List;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
+import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,14 +88,16 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-    	String userUuid = ShiroUtils.getUserUuid();
+        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+//    	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = new EnergyBallResult();
-        List<EnergyBall> energyBallList = energyService.listEnergyBall(userUuid);
+        List<EnergyBallWrapper> energyBallWrappersList = energyService.listEnergyBall(userUuid);
+        System.out.println(energyBallWrappersList);
         BigDecimal ongoingEnergySummary = new BigDecimal("0");
-        for (int i = 0; i < energyBallList.size(); i++) {
-            ongoingEnergySummary = ongoingEnergySummary.add(energyBallList.get(i).getPoint());
+        for (int i = 0; i < energyBallWrappersList.size(); i++) {
+            ongoingEnergySummary = ongoingEnergySummary.add(energyBallWrappersList.get(i).getValue());
         }
-        energyBallResult.setEnergyBallList(energyBallList);
+        energyBallResult.setEnergyBallList(energyBallWrappersList);
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
         return new ResponseEntity.Builder<EnergyBallResult>().setData(energyBallResult).setErrorCode(ErrorCode.SUCCESS).build();
     }

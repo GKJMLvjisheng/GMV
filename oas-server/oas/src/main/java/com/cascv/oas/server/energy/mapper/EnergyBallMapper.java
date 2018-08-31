@@ -1,6 +1,7 @@
 package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.energy.model.EnergyBall;
+import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,4 +41,6 @@ public interface EnergyBallMapper {
      * @return
      */
     List<EnergyBall> selectByStatus();
+
+    List<EnergyBallWrapper> selectCheckinEnergyBalls(EnergyBall energyBall);
 }

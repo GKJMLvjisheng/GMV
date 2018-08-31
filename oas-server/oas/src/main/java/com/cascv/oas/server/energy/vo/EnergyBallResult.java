@@ -12,6 +12,6 @@ import lombok.ToString;
 @ToString
 public class EnergyBallResult  implements Serializable {
   private static final long serialVersionUID = 1L;
-  @Getter @Setter private List<EnergyBall> energyBallList;
+  @Getter @Setter private List<EnergyBallWrapper> energyBallList;
   @Getter @Setter private BigDecimal ongoingEnergySummary;
 }

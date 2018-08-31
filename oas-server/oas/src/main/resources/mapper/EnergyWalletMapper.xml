@@ -37,40 +37,40 @@
 
   <!-- delete by uuid -->
   <delete id="deleteByUuid">
-    delete from energy_wallet where uuid = #{uuid}
+    delete from energy_point where uuid = #{uuid}
   </delete>
 
   <!-- delete by userId -->
   <delete id="deleteByUserUuid">
-    delete from energy_wallet where user_uuid = #{userUuid}
+    delete from energy_point where user_uuid = #{userUuid}
   </delete>
   
   <select id="selectByUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
   	select 
       <include refid="Base_Column_List" />
-    from energy_wallet where uuid = #{uuid}
+    from energy_point where uuid = #{uuid}
   </select>
 
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
   	select 
       <include refid="Base_Column_List" />
-    from energy_wallet where user_uuid = #{userUuid}
+    from energy_point where user_uuid = #{userUuid}
   </select>
   
   <update id="increaseBalance">
-  	update energy_wallet set balance=balance + #{value} where uuid = #{uuid}
+  	update energy_point set balance=balance + #{value} where uuid = #{uuid}
   </update>
   
   <update id="decreaseBalance">
-  	update energy_wallet set balance=balance - #{value} where uuid = #{uuid}
+  	update energy_point set balance=balance - #{value} where uuid = #{uuid}
   </update>
   
   <update id="increasePower">
-  	update energy_wallet set power=power + #{value} where uuid = #{uuid}
+  	update energy_point set power=power + #{value} where uuid = #{uuid}
   </update>
   
   <update id="decreasePower">
-  	update energy_wallet set power=power - #{value} where uuid = #{uuid}
+  	update energy_point set power=power - #{value} where uuid = #{uuid}
   </update>
   
   
