@@ -2,15 +2,19 @@ package com.cascv.oas.server.blockchain.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
+import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
+import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +30,28 @@ public class EthWalletController {
   
   @Autowired
   private EthWalletService ethWalletService;
+  
+  @PostMapping(value="/OAStransfer")
+  @ResponseBody
+  public String OAStransfer(){
+	  ShiroUtils.getUserUuid();
+	  return "OAStransfer";
+  }
+  
+  @PostMapping(value="/selectContractSymbol")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> selectContractSymbol(){
+	  String userUuid = ShiroUtils.getUserUuid();
+	  System.out.println(userUuid);
+	  ContractSymbol conractSymbol = ethWalletService.selectContractSymbol(userUuid);
+	  System.out.println(conractSymbol);
+	return new ResponseEntity.Builder<ContractSymbol>()
+			.setData(conractSymbol)
+			.setErrorCode(ErrorCode.SUCCESS)
+			.build();
+	  
+  }
 
   @PostMapping(value="/transfer")
   @ResponseBody
@@ -77,10 +103,18 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> summary(){
     ErrorCode errorCode=ErrorCode.SUCCESS;
+    UserCoin tokenCoin = ethWalletService.getTokenCoin(ShiroUtils.getUserUuid());
+    
     EthWalletSummary ethWalletSummary = new EthWalletSummary();
-    ethWalletSummary.setTotalBalance(BigDecimal.valueOf(2311.67));
     ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);
-    ethWalletSummary.setTotalValue(BigDecimal.valueOf(67896.11));
+
+    if (tokenCoin != null) {
+      ethWalletSummary.setTotalBalance(tokenCoin.getBalance());
+      ethWalletSummary.setTotalValue(tokenCoin.getValue());
+    } else {
+      ethWalletSummary.setTotalBalance(BigDecimal.ZERO);
+      ethWalletSummary.setTotalValue(BigDecimal.ZERO);
+    }
     return new ResponseEntity.Builder<EthWalletSummary>()
         .setData(ethWalletSummary)
         .setErrorCode(errorCode)

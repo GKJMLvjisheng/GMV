@@ -57,7 +57,7 @@ public class UserWalletController {
     
     return new ResponseEntity.Builder<Map<String, String>>()
     	  .setData(map)
-          .setErrorCode(errorCode).build();
+        .setErrorCode(errorCode).build();
   }
   
   
@@ -74,13 +74,13 @@ public class UserWalletController {
       BigDecimal factor = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
       BigDecimal value=balance.multiply(factor);
       userWalletBalanceSummary.setAvailableBalance(balance);
-      userWalletBalanceSummary.setValue(value);
+      userWalletBalanceSummary.setAvailableBalanceValue(value);
       return new ResponseEntity.Builder<UserWalletBalanceSummary>()
       		.setData(userWalletBalanceSummary)
               .setErrorCode(ErrorCode.SUCCESS).build();
     } else {
       userWalletBalanceSummary.setAvailableBalance(BigDecimal.ZERO);
-      userWalletBalanceSummary.setValue(BigDecimal.ZERO);
+      userWalletBalanceSummary.setAvailableBalanceValue(BigDecimal.ZERO);
     	return new ResponseEntity.Builder<UserWalletBalanceSummary>()
     		.setData(userWalletBalanceSummary)
             .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();

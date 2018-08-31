@@ -5,12 +5,10 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 import Index from '@/views/Index.vue'
 export default {
   name: 'app',
   components: {
-    HelloWorld,
     Index
   }
 }
