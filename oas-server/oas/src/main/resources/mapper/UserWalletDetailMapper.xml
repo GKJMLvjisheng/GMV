@@ -63,10 +63,14 @@
     delete from user_wallet_detail where user_uuid = #{userUuid}
   </delete>
   
-  <select id="selectByDateRange" resultMap="userWalletDetailMap">
+  <select id="selectCount">
+  	select count(*) from user_wallet_detail;
+  </select>
+  
+  <select id="selectByPage" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid} and created between #{fromDate} and #{toDate} ordered by created desc;
+    from user_wallet_detail where user_uuid = #{userUuid} ordered by created desc limit #{offset},#{limit};
   </select>
 
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
