@@ -31,21 +31,12 @@ public class EthWalletController {
   @Autowired
   private EthWalletService ethWalletService;
   
-  @PostMapping(value="/OAStransfer")
-  @ResponseBody
-  public String OAStransfer(){
-	  ShiroUtils.getUserUuid();
-	  return "OAStransfer";
-  }
-  
   @PostMapping(value="/selectContractSymbol")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> selectContractSymbol(){
 	  String userUuid = ShiroUtils.getUserUuid();
-	  System.out.println(userUuid);
 	  ContractSymbol conractSymbol = ethWalletService.selectContractSymbol(userUuid);
-	  System.out.println(conractSymbol);
 	return new ResponseEntity.Builder<ContractSymbol>()
 			.setData(conractSymbol)
 			.setErrorCode(ErrorCode.SUCCESS)
