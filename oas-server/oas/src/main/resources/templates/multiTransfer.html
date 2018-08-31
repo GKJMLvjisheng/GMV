@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+  <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+  <script type="text/javascript" th:src="@{js/gridEdit.js}"></script>
+  <script type="text/javascript" th:src="@{/webjars/js-xlsx/0.8.0/dist/xlsx.core.min.js}"></script>
+
+    <title>一对多转账</title>  
+
+    <style type="text/css">  
+
+    <!--  
+
+    body,div,p,ul,li,font,span,td,th{  
+
+    font-size:10pt;  
+
+    line-height:155%;  
+
+    }  
+
+    table{  
+
+    border-top-width: 1px;  
+
+    border-right-width: 1px;  
+
+    border-bottom-width: 0px;  
+
+    border-left-width: 1px;  
+
+    border-top-style: solid;  
+
+    border-right-style: solid;  
+
+    border-bottom-style: none;  
+
+    border-left-style: solid;  
+
+    border-top-color: #CCCCCC;  
+
+    border-right-color: #CCCCCC;  
+
+    border-bottom-color: #CCCCCC;  
+
+    border-left-color: #CCCCCC;  
+
+    }  
+
+    td{  
+
+    border-bottom-width: 1px;  
+
+    border-bottom-style: solid;  
+
+    border-bottom-color: #CCCCCC;  
+
+    }  
+
+    .EditCell_TextBox {  
+
+    width: 90%;  
+
+    border:1px solid #0099CC;  
+
+    }  
+
+    .EditCell_DropDownList {  
+
+    width: 90%;  
+
+    }  
+
+    -->  
+.fileBtn { 
+/*  width: 25%;  */
+ margin-top: 25px; 
+ margin-left:10px;
+ float:left;
+}
+.submitBtn { 
+/*  width: 25%;  */
+ margin-top: 25px; 
+ margin-left:15px;
+ float:left;
+}
+    </style>  
+
+
+
+    </head>  
+
+      
+
+    <body>  
+<div class="container">
+    <form id="form1" name="form1" method="post" action="">  
+
+    <h3>一对多转账</h3>  
+     <input type="button" name="Submit" value="新增" onclick="addRow(document.getElementById('tabProduct'),1)" />  
+
+    <input type="button" name="Submit2" value="删除" onclick="deleteRow(document.getElementById('tabProduct'),1)" />  
+
+    <input type="button" name="Submit22" value="重置" onclick="window.location.reload()" />  
+
+    <input type="submit" name="Submit3" value="提交" onclick="getTableData(document.getElementById('tabProduct'));return false;" />
+   
+     
+   
+   <hr/> 
+
+
+								<label for="contract" class=" control-label">货币类型:</label>
+
+									
+			                	<select id="contract"  name="contract" required="required">
+			                    <option >请选择</option>
+			                    
+		
+			               		 </select>
+               	
+            
+       
+         
+        <br /> 
+    <table width="698" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
+
+        <tr>  
+
+          <td width="32" align="center" bgcolor="#EFEFEF" Name="Num"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
+
+          <td width="103" bgcolor="#EFEFEF" Name="Num" style="text-align:center"EditType="TextBox">index</td>  
+
+           
+
+          	<td width="200" bgcolor="#EFEFEF" Name="toUserAddress"style="text-align:center" EditType="TextBox">_to(address)</td>  
+            <td width="152" bgcolor="#EFEFEF" Name="candy" style="text-align:center" EditType="TextBox">Number of Candy</td>  
+           	<td width="152" bgcolor="#EFEFEF" Name="precision"style="text-align:center" EditType="DropDownList" DataItems="{text:'18',value:'18'},{text:'19',value:'19'},{text:'20',value:'20'},{text:'21',value:'21'}">Decimals of Precision</td>
+
+         
+
+          <td width="200" bgcolor="#EFEFEF" Name="amount"style="text-align:center" Expression="candy*Math.pow(10,precision)" >value</td>  
+<!-- Format="#,###.00";display:none -->
+        </tr>  
+
+        <tr>  
+
+          <td align="center" bgcolor="#FFFFFF"><input type="checkbox" name="checkbox2" value="checkbox" /></td>  
+
+          <td bgcolor="#FFFFFF"style="text-align:center">1</td>  
+
+          
+
+          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+
+          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+           <td bgcolor="#FFFFFF" style="text-align:center"Value="18">18</td> 
+
+          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+
+        </tr>  
+
+        <tr>  
+
+          <td align="center" bgcolor="#FFFFFF"><input type="checkbox" name="checkbox22" value="checkbox" /></td>  
+
+          <td bgcolor="#FFFFFF"style="text-align:center">2</td>  
+
+         
+
+          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+
+          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+           <td bgcolor="#FFFFFF"style="text-align:center" Value="18">18</td>  
+
+          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+
+        </tr>  
+
+    </table>  
+
+      
+
+    <br />  
+ <hr/> 
+<!--  style="background:yellow" -->
+     <div id="drop"><h4>If you need to transfer more than 15 people, please use the excel attachment form to transfer money.</h4> </div>
+    <input type="file" name="xlfile" class="btn-primary fileBtn"id="excelFile" /> <input type="submit" class=" btn-primary submitBtn"name="Submit3" value="提交" onclick="getExcelData();return false;" />
+    
+
+    </form>  
+
+ </div>     
+
+  
+ 
+
+
+      
+
+
+
+      
+
+      
+
+
+
+    </body>  
+
+    </html>  

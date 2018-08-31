@@ -4,7 +4,7 @@
     <header>
       <div class="left">
         <img :src="avatar" alt="">
-        <span class="name">伍鑫</span>
+        <span class="name">{{userInfo.nickname}}</span>
       </div>
       <div class="right">
         <div>
@@ -99,8 +99,8 @@
     <div v-if="isShowMask" class="mask">
       <div class="content">
         <img :src="attendanceSuccess" alt="">
-        <p class="tips">签到成功</p>
-        <p class="info">恭喜您获得20点能量</p>
+        <p class="tips">{{attendanceMsg.msg}}</p>
+        <p class="info">恭喜您获得{{attendanceMsg.energy}}点能量,{{attendanceMsg.power}}点算力</p>
         <button @click="handleAttendanceConfirm">确认</button>
       </div>
     </div>
@@ -116,7 +116,7 @@ const bottom = require("@/assets/images/bottom_logo@2x.png");
 const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
 
-import { randomNum, createPositionArr, getArrItems } from '@/utils/utils.js'
+import { randomNum } from '@/utils/utils.js'
 export default {
   name: "index",
   data() {
@@ -135,7 +135,17 @@ export default {
       articleList:[],
       analysis:'',
       analysisCount:0,
-    };
+      tempArr:[],
+      attendanceMsg:{
+        msg:'签到成功',
+        energy:0,
+        power:0
+      },
+      userInfo:{
+        avatar:'',
+        nickname: ''
+      }
+    }
   },
   created() {
     this.getEnergyBall()
@@ -143,56 +153,78 @@ export default {
     this.getCurrentPower()
     this.getEnergyAnalysis()
     this.getArticleList()
+    this.getUserInfo()
   },
   filters: {
   },
   methods: {
+    // 签到按钮点击事件
     handleAttendance () {
-      this.$axios.post('takeEnergyBall').then(({data}) => {
+      this.$axios.post('/energyPoint/checkin').then(({data}) => {
         console.log(data)
+        if (data.code == 0) {
+          this.currentEnergy += data.data.newEnergyPoint
+          this.currentPower += data.data.newPower
+        }
+        this.attendanceMsg.msg = data.message
+        this.attendanceMsg.energy = data.data.newEnergyPoint
+        this.attendanceMsg.power = data.data.newPower
+        this.isShowMask = true
       })
-      this.isShowMask = true
     },
+    // 签到弹窗确认按钮
     handleAttendanceConfirm () {
       this.isShowMask = false
     },
+    // 获取用户信息
+    getUserInfo () {
+      this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
+        console.log(data)
+        this.userInfo.nickname = data.nickname
+      })
+    },
+    // 获取悬浮能量球数据
     getEnergyBall () {
-      this.$axios.post('/inquireEnergyBall').then(({data:{data}}) => {
-        let pArr = createPositionArr()
+      this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
+        // let pArr = createPositionArr()
         this.energyBallList = data.energyBallList.map(el => {
-          let randomIdx = randomNum(0,pArr.length - 1)
-          let p = pArr[randomIdx]
-          pArr.splice(randomIdx,1)
+          // let randomIdx = randomNum(0,pArr.length - 1)
+          let p = this.randomPoint()
+          // pArr.splice(randomIdx,1)
           el.x = p.x / 75 + 'rem'
           el.y = p.y / 75 + 'rem'
           return el
         })
       })
     },
+    // 获取当前能量
     getCurrentEnergy () {
-      this.$axios.post('inquireEnergyPoint').then(({data:{data}}) => {
+      this.$axios.post('/energyPoint/inquireEnergyPoint').then(({data:{data}}) => {
         this.currentEnergy = data
       })
     },
+    // 获取当前算力
     getCurrentPower () {
-      this.$axios.post('inquirePower').then(({data:{data}}) => {
+      this.$axios.post('/energyPoint/inquirePower').then(({data:{data}}) => {
         this.currentPower = data
       })
     },
+    // 获取能量分析
     getEnergyAnalysis () {
-      this.$axios.post('inquireEnergyPointByCategory').then(({data:{data}}) => {
+      this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
         this.analysis = data
-        console.log(this.analysis)
         data.forEach(el => {
           this.analysisCount += el.value
         })
       })
     },
+    // 获取新闻文章列表
     getArticleList () {
-      this.$axios.post('inquireNews').then(({data:{data}}) =>{
+      this.$axios.post('/energyPoint/inquireNews').then(({data:{data}}) =>{
         this.articleList = data.rows
       })
     },
+    // 根据能量数格式化能量球大小
     formatSize: function (value) {
       if (value > 9999) {
         return 75 / 75 + 'rem'
@@ -204,15 +236,32 @@ export default {
         return 52 / 75 + 'rem'
       }
     },
+    // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
       let ele = event.currentTarget
-      this.$axios.post('takeEnergyBall').then(({data:{data}}) => {
+      this.$axios.post('/energyPoint/takeEnergyBall',{}).then(({data:{data}}) => {
         console.log(data)
       })
       ele.classList.add('fadeOutUp')
       ele.classList.remove('flash')
       ele.classList.remove('infinite')
       this.currentEnergy += data.value
+    },
+    // 随机生成不重复坐标点方法
+    randomPoint() {
+      let p = {x:randomNum(20,650),y: randomNum(50, 550)}
+      if(this.tempArr.length == 0) {
+        this.tempArr.push(p)
+        return p
+      }
+      let len = this.tempArr.length
+      for (let i = 0; i < len; i++){
+        if(Math.abs(p.x - this.tempArr[i].x) < 75 && Math.abs(p.y - this.tempArr[i].y) < 75) {
+          return this.randomPoint()
+        }
+      }
+      this.tempArr.push(p)
+      return p
     }
   }
 };
@@ -276,7 +325,8 @@ header {
     width: 100%;
     height: 624px;
     background-image: url("../assets/images/background@2x.png");
-    background-size: 750px 624px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     .energy-ball {
       // animation: 1.5s twinkling infinite;
       position: absolute;
@@ -357,6 +407,7 @@ header {
   .bar {
     position: relative;
     width: 400px;
+    height: 12px;
     div {
       position: absolute;
       top: 0;

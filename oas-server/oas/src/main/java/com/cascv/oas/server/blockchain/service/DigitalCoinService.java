@@ -6,6 +6,7 @@ import java.util.List;
 import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.server.blockchain.mapper.DigitalCoinMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
+import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,9 +22,14 @@ public class DigitalCoinService {
     public List<DigitalCoin> listDigitalCoins() {
       return digitalCoinMapper.selectAll();
     }
+    
 
     public DigitalCoin find(String contract) {
       return digitalCoinMapper.selectByContract(contract);
+    }
+    
+    public List<ContractSymbol> selectContractSymbol(String name) {
+		return digitalCoinMapper.selectContractSymbol(name);
     }
 
     public Integer create(CoinClient coinClient, String contract){
@@ -36,22 +42,17 @@ public class DigitalCoinService {
         }
         digitalCoin = new DigitalCoin();
         digitalCoin.setContract(contract);
-        Integer width = coinClient.getDecimals(contract);
-        digitalCoin.setWidth(width);
-        digitalCoin.setName(coinClient.getName(contract));
-        digitalCoin.setSymbol(coinClient.getSymbol(contract));
-        
-        BigDecimal supply = coinClient.getTotalSupply(contract);
-        while (width > 0) {
-          supply=supply.divide(BigDecimal.TEN);
-          width--;
-        }
+        BigDecimal weiFactor = coinClient.weiFactorOf(contract);
+        digitalCoin.setWeiFactor(weiFactor);
+        digitalCoin.setName(coinClient.nameOf(contract));
+        digitalCoin.setSymbol(coinClient.symbolOf(contract));
+        BigDecimal supply = coinClient.supplyOf(contract, weiFactor);
         digitalCoin.setSupply(supply);
         ret=digitalCoinMapper.insertSelective(digitalCoin);
-        log.info("new coin name {} symbol {} decimal {} contract {} total supply {} loaded",
+        log.info("new coin name {} symbol {} weiFactor {} contract {} supply {} loaded",
               digitalCoin.getName(), 
               digitalCoin.getSymbol(),
-              digitalCoin.getWidth(),
+              digitalCoin.getWeiFactor(),
               digitalCoin.getContract(), 
               digitalCoin.getSupply());
       } catch (Exception e) {

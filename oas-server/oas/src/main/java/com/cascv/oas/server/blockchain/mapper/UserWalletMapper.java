@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import org.apache.ibatis.annotations.Param;
 
 import com.cascv.oas.server.blockchain.model.UserWallet;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface UserWalletMapper {
   Integer insertSelective(UserWallet userWallet);
   UserWallet selectByUuid(String uuid);
