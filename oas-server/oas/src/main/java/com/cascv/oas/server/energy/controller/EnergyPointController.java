@@ -88,13 +88,10 @@ public class EnergyPointController {
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
     	String userUuid = ShiroUtils.getUserUuid();
-    	System.out.println(userUuid);
         EnergyBallResult energyBallResult = new EnergyBallResult();
         List<EnergyBall> energyBallList = energyService.listEnergyBall(userUuid);
-        System.out.println(energyBallList);
         BigDecimal ongoingEnergySummary = new BigDecimal("0");
         for (int i = 0; i < energyBallList.size(); i++) {
-            System.out.println(energyBallList.get(i).getPoint());
             ongoingEnergySummary = ongoingEnergySummary.add(energyBallList.get(i).getPoint());
         }
         energyBallResult.setEnergyBallList(energyBallList);
