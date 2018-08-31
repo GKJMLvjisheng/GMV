@@ -5,17 +5,18 @@ import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergySourcePointMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
-import com.cascv.oas.server.energy.mapper.UserEnergyMapper;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
+import com.cascv.oas.server.energy.mapper.EnergyTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.model.UserEnergy;
+import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.lang.model.type.ErrorType;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class EnergyService {
     @Autowired
     private EnergyBallMapper energyBallMapper;
     @Autowired
-    private UserEnergyMapper userEnergyMapper;
+    private EnergyTradeRecordMapper energyTradeRecordMapper;
     @Autowired
     private EnergySourcePointMapper energySourcePointMapper;
     @Autowired
@@ -69,24 +70,24 @@ public class EnergyService {
      * @return
      */
     public EnergyCheckinResult saveUserEnergy(String userId) {
-        UserEnergy userEnergy = new UserEnergy();
-        userEnergy.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-        userEnergy.setUserUuid(userId);
-        userEnergy.setEnergyBallUuid(checkinEnergyBall.getUuid());
+        EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
+        energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+        energyTradeRecord.setUserUuid(userId);
+        energyTradeRecord.setEnergyBallUuid(checkinEnergyBall.getUuid());
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        userEnergy.setTimeCreated(now);
-        userEnergy.setTimeUpdated(now);
+        energyTradeRecord.setTimeCreated(now);
+        energyTradeRecord.setTimeUpdated(now);
 
         EnergyCheckinResult checkinEnergy = this.getCheckinEnergy();
-        UserEnergy newestEnergyResult = this.getNewestEnergyResult(userId);
+        EnergyTradeRecord newestEnergyResult = this.getNewestEnergyResult(userId);
         if(newestEnergyResult == null) {
-            userEnergy.setBalancePoint(checkinEnergy.getNewEnergyPoint().add(BigDecimal.ZERO));
-            userEnergy.setBalancePower(checkinEnergy.getNewPower().add(BigDecimal.ZERO));
+            energyTradeRecord.setPointChange(checkinEnergy.getNewEnergyPoint().add(BigDecimal.ZERO));
+            energyTradeRecord.setPowerChange(checkinEnergy.getNewPower().add(BigDecimal.ZERO));
         }else {
-            userEnergy.setBalancePoint(newestEnergyResult.getBalancePoint().add(checkinEnergy.getNewEnergyPoint()));
-            userEnergy.setBalancePower(newestEnergyResult.getBalancePower().add(checkinEnergy.getNewPower()));
+            energyTradeRecord.setPointChange(newestEnergyResult.getPointChange().add(checkinEnergy.getNewEnergyPoint()));
+            energyTradeRecord.setPowerChange(newestEnergyResult.getPowerChange().add(checkinEnergy.getNewPower()));
         }
-        userEnergyMapper.insertUserEnergy(userEnergy);
+        energyTradeRecordMapper.insertUserEnergy(energyTradeRecord);
         return checkinEnergy;
     }
 
@@ -105,14 +106,14 @@ public class EnergyService {
      * 查询挖矿类型的所有能量球
      * @return
      */
-    public List<EnergyBall> listEnergyBall(String userUuid) {
+    public List<EnergyBallWrapper> listEnergyBall(String userUuid) {
         // 如果此用户该类型能量球还没有，则生成
         this.miningEnergyBallGenerate(userUuid);
         // 查询所有挖矿能量球信息
         EnergyBall energyBall = new EnergyBall();
-        energyBall.setUserUuid(userUuid);
         energyBall.setPointSource(SOURCE_CODE_OF_MINING);
-        return energyBallMapper.selectByPointSourceCode(energyBall);
+        energyBall.setUserUuid(userUuid);
+        return energyBallMapper.selectCheckinEnergyBalls(energyBall);
     }
 
     // 以下为非业务方法
@@ -157,9 +158,9 @@ public class EnergyService {
      * @param userId
      * @return
      */
-    public UserEnergy getNewestEnergyResult(String userId) {
-        List<UserEnergy> userEnergies = userEnergyMapper.selectByUserId(userId);
-        return CollectionUtils.isEmpty(userEnergies) ? null : userEnergies.get(0);
+    public EnergyTradeRecord getNewestEnergyResult(String userId) {
+        List<EnergyTradeRecord> energyTradeRecords = energyTradeRecordMapper.selectByUserId(userId);
+        return CollectionUtils.isEmpty(energyTradeRecords) ? null : energyTradeRecords.get(0);
     }
 
     /**

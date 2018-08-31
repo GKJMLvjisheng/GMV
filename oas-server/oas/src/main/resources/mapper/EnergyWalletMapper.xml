@@ -17,7 +17,7 @@
   
   
   <!-- insert user -->
-  <insert id="insertSelective" parameterType="com.cascv.oas.server.energy.model.EnergyPoint">
+  <insert id="insertSelective" parameterType="com.cascv.oas.server.energy.model.EnergyWallet">
     insert into energy_point(
       uuid,
     	user_uuid,
