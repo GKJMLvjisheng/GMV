@@ -51,11 +51,8 @@ public class EnergyService {
      */
     public Boolean isCheckin(String userUuid) {
         String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
-        EnergyBall energyBall = new EnergyBall();
-        energyBall.setUserUuid(userUuid);
-        energyBall.setTimeCreated(today);
-        energyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-        List<EnergyBall> energyBalls = energyBallMapper.selectByTimeFuzzyQuery(energyBall);
+        List<EnergyBall> energyBalls = energyBallMapper
+                .selectByTimeFuzzyQuery(userUuid, SOURCE_CODE_OF_CHECKIN, today);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
     }
 
@@ -66,7 +63,7 @@ public class EnergyService {
      * @return
      */
     public int saveCheckinEnergyBall(String userUuid) {
-        checkinEnergyBall = this.setCheckinEnergyBall(userUuid);
+        this.setCheckinEnergyBall(userUuid);
         return energyBallMapper.insertEnergyBall(checkinEnergyBall);
     }
 
@@ -107,7 +104,6 @@ public class EnergyService {
         energyWallet.setUpdated(now);
         energyWallet.setCreated(now);
         energyWalletMapper.insertSelectiveExceptPointPower(energyWallet);
-        System.out.println("获取签到积分：" + this.getCheckinEnergy().getNewEnergyPoint());
         energyWalletMapper.increasePoint(uuid, this.getCheckinEnergy().getNewEnergyPoint());
         energyWalletMapper.increasePower(uuid, this.getCheckinEnergy().getNewPower());
     }
@@ -116,11 +112,10 @@ public class EnergyService {
      * 根据能量球uuid 更新其状态，将状态
      * @return
      */
-    public int updateEnergyBallStatusByUuid() {
-        checkinEnergyBall.setStatus(STATUS_OF_DIE_ENERGYBALL);
+    public int updateEnergyBallStatusByUuid(String userUuid) {
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        checkinEnergyBall.setTimeUpdated(now);
-        return energyBallMapper.updateEnergyBallStatusByUuid(checkinEnergyBall);
+        String uuid = checkinEnergyBall.getUuid();
+        return energyBallMapper.updateStatusByUuid(uuid, STATUS_OF_DIE_ENERGYBALL, now);
     }
 
     /**
@@ -130,11 +125,8 @@ public class EnergyService {
     public List<EnergyBallWrapper> listEnergyBall(String userUuid) {
         // 如果此用户该类型能量球还没有，则生成
         this.miningEnergyBallGenerate(userUuid);
-        // 查询所有挖矿能量球信息
-        EnergyBall energyBall = new EnergyBall();
-        energyBall.setPointSource(SOURCE_CODE_OF_MINING);
-        energyBall.setUserUuid(userUuid);
-        return energyBallMapper.selectCheckinEnergyBalls(energyBall);
+        // 查询所有挖矿能量球的部分信息，包装
+        return energyBallMapper.selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
     }
 
     // 以下为非业务方法
@@ -143,22 +135,20 @@ public class EnergyService {
      * @param userUuid
      * @return
      */
-    public EnergyBall setCheckinEnergyBall(String userUuid) {
-        EnergyBall energyBallOfCheckin = new EnergyBall();
-        energyBallOfCheckin.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-        energyBallOfCheckin.setUserUuid(userUuid);
-        energyBallOfCheckin.setPointSource(SOURCE_CODE_OF_CHECKIN);
-        energyBallOfCheckin.setPowerSource(SOURCE_CODE_OF_CHECKIN);
-        energyBallOfCheckin.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+    public void setCheckinEnergyBall(String userUuid) {
+        checkinEnergyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+        checkinEnergyBall.setUserUuid(userUuid);
+        checkinEnergyBall.setPointSource(SOURCE_CODE_OF_CHECKIN);
+        checkinEnergyBall.setPowerSource(SOURCE_CODE_OF_CHECKIN);
+        checkinEnergyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 
         EnergyCheckinResult checkinEnergy = this.getCheckinEnergy();
-        energyBallOfCheckin.setPoint(checkinEnergy.getNewEnergyPoint());
-        energyBallOfCheckin.setPower(checkinEnergy.getNewPower());
+        checkinEnergyBall.setPoint(checkinEnergy.getNewEnergyPoint());
+        checkinEnergyBall.setPower(checkinEnergy.getNewPower());
 
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        energyBallOfCheckin.setTimeCreated(now);
-        energyBallOfCheckin.setTimeUpdated(now);
-        return energyBallOfCheckin;
+        checkinEnergyBall.setTimeCreated(now);
+        checkinEnergyBall.setTimeUpdated(now);
     }
 
     /**
@@ -171,8 +161,6 @@ public class EnergyService {
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
         energyCheckinResult.setNewPower(power);
-        System.out.println("签到积分：" + point);
-        System.out.println("签到算力: " + power);
         return energyCheckinResult;
     }
 
@@ -180,11 +168,10 @@ public class EnergyService {
      * 产生不足数的能量球原球
      */
     public void miningEnergyBallGenerate(String userUuid) {
-        // 查询该用户是否产生挖矿能量球
+        // 查询该用户是否产生过挖矿能量球
+        List<EnergyBall> energyBalls = energyBallMapper
+                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
         EnergyBall energyBall = new EnergyBall();
-        energyBall.setUserUuid(userUuid);
-        energyBall.setPointSource(SOURCE_CODE_OF_MINING);
-        List<EnergyBall> energyBalls = energyBallMapper.selectByPointSourceCode(energyBall);
         // 能量球数不足，则产生至需要数目
         if (energyBalls == null || energyBalls.size() < MAX_COUNT_OF_MINING_ENERGYBALL) {
             int countOfGenerate = MAX_COUNT_OF_MINING_ENERGYBALL - energyBalls.size();

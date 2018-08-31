@@ -73,7 +73,7 @@ public class EnergyPointController {
             // add the Checkin point&power in EnergyWallet
             energyService.saveEnergyWallet(energyCheckinResult, userUuid);
             // change the Checkin EnergyBall to Die
-            energyService.updateEnergyBallStatusByUuid();
+            energyService.updateEnergyBallStatusByUuid(userUuid);
             // the result of Checkin
             energyCheckinResult = energyService.getCheckinEnergy();
         } else {
