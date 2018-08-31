@@ -9,6 +9,7 @@ import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.SelectContractSymbolName;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -34,9 +35,11 @@ public class EthWalletController {
   @PostMapping(value="/selectContractSymbol")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> selectContractSymbol(){
-	  String userUuid = ShiroUtils.getUserUuid();
-	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(userUuid);
+  public ResponseEntity<?> selectContractSymbol(@RequestBody SelectContractSymbolName selectContractSymbolName){
+//	  UserModel userModel = ShiroUtils.getUser();
+//	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(userModel.getName());
+	  String name = selectContractSymbolName.getName();
+	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(name);
 	return new ResponseEntity.Builder<List<ContractSymbol>>()
 			.setData(conractSymbolList)
 			.setErrorCode(ErrorCode.SUCCESS)

@@ -145,8 +145,8 @@ public class EthWalletService {
     }
   }
   
-  public List<ContractSymbol> selectContractSymbol(String userUuid) {
-	  return digitalCoinService.selectContractSymbol(userUuid);
+  public List<ContractSymbol> selectContractSymbol(String name) {
+	  return digitalCoinService.selectContractSymbol(name);
   }
 
   public void import_token(String userUuid, String address, String contract){
