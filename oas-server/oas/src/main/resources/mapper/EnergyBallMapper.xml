@@ -28,7 +28,7 @@
         select * from energy_ball where user_uuid = #{userUuid} and point_source = #{pointSource}
     </select>
 
-    <update id="updateEnergyBallStatusById" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
+    <update id="updateEnergyBallStatusByUuid" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
         update energy_ball set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
     </update>
 

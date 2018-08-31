@@ -3,12 +3,10 @@ package com.cascv.oas.server.energy.service;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.energy.mapper.EnergySourcePointMapper;
-import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
-import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
-import com.cascv.oas.server.energy.mapper.EnergyTradeRecordMapper;
+import com.cascv.oas.server.energy.mapper.*;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.apache.commons.collections.CollectionUtils;
@@ -30,17 +28,24 @@ public class EnergyService {
     private EnergySourcePointMapper energySourcePointMapper;
     @Autowired
     private EnergySourcePowerMapper energySourcePowerMapper;
+    @Autowired
+    private EnergyWalletMapper energyWalletMapper;
 
     private EnergyBall checkinEnergyBall = new EnergyBall();
 
-    private static final Integer STATUS_OF_NEW_BORN_ENERGYBALL = 1; // 新生能量球状态值为1；
-    private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;      // 被获取过能量的能量球已死，状态值为0；
-    private static final Integer SOURCE_CODE_OF_CHECKIN = 1;        // 能量球来源：签到为1
-    private static final Integer SOURCE_CODE_OF_MINING = 2;         // 能量球来源：挖矿为2
+    private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
+    private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
+    private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
+    private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，可被获取
+    private static final Integer SOURCE_CODE_OF_CHECKIN = 1;            // 能量球来源：签到为1
+    private static final Integer SOURCE_CODE_OF_MINING = 2;             // 能量球来源：挖矿为2
     private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 16;
+    private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
+//    private static final String FORMAT_OF_TIME = ""
 
     /**
-     * 查询当日是否签过到，已签到返回 true，当日尚未签到返回 false
+     * Checkin the 1st function
+     * 查询当日是否签过到，已签到返回true,当日尚未签到返回false
      * @param userUuid
      * @return
      */
@@ -49,12 +54,13 @@ public class EnergyService {
         EnergyBall energyBall = new EnergyBall();
         energyBall.setUserUuid(userUuid);
         energyBall.setTimeCreated(today);
-        energyBall.setStatus(STATUS_OF_NEW_BORN_ENERGYBALL);
+        energyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
         List<EnergyBall> energyBalls = energyBallMapper.selectByTimeFuzzyQuery(energyBall);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
     }
 
     /**
+     * Checkin the 2nd function
      * 插入签到EnergyBall
      * @param userUuid
      * @return
@@ -65,41 +71,56 @@ public class EnergyService {
     }
 
     /**
-     * 用户能量表中插入记录
+     * Checkin the 3rd function
+     * 能量记录表中插入签到记录
      * @param userId
      * @return
      */
-    public EnergyCheckinResult saveUserEnergy(String userId) {
+    public int saveEnergyRecord(String userId) {
         EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
-        energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+        energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
         energyTradeRecord.setUserUuid(userId);
         energyTradeRecord.setEnergyBallUuid(checkinEnergyBall.getUuid());
+        energyTradeRecord.setInOrOut(ENEGY_IN);
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         energyTradeRecord.setTimeCreated(now);
         energyTradeRecord.setTimeUpdated(now);
+        energyTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
+        energyTradeRecord.setPointChange(this.getCheckinEnergy().getNewEnergyPoint());
+        energyTradeRecord.setPowerChange(this.getCheckinEnergy().getNewPower());
+        return energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
+    }
 
-        EnergyCheckinResult checkinEnergy = this.getCheckinEnergy();
-        EnergyTradeRecord newestEnergyResult = this.getNewestEnergyResult(userId);
-        if(newestEnergyResult == null) {
-            energyTradeRecord.setPointChange(checkinEnergy.getNewEnergyPoint().add(BigDecimal.ZERO));
-            energyTradeRecord.setPowerChange(checkinEnergy.getNewPower().add(BigDecimal.ZERO));
-        }else {
-            energyTradeRecord.setPointChange(newestEnergyResult.getPointChange().add(checkinEnergy.getNewEnergyPoint()));
-            energyTradeRecord.setPowerChange(newestEnergyResult.getPowerChange().add(checkinEnergy.getNewPower()));
-        }
-        energyTradeRecordMapper.insertUserEnergy(energyTradeRecord);
-        return checkinEnergy;
+    /**
+     * Checkin the 4th function
+     * 在能量钱包(EnergyWallet)中添加记录
+     * @param energyCheckinResult
+     * @param userUuid
+     * @return
+     */
+    public void saveEnergyWallet(EnergyCheckinResult energyCheckinResult, String userUuid) {
+        EnergyWallet energyWallet = new EnergyWallet();
+        String uuid = UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
+        energyWallet.setUuid(uuid);
+        energyWallet.setUserUuid(userUuid);
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+        energyWallet.setUpdated(now);
+        energyWallet.setCreated(now);
+        energyWalletMapper.insertSelectiveExceptPointPower(energyWallet);
+        System.out.println("获取签到积分：" + this.getCheckinEnergy().getNewEnergyPoint());
+        energyWalletMapper.increasePoint(uuid, this.getCheckinEnergy().getNewEnergyPoint());
+        energyWalletMapper.increasePower(uuid, this.getCheckinEnergy().getNewPower());
     }
 
     /**
      * 根据能量球uuid 更新其状态，将状态
      * @return
      */
-    public int updateEnergyBallStatusById() {
+    public int updateEnergyBallStatusByUuid() {
         checkinEnergyBall.setStatus(STATUS_OF_DIE_ENERGYBALL);
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         checkinEnergyBall.setTimeUpdated(now);
-        return energyBallMapper.updateEnergyBallStatusById(checkinEnergyBall);
+        return energyBallMapper.updateEnergyBallStatusByUuid(checkinEnergyBall);
     }
 
     /**
@@ -128,7 +149,7 @@ public class EnergyService {
         energyBallOfCheckin.setUserUuid(userUuid);
         energyBallOfCheckin.setPointSource(SOURCE_CODE_OF_CHECKIN);
         energyBallOfCheckin.setPowerSource(SOURCE_CODE_OF_CHECKIN);
-        energyBallOfCheckin.setStatus(STATUS_OF_NEW_BORN_ENERGYBALL);
+        energyBallOfCheckin.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 
         EnergyCheckinResult checkinEnergy = this.getCheckinEnergy();
         energyBallOfCheckin.setPoint(checkinEnergy.getNewEnergyPoint());
@@ -150,17 +171,9 @@ public class EnergyService {
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
         energyCheckinResult.setNewPower(power);
+        System.out.println("签到积分：" + point);
+        System.out.println("签到算力: " + power);
         return energyCheckinResult;
-    }
-
-    /**
-     * 获取用户最新的energy记录
-     * @param userId
-     * @return
-     */
-    public EnergyTradeRecord getNewestEnergyResult(String userId) {
-        List<EnergyTradeRecord> energyTradeRecords = energyTradeRecordMapper.selectByUserId(userId);
-        return CollectionUtils.isEmpty(energyTradeRecords) ? null : energyTradeRecords.get(0);
     }
 
     /**
@@ -183,7 +196,7 @@ public class EnergyService {
                 energyBall.setPoint(BigDecimal.ZERO);
                 energyBall.setPower(BigDecimal.ZERO);
                 energyBall.setPowerSource(0);
-                energyBall.setStatus(STATUS_OF_NEW_BORN_ENERGYBALL);
+                energyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
                 energyBall.setTimeCreated(now);
                 energyBall.setTimeUpdated(now);
                 energyBallMapper.insertEnergyBall(energyBall);

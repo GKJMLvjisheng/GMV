@@ -7,17 +7,11 @@ import java.util.List;
 
 @Component
 public interface EnergyTradeRecordMapper {
-    /**
-     * 根据userId 查询userEnergy列表
-     * @param userId
-     * @return
-     */
-    List<EnergyTradeRecord> selectByUserId(String userId);
 
     /**
      *
      * @param energyTradeRecord
      * @return
      */
-    int insertUserEnergy(EnergyTradeRecord energyTradeRecord);
+    int insertEnergyTradeRecord(EnergyTradeRecord energyTradeRecord);
 }

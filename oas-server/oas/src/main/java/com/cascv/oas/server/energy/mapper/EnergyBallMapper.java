@@ -27,7 +27,7 @@ public interface EnergyBallMapper {
      * @param energyBall
      * @return
      */
-    int updateEnergyBallStatusById(EnergyBall energyBall);
+    int updateEnergyBallStatusByUuid(EnergyBall energyBall);
 
     /**
      * 根据能量球id，查询能量球信息

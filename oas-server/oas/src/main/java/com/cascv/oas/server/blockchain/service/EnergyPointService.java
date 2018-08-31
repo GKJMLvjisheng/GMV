@@ -1,6 +1,7 @@
 package com.cascv.oas.server.blockchain.service;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -36,8 +37,8 @@ public class EnergyPointService {
     EnergyWallet energyWallet = new EnergyWallet();
     energyWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
     energyWallet.setUserUuid(userUuid);
-    energyWallet.setBalance(0);
-    energyWallet.setPower(0);
+    energyWallet.setPoint(BigDecimal.ZERO);
+    energyWallet.setPower(BigDecimal.ZERO);
     String now = DateUtils.dateTimeNow();
     energyWallet.setCreated(now);
     energyWallet.setUpdated(now);
@@ -63,11 +64,11 @@ public class EnergyPointService {
   public Integer redeem(String userUuid, Integer value) {
     EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
     UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
-    if (energyWallet == null || userWallet == null || energyWallet.getBalance().compareTo(value) < 0) {
+    if (energyWallet == null || userWallet == null || energyWallet.getPoint().compareTo(BigDecimal.valueOf(value)) < 0) {
       return 0;
     }
-    energyWalletMapper.decreaseBalance(energyWallet.getUuid(), value);
-    userWalletMapper.increaseBalance(userWallet.getUuid(), powerService.exchange(energyWallet.getPower(), value));
+    energyWalletMapper.decreasePoint(energyWallet.getUuid(), BigDecimal.valueOf(value));
+    userWalletMapper.increaseBalance(userWallet.getUuid(), powerService.exchange(energyWallet.getPower().intValue(), value));
     return value;
   }
   
@@ -77,7 +78,7 @@ public class EnergyPointService {
     if (energyWallet == null) {
       return 0;
     }
-    energyWalletMapper.increaseBalance(energyWallet.getUuid(), value);
+    energyWalletMapper.increasePoint(energyWallet.getUuid(), BigDecimal.valueOf(value));
     return value;
   }
   
