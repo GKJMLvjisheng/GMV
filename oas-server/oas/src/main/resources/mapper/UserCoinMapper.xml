@@ -44,7 +44,7 @@
       <include refid="Base_Column_List" />
     from user_coin where user_uuid = #{userUuid} and contract = #{contract}
   </select>
-
+  
   <select id="selectAll" resultMap="userCoinMap">
   	select 
       <include refid="Base_Column_List" />

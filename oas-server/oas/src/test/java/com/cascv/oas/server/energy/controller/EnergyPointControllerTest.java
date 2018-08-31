@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigDecimal;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class EnergyPointControllerTest {
@@ -19,4 +21,13 @@ public class EnergyPointControllerTest {
 //        System.out.println("code: " + checkin.getCode());
 //        System.out.println("message: " + checkin.getMessage());
     }
+
+    @Test
+    public void inquireEnergyBall() {
+        ResponseEntity<?> energyBallResult = energyPointController.inquireEnergyBall("USR-0178ea59a6ab11e883290a1411382ce0");
+        System.out.println("data: " + energyBallResult.getData());
+        System.out.println("code: " + energyBallResult.getCode());
+        System.out.println("message: " + energyBallResult.getMessage());
+    }
+
 }

@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-#HOST='http://18.219.19.160:8080/api/v1'
-HOST='http://localhost:8080/api/v1'
+HOST='http://18.219.19.160:8080/api/v1'
+#HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -281,24 +281,11 @@ def ethWalletMultiTransfer(token):
   if res.get('code') == 0:
     return res.get('data')
 
-NAME="cai001"
-PASSWORD="cai120501"
-token=login(NAME,PASSWORD)
-if token is not None:
-  print "[PASS] user login"
-else:
-  raise Exception("[FAIL] user login")
-
-coin=ethWalletListCoin(token)
-if coin is not None:
-  print coin
-else:
-  raise Exception("[FAIL] list coin")
-    
-#testRegisterDestroy()
-#testEnergyPoint()
-#testUserWallet()
-#testEthWallet()
+   
+testRegisterDestroy()
+testEnergyPoint()
+testUserWallet()
+testEthWallet()
 
 file.close()
 

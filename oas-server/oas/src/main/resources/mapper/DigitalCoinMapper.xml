@@ -62,6 +62,15 @@
       <include refid="Base_Column_List" />
     from digital_coin
   </select>
+  
+  <resultMap id="contractSymbolMap" type="com.cascv.oas.server.blockchain.wrapper.ContractSymbol">
+	<result column="user_uuid" property="userUuid"/>
+	<result column="symbol" property="symbol"/>
+	<result column="contract" property="contract"/>
+  </resultMap>
+  <select id="selectContractSymbol" parameterType="java.lang.String" resultMap="contractSymbolMap">
+      select * from digital_coin a left join user_coin b on a.contract = b.contract where b.user_uuid = #{userUuid}
+  </select>
 
   <!-- delete by contract -->
   <delete id="deleteByContract">

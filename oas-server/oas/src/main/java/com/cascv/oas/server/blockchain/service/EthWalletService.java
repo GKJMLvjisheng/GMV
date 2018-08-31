@@ -33,6 +33,7 @@ import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.UserCoin;
+import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -143,6 +144,10 @@ public class EthWalletService {
       return null;
     }
   }
+  
+  public ContractSymbol selectContractSymbol(String userUuid) {
+	  return digitalCoinService.selectContractSymbol(userUuid);
+  }
 
   public void import_token(String userUuid, String address, String contract){
     DigitalCoin digitalCoin = digitalCoinService.find(contract);
@@ -158,6 +163,10 @@ public class EthWalletService {
     BigDecimal balance = this.getBalance(address, contract, weiFactor);
     userCoin.setBalance(balance);
     userCoinMapper.insertSelective(userCoin);
+  }
+  
+  public List<DigitalCoin> listDigitalCoins(){
+	return digitalCoinService.listDigitalCoins();	  
   }
 
   public EthWallet getEthWalletByUserUuid(String userUuid)
@@ -191,6 +200,11 @@ public class EthWalletService {
     userCoin.setValue(this.getValue(balance));
     return userCoin;
   }
+  
+  public UserCoin getTokenCoin(String userUuid){
+    return this.getUserCoin(userUuid, coinClient.getToken());
+  }
+
 
   public List<UserCoin> listCoin(String userUuid){
     List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
