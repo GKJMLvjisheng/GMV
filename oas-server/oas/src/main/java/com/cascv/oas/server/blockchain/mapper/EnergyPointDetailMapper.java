@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface EnergyPointDetailMapper {
   Integer insertSelective(EnergyPointDetail energyPointDetail);
   List<EnergyPointDetail> selectByUuid(String uuid);
