@@ -15,6 +15,7 @@
 //     // 设置表格可编辑  
 
 //     // 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
+document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
 var token;
 $(function ()
 	{
@@ -24,8 +25,48 @@ $(function ()
 	var len=strInfo.length;
 	if(len>0)
 	{
-		token=decodeURI(strInfo[0]);//获取第一个参数的值
+		token=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+		var name=decodeURI(decodeURI(strInfo[1]));
+		alert("name"+name);
 		}
+	data={"name":name}
+	$.ajax({
+		   type: 'post',
+		   url: '/api/v1/ethWallet/selectContractSymbol',
+		   data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   success: function (res) {
+		     if (res.code == 0) {
+		    	 alert(JSON.stringify(res));
+		    	
+		    	 var optionData=res.data;
+		    	 alert(JSON.stringify(optionData));
+		    	 var len=optionData.length;
+		    	 alert("长度"+len);
+		    	 
+		    	 var selections = document.getElementById("contract");
+		    	 //var string=res.data[];
+		    	 for(var i =0;i<len;i++){
+                     //设置下拉列表中的值的属性
+                     var option = document.createElement("option");
+                         option.value = optionData[i].contract;
+                         alert(optionData[i].contract);
+                         option.text= optionData[i].symbol;
+                     //将option增加到下拉列表中。
+                     selections.options.add(option);
+                 }
+			     
+		     } else {
+		    	 alert(res.message);
+		     }
+		   },
+		   error: function (res) {
+			  alert("option错误"+JSON.stringify(res));
+		   },
+		  
+		  });
 	var tabProduct = document.getElementById("tabProduct");    
 	
     editTables(tabProduct);  
@@ -450,18 +491,25 @@ $(function ()
     //提取表格的值,JSON格式  
 
     function getTableData(table){  
-
+    var contract=$('#contract option:selected') .val();
+    if(contract=="请选择")
+    {alert("请选择货币类型");
+    return;}
+    
+    Ewin.confirm({ message: "确认要提交表格的数据吗？" }).on(function (e) {
+		if (!e) {
+		  return;
+		 }
     var tableData = new Array();  
 
-    alert("行数：" + table.rows.length);  
+   
 
     for(var i=1; i<table.rows.length;i++){  
 
        tableData.push(getRowData(table.rows[i]));  
 
     }  
-    alert(JSON.stringify(tableData[0]));
-    alert(JSON.stringify(tableData));
+   
     var tableDataLen=tableData.length;
     var tableData1=[];
     for(var i=0;i<tableDataLen;i++)
@@ -474,20 +522,21 @@ $(function ()
      tableData1.push(rowAdd);
 		}
     alert(JSON.stringify(tableData1))
-    var contract=$('#contract option:selected') .val();
-	alert("contract"+$('#contract option:selected') .val());//选中的值
+   
+	//alert("contract"+$('#contract option:selected') .val());//选中的值
+	
     alert(token);
     data={
     		"contract": contract,
     	    "quota":tableData1,
     	};
     alert(JSON.stringify(data));
-   transfer(data);
-    return tableData;  
-
-      
+    transfer(data);
+    });
+    //return tableData;  
 
     }  
+    //转账接口
     function transfer(data)
     {
     	 alert("111"+JSON.stringify(data));
@@ -868,14 +917,21 @@ alert("leni"+i);
     });
     function getExcelData()
     {	
+    	
     	 var contract=$('#contract option:selected') .val();
-    		alert("contract"+$('#contract option:selected') .val());//选中的值
-    	    alert(token);
+    	 if(contract=="请选择")
+    	    {alert("请选择货币类型");
+    	    return;}
+    		Ewin.confirm({ message: "确认要提交导入的excel数据吗？" }).on(function (e) {
+    			if (!e) {
+    			  return;
+    			 }
     	    data={
     	    		"contract": contract,
     	    	    "quota":transferData,
     	    	};
     	    alert(JSON.stringify(data));
     	   transfer(data);
+    		});
     	
     }

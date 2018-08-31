@@ -33,6 +33,7 @@
 		"name": $('#nameId').val(),
 	    "password": $('#passwordId').val(),
 	};
+	var name=$('#nameId').val();
 	$.ajax({
 	   type: 'post',
 	   url: '/api/v1/userCenter/login',
@@ -44,7 +45,7 @@
 	     if (res.code == 0) {
 	    	 var string=res.data.token;
 	    	 
-		     	window.location.replace("multiTransfer?string="+string);
+	    	 window.location.replace(encodeURI(encodeURI("multiTransfer?string="+string+"&用户名字="+name)));
 	     } else {
 	    	 alert(res.message);
 	     }

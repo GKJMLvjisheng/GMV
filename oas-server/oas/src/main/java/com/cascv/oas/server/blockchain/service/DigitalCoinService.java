@@ -28,8 +28,8 @@ public class DigitalCoinService {
       return digitalCoinMapper.selectByContract(contract);
     }
     
-    public ContractSymbol selectContractSymbol(String userUuid) {
-		return digitalCoinMapper.selectContractSymbol(userUuid);
+    public List<ContractSymbol> selectContractSymbol(String name) {
+		return digitalCoinMapper.selectContractSymbol(name);
     }
 
     public Integer create(CoinClient coinClient, String contract){

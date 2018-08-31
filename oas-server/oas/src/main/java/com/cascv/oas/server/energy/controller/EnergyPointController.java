@@ -93,8 +93,8 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//    	String userUuid = ShiroUtils.getUserUuid();
+   //    String userUuid = "USR-9590d7f9a5c811e883290a1411382ce0";
+    	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = new EnergyBallResult();
         List<EnergyBallWrapper> energyBallWrappersList = energyService.listEnergyBall(userUuid);
         BigDecimal ongoingEnergySummary = new BigDecimal("0");

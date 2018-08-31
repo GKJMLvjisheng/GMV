@@ -14,6 +14,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
+import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
@@ -42,6 +43,10 @@ public class UserWalletController {
   @Autowired
   private UserService userService;
 
+  @Autowired
+  private UserWalletDetailMapper userWalletDetailMapper;
+
+  
   @Autowired
   private ExchangeParam exchangeParam;
 
@@ -94,27 +99,25 @@ public class UserWalletController {
     Calendar calendar = new GregorianCalendar();
     Date now = new Date();
     calendar.setTime(now);
-    List<UserWalletDetail> userWalletDetailList = new ArrayList<>();
-    for (Integer i = 0; i < 3; i++) {
-      UserWalletDetail userWalletDetail = new UserWalletDetail();
-      userWalletDetail.setUuid(String.valueOf(i+1));
-      userWalletDetail.setUserUuid(ShiroUtils.getUserUuid());
-      userWalletDetail.setValue(BigDecimal.valueOf(i+100));
-      userWalletDetail.setTitle(UserWalletDetailScope.COIN_REDEEM.getTitle());
-      userWalletDetail.setSubTitle(UserWalletDetailScope.COIN_REDEEM.getSubTitle());
-      
-      calendar.add(Calendar.DATE,1+i);
-      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-      String str = formatter.format(calendar.getTime());
-      userWalletDetail.setCreated(str);
-      userWalletDetailList.add(userWalletDetail);
-    }
+    
+    Integer count = userWalletDetailMapper.selectCount();
+    Integer pageNum = pageInfo.getPageNum();
+    Integer pageSize = pageInfo.getPageSize();
+    Integer limit = pageSize;
+    Integer offset;
+    if (pageNum > 0)
+    	offset = (pageNum - 1) * limit;
+    else 
+    	offset = 0;
+
+    List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(
+    				ShiroUtils.getUserUuid(), offset,limit);
     PageDomain<UserWalletDetail> pageUserWalletDetail= new PageDomain<>();
-    pageUserWalletDetail.setTotal(3);
-    pageUserWalletDetail.setAsc("asc");
-    pageUserWalletDetail.setOffset(0);
-    pageUserWalletDetail.setPageNum(1);
-    pageUserWalletDetail.setPageSize(3);
+    pageUserWalletDetail.setTotal(count);
+    pageUserWalletDetail.setAsc("desc");
+    pageUserWalletDetail.setOffset(offset);
+    pageUserWalletDetail.setPageNum(pageNum);
+    pageUserWalletDetail.setPageSize(pageSize);
     pageUserWalletDetail.setRows(userWalletDetailList);
     return new ResponseEntity.Builder<PageDomain<UserWalletDetail>>()
             .setData(pageUserWalletDetail)
