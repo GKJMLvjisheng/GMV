@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-HOST='http://18.219.19.160:8080/api/v1'
-#HOST='http://localhost:8080/api/v1'
+#HOST='http://18.219.19.160:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -126,6 +126,15 @@ def userWalletBalance(token):
   if res.get('code') == 0:
     return res.get('data')
 
+# userWalletTransfer
+def userWalletTransfer(token,toUserName, amount):
+  url=HOST+"/userWallet/transfer"
+  data={"toUserName":toUserName,"value":amount}
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+    
 def energyPointCheckin(token):
   url=HOST+"/energyPoint/checkin"
   data={}
@@ -281,11 +290,30 @@ def ethWalletMultiTransfer(token):
   if res.get('code') == 0:
     return res.get('data')
 
-   
-testRegisterDestroy()
-testEnergyPoint()
-testUserWallet()
-testEthWallet()
+def testUserWalletTransfer():
+  fromUserName="caikov"
+  fromPassword="cai120501"
+  toUserName="cai002"
+  amount=15.0
+  token=login(fromUserName,fromPassword)
+  
+  if token is not None:
+    print "[PASS] user login"
+  else:
+    raise Exception("[Fail] user login")
+    
+  res=userWalletTransfer(token,toUserName, amount)
+  if res is not None:
+    print res
+  else:
+    raise Exception("[Fail] user wallet transfer")
+
+testUserWalletTransfer()
+
+#testRegisterDestroy()
+#testEnergyPoint()
+#testUserWallet()
+#testEthWallet()
 
 file.close()
 
