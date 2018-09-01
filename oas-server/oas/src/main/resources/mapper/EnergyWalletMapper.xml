@@ -5,14 +5,14 @@
   <resultMap id="energyPonitMap" type="com.cascv.oas.server.energy.model.EnergyWallet">
 	<id column="uuid" property="uuid" />
 	<result column="user_uuid" property="userUuid"/>
-	<result column="balance" property="balance"/>
+	<result column="point" property="balance"/>
 	<result column="power" property="power"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, balance,power, created,updated
+    uuid, user_uuid, point,power, created,updated
   </sql>
   
   
@@ -21,56 +21,56 @@
     insert into energy_wallet(
       uuid,
     	user_uuid,
-    	balance,
+    	point,
     	power,
     	created,
     	updated
 	)  values (
-    #{uuid,jdbcType=VARCHAR},
-		#{userUuid,jdbcType=VARCHAR},
-		#{balance,jdbcType=BIGINT},
-		#{power,jdbcType=INTEGER},
-		#{created,jdbcType=VARCHAR},
-		#{updated,jdbcType=VARCHAR}
+      #{uuid,jdbcType=VARCHAR},
+      #{userUuid,jdbcType=VARCHAR},
+      #{balance,jdbcType=BIGINT},
+	  #{power,jdbcType=INTEGER},
+	  #{created,jdbcType=VARCHAR},
+	  #{updated,jdbcType=VARCHAR}
 	)
   </insert>
 
   <!-- delete by uuid -->
   <delete id="deleteByUuid">
-    delete from energy_point where uuid = #{uuid}
+    delete from energy_wallet where uuid = #{uuid}
   </delete>
 
   <!-- delete by userId -->
   <delete id="deleteByUserUuid">
-    delete from energy_point where user_uuid = #{userUuid}
+    delete from energy_wallet where user_uuid = #{userUuid}
   </delete>
   
   <select id="selectByUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
   	select 
       <include refid="Base_Column_List" />
-    from energy_point where uuid = #{uuid}
+    from energy_wallet where uuid = #{uuid}
   </select>
 
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
   	select 
       <include refid="Base_Column_List" />
-    from energy_point where user_uuid = #{userUuid}
+    from energy_wallet where user_uuid = #{userUuid}
   </select>
   
   <update id="increaseBalance">
-  	update energy_point set balance=balance + #{value} where uuid = #{uuid}
+  	update energy_wallet set point=point + #{value} where uuid = #{uuid}
   </update>
   
   <update id="decreaseBalance">
-  	update energy_point set balance=balance - #{value} where uuid = #{uuid}
+  	update energy_wallet set point=point - #{value} where uuid = #{uuid}
   </update>
   
   <update id="increasePower">
-  	update energy_point set power=power + #{value} where uuid = #{uuid}
+  	update energy_wallet set power=power + #{value} where uuid = #{uuid}
   </update>
   
   <update id="decreasePower">
-  	update energy_point set power=power - #{value} where uuid = #{uuid}
+  	update energy_wallet set power=power - #{value} where uuid = #{uuid}
   </update>
   
   
