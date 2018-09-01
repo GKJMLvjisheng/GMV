@@ -89,7 +89,7 @@ public class UserWalletController {
       userWalletBalanceSummary.setAvailableBalanceValue(BigDecimal.ZERO);
     	return new ResponseEntity.Builder<UserWalletBalanceSummary>()
     		.setData(userWalletBalanceSummary)
-            .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
+        .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
     }
   }
 
