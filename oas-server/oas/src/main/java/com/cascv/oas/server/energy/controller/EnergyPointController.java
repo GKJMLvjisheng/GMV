@@ -60,19 +60,24 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> checkin() {
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         ErrorCode errorCode = ErrorCode.SUCCESS;
-        // 检查当日是否已经签过到
-        Boolean checkin = energyService.isCheckin(userUuid);
-        if (!checkin) {
-            // 在数据库中生成签到记录以供签到
+        if (!energyService.isCheckin(userUuid)) {
+            // today sign in not yet
+            // generate a new Checkin EnergyBall
             energyService.saveCheckinEnergyBall(userUuid);
-            // 添加用户能量记录
-            energyCheckinResult = energyService.saveUserEnergy(userUuid);
-            // 将签到记录的状态更新为已被获取
-            energyService.updateEnergyBallStatusById();
+            // insert the Checkin record of this time
+            energyService.saveEnergyRecord(userUuid);
+            // add the Checkin point&power in EnergyWallet
+            energyService.saveEnergyWallet(energyCheckinResult, userUuid);
+            // change the Checkin EnergyBall to Die
+            energyService.updateEnergyBallStatusByUuid(userUuid);
+            // the result of Checkin
+            energyCheckinResult = energyService.getCheckinEnergy();
         } else {
+            // today sign in yet
             energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
             energyCheckinResult.setNewPower(BigDecimal.ZERO);
             errorCode = ErrorCode.ALREADY_CHECKIN_TODAY;
@@ -97,6 +102,7 @@ public class EnergyPointController {
             ongoingEnergySummary = ongoingEnergySummary.add(energyBallWrappersList.get(i).getValue());
         }
         energyBallResult.setEnergyBallList(energyBallWrappersList);
+
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
         return new ResponseEntity.Builder<EnergyBallResult>().setData(energyBallResult).setErrorCode(ErrorCode.SUCCESS).build();
     }
@@ -116,13 +122,13 @@ public class EnergyPointController {
     public ResponseEntity<?> inquirePower() {
         EnergyWallet energyWallet = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyWallet != null) {
-            return new ResponseEntity.Builder<Integer>()
+            return new ResponseEntity.Builder<BigDecimal>()
                     .setData(energyWallet.getPower())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
-            return new ResponseEntity.Builder<Integer>()
-                    .setData(0)
+            return new ResponseEntity.Builder<BigDecimal>()
+                    .setData(BigDecimal.ZERO)
                     .setErrorCode(ErrorCode.NO_ENERGY_POINT_ACCOUNT)
                     .build();
         }
@@ -133,8 +139,8 @@ public class EnergyPointController {
     public ResponseEntity<?> inquireEnergyPoint() {
         EnergyWallet energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
-            return new ResponseEntity.Builder<Integer>()
-                    .setData(energyPoint.getBalance())
+            return new ResponseEntity.Builder<BigDecimal>()
+                    .setData(energyPoint.getPoint())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {

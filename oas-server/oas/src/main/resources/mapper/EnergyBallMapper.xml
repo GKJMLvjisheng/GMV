@@ -12,48 +12,100 @@
         <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
         <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
     </resultMap>
-    <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.model.EnergyBall"
-            resultMap="BaseResultMap">
-        select * FROM energy_ball
+
+    <sql id="Base_Column_List">
+        uuid, user_uuid, point_source, point, power_source, power, status, time_created, time_updated
+    </sql>
+
+    <!-- 某用户的某个积分来源、根据提供的时间模糊查询 -->
+    <select id="selectByTimeFuzzyQuery" resultMap="BaseResultMap">
+          select
+        <include refid="Base_Column_List" />
+          from energy_ball
         <where>
-            user_uuid = #{userUuid} and point_source = #{status} and time_created like #{timeCreated}"%"
+            <if test="userUuid != null">
+                user_uuid = #{userUuid}
+            </if>
+            <if test="pointSourceCode != null">
+                and point_source = #{pointSourceCode}
+            </if>
+            <if test="timeCreated != null">
+                and time_created like #{timeCreated}"%"
+            </if>
         </where>
     </select>
 
-    <select id="selectByStatus" resultMap="BaseResultMap">
-      select * from energy_ball where status = #{status}
-    </select>
-
-    <select id="selectByPointSourceCode" parameterType="com.cascv.oas.server.energy.model.EnergyBall" resultMap="BaseResultMap">
-        select * from energy_ball where user_uuid = #{userUuid} and point_source = #{pointSource}
-    </select>
-
-    <update id="updateEnergyBallStatusById" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-        update energy_ball set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
-    </update>
-
-    <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-      insert into energy_ball (uuid, user_uuid, point_source, point, power_source, power, status,
-      time_created, time_updated)
-      values (#{uuid, jdbcType=VARCHAR}, #{userUuid,jdbcType=VARCHAR}, #{pointSource,jdbcType=INTEGER},
-      #{point,jdbcType=DECIMAL}, #{powerSource,jdbcType=INTEGER}, #{power,jdbcType=DECIMAL},
-      #{status,jdbcType=INTEGER}, #{timeCreated,jdbcType=VARCHAR}, #{timeUpdated,jdbcType=VARCHAR}
-      )
-    </insert>
-
-    <select id="selectCheckinEnergyBalls" parameterType="com.cascv.oas.server.energy.model.EnergyBall" resultMap="EnergyBallWrapper">
-        select b.uuid, b.point, b.time_created, b.time_updated, p.source_code, p.source_name
-        from energy_ball b inner join energy_source_point p
+    <!-- 查询某用户某种积分的所有能量球 -->
+    <select id="selectByPointSourceCode" resultMap="BaseResultMap">
+          select
+        <include refid="Base_Column_List" />
+          from energy_ball
         <where>
-            point_source = source_code and point_source = #{pointSource} and user_uuid = #{userUuid}
+            <if test="userUuid != null">
+                user_uuid = #{userUuid}
+            </if>
+            <if test="pointSource != null">
+                and point_source = #{pointSourceCode}
+            </if>
         </where>
     </select>
+
+    <!-- 查询某用户某种积分的所有能量球 部分信息 -->
+    <select id="selectPartByPointSourceCode" resultMap="EnergyBallWrapper">
+        select
+        <include refid="Part_Imformation_Of_EnergyBall" />
+        from energy_ball b
+        inner join energy_source_point p
+        <where>
+                point_source = source_code
+            <if test="pointSourceCode != null">
+                and point_source = #{pointSourceCode}
+            </if>
+            <if test="userUuid != null">
+                and user_uuid = #{userUuid}
+            </if>
+        </where>
+    </select>
+    <sql id="Part_Imformation_Of_EnergyBall">
+        b.uuid, b.point, b.time_created, b.time_updated, p.source_code, p.source_name
+    </sql>
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
-        <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
-        <result column="point" jdbcType="DECIMAL" property="value"/>
-        <result column="time_created" jdbcType="VARCHAR" property="startDate"/>
-        <result column="time_updated" jdbcType="VARCHAR" property="endDate"/>
+        <id column="uuid" property="uuid"/>
+        <result column="point" property="value"/>
+        <result column="time_created" property="startDate"/>
+        <result column="time_updated"  property="endDate"/>
         <result column="source_code" property="type" />
         <result column="source_name" property="name" />
     </resultMap>
+
+    <!-- 变更能量球的状态 -->
+    <update id="updateStatusByUuid">
+        update energy_ball
+        set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
+    </update>
+
+    <!-- 插入能量球 -->
+    <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
+        insert into energy_ball (
+        uuid,
+        user_uuid,
+        point_source,
+        point,
+        power_source,
+        power,
+        status,
+        time_created,
+        time_updated)
+        values (
+        #{uuid},
+        #{userUuid},
+        #{pointSource},
+        #{point},
+        #{powerSource},
+        #{power},
+        #{status},
+        #{timeCreated},
+        #{timeUpdated})
+    </insert>
+
 </mapper>
