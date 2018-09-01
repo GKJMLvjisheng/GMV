@@ -5,7 +5,7 @@
   <resultMap id="energyPonitMap" type="com.cascv.oas.server.energy.model.EnergyWallet">
 	<id column="uuid" property="uuid" />
 	<result column="user_uuid" property="userUuid"/>
-	<result column="point" property="balance" jdbcType="DECIMAL"/>
+	<result column="point" property="point" jdbcType="DECIMAL"/>
 	<result column="power" property="power" jdbcType="DECIMAL"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
