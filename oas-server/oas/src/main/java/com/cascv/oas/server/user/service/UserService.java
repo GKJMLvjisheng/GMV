@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.InviteCodeUtils;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import lombok.extern.slf4j.Slf4j;
 

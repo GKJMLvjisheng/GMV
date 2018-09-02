@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-#HOST='http://18.219.19.160:8080/api/v1'
-HOST='http://localhost:8080/api/v1'
+HOST='http://18.219.19.160:8080/api/v1'
+#HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -308,9 +308,9 @@ def testUserWalletTransfer():
   else:
     raise Exception("[Fail] user wallet transfer")
 
-testUserWalletTransfer()
+#testUserWalletTransfer()
 
-#testRegisterDestroy()
+testRegisterDestroy()
 #testEnergyPoint()
 #testUserWallet()
 #testEthWallet()

@@ -23,7 +23,6 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthCall;
@@ -41,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 public class CoinClient {
   public static final String EmptyAddress = "0x0000000000000000000000000000000000000000";
   @Getter @Setter private Web3j web3j;
-  @Getter @Setter private Admin admin;
   @Getter @Setter private String token;
   
   // balance

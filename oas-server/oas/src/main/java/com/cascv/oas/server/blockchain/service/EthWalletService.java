@@ -71,6 +71,9 @@ public class EthWalletService {
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
   
+  @Autowired
+  private KeyStoreService keyStoreService;
+  
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
     try {
@@ -97,11 +100,11 @@ public class EthWalletService {
   public Integer destroy(String userUuid){
     userCoinMapper.deleteAll(userUuid);
     ethWalletMapper.deleteByUserUuid(userUuid);
+    keyStoreService.destroyKey(userUuid);
     return 0;
   }
 
   public EthWallet create(String userUuid, String password){
-    
     String passphrase = "";
     long creationTimeSeconds = System.currentTimeMillis() / 1000;
     DeterministicSeed ds = new DeterministicSeed(secureRandom, 128, passphrase, creationTimeSeconds);
@@ -141,7 +144,7 @@ public class EthWalletService {
       ethWallet.setPrivateKey(keyPair.getPrivateKey().toString(16));
       ethWallet.setMnemonicPath(dkKey.getPathAsString());
       ethWallet.setAddress("0x" + walletFile.getAddress());
-      ethWallet.setKeystore(jsonStr);
+      keyStoreService.saveKey(userUuid, jsonStr);
       String datetime = DateUtils.dateTimeNow();
       ethWallet.setCreated(datetime);
       ethWallet.setUpdated(datetime);
