@@ -30,12 +30,13 @@ public class UserWalletService {
   }
   
   
-  private void addNewDetail(UserWallet userWallet, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment) {
+  private void addDetail(UserWallet userWallet, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment) {
 	  UserWalletDetail userWalletDetail = new UserWalletDetail();
 	  userWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
 	  userWalletDetail.setUserUuid(userWallet.getUserUuid());
 	  userWalletDetail.setTitle(userWalletDetailScope.getTitle());
 	  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
+	  userWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
 	  userWalletDetail.setValue(value);
 	  userWalletDetail.setCreated(DateUtils.getTime());
 	  userWalletDetail.setComment(comment);
@@ -72,10 +73,10 @@ public class UserWalletService {
     }
     
     userWalletMapper.decreaseBalance(fromUserWallet.getUuid(), value);
-    this.addNewDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value,"");
+    this.addDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value,"");
     
     userWalletMapper.increaseBalance(toUserWallet.getUuid(), value);
-    this.addNewDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"");
+    this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"");
     return ErrorCode.SUCCESS;
   }
 }
