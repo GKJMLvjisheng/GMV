@@ -1,6 +1,7 @@
 package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.vo.EnergyWalletBalance;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -9,8 +10,8 @@ import java.math.BigDecimal;
 @Component
 public interface EnergyWalletMapper {
   Integer insertSelective(EnergyWallet energyPoint);
-  Integer insertSelectiveExceptPointPower(EnergyWallet energyPoint);
 
+  EnergyWalletBalance selectLatest(@Param("userUuid")String useruuid);
   EnergyWallet selectByUuid(String uuid);
   EnergyWallet selectByUserUuid(String userUuid);
   

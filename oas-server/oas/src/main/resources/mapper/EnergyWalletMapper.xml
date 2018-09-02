@@ -2,29 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cascv.oas.server.energy.mapper.EnergyWalletMapper">
 
-  <resultMap id="energyPonitMap" type="com.cascv.oas.server.energy.model.EnergyWallet">
-	<id column="uuid" property="uuid" />
-	<result column="user_uuid" property="userUuid"/>
-	<result column="point" property="point" jdbcType="DECIMAL"/>
-	<result column="power" property="power" jdbcType="DECIMAL"/>
-	<result column="created" property="created"/>
-	<result column="updated" property="updated"/>
-  </resultMap>
-  
-  <sql id="Base_Column_List">
-    uuid, user_uuid, point,power, created,updated
-  </sql>
-  
-  
-  <!-- insert user -->
-  <insert id="insertSelective" parameterType="com.cascv.oas.server.energy.model.EnergyWallet">
+    <resultMap id="energyPonitMap" type="com.cascv.oas.server.energy.model.EnergyWallet">
+        <id column="uuid" property="uuid"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="point" property="point" jdbcType="DECIMAL"/>
+        <result column="power" property="power" jdbcType="DECIMAL"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      uuid, user_uuid, point,power, created,updated
+    </sql>
+
+
+    <!-- insert user -->
+    <insert id="insertSelective" parameterType="com.cascv.oas.server.energy.model.EnergyWallet">
     insert into energy_wallet(
-      uuid,
-    	user_uuid,
-    	point,
-    	power,
-    	created,
-    	updated
+        uuid,
+        user_uuid,
+        point,
+        power,
+        created,
+        updated
 	)  values (
       #{uuid,jdbcType=VARCHAR},
       #{userUuid,jdbcType=VARCHAR},
@@ -35,41 +35,49 @@
 	)
   </insert>
 
-  <!-- delete by uuid -->
-  <delete id="deleteByUuid">
+    <!-- delete by uuid -->
+    <delete id="deleteByUuid">
     delete from energy_wallet where uuid = #{uuid}
   </delete>
 
-  <!-- delete by userId -->
-  <delete id="deleteByUserUuid">
+    <!-- delete by userId -->
+    <delete id="deleteByUserUuid">
     delete from energy_wallet where user_uuid = #{userUuid}
   </delete>
-  
-  <select id="selectByUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
-  	select 
-      <include refid="Base_Column_List" />
-    from energy_wallet where uuid = #{uuid}
-  </select>
 
-  <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
-  	select 
-      <include refid="Base_Column_List" />
-    from energy_wallet where user_uuid = #{userUuid}
-  </select>
-  
-  <update id="increaseBalance">
+    <select id="selectLatest" resultType="com.cascv.oas.server.energy.vo.EnergyWalletBalance">
+        select point, power
+        from energy_wallet
+        where user_uuid = #{userUuid}
+        order by updated desc
+        limit 1
+    </select>
+
+    <select id="selectByUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
+        select
+        <include refid="Base_Column_List"/>
+        from energy_wallet where uuid = #{uuid}
+    </select>
+
+    <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
+        select
+        <include refid="Base_Column_List"/>
+        from energy_wallet where user_uuid = #{userUuid}
+    </select>
+
+    <update id="increaseBalance">
   	update energy_wallet set point=point + #{value} where uuid = #{uuid}
   </update>
-  
-  <update id="decreaseBalance">
+
+    <update id="decreaseBalance">
   	update energy_wallet set point=point - #{value} where uuid = #{uuid}
   </update>
-  
-  <update id="increasePower">
+
+    <update id="increasePower">
   	update energy_wallet set power=power + #{value} where uuid = #{uuid}
   </update>
-  
-  <update id="decreasePower">
+
+    <update id="decreasePower">
   	update energy_wallet set power=power - #{value} where uuid = #{uuid}
   </update>
 </mapper>

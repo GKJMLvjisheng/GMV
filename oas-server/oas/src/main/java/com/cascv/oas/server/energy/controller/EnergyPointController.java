@@ -70,12 +70,12 @@ public class EnergyPointController {
             energyService.saveCheckinEnergyBall(userUuid);
             // insert the Checkin record of this time
             energyService.saveEnergyRecord(userUuid);
+            // the result of Checkin
+            energyCheckinResult = energyService.getCheckinEnergy();
             // add the Checkin point&power in EnergyWallet
             energyService.saveEnergyWallet(energyCheckinResult, userUuid);
             // change the Checkin EnergyBall to Die
             energyService.updateEnergyBallStatusByUuid(userUuid);
-            // the result of Checkin
-            energyCheckinResult = energyService.getCheckinEnergy();
         } else {
             // today sign in yet
             energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
