@@ -7,11 +7,5 @@ import java.util.List;
 
 @Component
 public interface EnergyTradeRecordMapper {
-
-    /**
-     *
-     * @param energyTradeRecord
-     * @return
-     */
     int insertEnergyTradeRecord(EnergyTradeRecord energyTradeRecord);
 }

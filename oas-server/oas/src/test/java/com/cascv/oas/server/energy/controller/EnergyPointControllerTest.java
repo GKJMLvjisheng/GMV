@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.math.BigDecimal;
 //USR-9590d7f9a5c811e883290a1411382ce0
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest

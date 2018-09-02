@@ -17,6 +17,7 @@
         uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, power_change, status, time_created, time_updated
     </sql>
 
+    <!-- 插入记录 -->
     <insert id="insertEnergyTradeRecord" parameterType="com.cascv.oas.server.energy.model.EnergyTradeRecord">
         insert into energy_trade_record (
         uuid,

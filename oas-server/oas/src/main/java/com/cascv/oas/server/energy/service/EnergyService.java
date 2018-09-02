@@ -156,8 +156,8 @@ public class EnergyService {
      * @return
      */
     public EnergyCheckinResult getCheckinEnergy() {
-        BigDecimal point = energySourcePointMapper.queryPointSingle().getPointSingle();
-        BigDecimal power = energySourcePowerMapper.queryPowerSingle().getPowerSingle();
+        BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN);
+        BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN);
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
         energyCheckinResult.setNewPower(power);

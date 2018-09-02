@@ -14,7 +14,8 @@
         <result column="point_max_each_ball" jdbcType="DECIMAL" property="pointMaxEachBall"/>
     </resultMap>
 
-  <select id="queryPointSingle" resultMap="BaseResultMap">
-    select point_single from energy_source_point where source_code = 1
+    <!-- 查询对应来源的一次性积分属性 -->
+  <select id="queryPointSingle" resultType="java.math.BigDecimal">
+    select point_single from energy_source_point where source_code = #{sourceCode}
   </select>
 </mapper>

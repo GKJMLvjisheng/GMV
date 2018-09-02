@@ -14,7 +14,7 @@
         <result column="power_max_each_ball" jdbcType="DECIMAL" property="powerMaxEachBall"/>
     </resultMap>
 
-  <select id="queryPowerSingle" resultMap="BaseResultMap">
-    select power_single from energy_source_power where source_code = 1
+  <select id="queryPowerSingle" resultType="java.math.BigDecimal">
+    select power_single from energy_source_power where source_code = #{sourceCode}
   </select>
 </mapper>
