@@ -4,6 +4,8 @@ package com.cascv.oas.server.user.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -31,7 +33,7 @@ import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.ShiroUtils;
-
+import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -171,6 +173,35 @@ public class UserController {
 	  info.put("birthday", userModel.getBirthday());
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
+	}
+	
+	/*
+	 * Name:upadateUserInfo
+	 * Author:lvjisheng
+	 * Date:2018.09.03
+	 */
+	@PostMapping(value="/updateUserInfo")
+	@ResponseBody
+	public ResponseEntity<?> updateUserInfo(@RequestBody updateUserInfo userInfo){
+	  Map<String,String> info = new HashMap<>();
+	  UserModel userModel=new UserModel();   
+      try {
+    	 log.info("userUUID {}",userInfo.getEuserNickname());
+		 userModel.setNickname(userInfo.getEuserNickname());
+		 userModel.setName(userInfo.getEuserName());
+	     userModel.setGender(userInfo.getEuserGender());
+	     userModel.setBirthday(userInfo.getEuserBirthday());
+	     userModel.setAddress(userInfo.getEuserAddress());
+    	 userService.updateUser(userModel); 
+    	  info.put("isSuccess","success");
+    	  log.info("修改成功");
+      }catch(Exception e){
+    	  info.put("isSuccess","failure");
+    	  log.info("修改失败"+e);
+      }
+	       
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 	}

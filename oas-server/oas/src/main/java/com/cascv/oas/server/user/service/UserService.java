@@ -86,4 +86,15 @@ public class UserService {
     return ErrorCode.SUCCESS;
   }
   
+	/*
+	 * Name:upadateUserInfo
+	 * Author:lvjisheng
+	 * Date:2018.09.03
+	 */
+	public Integer updateUser(UserModel userModel) {
+		return userModelMapper.updateUserInfo(userModel);
+	}
 }
+
+
+
