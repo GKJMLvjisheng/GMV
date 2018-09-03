@@ -8,6 +8,7 @@ import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergySourcePoint;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.vo.EnergyBallResult;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.apache.commons.collections.CollectionUtils;
@@ -107,6 +108,16 @@ public class EnergyService {
         energyWalletMapper.increasePower(uuid, this.getCheckinEnergy().getNewPower());
     }
 
+    /**
+     * Checkin the 5th function
+     * 根据能量球uuid 更新其状态
+     * @return
+     */
+    public int updateEnergyBallStatusByUuid(String userUuid) {
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+        String uuid = checkinEnergyBall.getUuid();
+        return energyBallMapper.updateStatusByUuid(uuid, STATUS_OF_DIE_ENERGYBALL, now);
+    }
 
     /**
      * 根据用户uuid查询用户当前积分和算力
@@ -117,21 +128,12 @@ public class EnergyService {
     }
 
     /**
-     * 根据能量球uuid 更新其状态，将状态
-     * @return
-     */
-    public int updateEnergyBallStatusByUuid(String userUuid) {
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        String uuid = checkinEnergyBall.getUuid();
-        return energyBallMapper.updateStatusByUuid(uuid, STATUS_OF_DIE_ENERGYBALL, now);
-    }
-
-    /**
-     * 挖矿
+     * for inquireEnergyBall
      * @param userUuid
      * @return
      */
-    public List<EnergyBallWrapper> miningEnergyBall(String userUuid) {
+    public EnergyBallResult miningEnergyBall(String userUuid) {
+        BigDecimal ongoingEnergySummary = new BigDecimal("0");
         List<EnergyBall> energyBalls = energyBallMapper.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
         EnergySourcePoint energySourcePoint = energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING);
         BigDecimal pointIncreaseSpeed = energySourcePoint.getPointIncreaseSpeed();  // 增长速度
@@ -188,6 +190,7 @@ public class EnergyService {
                             energyBall.setPoint(pointCapacityEachBall);
                         } else {
                             energyBall.setPoint(balance);
+                            ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
                         }
                         energyBallMapper.insertEnergyBall(energyBall);
                         energyBalls.add(energyBall);
@@ -201,10 +204,13 @@ public class EnergyService {
 
             }
         }
-        System.out.println("需要添加的：" + energyBalls);
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper.selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
+        EnergyBallResult energyBallResult = new EnergyBallResult();
+        energyBallResult.setEnergyBallList(energyBallWrappers);
+        energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
+        System.out.println("需要添加的：" + energyBalls);
         System.out.println("挖矿能量球：" + energyBallWrappers);
-        return energyBallWrappers;
+        return energyBallResult;
     }
     public EnergyBall setMiningEnergyBall(String userUuid) {
         EnergyBall energyBall = new EnergyBall();

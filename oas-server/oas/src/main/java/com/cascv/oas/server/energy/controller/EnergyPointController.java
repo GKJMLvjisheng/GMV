@@ -48,6 +48,7 @@ public class EnergyPointController {
     @Autowired
     private EnergyService energyService;
 
+
     /**
      * 签到功能
      * @return
@@ -91,15 +92,7 @@ public class EnergyPointController {
     public ResponseEntity<?> inquireEnergyBall() {
 //        String userUuid = "USR-9590d7f9a5c811e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
-        EnergyBallResult energyBallResult = new EnergyBallResult();
-        List<EnergyBallWrapper> energyBallWrappersList = energyService.miningEnergyBall(userUuid);
-        BigDecimal ongoingEnergySummary = new BigDecimal("0");
-        for (int i = 0; i < energyBallWrappersList.size(); i++) {
-            ongoingEnergySummary = ongoingEnergySummary.add(energyBallWrappersList.get(i).getValue());
-        }
-        energyBallResult.setEnergyBallList(energyBallWrappersList);
-
-        energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
+        EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
                 .setData(energyBallResult)
