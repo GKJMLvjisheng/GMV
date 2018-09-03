@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.http.HttpService;
 
 import com.cascv.oas.server.blockchain.service.DigitalCoinService;
@@ -47,8 +46,6 @@ public class BlockChainConfig {
     Web3j web3j =  Web3j.build(new HttpService(provider));
     coinClient.setWeb3j(web3j);
 
-    Admin admin = Admin.build(new HttpService(provider));
-    coinClient.setAdmin(admin);
     
     coinClient.setToken(token);
     

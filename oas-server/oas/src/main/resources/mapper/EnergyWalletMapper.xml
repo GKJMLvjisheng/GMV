@@ -5,8 +5,8 @@
     <resultMap id="energyPonitMap" type="com.cascv.oas.server.energy.model.EnergyWallet">
         <id column="uuid" property="uuid"/>
         <result column="user_uuid" property="userUuid"/>
-        <result column="point" property="point"/>
-        <result column="power" property="power"/>
+        <result column="point" property="point" jdbcType="DECIMAL"/>
+        <result column="power" property="power" jdbcType="DECIMAL"/>
         <result column="created" property="created"/>
         <result column="updated" property="updated"/>
     </resultMap>
@@ -15,38 +15,25 @@
       uuid, user_uuid, point, power, created, updated
     </sql>
 
+
     <!-- insert user -->
     <insert id="insertSelective" parameterType="com.cascv.oas.server.energy.model.EnergyWallet">
-        insert into energy_wallet(
-            uuid,
-            user_uuid,
-            point,
-            power,
-            created,
-            updated
-        )  values (
-            #{uuid,jdbcType=VARCHAR},
-            #{userUuid,jdbcType=VARCHAR},
-            #{point,jdbcType=BIGINT},
-            #{power,jdbcType=INTEGER},
-            #{created,jdbcType=VARCHAR},
-            #{updated,jdbcType=VARCHAR}
-        )
-    </insert>
-
-    <insert id="insertSelectiveExceptPointPower" parameterType="com.cascv.oas.server.energy.model.EnergyWallet">
-        insert into energy_wallet(
-            uuid,
-            user_uuid,
-            created,
-            updated
-        )  values (
-            #{uuid,jdbcType=VARCHAR},
-            #{userUuid,jdbcType=VARCHAR},
-            #{created,jdbcType=VARCHAR},
-            #{updated,jdbcType=VARCHAR}
-        )
-    </insert>
+    insert into energy_wallet(
+        uuid,
+        user_uuid,
+        point,
+        power,
+        created,
+        updated
+	)  values (
+      #{uuid,jdbcType=VARCHAR},
+      #{userUuid,jdbcType=VARCHAR},
+      #{point,jdbcType=DECIMAL},
+	  #{power,jdbcType=DECIMAL},
+	  #{created,jdbcType=VARCHAR},
+	  #{updated,jdbcType=VARCHAR}
+	)
+  </insert>
 
     <!-- delete by uuid -->
     <delete id="deleteByUuid">
@@ -57,6 +44,14 @@
     <delete id="deleteByUserUuid">
     delete from energy_wallet where user_uuid = #{userUuid}
   </delete>
+
+    <select id="selectLatest" resultType="com.cascv.oas.server.energy.vo.EnergyWalletBalance">
+        select point, power
+        from energy_wallet
+        where user_uuid = #{userUuid}
+        order by updated desc
+        limit 1
+    </select>
 
     <select id="selectByUuid" parameterType="java.lang.String" resultMap="energyPonitMap">
         select
@@ -71,8 +66,8 @@
     </select>
 
     <update id="increasePoint">
-  	update energy_wallet set point=point + #{value} where uuid = #{uuid}
-  </update>
+      update energy_wallet set point=point + #{value} where uuid = #{uuid}
+    </update>
 
     <update id="decreasePoint">
   	update energy_wallet set point=point - #{value} where uuid = #{uuid}
@@ -83,6 +78,6 @@
   </update>
 
     <update id="decreasePower">
-    update energy_wallet set power=power - #{value} where uuid = #{uuid}
+  	update energy_wallet set power=power - #{value} where uuid = #{uuid}
   </update>
 </mapper>

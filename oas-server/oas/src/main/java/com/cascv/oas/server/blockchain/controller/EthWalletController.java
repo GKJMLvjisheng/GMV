@@ -1,9 +1,15 @@
 package com.cascv.oas.server.blockchain.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.config.TransferQuota;
+import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
+import com.cascv.oas.server.blockchain.model.EthWallet;
+import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
+import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
@@ -14,6 +20,9 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +40,9 @@ public class EthWalletController {
   
   @Autowired
   private EthWalletService ethWalletService;
+  
+  @Autowired
+  private EthWalletDetailMapper ethWalletDetailMapper;
   
   @PostMapping(value="/selectContractSymbol")
   @ResponseBody
@@ -51,31 +63,55 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
-    ErrorCode errorCode=ethWalletService.transfer(
-        ShiroUtils.getUserUuid(), 
-        ethWalletTransfer.getContract(),
-        ethWalletTransfer.getToUserAddress(),
-        ethWalletTransfer.getAmount());
+	  if(ethWalletTransfer.getContract() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
+				  .build();
+	  }else if(ethWalletTransfer.getToUserAddress() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.WRONG_ADDRESS)
+				  .build();
+	  }else if(ethWalletTransfer.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.WRONG_AMOUNT)
+				  .build();
+	  }else {
+	    ErrorCode errorCode=ethWalletService.transfer(
+	        ShiroUtils.getUserUuid(), 
+	        ethWalletTransfer.getContract(),
+	        ethWalletTransfer.getToUserAddress(),
+	        ethWalletTransfer.getAmount());	  
 
-    return new ResponseEntity.Builder<Integer>()
-        .setData(1)
-        .setErrorCode(errorCode)
-        .build();
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(errorCode)
+	        .build();
+	  }
   }
 
   @PostMapping(value="/multiTtransfer")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
-    ErrorCode errorCode=ethWalletService.multiTransfer(
-        ShiroUtils.getUserUuid(), 
-        ethWalletMultiTransfer.getContract(),
-        ethWalletMultiTransfer.getQuota());
-
-    return new ResponseEntity.Builder<Integer>()
-        .setData(1)
-        .setErrorCode(errorCode)
-        .build();
+	  if (ethWalletMultiTransfer.getContract() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
+				  .build();
+	  }else{
+	    ErrorCode errorCode=ethWalletService.multiTransfer(
+	        ShiroUtils.getUserUuid(), 
+	        ethWalletMultiTransfer.getContract(),
+	        ethWalletMultiTransfer.getQuota());
+	
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(errorCode)
+	        .build();
+	  }
   }
   
   
@@ -92,6 +128,37 @@ public class EthWalletController {
             .build();
   }
 
+  @PostMapping(value="/transactionDetail")
+  @ResponseBody()
+  public ResponseEntity<?> transactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+    Integer count = ethWalletDetailMapper.selectCount();
+    Integer pageNum = pageInfo.getPageNum();
+    Integer pageSize = pageInfo.getPageSize();
+    Integer limit = pageSize;
+    Integer offset;
+    if (pageNum > 0)
+      offset = (pageNum - 1) * limit;
+    else 
+      offset = 0;
+    
+    EthWallet ethWallet = ethWalletService.getEthWalletByUserUuid(ShiroUtils.getUserUuid());
+  
+    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByPage(
+        ethWallet.getAddress(), offset,limit);
+    PageDomain<EthWalletDetail> pageEthWalletDetail= new PageDomain<>();
+    pageEthWalletDetail.setTotal(count);
+    pageEthWalletDetail.setAsc("desc");
+    pageEthWalletDetail.setOffset(offset);
+    pageEthWalletDetail.setPageNum(pageNum);
+    pageEthWalletDetail.setPageSize(pageSize);
+    pageEthWalletDetail.setRows(ethWalletDetailList);
+    return new ResponseEntity.Builder<PageDomain<EthWalletDetail>>()
+            .setData(pageEthWalletDetail)
+            .setErrorCode(ErrorCode.SUCCESS)
+            .build();
+  }
+  
+  
   @PostMapping(value="/summary")
   @ResponseBody
   @Transactional

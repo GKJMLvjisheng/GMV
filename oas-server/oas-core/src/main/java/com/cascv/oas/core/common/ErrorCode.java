@@ -26,7 +26,10 @@ public enum ErrorCode {
   NO_ETH_WALLET(10010, "没有创建交易账号"),
   NO_ENERGY_POINT_ACCOUNT(10011, "没有积分帐户"),
   ALREADY_CHECKIN_TODAY(10012, "已经签到"),
-  MULTIPLE_TRANSFER_FAILURE(10013, "多路转账失败");
+  MULTIPLE_TRANSFER_FAILURE(10013, "多路转账失败"),
+  WRONG_ADDRESS(10014, "地址不正确，请检查"),
+  WRONG_AMOUNT(10015, "金额不正确，请检查"),
+  SELECT_THE_CONTRACT(10016, "请选择币种");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

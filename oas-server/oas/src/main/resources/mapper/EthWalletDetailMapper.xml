@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper">
+<mapper namespace="com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper">
 
-  <resultMap id="userWalletDetailMap" type="com.cascv.oas.server.blockchain.model.UserWalletDetail">
+  <resultMap id="ethWalletDetailMap" type="com.cascv.oas.server.blockchain.model.EthWalletDetail">
 	<id column="uuid" property="uuid" />
-	<result column="user_uuid" property="userUuid"/>
+	<result column="address" property="address"/>
 	<result column="value" property="value" jdbcType="DECIMAL"/>
 	<result column="title" property="title"/>
 	<result column="sub_title" property="subTitle"/>
 	<result column="in_or_out" property="inOrOut" jdbcType="INTEGER"/>
+	<result column="tx_hash" property="txHash"/>
 	<result column="comment" property="comment"/>
 	<result column="created" property="created"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, title, sub_title,in_or_out, comment, created
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, comment, created
   </sql>
   
   
   <!-- insert user -->
-  <insert id="insertSelective" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail">
-    insert into user_wallet_detail
+  <insert id="insertSelective" parameterType="com.cascv.oas.server.blockchain.model.EthWalletDetail">
+    insert into eth_wallet_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
     	uuid,
-    	user_uuid,
+    	address,
     	value,
     	<if test="title != null">
     		title,
@@ -35,6 +36,9 @@
     	<if test="inOrOut != null">
     		in_or_out,
     	</if>
+		<if test="txHash != null">
+    		tx_hash,
+    	</if>
     	<if test="comment != null">
     		comment,
     	</if>
@@ -42,7 +46,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       #{uuid,jdbcType=VARCHAR},
-      #{userUuid,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR},
       #{value,jdbcType=DECIMAL},
     	<if test="title != null">
     		#{title,jdbcType=VARCHAR},
@@ -53,6 +57,9 @@
     	<if test="inOrOut != null">
     		#{inOrOut,jdbcType=INTEGER},
     	</if>
+    	<if test="txHash != null">
+    		#{txHash,jdbcType=VARCHAR},
+    	</if>
     	<if test="comment != null">
     		#{comment,jdbcType=VARCHAR},
     	</if>
@@ -62,28 +69,28 @@
 
   <!-- delete by id -->
   <delete id="deleteByUuid" parameterType="java.lang.String">
-    delete from user_wallet_detail where uuid = #{uuid}
+    delete from eth_wallet_detail where uuid = #{uuid}
   </delete>
 
   <!-- delete by userId -->
-  <delete id="deleteByUserUuid" parameterType="java.lang.String">
-    delete from user_wallet_detail where user_uuid = #{userUuid}
+  <delete id="deleteByAddress" parameterType="java.lang.String">
+    delete from eth_wallet_detail where address = #{address}
   </delete>
   
-  <select id="selectCount" resultMap="userWalletDetailMap">
-  	select count(*) from user_wallet_detail;
+  <select id="selectCount" resultMap="ethWalletDetailMap">
+  	select count(*) from eth_wallet_detail;
   </select>
   
-  <select id="selectByPage" resultMap="userWalletDetailMap">
+  <select id="selectByPage" resultMap="ethWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid} order by created desc limit #{offset},#{limit};
+    from eth_wallet_detail where address = #{address} order by created desc limit #{offset},#{limit};
   </select>
 
-  <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
+  <select id="selectByAddress" parameterType="java.lang.String" resultMap="ethWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid}
+    from eth_wallet_detail where address = #{address}
   </select>
   
 </mapper>

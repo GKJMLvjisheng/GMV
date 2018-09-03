@@ -16,6 +16,12 @@
     <sql id="Base_Column_List">
         uuid, user_uuid, point_source, point, power_source, power, status, time_created, time_updated
     </sql>
+    <!-- 根据能量球id查询 -->
+    <select id="selectByUuid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from energy_ball where uuid = #{uuid}
+    </select>
 
     <!-- 某用户的某个积分来源、根据提供的时间模糊查询 -->
     <select id="selectByTimeFuzzyQuery" resultMap="BaseResultMap">
@@ -44,10 +50,26 @@
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="pointSource != null">
+            <if test="pointSourceCode != null">
                 and point_source = #{pointSourceCode}
             </if>
         </where>
+    </select>
+
+    <!-- 查询某用户某种积分的最近更新的一个球 -->
+    <select id="selectLatestOneByPointSourceCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from energy_ball
+        <where>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid}
+            </if>
+            <if test="pointSource != null">
+                and point_source = #{pointSource}
+            </if>
+        </where>
+        order by time_updated desc limit 1
     </select>
 
     <!-- 查询某用户某种积分的所有能量球 部分信息 -->
@@ -84,6 +106,11 @@
         set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
     </update>
 
+    <!-- 变更能量球积分 -->
+    <update id="updatePointByUuid">
+        update energy_ball
+        set point = #{point}, time_updated = #{timeUpdated} where uuid = #{uuid}
+    </update>
     <!-- 插入能量球 -->
     <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
         insert into energy_ball (

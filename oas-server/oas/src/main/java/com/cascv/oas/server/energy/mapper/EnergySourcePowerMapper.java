@@ -1,9 +1,11 @@
 package com.cascv.oas.server.energy.mapper;
 
-import com.cascv.oas.server.energy.model.EnergySourcePower;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public interface EnergySourcePowerMapper {
-    EnergySourcePower queryPowerSingle();
+    BigDecimal queryPowerSingle(@Param("sourceCode")Integer sourceCode);
 }
