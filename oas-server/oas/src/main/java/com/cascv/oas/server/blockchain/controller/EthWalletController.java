@@ -3,6 +3,7 @@ package com.cascv.oas.server.blockchain.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.blockchain.config.TransferQuota;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -62,16 +63,28 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
-    ErrorCode errorCode=ethWalletService.transfer(
-        ShiroUtils.getUserUuid(), 
-        ethWalletTransfer.getContract(),
-        ethWalletTransfer.getToUserAddress(),
-        ethWalletTransfer.getAmount());
+	  if(ethWalletTransfer.getToUserAddress() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.ADDRESS_CAN_NOT_BE_NULL)
+				  .build();
+	  }else if(ethWalletTransfer.getAmount() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.VALUE_CAN_NOT_BE_NULL)
+				  .build();
+	  }else {
+	    ErrorCode errorCode=ethWalletService.transfer(
+	        ShiroUtils.getUserUuid(), 
+	        ethWalletTransfer.getContract(),
+	        ethWalletTransfer.getToUserAddress(),
+	        ethWalletTransfer.getAmount());	  
 
-    return new ResponseEntity.Builder<Integer>()
-        .setData(1)
-        .setErrorCode(errorCode)
-        .build();
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(errorCode)
+	        .build();
+	  }
   }
 
   @PostMapping(value="/multiTtransfer")
