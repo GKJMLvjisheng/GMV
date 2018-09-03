@@ -27,7 +27,9 @@ public enum ErrorCode {
   NO_ENERGY_POINT_ACCOUNT(10011, "没有积分帐户"),
   ALREADY_CHECKIN_TODAY(10012, "已经签到"),
   MULTIPLE_TRANSFER_FAILURE(10013, "多路转账失败"),
-  ADDRESS_CAN_NOT_BE_NULL(10014, "地址不能为空");
+  WRONG_ADDRESS(10014, "地址不正确，请检查"),
+  WRONG_AMOUNT(10015, "金额不正确，请检查"),
+  SELECT_THE_CONTRACT(10016, "请选择币种");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

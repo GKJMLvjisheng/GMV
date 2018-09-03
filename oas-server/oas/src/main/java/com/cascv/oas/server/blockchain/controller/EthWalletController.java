@@ -63,15 +63,20 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
-	  if(ethWalletTransfer.getToUserAddress() == null) {
+	  if(ethWalletTransfer.getContract() == null) {
 		  return new ResponseEntity.Builder<Integer>()
 				  .setData(1)
-				  .setErrorCode(ErrorCode.ADDRESS_CAN_NOT_BE_NULL)
+				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
 				  .build();
-	  }else if(ethWalletTransfer.getAmount() == null) {
+	  }else if(ethWalletTransfer.getToUserAddress() == null) {
 		  return new ResponseEntity.Builder<Integer>()
 				  .setData(1)
-				  .setErrorCode(ErrorCode.VALUE_CAN_NOT_BE_NULL)
+				  .setErrorCode(ErrorCode.WRONG_ADDRESS)
+				  .build();
+	  }else if(ethWalletTransfer.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.WRONG_AMOUNT)
 				  .build();
 	  }else {
 	    ErrorCode errorCode=ethWalletService.transfer(
@@ -91,15 +96,22 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
-    ErrorCode errorCode=ethWalletService.multiTransfer(
-        ShiroUtils.getUserUuid(), 
-        ethWalletMultiTransfer.getContract(),
-        ethWalletMultiTransfer.getQuota());
-
-    return new ResponseEntity.Builder<Integer>()
-        .setData(1)
-        .setErrorCode(errorCode)
-        .build();
+	  if (ethWalletMultiTransfer.getContract() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(1)
+				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
+				  .build();
+	  }else{
+	    ErrorCode errorCode=ethWalletService.multiTransfer(
+	        ShiroUtils.getUserUuid(), 
+	        ethWalletMultiTransfer.getContract(),
+	        ethWalletMultiTransfer.getQuota());
+	
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(errorCode)
+	        .build();
+	  }
   }
   
   
