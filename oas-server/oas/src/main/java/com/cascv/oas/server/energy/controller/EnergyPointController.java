@@ -93,10 +93,10 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-   //    String userUuid = "USR-9590d7f9a5c811e883290a1411382ce0";
+//        String userUuid = "USR-9590d7f9a5c811e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = new EnergyBallResult();
-        List<EnergyBallWrapper> energyBallWrappersList = energyService.listEnergyBall(userUuid);
+        List<EnergyBallWrapper> energyBallWrappersList = energyService.miningEnergyBall(userUuid);
         BigDecimal ongoingEnergySummary = new BigDecimal("0");
         for (int i = 0; i < energyBallWrappersList.size(); i++) {
             ongoingEnergySummary = ongoingEnergySummary.add(energyBallWrappersList.get(i).getValue());
@@ -104,7 +104,11 @@ public class EnergyPointController {
         energyBallResult.setEnergyBallList(energyBallWrappersList);
 
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
-        return new ResponseEntity.Builder<EnergyBallResult>().setData(energyBallResult).setErrorCode(ErrorCode.SUCCESS).build();
+        return new ResponseEntity
+                .Builder<EnergyBallResult>()
+                .setData(energyBallResult)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
     }
 
     @PostMapping(value = "/takeEnergyBall")

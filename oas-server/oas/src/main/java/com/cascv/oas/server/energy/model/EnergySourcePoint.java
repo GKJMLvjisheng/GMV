@@ -12,9 +12,7 @@ public class EnergySourcePoint {
     @Getter @Setter String sourceName;
     @Getter @Setter private String type;
     @Getter @Setter private BigDecimal pointSingle;
-    @Getter @Setter BigDecimal pointTotal;
     @Getter @Setter BigDecimal pointIncreaseSpeed;
-    @Getter @Setter String pointIncreaseSpeedUnitName;
-    @Getter @Setter BigDecimal pointIncreaseSpeedUnitValue;
-    @Getter @Setter BigDecimal pointMaxEachBall;
+    @Getter @Setter String pointIncreaseSpeedUnit;
+    @Getter @Setter BigDecimal pointCapacityEachBall;
 }

@@ -8,5 +8,8 @@ import java.math.BigDecimal;
 
 @Component
 public interface EnergySourcePointMapper {
+
+    EnergySourcePoint queryBySourceCode(@Param("sourceCode") Integer sourceCode);
+
     BigDecimal queryPointSingle(@Param("sourceCode")Integer sourceCode);
 }
