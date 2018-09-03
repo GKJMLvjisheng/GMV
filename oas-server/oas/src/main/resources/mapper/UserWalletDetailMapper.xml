@@ -61,23 +61,23 @@
   </insert>
 
   <!-- delete by id -->
-  <delete id="deleteByUuid">
+  <delete id="deleteByUuid" parameterType="java.lang.String">
     delete from user_wallet_detail where uuid = #{uuid}
   </delete>
 
   <!-- delete by userId -->
-  <delete id="deleteByUserUuid">
+  <delete id="deleteByUserUuid" parameterType="java.lang.String">
     delete from user_wallet_detail where user_uuid = #{userUuid}
   </delete>
   
-  <select id="selectCount">
+  <select id="selectCount" resultMap="userWalletDetailMap">
   	select count(*) from user_wallet_detail;
   </select>
   
   <select id="selectByPage" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid} ordered by created desc limit #{offset},#{limit};
+    from user_wallet_detail where user_uuid = #{userUuid} order by created desc limit #{offset},#{limit};
   </select>
 
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
