@@ -7,6 +7,7 @@ import com.cascv.oas.server.energy.mapper.*;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergySourcePoint;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.apache.commons.collections.CollectionUtils;
@@ -22,7 +23,7 @@ import java.util.*;
 @Service
 public class EnergyService {
 
-    @Autowired
+	@Autowired
     private EnergyBallMapper energyBallMapper;
     @Autowired
     private EnergyTradeRecordMapper energyTradeRecordMapper;
@@ -104,6 +105,15 @@ public class EnergyService {
         String uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
         energyWalletMapper.increasePoint(uuid, this.getCheckinEnergy().getNewEnergyPoint());
         energyWalletMapper.increasePower(uuid, this.getCheckinEnergy().getNewPower());
+    }
+
+
+    /**
+     * 根据用户uuid查询用户当前积分和算力
+     * @return
+     */
+    public EnergyWallet findByUserUuid(String userUuid) {
+  	  return energyWalletMapper.selectByUserUuid(userUuid);
     }
 
     /**
@@ -285,9 +295,5 @@ public class EnergyService {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 3; i++) {
-            String prefixUUID = UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
-            System.out.println(prefixUUID);
-        }
     }
 }
