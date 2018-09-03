@@ -6,6 +6,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.*;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import org.apache.commons.collections.CollectionUtils;
@@ -17,8 +18,8 @@ import java.util.List;
 
 @Service
 public class EnergyService {
-
-    @Autowired
+	
+	@Autowired
     private EnergyBallMapper energyBallMapper;
     @Autowired
     private EnergyTradeRecordMapper energyTradeRecordMapper;
@@ -34,7 +35,6 @@ public class EnergyService {
     private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
-    private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，可被获取
     private static final Integer SOURCE_CODE_OF_CHECKIN = 1;            // 能量球来源：签到为1
     private static final Integer SOURCE_CODE_OF_MINING = 2;             // 能量球来源：挖矿为2
     private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 16;
@@ -108,6 +108,15 @@ public class EnergyService {
         String uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
         energyWalletMapper.increasePoint(uuid, this.getCheckinEnergy().getNewEnergyPoint());
         energyWalletMapper.increasePower(uuid, this.getCheckinEnergy().getNewPower());
+    }
+    
+    
+    /**
+     * 根据用户uuid查询用户当前积分和算力
+     * @return
+     */
+    public EnergyWallet findByUserUuid(String userUuid) {
+  	  return energyWalletMapper.selectByUserUuid(userUuid);
     }
 
     /**

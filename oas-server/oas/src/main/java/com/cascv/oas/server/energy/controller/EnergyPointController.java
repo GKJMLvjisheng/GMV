@@ -9,11 +9,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
+import com.cascv.oas.server.energy.vo.EnergyPointCategory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +28,11 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
-import com.cascv.oas.server.blockchain.service.EnergyPointService;
 import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
 import com.cascv.oas.server.energy.vo.EnergyBallResult;
 import com.cascv.oas.server.blockchain.wrapper.EnergyBallTakenResult;
 import com.cascv.oas.server.blockchain.wrapper.EnergyBallTokenRequest;
 import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointCategory;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactor;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointRedeem;
@@ -42,9 +41,6 @@ import com.cascv.oas.server.utils.ShiroUtils;
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
 public class EnergyPointController {
-
-    @Autowired
-    private EnergyPointService energyPointService;
 
     @Autowired
     private ExchangeParam exchangeParam;
@@ -120,7 +116,7 @@ public class EnergyPointController {
     @PostMapping(value = "/inquirePower")
     @ResponseBody
     public ResponseEntity<?> inquirePower() {
-        EnergyWallet energyWallet = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
+        EnergyWallet energyWallet = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyWallet != null) {
             return new ResponseEntity.Builder<BigDecimal>()
                     .setData(energyWallet.getPower())
@@ -137,7 +133,7 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyPoint")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPoint() {
-        EnergyWallet energyPoint = energyPointService.findByUserUuid(ShiroUtils.getUserUuid());
+        EnergyWallet energyPoint = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
             return new ResponseEntity.Builder<BigDecimal>()
                     .setData(energyPoint.getPoint())

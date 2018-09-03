@@ -82,9 +82,7 @@ public class EnergyPointService {
     return value;
   }
   
-  public EnergyWallet findByUserUuid(String userUuid) {
-	  return energyWalletMapper.selectByUserUuid(userUuid);
-  }
+  
 
 
 }
