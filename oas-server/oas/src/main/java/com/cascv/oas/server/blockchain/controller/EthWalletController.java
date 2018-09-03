@@ -117,7 +117,7 @@ public class EthWalletController {
       offset = 0;
     
     EthWallet ethWallet = ethWalletService.getEthWalletByUserUuid(ShiroUtils.getUserUuid());
-    
+  
     List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByPage(
         ethWallet.getAddress(), offset,limit);
     PageDomain<EthWalletDetail> pageEthWalletDetail= new PageDomain<>();

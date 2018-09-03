@@ -68,23 +68,23 @@
   </insert>
 
   <!-- delete by id -->
-  <delete id="deleteByUuid">
+  <delete id="deleteByUuid" parameterType="java.lang.String">
     delete from eth_wallet_detail where uuid = #{uuid}
   </delete>
 
   <!-- delete by userId -->
-  <delete id="deleteByAddress">
+  <delete id="deleteByAddress" parameterType="java.lang.String">
     delete from eth_wallet_detail where address = #{address}
   </delete>
   
-  <select id="selectCount">
+  <select id="selectCount" resultMap="ethWalletDetailMap">
   	select count(*) from eth_wallet_detail;
   </select>
   
   <select id="selectByPage" resultMap="ethWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from eth_wallet_detail where address = #{address} ordered by created desc limit #{offset},#{limit};
+    from eth_wallet_detail where address = #{address} order by created desc limit #{offset},#{limit};
   </select>
 
   <select id="selectByAddress" parameterType="java.lang.String" resultMap="ethWalletDetailMap">
