@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 public interface EnergyWalletMapper {
   Integer insertSelective(EnergyWallet energyPoint);
 
-  EnergyWalletBalance selectLatest(@Param("userUuid")String useruuid);
   EnergyWallet selectByUuid(String uuid);
   EnergyWallet selectByUserUuid(String userUuid);
-  
+  EnergyWalletBalance selectLatest(@Param("userUuid")String useruuid);
+
   Integer increasePoint(@Param("uuid")  String uuid, @Param("value") BigDecimal value);
   Integer decreasePoint(@Param("uuid")  String uuid, @Param("value") BigDecimal value);
   

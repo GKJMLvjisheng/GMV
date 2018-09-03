@@ -6,10 +6,8 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.*;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
-import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
-import com.cascv.oas.server.energy.vo.EnergyWalletBalance;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,22 +90,24 @@ public class EnergyService {
     /**
      * Checkin the 4th function
      * 在能量钱包(EnergyWallet)中添加记录
-     * @param energyCheckinResult
+     * @param
      * @param userUuid
      * @return
      */
-    public void saveEnergyWallet(EnergyCheckinResult energyCheckinResult, String userUuid) {
-        EnergyWallet energyWallet = new EnergyWallet();
-        String uuid = UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
-        energyWallet.setUuid(uuid);
-        energyWallet.setUserUuid(userUuid);
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        energyWallet.setUpdated(now);
-        energyWallet.setCreated(now);
-        EnergyWalletBalance energyWalletBalance = energyWalletMapper.selectLatest(userUuid);
-        energyWallet.setPoint(energyWalletBalance.getPoint().add(this.getCheckinEnergy().getNewEnergyPoint()));
-        energyWallet.setPower(energyWalletBalance.getPower().add(this.getCheckinEnergy().getNewPower()));
-        energyWalletMapper.insertSelective(energyWallet);
+    public void updateEnergyWallet(String userUuid) {
+//        EnergyWallet energyWallet = new EnergyWallet();
+//        energyWallet.setUserUuid(userUuid);
+//        String uuid = UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
+//        energyWallet.setUuid(uuid);
+//        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+//        energyWallet.setUpdated(now);
+//        energyWallet.setCreated(now);
+//        EnergyWalletBalance energyWalletBalance = energyWalletMapper.selectLatest(userUuid);
+//        energyWallet.setPoint(energyWalletBalance.getPoint().add(this.getCheckinEnergy().getNewEnergyPoint()));
+//        energyWallet.setPower(energyWalletBalance.getPower().add(this.getCheckinEnergy().getNewPower()));
+        String uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
+        energyWalletMapper.increasePoint(uuid, this.getCheckinEnergy().getNewEnergyPoint());
+        energyWalletMapper.increasePower(uuid, this.getCheckinEnergy().getNewPower());
     }
 
     /**

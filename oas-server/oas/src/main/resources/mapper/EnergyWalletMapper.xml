@@ -12,7 +12,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-      uuid, user_uuid, point,power, created,updated
+      uuid, user_uuid, point, power, created, updated
     </sql>
 
 
@@ -65,11 +65,11 @@
         from energy_wallet where user_uuid = #{userUuid}
     </select>
 
-    <update id="increaseBalance">
-  	update energy_wallet set point=point + #{value} where uuid = #{uuid}
-  </update>
+    <update id="increasePoint">
+      update energy_wallet set point=point + #{value} where uuid = #{uuid}
+    </update>
 
-    <update id="decreaseBalance">
+    <update id="decreasePoint">
   	update energy_wallet set point=point - #{value} where uuid = #{uuid}
   </update>
 
