@@ -281,6 +281,12 @@ public class EthWalletService {
       BigInteger amountInt=q.getAmount().multiply(userCoin.getWeiFactor()).toBigInteger();
       amountIntList.add(amountInt);
     }
+    String len = "0"; //需要得到前端传过来的需要转账的总共的条数
+    Integer length = Integer.parseInt(len);
+    if (addressList == null || (addressList != null && addressList.size() < length))
+    	return ErrorCode.WRONG_ADDRESS;
+    if (amountIntList == null || (amountIntList != null && amountIntList.size() < length))
+    	return ErrorCode.WRONG_AMOUNT;
     if (userCoin.getBalance().compareTo(total) < 0)
       return ErrorCode.BALANCE_NOT_ENOUGH;
     String txHash=coinClient.multiTransfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), addressList, contract, amountIntList);
