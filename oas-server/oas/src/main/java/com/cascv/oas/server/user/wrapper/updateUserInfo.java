@@ -4,13 +4,18 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
+/*
+ * Name:upadateUserInfo
+ * Author:lvjisheng
+ * Date:2018.09.03
+ */	 
 public class updateUserInfo implements Serializable{
   private static final long serialVersionUID = 1L;
-  @Getter @Setter String EuserNickname;
-  @Getter @Setter String EuserName;
-  @Getter @Setter String EuserGender;
-  @Getter @Setter String EuserBirthday;
-  @Getter @Setter String EuserAddress;
+  @Getter @Setter String userNickname;
+  @Getter @Setter String userName;
+  @Getter @Setter String userGender;
+  @Getter @Setter String userBirthday;
+  @Getter @Setter String userAddress;
   void toSring(){	  
   }
 }

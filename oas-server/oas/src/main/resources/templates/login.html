@@ -1,31 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-  <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>web登陆系统 - 登录</title>
+    <meta name="keywords" content="web登陆系统">
+    
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+   
+<!--       <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>    -->
+    <link href="../static/css/login.css" th:href="@{css/login.css}" rel="stylesheet"/>
+    <!-- 全局js -->
+ <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
   <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 </head>
-<body class="container">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <form role="form">
-        <div class="form-group field-login">
-          <label for="login" class="control-label">Login</label>
-          <input type="text" id="nameId" name="name" class="form-control" required="required" autofocus="autofocus"/>
-        </div>
 
-        <div class="form-group field-password">
-          <label for="password" class="control-label">Password</label>
-          <input type="password" id="passwordId" name="password" class="form-control" required="required" autocomplete="current-password" maxlength="4096"/>
+<body class="signin">
+
+    <div class="signinpanel"> 
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="signin-info">
+                    <div class="logopanel m-b">
+                        <h1><img alt="[ 区块链 ]" src="../img/ball.571c6cc8.png" th:src="@{/img/ball.571c6cc8.png}"></h1>
+                    </div>
+                    <div class="m-b"></div>
+                    <h4>欢迎使用 <strong>web 后台管理系统</strong></h4>
+                    <ul class="m-b">
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Jquery</li>
+                    </ul>
+                    <strong>还没有账号？ <a href="#">立即注册&raquo;</a></strong>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <form id="signupForm">
+                    <h4 class="no-margins text-center">欢迎登录</h4>
+<!--                    <p class="no-margins">登录：</p> -->
+					<br/>
+                    <input type="text"   id="nameId"  name="username" class="form-control uname"     placeholder="用户名"     />
+                    <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"    />
+
+                    <button class="btn btn-primary btn-block" type=button id="btnSubmit" onclick="submitLogin()">登录</button>
+                     <br/>
+                     <br/>
+                </form>
+            </div>
         </div>
-        <div class="clearfix">
-          <a class="btn btn-primary" onclick="submitLogin()">Log in</a>
+        <div class="signup-footer">
+            <div class="pull-left">
+                &copy; 2018 All Rights Reserved. web区块链
+            </div>
         </div>
-      </form>
-    </div>
-  </div>
+    </div> 
+
+
+
 </body>
 <script>
 	function submitLogin(){
@@ -33,6 +68,7 @@
 		"name": $('#nameId').val(),
 	    "password": $('#passwordId').val(),
 	};
+	alert(JSON.stringify(data));
 	var name=$('#nameId').val();
 	$.ajax({
 	   type: 'post',
