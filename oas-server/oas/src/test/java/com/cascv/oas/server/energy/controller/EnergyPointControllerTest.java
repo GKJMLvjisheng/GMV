@@ -1,11 +1,14 @@
 package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.crypto.interfaces.PBEKey;
 
 //USR-9590d7f9a5c811e883290a1411382ce0
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,6 +30,13 @@ public class EnergyPointControllerTest {
         System.out.println("data: " + energyBallResult.getData());
         System.out.println("code: " + energyBallResult.getCode());
         System.out.println("message: " + energyBallResult.getMessage());
+    }
+
+    @Test
+    public void takeEnergyBall() {
+        EnergyBallTokenRequest energyBallTokenRequest = new EnergyBallTokenRequest();
+        energyBallTokenRequest.setBallId("EP-ab05c88eb00811e8bb4a309c23ce159d");
+        energyPointController.takeEnergyBall(energyBallTokenRequest);
     }
 
 }
