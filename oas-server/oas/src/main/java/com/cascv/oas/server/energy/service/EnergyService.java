@@ -134,56 +134,60 @@ public class EnergyService {
      */
     public EnergyBallResult miningEnergyBall(String userUuid) {
         BigDecimal ongoingEnergySummary = new BigDecimal("0");
-        List<EnergyBall> energyBalls = energyBallMapper.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
+
+        List<EnergyBall> energyBalls = energyBallMapper
+                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        EnergyBall latestEnergyBall = energyBallMapper
+                .selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         EnergySourcePoint energySourcePoint = energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING);
-        BigDecimal pointIncreaseSpeed = energySourcePoint.getPointIncreaseSpeed();  // 增长速度
-        BigDecimal pointCapacityEachBall = energySourcePoint.getPointCapacityEachBall();      // 球最大容量
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+        String latestUuid = latestEnergyBall.getUuid();                 // 最近球id
+        BigDecimal latestPoint = latestEnergyBall.getPoint();           // 最近球积分
+        String latestTimeUpdated = latestEnergyBall.getTimeUpdated();   // 最近球更新时间
+        BigDecimal pointIncreaseSpeed = energySourcePoint.getPointIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = energySourcePoint.getPointCapacityEachBall();      // 挖矿球最大容量
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);          // 当前时间
         if (CollectionUtils.isEmpty(energyBalls)) {
+            // 首次登陆初始化
             EnergyBall energyBall = setMiningEnergyBall(userUuid);
             energyBallMapper.insertEnergyBall(energyBall);
             energyBalls.add(energyBall);
-            System.out.println("初始");
         }else {
+            // 已有的球积分总和
             Iterator iterator = energyBalls.iterator();
-            BigDecimal preTotalPoint = new BigDecimal("0");
+            BigDecimal pointPrevious = new BigDecimal("0");
             while (iterator.hasNext()) {
                 EnergyBall energyBall = (EnergyBall) iterator.next();
-                preTotalPoint = preTotalPoint.add(energyBall.getPoint());
+                pointPrevious = pointPrevious.add(energyBall.getPoint());
             }
-            System.out.println("preTotal:" + preTotalPoint);// 已有总量
+            int ballAmountPrevious = energyBalls.size();
             energyBalls.clear();
-            EnergyBall latestEnergyBall = energyBallMapper.selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
+            // 计算时间差，即需要增加的积分
             SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
-            long latestTime = 0;// 最近一次更新的能量球的更新时间，声明、初始化
+            long latestTime = 0;    // 最近一次更新的能量球的更新时间，声明、初始化
             long currentTime = 0;   // 现在的时间，声明、初始化
             try {
-                latestTime = sdf.parse(latestEnergyBall.getTimeUpdated()).getTime();
+                latestTime = sdf.parse(latestTimeUpdated).getTime();
                 currentTime = sdf.parse(now).getTime();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            System.out.println("最新球更新时间：" + latestTime);
             long deltaTime = (currentTime - latestTime) / TRANSFER_OF_SECOND_TO_MILLISECOND; // 实际需增加的时间量
-            System.out.println("时间差：" + deltaTime);
             BigDecimal pointNeeded = pointIncreaseSpeed.multiply(BigDecimal.valueOf(deltaTime));
-            if (preTotalPoint.add(pointNeeded).compareTo
+            // 根据该用户是否挖满矿来分情况更新
+            if (pointPrevious.add(pointNeeded).compareTo
                     (pointCapacityEachBall.multiply(BigDecimal
                             .valueOf(MAX_COUNT_OF_MINING_ENERGYBALL))) == -1) {
-                BigDecimal latestBallPoint = latestEnergyBall.getPoint();   // 最新球的积分含量
-                long latestBallTime = latestBallPoint
+                // 未挖满情况
+                long latestBallTime = latestPoint
                         .divide(pointIncreaseSpeed, 0, BigDecimal.ROUND_HALF_UP).longValue(); // 转化为最新球时间含量
                 long totalTime = deltaTime + latestBallTime;// 现有的球零头加上需要增加的量
-                BigDecimal totalPoint = pointIncreaseSpeed.multiply(BigDecimal.valueOf(totalTime));
-                System.out.println("需要增加的总积分:" + totalPoint);
-                int amount = totalPoint.divide(pointCapacityEachBall, 0, BigDecimal.ROUND_UP).intValue();
-                System.out.println("total" + totalPoint);
+                BigDecimal pointNeededPlusLatest = pointIncreaseSpeed.multiply(BigDecimal.valueOf(totalTime));
+                int amount = pointNeededPlusLatest.divide(pointCapacityEachBall, 0, BigDecimal.ROUND_UP).intValue();
                 System.out.println("需要变更的球数：" + amount);
                 if (amount > 1) {
-                    energyBallMapper.updatePointByUuid(latestEnergyBall.getUuid(), pointCapacityEachBall, now);
-                    energyBalls.add(energyBallMapper.selectByUuid(latestEnergyBall.getUuid()));
-                    BigDecimal pointOfBalls = pointCapacityEachBall.multiply(BigDecimal.valueOf(amount));
-                    BigDecimal balance = totalPoint.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount-1)));
+                    energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
+                    energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
+                    BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount-1)));
                     for (int i = 1; i < amount; i++) {
                         EnergyBall energyBall = setMiningEnergyBall(userUuid);
                         if (i != amount - 1) {
@@ -196,20 +200,28 @@ public class EnergyService {
                         energyBalls.add(energyBall);
                     }
                 }else {
-                    energyBallMapper.updatePointByUuid(latestEnergyBall.getUuid(), totalPoint, now);
-                    EnergyBall energyBall = energyBallMapper.selectByUuid(latestEnergyBall.getUuid());
+                    energyBallMapper.updatePointByUuid(latestUuid, pointNeededPlusLatest, now);
+                    EnergyBall energyBall = energyBallMapper.selectByUuid(latestUuid);
                     energyBalls.add(energyBall);
                 }
             }else {
-
+                // 挖满情况
+                int ballAmountNeeded = MAX_COUNT_OF_MINING_ENERGYBALL - ballAmountPrevious;
+                int i1 = energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
+                energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
+                for (int i = 0; i < ballAmountNeeded; i++) {
+                    EnergyBall energyBall = setMiningEnergyBall(userUuid);
+                    energyBall.setPoint(pointCapacityEachBall);
+                    energyBallMapper.insertEnergyBall(energyBall);
+                    energyBalls.add(energyBall);
+                    ongoingEnergySummary = BigDecimal.ZERO;
+                }
             }
         }
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper.selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
         EnergyBallResult energyBallResult = new EnergyBallResult();
         energyBallResult.setEnergyBallList(energyBallWrappers);
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
-        System.out.println("需要添加的：" + energyBalls);
-        System.out.println("挖矿能量球：" + energyBallWrappers);
         return energyBallResult;
     }
     public EnergyBall setMiningEnergyBall(String userUuid) {
@@ -225,17 +237,6 @@ public class EnergyService {
         energyBall.setTimeCreated(now);
         energyBall.setTimeUpdated(now);
         return energyBall;
-    }
-
-    /**
-     * 查询挖矿类型的所有能量球
-     * @return
-     */
-    public List<EnergyBallWrapper> listEnergyBall(String userUuid) {
-        // 如果此用户该类型能量球还没有，则生成
-        this.miningEnergyBallGenerate(userUuid);
-        // 查询所有挖矿能量球的部分信息，包装
-        return energyBallMapper.selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
     }
 
     // 以下为非业务方法
@@ -273,32 +274,6 @@ public class EnergyService {
         return energyCheckinResult;
     }
 
-    /**
-     * 产生不足数的能量球原球
-     */
-    public void miningEnergyBallGenerate(String userUuid) {
-        // 查询该用户是否产生过挖矿能量球
-        List<EnergyBall> energyBalls = energyBallMapper
-                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
-        EnergyBall energyBall = new EnergyBall();
-        // 能量球数不足，则产生至需要数目
-        if (energyBalls == null || energyBalls.size() < MAX_COUNT_OF_MINING_ENERGYBALL) {
-            int countOfGenerate = MAX_COUNT_OF_MINING_ENERGYBALL - energyBalls.size();
-            for (int i = 0; i < countOfGenerate; i++) {
-                String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-                energyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-                energyBall.setUserUuid(userUuid);
-                energyBall.setPointSource(SOURCE_CODE_OF_MINING);
-                energyBall.setPoint(BigDecimal.ZERO);
-                energyBall.setPower(BigDecimal.ZERO);
-                energyBall.setPowerSource(0);
-                energyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-                energyBall.setTimeCreated(now);
-                energyBall.setTimeUpdated(now);
-                energyBallMapper.insertEnergyBall(energyBall);
-            }
-        }
-    }
 
     public static void main(String[] args) {
     }

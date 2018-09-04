@@ -53,6 +53,9 @@
             <if test="pointSourceCode != null">
                 and point_source = #{pointSourceCode}
             </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
         </where>
     </select>
 
@@ -67,6 +70,9 @@
             </if>
             <if test="pointSource != null">
                 and point_source = #{pointSource}
+            </if>
+            <if test="status != null">
+                and status = #{status}
             </if>
         </where>
         order by time_updated desc limit 1
