@@ -1,6 +1,7 @@
 package com.cascv.oas.server.energy.service;
 
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.*;
@@ -116,13 +117,31 @@ public class EnergyService {
      * @return
      */
     public EnergyBallResult miningEnergyBall(String userUuid) {
+        if (StringUtils.isEmpty(userUuid)) {
+            return null;
+        }
+        EnergySourcePoint energySourcePoint = energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING);
+        BigDecimal pointIncreaseSpeed = energySourcePoint.getPointIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = energySourcePoint.getPointCapacityEachBall();      // 挖矿球最大容量
+        BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
+                0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
+        BigDecimal ongoingEnergySummary = this.aaa(userUuid, energySourcePoint);
+        List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
+                .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, timeGap.intValue());
+        EnergyBallResult energyBallResult = new EnergyBallResult();
+        energyBallResult.setEnergyBallList(energyBallWrappers);
+        energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
+        return energyBallResult;
+    }
+
+    private BigDecimal aaa(String userUuid, EnergySourcePoint energySourcePoint) {
         BigDecimal ongoingEnergySummary = new BigDecimal(0);
         List<EnergyBall> energyBalls = energyBallMapper
                 .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         // 最近创建的球，以下称为“最近球”
         EnergyBall latestEnergyBall = energyBallMapper
                 .selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
-        EnergySourcePoint energySourcePoint = energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING);
+
         BigDecimal pointIncreaseSpeed = energySourcePoint.getPointIncreaseSpeed();            // 挖矿球增长速度
         BigDecimal pointCapacityEachBall = energySourcePoint.getPointCapacityEachBall();      // 挖矿球最大容量
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
@@ -134,7 +153,7 @@ public class EnergyService {
             energyBallMapper.insertEnergyBall(energyBall);
             energyBalls.add(energyBall);
             ongoingEnergySummary = pointCapacityEachBall;
-        }else {
+        } else {
             String latestUuid = latestEnergyBall.getUuid();                 // 最近球id
             BigDecimal latestPoint = latestEnergyBall.getPoint();           // 最近球积分
             SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
@@ -173,7 +192,7 @@ public class EnergyService {
                 if (amount > 1) {
                     energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
                     energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
-                    BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount-1)));
+                    BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)));
                     for (int i = 1; i < amount; i++) {
                         EnergyBall energyBall = getMiningEnergyBall(userUuid, now);
                         if (i != amount - 1) {
@@ -191,12 +210,12 @@ public class EnergyService {
                         energyBallMapper.insertEnergyBall(energyBall);
                         energyBalls.add(energyBall);
                     }
-                }else {
+                } else {
                     energyBallMapper.updatePointByUuid(latestUuid, pointNeededPlusLatest, now);
                     EnergyBall energyBall = energyBallMapper.selectByUuid(latestUuid);
                     energyBalls.add(energyBall);
                 }
-            }else {
+            } else {
                 // 挖满情况
                 int ballAmountNeeded = MAX_COUNT_OF_MINING_ENERGYBALL - ballAmountPrevious;
                 energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
@@ -213,25 +232,7 @@ public class EnergyService {
                 }
             }
         }
-        List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
-                .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
-        Iterator iterator = energyBallWrappers.iterator();
-        while (iterator.hasNext()) {
-            EnergyBallWrapper energyBallWrapper = (EnergyBallWrapper) iterator.next();
-            SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
-            Date endDate = new Date();
-            try {
-                endDate = sdf.parse(energyBallWrapper.getStartDate());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            endDate = timeCalculator(timeGap, endDate);
-            energyBallWrapper.setEndDate(DateUtils.parseDateToStr(FORMAT_OF_TIME, endDate));
-        }
-        EnergyBallResult energyBallResult = new EnergyBallResult();
-        energyBallResult.setEnergyBallList(energyBallWrappers);
-        energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
-        return energyBallResult;
+        return ongoingEnergySummary;
     }
 
     public Date timeCalculator(BigDecimal timeGap, Date time) {
