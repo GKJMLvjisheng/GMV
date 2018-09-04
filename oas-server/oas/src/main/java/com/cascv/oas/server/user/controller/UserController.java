@@ -198,14 +198,16 @@ public class UserController {
     	 UserModel userNewModel=new UserModel();
     	 userNewModel=userService.findUserByName(userInfo.getUserName());
     	 //返回修改完成的数据
-    	 info.put("isSuccess","success");
+    	 info.put("name", userNewModel.getName());
     	 info.put("nickname", userNewModel.getNickname());
     	 info.put("gender", userNewModel.getGender());
-    	 info.put("birthday", userNewModel.getBirthday());
     	 info.put("address", userNewModel.getAddress());
+    	 info.put("birthday", userNewModel.getBirthday());
+    	 info.put("mobile", userNewModel.getMobile());
+    	 info.put("email", userNewModel.getEmail());
+    	 info.put("inviteCode", userNewModel.getInviteCode().toString());
     	  log.info("修改成功");
       }catch(Exception e){
-    	  info.put("isSuccess","failure");
     	  log.info("修改失败"+e);
       }
 	       
