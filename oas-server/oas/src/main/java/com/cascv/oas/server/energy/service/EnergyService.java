@@ -133,6 +133,7 @@ public class EnergyService {
             EnergyBall energyBall = getMiningEnergyBall(userUuid, now);
             energyBallMapper.insertEnergyBall(energyBall);
             energyBalls.add(energyBall);
+            ongoingEnergySummary = pointCapacityEachBall;
         }else {
             String latestUuid = latestEnergyBall.getUuid();                 // 最近球id
             BigDecimal latestPoint = latestEnergyBall.getPoint();           // 最近球积分
