@@ -59,7 +59,7 @@
         </where>
     </select>
 
-    <!-- 查询某用户某种积分的最近更新的一个球 -->
+    <!-- 查询某用户某种积分的最近创建的一个球 -->
     <select id="selectLatestOneByPointSourceCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
@@ -75,7 +75,7 @@
                 and status = #{status}
             </if>
         </where>
-        order by time_updated desc limit 1
+        order by time_created desc limit 1
     </select>
 
     <!-- 查询某用户某种积分的所有能量球 部分信息 -->
