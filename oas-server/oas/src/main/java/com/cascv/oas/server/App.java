@@ -15,6 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.cascv.oas.server"})
+
 public class App extends SpringBootServletInitializer{
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
@@ -22,7 +23,10 @@ public class App extends SpringBootServletInitializer{
   }
 
   public static void main(String[] args) {
-      SpringApplication.run(App.class, args);
+    try {  SpringApplication.run(App.class, args);}
+    catch(Exception e){
+    	System.out.println(e);
+    }
   }
 }
 
