@@ -139,11 +139,11 @@ public class EnergyService {
             SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
             Date latestTimeUpdated = new Date();     // 最近球更新时间初始化
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
-            long currentTime = 0;           // 现在的时间，声明、初始化
+            long currentTime = 0;                    // 现在的时间，声明、初始化
             try {
                 latestTimeUpdated = sdf.parse(latestEnergyBall.getTimeUpdated());// 最近球更新时间
                 latestTimeCreated = sdf.parse(latestEnergyBall.getTimeCreated());// 最近球创建时间
-                currentTime = sdf.parse(now).getTime();                                    // 当前时间
+                currentTime = sdf.parse(now).getTime();                          // 当前时间
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -160,15 +160,15 @@ public class EnergyService {
             long realNeededTime = (currentTime - latestTimeUpdated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND; // 实际需增加的时间量
             BigDecimal pointNeeded = pointIncreaseSpeed.multiply(BigDecimal.valueOf(realNeededTime));
             // 根据该用户是否挖满矿来分情况更新
-            if (pointPrevious.add(pointNeeded).compareTo
-                    (pointCapacityEachBall.multiply(BigDecimal
-                            .valueOf(MAX_COUNT_OF_MINING_ENERGYBALL))) == -1) {
+            if (pointPrevious.add(pointNeeded)
+                    .compareTo(pointCapacityEachBall.multiply(BigDecimal.valueOf(MAX_COUNT_OF_MINING_ENERGYBALL))) == -1) {
                 // 未挖满情况
                 long latestBallTime = latestPoint.divide(pointIncreaseSpeed,
                         0, BigDecimal.ROUND_HALF_UP).longValue(); // 转化为最新球时间含量
                 long totalTime = realNeededTime + latestBallTime;// 现有的球零头加上需要增加的量
                 BigDecimal pointNeededPlusLatest = pointIncreaseSpeed.multiply(BigDecimal.valueOf(totalTime));
                 int amount = pointNeededPlusLatest.divide(pointCapacityEachBall, 0, BigDecimal.ROUND_UP).intValue();
+                System.out.println("amount:" + amount);
                 if (amount > 1) {
                     energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
                     energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
@@ -180,6 +180,8 @@ public class EnergyService {
                         } else {
                             energyBall.setPoint(balance);
                             ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
+                            System.out.println("balance: " + balance);
+                            System.out.println("ongoingEnergySummary: " + ongoingEnergySummary);
                         }
                         // 计算创建时间
                         BigDecimal deltaTime = timeGap.multiply(BigDecimal.valueOf(i)); // 时间差
@@ -210,7 +212,21 @@ public class EnergyService {
                 }
             }
         }
-        List<EnergyBallWrapper> energyBallWrappers = energyBallMapper.selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
+        List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
+                .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING);
+        Iterator iterator = energyBallWrappers.iterator();
+        while (iterator.hasNext()) {
+            EnergyBallWrapper energyBallWrapper = (EnergyBallWrapper) iterator.next();
+            SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
+            Date endDate = new Date();
+            try {
+                endDate = sdf.parse(energyBallWrapper.getStartDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            endDate = timeCalculator(timeGap, endDate);
+            energyBallWrapper.setEndDate(DateUtils.parseDateToStr(FORMAT_OF_TIME, endDate));
+        }
         EnergyBallResult energyBallResult = new EnergyBallResult();
         energyBallResult.setEnergyBallList(energyBallWrappers);
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
