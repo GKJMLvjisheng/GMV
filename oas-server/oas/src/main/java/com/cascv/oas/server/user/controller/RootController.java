@@ -20,7 +20,6 @@ public class RootController {
     if (ServletUtils.isAjaxRequest(request)){
       return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"未认证\"}");
     }
-    return "login";
-  }
+    return "login";  }
 }
 

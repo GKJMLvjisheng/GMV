@@ -188,17 +188,26 @@ public class UserController {
 	  Map<String,String> info = new HashMap<>();
 	  UserModel userModel=new UserModel();   
       try {
-    	 log.info("userUUID {}",userInfo.getEuserNickname());
-		 userModel.setNickname(userInfo.getEuserNickname());
-		 userModel.setName(userInfo.getEuserName());
-	     userModel.setGender(userInfo.getEuserGender());
-	     userModel.setBirthday(userInfo.getEuserBirthday());
-	     userModel.setAddress(userInfo.getEuserAddress());
+    	 log.info("userUUID {}",userInfo.getUserName());
+		 userModel.setName(userInfo.getUserName());
+		 userModel.setNickname(userInfo.getUserNickname());
+	     userModel.setGender(userInfo.getUserGender());
+	     userModel.setBirthday(userInfo.getUserBirthday());
+	     userModel.setAddress(userInfo.getUserAddress());
     	 userService.updateUser(userModel); 
-    	  info.put("isSuccess","success");
+    	 UserModel userNewModel=new UserModel();
+    	 userNewModel=userService.findUserByName(userInfo.getUserName());
+    	 //返回修改完成的数据
+    	 info.put("name", userNewModel.getName());
+    	 info.put("nickname", userNewModel.getNickname());
+    	 info.put("gender", userNewModel.getGender());
+    	 info.put("address", userNewModel.getAddress());
+    	 info.put("birthday", userNewModel.getBirthday());
+    	 info.put("mobile", userNewModel.getMobile());
+    	 info.put("email", userNewModel.getEmail());
+    	 info.put("inviteCode", userNewModel.getInviteCode().toString());
     	  log.info("修改成功");
       }catch(Exception e){
-    	  info.put("isSuccess","failure");
     	  log.info("修改失败"+e);
       }
 	       

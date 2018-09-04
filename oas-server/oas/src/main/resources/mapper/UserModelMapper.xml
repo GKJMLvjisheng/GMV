@@ -148,11 +148,11 @@
 	<!-- Date:2018.09.03 -->
     <update id="updateUserInfo" parameterType="com.cascv.oas.server.user.model.UserModel">
         update user_info set 
-      	name = #{name},
+      	nickname = #{nickname},
       	gender= #{gender},
         address = #{address},
       	birthday = #{birthday}
-      where nickname = #{nickname}  
+      where name = #{name}  
     </update>
     
         <!-- update userprofile -->
