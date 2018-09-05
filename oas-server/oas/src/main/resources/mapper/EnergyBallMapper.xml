@@ -32,7 +32,7 @@
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="pointSourceCode != null">
+            <if test="pointSource != null">
                 and point_source = #{pointSourceCode}
             </if>
             <if test="timeCreated != null">
@@ -50,7 +50,7 @@
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="pointSourceCode != null">
+            <if test="pointSource != null">
                 and point_source = #{pointSourceCode}
             </if>
             <if test="status != null">
@@ -81,29 +81,38 @@
     <!-- 查询某用户某种积分的所有能量球 部分信息 -->
     <select id="selectPartByPointSourceCode" resultMap="EnergyBallWrapper">
         select
-        <include refid="Part_Imformation_Of_EnergyBall" />
-        from energy_ball b
-        inner join energy_source_point p
-        <where>
-                point_source = source_code
-            <if test="pointSourceCode != null">
-                and point_source = #{pointSourceCode}
-            </if>
-            <if test="userUuid != null">
-                and user_uuid = #{userUuid}
-            </if>
-        </where>
+            b.uuid,
+            b.user_uuid,
+            b.point as value,
+            b.start_date,
+            date_add( b.start_date, interval #{timeGap} second ) as end_date,
+            p.source_code as type,
+            p.source_name as name
+        from
+            (
+            select
+                uuid,
+                user_uuid,
+                point_source,
+                point,
+                status,
+                STR_TO_DATE( time_created, '%Y-%m-%d %H:%i:%s' ) as start_date
+            from
+                energy_ball
+            ) b
+            inner join energy_source_point p
+        where
+            point_source = source_code
+            and point_source = #{pointSource}
+            and user_uuid = #{userUuid}
     </select>
-    <sql id="Part_Imformation_Of_EnergyBall">
-        b.uuid, b.point, b.time_created, b.time_updated, p.source_code, p.source_name
-    </sql>
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
         <id column="uuid" property="uuid"/>
-        <result column="point" property="value"/>
-        <result column="time_created" property="startDate"/>
-        <result column="time_updated"  property="endDate"/>
-        <result column="source_code" property="type" />
-        <result column="source_name" property="name" />
+        <result column="value" property="value"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date"  property="endDate"/>
+        <result column="type" property="type" />
+        <result column="name" property="name" />
     </resultMap>
 
     <!-- 变更能量球的状态 -->
