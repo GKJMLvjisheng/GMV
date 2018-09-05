@@ -52,8 +52,8 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> checkin() {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//        String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+        String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         ErrorCode errorCode = ErrorCode.SUCCESS;
         if (!energyService.isCheckin(userUuid)) {
@@ -84,8 +84,8 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//    	String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+    	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
@@ -98,8 +98,8 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//        String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+        String userUuid = ShiroUtils.getUserUuid();
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
         System.out.println("结果:"+energyBallTakenResult);
