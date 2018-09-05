@@ -104,6 +104,7 @@
         where
             point_source = source_code
             and point_source = #{pointSource}
+            and status = #{status}
             and user_uuid = #{userUuid}
     </select>
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">

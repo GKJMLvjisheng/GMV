@@ -26,6 +26,7 @@ public interface EnergyBallMapper {
 
     List<EnergyBallWrapper> selectPartByPointSourceCode(@Param("userUuid") String userUuid,
                                                         @Param("pointSource") Integer pointSource,
+                                                        @Param("status") Integer status,
                                                         @Param("timeGap") Integer timeGap);
 
     int updateStatusByUuid(@Param("uuid") String uuid,
