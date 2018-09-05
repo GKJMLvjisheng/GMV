@@ -213,12 +213,15 @@ public class UserController {
     	 info.put("email", userNewModel.getEmail());
     	 info.put("inviteCode", userNewModel.getInviteCode().toString());
     	  log.info("修改成功");
+    	  return new ResponseEntity.Builder<Map<String, String>>()
+    		      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
       }catch(Exception e){
     	  log.info("修改失败"+e);
+    	  return new ResponseEntity.Builder<Map<String, String>>()
+    		      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
       }
 	       
-	  return new ResponseEntity.Builder<Map<String, String>>()
-	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+	  
 	}
 	
 	/*
