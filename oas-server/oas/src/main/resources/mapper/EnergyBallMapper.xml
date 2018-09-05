@@ -33,7 +33,7 @@
                 user_uuid = #{userUuid}
             </if>
             <if test="pointSource != null">
-                and point_source = #{pointSourceCode}
+                and point_source = #{pointSource}
             </if>
             <if test="timeCreated != null">
                 and time_created like #{timeCreated}"%"

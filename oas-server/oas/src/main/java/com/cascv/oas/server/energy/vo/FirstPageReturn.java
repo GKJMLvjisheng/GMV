@@ -12,9 +12,8 @@ public class FirstPageReturn implements Serializable {
 	@Getter @Setter private BigDecimal power;
 	@Getter @Setter private BigDecimal point;
 
-	public void energyBallResult(EnergyBallResult energyBallResult){
-		this.energyBallResult(energyBallResult);
-
+	public void energyBallReturn(EnergyBallResult energyBallResult){
+		this.energyBallReturn(energyBallResult);;
 	}
 
 }
