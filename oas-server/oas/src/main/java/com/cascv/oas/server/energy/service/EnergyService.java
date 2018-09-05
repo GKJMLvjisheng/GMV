@@ -276,6 +276,12 @@ public class EnergyService {
         energyWalletMapper.increasePower(uuid, increasePower);
         energyBallTakenResult.setNewEnergyPonit(increasePoint);
         energyBallTakenResult.setNewPower(increasePower);
+        // 判断能量球有没有被拿光，如果是，要产生一个新的
+        List<EnergyBall> energyBalls = energyBallMapper.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        if (CollectionUtils.isEmpty(energyBalls)) {
+            energyBallMapper.insertEnergyBall(getMiningEnergyBall(userUuid, now));
+            energyBalls.add(getMiningEnergyBall(userUuid, now));
+        }
         return energyBallTakenResult;
     }
 
