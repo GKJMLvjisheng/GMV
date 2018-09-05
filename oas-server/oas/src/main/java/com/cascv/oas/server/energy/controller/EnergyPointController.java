@@ -11,7 +11,6 @@ import java.util.List;
 
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
-import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import com.cascv.oas.server.energy.vo.EnergyPointCategory;
 
@@ -30,8 +29,8 @@ import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
 import com.cascv.oas.server.energy.vo.EnergyBallResult;
-import com.cascv.oas.server.blockchain.wrapper.EnergyBallTakenResult;
-import com.cascv.oas.server.blockchain.wrapper.EnergyBallTokenRequest;
+import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
 import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactor;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
@@ -49,16 +48,12 @@ public class EnergyPointController {
     private EnergyService energyService;
 
 
-    /**
-     * 签到功能
-     * @return
-     */
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
     public ResponseEntity<?> checkin() {
-//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-        String userUuid = ShiroUtils.getUserUuid();
+        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+//        String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         ErrorCode errorCode = ErrorCode.SUCCESS;
         if (!energyService.isCheckin(userUuid)) {
@@ -66,11 +61,11 @@ public class EnergyPointController {
             // generate a new Checkin EnergyBall
             energyService.saveCheckinEnergyBall(userUuid);
             // insert the Checkin record of this time
-            energyService.saveEnergyRecord(userUuid);
+            energyService.saveCheckinEnergyRecord(userUuid);
             // the result of Checkin
             energyCheckinResult = energyService.getCheckinEnergy();
             // add the Checkin point&power in EnergyWallet
-            energyService.updateEnergyWallet(userUuid);
+            energyService.updateCheckinEnergyWallet(userUuid);
             // change the Checkin EnergyBall to Die
             energyService.updateEnergyBallStatusByUuid(userUuid);
         } else {
@@ -85,7 +80,6 @@ public class EnergyPointController {
                 .setErrorCode(errorCode)
                 .build();
     }
-
 
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
@@ -104,10 +98,16 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
-        EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
-        energyBallTakenResult.setNewEnergyPonit(15);
-        energyBallTakenResult.setNewPower(0);
-        return new ResponseEntity.Builder<EnergyBallTakenResult>().setData(energyBallTakenResult).setErrorCode(ErrorCode.SUCCESS).build();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+        String userUuid = ShiroUtils.getUserUuid();
+        EnergyBallTakenResult energyBallTakenResult = energyService
+                .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
+        System.out.println("结果:"+energyBallTakenResult);
+        return new ResponseEntity
+                .Builder<EnergyBallTakenResult>()
+                .setData(energyBallTakenResult)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
     }
 
     @PostMapping(value = "/inquirePower")

@@ -13,11 +13,11 @@ public interface EnergyBallMapper {
     EnergyBall selectByUuid(@Param("uuid") String uuid);
 
     List<EnergyBall> selectByTimeFuzzyQuery(@Param("userUuid") String userUuid,
-                                            @Param("pointSourceCode") Integer pointSourceCode,
+                                            @Param("pointSource") Integer pointSource,
                                             @Param("timeCreated") String timeCreated);
 
     List<EnergyBall> selectByPointSourceCode(@Param("userUuid") String userUuid,
-                                             @Param("pointSourceCode") Integer pointSourceCode,
+                                             @Param("pointSource") Integer pointSource,
                                              @Param("status") Integer status);
 
     EnergyBall selectLatestOneByPointSourceCode(@Param("userUuid") String userUuid,
@@ -25,7 +25,8 @@ public interface EnergyBallMapper {
                                                 @Param("status") Integer status);
 
     List<EnergyBallWrapper> selectPartByPointSourceCode(@Param("userUuid") String userUuid,
-                                                        @Param("pointSourceCode") Integer pointSourceCode);
+                                                        @Param("pointSource") Integer pointSource,
+                                                        @Param("timeGap") Integer timeGap);
 
     int updateStatusByUuid(@Param("uuid") String uuid,
                            @Param("status") Integer status,
