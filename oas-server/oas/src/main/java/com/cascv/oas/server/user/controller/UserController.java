@@ -22,7 +22,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.model.EthWallet;
-import com.cascv.oas.server.blockchain.service.EnergyPointService;
+import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -54,7 +54,7 @@ public class UserController {
 	private UserWalletService userWalletService;
 	
 	@Autowired
-	private EnergyPointService energyPointService;
+	private EnergyWalletService energyPointService;
   
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")

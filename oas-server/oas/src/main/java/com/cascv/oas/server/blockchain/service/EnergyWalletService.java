@@ -18,7 +18,7 @@ import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.common.UuidPrefix;
 
 @Service
-public class EnergyPointService {
+public class EnergyWalletService {
   
   @Autowired
   private EnergyWalletMapper energyWalletMapper;
@@ -60,17 +60,6 @@ public class EnergyPointService {
     return 0;
   }
 
-  //redeem
-  public Integer redeem(String userUuid, Integer value) {
-    EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
-    UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
-    if (energyWallet == null || userWallet == null || energyWallet.getPoint().compareTo(BigDecimal.valueOf(value)) < 0) {
-      return 0;
-    }
-    energyWalletMapper.decreasePoint(energyWallet.getUuid(), BigDecimal.valueOf(value));
-    userWalletMapper.increaseBalance(userWallet.getUuid(), powerService.exchange(energyWallet.getPower().intValue(), value));
-    return value;
-  }
   
   //deposit
   public Integer deposit(String category, String source, String activity, String userUuid, Integer value) {

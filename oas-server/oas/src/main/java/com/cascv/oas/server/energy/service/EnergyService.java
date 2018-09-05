@@ -1,8 +1,10 @@
 package com.cascv.oas.server.energy.service;
 
+import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.*;
 import com.cascv.oas.server.energy.model.EnergyBall;
@@ -13,17 +15,20 @@ import com.cascv.oas.server.energy.vo.EnergyBallResult;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.security.acl.LastOwnerException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
+@Slf4j
 public class EnergyService {
 	@Autowired
     private EnergyBallMapper energyBallMapper;
@@ -35,6 +40,10 @@ public class EnergyService {
     private EnergySourcePowerMapper energySourcePowerMapper;
     @Autowired
     private EnergyWalletMapper energyWalletMapper;
+    
+    @Autowired
+    private UserWalletService userWalletService;
+    
     private static String checkinEnergyBallUuid;
     private EnergyBall checkinEnergyBall = new EnergyBall();
 
@@ -376,7 +385,78 @@ public class EnergyService {
         return energyWallet;
     }
 
-
+    private void saveEnergyOutRecord(String userUuid, BigDecimal total) {
+    	EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
+    	energyTradeRecord.setInOrOut(0);
+    	energyTradeRecord.setPointChange(total);
+    	energyTradeRecord.setEnergyBallUuid("0");
+    	energyTradeRecord.setPowerChange(BigDecimal.ZERO);
+    	energyTradeRecord.setStatus(0);
+    	String now = DateUtils.getTime();
+    	energyTradeRecord.setTimeCreated(now);
+    	energyTradeRecord.setTimeUpdated(now);
+    	energyTradeRecord.setUserUuid(userUuid);
+    	energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+    	energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
+    }
+    /*
+     * summary period point
+     * */
+    public BigDecimal summaryPoint(String userUuid, String yyyy_MM) {
+        String begin = yyyy_MM + "-01 00:00:00";
+        String end = null;
+    	String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    	if (yyyy_MM.compareToIgnoreCase(today) == 0) {
+    		end=DateUtils.getTime();
+    	} else {
+    		Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.dateTime(DateUtils.YYYY_MM, yyyy_MM));
+    		int day = calendar.getActualMaximum(Calendar.DATE);
+        	calendar.set(Calendar.DAY_OF_MONTH, day);
+        	end = yyyy_MM + String.format("-%02d 23:59:59", day);
+    	}
+    	log.info("begin {} end {}", begin, end);
+    	return energyTradeRecordMapper.sumPoint(userUuid, begin, end);
+    } 
+    
+    //redeem
+    public Boolean decreaseBalance(String userUuid, BigDecimal value) {
+      EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
+      if (energyWallet == null|| energyWallet.getPoint().compareTo(value) < 0) {
+        return false;
+      }
+      energyWalletMapper.decreasePoint(energyWallet.getUuid(), value);
+      return true;
+    }
+    
+    public ErrorCode redeem(String userUuid, String yyyy_MM) {
+        String begin = yyyy_MM + "-01 00:00:00";
+        String end = null;
+    	String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    	if (yyyy_MM.compareToIgnoreCase(today) == 0) {
+    		end=DateUtils.getTime();
+    	} else {
+    		Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.dateTime(DateUtils.YYYY_MM, yyyy_MM));
+    		int day = calendar.getActualMaximum(Calendar.DATE);
+        	calendar.set(Calendar.DAY_OF_MONTH, day);
+        	end = yyyy_MM + String.format("-%02d 23:59:59", day);
+    	}
+    	
+    	List<EnergyTradeRecord> tradeList = energyTradeRecordMapper.selectTrade(userUuid, begin, end);
+    	BigDecimal sum = BigDecimal.ZERO;
+    	for (EnergyTradeRecord trade : tradeList) {
+    		sum=sum.add(trade.getPointChange());
+    		energyTradeRecordMapper.updateStatus(trade.getUuid(), STATUS_OF_DIE_ENERGYRECORD);
+    	}
+    	log.info("summary {}", sum);
+    	if (!decreaseBalance(userUuid, sum))
+    		return ErrorCode.BALANCE_NOT_ENOUGH;
+    	userWalletService.addFromEnergy(userUuid, sum);
+    	saveEnergyOutRecord(userUuid, sum);
+    	return ErrorCode.SUCCESS;
+    } 
+    
     public static void main(String[] args) {
     }
 }

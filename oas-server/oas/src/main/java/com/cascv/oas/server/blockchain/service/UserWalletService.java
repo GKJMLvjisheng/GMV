@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
@@ -24,6 +25,8 @@ public class UserWalletService {
   @Autowired 
   private UserWalletDetailMapper userWalletDetailMapper; 
   
+  @Autowired
+  private ExchangeParam exchangeParam;
   
   public UserWallet find(String userUuid){
     return userWalletMapper.selectByUserUuid(userUuid);
@@ -79,4 +82,11 @@ public class UserWalletService {
     this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"");
     return ErrorCode.SUCCESS;
   }
+  
+  public void addFromEnergy(String userUuid, BigDecimal point) {
+	  UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
+	  BigDecimal token = point.multiply(BigDecimal.valueOf(exchangeParam.getEnergyPointRate()));
+	  userWalletMapper.increaseBalance(userWallet.getUuid(), token);
+	  this.addDetail(userWallet, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString());
+  } 
 }
