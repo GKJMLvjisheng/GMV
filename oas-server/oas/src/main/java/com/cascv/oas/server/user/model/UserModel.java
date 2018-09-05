@@ -29,4 +29,11 @@ public class UserModel extends BaseEntity {
 	@Getter @Setter private Integer confirmed;
 	@Getter @Setter private Set<String> roles = new HashSet<>();
 	@Getter @Setter private Set<String> perms = new HashSet<>();
+	
+	/*
+	 * Name:UpLoadImg
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	@Getter @Setter private String profile;
 }

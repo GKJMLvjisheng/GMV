@@ -20,5 +20,25 @@ public interface UserModelMapper {
 	 * Date:2018.09.03
 	 */	 
 	 Integer updateUserInfo(UserModel userModel);
+	 
+	/*
+	 * Name:upadateUserProfile
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */	
+	 Integer updateUserProfile(UserModel userModel);
+	 
+	/*
+	 * Name:resetMobileByName
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */	
+	 Integer resetMobileByName(UserModel userModel);
+	/*
+	 * Name:resetMobileByName
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */	
+	 Integer resetEmailByName(UserModel userModel);
 }
 
