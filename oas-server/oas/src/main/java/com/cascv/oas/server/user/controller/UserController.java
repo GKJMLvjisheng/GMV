@@ -194,12 +194,12 @@ public class UserController {
 	  Map<String,String> info = new HashMap<>();
 	  UserModel userModel=new UserModel();   
       try {
-    	 log.info("userUUID {}",userInfo.getUserName());
+    	 log.info("userUUID {}",userInfo.getName());
 		 userModel.setName(ShiroUtils.getUser().getName());
-		 userModel.setNickname(userInfo.getUserNickname());
-	     userModel.setGender(userInfo.getUserGender());
-	     userModel.setBirthday(userInfo.getUserBirthday());
-	     userModel.setAddress(userInfo.getUserAddress());
+		 userModel.setNickname(userInfo.getNickname());
+	     userModel.setGender(userInfo.getGender());
+	     userModel.setBirthday(userInfo.getBirthday());
+	     userModel.setAddress(userInfo.getAddress());
     	 userService.updateUser(userModel); 
     	 UserModel userNewModel=new UserModel();
     	 userNewModel=userService.findUserByName(ShiroUtils.getUser().getName());
