@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
+<title>修改邮箱</title>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css}">
+
+<!-- <link rel="stylesheet" type="text/css" th:href="@{/style.css}"> -->
+
+<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+
+<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+<style>
+.form-group span.required {
+	color: red;
+	font-size: 150%;
+}
+
+.col-center-block {
+	float: none;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#labelProgressTwo1:after {
+	content: '1';
+	margin-left: -40px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	top: 76px;
+	color: white;
+}
+
+#labelProgressTwo2:after {
+	content: '2';
+	margin-left: -42px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	color: white;
+	top: 76px;
+}
+
+.content:after {
+	content: '3';
+	margin-left: -24px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	top: 76px;
+}
+
+i:after {
+	content: '';
+	width: 10px;
+	height: 10px;
+	border-radius: 20px; /**控制形状**/
+	background-color: orange; /**控制图标颜色#000**/
+	margin-right: 25px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -25px;
+}
+
+.grayness:after {
+	content: '';
+	width: 10px;
+	height: 10px;
+	border-radius: 20px; /**控制形状**/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
+	margin-right: 25px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -25px;
+}
+
+.orange:after {
+	content: '';
+	width: 10px;
+	height: 10px;
+	border-radius: 20px; /**控制形状**/
+	background-color: orange; /**控制图标颜色#000**/
+	margin-right: 25px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -25px;
+}
+
+#labelProgressTwo1:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: orange; /**控制图标颜色#000**/
+	margin-right: -50px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+
+#labelProgressTwo2:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: orange; /**控制图标颜色#000**/
+	margin-right: -48px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+
+.content:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
+	margin-right: -30px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+
+.content3:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: orange; /**控制图标颜色#000**/
+	margin-right: -30px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+
+.content3:after {
+	content: '3';
+	margin-left: -24px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	top: 76px;
+	color: white;
+}
+
+@charset "utf-8";
+* { outline:none; margin:0; padding:0; font-family:microsoft yahei; }
+ul, li { list-style:none; }
+.auto-tip li { width:100%; text-align:left; height:22px; line-height:22px; font-size:14px;background:white; }
+.auto-tip li.hoverBg { background:#ddd; cursor:pointer; }
+.auto-tip li em { font-style:normal; }
+.red { color:#333; } 
+.hidden { display:none; }
+
+</style>
+</head>
+<body>
+	<section class="content-header text-center">
+		<div class="container">
+			<h2 class="text-center" id="labelPwd2">通过手机验证码找回</h2>
+		</div>
+		<br />
+		<div class="container">
+			<h4 style="display: inline-block" id="labelProgressTwo1">验证身份</h4>
+			<i id="circle1"></i><i id="circle1"></i><i id="circle1"></i>
+			<h4 style="display: inline-block" id="labelProgressTwo2">修改密码</h4>
+			<i id="circle2" class="grayness"></i><i id="circle2" class="grayness"></i><i
+				id="circle2" class="grayness"></i>
+			<h4 class=" content" style="display: inline-block"
+				id="labelProgressTwo3">完成</h4>
+		</div>
+	</section>
+
+	<hr />
+	<div class="container">
+
+
+		<div class=" col-sm-7 col-center-block">
+
+			<form id="resetMailForm" action="/user/resetMail"
+				method="post" class="form-horizontal">
+				<input type="text" style="display: none" name="userNicknameHiden"
+					id="userNicknameHiden">
+
+
+				<div class="form-group">
+					<label for="userNiName" class="col-sm-3 control-label">登录名:</label>
+					<div class="col-sm-6">
+						<input type="text" name="userNiname" id="userNiname"
+							class="form-control" style="border-style: none"
+							readonly="readonly" />
+
+					</div>
+				</div>
+				
+				<div class="form-group">
+
+					<label for="userMail" class="col-sm-3 control-label">邮箱:</label>
+					
+					<span class="required">*</span>
+
+					<div class="col-sm-6">
+
+						<input type="text" name="userMail" class="form-control"
+							id="userMail" required="required" onblur="checkUserMail(this)"
+							placeholder="请输入邮箱" /> 
+					    <span id="userMail_span"></span>
+
+					</div>
+
+
+				</div>
+
+<!-- 				<div class="form-group"> -->
+<!-- 					<label for="identifyCodeNext" class="col-sm-3 control-label">校验码:</label><span -->
+<!-- 						class="required " style="font-size: 15px"></span> -->
+<!-- 						<button class="btn btn-warning   " id="obtain" type="button" -->
+<!-- 							onclick="sendCode()">获取验证码</button></span> -->
+<!-- 					<div class="col-sm-4"> -->
+<!-- 						<input type="text" id="identifyCodeNext" class="form-control" -->
+<!-- 							placeholder="请输入验证码" onblur='checkIdentify()' /> <span -->
+<!-- 							id='msgNext'></span> -->
+
+<!-- 					</div> -->
+<!-- 				</div> -->
+
+
+<!-- 				<div class="form-group"> -->
+<!-- 					<label for="idengtify" class="col-sm-3 control-label"></label> -->
+<!-- 					<div class="col-sm-6"> -->
+
+<!-- 						<button class="btn btn-warning   btn-block " id="idengtifyNext" -->
+<!-- 							type="button" onclick="addNewMail()">确定</button> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+                  <div class="form-group">
+					<label for="idengtify" class="col-sm-3 control-label"></label>
+					<div class="col-sm-6">
+
+						<button class="btn btn-warning " id="obtain"
+							type="button" onclick="sendCode()">验证激活邮箱</button>
+					</div>
+				</div>
+
+
+				<!--         btn-primary   btn-block-->
+
+			</form>
+
+		</div>
+
+	</div>
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+
+					<h3>提示</h3>
+
+				</div>
+
+				<div class="modal-body" align="center">
+
+					<h4 id="tipContent">新增成功</h4>
+
+				</div>
+
+				<div class="modal-footer">
+
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript" th:src="@{/resetPassword.js}"></script>
+	<script type="text/javascript" th:src="@{/emailAutoComplete.js}"></script>
+
+</body>
+<script type="text/javascript">
+	$(function() {
+		var url = window.location.href;
+		var strInfo = getInfoAndAnalysis(url);
+
+		var len = strInfo.length;
+		if (len > 0) {
+			var string1 = decodeURI(decodeURI(strInfo[0]));//标题
+			var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
+			var userNickname = decodeURI(decodeURI(strInfo[2])); // 登录名
+			alert(userNickname);
+
+			document.getElementById("labelPwd2").innerHTML = (string1);
+			$("#labelPwd2").val(string1);
+
+			document.getElementById("labelProgressTwo2").innerHTML = (strProgress);
+			$("#labelProgressTwo2").val(strProgress);
+
+			$("#userNiname").val(userNickname);
+		}
+	});
+	
+	//发ajax请求到后台判断邮箱是否重复，重复则不可注册
+	var checkMailFlag = 0;
+	function checkUserMail(userMail) {
+	  var userMail = $("#userMail").val();
+	 
+	  if (!userMail == "") {
+	
+	      var data = {
+	        "userMail" : userMail
+	      };
+
+	      $.ajax({
+	        url : "/doCheckUserMail",
+	        type : "POST",
+	        dataType : 'json',
+	        async : false,
+	        data : data,
+	        success : function(data) {
+	          //根据判断提示用户
+	          if (data.state == true) {
+	        	
+	            $("#userMail_span").html("恭喜您，邮箱可以使用");
+	            $("#userMail_span").css("color", "green");
+	            checkMailFlag = 1
+	       
+	          } else {
+	        	  
+	            $("#userMail_span").html("该邮箱已经存在");
+	            $("#userMail_span").css("color", "red");
+	            checkMailFlag = 0
+	          }
+	        },
+	        error : function() {
+	          alert('检查邮箱是否存在发生错误');
+	        }
+	      });
+	    }
+	  else {
+	    $("#userMail_span").html("请输入邮箱!");
+	    $("#userMail_span").css("color", "red");
+	    checkMailFlag = 0;
+	  }
+	}
+	
+	//发送验证码
+
+	var btn = document.getElementsByTagName('button')[0];
+	
+	function sendCode() {
+		var time = 60;//定义时间变量。用于倒计时用
+		var timer = null;//定义一个定时器；
+		
+		if (time == 60 && checkMailFlag == 1) {
+			var mobileAndMail = $("#userMail").val();
+			var string1 = $("#labelPwd2").val();//标题
+			var strProgress = $("#labelProgressTwo2").val();// 修改邮箱 或者 修改手机
+			var userNickname = $("#userNiname").val();// 登录名
+			var code = $("#identifyCodeNext").val();// 校验码
+			var result = "成功！";
+			var data = {
+				"mobileAndMail" : mobileAndMail,
+				"string1" : string1,
+				"strProgress" : strProgress,
+				"userNickname" : userNickname,
+				"result" : result
+			};
+			
+			timer = setInterval(function() {///开启定时器。函数内执行
+			btn.disabled = true;
+			btn.innerText = time + "秒后重新发送"; //点击发生后，按钮的文本内容变成之前定义好的时间值。
+		
+	        time--;//时间值自减
+			if (time == 0) { //判断,当时间值小于等于0的时候
+				btn.innerText = '重新发送验证码'; //其文本内容变成……点击重新发送……
+				btn.disabled = false;
+				clearInterval(timer); //清除定时器
+				}
+			}, 1000)
+
+			$.ajax({
+				url : "/sendMailLink",
+				type : "POST",
+				dataType : 'json',
+				//async : false,
+				data : data,
+				success : function(data) {
+
+					if (data.state) {
+						alert("验证码发送成功");
+						addNewMail();
+						alert("修改邮箱成功！");
+
+					}
+
+					else {
+						alert("验证码发送失败");
+					}
+				},
+				error : function(data) {
+					//alert(data);
+					alert('检查用户是否存在发生错误');
+				}
+			});
+		} else {
+			alert('请输入合适邮箱');
+			time == 60;
+		}
+
+	}
+
+	// 检查邮箱/手机号验证码
+	var flag = 0;
+	function checkIdentify() {
+
+		var numberAndMobileCode = $("#identifyCodeNext").val();
+
+		var data = {
+
+			"numberAndMobileCode" : numberAndMobileCode,
+		};
+
+		$.ajax({
+			url : "/mailCheckCode",
+			type : "POST",
+			dataType : 'json',
+			async : false,
+			data : data,
+			success : function(data) {
+				//根据判断提示用户
+				if (data.state) {
+					$("#msgNext").html("验证码正确！");
+					$("#msgNext").css("color", "#00ff00");
+
+					flag = 1;
+				} else {
+					$("#msgNext").html("验证码错误");
+					$("#msgNext").css("color", "#ff0000");
+
+					flag = 0;
+				}
+				return flag;
+			},
+			error : function() {
+				alert('检查用户是否存在发生错误');
+			}
+		});
+
+	}
+</script>
+	
+</html>

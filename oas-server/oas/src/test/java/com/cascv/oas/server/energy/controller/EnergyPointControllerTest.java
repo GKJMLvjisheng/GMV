@@ -35,7 +35,7 @@ public class EnergyPointControllerTest {
     @Test
     public void takeEnergyBall() {
         EnergyBallTokenRequest energyBallTokenRequest = new EnergyBallTokenRequest();
-        energyBallTokenRequest.setBallId("EP-ab05c88eb00811e8bb4a309c23ce159d");
+        energyBallTokenRequest.setBallId("EP-d456a83eb0b811e8ad61309c23ce159d");
         energyPointController.takeEnergyBall(energyBallTokenRequest);
     }
 

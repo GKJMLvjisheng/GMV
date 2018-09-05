@@ -27,5 +27,4 @@ public class HostIpUtils{
 		}
 		return null;
 	}
-
-    }  
+}
