@@ -176,17 +176,19 @@ public class EnergyService {
             }
             int ballAmountPrevious = energyBalls.size();
             energyBalls.clear();
-            // 计算时间差，即需要增加的积分
-            long realNeededTime = (currentTime - latestTimeUpdated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND; // 实际需增加的时间量
-            BigDecimal pointNeeded = pointIncreaseSpeed.multiply(BigDecimal.valueOf(realNeededTime));
+            // 计算与最近球创建的时间差，即需要增加的积分+ 最近球已有积分
+            long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND;
+            BigDecimal leadPoint = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
+            BigDecimal realNeedPoint = leadPoint.subtract(latestPoint);
+            System.out.println("总的：" + pointPrevious.add(realNeedPoint));
+            System.out.println("满的：" + pointCapacityEachBall.multiply(BigDecimal.valueOf(MAX_COUNT_OF_MINING_ENERGYBALL)));
             // 根据该用户是否挖满矿来分情况更新
-            if (pointPrevious.add(pointNeeded)
+            if (pointPrevious.add(realNeedPoint)
                     .compareTo(pointCapacityEachBall.multiply(BigDecimal.valueOf(MAX_COUNT_OF_MINING_ENERGYBALL))) == -1) {
                 // 未挖满情况
                 long latestBallTime = latestPoint.divide(pointIncreaseSpeed,
                         0, BigDecimal.ROUND_HALF_UP).longValue(); // 转化为最新球时间含量
-                long totalTime = realNeededTime + latestBallTime;// 现有的球零头加上需要增加的量
-                BigDecimal pointNeededPlusLatest = pointIncreaseSpeed.multiply(BigDecimal.valueOf(totalTime));
+                BigDecimal pointNeededPlusLatest = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
                 int amount = pointNeededPlusLatest.divide(pointCapacityEachBall, 0, BigDecimal.ROUND_UP).intValue();
                 System.out.println("amount:" + amount);
                 if (amount > 1) {
@@ -204,12 +206,12 @@ public class EnergyService {
                             System.out.println("ongoingEnergySummary: " + ongoingEnergySummary);
                         }
                         // 计算创建时间
-                        BigDecimal deltaTime = timeGap.multiply(BigDecimal.valueOf(i)); // 时间差
-                        Date timeCreated = timeCalculator(deltaTime, latestTimeCreated);
-                        energyBall.setTimeCreated(DateUtils.parseDateToStr(FORMAT_OF_TIME, timeCreated));
-                        energyBallMapper.insertEnergyBall(energyBall);
-                        energyBalls.add(energyBall);
-                    }
+                    BigDecimal deltaTime = timeGap.multiply(BigDecimal.valueOf(i)); // 时间差
+                    Date timeCreated = timeCalculator(deltaTime, latestTimeCreated);
+                    energyBall.setTimeCreated(DateUtils.parseDateToStr(FORMAT_OF_TIME, timeCreated));
+                    energyBallMapper.insertEnergyBall(energyBall);
+                    energyBalls.add(energyBall);
+                }
                 } else {
                     energyBallMapper.updatePointByUuid(latestUuid, pointNeededPlusLatest, now);
                     EnergyBall energyBall = energyBallMapper.selectByUuid(latestUuid);

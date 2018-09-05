@@ -51,7 +51,7 @@
                 user_uuid = #{userUuid}
             </if>
             <if test="pointSource != null">
-                and point_source = #{pointSourceCode}
+                and point_source = #{pointSource}
             </if>
             <if test="status != null">
                 and status = #{status}
