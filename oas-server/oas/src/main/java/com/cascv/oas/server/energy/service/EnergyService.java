@@ -251,6 +251,12 @@ public class EnergyService {
      * @return
      */
     public EnergyBallTakenResult getEnergyBallTakenResult(String userUuid, String energyBallUuid) {
+        if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
+            System.out.println("userUuid or energyBallUuid is null");
+            return null;
+        }
+        List<EnergyBall> energyBallsBefore = energyBallMapper
+                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         // 改变被取走能量的球的状态
@@ -277,10 +283,12 @@ public class EnergyService {
         energyBallTakenResult.setNewEnergyPonit(increasePoint);
         energyBallTakenResult.setNewPower(increasePower);
         // 判断能量球有没有被拿光，如果是，要产生一个新的
-        List<EnergyBall> energyBalls = energyBallMapper.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
-        if (CollectionUtils.isEmpty(energyBalls)) {
+        // 判断采摘前球是否已经满了，如果满了，摘掉一个球马上生成一个新的
+        List<EnergyBall> energyBallsAfter = energyBallMapper
+                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        if (CollectionUtils.isEmpty(energyBallsAfter) || energyBallsBefore.size() == MAX_COUNT_OF_MINING_ENERGYBALL) {
             energyBallMapper.insertEnergyBall(getMiningEnergyBall(userUuid, now));
-            energyBalls.add(getMiningEnergyBall(userUuid, now));
+            energyBallsAfter.add(getMiningEnergyBall(userUuid, now));
         }
         return energyBallTakenResult;
     }
