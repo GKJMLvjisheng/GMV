@@ -222,7 +222,7 @@ public class EnergyService {
                 int ballAmountNeeded = MAX_COUNT_OF_MINING_ENERGYBALL - ballAmountPrevious;
                 energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
                 energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
-                for (int i = 0; i < ballAmountNeeded; i++) {
+                for (int i = 1; i <= ballAmountNeeded; i++) {
                     BigDecimal deltaTime = timeGap.multiply(BigDecimal.valueOf(i)); // 时间差
                     EnergyBall energyBall = getMiningEnergyBall(userUuid, now);
                     energyBall.setPoint(pointCapacityEachBall);
