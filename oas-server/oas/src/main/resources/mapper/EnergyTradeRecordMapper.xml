@@ -40,4 +40,30 @@
         #{timeCreated},
         #{timeUpdated})
     </insert>
+    
+   <select id="sumPoint" resultType="java.math.BigDecimal">
+  	select 
+  	  sum(point_change) 
+  	from energy_trade_record 
+    	where user_uuid=#{userUuid}
+    	and in_or_out=1 
+    	and status = 1
+    	and time_created between #{beginTime} and #{endTime}
+  </select>
+	
+  <select id="selectTrade" resultMap="BaseResultMap">
+	select 
+  	  <include refid="Base_Column_List"/>
+  	from energy_trade_record 
+    where user_uuid=#{userUuid}
+    and in_or_out=1 
+    and status = 1
+    and time_created between #{beginTime} and #{endTime}
+  </select>
+
+  <update id="updateStatus">
+  	update energy_trade_record set
+  	  status = #{newStatus}
+    where uuid = #{uuid}
+  </update>
 </mapper>

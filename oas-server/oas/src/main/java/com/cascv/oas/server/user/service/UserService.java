@@ -93,6 +93,33 @@ public class UserService {
 	public Integer updateUser(UserModel userModel) {
 		return userModelMapper.updateUserInfo(userModel);
 	}
+	
+	/*
+	 * Name:upadateUserInfo
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	public Integer updateUserProfile(UserModel userModel) {
+		return userModelMapper.updateUserProfile(userModel);
+	}
+	
+	/*
+	 * Name:resetMobile
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	public Integer resetMobileByName(UserModel userModel) {
+		return userModelMapper.resetMobileByName(userModel);
+	}	
+	
+	/*
+	 * Name:resetEmail
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	public Integer resetEmailByName(UserModel userModel) {
+		return userModelMapper.resetEmailByName(userModel);
+	}	
 }
 
 

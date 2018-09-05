@@ -19,6 +19,7 @@
 	<result column="salt" property="salt"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
+	<result column="profile" property="profile"/>
   </resultMap>
  
   <sql id="Base_Column_List">
@@ -147,20 +148,38 @@
 	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.03 -->
     <update id="updateUserInfo" parameterType="com.cascv.oas.server.user.model.UserModel">
+<!--        update user_info set  -->
+<!--       	nickname = #{nickname}, -->
+<!--       	gender= #{gender}, -->
+<!--        address = #{address}, -->
+<!--       	birthday = #{birthday} -->
+<!--        where name = #{name}   -->   
+      update user_info 
+      <trim prefix="SET" suffixOverrides=",">
+      <if test="nickname != null">
+       nickname = #{nickname},
+      </if>
+      <if test="gender!= null">
+        gender= #{gender},
+      </if>
+      <if test="address != null">
+       address = #{address},
+      </if>
+      <if test="birthday != null">
+       birthday = #{birthday}
+      </if>
+    </trim>
+     where name = #{name}
+    </update>
+   
+    <!-- update userprofile -->
+   	<!-- Author:lvjisheng -->
+	<!-- Date:2018.09.04 -->
+    <update id="updateUserProfile" parameterType="com.cascv.oas.server.user.model.UserModel">
         update user_info set 
-      	nickname = #{nickname},
-      	gender= #{gender},
-        address = #{address},
-      	birthday = #{birthday}
+      	profile = #{profile}
       where name = #{name}  
     </update>
-    
-        <!-- update userprofile -->
-<!--     <update id="updateUserProfile" parameterType="com.cascv.rpms.model.UserModel"> -->
-<!--         update user_info set  -->
-<!--       	profile = #{profile} -->
-<!--       where user_nickname = #{userNickname}   -->
-<!--     </update> -->
     
 </mapper>
 

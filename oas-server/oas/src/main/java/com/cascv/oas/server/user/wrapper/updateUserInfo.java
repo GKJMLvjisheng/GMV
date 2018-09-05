@@ -11,11 +11,11 @@ import lombok.Setter;
  */	 
 public class updateUserInfo implements Serializable{
   private static final long serialVersionUID = 1L;
-  @Getter @Setter String userNickname;
-  @Getter @Setter String userName;
-  @Getter @Setter String userGender;
-  @Getter @Setter String userBirthday;
-  @Getter @Setter String userAddress;
+  @Getter @Setter String nickname;
+  @Getter @Setter String name;
+  @Getter @Setter String gender;
+  @Getter @Setter String birthday;
+  @Getter @Setter String address;
   void toSring(){	  
   }
 }
