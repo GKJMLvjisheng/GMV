@@ -6,7 +6,6 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;    
 public class HostIpUtils{  
 
-  
 	@SuppressWarnings("unused")
 	public static String getHostIp(){
 		try{
@@ -31,4 +30,8 @@ public class HostIpUtils{
 		return null;
 	}
 
+
     }  
+
+
+
