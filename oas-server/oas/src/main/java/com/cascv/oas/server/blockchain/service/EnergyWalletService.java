@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
-import com.cascv.oas.server.blockchain.mapper.EnergyPointDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -30,8 +29,6 @@ public class EnergyWalletService {
   @Autowired
   private PowerService powerService;
 
-  @Autowired
-  private EnergyPointDetailMapper energyPointDetailMapper;
   
   
   public EnergyWallet create(String userUuid){
@@ -48,13 +45,6 @@ public class EnergyWalletService {
     return energyWallet;
   }
 
-  public List<EnergyChangeDetail> searchEnergyPointDetail(
-		  String userUuid, 
-		  Integer activity, 
-		  String dateFrom, 
-		  String dateEnd){
-    return energyPointDetailMapper.selectActivityByDate(userUuid, activity, dateFrom, dateEnd);
-  }
 
   public Integer destroy(String userUuid){
     energyWalletMapper.deleteByUserUuid(userUuid);
