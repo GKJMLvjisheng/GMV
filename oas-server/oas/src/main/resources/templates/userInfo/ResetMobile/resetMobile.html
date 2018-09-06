@@ -187,8 +187,8 @@ i:after {
 			<!--       <form class="form-signin"> -->
 			<form id="resetMobileForm" action="/user/resetMobile"
 				method="post" class="form-horizontal">
-				<input type="text" style="display: none" name="userNickname"
-					id="userNickname">
+				<input type="text" style="display: none" name="userName"
+					id="userName">
 				
 				<div class="form-group">
 					<label for="numberPhone" id=labelMobileMail
@@ -309,8 +309,8 @@ i:after {
 		</div>
 
 	</div>
-	<script type="text/javascript" th:src="@{/resetPassword.js}"></script>
-	<script type="text/javascript" th:src="@{/userInfo/userInfo.js}"></script>
+	<script type="text/javascript" th:src="@{/js/userInfo/resetPassword.js}"></script>
+	<script type="text/javascript" th:src="@{js/userInfo/userInfo.js}"></script>
 
 </body>
 <script type="text/javascript">
@@ -325,7 +325,7 @@ $(function() {
 		var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
 		var str = decodeURI(decodeURI(strInfo[2]));// userMobileHiden mail\mobile
 		var string2 = decodeURI(decodeURI(strInfo[3])); // labelMobileMail 原手机号或者邮箱
-		var userNickname = decodeURI(decodeURI(strInfo[4])); // 登录名
+		var userName = decodeURI(decodeURI(strInfo[4])); // 登录名
 
 		document.getElementById("labelPwd2").innerHTML = (string1);//标题
 		$("#labelPwd2").val(string1);
@@ -334,7 +334,7 @@ $(function() {
 		$("#labelProgressTwo2").val(strProgress);
 		$("#userMobile").val(str);
 
-		$("#userNickname").val(userNickname);
+		$("#userName").val(userName);
 	}
 });
 

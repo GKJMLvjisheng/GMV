@@ -199,7 +199,7 @@ ul, li { list-style:none; }
 
 			<form id="resetMMSuccessForm" action="/user/resetMMSuccess"
 				method="post" class="form-horizontal">
-				<input type="text" style="display: none" name="userNickname" id="userNickname">
+				<input type="text" style="display: none" name="userName" id="userName">
 
 			</form>
 
@@ -223,7 +223,7 @@ $(function() {
 		var string1 = decodeURI(decodeURI(strInfo[0]));//标题
 		var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
 		var str = decodeURI(decodeURI(strInfo[2]));// mobileAddMailHiden mail\mobile
-		var userNickname = decodeURI(decodeURI(strInfo[3])); // 登录名
+		var userName = decodeURI(decodeURI(strInfo[3])); // 登录名
 		var result = decodeURI(decodeURI(strInfo[4])); // 成功 或者 失败
 		
 		document.getElementById("labelPwd2").innerHTML = (string1);//标题
@@ -233,16 +233,16 @@ $(function() {
 		$("#labelProgressTwo2").val(strProgress);
 		$("#mobileAddMail").val(str);
 
-		$("#userNickname").val(userNickname);
+		$("#userName").val(userName);
 		
-		var s = "恭喜！！！" + userNickname + string1 + result + "10秒后跳转！";
+		var s = "恭喜！！！" + userName + string1 + result + "10秒后跳转！";
 
 		document.getElementById("resultLabel").innerHTML = (s);
 	}
 	
 	setTimeout(function(){
 		
-		var href = encodeURI(encodeURI("userSecurityInfo?userNickname=" + userNickname));
+		var href = encodeURI(encodeURI("userSecurityInfo?userName=" + userName));
 		
 		window.location.href= href;},10000);
 				
