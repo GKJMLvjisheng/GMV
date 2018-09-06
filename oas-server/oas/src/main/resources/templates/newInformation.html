@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>首页</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+	
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css}">
+	<link rel="stylesheet" href="css/index1.css"> 
+	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/org/tinygroup/bootstraptable/css/bootstrap-table.tiny.min.css}">
+	<script type="text/javascript" th:src="@{/org/tinygroup/bootstraptable/js/bootstrap-table.tiny.min.js}"></script>
+	<script type="text/javascript" th:src="@{/org/tinygroup/bootstraptable/js/locale/bootstrap-table-zh-CN.tiny.min.js}"></script>
+<!-- 	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>	 -->
+<!-- 	<script type="text/javascript" th:src="@{/webjars/bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js}"></script> -->
+<!-- 	<script type="text/javascript" th:src="@{/register.js}"></script> -->
+	<script type="text/javascript" th:src="@{js/news/newsManage.js}"></script>
+<!--   	<script type="text/javascript" th:src="@{userInfo/resetPassword.js}"></script> -->
+  	 
+  	
+
+<style>
+.input-group .datetimepicker {
+	z-index: 100000;
+}
+
+.form-group span.required {
+	color: red;
+	font-size: 150%;
+}
+
+
+.nav > li:hover .dropdown-menu {display: block;}
+
+.text-muted text-xs block{
+	 margin-top: 20px;
+}
+    
+</style>
+
+</head>
+
+<body>
+
+    <!-- 主内容 -->
+    <div class="container">
+        <h1></h1>          
+                
+        <div class="col-sm-1"></div>
+
+        <div class="col-sm-10">
+            <div class="new-list">                            
+				<span id="Grid"></span>  				                                                 
+            </div>
+        </div>  
+                                              
+     </div>                    	           
+    		
+</body>
+
+<script type="text/javascript">
+
+$(function(){
+	newsIndexReady();
+	});
+	
+</script>
+</html>
