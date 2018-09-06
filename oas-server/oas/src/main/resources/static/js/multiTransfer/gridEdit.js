@@ -19,17 +19,19 @@ document.write("<script language=javascript src='js/deleteConfirm.js'></script>"
 var token;
 $(function ()
 	{
-	var url = window.location.href;
-	var strInfo=getInfoAndAnalysis(url);
-	//console.log(JSON.stringify(strInfo));
-	var len=strInfo.length;
-	if(len>0)
-	{
-		token=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
-		var name=decodeURI(decodeURI(strInfo[1]));
-		alert("name"+name);
-		}
-	data={"name":name}
+//	var url = window.location.href;
+//	var strInfo=getInfoAndAnalysis(url);
+//	//console.log(JSON.stringify(strInfo));
+//	var len=strInfo.length;
+//	if(len>0)
+//	{
+//		token=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+//		var name=decodeURI(decodeURI(strInfo[1]));
+//		alert("name"+name);
+//		}
+	var userName=$("#userNickname",parent.document).text();
+	token=$("#userToken",parent.document).val();
+	data={"name":userName}
 	$.ajax({
 		   type: 'post',
 		   url: '/api/v1/ethWallet/selectContractSymbol',
