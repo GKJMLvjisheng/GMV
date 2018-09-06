@@ -32,7 +32,10 @@ public enum ErrorCode {
   SELECT_THE_CONTRACT(10016, "请选择币种"),
   RATE_NOT_ACCEPTABLE(10017,"汇率出错"),
   NO_AVAILABLE_POINT(10018,"没有相应的积分"),
-  NO_DATE_SPECIFIED(10019,"没有指定日期");
+  NO_DATE_SPECIFIED(10019,"没有指定日期"),
+  NO_AVAILABLE_EXCHANGE_RATE(10020,"没有指定汇率"),
+  NO_TIME_SPECIFIED(10021,"没有指定时间"),
+  NO_CURRENCY_SPECIFIED(10022,"没有指定货币");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

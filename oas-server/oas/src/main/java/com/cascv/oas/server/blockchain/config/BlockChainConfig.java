@@ -31,7 +31,6 @@ public class BlockChainConfig {
   @Setter @Getter private String provider;
   @Setter @Getter private String token;
   @Setter @Getter private List<CoinContract> contracts;
-  @Setter @Getter private ExchangeParam exchange;
 
   @Bean
   @Lazy
@@ -54,10 +53,5 @@ public class BlockChainConfig {
       digitalCoinService.create(coinClient, s.getAddress());
     }
     return coinClient;
-  }
-
-  @Bean(name="exchangeParam")
-  public ExchangeParam getExchangeParam(){
-    return exchange;
   }
 }

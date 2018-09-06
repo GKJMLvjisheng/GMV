@@ -1,14 +1,13 @@
 package com.cascv.oas.server.user.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.cascv.oas.core.common.BaseEntity;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class UserModel extends BaseEntity {
+public class UserModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Getter @Setter private String uuid;          
 	@Getter @Setter private String name;   

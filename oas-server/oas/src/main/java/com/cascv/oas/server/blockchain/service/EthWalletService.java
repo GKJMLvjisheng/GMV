@@ -23,9 +23,9 @@ import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
-import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.config.TransferQuota;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
@@ -35,12 +35,11 @@ import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
-import com.cascv.oas.server.blockchain.model.UserWallet;
-import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.common.EthWalletDetailScope;
-import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,7 +65,7 @@ public class EthWalletService {
   private UserCoinMapper userCoinMapper;
   
   @Autowired
-  private ExchangeParam exchangeParam;
+  private ExchangeRateService exchangeRateService;
   
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
@@ -85,7 +84,7 @@ public class EthWalletService {
       WalletFile checkWalletFile = objectMapper.readValue(walletFileStr, WalletFile.class);
       ECKeyPair ecKeyPair = Wallet.decrypt(password, checkWalletFile);
       byte[] checkMnemonicSeedBytes = Numeric.hexStringToByteArray(ecKeyPair.getPrivateKey().toString(16));
-      List<String> checkMnemonic = MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
+      MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
     } catch (MnemonicException.MnemonicLengthException 
           | MnemonicException.MnemonicWordException 
           | MnemonicException.MnemonicChecksumException 
@@ -199,8 +198,13 @@ public class EthWalletService {
   }
   
   public BigDecimal getValue(BigDecimal balance) {
-    BigDecimal rate = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
-    return balance.multiply(rate);
+    
+    String time = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    ReturnValue<BigDecimal> returnValue = exchangeRateService.exchangeTo(
+        balance, 
+        time, 
+        CurrencyCode.CNY);
+    return returnValue.getData();
   }
   
   public UserCoin getUserCoin(String userUuid, String contract){

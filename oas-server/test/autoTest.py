@@ -341,17 +341,28 @@ def inquireEnergyPointDetail(token):
   print res
   if res.get('code') == 0:
     return res.get('data')
- 
+
+def excchangeRateInquire(token):    
+  url=HOST+"/exchange/inquire"
+  data={
+    "time" : "2018-09",
+    "currency" : 2
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
 
 #testUserWalletTransfer()
 
-testRegisterDestroy()
+#testRegisterDestroy()
 
-#token=login("caikov","cai120501")
-#if token is None:
-#  raise Exception("[Fail] login")
+token=login("caikov","cai120501")
+if token is None:
+  raise Exception("[Fail] login")
 
-#inquire=inquireEnergyPointDetail(token)
+inquire=excchangeRateInquire(token)
 
 #testEnergyPoint()
 #testUserWallet()
