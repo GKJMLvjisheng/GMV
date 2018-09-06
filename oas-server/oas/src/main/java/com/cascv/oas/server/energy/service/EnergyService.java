@@ -136,10 +136,15 @@ public class EnergyService {
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         BigDecimal ongoingEnergySummary = this.miningGenerator(userUuid, energySourcePoint);
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
-                .selectPartByPointSourceCode(userUuid,
-                        SOURCE_CODE_OF_MINING,
-                        STATUS_OF_ACTIVE_ENERGYBALL,
+                .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL,
                         timeGap.intValue());
+        Iterator iterator = energyBallWrappers.iterator();
+        while (iterator.hasNext()) {
+            EnergyBallWrapper next = (EnergyBallWrapper) iterator.next();
+
+            System.out.println("开始时间: " + next.getStartDate());
+            System.out.println("结束时间: " + next.getEndDate());
+        }
         EnergyBallResult energyBallResult = new EnergyBallResult();
         energyBallResult.setEnergyBallList(energyBallWrappers);
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
