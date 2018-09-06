@@ -60,6 +60,13 @@
     and status = 1
     and time_created between #{beginTime} and #{endTime}
   </select>
+  
+  <select id="selectByPage" resultMap="BaseResultMap">
+    select 
+      <include refid="Base_Column_List" />
+    from energy_trade_record where user_uuid = #{userUuid} order by time_created desc limit #{offset},#{limit};
+  
+  </select>
 
   <update id="updateStatus">
   	update energy_trade_record set

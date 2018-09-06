@@ -503,6 +503,7 @@ public class EnergyService {
     	return ErrorCode.SUCCESS;
     } 
     
+
     public static void main(String[] args) {
     }
 }
