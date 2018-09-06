@@ -428,6 +428,8 @@ $(function ()
     alert(startIndex);
    // var endIndex = table.rows.length; 
     //alert(endIndex);
+    newRow.cells[2].setAttribute("Value", 0);  
+    newRow.cells[2].innerHTML=0;
     table.tBodies[0].appendChild(newRow);  
 
     //newRow.cells[1].innerHTML=endIndex-startIndex;

@@ -1,0 +1,106 @@
+
+/* 鍏辩敤 */
+img{
+    display: block;
+    max-width: 100%;
+    border-radius: 3px;   /* 鍥剧墖浠ュ渾瑙掓樉绀� */
+    margin-left:1px;  /* 鍥剧墖璺濈宸﹁竟1px */
+    width: 250px;
+    height: 150px;
+}
+
+.list-group{ 
+ 	 isplay: block; 
+     font-size: 17px; 
+     font-weight:bold; 
+     color: #444; 
+     line-height: 1.5; 
+    margin-bottom:10px; 
+ } 
+ 
+ .round_icon{
+  width: 80px;
+  height: 80px;
+  display: flex;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/*  .list-group:hover{  */
+/*      text-decoration: none;  */
+/*      color: #ff0000;  */
+/*  }  */
+ 
+/*  .nav-header{ */
+/*  	isplay: block;  */
+/*      font-size: 17px;  */
+/*      font-weight:bold;  */
+/*      color: #008040;  */
+/*      line-height: 1.5;  */
+/*      margin-bottom:10px;  */
+/*      margin-top:20px;  */
+ 
+/*  } */
+/* 瀵艰埅鏍�  */
+.navbar {
+    background: url(../img/image/header_shadow.png) no-repeat left top;
+    background-size: 100% 54px;
+}
+
+.navbar .navbar-content a {
+	color: #FFF;
+	line-height: 54px;
+	display: inline-block;
+	width: 100px;
+}
+.navbar .navbar-content a:hover {
+	color: #CCC;
+}
+
+/* .nav-header { */
+/* /*       padding: 25px 25px; */ */
+/*     background: url(../img/image/header-profile.png) no-repeat; */
+/* } */
+
+/* .nav-header.img-circle { */
+/*       width: 10px; */
+/* } */
+/* 涓诲唴瀹� */
+
+.container {
+	width: 1100px;
+	margin: auto;
+}
+
+.new-list-item{
+    padding: 15px 0;  /* new-list-item涓婁笅闂撮殧 */
+    border-bottom: 1px solid #eeeeee;  /* new-list-item涓嬮潰鐨勫垎鍓茬嚎 */
+}
+.new-list-item:first-child{
+    padding-top: 0;  /* 绗竴涓猲ew-list-item鏃犻棿闅� */
+}
+.new-list-item .title{
+    display: block; /*鍏冪礌灏嗘樉绀轰负鍧楃骇鍏冪礌锛屾鍏冪礌鍓嶅悗浼氬甫鏈夋崲琛岀*/
+    font-size: 18px;
+    font-weight:bold;
+    color: #444;
+    line-height: 1.5; /* title鐨勮楂� */
+    margin-bottom:10px;  /* title涓嬮潰鐨勯棿璺� */
+}
+.new-list-item .title:hover{
+    text-decoration: none; /* 榧犳爣鍒掑埌閾炬帴鐨勬椂鍊欐棤涓嬪垝绾� */
+    color: #337ab7;  /* 鏄剧ず涓鸿摑鑹� */
+}
+.new-list-item .abstract{
+    color: #888;
+}
+
+/* 椤佃剼澹版槑 */
+.footer{
+    color: #999;
+    margin-top: 20px;
+    padding: 50px 0;
+    text-align: center;
+}
+

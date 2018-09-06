@@ -69,13 +69,21 @@ public class RootController {
       
           return "resetMailLink";
     }
+    
+   
 	
     // Login 
-  @GetMapping("/login")
-  public String login(HttpServletRequest request, HttpServletResponse response) {
-    if (ServletUtils.isAjaxRequest(request)){
-      return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"未认证\"}");
-   }
-      return "login";  }
+	  @GetMapping("/login")
+	  public String login(HttpServletRequest request, HttpServletResponse response) {
+	    if (ServletUtils.isAjaxRequest(request)){
+	      return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"未认证\"}");
+	   }
+	      return "login";  }
+  
+	  @GetMapping(value="/main")
+	  public String main() {
+	    
+	        return "main";
+  }
    }
 

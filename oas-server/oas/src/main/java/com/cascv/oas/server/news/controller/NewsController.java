@@ -6,7 +6,6 @@
 package com.cascv.oas.server.news.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,10 +25,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
-import com.cascv.oas.server.user.model.UserModel;
-import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.utils.HostIpUtils;
-import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import io.swagger.annotations.Api;
@@ -48,15 +43,9 @@ String localhostIp=HostIpUtils.getHostIp();
  	
 private static String UPLOADED_FOLDER = "D:\\Temp\\Image\\news\\";
 
-@PostMapping(value="/NewsManage")
-public String index() {
-
-    return "NewsManage";
-}
-
-@PostMapping(value="/AddNews")
+@PostMapping(value="/addNews")
 @ResponseBody
-public ResponseEntity<?> AddNews(NewsModel newsInfo,@RequestParam("file") MultipartFile file){
+public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam("file") MultipartFile file){
 	
 	File dir=new File(UPLOADED_FOLDER);
   	 if(!dir.exists()){
@@ -110,9 +99,9 @@ public ResponseEntity<?> AddNews(NewsModel newsInfo,@RequestParam("file") Multip
   	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 }
 
-@PostMapping(value="/UpdateNews")
+@PostMapping(value="/updateNews")
 @ResponseBody
-public ResponseEntity<?> UpdateNews(NewsModel newsInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
+public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
 			log.info("--------start--------");
 			NewsModel newsModel = new NewsModel();
 			
@@ -149,11 +138,12 @@ public ResponseEntity<?> UpdateNews(NewsModel newsInfo,@RequestParam(name="file"
 	    		{
 	        	log.info("修改失败"+e);
 	    		}
-}else
-	{
-	newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
-	newsService.updateNews(newsModel);
-	}
+
+	      }else
+	      {
+	    	  newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
+	    	  newsService.updateNews(newsModel);
+	      }
 	      
 
       log.info("--------end-------");
@@ -163,4 +153,29 @@ public ResponseEntity<?> UpdateNews(NewsModel newsInfo,@RequestParam(name="file"
       
     }
 
+@PostMapping(value="/selectAllNews")
+@ResponseBody
+public ResponseEntity<?> selectAllNews(){
+	Map<String,Object> info=new HashMap<>();
+	List<NewsModel> list=newsService.selectAllNews();
+	int length=list.size();
+	if(length>0) {
+     info.put("list", list);
+	}else
+	{
+		log.info("no news in mysql");
+	}
+		return new ResponseEntity.Builder<Map<String, Object>>()
+	    	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+	}
+
+@PostMapping(value="/deleteNews")
+@ResponseBody
+public ResponseEntity<?> deleteNews(String newsId){
+	
+	newsService.deleteNews(newsId);
+	
+	return new ResponseEntity.Builder<Integer>()
+			.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+}
 }
