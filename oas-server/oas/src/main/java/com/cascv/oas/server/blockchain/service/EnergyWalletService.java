@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,6 @@ import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.EnergyPointDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
-import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.common.UuidPrefix;
 
 @Service
@@ -47,7 +48,7 @@ public class EnergyWalletService {
     return energyWallet;
   }
 
-  public List<EnergyPointDetail> searchEnergyPointDetail(
+  public List<EnergyChangeDetail> searchEnergyPointDetail(
 		  String userUuid, 
 		  Integer activity, 
 		  String dateFrom, 

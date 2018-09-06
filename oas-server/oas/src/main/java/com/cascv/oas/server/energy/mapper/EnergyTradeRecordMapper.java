@@ -14,5 +14,6 @@ public interface EnergyTradeRecordMapper {
     BigDecimal sumPoint(@Param("userUuid") String userUuid, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
     List<EnergyTradeRecord> selectTrade(@Param("userUuid") String userUuid, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
     Integer updateStatus(@Param("uuid") String uuid, @Param("newStatus") Integer newStatus);
+    Integer countByUserUuid(@Param("userUuid") String userUuid);
     List<EnergyTradeRecord> selectByPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }

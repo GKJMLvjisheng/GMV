@@ -13,6 +13,7 @@ import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import com.cascv.oas.server.energy.vo.EnergyPointCategory;
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,6 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
-import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
 import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
 import com.cascv.oas.server.energy.vo.EnergyBallResult;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
@@ -226,37 +226,45 @@ public class EnergyPointController {
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
 
-        List<EnergyPointDetail> energyPointDetailList = new ArrayList<>();
-
-        Calendar calendar = new GregorianCalendar();
-        Date now = new Date();
-        calendar.setTime(now);
-
-        for (Integer i = 0; i < 3; i++) {
-            EnergyPointDetail energyPointDetail = new EnergyPointDetail();
-            energyPointDetail.setActivity("");
-            energyPointDetail.setCategory("");
-
-            calendar.add(Calendar.DATE, 1 + i);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-            String str = formatter.format(calendar.getTime());
-            energyPointDetail.setCreated(str);
-            energyPointDetail.setSource("手机");
-            energyPointDetail.setUuid(ShiroUtils.getUserUuid());
-            energyPointDetail.setUuid(String.valueOf(i + 3));
-            energyPointDetail.setValue(i * 5 + 5);
-            energyPointDetailList.add(energyPointDetail);
-        }
-        PageDomain<EnergyPointDetail> pageEnergyPointDetail = new PageDomain<>();
-        pageEnergyPointDetail.setTotal(3);
+        
+        Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+        if (pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        
+        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
+        Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
+        
+        
+//        for (Integer i = 0; i < 3; i++) {
+//            EnergyChangeDetail energyPointDetail = new EnergyChangeDetail();
+//            energyPointDetail.setActivity("");
+//            energyPointDetail.setCategory("");
+//
+//            calendar.add(Calendar.DATE, 1 + i);
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//
+//            String str = formatter.format(calendar.getTime());
+//            energyPointDetail.setCreated(str);
+//            energyPointDetail.setSource("手机");
+//            energyPointDetail.setUuid(ShiroUtils.getUserUuid());
+//            energyPointDetail.setUuid(String.valueOf(i + 3));
+//            energyPointDetail.setValue(i * 5 + 5);
+//            energyPointDetailList.add(energyPointDetail);
+//        }
+        PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();
+        pageEnergyPointDetail.setTotal(count);
         pageEnergyPointDetail.setAsc("asc");
-        pageEnergyPointDetail.setOffset(0);
-        pageEnergyPointDetail.setPageNum(1);
-        pageEnergyPointDetail.setPageSize(3);
+        pageEnergyPointDetail.setOffset(offset);
+        pageEnergyPointDetail.setPageNum(pageNum);
+        pageEnergyPointDetail.setPageSize(pageSize);
         pageEnergyPointDetail.setRows(energyPointDetailList);
 
-        return new ResponseEntity.Builder<PageDomain<EnergyPointDetail>>()
+        return new ResponseEntity.Builder<PageDomain<EnergyChangeDetail>>()
                 .setData(pageEnergyPointDetail)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();

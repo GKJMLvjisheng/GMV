@@ -131,7 +131,6 @@ public class EthWalletController {
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
   public ResponseEntity<?> transactionDetail(@RequestBody PageDomain<Integer> pageInfo){
-    Integer count = ethWalletDetailMapper.selectCount();
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
@@ -145,6 +144,7 @@ public class EthWalletController {
   
     List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByPage(
         ethWallet.getAddress(), offset,limit);
+    Integer count = ethWalletDetailMapper.selectCount(ethWallet.getAddress());
     PageDomain<EthWalletDetail> pageEthWalletDetail= new PageDomain<>();
     pageEthWalletDetail.setTotal(count);
     pageEthWalletDetail.setAsc("desc");

@@ -14,6 +14,7 @@ import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.EnergyBallResult;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 
 import lombok.extern.slf4j.Slf4j;
@@ -508,6 +509,21 @@ public class EnergyService {
     	return ErrorCode.SUCCESS;
     } 
     
+    public Integer countEnergyChange(String userUuid) {
+    	return energyTradeRecordMapper.countByUserUuid(userUuid);
+    }
+    
+    public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit) {
+    	List<EnergyTradeRecord> tradeList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
+    	List<EnergyChangeDetail> energyChangeDetailList= new ArrayList<>();
+    	if (tradeList != null) {
+    		for (EnergyTradeRecord trade:tradeList) {
+    			EnergyChangeDetail newEnergyChange = new EnergyChangeDetail();
+    			// to do
+    		}
+    	}
+    	return energyChangeDetailList;
+    }
 
     public static void main(String[] args) {
         BigDecimal decimal = new BigDecimal(12.12345).setScale(2, BigDecimal.ROUND_HALF_UP);

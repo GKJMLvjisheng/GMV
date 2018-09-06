@@ -71,7 +71,7 @@
   </delete>
   
   <select id="selectCount" resultMap="userWalletDetailMap">
-  	select count(*) from user_wallet_detail;
+  	select count(*) from user_wallet_detail where user_uuid = #{userUuid};
   </select>
   
   <select id="selectByPage" resultMap="userWalletDetailMap">
