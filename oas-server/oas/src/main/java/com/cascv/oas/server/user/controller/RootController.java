@@ -24,10 +24,10 @@ public class RootController {
 	    return "userImgInfo";
 	}
 	
-	@RequestMapping(value="/userInfo")
-	public String userInfo(Model model) {
+	@GetMapping(value="/userInfo/userInfo")
+	public String userInfo() {
 		
-	    return "userInfo";
+	    return "userInfo/userInfo";
 	}
 	
 	@RequestMapping(value="/userSecurityInfo")

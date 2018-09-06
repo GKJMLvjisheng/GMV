@@ -61,7 +61,7 @@
     and time_created between #{beginTime} and #{endTime}
   </select>
   
-  <select id="countByUserUuid">
+  <select id="countByUserUuid" resultMap="BaseResultMap">
   	select count(*) from energy_trade_record where user_uuid = #{userUuid};
   </select>
   <select id="selectByPage" resultMap="BaseResultMap">
