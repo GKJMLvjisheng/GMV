@@ -23,7 +23,7 @@
   </resultMap>
  
   <sql id="Base_Column_List">
-    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated
+    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated,profile
   </sql>
   
   <!-- insert user -->
