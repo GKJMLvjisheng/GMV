@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.FileUtils;
 import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -179,6 +182,7 @@ public class UserController {
 	  info.put("birthday", userModel.getBirthday());
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
+	  info.put("profile", userModel.getProfile());
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
@@ -194,7 +198,7 @@ public class UserController {
 	  Map<String,String> info = new HashMap<>();
 	  UserModel userModel=new UserModel();   
       try {
-    	 log.info("userUUID {}",userInfo.getName());
+    	 log.info("userName {}",userInfo.getName());
 		 userModel.setName(ShiroUtils.getUser().getName());
 		 userModel.setNickname(userInfo.getNickname());
 	     userModel.setGender(userInfo.getGender());
@@ -203,6 +207,7 @@ public class UserController {
     	 userService.updateUser(userModel); 
     	 UserModel userNewModel=new UserModel();
     	 userNewModel=userService.findUserByName(ShiroUtils.getUser().getName());
+    	 ShiroUtils.setUser(userNewModel);
     	 //返回修改完成的数据
     	 info.put("name", userNewModel.getName());
     	 info.put("nickname", userNewModel.getNickname());
@@ -230,7 +235,7 @@ public class UserController {
 	 * Date:2018.09.04
 	 */
 	@RequestMapping(value="/upLoadImg", method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
-	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file,UserModel userModel)
+	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file)
 	{
 		log.info("doUpLoadImg-->start");
 		Map<String,String> info=new HashMap<>();
@@ -251,7 +256,7 @@ public class UserController {
 	        UserModel userNewModel=new UserModel();
 	        String profile=filePath+fileName;
 	        //获取用户名
-	        String name=userModel.getName();
+	        String name=ShiroUtils.getUser().getName();
 	        log.info("---userName-->{}" +name);
 	        userNewModel.setName(name);
 	        userNewModel.setProfile(profile);
@@ -273,7 +278,7 @@ public class UserController {
 	@RequestMapping(value = "/resetMobile", method = RequestMethod.POST)
 	public ResponseEntity<?> resetMobile(@RequestBody UserModel userModel) throws Exception {
     Map<String,String> info=new HashMap<>();
-	String name = userModel.getName();
+	String name = ShiroUtils.getUser().getName();
 	String mobile = userModel.getMobile();
 	log.info("************ResetMobile start****************");
 
@@ -290,6 +295,8 @@ public class UserController {
 	log.info("userMobile ={}",userNewModel.getMobile());
 
 	log.info("--------ResetMobile end-------");
+    info.put("name",name);
+    info.put("mobile",mobile);
 
 	return new ResponseEntity.Builder<Map<String, String>>()
     	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
@@ -304,7 +311,7 @@ public class UserController {
 	public ResponseEntity<?> resetMail(@RequestBody UserModel userModel) throws Exception {
 
     Map<String,String> info=new HashMap<>();
-	String name = userModel.getName();
+	String name = ShiroUtils.getUser().getName();
 	String email = userModel.getEmail();
 	log.info("************ResetMail start****************");
 	log.info("userMail-->"+email);
@@ -317,7 +324,9 @@ public class UserController {
 	userService.resetEmailByName(userModel);
 
 	log.info("--------end-------");
-
+	
+    info.put("name",name);
+    info.put("email",email);
 	return new ResponseEntity.Builder<Map<String, String>>()
   	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 	}
@@ -331,40 +340,89 @@ public class UserController {
 
     Map<String,String> info=new HashMap<>();
 	log.info("-----------sendMobile start---------------");
-//	String mobileAndMail = request.getParameter("mobileAndMail");
-//	
-//	Map<String, Object> map = new HashMap<>();
-//	boolean state = false;
-//	
-//	String userMobile = mobileAndMail;	
-//	try {
-//	
-//		String vcode = MobileAuthentication.createRandomVcode();
-//		System.out.println("vcode = "+vcode);
-//		HttpSession session = request.getSession(true);
-//		
-//		session.setAttribute("mobileCheckCode", vcode);
-//
-//		MobileAuthentication sms = new MobileAuthentication();
-//		
-//		if(sms.SendCode(userMobile,vcode).getCode().equals("OK")) {
-//			
-//			state = true;
-//			
-//		}else {
-//			
-//			state = false;
-//		}
-//		
-//		
-//	} catch (Exception e) {
-//		e.printStackTrace();
-//		state = false;
-//	}
-//	
-//	 map.put("state",state);
-//	 System.out.println(map);
+	String mobile = userModel.getMobile();
+	boolean state = false;
+	try {
+	
+		String vcode = AuthenticationUtils.createRandomVcode();
+		System.out.println("vcode = "+vcode);
+		//???
+		Session session = ShiroUtils.getSession();
+		
+		session.setAttribute("mobileCheckCode", vcode);
+
+		AuthenticationUtils sms = new AuthenticationUtils();
+		
+		if(sms.SendCode(mobile,vcode).getCode().equals("OK")) {
+			
+			state = true;
+			
+		}else {
+			
+			state = false;
+		}
+		
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+		state = false;
+	}
 		return new ResponseEntity.Builder<Map<String, String>>()
 		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 }
+	/*
+	 * @Name:mobileCheckCode
+	 * @Author:lvjisheng
+	 * @Date:2018.09.06
+	 */	
+//	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
+//	@ResponseBody
+//	public ResponseEntity<?> mobileCheckCode(HttpServletRequest request, HttpSession session) throws Exception {
+//		System.out.println("--------mobileCheckCode   start--------");
+//
+//		String mobilecode = request.getParameter("mobilecode");
+//
+//		System.out.println("mail hello" + mobilecode);
+//		System.out.println("mail hello" + session.getAttribute("mobileCheckCode"));
+//		
+//		Map<String, Object> map = new HashMap<>();
+//		
+//		if (mobilecode.equalsIgnoreCase((String) session.getAttribute("mobileCheckCode"))) {
+//			
+//			//map.put("state",true);
+//
+//		} else {
+//			//map.put("state",false);
+//
+//		}
+//		
+//		return new ResponseEntity.Builder<Map<String, String>>()
+//		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+//	}
+//	 
+//    @RequestMapping(value="/doCheckPassword",method = RequestMethod.POST)
+//    @ResponseBody
+//    public Map<String,Object> doCheckPassword(HttpServletRequest request) {
+//       System.out.println("--------doCheckPassword start--------");
+//       String userNicknameIn = request.getParameter("userNickname"); 
+//       String userPasswordIn = request.getParameter("userPassword"); 
+//       System.out.println(" userNickname " + userNicknameIn);
+//       System.out.println(" userPassword " + userPasswordIn);
+//       List<UserModel> list = userService.selectByNickName(userNicknameIn); 
+//       String saltDb = list.get(0).getUserSalt();  
+//       String userPasswordDb = list.get(0).getUserPassword(); 
+//       String userPasswordOu = new Md5Hash(userPasswordIn,saltDb,3).toString(); 
+//
+//       Map<String,Object> map = new HashMap<>();
+//
+//       if (userPasswordOu.equals(userPasswordDb)){
+//        map.put("state", true);
+//
+//       }else{
+//        map.put("state", false);
+//       }
+//
+//        return map;
+//    }
+
 }

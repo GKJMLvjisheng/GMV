@@ -236,6 +236,7 @@ public class EnergyService {
                 }
             }
         }
+        ongoingEnergySummary = ongoingEnergySummary.setScale(2, BigDecimal.ROUND_HALF_UP);// 保留2位小数点
         return ongoingEnergySummary;
     }
 
@@ -287,6 +288,10 @@ public class EnergyService {
     public EnergyBallTakenResult getEnergyBallTakenResult(String userUuid, String energyBallUuid) {
         if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
             System.out.println("userUuid or energyBallUuid is null");
+            return null;
+        }
+        if (energyBallMapper.selectByUuid(energyBallUuid)
+                .getStatus().equals(STATUS_OF_DIE_ENERGYBALL)) {
             return null;
         }
         List<EnergyBall> energyBallsBefore = energyBallMapper
@@ -505,5 +510,7 @@ public class EnergyService {
     
 
     public static void main(String[] args) {
+        BigDecimal decimal = new BigDecimal(12.12345).setScale(2, BigDecimal.ROUND_HALF_UP);
+        System.out.println(decimal);
     }
 }
