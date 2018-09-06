@@ -1,10 +1,10 @@
-package com.cascv.oas.server.blockchain.model;
+package com.cascv.oas.server.energy.vo;
 
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class EnergyPointDetail {
+public class EnergyChangeDetail {
   @Getter @Setter private String uuid;
   @Getter @Setter private String userUuid;
   @Getter @Setter private Integer value;

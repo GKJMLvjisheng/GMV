@@ -100,7 +100,7 @@ public class UserWalletController {
     Date now = new Date();
     calendar.setTime(now);
     
-    Integer count = userWalletDetailMapper.selectCount();
+    
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
@@ -112,6 +112,7 @@ public class UserWalletController {
 
     List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(
     				ShiroUtils.getUserUuid(), offset,limit);
+    Integer count = userWalletDetailMapper.selectCount(ShiroUtils.getUserUuid());
     PageDomain<UserWalletDetail> pageUserWalletDetail= new PageDomain<>();
     pageUserWalletDetail.setTotal(count);
     pageUserWalletDetail.setAsc("desc");
