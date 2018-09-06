@@ -15,7 +15,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +28,6 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.utils.HostIpUtils;
-
 import lombok.extern.slf4j.Slf4j;
 import io.swagger.annotations.Api;
 
@@ -42,6 +43,12 @@ private NewsService newsService;
 String localhostIp=HostIpUtils.getHostIp();
  	
 private static String UPLOADED_FOLDER = "D:\\Temp\\Image\\news\\";
+
+/*@PostMapping(value="/newsManage")
+public String index() {
+
+    return "newsManage";
+}*/
 
 @PostMapping(value="/addNews")
 @ResponseBody
@@ -138,12 +145,11 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	    		{
 	        	log.info("修改失败"+e);
 	    		}
-
-	      }else
-	      {
-	    	  newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
-	    	  newsService.updateNews(newsModel);
-	      }
+}else
+	{
+	newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
+	newsService.updateNews(newsModel);
+	}
 	      
 
       log.info("--------end-------");
@@ -153,29 +159,35 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
       
     }
 
+
 @PostMapping(value="/selectAllNews")
 @ResponseBody
 public ResponseEntity<?> selectAllNews(){
-	Map<String,Object> info=new HashMap<>();
-	List<NewsModel> list=newsService.selectAllNews();
-	int length=list.size();
-	if(length>0) {
+  Map<String,Object> info=new HashMap<>();
+  List<NewsModel> list=newsService.selectAllNews();
+  int length=list.size();
+  if(length>0) {
      info.put("list", list);
-	}else
-	{
-		log.info("no news in mysql");
-	}
-		return new ResponseEntity.Builder<Map<String, Object>>()
-	    	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-	}
+  }else
+  {
+    log.info("no news in mysql");
+  }
+    return new ResponseEntity.Builder<Map<String, Object>>()
+              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+  }
 
 @PostMapping(value="/deleteNews")
 @ResponseBody
-public ResponseEntity<?> deleteNews(String newsId){
+public ResponseEntity<?> deleteNews(@RequestBody NewsModel newsModel){
+	
+	String newsId=newsModel.getNewsId();
+	log.info("newsId={}",newsId);
 	
 	newsService.deleteNews(newsId);
 	
 	return new ResponseEntity.Builder<Integer>()
 			.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+	
 }
+
 }
