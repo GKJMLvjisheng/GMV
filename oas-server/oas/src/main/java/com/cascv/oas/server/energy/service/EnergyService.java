@@ -137,9 +137,7 @@ public class EnergyService {
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         BigDecimal ongoingEnergySummary = this.miningGenerator(userUuid, energySourcePoint);
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
-                .selectPartByPointSourceCode(userUuid,
-                        SOURCE_CODE_OF_MINING,
-                        STATUS_OF_ACTIVE_ENERGYBALL,
+                .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL,
                         timeGap.intValue());
         EnergyBallResult energyBallResult = new EnergyBallResult();
         energyBallResult.setEnergyBallList(energyBallWrappers);

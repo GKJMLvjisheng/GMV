@@ -1,45 +1,23 @@
 package com.cascv.oas.server.energy.controller;
 
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import com.cascv.oas.server.energy.model.EnergyWallet;
-import com.cascv.oas.server.energy.service.EnergyService;
-import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
-import com.cascv.oas.server.energy.vo.EnergyPointCategory;
-import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
-import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
-import com.cascv.oas.server.energy.vo.EnergyBallResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
-import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactor;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointRedeem;
+import com.cascv.oas.server.blockchain.wrapper.*;
+import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.service.EnergyService;
+import com.cascv.oas.server.energy.vo.*;
 import com.cascv.oas.server.utils.ShiroUtils;
-
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
@@ -89,8 +67,8 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//    	String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+    	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
@@ -103,8 +81,8 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//        String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+        String userUuid = ShiroUtils.getUserUuid();
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
         return new ResponseEntity
