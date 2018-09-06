@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
@@ -50,6 +51,9 @@
                          <li class="active"><a class="menuItem" th:href="@{/newInformation}">了解我们</a></li> 
                     </ul>
                 </li>
+                
+                <shiro:hasRole name="admin">
+                
                  <li class="active">
                     <a href="userManage"><i class="glyphicon glyphicon-user menuItem"></i> <span class="nav-label">用户管理</span> </a>
                    
@@ -71,6 +75,7 @@
                           <a   class="menuItem"href="multiTransfer"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label">一对多转账</span>  </a> 
                     
                 </li>
+                 </shiro:hasRole>
                  </ul>
                  </div>
     </nav>

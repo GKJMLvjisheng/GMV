@@ -1,25 +1,34 @@
 package com.cascv.oas.server.user.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
+import com.cascv.oas.server.user.model.UserRole;
 
 @Service
 public class RoleService {
-	/**
-     * 模拟根据用户id查询返回用户的所有角色，实际查询语句参考：
-     * SELECT r.rval FROM role r, user_role ur
-     * WHERE r.rid = ur.role_id AND ur.user_id = #{userId}
-     * @param uid
-     * @return
-     */
-    public Set<String> getRolesByUserUuid(String userUuid){
+	
+	@Autowired
+	private UserRoleModelMapper userRoleModelMapper;
+//	/**
+//     * 模拟根据用户id查询返回用户的所有角色，实际查询语句参考：
+//     * SELECT r.role_name FROM role_info r, user_role ur
+//     * WHERE r.role_id = ur.role_id AND ur.uuid = #{uuid}
+//     * @param uid
+//     * @return
+//     */
+    public Set<String> getRolesByUserUuid(String uuid){
         Set<String> roles = new HashSet<>();
-        //三种编程语言代表三种角色：js程序员、java程序员、c++程序员
-        roles.add("js");
-        roles.add("java");
-        roles.add("cpp");
+       List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid); 
+       for(int i=0;i<userRoles.size();i++)
+       {
+    	   roles.add(userRoles.get(i).getRoleName());
+       }
         return roles;
     }
 }

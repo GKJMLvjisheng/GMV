@@ -137,11 +137,11 @@ function updateNews(){
 	var fileobj = img_file.files[0];//使用files获取文件
 	//alert(fileobj);
 	formData.append("file",fileobj);//添加fileobj到formData的键file中
-	formData.append("EnewsId", $("#EnewsId").val());
-	formData.append("EnewsTitle", $("#EnewsTitle").val());
-	formData.append("EnewsAbstract", $("#EnewsAbstract").val());
-	formData.append("EnewsUrl", $("#EnewsUrl").val());
-	formData.append("EnewsPicturePath", $("#EnewsPicturePath").val());
+	formData.append("newsId", $("#EnewsId").val());
+	formData.append("newsTitle", $("#EnewsTitle").val());
+	formData.append("newsAbstract", $("#EnewsAbstract").val());
+	formData.append("newsUrl", $("#EnewsUrl").val());
+	formData.append("newsPicturePath", $("#EnewsPicturePath").val());
 	
 	
 	$.ajax({
