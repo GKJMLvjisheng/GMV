@@ -31,7 +31,8 @@ public enum ErrorCode {
   WRONG_AMOUNT(10015, "金额不正确，请检查"),
   SELECT_THE_CONTRACT(10016, "请选择币种"),
   RATE_NOT_ACCEPTABLE(10017,"汇率出错"),
-  NO_AVAILABLE_POINT(10018,"没有相应的积分");
+  NO_AVAILABLE_POINT(10018,"没有相应的积分"),
+  NO_DATE_SPECIFIED(10019,"没有指定日期");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

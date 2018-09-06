@@ -135,7 +135,10 @@ public class EthWalletController {
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
     Integer offset;
-    if (pageNum > 0)
+    
+    if (limit == null)
+      limit = 10;
+    if (pageNum != null && pageNum > 0)
       offset = (pageNum - 1) * limit;
     else 
       offset = 0;

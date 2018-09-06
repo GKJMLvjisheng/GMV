@@ -73,19 +73,19 @@ public class UserWalletController {
     UserWalletBalanceSummary userWalletBalanceSummary = new UserWalletBalanceSummary();
     UserWallet userWallet = userWalletService.find(ShiroUtils.getUserUuid());
     
-    userWalletBalanceSummary.setOngoingBalance(BigDecimal.ZERO);
+    userWalletBalanceSummary.setOngoingBalance(0.0);
     if (userWallet != null) {
       BigDecimal balance = userWallet.getBalance();
       BigDecimal factor = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
       BigDecimal value=balance.multiply(factor);
-      userWalletBalanceSummary.setAvailableBalance(balance.setScale(2));
-      userWalletBalanceSummary.setAvailableBalanceValue(value.setScale(2));
+      userWalletBalanceSummary.setAvailableBalance(balance.doubleValue());
+      userWalletBalanceSummary.setAvailableBalanceValue(value.doubleValue());
       return new ResponseEntity.Builder<UserWalletBalanceSummary>()
       		.setData(userWalletBalanceSummary)
               .setErrorCode(ErrorCode.SUCCESS).build();
     } else {
-      userWalletBalanceSummary.setAvailableBalance(BigDecimal.ZERO);
-      userWalletBalanceSummary.setAvailableBalanceValue(BigDecimal.ZERO);
+      userWalletBalanceSummary.setAvailableBalance(0.0);
+      userWalletBalanceSummary.setAvailableBalanceValue(0.0);
     	return new ResponseEntity.Builder<UserWalletBalanceSummary>()
     		.setData(userWalletBalanceSummary)
         .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
@@ -99,15 +99,19 @@ public class UserWalletController {
     Date now = new Date();
     calendar.setTime(now);
     
+
     
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
     Integer offset;
-    if (pageNum > 0)
-    	offset = (pageNum - 1) * limit;
+
+    if (limit == null)
+      limit = 10;
+    if (pageNum != null && pageNum > 0)
+      offset = (pageNum - 1) * limit;
     else 
-    	offset = 0;
+      offset = 0;
 
     List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(
     				ShiroUtils.getUserUuid(), offset,limit);

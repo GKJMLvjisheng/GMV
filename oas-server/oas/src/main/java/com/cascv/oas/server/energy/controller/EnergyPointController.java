@@ -221,14 +221,16 @@ public class EnergyPointController {
         Integer pageSize = pageInfo.getPageSize();
         Integer limit = pageSize;
         Integer offset;
+ 
+        if (limit == null) {
+          limit = 10;
+        }
         
         if (pageNum != null && pageNum > 0)
         	offset = (pageNum - 1) * limit;
         else 
         	offset = 0;
-        if (limit == null) {
-          limit = 10;
-        }
+ 
         List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
         Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
         
@@ -254,9 +256,13 @@ public class EnergyPointController {
       BigDecimal rate = BigDecimal.valueOf(exchangeParam.getEnergyPointRate());
       BigDecimal userRate = energyPointRedeem.getRate();
       if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
-    	errorCode = ErrorCode.RATE_NOT_ACCEPTABLE;
+        errorCode = ErrorCode.RATE_NOT_ACCEPTABLE;
       } else {
-    	errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getDate());
+        if (energyPointRedeem.getDate() == null) {
+          errorCode = ErrorCode.NO_DATE_SPECIFIED;
+        } else {
+          errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getDate());
+        }
       }
       return new ResponseEntity.Builder<Integer>()
               .setData(0)
