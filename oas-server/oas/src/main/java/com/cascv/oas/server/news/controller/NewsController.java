@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,29 +51,23 @@ public String index() {
 
 @PostMapping(value="/addNews")
 @ResponseBody
-public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam("file") MultipartFile file){
+public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
 	
 	File dir=new File(UPLOADED_FOLDER);
   	 if(!dir.exists()){
   	        dir.mkdirs();
   	    }
-   	String msg="";
    	
    	Map<String,String> info = new HashMap<>();
-   	
-   	if (file.isEmpty()) 
-   	{
-   	   msg="文件为空";
-       }
 
+   	if(file!=null)
+   	{
    	try 
    	{
            // Get the file and save it somewhere
            byte[] bytes = file.getBytes();
            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
            Files.write(path, bytes);
-           
-
            
            String  newsPicturePath=String.valueOf(path);
            
@@ -87,21 +80,26 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam("file") Multip
            String str="http://"+localhostIp+":8080/image/news/";
            newsPicturePath=str+pictureName;
            log.info("newsPicturePath={}",newsPicturePath); 
-	       NewsModel newsModel=new NewsModel();
-	       	
-	       newsModel.setNewsTitle(newsInfo.getNewsTitle());
-	       newsModel.setNewsAbstract(newsInfo.getNewsAbstract());
-	       newsModel.setNewsUrl(newsInfo.getNewsUrl());
+           NewsModel newsModel=new NewsModel();
+          	
+           newsModel.setNewsTitle(newsInfo.getNewsTitle());
+           newsModel.setNewsAbstract(newsInfo.getNewsAbstract());
+           newsModel.setNewsUrl(newsInfo.getNewsUrl());
            newsModel.setNewsPicturePath(newsPicturePath);
            
            newsService.addNews(newsModel);
-           
+           log.info("新闻进行了上传图片");
        } catch (Exception e)
    		{
        	log.info(" e.printStackTrace()={}");
            e.printStackTrace();
    		}
-   	
+   	}else
+   	{
+//   		newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
+//   		newsService.addNews(newsModel);
+   		log.info("新闻未上传图片");
+   	}
    	return new ResponseEntity.Builder<Map<String, String>>()
   	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 }
