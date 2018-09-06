@@ -83,12 +83,16 @@ public class EnergyPointController {
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
+        ErrorCode errorCode = ErrorCode.SUCCESS;
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
+        if (energyBallTakenResult == null) {
+            errorCode = ErrorCode.GENERAL_ERROR;
+        }
         return new ResponseEntity
                 .Builder<EnergyBallTakenResult>()
                 .setData(energyBallTakenResult)
-                .setErrorCode(ErrorCode.SUCCESS)
+                .setErrorCode(errorCode)
                 .build();
     }
 
