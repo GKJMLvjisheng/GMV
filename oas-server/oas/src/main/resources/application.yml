@@ -75,5 +75,5 @@ wallet:
     energyPointDaily: 15
     energyPowerDaily: 10
     energyPointRate: 0.01
-    tokenRmbRate: 97
+    tokenRmbRate: 0.026
       
