@@ -76,11 +76,10 @@ public class UserWalletController {
     userWalletBalanceSummary.setOngoingBalance(BigDecimal.ZERO);
     if (userWallet != null) {
       BigDecimal balance = userWallet.getBalance();
-      
       BigDecimal factor = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
       BigDecimal value=balance.multiply(factor);
-      userWalletBalanceSummary.setAvailableBalance(balance);
-      userWalletBalanceSummary.setAvailableBalanceValue(value);
+      userWalletBalanceSummary.setAvailableBalance(balance.setScale(2));
+      userWalletBalanceSummary.setAvailableBalanceValue(value.setScale(2));
       return new ResponseEntity.Builder<UserWalletBalanceSummary>()
       		.setData(userWalletBalanceSummary)
               .setErrorCode(ErrorCode.SUCCESS).build();
