@@ -139,13 +139,6 @@ public class EnergyService {
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
                 .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL,
                         timeGap.intValue());
-        Iterator iterator = energyBallWrappers.iterator();
-        while (iterator.hasNext()) {
-            EnergyBallWrapper next = (EnergyBallWrapper) iterator.next();
-
-            System.out.println("开始时间: " + next.getStartDate());
-            System.out.println("结束时间: " + next.getEndDate());
-        }
         EnergyBallResult energyBallResult = new EnergyBallResult();
         energyBallResult.setEnergyBallList(energyBallWrappers);
         energyBallResult.setOngoingEnergySummary(ongoingEnergySummary);
