@@ -308,10 +308,6 @@ def testUserWalletTransfer():
   else:
     raise Exception("[Fail] user wallet transfer")
 
-#testUserWalletTransfer()
-
-#testRegisterDestroy()
-
 def inquirePointFactor(token):
   url=HOST+"/energyPoint/inquirePointFactor"
   data={
@@ -333,11 +329,15 @@ def redeemPoint(token):
   if res.get('code') == 0:
     return res.get('data')
     
-token=login("caikov","cai120501")
-if token is None:
-  raise Exception("[Fail] login")
+#testUserWalletTransfer()
 
-factor=redeemPoint(token)
+testRegisterDestroy()
+
+#token=login("caikov","cai120501")
+#if token is None:
+#  raise Exception("[Fail] login")
+
+#factor=redeemPoint(token)
 
 #testEnergyPoint()
 #testUserWallet()
