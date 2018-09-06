@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-HOST='http://18.219.19.160:8080/api/v1'
-#HOST='http://localhost:8080/api/v1'
+#HOST='http://18.219.19.160:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -310,7 +310,35 @@ def testUserWalletTransfer():
 
 #testUserWalletTransfer()
 
-testRegisterDestroy()
+#testRegisterDestroy()
+
+def inquirePointFactor(token):
+  url=HOST+"/energyPoint/inquirePointFactor"
+  data={
+    "date":"2018-09",
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+
+def redeemPoint(token):
+  url=HOST+"/energyPoint/redeemPoint"
+  data={
+    "date":"2018-09",
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+    
+token=login("caikov","cai120501")
+if token is None:
+  raise Exception("[Fail] login")
+
+factor=redeemPoint(token)
+
 #testEnergyPoint()
 #testUserWallet()
 #testEthWallet()

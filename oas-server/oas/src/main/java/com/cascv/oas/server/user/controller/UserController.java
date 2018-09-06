@@ -27,7 +27,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.model.EthWallet;
-import com.cascv.oas.server.blockchain.service.EnergyPointService;
+import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -62,7 +62,7 @@ public class UserController {
 	private UserWalletService userWalletService;
 	
 	@Autowired
-	private EnergyPointService energyPointService;
+	private EnergyWalletService energyPointService;
   
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
@@ -217,12 +217,15 @@ public class UserController {
     	 info.put("email", userNewModel.getEmail());
     	 info.put("inviteCode", userNewModel.getInviteCode().toString());
     	  log.info("修改成功");
+    	  return new ResponseEntity.Builder<Map<String, String>>()
+    		      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
       }catch(Exception e){
     	  log.info("修改失败"+e);
+    	  return new ResponseEntity.Builder<Map<String, String>>()
+    		      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
       }
 	       
-	  return new ResponseEntity.Builder<Map<String, String>>()
-	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+	  
 	}
 	
 	/*

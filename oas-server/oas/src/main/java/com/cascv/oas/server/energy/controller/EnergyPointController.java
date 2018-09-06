@@ -37,8 +37,13 @@ import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
 import com.cascv.oas.server.blockchain.wrapper.EnergyPointRedeem;
 import com.cascv.oas.server.utils.ShiroUtils;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
+@Slf4j
 public class EnergyPointController {
 
     @Autowired
@@ -52,8 +57,8 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> checkin() {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//        String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+        String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         ErrorCode errorCode = ErrorCode.SUCCESS;
         if (!energyService.isCheckin(userUuid)) {
@@ -102,7 +107,6 @@ public class EnergyPointController {
         String userUuid = ShiroUtils.getUserUuid();
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
-        System.out.println("结果:"+energyBallTakenResult);
         return new ResponseEntity
                 .Builder<EnergyBallTakenResult>()
                 .setData(energyBallTakenResult)
@@ -262,25 +266,36 @@ public class EnergyPointController {
     @PostMapping(value = "/redeemPoint")
     @ResponseBody
     public ResponseEntity<?> redeemPoint(@RequestBody EnergyPointRedeem energyPointRedeem) {
-        return new ResponseEntity.Builder<Integer>()
-                .setData(0)
-                .setErrorCode(ErrorCode.SUCCESS)
-                .build();
+      ErrorCode errorCode = ErrorCode.SUCCESS;
+      BigDecimal rate = BigDecimal.valueOf(exchangeParam.getEnergyPointRate());
+      BigDecimal userRate = energyPointRedeem.getRate();
+      if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
+    	errorCode = ErrorCode.RATE_NOT_ACCEPTABLE;
+      } else {
+    	errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getDate());
+      }
+      return new ResponseEntity.Builder<Integer>()
+              .setData(0)
+              .setErrorCode(errorCode)
+              .build();
     }
-
 
     @PostMapping(value = "/inquirePointFactor")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointFactor(@RequestBody EnergyPointFactorRequest energyPointFactorRequest) {
         String date = energyPointFactorRequest.getDate();
+        
         EnergyPointFactor energyPointFactor = new EnergyPointFactor();
         energyPointFactor.setFactor(exchangeParam.getEnergyPointRate());
         energyPointFactor.setDate(date);
-        energyPointFactor.setAmount(156);
+        BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
+        if (amount == null)
+        	amount=BigDecimal.ZERO;
+        energyPointFactor.setAmount(amount);
         return new ResponseEntity.Builder<EnergyPointFactor>()
                 .setData(energyPointFactor)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
     }
-
+   
 }

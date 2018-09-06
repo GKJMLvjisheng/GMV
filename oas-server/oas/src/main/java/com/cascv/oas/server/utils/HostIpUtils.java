@@ -1,9 +1,11 @@
 package com.cascv.oas.server.utils;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;    
 public class HostIpUtils{  
+
 	@SuppressWarnings("unused")
 	public static String getHostIp(){
 		try{
@@ -27,4 +29,9 @@ public class HostIpUtils{
 		}
 		return null;
 	}
-}
+
+
+    }  
+
+
+
