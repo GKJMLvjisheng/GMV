@@ -25,7 +25,7 @@ public class SendMailUtils implements Callable<String> {
     }
     
 
-    /* 锟斤拷写run锟斤拷锟斤拷锟斤拷实锟街ｏ拷锟斤拷run锟斤拷锟斤拷锟叫凤拷锟斤拷锟绞硷拷锟斤拷指锟斤拷锟斤拷锟矫伙拷
+    /* 
      * @see java.lang.Thread#run()
      */
     @Override
@@ -89,9 +89,9 @@ public class SendMailUtils implements Callable<String> {
         message.addHeader("X-Mailer","Microsoft Outlook Express 6.00.2900.2869");
     	
         message.setFrom(new InternetAddress(mailInfo.getfromAddress(),mailInfo.getmailUsername(), "UTF-8"));
-        //锟秸硷拷锟斤拷
+
         message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(mailInfo.gettoAddress(), "youyouyu", "UTF-8"));
-	        //锟绞硷拷锟斤拷锟斤拷
+
         message.setSubject(mailInfo.getmailSubject());
       //不被当作垃圾邮件的关键代码--Begin            
 
@@ -116,7 +116,6 @@ public class SendMailUtils implements Callable<String> {
     
 
     public static String createRandomVcode(){
-        //楠岃瘉鐮�
         String vcode = "";
         for (int i = 0; i < 6; i++) {
             vcode = vcode + (int)(Math.random() * 9);
