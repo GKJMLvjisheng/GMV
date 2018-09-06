@@ -328,7 +328,21 @@ def redeemPoint(token):
   print res
   if res.get('code') == 0:
     return res.get('data')
-    
+ 
+
+
+def inquireEnergyPointDetail(token):
+  url=HOST+"/energyPoint/inquireEnergyPointDetail"
+  data={
+    "pageNum" : 1,
+    "pageSize" : 3
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+ 
+
 #testUserWalletTransfer()
 
 testRegisterDestroy()
@@ -337,7 +351,7 @@ testRegisterDestroy()
 #if token is None:
 #  raise Exception("[Fail] login")
 
-#factor=redeemPoint(token)
+#inquire=inquireEnergyPointDetail(token)
 
 #testEnergyPoint()
 #testUserWallet()

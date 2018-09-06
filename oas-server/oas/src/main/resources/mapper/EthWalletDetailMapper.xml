@@ -77,7 +77,7 @@
     delete from eth_wallet_detail where address = #{address}
   </delete>
   
-  <select id="selectCount" resultMap="ethWalletDetailMap">
+  <select id="selectCount" resultType="java.lang.Integer">
   	select count(*) from eth_wallet_detail where address = #{address};
   </select>
   
