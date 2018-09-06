@@ -513,6 +513,7 @@ public class EnergyService {
     	return ErrorCode.SUCCESS;
     } 
     
+
     public static void main(String[] args) {
         BigDecimal decimal = new BigDecimal(12.12345).setScale(2, BigDecimal.ROUND_HALF_UP);
         System.out.println(decimal);

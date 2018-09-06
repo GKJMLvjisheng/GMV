@@ -6,24 +6,25 @@
 	<result column="name" property="name"/>
 	<result column="nickname" property="nickname"/>
 	<result column="password" property="password"/>
-  <result column="confirmed" property="confirmed"/>
-  <result column="invite_from" property="inviteFrom" jdbcType="INTEGER"/>
+    <result column="confirmed" property="confirmed"/>
+    <result column="invite_from" property="inviteFrom" jdbcType="INTEGER"/>
 	<result column="invite_code" property="inviteCode" jdbcType="INTEGER"/>
 	<result column="gender" property="gender"/>
 	<result column="birthday" property="birthday"/>
 	<result column="address" property="address"/>
 	<result column="mobile" property="mobile"/>
 	<result column="email" property="email"/>
-  <result column="mobile_checked" property="mobileChecked"/>
+    <result column="mobile_checked" property="mobileChecked"/>
 	<result column="email_checked" property="emailChecked"/>
 	<result column="salt" property="salt"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
-	<result column="profile" property="profile"/>
+	<!-- 
+	<result column="profile" property="profile"/> -->
   </resultMap>
  
   <sql id="Base_Column_List">
-    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated,profile
+    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated <!-- ,profile -->
   </sql>
   
   <!-- insert user -->
