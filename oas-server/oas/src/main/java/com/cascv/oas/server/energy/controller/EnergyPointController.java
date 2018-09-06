@@ -1,45 +1,23 @@
 package com.cascv.oas.server.energy.controller;
 
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import com.cascv.oas.server.energy.model.EnergyWallet;
-import com.cascv.oas.server.energy.service.EnergyService;
-import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
-import com.cascv.oas.server.energy.vo.EnergyPointCategory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
-import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
-import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
-import com.cascv.oas.server.energy.vo.EnergyBallResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
-import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactor;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointRedeem;
+import com.cascv.oas.server.blockchain.wrapper.*;
+import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.service.EnergyService;
+import com.cascv.oas.server.energy.vo.*;
 import com.cascv.oas.server.utils.ShiroUtils;
-
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
@@ -89,8 +67,8 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyBall")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//    	String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+    	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
@@ -103,8 +81,8 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
-        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-//        String userUuid = ShiroUtils.getUserUuid();
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+        String userUuid = ShiroUtils.getUserUuid();
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
         return new ResponseEntity
@@ -226,37 +204,45 @@ public class EnergyPointController {
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
 
-        List<EnergyPointDetail> energyPointDetailList = new ArrayList<>();
-
-        Calendar calendar = new GregorianCalendar();
-        Date now = new Date();
-        calendar.setTime(now);
-
-        for (Integer i = 0; i < 3; i++) {
-            EnergyPointDetail energyPointDetail = new EnergyPointDetail();
-            energyPointDetail.setActivity("");
-            energyPointDetail.setCategory("");
-
-            calendar.add(Calendar.DATE, 1 + i);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-            String str = formatter.format(calendar.getTime());
-            energyPointDetail.setCreated(str);
-            energyPointDetail.setSource("手机");
-            energyPointDetail.setUuid(ShiroUtils.getUserUuid());
-            energyPointDetail.setUuid(String.valueOf(i + 3));
-            energyPointDetail.setValue(i * 5 + 5);
-            energyPointDetailList.add(energyPointDetail);
-        }
-        PageDomain<EnergyPointDetail> pageEnergyPointDetail = new PageDomain<>();
-        pageEnergyPointDetail.setTotal(3);
+        
+        Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+        if (pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        
+        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
+        Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
+        
+        
+//        for (Integer i = 0; i < 3; i++) {
+//            EnergyChangeDetail energyPointDetail = new EnergyChangeDetail();
+//            energyPointDetail.setActivity("");
+//            energyPointDetail.setCategory("");
+//
+//            calendar.add(Calendar.DATE, 1 + i);
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+//
+//            String str = formatter.format(calendar.getTime());
+//            energyPointDetail.setCreated(str);
+//            energyPointDetail.setSource("手机");
+//            energyPointDetail.setUuid(ShiroUtils.getUserUuid());
+//            energyPointDetail.setUuid(String.valueOf(i + 3));
+//            energyPointDetail.setValue(i * 5 + 5);
+//            energyPointDetailList.add(energyPointDetail);
+//        }
+        PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();
+        pageEnergyPointDetail.setTotal(count);
         pageEnergyPointDetail.setAsc("asc");
-        pageEnergyPointDetail.setOffset(0);
-        pageEnergyPointDetail.setPageNum(1);
-        pageEnergyPointDetail.setPageSize(3);
+        pageEnergyPointDetail.setOffset(offset);
+        pageEnergyPointDetail.setPageNum(pageNum);
+        pageEnergyPointDetail.setPageSize(pageSize);
         pageEnergyPointDetail.setRows(energyPointDetailList);
 
-        return new ResponseEntity.Builder<PageDomain<EnergyPointDetail>>()
+        return new ResponseEntity.Builder<PageDomain<EnergyChangeDetail>>()
                 .setData(pageEnergyPointDetail)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
