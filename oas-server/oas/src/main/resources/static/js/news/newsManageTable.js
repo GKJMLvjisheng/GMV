@@ -48,7 +48,8 @@ function initNewsGrid(data) {
 	    sortOrder: 'asc', // 排序规则
 
 		data:data,
-		columns : [ {
+		columns : [ 	
+			{
 			title : "选择",
 			
 
@@ -77,7 +78,8 @@ function initNewsGrid(data) {
 			valign: 'middle',
 			width:  '200px',
 
-		},{
+		},
+		{
 
 			title : "图片",
 
@@ -87,7 +89,8 @@ function initNewsGrid(data) {
 			width:  '200px',
 			formatter: actionFormatter1
 
-		}, {
+		}, 
+		{
 
 			title : "新闻链接",
 
@@ -99,7 +102,8 @@ function initNewsGrid(data) {
 			//formatter: actionFormatter3
 			
 
-		},{
+		},
+		{
 
 			title : " 操作",
 
@@ -137,11 +141,7 @@ function actionFormatter3(value, row, index) {
   
 function actionFormatter1(value, row, index) {
     var newsPicturePath = value;
-    
-//    var imgarr=newsPicturePath.split('\\'); //分割
-//    var myimg=imgarr[imgarr.length-1]; // 获取图片名
-//    var str="http://localhost:8080/image/news/";
-//    picturePath=str+myimg; 
+    //alert(newsPicturePath);    
 
     var result = "";
     
@@ -181,18 +181,14 @@ function ViewNewsById(id){
 }	
 function EditNewsById(id){
     
-
     //获取选中行的数据
-
     var rows=$("#newsGrid").bootstrapTable('getRowByUniqueId', id);
 
     	$('#EnewsId').val(rows.newsId);  
 	    $('#EnewsTitle').val(rows.newsTitle);
 		$('#EnewsAbstract').val(rows.newsAbstract);
 		$('#EnewsUrl').val(rows.newsUrl);
-		$('#EnewsPicturePath').val(rows.newsPicturePath); 
-		
-		
+		$('#EnewsPicturePath').val(rows.newsPicturePath); 				
         $("#updateNewsModal").modal("show");       
     
   }
@@ -204,37 +200,32 @@ function deleteNewsById(id)
 		if (!e) {
 		  return;
 		 }
-		
 
-	var ids = [];
-	ids.push(id);
+	data={"newsId":id};
+	alert(JSON.stringify(data));
 	$.ajax({
 
-		url:"/doDeleteNews",
+		url:"/api/v1/userCenter/deleteNews",
+		data: JSON.stringify(data),
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		type: 'post',
+		cache: false,
 
-		dataType:"json",
-
-		traditional: true,//属性在这里设置
-
-		method:"post",
-
-		data:{
-
-			"ids":ids
-		},
-
-		success:function(data){
+		success:function(res){
 			
-				
-			$("#newsGrid").bootstrapTable('removeByUniqueId', id);
-            
-            
-            alert("删除成功！");
-		     },
-	
-		     error:function(){
-					alert("删除失败！")
+			if(res.code==0){
+				$("#newsGrid").bootstrapTable('removeByUniqueId', id);
+				alert("删除成功！");
+			}
+			else{
+				alert("删除失败");
 				}
+			},
+	
+	     error:function(){
+				alert("删除失败！");
+			}
 	});
 });
 }

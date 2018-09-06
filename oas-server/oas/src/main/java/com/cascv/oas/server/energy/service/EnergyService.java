@@ -459,6 +459,40 @@ public class EnergyService {
     	return energyTradeRecordMapper.sumPoint(userUuid, begin, end);
     } 
     
+    public BigDecimal summaryInPoint(String userUuid, String yyyy_MM) {
+        String begin = yyyy_MM + "-01 00:00:00";
+        String end = null;
+    	String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    	if (yyyy_MM.compareToIgnoreCase(today) == 0) {
+    		end=DateUtils.getTime();
+    	} else {
+    		Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.dateTime(DateUtils.YYYY_MM, yyyy_MM));
+    		int day = calendar.getActualMaximum(Calendar.DATE);
+        	calendar.set(Calendar.DAY_OF_MONTH, day);
+        	end = yyyy_MM + String.format("-%02d 23:59:59", day);
+    	}
+    	log.info("begin {} end {}", begin, end);
+    	return energyTradeRecordMapper.sumInPoint(userUuid, begin, end);
+    } 
+    
+    public BigDecimal summaryOutPoint(String userUuid, String yyyy_MM) {
+        String begin = yyyy_MM + "-01 00:00:00";
+        String end = null;
+    	String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    	if (yyyy_MM.compareToIgnoreCase(today) == 0) {
+    		end=DateUtils.getTime();
+    	} else {
+    		Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.dateTime(DateUtils.YYYY_MM, yyyy_MM));
+    		int day = calendar.getActualMaximum(Calendar.DATE);
+        	calendar.set(Calendar.DAY_OF_MONTH, day);
+        	end = yyyy_MM + String.format("-%02d 23:59:59", day);
+    	}
+    	log.info("begin {} end {}", begin, end);
+    	return energyTradeRecordMapper.sumInPoint(userUuid, begin, end);
+    } 
+    
     //redeem
     public Boolean decreaseBalance(String userUuid, BigDecimal value) {
       EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
@@ -506,13 +540,13 @@ public class EnergyService {
     }
     
     public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit) {
-    	List<EnergyTradeRecord> tradeList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
-    	List<EnergyChangeDetail> energyChangeDetailList= new ArrayList<>();
-    	if (tradeList != null) {
-    		for (EnergyTradeRecord trade:tradeList) {
-    			EnergyChangeDetail newEnergyChange = new EnergyChangeDetail();
-    			// to do
+    	List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
+    	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList) {
+    		if (energyChangeDetail.getInOrOut() == 0) {
+    			energyChangeDetail.setActivity("积分兑换");
+    			energyChangeDetail.setCategory("OASES redeem");
     		}
+    		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
     	}
     	return energyChangeDetailList;
     }

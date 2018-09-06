@@ -4,6 +4,7 @@ package com.cascv.oas.server.energy.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -101,13 +102,13 @@ public class EnergyPointController {
     public ResponseEntity<?> inquirePower() {
         EnergyWallet energyWallet = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyWallet != null) {
-            return new ResponseEntity.Builder<BigDecimal>()
-                    .setData(energyWallet.getPower())
+            return new ResponseEntity.Builder<Integer>()
+                    .setData(energyWallet.getPower().intValue())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
-            return new ResponseEntity.Builder<BigDecimal>()
-                    .setData(BigDecimal.ZERO)
+            return new ResponseEntity.Builder<Integer>()
+                    .setData(0)
                     .setErrorCode(ErrorCode.NO_ENERGY_POINT_ACCOUNT)
                     .build();
         }
@@ -118,8 +119,8 @@ public class EnergyPointController {
     public ResponseEntity<?> inquireEnergyPoint() {
         EnergyWallet energyPoint = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
-            return new ResponseEntity.Builder<BigDecimal>()
-                    .setData(energyPoint.getPoint())
+            return new ResponseEntity.Builder<Integer>()
+                    .setData(energyPoint.getPoint().intValue())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
@@ -172,7 +173,7 @@ public class EnergyPointController {
             energyNews.setId(i + 1);
             energyNews.setTitle(titleArray[i]);
             energyNews.setSummary(summaryArray[i]);
-            energyNews.setImageLink("/img/" + String.valueOf(i + 1) + ".jpg");
+            energyNews.setImageLink("http://18.219.19.160:8080/img/" + String.valueOf(i + 1) + ".jpg");
             energyNews.setNewsLink(newsArray[i]);
             energyNewsList.add(energyNews);
         }
@@ -195,8 +196,11 @@ public class EnergyPointController {
     public ResponseEntity<?> inquireCurrentPeriodEnergyPoint() {
         //produce and cosume during current peroid
         CurrentPeriodEnergyPoint currentPeriodEnergyPoint = new CurrentPeriodEnergyPoint();
-        currentPeriodEnergyPoint.setConsumedEnergyPoint(3450);
-        currentPeriodEnergyPoint.setProducedEnergyPoint(5643);
+        String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+        BigDecimal consumed = energyService.summaryOutPoint(ShiroUtils.getUserUuid(), today);
+        BigDecimal produced = energyService.summaryInPoint(ShiroUtils.getUserUuid(), today);
+        currentPeriodEnergyPoint.setConsumedEnergyPoint(consumed.intValue());
+        currentPeriodEnergyPoint.setProducedEnergyPoint(produced.intValue());
 
         return new ResponseEntity.Builder<CurrentPeriodEnergyPoint>()
                 .setData(currentPeriodEnergyPoint)
@@ -207,8 +211,6 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyPointDetail")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
-
-        
         Integer pageNum = pageInfo.getPageNum();
         Integer pageSize = pageInfo.getPageSize();
         Integer limit = pageSize;
@@ -221,23 +223,6 @@ public class EnergyPointController {
         List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
         Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
         
-        
-//        for (Integer i = 0; i < 3; i++) {
-//            EnergyChangeDetail energyPointDetail = new EnergyChangeDetail();
-//            energyPointDetail.setActivity("");
-//            energyPointDetail.setCategory("");
-//
-//            calendar.add(Calendar.DATE, 1 + i);
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//
-//            String str = formatter.format(calendar.getTime());
-//            energyPointDetail.setCreated(str);
-//            energyPointDetail.setSource("手机");
-//            energyPointDetail.setUuid(ShiroUtils.getUserUuid());
-//            energyPointDetail.setUuid(String.valueOf(i + 3));
-//            energyPointDetail.setValue(i * 5 + 5);
-//            energyPointDetailList.add(energyPointDetail);
-//        }
         PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();
         pageEnergyPointDetail.setTotal(count);
         pageEnergyPointDetail.setAsc("asc");

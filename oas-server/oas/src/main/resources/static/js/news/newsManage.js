@@ -22,10 +22,9 @@ function newsReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		//async : false,
 		success: function(res) {
-			alert(JSON.stringify(res));
-			 data2=res.data.list;
+			//alert(JSON.stringify(res));
+			data2=res.data.list;
 			alert(JSON.stringify(data2));
 			initNewsGrid(data2);
 		}, 
@@ -33,7 +32,7 @@ function newsReady(){
 			
 		}
 		}); 
-
+	 
 	 //initNewsGrid(data2);
 }
 
@@ -86,14 +85,18 @@ function addNews(){
 	formData.append("newsUrl", $("#newsUrl").val());
 	
 	$.ajax({
-		url:"/doAddNews",
-		method:"post",
+		url:"/api/v1/userCenter/addNews",
 		data:formData,
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		type: 'post',
+		cache: false,
+		
 		processData : false,
 		contentType : false,
 		async:false,
 
-		success:function(data){	
+		success:function(res){	
 				
 				document.getElementById("tipContent").innerText="上传成功";
 				$("#Tip").modal('show');
@@ -133,7 +136,6 @@ function updateNews(){
 	//alert(img_file);
 	var fileobj = img_file.files[0];//使用files获取文件
 	//alert(fileobj);
-	 
 	formData.append("file",fileobj);//添加fileobj到formData的键file中
 	formData.append("EnewsId", $("#EnewsId").val());
 	formData.append("EnewsTitle", $("#EnewsTitle").val());
@@ -143,18 +145,26 @@ function updateNews(){
 	
 	
 	$.ajax({
-		url:"/doUpdateNews",
-		method:"post",
+		url:"/api/v1/userCenter/updateNews",
 		data:formData,
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		type: 'post',
+		cache: false,
+		
 		processData : false,
 		contentType : false,
 		async:false,
 
-		success:function(data){	
-				
-			alert("success");
-		    newsReady();
-				
+		success:function(res){	
+			
+			if(res.code==0){
+				alert("success");
+			    newsReady();
+			}
+			else{
+				alert("修改失败");
+				}			
 			
 		},
 		error:function(){
@@ -166,65 +176,65 @@ function updateNews(){
 	}
 
 //批量删除
-function deleteNews(){
-  var rows = $("#newsGrid").bootstrapTable("getSelections");
-    var ids = [];
-  var len = rows.length;
-  //alert(len);
-    if (len== 0) {
-        alert("请先选择要删除的记录!");
-        return;
-    }
-    Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
-		if (!e) {
-		  return;
-		 }
-  for(var i=0;i<len;i++){
-    ids.push(rows[i]['newsId']);
-
-  }
-	$.ajax({
-
-		url:"/doDeleteNews",
-
-		dataType:"json",
-
-		traditional: true,//属性在这里设置
-
-		method:"post",
-
-		data:{
-
-			"ids":ids
-		},
-
-		success:function(data){
-
-            DeleteByIds();
-            
-            alert("删除成功！");
-		     },
-
-		error:function(){
-			alert("删除失败！")
-		}
-
-	});
-    });
-}
-function DeleteByIds(){
-
-    var ids = $.map($('#newsGrid').bootstrapTable('getSelections'),function(row){
-        return row.newsId;
-    });
-
-    $('#newsGrid').bootstrapTable('remove',{
-        field : 'newsId',
-        values : ids
-    });
-}
+//function deleteNews(){
+//  var rows = $("#newsGrid").bootstrapTable("getSelections");
+//    var ids = [];
+//  var len = rows.length;
+//  //alert(len);
+//    if (len== 0) {
+//        alert("请先选择要删除的记录!");
+//        return;
+//    }
+//    Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
+//		if (!e) {
+//		  return;
+//		 }
+//  for(var i=0;i<len;i++){
+//    ids.push(rows[i]['newsId']);
+//
+//  }
+//	$.ajax({
+//
+//		url:"/doDeleteNews",
+//
+//		dataType:"json",
+//
+//		traditional: true,//属性在这里设置
+//
+//		method:"post",
+//
+//		data:{
+//
+//			"ids":ids
+//		},
+//
+//		success:function(data){
+//
+//            DeleteByIds();
+//            
+//            alert("删除成功！");
+//		     },
+//
+//		error:function(){
+//			alert("删除失败！")
+//		}
+//
+//	});
+//    });
+//}
+//function DeleteByIds(){
+//
+//    var ids = $.map($('#newsGrid').bootstrapTable('getSelections'),function(row){
+//        return row.newsId;
+//    });
+//
+//    $('#newsGrid').bootstrapTable('remove',{
+//        field : 'newsId',
+//        values : ids
+//    });
+//}
 function newsIndexReady() {
-	  
+	alert(1);
 	   $.ajax({
 	    url: "/api/v1/userCenter/selectAllNews",
 	    contentType : 'application/json;charset=utf8',
@@ -232,18 +242,15 @@ function newsIndexReady() {
 		cache: false,
 		type: 'post',
 	    success: function(res) {
-	    	alert(JSON.stringify(res));
+	    	//alert(JSON.stringify(res),);
 	    	var len=res.data.list.length;
 	    	
-	    	var picturePath=[len];
+	    	//var picturePath=[len];
 	    	
 	      if (len>0) {
 	        list="";
 	        for(i=0;i<len;i++){
-	        // var imgarr=res.data.list[i].newsPicturePath.split('\\'); //分割
-	         //var myimg=imgarr[imgarr.length-1]; // 获取图片名
-	         //var str="http://localhost:8080/image/news/";
-	         //picturePath[i]=str+myimg; 
+
 	          list+=
 	            "<div class='new-list-item clearfix'>"+
 	            "<div class='col-xs-1'></div>"+
@@ -263,8 +270,7 @@ function newsIndexReady() {
 	    }, 
 	    error: function(){
 	    	alert("新闻首页回显失败！");
-	    }
-	    }); 
+	    }}); 
 	}
 	  
 

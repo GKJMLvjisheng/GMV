@@ -70,7 +70,7 @@
     delete from user_wallet_detail where user_uuid = #{userUuid}
   </delete>
   
-  <select id="selectCount" resultMap="userWalletDetailMap">
+  <select id="selectCount" resultType="java.lang.Integer">
   	select count(*) from user_wallet_detail where user_uuid = #{userUuid};
   </select>
   
