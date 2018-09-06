@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -338,36 +339,90 @@ public class UserController {
 	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
 
     Map<String,String> info=new HashMap<>();
-//	log.info("-----------sendMobile start---------------");
-//	String mobile = userModel.getMobile();
-//	boolean state = false;
-//	try {
-//	
-//		String vcode = AuthenticationUtils.createRandomVcode();
-//		System.out.println("vcode = "+vcode);
-//		HttpSession session = request.getSession(true);
-//		
-//		session.setAttribute("mobileCheckCode", vcode);
-//
-//		AuthenticationUtils sms = new AuthenticationUtils();
-//		
-//		if(sms.SendCode(mobile,vcode).getCode().equals("OK")) {
-//			
-//			state = true;
-//			
-//		}else {
-//			
-//			state = false;
-//		}
-//		
-//		
-//	} catch (Exception e) {
-//		e.printStackTrace();
-//		state = false;
-//	}
-//	
-//	 map.put("state",state);
+	log.info("-----------sendMobile start---------------");
+	String mobile = userModel.getMobile();
+	boolean state = false;
+	try {
+	
+		String vcode = AuthenticationUtils.createRandomVcode();
+		System.out.println("vcode = "+vcode);
+		//???
+		Session session = ShiroUtils.getSession();
+		
+		session.setAttribute("mobileCheckCode", vcode);
+
+		AuthenticationUtils sms = new AuthenticationUtils();
+		
+		if(sms.SendCode(mobile,vcode).getCode().equals("OK")) {
+			
+			state = true;
+			
+		}else {
+			
+			state = false;
+		}
+		
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+		state = false;
+	}
 		return new ResponseEntity.Builder<Map<String, String>>()
 		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 }
+	/*
+	 * @Name:mobileCheckCode
+	 * @Author:lvjisheng
+	 * @Date:2018.09.06
+	 */	
+//	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
+//	@ResponseBody
+//	public ResponseEntity<?> mobileCheckCode(HttpServletRequest request, HttpSession session) throws Exception {
+//		System.out.println("--------mobileCheckCode   start--------");
+//
+//		String mobilecode = request.getParameter("mobilecode");
+//
+//		System.out.println("mail hello" + mobilecode);
+//		System.out.println("mail hello" + session.getAttribute("mobileCheckCode"));
+//		
+//		Map<String, Object> map = new HashMap<>();
+//		
+//		if (mobilecode.equalsIgnoreCase((String) session.getAttribute("mobileCheckCode"))) {
+//			
+//			//map.put("state",true);
+//
+//		} else {
+//			//map.put("state",false);
+//
+//		}
+//		
+//		return new ResponseEntity.Builder<Map<String, String>>()
+//		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+//	}
+//	 
+//    @RequestMapping(value="/doCheckPassword",method = RequestMethod.POST)
+//    @ResponseBody
+//    public Map<String,Object> doCheckPassword(HttpServletRequest request) {
+//       System.out.println("--------doCheckPassword start--------");
+//       String userNicknameIn = request.getParameter("userNickname"); 
+//       String userPasswordIn = request.getParameter("userPassword"); 
+//       System.out.println(" userNickname " + userNicknameIn);
+//       System.out.println(" userPassword " + userPasswordIn);
+//       List<UserModel> list = userService.selectByNickName(userNicknameIn); 
+//       String saltDb = list.get(0).getUserSalt();  
+//       String userPasswordDb = list.get(0).getUserPassword(); 
+//       String userPasswordOu = new Md5Hash(userPasswordIn,saltDb,3).toString(); 
+//
+//       Map<String,Object> map = new HashMap<>();
+//
+//       if (userPasswordOu.equals(userPasswordDb)){
+//        map.put("state", true);
+//
+//       }else{
+//        map.put("state", false);
+//       }
+//
+//        return map;
+//    }
+
 }

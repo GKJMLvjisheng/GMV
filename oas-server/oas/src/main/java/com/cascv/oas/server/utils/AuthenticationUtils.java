@@ -16,10 +16,6 @@ import com.aliyuncs.profile.IClientProfile;
  */
 public class AuthenticationUtils {
 	
-//	public boolean checkState() {
-//		boolean flag = false;
-//		return flag;
-//	}
 	
 	public static String createRandomVcode(){
         String vcode = "";
