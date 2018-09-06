@@ -269,7 +269,7 @@ public class EnergyPointController {
       ErrorCode errorCode = ErrorCode.SUCCESS;
       BigDecimal rate = BigDecimal.valueOf(exchangeParam.getEnergyPointRate());
       BigDecimal userRate = energyPointRedeem.getRate();
-      if (userRate != null && userRate.compareTo(rate) > 0){
+      if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
     	errorCode = ErrorCode.RATE_NOT_ACCEPTABLE;
       } else {
     	errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getDate());

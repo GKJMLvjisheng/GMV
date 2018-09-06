@@ -52,6 +52,14 @@ dependencies{
   runtime('org.springframework.boot:spring-boot-devtools')
   compile group: 'org.webjars.bower', name: 'js-xlsx', version: '0.8.0'
   
+  /*
+ * Name:EmailBuild
+ * Author:lvjisheng
+ * Date:2018.09.05
+ */
+  compile group: 'javax.activation', name: 'activation', version: '1.1'
+  compile group: 'org.glassfish', name: 'javax.mail', version: '3.0-b71'
+  
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

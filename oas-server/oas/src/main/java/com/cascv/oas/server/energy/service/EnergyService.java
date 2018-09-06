@@ -147,7 +147,7 @@ public class EnergyService {
     }
 
 
-    private BigDecimal miningGenerator(String userUuid, EnergySourcePoint energySourcePoint) {
+    public BigDecimal miningGenerator(String userUuid, EnergySourcePoint energySourcePoint) {
         BigDecimal ongoingEnergySummary = new BigDecimal(0);
         List<EnergyBall> energyBalls = energyBallMapper
                 .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
@@ -432,11 +432,11 @@ public class EnergyService {
         return energyWallet;
     }
 
-    private void saveEnergyOutRecord(String userUuid, BigDecimal total) {
+    private void saveEnergyOutRecord(String userUuid, BigDecimal total, String endTime) {
     	EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
     	energyTradeRecord.setInOrOut(0);
     	energyTradeRecord.setPointChange(total);
-    	energyTradeRecord.setEnergyBallUuid("0");
+    	energyTradeRecord.setEnergyBallUuid(endTime);
     	energyTradeRecord.setPowerChange(BigDecimal.ZERO);
     	energyTradeRecord.setStatus(0);
     	String now = DateUtils.getTime();
@@ -491,16 +491,20 @@ public class EnergyService {
     	}
     	
     	List<EnergyTradeRecord> tradeList = energyTradeRecordMapper.selectTrade(userUuid, begin, end);
+    	if (tradeList == null)
+    		return ErrorCode.NO_AVAILABLE_POINT;
     	BigDecimal sum = BigDecimal.ZERO;
     	for (EnergyTradeRecord trade : tradeList) {
     		sum=sum.add(trade.getPointChange());
     		energyTradeRecordMapper.updateStatus(trade.getUuid(), STATUS_OF_DIE_ENERGYRECORD);
     	}
+    	if (sum.compareTo(BigDecimal.ZERO) == 0)
+    		return ErrorCode.NO_AVAILABLE_POINT;
     	log.info("summary {}", sum);
     	if (!decreaseBalance(userUuid, sum))
     		return ErrorCode.BALANCE_NOT_ENOUGH;
     	userWalletService.addFromEnergy(userUuid, sum);
-    	saveEnergyOutRecord(userUuid, sum);
+    	saveEnergyOutRecord(userUuid, sum, end);
     	return ErrorCode.SUCCESS;
     } 
     
