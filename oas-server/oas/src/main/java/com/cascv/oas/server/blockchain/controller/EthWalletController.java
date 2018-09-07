@@ -3,28 +3,26 @@ package com.cascv.oas.server.blockchain.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.blockchain.config.TransferQuota;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
-import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
-import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
+import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.SelectContractSymbolName;
-import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.web3j.utils.Convert;
 
 @RestController
 @RequestMapping(value="/api/v1/ethWallet")
@@ -79,15 +78,23 @@ public class EthWalletController {
 				  .setErrorCode(ErrorCode.WRONG_AMOUNT)
 				  .build();
 	  }else {
-	    ErrorCode errorCode=ethWalletService.transfer(
+		  BigInteger gasPrice = ethWalletTransfer.getGasPrice();
+		  if (gasPrice == null)
+			  gasPrice=Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
+	      
+		  BigInteger gasLimit =  ethWalletTransfer.getGasLimit();
+	      if (gasLimit == null)
+	    	  gasLimit = BigInteger.valueOf(60000);
+	      ReturnValue<String> returnValue=ethWalletService.transfer(
 	        ShiroUtils.getUserUuid(), 
 	        ethWalletTransfer.getContract(),
 	        ethWalletTransfer.getToUserAddress(),
-	        ethWalletTransfer.getAmount());	  
-
-	    return new ResponseEntity.Builder<Integer>()
-	        .setData(1)
-	        .setErrorCode(errorCode)
+	        ethWalletTransfer.getAmount(),gasPrice,gasLimit);	  
+      EthWalletTransferResp resp = new EthWalletTransferResp();
+      resp.setTxHash(returnValue.getData());
+	    return new ResponseEntity.Builder<EthWalletTransferResp>()
+	        .setData(resp)
+	        .setErrorCode(returnValue.getErrorCode())
 	        .build();
 	  }
   }
@@ -102,18 +109,24 @@ public class EthWalletController {
 				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
 				  .build();
 	  }else{
-	    ErrorCode errorCode=ethWalletService.multiTransfer(
+		  BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice();
+		  if (gasPrice == null)
+			gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
+		  BigInteger gasLimit = ethWalletMultiTransfer.getGasLimit();
+		  if (gasLimit == null)
+			  gasLimit = BigInteger.valueOf(600000);
+		  ReturnValue<String> returnValue=ethWalletService.multiTransfer(
 	        ShiroUtils.getUserUuid(), 
 	        ethWalletMultiTransfer.getContract(),
-	        ethWalletMultiTransfer.getQuota());
-	
-	    return new ResponseEntity.Builder<Integer>()
-	        .setData(1)
-	        .setErrorCode(errorCode)
+          ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit);
+      EthWalletMultiTransferResp resp = new EthWalletMultiTransferResp();
+      resp.setTxHash(returnValue.getData());
+	    return new ResponseEntity.Builder<EthWalletMultiTransferResp>()
+	        .setData(resp)
+	        .setErrorCode(returnValue.getErrorCode())
 	        .build();
 	  }
   }
-  
   
   @PostMapping(value="/listCoin")
   @ResponseBody
@@ -184,4 +197,33 @@ public class EthWalletController {
         .setErrorCode(errorCode)
         .build();
   }
+  
+  @PostMapping(value="/listNetwork")
+  @ResponseBody
+  public ResponseEntity<?> listNetwork(){
+	Set<String> networks = ethWalletService.listNetwork();
+	if (networks == null) {
+		return new ResponseEntity.Builder<Set<String>>()
+		        .setData(networks)
+		        .setErrorCode(ErrorCode.NO_BLOCKCHAIN_NETWORK)
+		        .build();
+	} else {
+		return new ResponseEntity.Builder<Set<String>>()
+		        .setData(networks)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+	}
+  }
+  
+  @PostMapping(value="/setPreferNetwork")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> setPreferNetwork(@RequestBody PreferNetworkReq req){
+    ErrorCode errorCode=ethWalletService.setPreferNetwork(ShiroUtils.getUserUuid(), req.getPreferNetwork());
+    return new ResponseEntity.Builder<Integer>()
+        .setData(1)
+        .setErrorCode(errorCode)
+        .build();
+  }
+  
 }

@@ -5,12 +5,13 @@
 */
 package com.cascv.oas.server.news.model;
 
-import com.cascv.oas.core.common.BaseEntity;
+import java.io.Serializable;
+
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class NewsModel extends BaseEntity {
+public class NewsModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Getter @Setter private Integer newsId;
 	@Getter @Setter private String newsTitle;

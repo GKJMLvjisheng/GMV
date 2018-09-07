@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.web3j.abi.FunctionEncoder;
@@ -29,7 +31,6 @@ import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.ChainId;
-import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import lombok.Getter;
@@ -39,11 +40,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CoinClient {
   public static final String EmptyAddress = "0x0000000000000000000000000000000000000000";
-  @Getter @Setter private Web3j web3j;
+  @Getter @Setter private Map<String, Web3j> providerMap;
+  @Getter @Setter private String defaultNet;
   @Getter @Setter private String token;
   
+  public Set<String> listNetwork(){
+	  if (providerMap == null)
+		  return null;
+	  return providerMap.keySet();
+  }
+  
   // balance
-  public BigDecimal balanceOf(String fromAddress, String contract, BigDecimal weiFactor) {
+  public BigDecimal balanceOf(String net, String fromAddress, String contract, BigDecimal weiFactor) {
 
     String methodName = "balanceOf";
     List<Type> inputParameters = new ArrayList<>();
@@ -61,6 +69,7 @@ public class CoinClient {
     EthCall ethCall;
     BigInteger balanceInt = BigInteger.ZERO;
     try {
+      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       balanceInt = (BigInteger) results.get(0).getValue();
@@ -74,7 +83,7 @@ public class CoinClient {
 
   
   // name
-  public String nameOf(String contract) {
+  public String nameOf(String net, String contract) {
     String methodName = "name";
     String name = null;
     String fromAddr = EmptyAddress;
@@ -92,6 +101,7 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
+      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       name = results.get(0).getValue().toString();
@@ -103,7 +113,7 @@ public class CoinClient {
 
   
   // symbol
-  public String symbolOf(String contract) {
+  public String symbolOf(String net, String contract) {
     String methodName = "symbol";
     String symbol = null;
     List<Type> inputParameters = new ArrayList<>();
@@ -120,6 +130,7 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
+      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       symbol = results.get(0).getValue().toString();
@@ -130,7 +141,7 @@ public class CoinClient {
   }
 
   // Decimal
-  public BigDecimal weiFactorOf(String contract) {
+  public BigDecimal weiFactorOf(String net, String contract) {
     String methodName = "decimals";
     Integer decimal = 0;
     List<Type> inputParameters = new ArrayList<>();
@@ -147,6 +158,7 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
+      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       decimal = Integer.parseInt(results.get(0).getValue().toString());
@@ -158,7 +170,7 @@ public class CoinClient {
 
   
   // total supply
-  public BigDecimal supplyOf(String contract, BigDecimal weiFactor) {
+  public BigDecimal supplyOf(String net, String contract, BigDecimal weiFactor) {
     String methodName = "totalSupply";
     String fromAddr = EmptyAddress;
     BigInteger totalSupply = BigInteger.ZERO;
@@ -176,6 +188,7 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
+      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       totalSupply = (BigInteger) results.get(0).getValue();
@@ -187,22 +200,21 @@ public class CoinClient {
   }
   
   // transfer todo
-  public String transfer(String fromAddress, String privateKey, String toAddress, String contract, BigInteger amount) {
+  public String transfer(String net, String fromAddress, String privateKey, String toAddress, 
+		  String contract, BigInteger amount, BigInteger gasPrice, BigInteger gasLimit) {
 	  BigInteger nonce;
 	  EthGetTransactionCount ethGetTransactionCount = null;
+	  Web3j web3j = providerMap.get(net);
 	  try {
-		ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
+		  ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
 	  } catch (IOException e) {
-		e.printStackTrace();
+		  e.printStackTrace();
 	  }
 	  if (ethGetTransactionCount == null) 
 		  return null;
 	  nonce = ethGetTransactionCount.getTransactionCount();
-	  System.out.println("nonce " + nonce);
-	  BigInteger gasPrice = Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
-      BigInteger gasLimit = BigInteger.valueOf(60000);
-      BigInteger value = BigInteger.ZERO;
-      String methodName = "transfer";
+    BigInteger value = BigInteger.ZERO;
+    String methodName = "transfer";
 	  List<Type> inputParameters = new ArrayList<>();
 	  List<TypeReference<?>> outputParameters = new ArrayList<>();
 	  Address tAddress = new Address(toAddress);
@@ -216,73 +228,74 @@ public class CoinClient {
 	  String data = FunctionEncoder.encode(function);
 
 	  byte chainId = ChainId.NONE;
-	  String signedData = null;
-      try {
+    String signedData = null;
+    String txHash = null;
+    try {
     	log.info("[transfer] data {}", data);
-		signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
-		if (signedData != null) {
-		  EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
-		  System.out.println(ethSendTransaction.getTransactionHash());
-		}
-	} catch (IOException e) {
+		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
+		  if (signedData != null) {
+		    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
+		    txHash=ethSendTransaction.getTransactionHash();
+		  }
+	  } catch (IOException e) {
       e.printStackTrace();
-	}
-    return signedData;
+	  }
+    return txHash;
   }
   
-  public String multiTransfer(String fromAddress, String privateKey, List<String> toAddress, String contract, List<BigInteger> amount) {
-	BigInteger nonce;
-	EthGetTransactionCount ethGetTransactionCount = null;
-	try {
-	  ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
+  public String multiTransfer(String net, String fromAddress, String privateKey, List<String> toAddress, 
+		  String contract, List<BigInteger> amount,BigInteger gasPrice, BigInteger gasLimit) {
+	  BigInteger nonce;
+	  EthGetTransactionCount ethGetTransactionCount = null;
+	  Web3j web3j = providerMap.get(net);
+	  try {
+	    ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
     } catch (IOException e) {
-	  e.printStackTrace();
+	    e.printStackTrace();
     }
-	if (ethGetTransactionCount == null) 
-	  return null;
-	nonce = ethGetTransactionCount.getTransactionCount();
-	System.out.println("nonce " + nonce);
-	BigInteger gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
-    BigInteger gasLimit = BigInteger.valueOf(600000);
-	BigInteger value = BigInteger.ZERO;
-	String methodName = "multiTransfer";
-	List<Type> inputParameters = new ArrayList<>();
-	List<TypeReference<?>> outputParameters = new ArrayList<>();
+	  if (ethGetTransactionCount == null) 
+	    return null;
+	  nonce = ethGetTransactionCount.getTransactionCount();
+	  BigInteger value = BigInteger.ZERO;
+	  String methodName = "multiTransfer";
+	  List<Type> inputParameters = new ArrayList<>();
+	  List<TypeReference<?>> outputParameters = new ArrayList<>();
 	  
-	List<Address> tAddress = new ArrayList<>();
-	Integer index = 0;
-	for (String s : toAddress) {
-	  log.info("[transfer] address {}", s);
-	  tAddress.add(new Address(s));
-	  index++;
-	}
-	List<Uint256> tokenValue = new ArrayList<>();
-	index=0;
-	for (BigInteger bint : amount) {
-		log.info("[transfer] amount {}", bint);
-		tokenValue.add(new Uint256(bint));
-	  index++;
-	}
+	  List<Address> tAddress = new ArrayList<>();
+	  Integer index = 0;
+	  for (String s : toAddress) {
+	    log.info("[transfer] address {}", s);
+	    tAddress.add(new Address(s));
+	    index++;
+	  }
+	  List<Uint256> tokenValue = new ArrayList<>();
+	  index=0;
+	  for (BigInteger bint : amount) {
+		  log.info("[transfer] amount {}", bint);
+		  tokenValue.add(new Uint256(bint));
+	    index++;
+	  }
     inputParameters.add(new DynamicArray(tAddress));
     inputParameters.add(new DynamicArray(tokenValue));
-	TypeReference<Bool> typeReference = new TypeReference<Bool>() {
-	};
-	outputParameters.add(typeReference);
-	 Function function = new Function(methodName, inputParameters, outputParameters);
-	 String data = FunctionEncoder.encode(function);
-	 byte chainId = ChainId.NONE;
-	 String signedData = null;
-     try {
+	  TypeReference<Bool> typeReference = new TypeReference<Bool>() {
+	  };
+	  outputParameters.add(typeReference);
+	  Function function = new Function(methodName, inputParameters, outputParameters);
+	  String data = FunctionEncoder.encode(function);
+	  byte chainId = ChainId.NONE;
+    String signedData = null;
+    String txHash = null;
+    try {
     	log.info("[multiTransfer] data {}", data);
-		signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
-		if (signedData != null) {
-		  EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
-		  System.out.println(ethSendTransaction.getTransactionHash());
-		}
-	} catch (IOException e) {
+		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
+		  if (signedData != null) {
+		    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
+        txHash = ethSendTransaction.getTransactionHash();
+		  }
+	  } catch (IOException e) {
       e.printStackTrace();
-	}
-    return signedData;
+	  }
+    return txHash;
   }
   
   public String signTransaction(

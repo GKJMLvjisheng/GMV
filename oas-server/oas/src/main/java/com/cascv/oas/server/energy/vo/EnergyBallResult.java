@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.cascv.oas.server.energy.model.EnergyBall;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

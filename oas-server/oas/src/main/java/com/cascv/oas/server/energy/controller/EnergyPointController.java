@@ -4,12 +4,15 @@ package com.cascv.oas.server.energy.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.*;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.model.ExchangeRateModel;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +28,8 @@ import java.util.List;
 @Slf4j
 public class EnergyPointController {
 
-    @Autowired
-    private ExchangeParam exchangeParam;
+  @Autowired
+  private ExchangeRateService exchangeRateService;
 
     @Autowired
     private EnergyService energyService;
@@ -252,18 +255,30 @@ public class EnergyPointController {
     @PostMapping(value = "/redeemPoint")
     @ResponseBody
     public ResponseEntity<?> redeemPoint(@RequestBody EnergyPointRedeem energyPointRedeem) {
-      ErrorCode errorCode = ErrorCode.SUCCESS;
-      BigDecimal rate = BigDecimal.valueOf(exchangeParam.getEnergyPointRate());
+      
+      if (energyPointRedeem.getPeriod() == null) {
+        return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
+            .build();
+      }
+      ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(energyPointRedeem.getPeriod(), CurrencyCode.POINT);
+      if (exchangeRateModel == null) {
+        return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
+            .build();
+      }
+      
+      BigDecimal rate = BigDecimal.ONE.divide(exchangeRateModel.getRate());
       BigDecimal userRate = energyPointRedeem.getRate();
       if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
-        errorCode = ErrorCode.RATE_NOT_ACCEPTABLE;
-      } else {
-        if (energyPointRedeem.getDate() == null) {
-          errorCode = ErrorCode.NO_DATE_SPECIFIED;
-        } else {
-          errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getDate());
-        }
-      }
+        return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.RATE_NOT_ACCEPTABLE)
+            .build();
+      } 
+      ErrorCode errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getPeriod());
       return new ResponseEntity.Builder<Integer>()
               .setData(0)
               .setErrorCode(errorCode)
@@ -273,16 +288,29 @@ public class EnergyPointController {
     @PostMapping(value = "/inquirePointFactor")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointFactor(@RequestBody EnergyPointFactorRequest energyPointFactorRequest) {
-        String date = energyPointFactorRequest.getDate();
-        
-        EnergyPointFactor energyPointFactor = new EnergyPointFactor();
-        energyPointFactor.setFactor(exchangeParam.getEnergyPointRate());
-        energyPointFactor.setDate(date);
-        BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
-        if (amount == null)
-        	amount=BigDecimal.ZERO;
-        energyPointFactor.setAmount(amount);
+      EnergyPointFactor energyPointFactor = new EnergyPointFactor();  
+      String date = energyPointFactorRequest.getDate();
+      if (date == null) {
         return new ResponseEntity.Builder<EnergyPointFactor>()
+            .setData(energyPointFactor)
+            .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
+            .build();
+      }
+      energyPointFactor.setDate(date);
+      ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(date, CurrencyCode.POINT);
+      if (exchangeRateModel == null) {
+        return new ResponseEntity.Builder<EnergyPointFactor>()
+            .setData(energyPointFactor)
+            .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
+            .build();
+      }
+      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate()).doubleValue());
+        
+      BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
+      if (amount == null)
+       	amount=BigDecimal.ZERO;
+      energyPointFactor.setAmount(amount);
+      return new ResponseEntity.Builder<EnergyPointFactor>()
                 .setData(energyPointFactor)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();

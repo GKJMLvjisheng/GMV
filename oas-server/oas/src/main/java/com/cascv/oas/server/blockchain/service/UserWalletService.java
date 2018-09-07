@@ -6,15 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 
 @Service
 public class UserWalletService {
@@ -26,7 +28,7 @@ public class UserWalletService {
   private UserWalletDetailMapper userWalletDetailMapper; 
   
   @Autowired
-  private ExchangeParam exchangeParam;
+  private ExchangeRateService exchangeRateService;
   
   public UserWallet find(String userUuid){
     return userWalletMapper.selectByUserUuid(userUuid);
@@ -83,9 +85,13 @@ public class UserWalletService {
     return ErrorCode.SUCCESS;
   }
   
-  public void addFromEnergy(String userUuid, BigDecimal point) {
+  public void addFromEnergy(String userUuid, String time, BigDecimal point) {
 	  UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
-	  BigDecimal token = point.multiply(BigDecimal.valueOf(exchangeParam.getEnergyPointRate()));
+	  
+	  ReturnValue<BigDecimal> returnValue = exchangeRateService.exchangeFrom(
+	        point, 
+	        time, CurrencyCode.POINT);
+	  BigDecimal token = returnValue.getData();
 	  userWalletMapper.increaseBalance(userWallet.getUuid(), token);
 	  this.addDetail(userWallet, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString());
   } 

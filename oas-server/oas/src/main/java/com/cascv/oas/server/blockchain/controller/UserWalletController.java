@@ -1,8 +1,6 @@
 package com.cascv.oas.server.blockchain.controller;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -13,14 +11,16 @@ import java.util.Map;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.blockchain.config.ExchangeParam;
+import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
-import com.cascv.oas.server.common.UserWalletDetailScope;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -48,7 +48,7 @@ public class UserWalletController {
 
   
   @Autowired
-  private ExchangeParam exchangeParam;
+  private ExchangeRateService exchangeRateService;
 
   @PostMapping(value="/inquireAddress")
   @ResponseBody()
@@ -74,22 +74,31 @@ public class UserWalletController {
     UserWallet userWallet = userWalletService.find(ShiroUtils.getUserUuid());
     
     userWalletBalanceSummary.setOngoingBalance(0.0);
-    if (userWallet != null) {
-      BigDecimal balance = userWallet.getBalance();
-      BigDecimal factor = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
-      BigDecimal value=balance.multiply(factor);
-      userWalletBalanceSummary.setAvailableBalance(balance.doubleValue());
-      userWalletBalanceSummary.setAvailableBalanceValue(value.doubleValue());
+    userWalletBalanceSummary.setAvailableBalance(0.0);
+    userWalletBalanceSummary.setAvailableBalanceValue(0.0);
+    
+    if (userWallet == null) {
       return new ResponseEntity.Builder<UserWalletBalanceSummary>()
-      		.setData(userWalletBalanceSummary)
-              .setErrorCode(ErrorCode.SUCCESS).build();
-    } else {
-      userWalletBalanceSummary.setAvailableBalance(0.0);
-      userWalletBalanceSummary.setAvailableBalanceValue(0.0);
-    	return new ResponseEntity.Builder<UserWalletBalanceSummary>()
-    		.setData(userWalletBalanceSummary)
-        .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
+          .setData(userWalletBalanceSummary)
+          .setErrorCode(ErrorCode.NO_ONLINE_ACCOUNT).build();
     }
+    BigDecimal balance = userWallet.getBalance();
+      
+    ReturnValue<BigDecimal> returnType = exchangeRateService.exchangeTo(
+         balance, DateUtils.dateTimeNow(DateUtils.YYYY_MM), 
+         CurrencyCode.CNY);
+    if (returnType.getErrorCode() != ErrorCode.SUCCESS) {
+        return new ResponseEntity.Builder<UserWalletBalanceSummary>()
+            .setData(userWalletBalanceSummary)
+            .setErrorCode(returnType.getErrorCode()).build();
+    }
+      
+    BigDecimal value=returnType.getData();
+    userWalletBalanceSummary.setAvailableBalance(balance.doubleValue());
+    userWalletBalanceSummary.setAvailableBalanceValue(value.doubleValue());
+    return new ResponseEntity.Builder<UserWalletBalanceSummary>()
+      		.setData(userWalletBalanceSummary)
+          .setErrorCode(ErrorCode.SUCCESS).build();
   }
 
   @PostMapping(value="/transactionDetail")

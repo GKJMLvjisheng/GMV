@@ -490,7 +490,7 @@ public class EnergyService {
         	end = yyyy_MM + String.format("-%02d 23:59:59", day);
     	}
     	log.info("begin {} end {}", begin, end);
-    	return energyTradeRecordMapper.sumInPoint(userUuid, begin, end);
+    	return energyTradeRecordMapper.sumOutPoint(userUuid, begin, end);
     } 
     
     //redeem
@@ -530,7 +530,7 @@ public class EnergyService {
     	log.info("summary {}", sum);
     	if (!decreaseBalance(userUuid, sum))
     		return ErrorCode.BALANCE_NOT_ENOUGH;
-    	userWalletService.addFromEnergy(userUuid, sum);
+    	userWalletService.addFromEnergy(userUuid, end.substring(0, 8), sum);
     	saveEnergyOutRecord(userUuid, sum, end);
     	return ErrorCode.SUCCESS;
     } 
