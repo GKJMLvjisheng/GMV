@@ -251,16 +251,21 @@ public class EthWalletService {
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
   
-  public ErrorCode transfer(String userUuid, String contract, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
+  public ReturnValue<String> transfer(String userUuid, String contract, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
 
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
-    if (ethWallet == null)
-      return ErrorCode.NO_ETH_WALLET;
+    ReturnValue<String> returnValue = new ReturnValue<>();
+    if (ethWallet == null) {
+      returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
+      return returnValue;
+    }
     if (contract == null)
       contract = coinClient.getToken();
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
-    if (userCoin.getBalance().compareTo(amount) < 0)
-      return ErrorCode.BALANCE_NOT_ENOUGH;
+    if (userCoin.getBalance().compareTo(amount) < 0) {
+      returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
+      return returnValue;
+    }
     amount = amount.multiply(userCoin.getWeiFactor());
     String net = ethWallet.getPreferNetwork();
     if (net == null)
@@ -272,15 +277,19 @@ public class EthWalletService {
       addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, "");
       addDetail(toAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, "");
     }
-    
-    return ErrorCode.SUCCESS;
+    returnValue.setErrorCode(ErrorCode.SUCCESS);
+    returnValue.setData(txHash);
+    return returnValue;
   }
   
-  public ErrorCode multiTransfer(String userUuid, String contract, List<TransferQuota> quota,
+  public ReturnValue<String> multiTransfer(String userUuid, String contract, List<TransferQuota> quota,
 		  BigInteger gasPrice, BigInteger gasLimit) {
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
-    if (ethWallet == null)
-      return ErrorCode.NO_ETH_WALLET;
+    ReturnValue<String> returnValue = new ReturnValue<>();
+    if (ethWallet == null) {
+      returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
+      return returnValue;
+    }
     if (contract == null)
       contract = coinClient.getToken();
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
@@ -314,9 +323,12 @@ public class EthWalletService {
       for (TransferQuota q: quota) {
         addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
       }
-      return ErrorCode.SUCCESS;
-    } else
-      return ErrorCode.MULTIPLE_TRANSFER_FAILURE;
+      returnValue.setErrorCode(ErrorCode.SUCCESS);
+      returnValue.setData(txHash);
+    } else {
+      returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
+    }
+    return returnValue;
   }
   
   public Set<String> listNetwork() {

@@ -3,6 +3,7 @@ package com.cascv.oas.server.blockchain.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
@@ -10,8 +11,10 @@ import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.SelectContractSymbolName;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -82,16 +85,16 @@ public class EthWalletController {
 		  BigInteger gasLimit =  ethWalletTransfer.getGasLimit();
 	      if (gasLimit == null)
 	    	  gasLimit = BigInteger.valueOf(60000);
-	      
-	    ErrorCode errorCode=ethWalletService.transfer(
+	      ReturnValue<String> returnValue=ethWalletService.transfer(
 	        ShiroUtils.getUserUuid(), 
 	        ethWalletTransfer.getContract(),
 	        ethWalletTransfer.getToUserAddress(),
 	        ethWalletTransfer.getAmount(),gasPrice,gasLimit);	  
-
-	    return new ResponseEntity.Builder<Integer>()
-	        .setData(1)
-	        .setErrorCode(errorCode)
+      EthWalletTransferResp resp = new EthWalletTransferResp();
+      resp.setTxHash(returnValue.getData());
+	    return new ResponseEntity.Builder<EthWalletTransferResp>()
+	        .setData(resp)
+	        .setErrorCode(returnValue.getErrorCode())
 	        .build();
 	  }
   }
@@ -112,14 +115,15 @@ public class EthWalletController {
 		  BigInteger gasLimit = ethWalletMultiTransfer.getGasLimit();
 		  if (gasLimit == null)
 			  gasLimit = BigInteger.valueOf(600000);
-		    
-		  ErrorCode errorCode=ethWalletService.multiTransfer(
+		  ReturnValue<String> returnValue=ethWalletService.multiTransfer(
 	        ShiroUtils.getUserUuid(), 
 	        ethWalletMultiTransfer.getContract(),
-	        ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit);
-	    return new ResponseEntity.Builder<Integer>()
-	        .setData(1)
-	        .setErrorCode(errorCode)
+          ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit);
+      EthWalletMultiTransferResp resp = new EthWalletMultiTransferResp();
+      resp.setTxHash(returnValue.getData());
+	    return new ResponseEntity.Builder<EthWalletMultiTransferResp>()
+	        .setData(resp)
+	        .setErrorCode(returnValue.getErrorCode())
 	        .build();
 	  }
   }
