@@ -23,7 +23,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter{
   public void addResourceHandlers(ResourceHandlerRegistry registry){
 
 	String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
-	String UPLOADED_FOLDER="file:///"+SYSTEM_USER_HOME+"/Temp/Image/";
+	String UPLOADED_FOLDER=SYSTEM_USER_HOME+"/Temp/Image/";
 	log.info("UPLOADED_FOLDER={}",UPLOADED_FOLDER);
     registry.addResourceHandler("/image/**").addResourceLocations(UPLOADED_FOLDER);
 System.out.print("--Config--");
