@@ -83,7 +83,7 @@
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid}
+    from user_wallet_detail where user_uuid = #{userUuid};
   </select>
   
 </mapper>
