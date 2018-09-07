@@ -206,16 +206,15 @@ public class CoinClient {
 	  EthGetTransactionCount ethGetTransactionCount = null;
 	  Web3j web3j = providerMap.get(net);
 	  try {
-		ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
+		  ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
 	  } catch (IOException e) {
-		e.printStackTrace();
+		  e.printStackTrace();
 	  }
 	  if (ethGetTransactionCount == null) 
 		  return null;
 	  nonce = ethGetTransactionCount.getTransactionCount();
-	  System.out.println("nonce " + nonce);
-      BigInteger value = BigInteger.ZERO;
-      String methodName = "transfer";
+    BigInteger value = BigInteger.ZERO;
+    String methodName = "transfer";
 	  List<Type> inputParameters = new ArrayList<>();
 	  List<TypeReference<?>> outputParameters = new ArrayList<>();
 	  Address tAddress = new Address(toAddress);
@@ -229,73 +228,74 @@ public class CoinClient {
 	  String data = FunctionEncoder.encode(function);
 
 	  byte chainId = ChainId.NONE;
-	  String signedData = null;
-      try {
+    String signedData = null;
+    String txHash = null;
+    try {
     	log.info("[transfer] data {}", data);
-		signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
-		if (signedData != null) {
-		  EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
-		  System.out.println(ethSendTransaction.getTransactionHash());
-		}
-	} catch (IOException e) {
+		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
+		  if (signedData != null) {
+		    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
+		    txHash=ethSendTransaction.getTransactionHash();
+		  }
+	  } catch (IOException e) {
       e.printStackTrace();
-	}
-    return signedData;
+	  }
+    return txHash;
   }
   
   public String multiTransfer(String net, String fromAddress, String privateKey, List<String> toAddress, 
 		  String contract, List<BigInteger> amount,BigInteger gasPrice, BigInteger gasLimit) {
-	BigInteger nonce;
-	EthGetTransactionCount ethGetTransactionCount = null;
-	Web3j web3j = providerMap.get(net);
-	try {
-	  ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
+	  BigInteger nonce;
+	  EthGetTransactionCount ethGetTransactionCount = null;
+	  Web3j web3j = providerMap.get(net);
+	  try {
+	    ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
     } catch (IOException e) {
-	  e.printStackTrace();
+	    e.printStackTrace();
     }
-	if (ethGetTransactionCount == null) 
-	  return null;
-	nonce = ethGetTransactionCount.getTransactionCount();
-	System.out.println("nonce " + nonce);
-	BigInteger value = BigInteger.ZERO;
-	String methodName = "multiTransfer";
-	List<Type> inputParameters = new ArrayList<>();
-	List<TypeReference<?>> outputParameters = new ArrayList<>();
+	  if (ethGetTransactionCount == null) 
+	    return null;
+	  nonce = ethGetTransactionCount.getTransactionCount();
+	  BigInteger value = BigInteger.ZERO;
+	  String methodName = "multiTransfer";
+	  List<Type> inputParameters = new ArrayList<>();
+	  List<TypeReference<?>> outputParameters = new ArrayList<>();
 	  
-	List<Address> tAddress = new ArrayList<>();
-	Integer index = 0;
-	for (String s : toAddress) {
-	  log.info("[transfer] address {}", s);
-	  tAddress.add(new Address(s));
-	  index++;
-	}
-	List<Uint256> tokenValue = new ArrayList<>();
-	index=0;
-	for (BigInteger bint : amount) {
-		log.info("[transfer] amount {}", bint);
-		tokenValue.add(new Uint256(bint));
-	  index++;
-	}
+	  List<Address> tAddress = new ArrayList<>();
+	  Integer index = 0;
+	  for (String s : toAddress) {
+	    log.info("[transfer] address {}", s);
+	    tAddress.add(new Address(s));
+	    index++;
+	  }
+	  List<Uint256> tokenValue = new ArrayList<>();
+	  index=0;
+	  for (BigInteger bint : amount) {
+		  log.info("[transfer] amount {}", bint);
+		  tokenValue.add(new Uint256(bint));
+	    index++;
+	  }
     inputParameters.add(new DynamicArray(tAddress));
     inputParameters.add(new DynamicArray(tokenValue));
-	TypeReference<Bool> typeReference = new TypeReference<Bool>() {
-	};
-	outputParameters.add(typeReference);
-	 Function function = new Function(methodName, inputParameters, outputParameters);
-	 String data = FunctionEncoder.encode(function);
-	 byte chainId = ChainId.NONE;
-	 String signedData = null;
-     try {
+	  TypeReference<Bool> typeReference = new TypeReference<Bool>() {
+	  };
+	  outputParameters.add(typeReference);
+	  Function function = new Function(methodName, inputParameters, outputParameters);
+	  String data = FunctionEncoder.encode(function);
+	  byte chainId = ChainId.NONE;
+    String signedData = null;
+    String txHash = null;
+    try {
     	log.info("[multiTransfer] data {}", data);
-		signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
-		if (signedData != null) {
-		  EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
-		  System.out.println(ethSendTransaction.getTransactionHash());
-		}
-	} catch (IOException e) {
+		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
+		  if (signedData != null) {
+		    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
+        txHash = ethSendTransaction.getTransactionHash();
+		  }
+	  } catch (IOException e) {
       e.printStackTrace();
-	}
-    return signedData;
+	  }
+    return txHash;
   }
   
   public String signTransaction(
