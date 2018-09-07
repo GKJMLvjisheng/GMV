@@ -1,12 +1,8 @@
 package com.cascv.oas.server.user.controller;
 
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -40,7 +36,6 @@ import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.FileUtils;
-import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import io.swagger.annotations.Api;
@@ -248,9 +243,7 @@ public class UserController {
 	    try {	    	
 	        FileUtils.uploadFile(file.getBytes(), filePath, fileName);
 	        log.info("imgPath-->{}" + filePath+fileName);
-	        //获取本地的IP地址
-	        String hostIp=HostIpUtils.getHostIp();
-	        String proPath="http://"+hostIp+":8080/image/profile/"+fileName;
+	        String proPath="http:8080/image/profile/"+fileName;
 	        log.info("proPath-->{}" + proPath);
 	        //需要根据ID进行修改
 	        UserModel userNewModel=new UserModel();

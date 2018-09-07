@@ -1,30 +1,15 @@
-/**
-
- * 
- */
-//document.write("<script language=javascript src='usermanage.js'></script>");
-//document.write("<script language=javascript src='/roleManage/roleManage.js'></script>");
-//主界面创建bootstrapTable
+//新闻管理界面创建bootstrapTable
 document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
-
-
-
 
 function initNewsGrid(data) {	
 
 	$("#newsGrid").bootstrapTable({
-
-		//method:"post",
 
 		//极为重要，缺失无法执行queryParams，传递page参数
 
 		contentType : "application/x-www-form-urlencoded",
 
 		dataType:"json",
-
-		//url:'/doqueryAllUser', 
-
-		//queryParams:queryParam,
 
 		pagination:true,//显示分页条：页码，条数等
 
@@ -38,10 +23,6 @@ function initNewsGrid(data) {
 		
 
 		uniqueId:"newsId",//Indicate an unique identifier for each row
-
-		 //height: document.body.clientHeight-165,
-
-		//height:tableModel.getHeight(),
 
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
@@ -86,7 +67,7 @@ function initNewsGrid(data) {
 			field : "newsPicturePath",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '130px',
 			formatter: actionFormatter1
 
 		}, 
@@ -97,10 +78,8 @@ function initNewsGrid(data) {
 			field : "newsUrl",
 			align: 'center',
 			valign: 'middle',
-			width:  '300px',
-			//table-layout:fixed,
-			//formatter: actionFormatter3
-			
+			width:  '100px',
+			//formatter: actionFormatter3			
 
 		},
 		{
@@ -110,7 +89,7 @@ function initNewsGrid(data) {
 			field : "newsId",
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '100px',
 			formatter: actionFormatter2
 
 
@@ -121,32 +100,24 @@ function initNewsGrid(data) {
 		//showSearchButton: true,
         searchOnEnterKey : true,
 
-		showRefresh : true,//刷新
+//		showRefresh : true,//刷新
 		clickToSelect: false,
-        //showToggle : true////是否显示详细视图和列表视图的切换按钮
+        showToggle : true////是否显示详细视图和列表视图的切换按钮
          
-
 
 	});
 
 }
 
-
-function actionFormatter3(value, row, index) {
-	var div = "<div style='width:100px;'>"+value+"</div>";//调列宽，在td中嵌套一个div，调整div大小
-	  return div;
-}
-
-  
-  
+ 
 function actionFormatter1(value, row, index) {
-    var newsPicturePath = value;
-    //alert(newsPicturePath);    
-
+    var newsPicturePath = value; 
+    myimg=newsPicturePath.split('\\\\');
+    var imgName=myimg[myimg.length-1];
     var result = "";
     
     result += "<img src="+newsPicturePath+ " width='120px' height='80'><br>"+
-    			"<span>"+newsPicturePath+"</span>";    
+    			"<span>"+imgName+"</span>";    
     return result;
 }
 
@@ -160,6 +131,13 @@ function actionFormatter2(value, row, index) {
 
         return result;
     }
+
+
+function actionFormatter3(value, row, index) {
+	var div = "<div style='width:100px;'>"+value+"</div>";//调列宽，在td中嵌套一个div，调整div大小
+	  return div;
+}
+
 
 
 

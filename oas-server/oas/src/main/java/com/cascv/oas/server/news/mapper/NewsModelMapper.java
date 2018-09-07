@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public interface NewsModelMapper {
 	 Integer insertNews(NewsModel newsModel);
 
-	 Integer deleteNews(String newsId);
+	 Integer deleteNews(Integer newsId);
 	 
 	 Integer updateNews(NewsModel newsModel);
 	 

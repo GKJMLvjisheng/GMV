@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
-       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
     <title>web登陆系统 - 首页</title>
-    <meta name="keywords" content="web登陆系统">
-    
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-   
-       <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>    
+    <meta name="keywords" content="web登陆系统">   
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>   
+    <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>    
     
     <!-- 全局js -->
- <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-  <style type="text/css">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+      
+    <style type="text/css">
         .nav > li:hover .dropdown-menu {display: block;}
     </style>
+    
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
 <div id="wrapper">
@@ -51,9 +49,6 @@
                          <li class="active"><a class="menuItem" th:href="@{/newInformation}">了解我们</a></li> 
                     </ul>
                 </li>
-                
-                <shiro:hasRole name="admin">
-                
                  <li class="active">
                     <a href="userManage"><i class="glyphicon glyphicon-user menuItem"></i> <span class="nav-label">用户管理</span> </a>
                    
@@ -75,7 +70,6 @@
                           <a   class="menuItem"href="multiTransfer"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label">一对多转账</span>  </a> 
                     
                 </li>
-                 </shiro:hasRole>
                  </ul>
                  </div>
     </nav>
@@ -90,41 +84,31 @@
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-default " href="#" title="收起菜单">
                     	<i class="glyphicon glyphicon-list"></i>
                     </a>
-<!--                     <form role="search" class="navbar-form-custom" method="post" action=""> -->
-<!--                         <div class="form-group"> -->
-<!--                             <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search"> -->
-<!--                         </div> -->
-<!--                     </form> -->
+
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
 	                <li>
-	                    <span class="m-r-sm text-muted welcome-message">欢迎来到管理后台.</span>
+	                    <span class="m-r-sm text-muted welcome-message">欢迎来到管理后台。</span>
 	                </li>
-	                <li><a id="fullScreen"><i class="glyphicon glyphicon-fullscreen"></i>全屏</a></li>
+	                <li><a id="fullScreen"><i class="glyphicon glyphicon-fullscreen"></i>全屏</a></li>	                
                     <li><a th:href="@{logout}"><i class="glyphicon glyphicon-new-window"></i>退出</a></li>
                 </ul>
             </nav>
         </div>
         <div class="row content-tabs">
-<!--             <button class="roll-nav roll-left tabLeft"> -->
-<!--                 <i class="fa fa-backward"></i> -->
-<!--             </button> -->
+
             <nav class="page-tabs menuTabs">
                 <div class="page-tabs-content">
                     <a href="javascript:;" class="active menuTab" data-id="/newInformation">首页</a>
                 </div>
             </nav>
           
-<!--             <button class="roll-nav roll-right tabRight"> -->
-<!--                 <i class="fa fa-forward"></i> -->
-<!--             </button> -->
             <div class="btn-group roll-nav roll-right">
                 <button class="dropdown J_tabClose" data-toggle="dropdown">
                                                                           页签操作<span class="caret"></span>
                 </button>
                 <ul role="menu" class="dropdown-menu dropdown-menu-right">
                      <li><a class="tabCloseCurrent" href="javascript:void();">关闭当前</a></li>
-<!--                      <li><a class="tabCloseOther" href="javascript:void();">关闭其他</a></li> -->
 					 <li><a class="tabCloseAll" href="javascript:void();">全部关闭</a></li>
                 </ul>
             </div>
@@ -138,33 +122,26 @@
             <div class="pull-right" id="time">©国科云景 Copyright </div>
         </div>
     </div>
-    </div>
+   </div>
 
 <script th:src="@{js/main/jquery.metisMenu.js}"></script>
 <script th:src="@{js/main/jquery.slimscroll.min.js}"></script>
 <script th:src="@{js/main/index.js}"></script>
-<script th:src="@{/js/main/jquery.fullscreen.js}"></script>
+<!-- <script th:src="@{/js/main/jquery.fullscreen.js}"></script> -->
 </body>
 <script type="text/javascript">
 var stringT;
 var stringName;
+
 $(function(){
-	//String name=Request.QueryString("name");
-	//document.getElementById("").innerHTML=window.location.split('')[];
 	var url = window.location.href;
-	var strInfo=getInfoAndAnalysis(url);    //
+	var strInfo=getInfoAndAnalysis(url); 
 	//console.log(JSON.stringify(strInfo));
-	var len=strInfo.length;
-	
+	var len=strInfo.length;	
 	if(len>0)
 	{
-		stringT=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
-	
-		//string="您好，"+string1;
-
-		
+		stringT=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值		
 		stringName=decodeURI(decodeURI(strInfo[1]));//获取第一个参数的值
-
 		var obj = document.getElementById("userNickname");
 	 	obj.innerHTML=(stringName);
 	 	
@@ -174,8 +151,8 @@ $(function(){
 	
 		var name=$("#userNickname").val();
 		var string=$("#userToken").val();
-	    alert("userNickname-->"+name);
-	    alert("token-->"+string);
+	    //alert("userNickname-->"+name);
+	   // alert("token-->"+string);
 	    var data={
 	 	       "userNickname":name
 	 	   };
@@ -189,7 +166,7 @@ $(function(){
 			async : false,
 			data:JSON.stringify(data),
 	     	success : function(res) {
-	     		alert(JSON.stringify(res));
+	     	  //alert(JSON.stringify(res));
 	          var userproPath=res.data.profile;
 	          var sex=res.data.gender;
 	          var name=res.data.name;
@@ -212,17 +189,10 @@ $(function(){
 	    
 	    //获取完整的日期
 	    var date=new Date;
-// 	    var year=date.getFullYear(); 
-// 	    var month=date.getMonth()+1;
-// 	    month =(month<10 ? "0"+month:month); 
 	    var mytime=date.toLocaleDateString()
-	   // var mytime=date.toLocaleTimeString(); //获取当前时间
-	    //var mydate = (year.toString()+month.toString()+mytime.toString());
-	  
-	    alert("year"+mytime);
-	    objTime.innerHTML=("©"+mytime+"国科云景 Copyright");
-	  
+	    objTime.innerHTML=("©"+mytime+"国科云景 Copyright");	  
 });
+
 //解析url
 function getInfoAndAnalysis(url){
 	var result=new Array();
