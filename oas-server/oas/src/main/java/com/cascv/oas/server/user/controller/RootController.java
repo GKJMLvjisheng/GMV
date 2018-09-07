@@ -18,63 +18,64 @@ public class RootController {
 		return "redirect:/swagger-ui.html";
 	}
 	
-	@RequestMapping(value="/userImgInfo")
-	public String userImgInfo(Model model) {
+	@GetMapping(value="/userInfo/userImgInfo")
+	public String userImgInfo(){
 		
-	    return "userImgInfo";
+	    return "userInfo/userImgInfo";
 	}
 	
-	@RequestMapping(value="/userInfo")
-	public String userInfo(Model model) {
+	@GetMapping(value="/userInfo/userInfo")
+	public String userInfo() {
 		
-	    return "userInfo";
+	    return "userInfo/userInfo";
 	}
 	
-	@RequestMapping(value="/userSecurityInfo")
-	public String userSecurityInfo(Model model) {
+	@GetMapping(value="/userInfo/userSecurityInfo")
+	public String userSecurityInfo() {
 		
-	    return "userSecurityInfo";
+	    return "userInfo/userSecurityInfo";
 	}
 	
 	//身份验证主页
-    @RequestMapping(value="/SecurityStep1")
-    public String SecurityStep1(Model model) {
+    @GetMapping(value="/userInfo/SecurityStep1")
+    public String SecurityStep1() {
       
-          return "SecurityStep1";
+          return "userInfo/SecurityStep1";
     }
     
-    //修改邮箱/手机成功主页
-    @RequestMapping(value="/resetMobileSuccess")
-    public String resetMobileSuccess(Model model) {
-      
-          return "resetMobileSuccess";
-    }
+//    //修改邮箱/手机成功主页
+//    @GetMapping(value="/userInfo/resetMail/resetMMSuccess")
+//    public String resetMMSuccess() {
+//      
+//          return "userInfo/restMail/resetMMSuccess";
+//    }
+    
+  //修改邮箱/手机成功主页
+  @GetMapping(value="/userInfo/resetMMSuccess")
+  public String resetMMSuccess() {
+    
+        return "userInfo/resetMMSuccess";
+  }
+  
     //修改邮箱主页
-    @RequestMapping(value="/resetMail")
-	  public String resetMail(Model model) {
+    @GetMapping(value="/userInfo/resetMail/resetMail")
+	  public String resetMail() {
 	    
-	        return "/resetMail";
+	        return "userInfo/resetMail/resetMail";
 	  }
     
     //修改手机主页
-    @RequestMapping(value="/resetMobile")
-    public String resetMobile(Model model) {
+    @GetMapping(value="/userInfo/resetMobile/resetMobile")
+    public String resetMobile() {
       
-          return "resetMobile";
-    }
-    
-    //修改邮箱主页
-    @RequestMapping(value="/resetMailLink")
-    public String resetMailLink(Model model) {
-      
-          return "resetMailLink";
+          return "userInfo/resetMobile/resetMobile";
     }
 	
     // Login 
   @GetMapping("/login")
   public String login(HttpServletRequest request, HttpServletResponse response) {
     if (ServletUtils.isAjaxRequest(request)){
-      return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"未认证\"}");
+      return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"δ��֤\"}");
    }
       return "login";  }
    }

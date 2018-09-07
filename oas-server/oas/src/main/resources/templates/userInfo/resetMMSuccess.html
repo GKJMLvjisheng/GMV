@@ -231,20 +231,20 @@ $(function() {
 
 		document.getElementById("labelProgressTwo2").innerHTML = (strProgress);// 修改邮箱 或者 修改手机
 		$("#labelProgressTwo2").val(strProgress);
-		$("#mobileAddMail").val(str);
+		//$("#mobileAddMail").val(str);
 
 		$("#userName").val(userName);
 		
-		var s = "恭喜！！！" + userName + string1 + result + "10秒后跳转！";
+		var s = "恭喜！！！" + userName + string1 + result + "5秒后跳转！";
 
 		document.getElementById("resultLabel").innerHTML = (s);
 	}
 	
 	setTimeout(function(){
 		
-		var href = encodeURI(encodeURI("userSecurityInfo?userName=" + userName));
+		var href = encodeURI(encodeURI("/userInfo/userSecurityInfo?userName=" + userName));
 		
-		window.location.href= href;},10000);
+		window.location.href= href;},5000);
 				
 });
 

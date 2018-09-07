@@ -6,7 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.cascv.oas.server.config.WebMvcConfig;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -15,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.cascv.oas.server"})
-
+@Import(WebMvcConfig.class) 
 public class App extends SpringBootServletInitializer{
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {

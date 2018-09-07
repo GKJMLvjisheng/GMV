@@ -1,16 +1,23 @@
 package com.cascv.oas.server.user.controller;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.FutureTask;
+import javax.servlet.ServletException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
+import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.UuidUtils;
@@ -32,8 +38,10 @@ import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
+import com.cascv.oas.server.user.wrapper.AuthCode;
 import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
@@ -41,6 +49,7 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.FileUtils;
 import com.cascv.oas.server.utils.HostIpUtils;
+import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import io.swagger.annotations.Api;
@@ -172,8 +181,8 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> inquireUserInfo(){
 	  Map<String, String> info = new HashMap<>();
-		UserModel userModel = ShiroUtils.getUser();
-		log.info("invideCode {}", userModel.getInviteCode());
+	  UserModel userModel = ShiroUtils.getUser();
+	  log.info("inviteCode11 {}", userModel.getInviteCode());	  
 	  info.put("name", userModel.getName());
 	  info.put("nickname", userModel.getNickname());
 	  info.put("inviteCode", userModel.getInviteCode().toString());
@@ -234,42 +243,63 @@ public class UserController {
 	 * Author:lvjisheng
 	 * Date:2018.09.04
 	 */
-	@RequestMapping(value="/upLoadImg", method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+	@PostMapping(value="/upLoadImg")
 	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file)
-	{
+	{   
+		 String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
+		 String UPLOADED_FOLDER =SYSTEM_USER_HOME+"\\Temp\\Image\\profile\\";	
 		log.info("doUpLoadImg-->start");
-		Map<String,String> info=new HashMap<>();
-	    //String contentType = file.getContentType();
+		File dir=new File(UPLOADED_FOLDER);
+	  	 if(!dir.exists()){
+	  	        dir.mkdirs();
+	  	    }
+	   	Map<String,String> info = new HashMap<>();
+	   	if(file!=null)
+	   	{	
 	    //生成唯一的文件名
+	    log.info("oriNmae="+file.getOriginalFilename());
 	    String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
-	    log.info("fileName-->{}" + fileName);
-	    //本地存储图片的路径
-	    String filePath="D:/Temp/Image/profile/";
-	    try {	    	
-	        FileUtils.uploadFile(file.getBytes(), filePath, fileName);
-	        log.info("imgPath-->{}" + filePath+fileName);
-	        //获取本地的IP地址
-	        String hostIp=HostIpUtils.getHostIp();
-	        String proPath="http://"+hostIp+":8080/image/profile/"+fileName;
-	        log.info("proPath-->{}" + proPath);
+	    try {
+        byte[] bytes = file.getBytes();
+        Path path = Paths.get(UPLOADED_FOLDER + fileName);
+        Files.write(path, bytes);
+        //String proPath=String.valueOf(path);
+        String str="/image/profile/";        
+        String proUrl=str+fileName;
+        log.info("--------获取路径--------:{}",path);
+        log.info("SYSTEM_USER_HOME={}",SYSTEM_USER_HOME);
+	    log.info("fileName-->{}" + fileName);	    	    
 	        //需要根据ID进行修改
 	        UserModel userNewModel=new UserModel();
-	        String profile=filePath+fileName;
 	        //获取用户名
 	        String name=ShiroUtils.getUser().getName();
 	        log.info("---userName-->{}" +name);
 	        userNewModel.setName(name);
-	        userNewModel.setProfile(profile);
+	        userNewModel.setProfile(proUrl);
 	        userService.updateUserProfile(userNewModel);
+	        //将头像的新地址存入缓存
+	    	UserModel usermodel=ShiroUtils.getUser();
+	    	usermodel.setProfile(proUrl);
+	    	ShiroUtils.setUser(usermodel);
 	        //图片存储的相对路径
-	    	info.put("ImageUrl",proPath);
+	    	info.put("ImageUrl",proUrl);
 	    	log.info("UpLoadSuccuss-->");
+	        return new ResponseEntity.Builder<Map<String, String>>()
+		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 	    } catch (Exception e){
 	    	log.info("UpLoadFailed-->");
+	    	 return new ResponseEntity.Builder<Map<String, String>>()
+		      	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 	    }
-        return new ResponseEntity.Builder<Map<String, String>>()
-	      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+
 	}
+	    else {
+	    	 return new ResponseEntity.Builder<Map<String, String>>()
+		      	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+	    }
+}
+	   	
+	
 	/*
 	 * Name:resetMobile
 	 * Author:lvjisheng
@@ -291,6 +321,10 @@ public class UserController {
 	userNewModel.setName(name);
 
 	userService.resetMobileByName(userNewModel);
+	
+	UserModel usermodel=ShiroUtils.getUser();
+	usermodel.setMobile(mobile);
+	ShiroUtils.setUser(usermodel);
 
 	log.info("userMobile ={}",userNewModel.getMobile());
 
@@ -319,9 +353,13 @@ public class UserController {
 
 	userNewModel.setEmail(email);
 
-	userModel.setName(name);
+	userNewModel.setName(name);
 
-	userService.resetEmailByName(userModel);
+	userService.resetEmailByName(userNewModel);
+	
+	UserModel usermodel=ShiroUtils.getUser();
+	usermodel.setEmail(email);
+	ShiroUtils.setUser(usermodel);
 
 	log.info("--------end-------");
 	
@@ -337,92 +375,253 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
 	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
-
-    Map<String,String> info=new HashMap<>();
-	log.info("-----------sendMobile start---------------");
+    Map<String,Boolean> info=new HashMap<>();
+	
+    log.info("-----------sendMobile start---------------");
+	
 	String mobile = userModel.getMobile();
-	boolean state = false;
+
 	try {
 	
 		String vcode = AuthenticationUtils.createRandomVcode();
-		System.out.println("vcode = "+vcode);
-		//???
+		log.info("vcode = "+vcode);
 		Session session = ShiroUtils.getSession();
+//		HttpSession session=request.getSession();
 		
 		session.setAttribute("mobileCheckCode", vcode);
-
 		AuthenticationUtils sms = new AuthenticationUtils();
 		
 		if(sms.SendCode(mobile,vcode).getCode().equals("OK")) {
 			
-			state = true;
-			
+
+			info.put("state",true);
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+			  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 		}else {
 			
-			state = false;
+			info.put("state",false);
+
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		}
 		
 		
 	} catch (Exception e) {
 		e.printStackTrace();
-		state = false;
+	
+		info.put("state",false);
+
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 	}
-		return new ResponseEntity.Builder<Map<String, String>>()
-		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+		
 }
 	/*
 	 * @Name:mobileCheckCode
 	 * @Author:lvjisheng
 	 * @Date:2018.09.06
 	 */	
-//	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
-//	@ResponseBody
-//	public ResponseEntity<?> mobileCheckCode(HttpServletRequest request, HttpSession session) throws Exception {
-//		System.out.println("--------mobileCheckCode   start--------");
-//
-//		String mobilecode = request.getParameter("mobilecode");
-//
-//		System.out.println("mail hello" + mobilecode);
-//		System.out.println("mail hello" + session.getAttribute("mobileCheckCode"));
-//		
-//		Map<String, Object> map = new HashMap<>();
-//		
-//		if (mobilecode.equalsIgnoreCase((String) session.getAttribute("mobileCheckCode"))) {
-//			
-//			//map.put("state",true);
-//
-//		} else {
-//			//map.put("state",false);
-//
-//		}
-//		
-//		return new ResponseEntity.Builder<Map<String, String>>()
-//		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-//	}
-//	 
-//    @RequestMapping(value="/doCheckPassword",method = RequestMethod.POST)
-//    @ResponseBody
-//    public Map<String,Object> doCheckPassword(HttpServletRequest request) {
-//       System.out.println("--------doCheckPassword start--------");
-//       String userNicknameIn = request.getParameter("userNickname"); 
-//       String userPasswordIn = request.getParameter("userPassword"); 
-//       System.out.println(" userNickname " + userNicknameIn);
-//       System.out.println(" userPassword " + userPasswordIn);
-//       List<UserModel> list = userService.selectByNickName(userNicknameIn); 
-//       String saltDb = list.get(0).getUserSalt();  
-//       String userPasswordDb = list.get(0).getUserPassword(); 
-//       String userPasswordOu = new Md5Hash(userPasswordIn,saltDb,3).toString(); 
-//
-//       Map<String,Object> map = new HashMap<>();
-//
-//       if (userPasswordOu.equals(userPasswordDb)){
-//        map.put("state", true);
-//
-//       }else{
-//        map.put("state", false);
-//       }
-//
-//        return map;
-//    }
+	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
+		log.info("--------mobileCheckCode   start--------");
 
+		String mobilecode = authCode.getMobileCode();
+        
+		Session session=ShiroUtils.getSession();
+		log.info("mail hello" + mobilecode);
+		log.info("mail hello" + session.getAttribute("mobileCheckCode"));
+		
+		Map<String,Boolean> info = new HashMap<>();
+		
+		if (mobilecode.equalsIgnoreCase((String) session.getAttribute("mobileCheckCode"))) {
+			info.put("state",true);
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+			  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+
+		} else {
+			info.put("state",false);
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+
+		}
+		
+		
+	}
+	 
+	
+    @RequestMapping(value="/checkPassword",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> checkPassword(@RequestBody UserModel userModel) {
+       log.info("--------doCheckPassword start--------");
+       Map<String,Boolean> info=new HashMap<>();
+       String nameIn = userModel.getName(); 
+       String passwordIn = userModel.getPassword();
+       UserModel userNewModel = userService.findUserByName(nameIn); 
+       String saltDb = userNewModel.getSalt();  
+       String userPasswordDb = userNewModel.getPassword(); 
+       String userPasswordOu = new Md5Hash(nameIn+passwordIn+saltDb).toHex().toString(); 
+       if (userPasswordOu.equals(userPasswordDb)){
+        info.put("state", true);
+        log.info("--------CheckPassword success--------");
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+			      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+		
+       }else{
+        info.put("state", false);
+        log.info("--------CheckPassword failed--------");
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+			      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+       }
+    }
+	@PostMapping(value = "/sendMail")
+	@ResponseBody
+	public ResponseEntity<?> sendMail(@RequestBody UserModel userModel)throws ServletException, IOException {
+ 
+		log.info("-----------sendMail start---------------");
+		String email =userModel.getEmail();
+		log.info(email);
+		//String email=request.getParameter("email"); 
+        //做一个判断邮箱和手机号
+		Map<String, Boolean> info = new HashMap<>();
+
+		 if(email.indexOf("com")!=-1)
+         { String userEmail=email;
+			try {	
+				MailInfo mailInfo = new MailInfo();
+
+				mailInfo.settoAddress(userEmail);
+				mailInfo.setfromAddress("3602745100@qq.com");
+				mailInfo.setmailPassword("hgmwayjbwmomcjdd");
+				mailInfo.setmailUsername("3602745100@qq.com");
+				mailInfo.setmailSubject("密码重置");
+	
+				String vcode = SendMailUtils.createRandomVcode();
+				log.info("vcode"+vcode);
+				
+				Session session = ShiroUtils.getSession();
+				//HttpSession session=request.getSession(true);
+				// 把当前生成的验证码存在session中，当用户输入后进行对比
+				session.setAttribute("mailCheckCode", vcode);
+	
+				StringBuffer demo = new StringBuffer();
+				demo.append("亲爱的：您好！<br><br>");
+				demo.append("验证码：" + vcode);
+	
+				mailInfo.setmailContent(demo.toString());
+	
+				System.out.println("获得页面数据");
+	
+				// 发送邮件是一件非常耗时的事情，因此这里开辟了另一个线程来专门发送邮件
+				SendMailUtils send = new SendMailUtils(mailInfo);
+				// 启动线程，线程启动之后就会执行run方法来发送邮件
+				FutureTask<String> task = new FutureTask<String>(send); // 捕获任务执行的结果
+				new Thread(task).start();
+				task.get();
+				info.put("state", true);
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+					      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+				
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				info.put("state", false);
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+					      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+
+			}
+			
+         }else {
+        	 
+        	 info.put("state", false);
+        	
+        	 return new ResponseEntity.Builder<Map<String, Boolean>>()
+				      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+        	 
+         } 	 
+
+	}
+	
+
+	// 对比前端输入验证码与邮箱中值是否一致
+	@PostMapping(value = "/mailCheckCode")
+	@ResponseBody
+	public ResponseEntity<?> mailCheckCode(@RequestBody AuthCode authCode) throws Exception {
+		log.info("--------mailCheckCode start--------");
+
+		String mailcode = authCode.getMailCode();
+
+		Map<String, Boolean> info = new HashMap<>();
+        
+		Session session=ShiroUtils.getSession();
+		if (mailcode.equalsIgnoreCase((String) session.getAttribute("mailCheckCode"))) {
+            info.put("state",true);
+            log.info("--------mailCheckCode success--------");
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+				      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+
+		} else {
+			info.put("state",false);
+			log.info("--------mailCheckCode failed-------");
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+				      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+
+		}
+	}
+	
+    @RequestMapping(value="/CheckUserEmail",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> CheckUserEmail(@RequestBody UserModel userModel) {
+       log.info("*********start**********");
+       String email= userModel.getEmail();
+       log.info("email{}",email);
+       List<String> userOEmail = userService.selectUserMail(email);
+
+       Map<String,Boolean> info = new HashMap<>();
+       
+       if(userOEmail.size()>0) {
+    	   info.put("state",false);
+    	   log.info("*********end**********");
+           return new ResponseEntity.Builder<Integer>()
+      	          .setData(1)
+      	          .setErrorCode(ErrorCode.GENERAL_ERROR)
+      	          .build();
+       }
+       else {
+    	   info.put("state",true);
+    	   log.info("*********end**********");
+           return new ResponseEntity.Builder<Integer>()
+     	          .setData(0)
+     	          .setErrorCode(ErrorCode.SUCCESS)
+     	          .build();
+       }
+      
+}
+    @RequestMapping(value="/CheckUserMobile",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> CheckUserMobile(@RequestBody UserModel userModel) {
+       log.info("*********CheckUserMobile start**********");
+       String mobile= userModel.getMobile();
+       log.info("mobile{}",mobile);
+       List<String> userOMobile = userService.selectUserMobile(mobile);
+       Map<String,Boolean> info = new HashMap<>();
+       
+       if(userOMobile.size()>0) {
+    	   info.put("state",false);
+    	   log.info("*********endfailed**********");
+           return new ResponseEntity.Builder<Integer>()
+      	          .setData(1)
+      	          .setErrorCode(ErrorCode.GENERAL_ERROR)
+      	          .build();
+       }
+       else {
+    	   info.put("state",true);
+    	   log.info("*********endsuccess**********");
+           return new ResponseEntity.Builder<Integer>()
+     	          .setData(0)
+     	          .setErrorCode(ErrorCode.SUCCESS)
+     	          .build();
+       }
+      
+}
 }

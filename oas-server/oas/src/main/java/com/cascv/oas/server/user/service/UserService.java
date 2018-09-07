@@ -1,6 +1,8 @@
 package com.cascv.oas.server.user.service;
 
 
+import java.util.List;
+
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,6 +121,15 @@ public class UserService {
 	 */
 	public Integer resetEmailByName(UserModel userModel) {
 		return userModelMapper.resetEmailByName(userModel);
+	}	
+	
+
+	public List<String> selectUserMail(String email){
+		return userModelMapper.selectUserMail(email);
+	}	
+
+	public List<String> selectUserMobile(String mobile){
+		return userModelMapper.selectUserMobile(mobile);
 	}	
 }
 

@@ -13,20 +13,20 @@ var check5 = 0;
 //判断用户名是否存在
 function checkName() {
   var userame = $("#pwdUserName").val();
-  //alert(userNickname);
+  
   if (userName != "") {
     var reg = /^[\w]{1,}$/;
     if (!reg.test(userName)) {
       $("#msgN").html("用户名由数字、字母、下划线组成");
       $("#msgN").css("color", "#ff0000");
-      //alert("用户名格式错误!");
+      
       check1 = 0;
       return check1;
     } else {
       var data = {
         "userName" : userName,
       };
-      //alert(JSON.stringify(data));
+      
       $.ajax({
         url : "/doCheckUserName",
         type : "POST",
@@ -105,13 +105,11 @@ function checkName() {
 //检查log验证码正确与否
 function checkIdentifyFirst()
 {var identifyCode = $("#identifyCode").val();
-//alert(identifyCode);
-//alert(code);
+
     var data = {
       "identifyCode" : identifyCode,
     };
     
-    //alert(JSON.stringify(data));
     $.ajax({
       url : "/contrastCode",
       type : "POST",
@@ -151,7 +149,7 @@ var numbAddMail=$("#numbAddMailHiden").val();
      // "numbAddMail":numbAddMail,
       "numberAndMobileCode" : numberAndMobileCode,
     };
-    //alert(JSON.stringify(data));
+    
     $.ajax({
       url : "/mailCheckCode",
       type : "POST",
@@ -247,7 +245,7 @@ function checkLink() {
 				        //根据判断提示用户
 				    	 
 				    	  var str3=data.userEmail;
-				    	  //alert(str3);
+				    	  
 				    	  var string1="通过邮箱验证码找回";
 				    	  var str=str1+str3+str2;
 				    	  //var string=string1+string3+string2;
@@ -263,9 +261,7 @@ function checkLink() {
 				    	 var href=encodeURI(encodeURI("findPwd?string1="+string1+"&strProgress="+strProgress+"&str="+str+"&string2="+string2+"&str3="+str3+"&userName="+userName));
 				    	//window.location.href="findPwd?string1="+string1+"&strProgress="+strProgress+"&str="+str+"&string2="+string2+"&str3="+str3+"&userNickname="+userNickname;
 				    	  //var href=encodeURIComponent(encodeURIComponent("findPwd?string1="+string1+"&strProgress="+strProgress+"&str="+str+"&string2="+string2+"&str3="+str3+"&userNickname="+userNickname));
-				    	 //alert(href1);
-				    	 
-				    	 alert(href);
+				    	
 				    	 window.location.href=href;
 				      },
 				      error : function() {
@@ -286,7 +282,7 @@ function checkLink() {
 			        //根据判断提示用户
 			    	 
 			    	  var str3=data.userMobile;
-			    	  //alert(str3);
+			    	  
 			    	  var string2="手机号:";
 			    	  var str=str1+str3+str2;
 			    	  var strProgress="验证手机";
@@ -310,8 +306,7 @@ function checkLink() {
 		  
 	  } else if (check3 ) {
 
-		    //alert("no warning！");
-			  alert("跳转");
+
 			  var string1=$("#labelPwd1").val();
 			
 			  var strProgress=$("#labelProgress1").val();
@@ -340,7 +335,7 @@ var wait = 60;
 function sendCode(node)
 {	 if(wait == 60)
 	{	var mobileAndMail = $("#mobileAddMailHiden").val();
-		alert(mobileAndMail);
+		
 		var data = {
 	      "mobileAndMail" : mobileAndMail,
 			};
@@ -353,7 +348,7 @@ function sendCode(node)
 	    data : data,
 	    success : function(data) {
 	      //根据判断提示用户
-	    	//alert(data.state);
+	    
 	    	if(data.state)
 	    	{alert("验证码发送成功");
 	    	//$("#message").html("验证码发送成功！");
@@ -370,7 +365,7 @@ function sendCode(node)
 	     
 	    },
 	    error : function(data) {
-	    	//alert(data);
+	    	
 	      alert('检查用户是否存在发生错误');
 	    }
 	  });
@@ -437,7 +432,7 @@ $(function(){
 });*/
 function addNewPwd(node)
 {	var param = $("#resetPasswordForm").serializeArray();
-	alert(JSON.stringify(param));
+	
 	if(check4&&check5)
 	{
 		$.ajax({
@@ -452,7 +447,7 @@ function addNewPwd(node)
 				$('#labelProgressTwo3').removeClass('content').addClass('content3');
 				node.setAttribute('disabled',true);
 				$("#Tip").modal('show');
-				//alert("恭喜您，重置密码成功");
+				
 				document.getElementById("tipContent").innerText="恭喜您，重置密码成功";
 				//location.reload();
 				window.location.href='Main';
@@ -598,7 +593,7 @@ function byId(id) { //自定义方法，用于获取传递过来的ID值对应�
 
 function logout(){
 	data="";
-	alert("111");
+	
     $.ajax({
            type: "POST",
            url: "/doUserLogout",
@@ -616,7 +611,7 @@ function logout(){
 }
 function userinfo(){
 	  var name=$("#userName").val();
-	  alert("个人信息的名字"+name);
+	 
 	  //var href=encodeURI(encodeURI("userInfo?userNickname="+userNickname));
 	  //window.location.href=href;
 	   var data={
@@ -631,7 +626,7 @@ function userinfo(){
 	    data : data,
 	    success : function(data) {
 	          //获取数据库中用户信息
-	    	  alert(JSON.stringify(data));
+	    	  
 	          var userName=data.OasUser["name"];
 	          var userProfile=data.OasUser["profile"];
 	          var userNickame=data.OasUser["nickname"];
@@ -641,7 +636,7 @@ function userinfo(){
 	          var userMobile=data.OasUser["mobile"];
 	          var userEmail=data.OasUser["email"];
 	          var href=encodeURI(encodeURI("userInfo?userName="+userName+"&userProfile="+userProfile+"&userNickname="+userNickname+"&userGender="+userGender+"&userAddress="+userAddress+"&userBirthday="+userBirthday+"&userMobile="+userMobile+"&userEmail="+userEmail));
-	          //alert(href);
+	        
 	          window.location.href=href;  
 	        },
 	        error : function() {
@@ -655,24 +650,24 @@ function userinfo(){
 	  
 	  $("#save").attr("onclick","saveUserInfo()");
 	  var userName=$("#userName").val();
-	  //alert(userNickname);
+	  
 	  var userProfile=$("#userProfile").val();
 	  var userNickname=$("#userNickname").val();
 	  //var userGender=$("#userGender").val();
-	  //alert(userGender);
+	  
 	  var userGender;
-	  //alert($("#userGender1").prop("checked"));
+	  
 	   if($("#userGender1").prop("checked")==true){
 	     userGender='女';
-	     alert(userGender);
+	    
 	  }else{
 	     userGender='男';
-	     alert(userGender);
+	     
 	     }
 	  var userAddress=$("#userAddress").val();
-	  alert(111);
+	  
 	  var userBirthday=$("input[name='userBirthday']").val();
-	  alert(userBirthday);
+	  
 	  data={
 	     "EuserName":userName,
 	     //"EuserProfile": userProfile,
@@ -682,7 +677,7 @@ function userinfo(){
 	     "EuserBirthday":userBirthday
 	  },
 	  //var param = $("#UserInfoForm").serializeArray();
-	    //alert(JSON.stringify(param));
+	    
 	  $.ajax({
 	    url:"/doUpdateOasUser",
 	    method:"post",
@@ -699,9 +694,9 @@ function userinfo(){
 
 
 	function userimginfo(){
-		alert(1);
+		
 		var name=$("#userName").val();
-	    alert("userName-->"+name);
+	    
 	    var data={
 	 	       "userName":name
 	 	   };	  $.ajax({
@@ -712,7 +707,7 @@ function userinfo(){
 	     data : data,
 	     success : function(data) {
 	          //根据判断提示用户
-	    	 alert(2);
+	    	 
 	          var userName=data.OasUser["name"];
 	          var userProfile=data.OasUser["profile"];
 	          var href=encodeURI(encodeURI("userImgInfo?userName="+userName+"&userProfile="+userProfile));

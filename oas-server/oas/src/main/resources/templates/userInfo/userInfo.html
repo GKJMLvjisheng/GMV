@@ -181,7 +181,7 @@ img{
     </div>
 <div id="content" >
 
-<input type="text" style="display:none" name="userNickname" class="form-control" id="userNickname"/>
+<input type="text" style="display:none" name="userName" class="form-control" id="userName"/>
 <form id="UserInfoForm" action="/user/editUserInfo" method="post" class="form-horizontal">
 
                         <div class="modal-body">
@@ -189,15 +189,15 @@ img{
 							<div class="form-group">						
 								<label for="EuserImg" class="col-sm-3 control-label">当前头像：</label>
 								 <div class="col-sm-5">
-                                <a class="pf-avatar"><img id ="userProfile" class="img-rounded"></a>
+                                <a class="pf-avatar"><img id ="userProfile" class="img-rounded" src="/image/profile/5167c14df6d648f9938d97903d2665ab-blob"></a>
                                 <a style="color:black;left:60px; top: 120px;position: absolute; width:30%; height:20%;" class="pf-edit-avatar" onclick="userimginfo()" href="#">编辑头像</a>
                                 </div>
 							</div>
 							
 							<div class="form-group">
-								<label for="userName" class="col-sm-3 control-label">姓名：</label>
+								<label for="userNickname" class="col-sm-3 control-label">姓名：</label>
 								<div class="col-sm-5">
-									<input type="text" name="userName" class="col-sm-4 form-control" id="userName"/>
+									<input type="text" name="userNickname" class="col-sm-4 form-control" id="userNickname"/>
 								</div>
 							</div>
 								
@@ -263,38 +263,37 @@ $(function(){
 	var strInfo=getInfoAndAnalysis(url);
 	//console.log(JSON.stringify(strInfo));
 	var len=strInfo.length;
-	//alert(len);
+	
 	if(len>0)
 	{
-	var userNickname=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+	var userName=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
 	var userProfile=decodeURI(decodeURI(strInfo[1]));
-	var userName=decodeURI(decodeURI(strInfo[2]));
+	var userNickname=decodeURI(decodeURI(strInfo[2]));
 	var userGender=decodeURI(decodeURI(strInfo[3]));
 	var userAddress=decodeURI(decodeURI(strInfo[4]));
 	var userBirthday=decodeURI(decodeURI(strInfo[5]));	
 	var userMobile=decodeURI(decodeURI(strInfo[6]));
 	var userEmail=decodeURI(decodeURI(strInfo[7]));
-	$("#userNickname").val(userNickname);
-	//$("#userProfile").val(userProfile);
-	//alert("userProfile-->"+userProfile);
-	$("#userProfile").attr("src", userProfile);
 	$("#userName").val(userName);
+	//$("#userProfile").val(userProfile);
+	
+	$("#userProfile").attr("src", userProfile);
+	$("#userNickname").val(userNickname);
 	//$("#userGender").val(userGender);
 	 if(userGender=='女'){
 		  $("#userGender1").prop("checked", true);
-		  //alert(userGender);
+		  
 		  }
 	  else{
 		  $("#userGender2").prop("checked", true);
 		  }
 	 $("#userAddress").val(userAddress);
-	 //alert(userBirthday);
+	
 	 //$("#userBirthday").val(userBirthday);
 	 $("input[name='userBirthday']").val(userBirthday);	
-     //alert(userBirthday);
+     
 	 $("#userBirthday").val(userBirthday);
-     //alert(userBirthday);
-	 //alert(userBirthday);
+    
 	 $("#userMobile").val(userMobile);
 	 $("#userEmail").val(userEmail);
 	}
@@ -314,7 +313,7 @@ $(function () {
 
 //刷新从数据库更新数据
 $(function () {
-	alert(111111);
+	 
 	 refreshUserInfo();
 });
 

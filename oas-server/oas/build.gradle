@@ -59,6 +59,10 @@ dependencies{
  */
   compile group: 'javax.activation', name: 'activation', version: '1.1'
   compile group: 'org.glassfish', name: 'javax.mail', version: '3.0-b71'
+  compile('org.webjars:Eonasdan-bootstrap-datetimepicker:4.17.47')
+  compile group: 'org.webjars.npm', name: 'cropper', version: '4.0.0'
+  compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '3.3.1'
+  compile group: 'com.aliyun', name: 'aliyun-java-sdk-dysmsapi', version: '1.0.0'
   
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }
