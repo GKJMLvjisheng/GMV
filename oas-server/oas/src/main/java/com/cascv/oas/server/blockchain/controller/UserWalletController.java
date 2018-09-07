@@ -122,8 +122,10 @@ public class UserWalletController {
     else 
       offset = 0;
 
+    System.out.println(ShiroUtils.getUserUuid());
     List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(
     				ShiroUtils.getUserUuid(), offset,limit);
+    System.out.println(userWalletDetailList);
     Integer count = userWalletDetailMapper.selectCount(ShiroUtils.getUserUuid());
     PageDomain<UserWalletDetail> pageUserWalletDetail= new PageDomain<>();
     pageUserWalletDetail.setTotal(count);
