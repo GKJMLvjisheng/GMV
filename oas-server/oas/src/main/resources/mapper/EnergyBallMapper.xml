@@ -84,7 +84,7 @@
             b.uuid,
             b.user_uuid,
             b.point as value,
-            b.start_date,
+            DATE_FORMAT(b.start_date, '%Y-%m-%d %H:%i:%S') as start_date,
             date_add( b.start_date, interval #{timeGap} second ) as end_date,
             p.source_code as type,
             p.source_name as name
@@ -96,16 +96,16 @@
                 point_source,
                 point,
                 status,
-                STR_TO_DATE( time_created, '%Y-%m-%d %H:%i:%s' ) as start_date
+                DATE_FORMAT( STR_TO_DATE( time_created, '%Y-%m-%d %H:%i:%S' ), '%Y-%m-%d %H:%i:%S') as start_date
             from
                 energy_ball
             ) b
             inner join energy_source_point p
         where
-            point_source = source_code
-            and point_source = #{pointSource}
-            and status = #{status}
-            and user_uuid = #{userUuid}
+            b.point_source = p.source_code
+            and b.point_source = #{pointSource}
+            and b.status = #{status}
+            and b.user_uuid = #{userUuid}
     </select>
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
         <id column="uuid" property="uuid"/>

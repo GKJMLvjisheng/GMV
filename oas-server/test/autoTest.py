@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-#HOST='http://18.219.19.160:8080/api/v1'
-HOST='http://localhost:8080/api/v1'
+HOST='http://18.219.19.160:8080/api/v1'
+#HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -308,10 +308,6 @@ def testUserWalletTransfer():
   else:
     raise Exception("[Fail] user wallet transfer")
 
-#testUserWalletTransfer()
-
-#testRegisterDestroy()
-
 def inquirePointFactor(token):
   url=HOST+"/energyPoint/inquirePointFactor"
   data={
@@ -332,12 +328,50 @@ def redeemPoint(token):
   print res
   if res.get('code') == 0:
     return res.get('data')
-    
+ 
+
+
+def inquireEnergyPointDetail(token):
+  url=HOST+"/energyPoint/inquireEnergyPointDetail"
+  data={
+    "pageNum" : 1,
+    "pageSize" : 3
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+def excchangeRateInquire(token):    
+  url=HOST+"/exchange/inquire"
+  data={
+    "time" : "2018-09",
+    "currency" : 2
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+def inquireCurrentPeriodEnergyPoint(token):
+  url=HOST+"/energyPoint/inquireCurrentPeriodEnergyPoint"
+  data={
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
+
+
+#testUserWalletTransfer()
+
+#testRegisterDestroy()
+
 token=login("caikov","cai120501")
 if token is None:
   raise Exception("[Fail] login")
 
-factor=redeemPoint(token)
+inquire=inquireCurrentPeriodEnergyPoint(token)
 
 #testEnergyPoint()
 #testUserWallet()

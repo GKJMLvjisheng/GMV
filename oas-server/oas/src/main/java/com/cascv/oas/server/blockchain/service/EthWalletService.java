@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -23,9 +24,9 @@ import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
-import com.cascv.oas.server.blockchain.config.ExchangeParam;
 import com.cascv.oas.server.blockchain.config.TransferQuota;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
@@ -35,12 +36,11 @@ import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
-import com.cascv.oas.server.blockchain.model.UserWallet;
-import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.common.EthWalletDetailScope;
-import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -66,7 +66,7 @@ public class EthWalletService {
   private UserCoinMapper userCoinMapper;
   
   @Autowired
-  private ExchangeParam exchangeParam;
+  private ExchangeRateService exchangeRateService;
   
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
@@ -85,7 +85,7 @@ public class EthWalletService {
       WalletFile checkWalletFile = objectMapper.readValue(walletFileStr, WalletFile.class);
       ECKeyPair ecKeyPair = Wallet.decrypt(password, checkWalletFile);
       byte[] checkMnemonicSeedBytes = Numeric.hexStringToByteArray(ecKeyPair.getPrivateKey().toString(16));
-      List<String> checkMnemonic = MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
+      MnemonicCode.INSTANCE.toMnemonic(checkMnemonicSeedBytes);
     } catch (MnemonicException.MnemonicLengthException 
           | MnemonicException.MnemonicWordException 
           | MnemonicException.MnemonicChecksumException 
@@ -190,7 +190,10 @@ public class EthWalletService {
     BigDecimal balance = BigDecimal.ZERO;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
-      balance = coinClient.balanceOf(ethWallet.getAddress(), contract, weiFactor);
+      String net = ethWallet.getPreferNetwork();
+      if (net == null)
+    	  net = coinClient.getDefaultNet();
+      balance = coinClient.balanceOf(net, ethWallet.getAddress(), contract, weiFactor);
       log.info("getBalance of {}", balance);
     } catch (Exception e) {
 
@@ -199,8 +202,13 @@ public class EthWalletService {
   }
   
   public BigDecimal getValue(BigDecimal balance) {
-    BigDecimal rate = BigDecimal.valueOf(exchangeParam.getTokenRmbRate());
-    return balance.multiply(rate);
+    
+    String time = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    ReturnValue<BigDecimal> returnValue = exchangeRateService.exchangeTo(
+        balance, 
+        time, 
+        CurrencyCode.CNY);
+    return returnValue.getData();
   }
   
   public UserCoin getUserCoin(String userUuid, String contract){
@@ -243,31 +251,45 @@ public class EthWalletService {
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
   
-  public ErrorCode transfer(String userUuid, String contract, String toAddress, BigDecimal amount) {
+  public ReturnValue<String> transfer(String userUuid, String contract, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
 
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
-    if (ethWallet == null)
-      return ErrorCode.NO_ETH_WALLET;
+    ReturnValue<String> returnValue = new ReturnValue<>();
+    if (ethWallet == null) {
+      returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
+      return returnValue;
+    }
     if (contract == null)
       contract = coinClient.getToken();
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
-    if (userCoin.getBalance().compareTo(amount) < 0)
-      return ErrorCode.BALANCE_NOT_ENOUGH;
+    if (userCoin.getBalance().compareTo(amount) < 0) {
+      returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
+      return returnValue;
+    }
     amount = amount.multiply(userCoin.getWeiFactor());
-    String txHash=coinClient.transfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), toAddress, contract, amount.toBigInteger());
+    String net = ethWallet.getPreferNetwork();
+    if (net == null)
+  	  net = coinClient.getDefaultNet();
+    String txHash=coinClient.transfer(net, ethWallet.getAddress(), ethWallet.getPrivateKey(), toAddress, contract, 
+    		amount.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
       addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, "");
       addDetail(toAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, "");
     }
-    
-    return ErrorCode.SUCCESS;
+    returnValue.setErrorCode(ErrorCode.SUCCESS);
+    returnValue.setData(txHash);
+    return returnValue;
   }
   
-  public ErrorCode multiTransfer(String userUuid, String contract, List<TransferQuota> quota) {
+  public ReturnValue<String> multiTransfer(String userUuid, String contract, List<TransferQuota> quota,
+		  BigInteger gasPrice, BigInteger gasLimit) {
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
-    if (ethWallet == null)
-      return ErrorCode.NO_ETH_WALLET;
+    ReturnValue<String> returnValue = new ReturnValue<>();
+    if (ethWallet == null) {
+      returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
+      return returnValue;
+    }
     if (contract == null)
       contract = coinClient.getToken();
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
@@ -289,16 +311,40 @@ public class EthWalletService {
 //    	return ErrorCode.WRONG_AMOUNT;
 //    if (userCoin.getBalance().compareTo(total) < 0)
 //      return ErrorCode.BALANCE_NOT_ENOUGH;
-    String txHash=coinClient.multiTransfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), addressList, contract, amountIntList);
+    String net = ethWallet.getPreferNetwork();
+    if (net == null)
+  	  net = coinClient.getDefaultNet();
+    String txHash=coinClient.multiTransfer(
+    			net, ethWallet.getAddress(), ethWallet.getPrivateKey(), 
+    			addressList, contract, amountIntList, gasPrice,gasLimit);
     log.info("txhash {}", txHash);
     if (txHash!=null) {
       addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
       for (TransferQuota q: quota) {
         addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
       }
-      return ErrorCode.SUCCESS;
-    } else
-      return ErrorCode.MULTIPLE_TRANSFER_FAILURE;
+      returnValue.setErrorCode(ErrorCode.SUCCESS);
+      returnValue.setData(txHash);
+    } else {
+      returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
+    }
+    return returnValue;
+  }
+  
+  public Set<String> listNetwork() {
+	  return coinClient.listNetwork();
+  }
+  
+  public ErrorCode setPreferNetwork(String userUuid, String preferNetwork) {
+	  Set<String> networkSet = this.listNetwork();
+	  if (networkSet == null || preferNetwork == null || !networkSet.contains(preferNetwork))
+		  return ErrorCode.INVALID_BLOCKCHAIN_NETWORK;
+	  EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
+	  if (ethWallet == null)
+		  return ErrorCode.NO_ETH_WALLET;
+	  ethWallet.setPreferNetwork(preferNetwork);
+	  ethWalletMapper.update(ethWallet);
+	  return ErrorCode.SUCCESS;
   }
 }
 

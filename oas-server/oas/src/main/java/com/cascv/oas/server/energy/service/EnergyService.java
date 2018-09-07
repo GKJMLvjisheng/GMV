@@ -11,13 +11,8 @@ import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergySourcePoint;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
-import com.cascv.oas.server.energy.vo.EnergyBallResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
-import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
-
+import com.cascv.oas.server.energy.vo.*;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,9 +131,7 @@ public class EnergyService {
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         BigDecimal ongoingEnergySummary = this.miningGenerator(userUuid, energySourcePoint);
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
-                .selectPartByPointSourceCode(userUuid,
-                        SOURCE_CODE_OF_MINING,
-                        STATUS_OF_ACTIVE_ENERGYBALL,
+                .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL,
                         timeGap.intValue());
         EnergyBallResult energyBallResult = new EnergyBallResult();
         energyBallResult.setEnergyBallList(energyBallWrappers);
@@ -236,6 +229,7 @@ public class EnergyService {
                 }
             }
         }
+        ongoingEnergySummary = ongoingEnergySummary.setScale(2, BigDecimal.ROUND_HALF_UP);// 保留2位小数点
         return ongoingEnergySummary;
     }
 
@@ -287,6 +281,10 @@ public class EnergyService {
     public EnergyBallTakenResult getEnergyBallTakenResult(String userUuid, String energyBallUuid) {
         if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
             System.out.println("userUuid or energyBallUuid is null");
+            return null;
+        }
+        if (energyBallMapper.selectByUuid(energyBallUuid)
+                .getStatus().equals(STATUS_OF_DIE_ENERGYBALL)) {
             return null;
         }
         List<EnergyBall> energyBallsBefore = energyBallMapper
@@ -461,6 +459,40 @@ public class EnergyService {
     	return energyTradeRecordMapper.sumPoint(userUuid, begin, end);
     } 
     
+    public BigDecimal summaryInPoint(String userUuid, String yyyy_MM) {
+        String begin = yyyy_MM + "-01 00:00:00";
+        String end = null;
+    	String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    	if (yyyy_MM.compareToIgnoreCase(today) == 0) {
+    		end=DateUtils.getTime();
+    	} else {
+    		Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.dateTime(DateUtils.YYYY_MM, yyyy_MM));
+    		int day = calendar.getActualMaximum(Calendar.DATE);
+        	calendar.set(Calendar.DAY_OF_MONTH, day);
+        	end = yyyy_MM + String.format("-%02d 23:59:59", day);
+    	}
+    	log.info("begin {} end {}", begin, end);
+    	return energyTradeRecordMapper.sumInPoint(userUuid, begin, end);
+    } 
+    
+    public BigDecimal summaryOutPoint(String userUuid, String yyyy_MM) {
+        String begin = yyyy_MM + "-01 00:00:00";
+        String end = null;
+    	String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    	if (yyyy_MM.compareToIgnoreCase(today) == 0) {
+    		end=DateUtils.getTime();
+    	} else {
+    		Calendar calendar = Calendar.getInstance();
+            calendar.setTime(DateUtils.dateTime(DateUtils.YYYY_MM, yyyy_MM));
+    		int day = calendar.getActualMaximum(Calendar.DATE);
+        	calendar.set(Calendar.DAY_OF_MONTH, day);
+        	end = yyyy_MM + String.format("-%02d 23:59:59", day);
+    	}
+    	log.info("begin {} end {}", begin, end);
+    	return energyTradeRecordMapper.sumOutPoint(userUuid, begin, end);
+    } 
+    
     //redeem
     public Boolean decreaseBalance(String userUuid, BigDecimal value) {
       EnergyWallet energyWallet = energyWalletMapper.selectByUserUuid(userUuid);
@@ -498,11 +530,29 @@ public class EnergyService {
     	log.info("summary {}", sum);
     	if (!decreaseBalance(userUuid, sum))
     		return ErrorCode.BALANCE_NOT_ENOUGH;
-    	userWalletService.addFromEnergy(userUuid, sum);
+    	userWalletService.addFromEnergy(userUuid, end.substring(0, 8), sum);
     	saveEnergyOutRecord(userUuid, sum, end);
     	return ErrorCode.SUCCESS;
     } 
     
+    public Integer countEnergyChange(String userUuid) {
+    	return energyTradeRecordMapper.countByUserUuid(userUuid);
+    }
+    
+    public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit) {
+    	List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
+    	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList) {
+    		if (energyChangeDetail.getInOrOut() == 0) {
+    			energyChangeDetail.setActivity("积分兑换");
+    			energyChangeDetail.setCategory("OASES redeem");
+    		}
+    		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+    	}
+    	return energyChangeDetailList;
+    }
+
     public static void main(String[] args) {
+        BigDecimal decimal = new BigDecimal(12.12345).setScale(2, BigDecimal.ROUND_HALF_UP);
+        System.out.println(decimal);
     }
 }

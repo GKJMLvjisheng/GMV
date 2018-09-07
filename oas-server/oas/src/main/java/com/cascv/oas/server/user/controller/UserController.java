@@ -1,6 +1,5 @@
 package com.cascv.oas.server.user.controller;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
-
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -48,7 +46,6 @@ import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.FileUtils;
-import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;

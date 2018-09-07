@@ -1,6 +1,7 @@
 package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,10 @@ import java.util.List;
 public interface EnergyTradeRecordMapper {
     int insertEnergyTradeRecord(EnergyTradeRecord energyTradeRecord);
     BigDecimal sumPoint(@Param("userUuid") String userUuid, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
+    BigDecimal sumInPoint(@Param("userUuid") String userUuid, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
+    BigDecimal sumOutPoint(@Param("userUuid") String userUuid, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
     List<EnergyTradeRecord> selectTrade(@Param("userUuid") String userUuid, @Param("beginTime") String beginTime, @Param("endTime") String endTime);
     Integer updateStatus(@Param("uuid") String uuid, @Param("newStatus") Integer newStatus);
+    Integer countByUserUuid(@Param("userUuid") String userUuid);
+    List<EnergyChangeDetail> selectByPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }

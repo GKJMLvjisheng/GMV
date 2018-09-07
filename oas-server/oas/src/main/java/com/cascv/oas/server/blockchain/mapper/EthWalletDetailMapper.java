@@ -9,7 +9,7 @@ public interface EthWalletDetailMapper {
   Integer insertSelective(EthWalletDetail ethWalletDetail);
   List<EthWalletDetail> selectByAddress(String address);
   
-  Integer selectCount();
+  Integer selectCount(@Param("address") String address);
   List<EthWalletDetail> selectByPage(@Param("address") String address, @Param("offset") Integer offset, @Param("limit") Integer limit);
   Integer deleteByAddress(String address);
   Integer deleteByUuid(String uuid);

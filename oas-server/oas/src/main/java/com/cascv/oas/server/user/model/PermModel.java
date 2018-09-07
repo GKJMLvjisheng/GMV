@@ -1,13 +1,11 @@
 package com.cascv.oas.server.user.model;
 
+import java.io.Serializable;
 import java.util.Date;
-
-import com.cascv.oas.core.common.BaseEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 
-public class PermModel extends BaseEntity {
+public class PermModel implements Serializable {
     
     
 	private static final long serialVersionUID = 1L;

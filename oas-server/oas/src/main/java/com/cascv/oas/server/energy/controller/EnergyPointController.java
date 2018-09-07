@@ -1,53 +1,35 @@
 package com.cascv.oas.server.energy.controller;
 
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import com.cascv.oas.server.energy.model.EnergyWallet;
-import com.cascv.oas.server.energy.service.EnergyService;
-import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
-import com.cascv.oas.server.energy.vo.EnergyPointCategory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.blockchain.config.ExchangeParam;
-import com.cascv.oas.server.blockchain.model.EnergyPointDetail;
-import com.cascv.oas.server.blockchain.wrapper.CurrentPeriodEnergyPoint;
-import com.cascv.oas.server.energy.vo.EnergyBallResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
-import com.cascv.oas.server.blockchain.wrapper.EnergyNews;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactor;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointFactorRequest;
-import com.cascv.oas.server.blockchain.wrapper.EnergyPointRedeem;
+import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.wrapper.*;
+import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.service.EnergyService;
+import com.cascv.oas.server.energy.vo.*;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.model.ExchangeRateModel;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.utils.ShiroUtils;
-
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
 @Slf4j
 public class EnergyPointController {
 
-    @Autowired
-    private ExchangeParam exchangeParam;
+  @Autowired
+  private ExchangeRateService exchangeRateService;
 
     @Autowired
     private EnergyService energyService;
@@ -105,12 +87,16 @@ public class EnergyPointController {
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
+        ErrorCode errorCode = ErrorCode.SUCCESS;
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
+        if (energyBallTakenResult == null) {
+            errorCode = ErrorCode.GENERAL_ERROR;
+        }
         return new ResponseEntity
                 .Builder<EnergyBallTakenResult>()
                 .setData(energyBallTakenResult)
-                .setErrorCode(ErrorCode.SUCCESS)
+                .setErrorCode(errorCode)
                 .build();
     }
 
@@ -119,13 +105,13 @@ public class EnergyPointController {
     public ResponseEntity<?> inquirePower() {
         EnergyWallet energyWallet = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyWallet != null) {
-            return new ResponseEntity.Builder<BigDecimal>()
-                    .setData(energyWallet.getPower())
+            return new ResponseEntity.Builder<Integer>()
+                    .setData(energyWallet.getPower().intValue())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
-            return new ResponseEntity.Builder<BigDecimal>()
-                    .setData(BigDecimal.ZERO)
+            return new ResponseEntity.Builder<Integer>()
+                    .setData(0)
                     .setErrorCode(ErrorCode.NO_ENERGY_POINT_ACCOUNT)
                     .build();
         }
@@ -136,8 +122,8 @@ public class EnergyPointController {
     public ResponseEntity<?> inquireEnergyPoint() {
         EnergyWallet energyPoint = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
-            return new ResponseEntity.Builder<BigDecimal>()
-                    .setData(energyPoint.getPoint())
+            return new ResponseEntity.Builder<Integer>()
+                    .setData(energyPoint.getPoint().intValue())
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
@@ -190,7 +176,7 @@ public class EnergyPointController {
             energyNews.setId(i + 1);
             energyNews.setTitle(titleArray[i]);
             energyNews.setSummary(summaryArray[i]);
-            energyNews.setImageLink("/img/" + String.valueOf(i + 1) + ".jpg");
+            energyNews.setImageLink("http://18.219.19.160:8080/img/" + String.valueOf(i + 1) + ".jpg");
             energyNews.setNewsLink(newsArray[i]);
             energyNewsList.add(energyNews);
         }
@@ -213,8 +199,17 @@ public class EnergyPointController {
     public ResponseEntity<?> inquireCurrentPeriodEnergyPoint() {
         //produce and cosume during current peroid
         CurrentPeriodEnergyPoint currentPeriodEnergyPoint = new CurrentPeriodEnergyPoint();
-        currentPeriodEnergyPoint.setConsumedEnergyPoint(3450);
-        currentPeriodEnergyPoint.setProducedEnergyPoint(5643);
+        String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+        BigDecimal consumed = energyService.summaryOutPoint(ShiroUtils.getUserUuid(), today);
+        BigDecimal produced = energyService.summaryInPoint(ShiroUtils.getUserUuid(), today);
+        if (consumed == null) {
+          consumed = BigDecimal.ZERO;
+        }
+        if (produced == null) {
+          produced = BigDecimal.ZERO;
+        }
+        currentPeriodEnergyPoint.setConsumedEnergyPoint(consumed.intValue());
+        currentPeriodEnergyPoint.setProducedEnergyPoint(produced.intValue());
 
         return new ResponseEntity.Builder<CurrentPeriodEnergyPoint>()
                 .setData(currentPeriodEnergyPoint)
@@ -225,38 +220,32 @@ public class EnergyPointController {
     @PostMapping(value = "/inquireEnergyPointDetail")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
-
-        List<EnergyPointDetail> energyPointDetailList = new ArrayList<>();
-
-        Calendar calendar = new GregorianCalendar();
-        Date now = new Date();
-        calendar.setTime(now);
-
-        for (Integer i = 0; i < 3; i++) {
-            EnergyPointDetail energyPointDetail = new EnergyPointDetail();
-            energyPointDetail.setActivity("");
-            energyPointDetail.setCategory("");
-
-            calendar.add(Calendar.DATE, 1 + i);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-            String str = formatter.format(calendar.getTime());
-            energyPointDetail.setCreated(str);
-            energyPointDetail.setSource("手机");
-            energyPointDetail.setUuid(ShiroUtils.getUserUuid());
-            energyPointDetail.setUuid(String.valueOf(i + 3));
-            energyPointDetail.setValue(i * 5 + 5);
-            energyPointDetailList.add(energyPointDetail);
+        Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+ 
+        if (limit == null) {
+          limit = 10;
         }
-        PageDomain<EnergyPointDetail> pageEnergyPointDetail = new PageDomain<>();
-        pageEnergyPointDetail.setTotal(3);
+        
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+ 
+        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
+        Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
+        
+        PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();
+        pageEnergyPointDetail.setTotal(count);
         pageEnergyPointDetail.setAsc("asc");
-        pageEnergyPointDetail.setOffset(0);
-        pageEnergyPointDetail.setPageNum(1);
-        pageEnergyPointDetail.setPageSize(3);
+        pageEnergyPointDetail.setOffset(offset);
+        pageEnergyPointDetail.setPageNum(pageNum);
+        pageEnergyPointDetail.setPageSize(pageSize);
         pageEnergyPointDetail.setRows(energyPointDetailList);
 
-        return new ResponseEntity.Builder<PageDomain<EnergyPointDetail>>()
+        return new ResponseEntity.Builder<PageDomain<EnergyChangeDetail>>()
                 .setData(pageEnergyPointDetail)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
@@ -266,14 +255,30 @@ public class EnergyPointController {
     @PostMapping(value = "/redeemPoint")
     @ResponseBody
     public ResponseEntity<?> redeemPoint(@RequestBody EnergyPointRedeem energyPointRedeem) {
-      ErrorCode errorCode = ErrorCode.SUCCESS;
-      BigDecimal rate = BigDecimal.valueOf(exchangeParam.getEnergyPointRate());
+      
+      if (energyPointRedeem.getPeriod() == null) {
+        return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
+            .build();
+      }
+      ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(energyPointRedeem.getPeriod(), CurrencyCode.POINT);
+      if (exchangeRateModel == null) {
+        return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
+            .build();
+      }
+      
+      BigDecimal rate = BigDecimal.ONE.divide(exchangeRateModel.getRate());
       BigDecimal userRate = energyPointRedeem.getRate();
       if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
-    	errorCode = ErrorCode.RATE_NOT_ACCEPTABLE;
-      } else {
-    	errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getDate());
-      }
+        return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.RATE_NOT_ACCEPTABLE)
+            .build();
+      } 
+      ErrorCode errorCode = energyService.redeem(ShiroUtils.getUserUuid(), energyPointRedeem.getPeriod());
       return new ResponseEntity.Builder<Integer>()
               .setData(0)
               .setErrorCode(errorCode)
@@ -283,16 +288,29 @@ public class EnergyPointController {
     @PostMapping(value = "/inquirePointFactor")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointFactor(@RequestBody EnergyPointFactorRequest energyPointFactorRequest) {
-        String date = energyPointFactorRequest.getDate();
-        
-        EnergyPointFactor energyPointFactor = new EnergyPointFactor();
-        energyPointFactor.setFactor(exchangeParam.getEnergyPointRate());
-        energyPointFactor.setDate(date);
-        BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
-        if (amount == null)
-        	amount=BigDecimal.ZERO;
-        energyPointFactor.setAmount(amount);
+      EnergyPointFactor energyPointFactor = new EnergyPointFactor();  
+      String date = energyPointFactorRequest.getDate();
+      if (date == null) {
         return new ResponseEntity.Builder<EnergyPointFactor>()
+            .setData(energyPointFactor)
+            .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
+            .build();
+      }
+      energyPointFactor.setDate(date);
+      ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(date, CurrencyCode.POINT);
+      if (exchangeRateModel == null) {
+        return new ResponseEntity.Builder<EnergyPointFactor>()
+            .setData(energyPointFactor)
+            .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
+            .build();
+      }
+      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate()).doubleValue());
+        
+      BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
+      if (amount == null)
+       	amount=BigDecimal.ZERO;
+      energyPointFactor.setAmount(amount);
+      return new ResponseEntity.Builder<EnergyPointFactor>()
                 .setData(energyPointFactor)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();

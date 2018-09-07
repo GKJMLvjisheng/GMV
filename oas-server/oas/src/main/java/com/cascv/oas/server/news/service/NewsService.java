@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.server.news.mapper.NewsModelMapper;
 import com.cascv.oas.server.news.model.NewsModel;
 
@@ -25,10 +27,11 @@ public class NewsService {
 		
 	}
 	
-	public Integer deleteNews(String newsId) 
+	public ErrorCode deleteNews(Integer newsId) 
 	{
 		
-		return newsModelMapper.deleteNews(newsId);
+		newsModelMapper.deleteNews(newsId);
+		return ErrorCode.SUCCESS;
 	}
 	
 	public Integer updateNews(NewsModel newsModel)

@@ -50,7 +50,25 @@
     	and status = 1
     	and time_created between #{beginTime} and #{endTime}
   </select>
-	
+
+   <select id="sumInPoint" resultType="java.math.BigDecimal">
+  	select 
+  	  sum(point_change) 
+	from energy_trade_record 
+    	where user_uuid=#{userUuid}
+    	and in_or_out=1 
+      	and time_created between #{beginTime} and #{endTime}
+  </select>
+
+	<select id="sumOutPoint" resultType="java.math.BigDecimal">
+  	select 
+  	  sum(point_change) 
+	from energy_trade_record 
+    	where user_uuid=#{userUuid}
+    	and in_or_out=0 
+      	and time_created between #{beginTime} and #{endTime}
+  </select>
+  
   <select id="selectTrade" resultMap="BaseResultMap">
 	select 
   	  <include refid="Base_Column_List"/>
@@ -59,6 +77,37 @@
     and in_or_out=1 
     and status = 1
     and time_created between #{beginTime} and #{endTime}
+  </select>
+  
+  <select id="countByUserUuid" resultType="java.lang.Integer">
+  	select count(*) from energy_trade_record where user_uuid = #{userUuid};
+  </select>
+  
+  
+  <resultMap id="detailResultMap" type="com.cascv.oas.server.energy.vo.EnergyChangeDetail">
+    <id column="uuid" property="uuid"/>
+    <result column="user_uuid" property="userUuid"/>
+    <result column="time_created" property="created"/>
+    <result column="type" property="category"/>
+    <result column="source_name" property="activity"/>
+    <result column="point" property="decPoint"/>
+    <result column="in_or_out" property="inOrOut"/>
+  </resultMap>
+  
+  <select id="selectByPage" resultMap="detailResultMap">
+    select 
+		U.uuid as uuid,
+		U.user_uuid as userUuid, 
+    	U.point_change as point, 
+    	U.time_created as time_created, 
+    	U.in_or_out as in_or_out,
+    	T.source_name as source_name, 
+    	T.type as type from energy_trade_record U 
+    	left outer join energy_ball A on U.in_or_out = 1 and U.energy_ball_uuid = A.uuid 
+    	left outer join energy_source_point T on A.point_source = T.source_code
+    	where U.user_uuid = #{userUuid} 
+    	order by U.time_created desc 
+    	limit #{offset}, #{limit}
   </select>
 
   <update id="updateStatus">
