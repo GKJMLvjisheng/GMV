@@ -1,8 +1,6 @@
 package com.cascv.oas.server.blockchain.controller;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -21,7 +19,6 @@ import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
-import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.user.model.UserModel;

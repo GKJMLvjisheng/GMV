@@ -64,16 +64,13 @@ server:
   session-timeout: 1800
 
 wallet:
-  provider: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
+  providers:
+    ropstrn: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
+    mainnet: "https://mainnet.infura.io/16897256b61d42689d088039a362a61b"
+    kovan:   "https://kovan.infura.io/16897256b61d42689d088039a362a61b"
+    rinkeby: "https://rinkeby.infura.io/16897256b61d42689d088039a362a61b"
+  defaultNet: ropstrn
   
   token: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
-  
   contracts[0]: 
     address: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
-  
-  exchange:
-    energyPointDaily: 15
-    energyPowerDaily: 10
-    energyPointRate: 0.01
-    tokenRmbRate: 0.026
-      

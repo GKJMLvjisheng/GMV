@@ -356,13 +356,13 @@ def excchangeRateInquire(token):
 
 #testUserWalletTransfer()
 
-#testRegisterDestroy()
+testRegisterDestroy()
 
-token=login("caikov","cai120501")
-if token is None:
-  raise Exception("[Fail] login")
+#token=login("caikov","cai120501")
+#if token is None:
+#  raise Exception("[Fail] login")
 
-inquire=excchangeRateInquire(token)
+#inquire=excchangeRateInquire(token)
 
 #testEnergyPoint()
 #testUserWallet()

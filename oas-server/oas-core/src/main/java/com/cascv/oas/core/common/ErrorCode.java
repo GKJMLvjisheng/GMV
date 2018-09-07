@@ -35,7 +35,9 @@ public enum ErrorCode {
   NO_DATE_SPECIFIED(10019,"没有指定日期"),
   NO_AVAILABLE_EXCHANGE_RATE(10020,"没有指定汇率"),
   NO_TIME_SPECIFIED(10021,"没有指定时间"),
-  NO_CURRENCY_SPECIFIED(10022,"没有指定货币");
+  NO_CURRENCY_SPECIFIED(10022,"没有指定货币"),
+  NO_BLOCKCHAIN_NETWORK(10023,"没有指定区块网络"),
+  INVALID_BLOCKCHAIN_NETWORK(10024,"无效的区块网络");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 
