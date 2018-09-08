@@ -42,12 +42,6 @@ private static String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
 private static String UPLOADED_FOLDER =SYSTEM_USER_HOME
   +File.separator+"Temp"+File.separator+"Image" + File.separator+"news"+File.separator;
 
-/*@PostMapping(value="/newsManage")
-public String index() {
-
-    return "newsManage";
-}*/
-
 @PostMapping(value="/addNews")
 @ResponseBody
 public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
@@ -74,8 +68,7 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            log.info("SYSTEM_USER_HOME={}",SYSTEM_USER_HOME);
 
            log.info("newsPicturePath={}",newsPicturePath); 
-           //String [] pictureArr=newsPicturePath.split("\\\\");
-           String pictureName=file.getOriginalFilename();//pictureArr[pictureArr.length-1];
+           String pictureName=file.getOriginalFilename();
            
            log.info("pictureName=",pictureName);            
            String str="/image/news/";
@@ -128,9 +121,7 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	            log.info("--------获取路径--------:{}",newsPicturePath);
 
 	            log.info("newsPicturePath={}",newsPicturePath);
-	            String [] pictureArr=newsPicturePath.split("\\\\");
-	            String pictureName=pictureArr[pictureArr.length-1];
-	            
+	            String pictureName=file.getOriginalFilename();
 	            log.info("pictureName=",pictureName);            
 	            String str="/image/news/";
 	            newsPicturePath=str+pictureName;
