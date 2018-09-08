@@ -2,6 +2,7 @@
  * 菜单处理
  */
 $(function() {
+	alert("222");
     $('#side-menu').metisMenu();   
     //固定菜单栏
     $(function() {
@@ -186,7 +187,7 @@ $(function() {
 
     function menuItem() {
         // 获取标识数据
-    	
+    	alert("进");
         var dataUrl = $(this).attr('href'),
         dataIndex = $(this).data('index'),
         menuName = $.trim($(this).text()),
@@ -453,3 +454,4 @@ $.ajaxSetup({
 //          })
         }
     }
+});
