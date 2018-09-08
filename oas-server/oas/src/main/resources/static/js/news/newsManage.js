@@ -234,7 +234,7 @@ function updateNews(){
 //    });
 //}
 function newsIndexReady() {
-	alert(1);
+	//alert(1);
 	   $.ajax({
 	    url: "/api/v1/userCenter/selectAllNews",
 	    contentType : 'application/json;charset=utf8',
