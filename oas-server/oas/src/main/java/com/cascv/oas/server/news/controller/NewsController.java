@@ -71,8 +71,7 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            log.info("SYSTEM_USER_HOME={}",SYSTEM_USER_HOME);
 
            log.info("newsPicturePath={}",newsPicturePath); 
-           String pictureName=file.getOriginalFilename();
-           
+           String pictureName=fileName;
            log.info("pictureName=",pictureName);            
            String str="/image/news/";
            newsPicturePath=str+pictureName;
@@ -86,7 +85,9 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            newsService.addNews(newsModel);
            log.info("新闻进行了上传图片");
            return new ResponseEntity.Builder<Map<String, String>>()
-        	  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+        	  	      .setData(info)
+        	  	      .setErrorCode(ErrorCode.SUCCESS)
+        	  	      .build();
        	}catch (Exception e)
    			{
        			log.info(" e.printStackTrace()={}");
@@ -135,7 +136,8 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	            log.info("--------获取路径--------:{}",newsPicturePath);
 
 	            log.info("newsPicturePath={}",newsPicturePath);
-	            String pictureName=file.getOriginalFilename();
+//	            String pictureName=file.getOriginalFilename();
+	            String pictureName=fileName;
 	            log.info("pictureName=",pictureName);            
 	            String str="/image/news/";
 	            newsPicturePath=str+pictureName;
