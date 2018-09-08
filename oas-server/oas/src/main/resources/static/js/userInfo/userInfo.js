@@ -147,7 +147,7 @@ function usersecurityinfo(){
 //个人信息二维码
 function QRcode() {
 	            var userName=$("#userName").val();
-	            var info="您的账号是:"+userName;
+	            var info="your account is:"+userName;
 	            var qrcode=$('#qrcodeCanvas').qrcode(info).hide();
 	   	        var canvas=qrcode.find('canvas').get(0);
 	   	        $('#image').attr('src',canvas.toDataURL('img/gray.jpg'))         
@@ -187,7 +187,7 @@ function QRtradecode() {
 		           num+=tmp;
 		        }
 		     }
-         var info="您的交易地址是:"+"0x"+num;
+         var info="your tradeaddress is:"+"0x"+num;
          var qrcode=$('#qrcodeCanvas').qrcode(info).hide();
 	     var canvas=qrcode.find('canvas').get(0);
 	        $('#image').attr('src',canvas.toDataURL('img/gray.jpg'))         
