@@ -266,12 +266,12 @@ public class EthWalletService {
       returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
       return returnValue;
     }
-    amount = amount.multiply(userCoin.getWeiFactor());
+    BigDecimal amountDec = amount.multiply(userCoin.getWeiFactor());
     String net = ethWallet.getPreferNetwork();
     if (net == null)
   	  net = coinClient.getDefaultNet();
     String txHash=coinClient.transfer(net, ethWallet.getAddress(), ethWallet.getPrivateKey(), toAddress, contract, 
-    		amount.toBigInteger(), gasPrice, gasLimit);
+    		amountDec.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
       addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, "");
