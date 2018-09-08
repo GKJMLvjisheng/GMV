@@ -66,10 +66,11 @@ function saveUserInfo(){
 	     "gender":userGender,
 	     "address":userAddress,
 	     "birthday":userBirthday
-	  },
+	  }
+	  alert(JSON.stringify(data));
 	  $.ajax({
 	    url:"/api/v1/userCenter/updateUserInfo",
-	    method:"post",
+	    method:"POST",
 	    data:JSON.stringify(data),
 	    dataType:"json",
 	    contentType : 'application/json;charset=utf8',

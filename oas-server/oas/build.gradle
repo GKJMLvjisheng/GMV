@@ -65,6 +65,9 @@ dependencies{
   compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '3.3.1'
   compile group: 'com.aliyun', name: 'aliyun-java-sdk-dysmsapi', version: '1.0.0'
   
+  /*图片裁剪*/
+    compile group: 'org.webjars.npm', name: 'cropper', version: '4.0.0'
+  
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
