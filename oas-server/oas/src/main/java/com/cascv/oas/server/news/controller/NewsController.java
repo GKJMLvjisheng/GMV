@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,13 +54,15 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
    	
    	Map<String,String> info = new HashMap<>();
 
-   	if(file!=null)
-   	{
+  if(file!=null)
+  {
+   	//生成唯一的文件名
+   	String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
    	try 
    	{
            // Get the file and save it somewhere
            byte[] bytes = file.getBytes();
-           Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+           Path path = Paths.get(UPLOADED_FOLDER + fileName);
            Files.write(path, bytes);
            
            String  newsPicturePath=String.valueOf(path);
@@ -82,17 +85,26 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            
            newsService.addNews(newsModel);
            log.info("新闻进行了上传图片");
-       } catch (Exception e)
-   		{
-       	log.info(" e.printStackTrace()={}");
-           e.printStackTrace();
-   		}
-   	}else
-   	{
-   		log.info("新闻未上传图片");
-   	}
-   	return new ResponseEntity.Builder<Map<String, String>>()
-  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+           return new ResponseEntity.Builder<Map<String, String>>()
+        	  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+       	}catch (Exception e)
+   			{
+       			log.info(" e.printStackTrace()={}");
+       				e.printStackTrace();
+       				return new ResponseEntity.Builder<Map<String, String>>()
+       						.setData(info)
+       						.setErrorCode(ErrorCode.GENERAL_ERROR)
+       						.build();
+   			}
+   		}else
+   			{
+   			log.info("新闻未上传图片");
+   			return new ResponseEntity.Builder<Map<String, String>>()
+   					.setData(info)
+   					.setErrorCode(ErrorCode.GENERAL_ERROR)
+   					.build();
+   			}
+   	
 }
 
 @PostMapping(value="/updateNews")
@@ -108,13 +120,15 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 		    newsModel.setNewsAbstract(newsInfo.getNewsAbstract());
 		    newsModel.setNewsUrl(newsInfo.getNewsUrl());
 	       
-	      if(file!=null)
-	      { 
+	 if(file!=null)
+	 { 
+	    //生成唯一的文件名
+	   	String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
 	      try 
 	    	{
 	            // Get the file and save it somewhere
 	            byte[] bytes = file.getBytes();
-	            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+	            Path path = Paths.get(UPLOADED_FOLDER + fileName);
 	            Files.write(path, bytes);
 	            String newsPicturePath=String.valueOf(path);
 	            
@@ -128,25 +142,30 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	            newsModel.setNewsPicturePath(newsPicturePath);
 	            
 	            newsService.updateNews(newsModel);
-	            
+	            log.info("--------end-------");
+      			return new ResponseEntity.Builder<Map<String, String>>()
+      					.setData(info)
+      					.setErrorCode(ErrorCode.SUCCESS)
+      					.build();
 	        } catch (Exception e)
 	    		{
-	        	log.info("修改失败"+e);
+	        		log.info("修改失败"+e);
+	           	    return new ResponseEntity.Builder<Map<String, String>>()
+	               	      .setData(info)
+	               	      .setErrorCode(ErrorCode.GENERAL_ERROR)
+	               	      .build();
 	    		}
-}else
-	{
-	newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
-	newsService.updateNews(newsModel);
-	}
-	      
-
-      log.info("--------end-------");
-      
-      return new ResponseEntity.Builder<Map<String, String>>()
-      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-      
-    }
-
+	 		}else
+	 			{
+	 			newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
+	 			newsService.updateNews(newsModel);
+	 			log.info("--------end-------");
+      			return new ResponseEntity.Builder<Map<String, String>>()
+      					.setData(info)
+      					.setErrorCode(ErrorCode.SUCCESS)
+      					.build();
+	 			}
+}
 
 @PostMapping(value="/selectAllNews")
 @ResponseBody
