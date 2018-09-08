@@ -16,6 +16,4 @@ public class updateUserInfo implements Serializable{
   @Getter @Setter String gender;
   @Getter @Setter String birthday;
   @Getter @Setter String address;
-  void toSring(){	  
-  }
 }

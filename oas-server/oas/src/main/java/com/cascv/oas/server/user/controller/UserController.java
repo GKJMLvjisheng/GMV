@@ -189,6 +189,7 @@ public class UserController {
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
 	  info.put("profile", userModel.getProfile());
+	  log.info("****end****");
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
@@ -230,9 +231,7 @@ public class UserController {
     	  log.info("修改失败"+e);
     	  return new ResponseEntity.Builder<Map<String, String>>()
     		      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-      }
-	       
-	  
+      }	     	  
 	}
 	
 	/*
