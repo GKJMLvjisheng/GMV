@@ -112,12 +112,10 @@ function initNewsGrid(data) {
  
 function actionFormatter1(value, row, index) {
     var newsPicturePath = value; 
-    myimg=newsPicturePath.split('\\\\');
-    var imgName=myimg[myimg.length-1];
     var result = "";
     
     result += "<img src="+newsPicturePath+ " width='120px' height='80'><br>"+
-    			"<span>"+imgName+"</span>";    
+    			"<span>"+newsPicturePath+"</span>";    
     return result;
 }
 

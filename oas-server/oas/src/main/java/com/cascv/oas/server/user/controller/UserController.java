@@ -189,6 +189,7 @@ public class UserController {
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
 	  info.put("profile", userModel.getProfile());
+	  log.info("****end****");
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
@@ -230,9 +231,7 @@ public class UserController {
     	  log.info("修改失败"+e);
     	  return new ResponseEntity.Builder<Map<String, String>>()
     		      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-      }
-	       
-	  
+      }	     	  
 	}
 	
 	/*
@@ -244,7 +243,7 @@ public class UserController {
 	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file)
 	{   
 		 String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
-		 String UPLOADED_FOLDER =SYSTEM_USER_HOME+"\\Temp\\Image\\profile\\";	
+		 String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
 		log.info("doUpLoadImg-->start");
 		File dir=new File(UPLOADED_FOLDER);
 	  	 if(!dir.exists()){
