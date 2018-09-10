@@ -18,7 +18,7 @@ CSS样式
 *{margin:0px;padding:0px}
 /* h5*/
 body{
-    background-color:#eceddd;
+/*     background-color:#eceddd; */
     font-family:Arial, Verdana,'Lucida Grande', Helvetica, sans-serif;
     text-align: left;
     color: #333333;
@@ -75,15 +75,16 @@ nav ul li{                  /*调整基本信息格式*/
     width:100px;          /*调整基本信息框长度*/
     }
 
-
 nav ul li button{              /*调整基本信息格式字体大小*/
     display:block;
-    background-color:#37210c;
+     background-color:#293846; 
+
     border-right:1px solid #fff;     /*调整基本信息框高度*/
     line-height:1.5em;         /*调整基本信息格式字体大小*/
     margin-right:0px;         
     padding:8px 14px 8px 14px;    /*调整基本信息框高度和宽度*/
-    color: #ecf9ff;
+      color: #ecf9ff;  /*白色*/
+    
     font-weight:normal;
      font-size: 1em;       /*调整基本信息字体大小*/
     text-decoration: none;
@@ -92,7 +93,10 @@ nav ul li button{              /*调整基本信息格式字体大小*/
 
 nav ul li .selected{           /*调整基本信息框颜色*/
     color: #ecf9ff;
-    background-color:#e67e1f;
+/*       background-color:#e67e1f; /*橘色*/  
+      background-color:#f0ad4e; 
+/*      background-color:#293846;*/ /*深蓝色*/ 
+/* background-color:#d8dbde; */
     }
 
 
@@ -100,7 +104,7 @@ nav ul li .selected{           /*调整基本信息框颜色*/
 #content{                   /*调整整个个人信息框的位置*/
     margin:0 auto;
     width:902px;
-    background-color:#dfeef9;
+/*     background-color:#dfeef9; */
     height:480px;            /*调整整个个人信息蓝色底框的高度，需与表格高度一致*/
     clear:both;
     }
@@ -302,16 +306,16 @@ section{                       /*调整头像和保存按钮的位置*/
  /*显示剪辑后框的大小     位置*/
 .str {
 	width: 150px;
-	height: 140px;
+	height: 150px;
 	border: solid 1px #e3e3e3;
 	padding: 5px;     
 	margin-top: 10px
 }
  
-.tailoring-container {
-	width: 800px;
-	height: 800px;
-}
+ .tailoring-container { 
+ 	width: 800px; 
+ 	height: 800px; 
+ } 
     
 
 </style>
@@ -319,17 +323,17 @@ section{                       /*调整头像和保存按钮的位置*/
 
 </head>
 <body> 
-<header> 
-  <h1> 
-      <span class="orange"> 个人信息</span>
-  </h1>
-</header>
+<!-- <header>  -->
+<!--   <h1>  -->
+<!--       <span class="orange"> 个人信息</span> -->
+<!--   </h1> -->
+<!-- </header> -->
 
 
 <nav>
       <ul>
         <li><button onclick="userinfo()">基本信息 </button> </li>
-        <li><button class="selected" onclick="userimginfo()">更换头像 </button></li>
+        <li><button class="selected" onclick="userimginfo()"disabled="disabled">更换头像 </button></li>
         <li><button onclick="usersecurityinfo()">安全设置 </button></li>
        
       </ul>
@@ -378,7 +382,7 @@ section{                       /*调整头像和保存按钮的位置*/
 	</div>
 </div>
 
-<script type="text/javascript" th:src="@{/js/userInfo/resetPassword.js}"></script>
+
 <script type="text/javascript" th:src="@{/js/userInfo/userInfo.js}"></script> 
 
 </body>
@@ -391,7 +395,9 @@ section{                       /*调整头像和保存按钮的位置*/
 (window.onresize = function() {
 	var win_height = $(window).height();
 	var win_width = $(window).width();
+	//alert(win_height);
 	if (win_width <= 768) {
+		
 		$(".tailoring-content").css(
 				{
 					"top" : (win_height - $(".tailoring-content")
@@ -401,8 +407,8 @@ section{                       /*调整头像和保存按钮的位置*/
 	} else {
 		$(".tailoring-content").css(
 				{
-					"top" : (win_height - $(".tailoring-content")
-							.outerHeight()) / 2,
+					"top" :  	(win_height - $(".tailoring-content")
+								.outerHeight()) / 1,
 					"left" : (win_width - $(".tailoring-content")
 							.outerWidth()) / 2
 				});
@@ -532,7 +538,9 @@ $("#sureCut").on("click", function() {
 	            success: function (res) {
 	            	
 	            	alert("success");
-	                $("#userProfile").attr("src", res.data.profile);
+	                //$("#userProfile").attr("src", res.data.profile);
+
+	            	window.parent.func();
 	                
 	            },
 	            error:function(){	 
@@ -541,6 +549,7 @@ $("#sureCut").on("click", function() {
 	     }); 
 		closeTailor();// 关闭裁剪框
 		}
+	
 	});
 
 //关闭裁剪框
@@ -550,21 +559,21 @@ function closeTailor() {
 }
 
 
-$(function(){
-	var url = window.location.href;
-	var strInfo=getInfoAndAnalysis(url);
-	//console.log(JSON.stringify(strInfo));
-	var len=strInfo.length;
-	if(len>0)
-	{
-	var userName=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
-	var userProfile=decodeURI(decodeURI(strInfo[1]));
+// $(function(){
+// 	var url = window.location.href;
+// 	var strInfo=getInfoAndAnalysis(url);
+// 	//console.log(JSON.stringify(strInfo));
+// 	var len=strInfo.length;
+// 	if(len>0)
+// 	{
+// 	var userName=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+// 	var userProfile=decodeURI(decodeURI(strInfo[1]));
 
-	$("#userName").val(userName);
-	//$("#userProfile").val(userProfile);
-	$("#userProfile").attr("src", userProfile);
-	}
-});	
+// 	$("#userName").val(userName);
+// 	//$("#userProfile").val(userProfile);
+// 	$("#userProfile").attr("src", userProfile);
+// 	}
+// });	
 	
 //刷新从数据库更新数据
 $(function () {

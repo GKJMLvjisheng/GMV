@@ -8,7 +8,10 @@ $(function() {
 
 	//初始加载	
 	newsReady();
-	//newsIndexReady();
+	newsTitle.setAttribute("maxlength",100);
+	EnewsTitle.setAttribute("maxlength",100);
+	newsAbstract.setAttribute("maxlength",200);
+	EnewsAbstract.setAttribute("maxlength",200);
 });
 
 function newsReady(){
@@ -29,11 +32,9 @@ function newsReady(){
 			initNewsGrid(data2);
 		}, 
 		error: function(){
-			
+			alert("新闻回显失败！")
 		}
 		}); 
-	 
-	 //initNewsGrid(data2);
 }
 
 //检查图片格式是否符合要求
@@ -72,6 +73,38 @@ function checkPic() {
         
     }
 }
+
+
+//修改新闻-检查标题
+function EcheckTitle() {
+	var abstract = $("#EnewsTitle").val(); 
+	var len=abstract.length;
+	//alert(len);
+	if (len==200) {
+		$("#msg_EnewsTitle").html("输入标题长度为100个字符，已达上限");
+        $("#msg_EnewsTitle").css("color", "red");
+	}
+	else {
+		$("#msg_EnewsTitle").html("输入标题不超过100个字符，符合要求");
+        $("#msg_EnewsTitle").css("color", "green");
+	}
+}
+
+//修改新闻-检查摘要
+function EcheckAbstract() {
+	var abstract = $("#EnewsAbstract").val(); //获取上传的摘要
+	var len=abstract.length;
+	//alert(len);
+	if (len==100) {
+		$("#msg_EnewsAbstract").html("输入摘要长度为200个字符，已达上限");
+        $("#msg_EnewsAbstract").css("color", "red");
+	}
+	else {
+		$("#msg_EnewsAbstract").html("输入摘要不超过200个字符，符合要求");
+        $("#msg_EnewsAbstract").css("color", "green");
+	}
+}
+
 //新增新闻
 function addNews(){		
     
@@ -102,9 +135,7 @@ function addNews(){
 				$("#Tip").modal('show');
 				$("#addNewsModal").modal('hide');
 				 newsReady();
-				$("#newsGrid").bootstrapTable('refresh');
-				
-			
+				$("#newsGrid").bootstrapTable('refresh');							
 		},
 		error:function(){
 			document.getElementById("tipContent").innerText="上传失败";
@@ -112,13 +143,8 @@ function addNews(){
 			$("#addNewsModal").modal('hide');
 
 		},
-	});
-    
-
-	   
+	});	   
 }
-
-
 
 
 //点击取消后清空表单中已写信息
@@ -128,9 +154,7 @@ function resetAddModal(){
 }
 
 
-function updateNews(){
-	  
-	
+function updateNews(){	  	
 	var formData = new FormData();
 	var img_file = document.getElementById("AnewsPicturePath");//获取类型为文件的输入元素
 	//alert(img_file);
@@ -160,7 +184,8 @@ function updateNews(){
 			
 			if(res.code==0){
 				alert("success");
-			    newsReady();
+				location.reload();
+			    //newsReady();
 			}
 			else{
 				alert("修改失败");
@@ -175,64 +200,7 @@ function updateNews(){
 	
 	}
 
-//批量删除
-//function deleteNews(){
-//  var rows = $("#newsGrid").bootstrapTable("getSelections");
-//    var ids = [];
-//  var len = rows.length;
-//  //alert(len);
-//    if (len== 0) {
-//        alert("请先选择要删除的记录!");
-//        return;
-//    }
-//    Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
-//		if (!e) {
-//		  return;
-//		 }
-//  for(var i=0;i<len;i++){
-//    ids.push(rows[i]['newsId']);
-//
-//  }
-//	$.ajax({
-//
-//		url:"/doDeleteNews",
-//
-//		dataType:"json",
-//
-//		traditional: true,//属性在这里设置
-//
-//		method:"post",
-//
-//		data:{
-//
-//			"ids":ids
-//		},
-//
-//		success:function(data){
-//
-//            DeleteByIds();
-//            
-//            alert("删除成功！");
-//		     },
-//
-//		error:function(){
-//			alert("删除失败！")
-//		}
-//
-//	});
-//    });
-//}
-//function DeleteByIds(){
-//
-//    var ids = $.map($('#newsGrid').bootstrapTable('getSelections'),function(row){
-//        return row.newsId;
-//    });
-//
-//    $('#newsGrid').bootstrapTable('remove',{
-//        field : 'newsId',
-//        values : ids
-//    });
-//}
+
 function newsIndexReady() {
 	//alert(1);
 	   $.ajax({

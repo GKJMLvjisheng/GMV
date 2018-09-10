@@ -262,7 +262,7 @@ function checkPasswordIn(){
 			url : "/api/v1/userCenter/checkPassword",
 			type : "POST",
 			dataType : 'json',
-			//async : false,
+			async : false,
 			data : JSON.stringify(data),
 			contentType : 'application/json;charset=utf8',
 			success : function(res) {
@@ -293,7 +293,7 @@ function checkPasswordIn(){
 
 // 功能： checkPassowrdFlag = 1 + 页面跳转到 resetMail 或者resetMobile
 function checkLink1() {
-	
+	checkPasswordIn();
 	var string1 = $("#labelPwd1").val();//标题
 	var strProgress = $("#labelProgress2").val();// 修改邮箱 或者 修改手机
 
@@ -394,10 +394,11 @@ function sendMailCode() {
 		};
 		timer = setInterval(function() {///开启定时器。函数内执行
 			btn.disabled = true;
-			btn.innerText = time + "秒后重新发送"; //点击发生后，按钮的文本内容变成之前定义好的时间值。
+			//btn.innerText = time + "秒后重新发送"; //点击发生后，按钮的文本内容变成之前定义好的时间值。
+			btn.innerText = time + "秒后重发";
 			time--;//时间值自减
 			if (time == 0) { //判断,当时间值小于等于0的时候
-				btn.innerText = '重新发送验证码'; //其文本内容变成……点击重新发送……
+				btn.innerText = '获取验证码'; //其文本内容变成……点击重新发送……
 				btn.disabled = false;
 				clearInterval(timer); //清除定时器
 			}
@@ -447,6 +448,7 @@ function checkMailIdentify() {
 		type : "POST",
 		dataType : 'json',
 		data : JSON.stringify(data),
+		async:false,
 		contentType : 'application/json;charset=utf8',
 		success : function(res) {
 			//根据判断提示用户
@@ -472,7 +474,7 @@ function checkMailIdentify() {
 
 // 修改邮箱到数据库
 function addNewMail() {
-	
+	checkMailIdentify();
 	if (flag){
 		
 		var userName = $("#userName").val();
@@ -549,6 +551,7 @@ function checkUserMobile(userMobile) {
         type : "POST",
         dataType : 'json',
         data : JSON.stringify(data),
+        async : false,
         contentType : 'application/json;charset=utf8',
         success : function(res) {
           //根据判断提示用户
@@ -597,7 +600,7 @@ function checkUserMobile(userMobile) {
 				url : "/api/v1/userCenter/sendMobile",
 				type : "POST",
 				dataType : 'json',
-				//async : false,
+				async : false,
 				data : JSON.stringify(data),
 				contentType : 'application/json;charset=utf8',
 				success : function(res) {
@@ -608,10 +611,10 @@ function checkUserMobile(userMobile) {
 						// 开启定时器。函数内执行
 						timer = setInterval(function() {
 							btn.disabled = true;
-							btn.innerText = time + "秒后重新发送"; //点击发生后，按钮的文本内容变成之前定义好的时间值。
+							btn.innerText = time + "秒后重发"; //点击发生后，按钮的文本内容变成之前定义好的时间值。
 							time--;//时间值自减
 							if (time == 0) { //判断,当时间值小于等于0的时候
-								btn.innerText = '重新发送验证码'; //其文本内容变成……点击重新发送……
+								btn.innerText = '获取验证码'; //其文本内容变成……点击重新发送……
 								btn.disabled = false;
 								clearInterval(timer); //清除定时器
 							}
@@ -651,6 +654,7 @@ function checkUserMobile(userMobile) {
 			type : "POST",
 			dataType : 'json',
 			data : JSON.stringify(data),
+			async : false,
 			contentType : 'application/json;charset=utf8',
 			success : function(res) {
 				//根据判断提示用户
@@ -677,7 +681,7 @@ function checkUserMobile(userMobile) {
 	}
 
 	function addNewMobile() {
-		
+		checkMobileIdentify();
 		//alert(checkCodeFlag);
 		if (checkCodeFlag){
 			
@@ -725,4 +729,36 @@ function checkUserMobile(userMobile) {
 			alert("验证失败，修改未成功！！！！");
 		}
 
+	}
+	//解析URL
+	function getInfoAndAnalysis(url){
+		var result=new Array();
+		var parm=""; 
+		if(url.indexOf("?")!=-1){
+			for(var i=0;i<url.length;i++){
+				if(url[i]=="?"){
+					parm=url.substring(i+1, url.length);
+				}
+			}
+				
+		}
+		function DivideTwoElement(parm){
+			strs=parm.split("&");
+			$.each(strs,function(i,n){
+				var a=(urid(n)==""?null:urid(n));
+				result.push(a);
+			});
+			return result;
+		}
+		var urid=function(parm){
+			var p="";
+			for(var i=0;i<parm.length;i++){
+				if(parm[i]=="="){
+					p=parm.substring(i+1, parm.length);
+				}
+			}
+			return p;
+		}
+		
+		return DivideTwoElement(parm);
 	}

@@ -62,9 +62,6 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
-	  System.out.println(ethWalletTransfer.getContract());
-	  System.out.println(ethWalletTransfer.getToUserAddress());
-	  System.out.println(ethWalletTransfer.getAmount());
 	  if(ethWalletTransfer.getToUserAddress().equals("0")) {
 		  return new ResponseEntity.Builder<Integer>()
 				  .setData(1)
