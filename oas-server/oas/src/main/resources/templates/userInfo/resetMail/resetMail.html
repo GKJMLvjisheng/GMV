@@ -57,7 +57,6 @@
 	/**display:inline-block;**/
 	position: absolute;
 	z-index: 10;
-	color: white;
 	top: 76px;
 }
 
@@ -79,7 +78,7 @@ i:after {
 	width: 10px;
 	height: 10px;
 	border-radius: 20px; /**控制形状**/
-	background-color: orange; /**控制图标颜色#000 #DCDCDC **/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
 	margin-right: 25px; /**图标与文字距离**/
 	display: inline-block;
 	position: relative;
@@ -131,7 +130,7 @@ i:after {
 	width: 25px;
 	height: 25px;
 	border-radius: 20px; /**控制形状**/
-	background-color: orange; /**控制图标颜色#000   #DCDCDC **/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
 	margin-right: -30px; /**图标与文字距离**/
 	display: inline-block;
 	position: relative;
@@ -171,6 +170,9 @@ ul, li { list-style:none; }
 .red { color:#333; } 
 .hidden { display:none; }
 
+.col-sm-4 {
+    width: 29.8%;
+}
 </style>
 </head>
 <body>
@@ -195,59 +197,136 @@ ul, li { list-style:none; }
 
 
 		<div class=" col-sm-7 col-center-block">
-		     <h4 class="text-center" id="resultLabel">**************</h4>
 
-			<form id="resetMMSuccessForm" action="/user/resetMMSuccess"
+			<form id="resetMailForm" action="/user/resetMail"
 				method="post" class="form-horizontal">
 				<input type="text" style="display: none" name="userName" id="userName">
+
+
+				<div class="form-group">
+					<label for="mailNumber" id=labelMobileMail
+						class="col-sm-3 control-label">原邮箱号:</label>
+					<div class="col-sm-6">
+						<input type="text" id="userMail" class="form-control"
+							style="border-style: none" readonly="readonly" />
+
+					</div>
+				</div>
+				
+				<div class="form-group">
+
+					<label for="userMailIn" class="col-sm-3 control-label">修改邮箱:</label>
+					
+					<span class="required">*</span>
+
+					<div class="col-sm-6">
+
+						<input type="text" name="userMailIn" class="form-control"
+							id="userMailIn" required="required" placeholder="请输入邮箱" /> 
+					    <span id="userMail_span"></span>
+
+					</div>
+
+
+				</div>
+
+				<div class="form-group">
+					<label for="identifyCodeNext" class="col-sm-3 control-label">校验码:</label><span
+						class="required " style="font-size: 15px"><button
+							class="btn btn-warning   " id="obtain" type="button"
+							onclick="sendMailCode()">获取验证码</button></span>
+					<div class="col-sm-4">
+						<input type="text" id="identifyCodeNext" class="form-control"
+							placeholder="请输入验证码"  /> <span
+							id='msgNext'></span>
+<!-- onblur='checkMailIdentify()' -->
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label for="idengtify" class="col-sm-3 control-label"></label>
+					<div class="col-sm-6">
+
+						<button class="btn btn-warning   btn-block " id="idengtifyNext"
+							type="button" onclick="addNewMail()">确定</button>
+					</div>
+				</div>
+
+
+				<!--         btn-primary   btn-block-->
 
 			</form>
 
 		</div>
 
 	</div>
+	<div class="modal fade" id="Tip" role="dialog">
 
-	<script type="text/javascript" th:src="@{/js/userInfo/resetPassword.js}"></script>
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+
+					<h3>提示</h3>
+
+				</div>
+
+				<div class="modal-body" align="center">
+
+					<h4 id="tipContent">新增成功</h4>
+
+				</div>
+
+				<div class="modal-footer">
+
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	
+	<script type="text/javascript" th:src="@{/js/userInfo/userInfo.js}"></script>
 	<script type="text/javascript" th:src="@{/js/userInfo/emailAutoComplete.js}"></script>
-	<script type="text/javascript" th:src="@{/js/userInfo/userInfo/userInfo.js}"></script>
 
 </body>
 <script type="text/javascript">
+	$(function() {
+		var url = window.location.href;
+		var strInfo = getInfoAndAnalysis(url);
 
-$(function() {
-	var url = window.location.href;
-	var strInfo = getInfoAndAnalysis(url);
+		var len = strInfo.length;
+		if (len > 0) {
+			var string1 = decodeURI(decodeURI(strInfo[0]));//标题
+			var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
+			var str = decodeURI(decodeURI(strInfo[2]));// userMailHiden mail\mobile
+			
+			var string2 = decodeURI(decodeURI(strInfo[3])); // labelMobileMail 原手机号或者邮箱
+			var userName = decodeURI(decodeURI(strInfo[4])); // 登录名
 
-	var len = strInfo.length;
-	if (len > 0) {
-		var string1 = decodeURI(decodeURI(strInfo[0]));//标题
-		var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
-		var str = decodeURI(decodeURI(strInfo[2]));// mobileAddMailHiden mail\mobile
-		var userName = decodeURI(decodeURI(strInfo[3])); // 登录名
-		var result = decodeURI(decodeURI(strInfo[4])); // 成功 或者 失败
-		
-		document.getElementById("labelPwd2").innerHTML = (string1);//标题
-		$("#labelPwd2").val(string1);
+			document.getElementById("labelPwd2").innerHTML = (string1);//标题
+			$("#labelPwd2").val(string1);
 
-		document.getElementById("labelProgressTwo2").innerHTML = (strProgress);// 修改邮箱 或者 修改手机
-		$("#labelProgressTwo2").val(strProgress);
-		$("#mobileAddMail").val(str);
+			document.getElementById("labelProgressTwo2").innerHTML = (strProgress);// 修改邮箱 或者 修改手机
+			$("#labelProgressTwo2").val(strProgress);
+			$("#userMail").val(str);
 
-		$("#userName").val(userName);
-		
-		var s = "恭喜！！！" + userName + string1 + result + "10秒后跳转！";
-
-		document.getElementById("resultLabel").innerHTML = (s);
-	}
+			$("#userName").val(userName);
+		}
+	});
 	
-	setTimeout(function(){
-		
-		var href = encodeURI(encodeURI("userSecurityInfo?userName=" + userName));
-		
-		window.location.href= href;},10000);
-				
-});
-
+     // userInfo.js
+	
+	//刷新从数据库更新数据
+	$(function () {
+	   refreshUserInfo();
+	});
 	
 </script>
 	

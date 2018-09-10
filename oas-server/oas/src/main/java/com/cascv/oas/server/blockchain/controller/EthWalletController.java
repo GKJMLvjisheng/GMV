@@ -62,12 +62,10 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
-	  if(ethWalletTransfer.getContract() == null) {
-		  return new ResponseEntity.Builder<Integer>()
-				  .setData(1)
-				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
-				  .build();
-	  }else if(ethWalletTransfer.getToUserAddress() == null) {
+	  System.out.println(ethWalletTransfer.getContract());
+	  System.out.println(ethWalletTransfer.getToUserAddress());
+	  System.out.println(ethWalletTransfer.getAmount());
+	  if(ethWalletTransfer.getToUserAddress().equals("0")) {
 		  return new ResponseEntity.Builder<Integer>()
 				  .setData(1)
 				  .setErrorCode(ErrorCode.WRONG_ADDRESS)
@@ -103,12 +101,7 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
-	  if (ethWalletMultiTransfer.getContract() == null) {
-		  return new ResponseEntity.Builder<Integer>()
-				  .setData(1)
-				  .setErrorCode(ErrorCode.SELECT_THE_CONTRACT)
-				  .build();
-	  }else{
+	  
 		  BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice();
 		  if (gasPrice == null)
 			gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
@@ -125,7 +118,6 @@ public class EthWalletController {
 	        .setData(resp)
 	        .setErrorCode(returnValue.getErrorCode())
 	        .build();
-	  }
   }
   
   @PostMapping(value="/listCoin")

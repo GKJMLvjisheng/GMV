@@ -13,7 +13,7 @@ import lombok.Setter;
 
 public class NewsModel implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Getter @Setter private String newsId;
+	@Getter @Setter private Integer newsId;
 	@Getter @Setter private String newsTitle;
 	@Getter @Setter private String newsAbstract;
 	@Getter @Setter private String newsUrl;

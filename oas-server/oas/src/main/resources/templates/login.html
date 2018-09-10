@@ -68,7 +68,7 @@
 		"name": $('#nameId').val(),
 	    "password": $('#passwordId').val(),
 	};
-	alert(JSON.stringify(data));
+	
 	var name=$('#nameId').val();
 	$.ajax({
 	   type: 'post',
@@ -81,13 +81,13 @@
 	     if (res.code == 0) {
 	    	 var string=res.data.token;
 	    	 
-	    	 window.location.replace(encodeURI(encodeURI("main?string="+string+"&用户名字="+name)));
+	    	 window.location.replace(encodeURI(encodeURI("/main?string="+string+"&用户名字="+name)));
 	     } else {
 	    	 alert(res.message);
 	     }
 	   },
 	   error: function (res) {
-		  alert("11"+JSON.stringify(res));
+		  alert(JSON.stringify(res));
 	   },
 	   complete: function () {
 	   }

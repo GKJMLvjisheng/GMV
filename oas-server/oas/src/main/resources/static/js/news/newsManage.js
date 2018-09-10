@@ -234,7 +234,7 @@ function updateNews(){
 //    });
 //}
 function newsIndexReady() {
-	alert(1);
+	//alert(1);
 	   $.ajax({
 	    url: "/api/v1/userCenter/selectAllNews",
 	    contentType : 'application/json;charset=utf8',
@@ -242,15 +242,12 @@ function newsIndexReady() {
 		cache: false,
 		type: 'post',
 	    success: function(res) {
-	    	//alert(JSON.stringify(res),);
 	    	var len=res.data.list.length;
-	    	
-	    	//var picturePath=[len];
 	    	
 	      if (len>0) {
 	        list="";
 	        for(i=0;i<len;i++){
-
+	        
 	          list+=
 	            "<div class='new-list-item clearfix'>"+
 	            "<div class='col-xs-1'></div>"+

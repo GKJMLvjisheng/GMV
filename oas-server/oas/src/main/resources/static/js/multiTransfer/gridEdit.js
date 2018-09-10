@@ -19,19 +19,23 @@ document.write("<script language=javascript src='js/deleteConfirm.js'></script>"
 var token;
 $(function ()
 	{
-//	var url = window.location.href;
-//	var strInfo=getInfoAndAnalysis(url);
-//	//console.log(JSON.stringify(strInfo));
-//	var len=strInfo.length;
-//	if(len>0)
-//	{
-//		token=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
-//		var name=decodeURI(decodeURI(strInfo[1]));
-//		alert("name"+name);
-//		}
+
+	var url = window.location.href;
+	var strInfo=getInfoAndAnalysis(url);
+	//console.log(JSON.stringify(strInfo));
+	var len=strInfo.length;
+	if(len>0)
+	{
+		token=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+		var name=decodeURI(decodeURI(strInfo[1]));
+		
+		}
+	//data={"name":name}
+	
 	var userName=$("#userNickname",parent.document).text();
 	token=$("#userToken",parent.document).val();
 	data={"name":userName}
+
 	$.ajax({
 		   type: 'post',
 		   url: '/api/v1/ethWallet/selectContractSymbol',
@@ -41,12 +45,12 @@ $(function ()
 		   cache: false,
 		   success: function (res) {
 		     if (res.code == 0) {
-		    	 alert(JSON.stringify(res));
+		    	 
 		    	
 		    	 var optionData=res.data;
-		    	 alert(JSON.stringify(optionData));
+		    	 
 		    	 var len=optionData.length;
-		    	 alert("长度"+len);
+		    	 
 		    	 
 		    	 var selections = document.getElementById("contract");
 		    	 //var string=res.data[];
@@ -54,7 +58,7 @@ $(function ()
                      //设置下拉列表中的值的属性
                      var option = document.createElement("option");
                          option.value = optionData[i].contract;
-                         alert(optionData[i].contract);
+                        
                          option.text= optionData[i].symbol;
                      //将option增加到下拉列表中。
                      selections.options.add(option);
@@ -421,17 +425,21 @@ $(function ()
     function addRow(table, index){  
 
     var lastRow = table.rows[table.rows.length-1];  
-    alert(lastRow);
+    
     var newRow = lastRow.cloneNode(true);  
 
     //计算新增加行的序号，需要引入jquery 的jar包
 
     var startIndex = $.inArray(lastRow,table.rows);//查找lastRow在table里的索引
-    alert(startIndex);
+    
    // var endIndex = table.rows.length; 
+<<<<<<< HEAD:oas-server/oas/src/main/resources/static/js/gridEdit.js
+   
+=======
     //alert(endIndex);
     newRow.cells[2].setAttribute("Value", 0);  
     newRow.cells[2].innerHTML=0;
+>>>>>>> 51a5169e2c01ff4d45d38e4d267bc859ccf6b16e:oas-server/oas/src/main/resources/static/js/multiTransfer/gridEdit.js
     table.tBodies[0].appendChild(newRow);  
 
     //newRow.cells[1].innerHTML=endIndex-startIndex;
@@ -468,10 +476,9 @@ $(function ()
           table.deleteRow(i);  
           if(i!=len)
           { var len1=table.rows.length;
-          alert(len1);
-         // alert(len2);
+        
           	 for(var j=i;j<len1;j++)
-          		{alert("111");
+          		{
           		table.rows[j].cells[1].innerHTML=j;
           		}
           	}
@@ -529,12 +536,12 @@ $(function ()
    
 	//alert("contract"+$('#contract option:selected') .val());//选中的值
 	
-    alert(token);
+    
     data={
     		"contract": contract,
     	    "quota":tableData1,
     	};
-    alert(JSON.stringify(data));
+    
     transfer(data);
     });
     //return tableData;  
@@ -543,7 +550,7 @@ $(function ()
     //转账接口
     function transfer(data)
     {
-    	 alert("111"+JSON.stringify(data));
+    	 
     $.ajax({
 
 		url:"/api/v1/ethWallet/multiTtransfer",
@@ -737,10 +744,10 @@ $(function ()
     function formatNumber(num,pattern){    
 
     var strarr = num?num.toString().split('.'):['0'];   //toString() 方法可把一个逻辑值转换为字符串，并返回结果。split()是使对象按这个方式划分 
-    alert("sum1"+strarr);
+    
 
     var fmtarr = pattern?pattern.split('.'):[''];    
-    alert("格式"+fmtarr);
+   
     var retstr='';    
 
         
@@ -752,7 +759,7 @@ $(function ()
     var fmt = fmtarr[0];    
 
     var i = str.length-1;      
-alert("leni"+i);
+
     var comma = false;    
 
     for(var f=fmt.length-1;f>=0;f--){    

@@ -1,30 +1,15 @@
-/**
-
- * 
- */
-//document.write("<script language=javascript src='usermanage.js'></script>");
-//document.write("<script language=javascript src='/roleManage/roleManage.js'></script>");
-//主界面创建bootstrapTable
+//新闻管理界面创建bootstrapTable
 document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
-
-
-
 
 function initNewsGrid(data) {	
 
 	$("#newsGrid").bootstrapTable({
-
-		//method:"post",
 
 		//极为重要，缺失无法执行queryParams，传递page参数
 
 		contentType : "application/x-www-form-urlencoded",
 
 		dataType:"json",
-
-		//url:'/doqueryAllUser', 
-
-		//queryParams:queryParam,
 
 		pagination:true,//显示分页条：页码，条数等
 
@@ -39,35 +24,20 @@ function initNewsGrid(data) {
 
 		uniqueId:"newsId",//Indicate an unique identifier for each row
 
-		 //height: document.body.clientHeight-165,
-
-		//height:tableModel.getHeight(),
-
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 
 		data:data,
-		columns : [ 	
-			{
-			title : "选择",
-			
-
-			checkbox:"true",
-			
-			align: 'center',// 居中显示
-			
-			field : "box",
-				
-
-		},{
+		columns : [{
 
 			title : "标题",
 
 			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '200px',
+			formatter: title
 
 		}, {
 
@@ -77,6 +47,7 @@ function initNewsGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
+			formatter: abstract
 
 		},
 		{
@@ -86,8 +57,7 @@ function initNewsGrid(data) {
 			field : "newsPicturePath",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
-			formatter: actionFormatter1
+			formatter: picturePath
 
 		}, 
 		{
@@ -97,10 +67,7 @@ function initNewsGrid(data) {
 			field : "newsUrl",
 			align: 'center',
 			valign: 'middle',
-			width:  '300px',
-			//table-layout:fixed,
-			//formatter: actionFormatter3
-			
+			formatter: url		
 
 		},
 		{
@@ -111,64 +78,79 @@ function initNewsGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
-			formatter: actionFormatter2
+			formatter: actionFormatter
 
 
 		}],
-
+		
 		search : true,//搜索
-		//strictSearch: true,
-		//showSearchButton: true,
         searchOnEnterKey : true,
-
-		showRefresh : true,//刷新
-		clickToSelect: false,
-        //showToggle : true////是否显示详细视图和列表视图的切换按钮
-         
-
-
+		clickToSelect: false,         
 	});
+}
 
+//每行countInLine个字符
+function changeLine(newsClass,countInLine){
+	var str="";	    	
+	var newsClass1 = newsClass.split('');	//字符串转数组	 
+	for(var i = 0; i < newsClass1.length; i++){ 
+	    if((i + 1) % countInLine == 0){ 
+	        str += newsClass1[i] + "<br>"; 
+	    } 
+	    else { 
+	        str += newsClass1[i]; 
+	    } 
+	}
+	return str;
 }
 
 
-function actionFormatter3(value, row, index) {
-	var div = "<div style='width:100px;'>"+value+"</div>";//调列宽，在td中嵌套一个div，调整div大小
-	  return div;
+function title(value, row, index) {	
+	var result = "";
+	var newsTitle = value;
+	var str=changeLine(newsTitle,20);
+	 result +="<span>"+str+"</span>";    
+	 return result;
 }
 
-  
-  
-function actionFormatter1(value, row, index) {
-    var newsPicturePath = value;
-    //alert(newsPicturePath);    
-
-    var result = "";
-    
+function abstract(value, row, index) {	
+	var result = "";
+	var abstract = value;
+	var str=changeLine(abstract,30);
+	 result +="<span>"+str+"</span>";    
+	 return result;
+}
+ 
+function picturePath(value, row, index) {
+	var result = "";
+	var newsPicturePath = value; 
+	var str=changeLine(newsPicturePath,20);      
     result += "<img src="+newsPicturePath+ " width='120px' height='80'><br>"+
-    			"<span>"+newsPicturePath+"</span>";    
+    			"<span>"+str+"</span>";    
     return result;
 }
 
-function actionFormatter2(value, row, index) {
+function url(value, row, index) {	
+	var result = "";
+	var newsUrl = value;    	
+	var str=changeLine(newsUrl,40);
+    result += "<a href="+str+">"+str+"</a>" ;    
+    return result;
+}
+
+function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
         
-        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewNewsById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditNewsById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteNewsById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
-    }
-
-
-
+}
  
-function ViewNewsById(id){
-	
+function ViewNewsById(id){	
 
-		//获取选中行的数据
-		
+		//获取选中行的数据		
 		var rows=$("#newsGrid").bootstrapTable('getRowByUniqueId', id);
 		$('#QnewsId').val(rows.newsId);
 		$('#QnewsTitle').val(rows.newsTitle);
@@ -183,14 +165,12 @@ function EditNewsById(id){
     
     //获取选中行的数据
     var rows=$("#newsGrid").bootstrapTable('getRowByUniqueId', id);
-
-    	$('#EnewsId').val(rows.newsId);  
-	    $('#EnewsTitle').val(rows.newsTitle);
-		$('#EnewsAbstract').val(rows.newsAbstract);
-		$('#EnewsUrl').val(rows.newsUrl);
-		$('#EnewsPicturePath').val(rows.newsPicturePath); 				
-        $("#updateNewsModal").modal("show");       
-    
+	$('#EnewsId').val(rows.newsId);  
+    $('#EnewsTitle').val(rows.newsTitle);
+	$('#EnewsAbstract').val(rows.newsAbstract);
+	$('#EnewsUrl').val(rows.newsUrl);
+	$('#EnewsPicturePath').val(rows.newsPicturePath); 				
+    $("#updateNewsModal").modal("show");           
   }
 
 
@@ -202,7 +182,7 @@ function deleteNewsById(id)
 		 }
 
 	data={"newsId":id};
-	alert(JSON.stringify(data));
+	//alert(JSON.stringify(data));
 	$.ajax({
 
 		url:"/api/v1/userCenter/deleteNews",

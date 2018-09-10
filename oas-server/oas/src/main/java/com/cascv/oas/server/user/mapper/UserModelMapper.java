@@ -1,6 +1,8 @@
 package com.cascv.oas.server.user.mapper;
 
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.cascv.oas.server.user.model.UserModel;
@@ -40,5 +42,9 @@ public interface UserModelMapper {
 	 * Date:2018.09.04
 	 */	
 	 Integer resetEmailByName(UserModel userModel);
+	 
+	 List<String> selectUserMail(String email);
+	 
+	 List<String> selectUserMobile(String mobile);
 }
 

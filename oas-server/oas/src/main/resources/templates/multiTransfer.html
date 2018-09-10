@@ -15,11 +15,11 @@
 
     <!--  
 
-    body,div,p,ul,li,font,span,td,th{  
+    p,ul,li,font,span,td,th{  
 
     font-size:10pt;  
 
-    line-height:155%;  
+    line-height:35px;  
 
     }  
 
@@ -88,6 +88,35 @@
  margin-left:15px;
  float:left;
 }
+.col-center-block {
+
+    float: none;
+
+    display: block;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+}
+
+ .col-sm-1 { 
+     width: 10.6667%; 
+     margin-right:-1.6667%; 
+     margin-left:-2.6667%;
+/*      padding-right: 25px;  */
+ } 
+  .col-sm-2 { 
+     width: 15.89%; 
+     margin-right:0%; 
+/*      padding-right: 20px;  */
+ } 
+   .col-sm-3 { 
+     width: 11.1%;
+     margin-right:auto;  
+/*       padding-right: 20px;  */
+ } 
+ 
     </style>  
 
 
@@ -98,8 +127,7 @@
 
     <body>  
 <div class="container">
-    <form id="form1" name="form1" method="post" action="">  
-
+  
     <h3>一对多转账</h3>  
      <input type="button" name="Submit" value="新增" onclick="addRow(document.getElementById('tabProduct'),1)" />  
 
@@ -109,24 +137,59 @@
 
     <input type="submit" name="Submit3" value="提交" onclick="getTableData(document.getElementById('tabProduct'));return false;" />
    
-     
-   
+
+  
    <hr/> 
 
+		 <div class=" col-sm-12 ">
+				 <form id="form1" name="form1" method="post" action=""class="form-horizontal"> 
 
-								<label for="contract" class=" control-label">货币类型:</label>
-
-									
-			                	<select id="contract"  name="contract" required="required">
+			               		
+			               		 <div class="form-group">
+								<label for="useAddress" class="col-sm-1 control-label">账户地址:</label>
+								<div class="col-sm-4">
+								<input type="text"class="form-control "readonly="readonly" name="useAddress" id="useAddress"/>
+								</div>
+								<label for="contractAddress" class=" col-sm-1 control-label">协议地址:</label>
+								<div class="col-sm-4">
+								<input type="text" class="form-control "readonly="readonly"name="contractAddress" id="contractAddress">
+							</div>
+							</div>
+							
+							 <div class="form-group">
+								<label for="contractSymbol" class="col-sm-1 control-label">货币类型:</label>
+								<div class="col-sm-2">
+								<select id="contractSymbol" class="form-control " name="contractSymbol" >
 			                    <option >请选择</option>
-			                    
-		
 			               		 </select>
+								</div>
+								<label for="precision" class=" col-sm-1 control-label">货币精度:</label>
+								<div class="col-sm-3">
+								<input type="text" class="form-control "readonly="readonly"name="precision" id="precision"/>
+							</div>
+							<label for="money" class=" col-sm-1 control-label">账户余额:</label>
+								<div class="col-sm-4">
+								<input type="text" class="form-control "readonly="readonly"name="money" id="money"/>
+							</div>
+							</div>
+							
+					  </form>  		
+							
+			
+					
+					</div>
+				
+			
+			
+			
+			
+
                	
             
        
          
         <br /> 
+        
     <table width="698" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
 
         <tr>  
@@ -139,11 +202,11 @@
 
           	<td width="200" bgcolor="#EFEFEF" Name="toUserAddress"style="text-align:center" EditType="TextBox">_to(address)</td>  
             <td width="152" bgcolor="#EFEFEF" Name="candy" style="text-align:center" EditType="TextBox">Number of Candy</td>  
-           	<td width="152" bgcolor="#EFEFEF" Name="precision"style="text-align:center" EditType="DropDownList" DataItems="{text:'18',value:'18'},{text:'19',value:'19'},{text:'20',value:'20'},{text:'21',value:'21'}">Decimals of Precision</td>
+<!--            	<td width="152" bgcolor="#EFEFEF" Name="precision"style="text-align:center" EditType="DropDownList" DataItems="{text:'18',value:'18'},{text:'19',value:'19'},{text:'20',value:'20'},{text:'21',value:'21'}">Decimals of Precision</td> -->
 
          
 
-          <td width="200" bgcolor="#EFEFEF" Name="amount"style="text-align:center" Expression="candy*Math.pow(10,precision)" >value</td>  
+          <td width="200" bgcolor="#EFEFEF" Name="amount"style="text-align:center;display:none" Expression="candy*Math.pow(10,precision)" >value</td>  
 <!-- Format="#,###.00";display:none -->
         </tr>  
 
@@ -158,9 +221,9 @@
           <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
 
           <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
-           <td bgcolor="#FFFFFF" style="text-align:center"Value="18">18</td> 
+<!--            <td bgcolor="#FFFFFF" style="text-align:center"Value="18">18</td>  -->
 
-          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+          <td bgcolor="#FFFFFF"style="text-align:center;display:none">0</td>  
 
         </tr>  
 
@@ -175,9 +238,9 @@
           <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
 
           <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
-           <td bgcolor="#FFFFFF"style="text-align:center" Value="18">18</td>  
+<!--            <td bgcolor="#FFFFFF"style="text-align:center" Value="18">18</td>   -->
 
-          <td bgcolor="#FFFFFF"style="text-align:center">0</td>  
+          <td bgcolor="#FFFFFF"style="text-align:center;display:none">0</td>  
 
         </tr>  
 
@@ -192,7 +255,7 @@
     <input type="file" name="xlfile" class="btn-primary fileBtn"id="excelFile" /> <input type="submit" class=" btn-primary submitBtn"name="Submit3" value="提交" onclick="getExcelData();return false;" />
     
 
-    </form>  
+  
 
  </div>     
 

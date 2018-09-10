@@ -147,13 +147,7 @@
 	<!-- Name:upadateUserInfo -->
 	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.03 -->
-    <update id="updateUserInfo" parameterType="com.cascv.oas.server.user.model.UserModel">
-<!--        update user_info set  -->
-<!--       	nickname = #{nickname}, -->
-<!--       	gender= #{gender}, -->
-<!--        address = #{address}, -->
-<!--       	birthday = #{birthday} -->
-<!--        where name = #{name}   -->   
+    <update id="updateUserInfo" parameterType="com.cascv.oas.server.user.model.UserModel"> 
       update user_info 
       <trim prefix="SET" suffixOverrides=",">
       <if test="nickname != null">
@@ -181,5 +175,22 @@
       where name = #{name}  
     </update>
     
+    <!-- resetMobileByName -->
+   	<!-- @Author:lvjisheng -->
+	<!-- @Date:2018.09.06 -->
+    <update parameterType="com.cascv.oas.server.user.model.UserModel" id="resetMobileByName">
+    update user_info set mobile = #{mobile} where name = #{name} 
+    </update>
+    <update parameterType="com.cascv.oas.server.user.model.UserModel" id="resetEmailByName">
+    update user_info set email = #{email} where name = #{name} 
+    </update>
+    
+     <!-- select user email-->
+    <select id="selectUserMail" resultMap="userModelMap">
+    select email from user_info where email = #{email} </select>
+    
+     <!-- select user mobile-->
+    <select id="selectUserMobile" resultMap="userModelMap">
+    select mobile from user_info where mobile = #{mobile} </select>
 </mapper>
 

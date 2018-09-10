@@ -5,14 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
-<title>修改邮箱</title>
+<title>修改手机</title>
 <link rel="stylesheet" type="text/css"
 	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
 
 <link rel="stylesheet" type="text/css"
 	th:href="@{/webjars/bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css}">
-
-<!-- <link rel="stylesheet" type="text/css" th:href="@{/style.css}"> -->
 
 <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 
@@ -160,16 +158,9 @@ i:after {
 	top: 76px;
 	color: white;
 }
-
-@charset "utf-8";
-* { outline:none; margin:0; padding:0; font-family:microsoft yahei; }
-ul, li { list-style:none; }
-.auto-tip li { width:100%; text-align:left; height:22px; line-height:22px; font-size:14px;background:white; }
-.auto-tip li.hoverBg { background:#ddd; cursor:pointer; }
-.auto-tip li em { font-style:normal; }
-.red { color:#333; } 
-.hidden { display:none; }
-
+.col-sm-4 {
+    width: 29.8%;
+}
 </style>
 </head>
 <body>
@@ -181,7 +172,7 @@ ul, li { list-style:none; }
 		<div class="container">
 			<h4 style="display: inline-block" id="labelProgressTwo1">验证身份</h4>
 			<i id="circle1"></i><i id="circle1"></i><i id="circle1"></i>
-			<h4 style="display: inline-block" id="labelProgressTwo2">修改密码</h4>
+			<h4 style="display: inline-block" id="labelProgressTwo2">修改手机</h4>
 			<i id="circle2" class="grayness"></i><i id="circle2" class="grayness"></i><i
 				id="circle2" class="grayness"></i>
 			<h4 class=" content" style="display: inline-block"
@@ -192,50 +183,85 @@ ul, li { list-style:none; }
 	<hr />
 	<div class="container">
 
+		<!--    <div class="row myCenter">  -->
 
 		<div class=" col-sm-7 col-center-block">
 
-			<form id="resetMailForm" action="/user/resetMail"
+			<!--       <form class="form-signin"> -->
+			<form id="resetMobileForm" action="/user/resetMobile"
 				method="post" class="form-horizontal">
-				<input type="text" style="display: none" name="userName" id="userName">
-
-
+				<input type="text" style="display: none" name="userName"
+					id="userName">
+				
 				<div class="form-group">
-					<label for="mailNumber" id=labelMobileMail
-						class="col-sm-3 control-label">原邮箱号:</label>
+					<label for="numberPhone" id=labelMobileMail
+						class="col-sm-3 control-label">原手机号:</label>
 					<div class="col-sm-6">
-						<input type="text" id="userMail" class="form-control"
+						<input type="text" id="userMobile" class="form-control"
 							style="border-style: none" readonly="readonly" />
 
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="countryName" class="col-sm-3 control-label">国家/地区:</label>
+					<div class="col-sm-6">
+					
+					<select id="country" name="country" class="form-control" >
+         	    	<option value="CN" selected="selected" code="86"> 中国大陆 +86</option>
+         	    	<option value="HK" code="852"> 中国香港 +852</option>
+         	    	<option value="MO" code="853"> 中国澳门 +853</option>
+         	    	<option value="TW" code="886"> 中国台湾地区 +886</option>
+         	    	<option value="KR" code="82"> 韩国 +82</option>
+         	    	<option value="JP" code="81"> 日本 +81</option>
+         	    	<option value="US" code="1"> 美国 +1</option>
+         	    	<option value="CA" code="1"> 加拿大 +1</option>
+         	    	<option value="GB" code="44"> 英国 +44</option>
+         	    	<option value="AU" code="61"> 澳大利亚 +61</option>
+         	    	<option value="SG" code="65"> 新加坡 +65</option>
+         	    	<option value="MY" code="60"> 马来西亚 +60</option>
+         	    	<option value="TH" code="66"> 泰国 +66</option>
+         	    	<option value="VN" code="84"> 越南 +84</option>
+         	    	<option value="PH" code="63"> 菲律宾 +63</option>
+         	    	<option value="ID" code="62"> 印度尼西亚 +62</option>
+         	    	<option value="DE" code="49"> 德国 +49</option>
+         	    	<option value="IT" code="39"> 意大利 +39</option>
+         	    	<option value="FR" code="33"> 法国 +33</option>
+         	    	<option value="RU" code="7"> 俄罗斯 +7</option>
+         	    	<option value="NZ" code="64"> 新西兰 +64</option>
+         	    	<option value="NL" code="31"> 荷兰 +31</option>
+         	    	<option value="SE" code="46"> 瑞典 +46</option>
+                    </select>
+                    
 					</div>
 				</div>
 				
 				<div class="form-group">
 
-					<label for="userMailIn" class="col-sm-3 control-label">修改邮箱:</label>
-					
-					<span class="required">*</span>
+					<label for="userMobileIn" class="col-sm-3 control-label">修改手机:</label><span
+						class="required">*</span>
 
 					<div class="col-sm-6">
 
-						<input type="text" name="userMailIn" class="form-control"
-							id="userMailIn" required="required" placeholder="请输入邮箱" /> 
-					    <span id="userMail_span"></span>
+						<input type="userMobileIn" name="userMobileIn" class="form-control"
+							onblur="checkUserMobile(this)" id="userMobileIn"
+							required="required" placeholder="请输入手机号码" /> <span
+							id="userMobile_span"></span>
 
 					</div>
-
 
 				</div>
 
 				<div class="form-group">
 					<label for="identifyCodeNext" class="col-sm-3 control-label">校验码:</label><span
-						class="required " style="font-size: 15px"><button
-							class="btn btn-warning   " id="obtain" type="button"
-							onclick="sendMailCode()">获取验证码</button></span>
+						class="required " style="font-size: 15px">
+						
+					<button class="btn btn-warning   " id="obtain" type="button"
+							onclick="sendMobileCode()">获取验证码</button></span>
 					<div class="col-sm-4">
 						<input type="text" id="identifyCodeNext" class="form-control"
-							placeholder="请输入验证码" onblur='checkMailIdentify()' /> <span
-							id='msgNext'></span>
+							placeholder="请输入验证码" onblur='checkMobileIdentify()' /> 
+						<span id='msgNext'></span>
 
 					</div>
 				</div>
@@ -246,18 +272,17 @@ ul, li { list-style:none; }
 					<div class="col-sm-6">
 
 						<button class="btn btn-warning   btn-block " id="idengtifyNext"
-							type="button" onclick="addNewMail()">确定</button>
+							type="button" onclick="addNewMobile()">确定</button>
 					</div>
 				</div>
 
-
-				<!--         btn-primary   btn-block-->
 
 			</form>
 
 		</div>
 
 	</div>
+	
 	<div class="modal fade" id="Tip" role="dialog">
 
 		<div class="modal-dialog" role="document">
@@ -287,37 +312,37 @@ ul, li { list-style:none; }
 		</div>
 
 	</div>
-
-	<script type="text/javascript" th:src="@{/js/userInfo/resetPassword.js}"></script>
+	
 	<script type="text/javascript" th:src="@{/js/userInfo/userInfo.js}"></script>
-	<script type="text/javascript" th:src="@{/js/userInfo/emailAutoComplete.js}"></script>
 
 </body>
 <script type="text/javascript">
-	$(function() {
-		var url = window.location.href;
-		var strInfo = getInfoAndAnalysis(url);
 
-		var len = strInfo.length;
-		if (len > 0) {
-			var string1 = decodeURI(decodeURI(strInfo[0]));//标题
-			var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
-			var str = decodeURI(decodeURI(strInfo[2]));// userMailHiden mail\mobile
-			var string2 = decodeURI(decodeURI(strInfo[3])); // labelMobileMail 原手机号或者邮箱
-			var userName = decodeURI(decodeURI(strInfo[4])); // 登录名
+$(function() {
+	var url = window.location.href;
+	var strInfo = getInfoAndAnalysis(url);
 
-			document.getElementById("labelPwd2").innerHTML = (string1);//标题
-			$("#labelPwd2").val(string1);
+	var len = strInfo.length;
+	if (len > 0) {
+		var string1 = decodeURI(decodeURI(strInfo[0]));//标题
+		var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
+		var str = decodeURI(decodeURI(strInfo[2]));// userMobileHiden mail\mobile
+		var string2 = decodeURI(decodeURI(strInfo[3])); // labelMobileMail 原手机号或者邮箱
+		var userName = decodeURI(decodeURI(strInfo[4])); // 登录名
 
-			document.getElementById("labelProgressTwo2").innerHTML = (strProgress);// 修改邮箱 或者 修改手机
-			$("#labelProgressTwo2").val(strProgress);
-			$("#userMail").val(str);
+		document.getElementById("labelPwd2").innerHTML = (string1);//标题
+		$("#labelPwd2").val(string1);
 
-			$("#userName").val(userName);
-		}
-	});
-	
-     // userInfo.js
+		document.getElementById("labelProgressTwo2").innerHTML = (strProgress);// 修改邮箱 或者 修改手机
+		$("#labelProgressTwo2").val(strProgress);
+		$("#userMobile").val(str);
+
+		$("#userName").val(userName);
+	}
+});
+
+
+
 	
 	//刷新从数据库更新数据
 	$(function () {
@@ -325,5 +350,4 @@ ul, li { list-style:none; }
 	});
 	
 </script>
-	
 </html>

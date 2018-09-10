@@ -27,7 +27,7 @@ public class NewsService {
 		
 	}
 	
-	public ErrorCode deleteNews(String newsId) 
+	public ErrorCode deleteNews(Integer newsId) 
 	{
 		
 		newsModelMapper.deleteNews(newsId);

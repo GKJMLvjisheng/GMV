@@ -83,7 +83,13 @@
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid}
+    from user_wallet_detail where user_uuid = #{userUuid};
+  </select>
+  
+   <select id="selectByInOrOut" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultMap="userWalletDetailMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from user_wallet_detail where user_uuid = #{userUuid} and in_or_out = #{inOrOut};
   </select>
   
 </mapper>
