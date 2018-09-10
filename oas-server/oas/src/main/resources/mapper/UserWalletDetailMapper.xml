@@ -89,7 +89,7 @@
    <select id="selectByInOrOut" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultMap="userWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid} and in_or_out = #{inOrOut};
+    from user_wallet_detail where user_uuid = #{userUuid} and in_or_out = #{inOrOut} order by created desc limit #{offset},#{limit};
   </select>
   
 </mapper>
