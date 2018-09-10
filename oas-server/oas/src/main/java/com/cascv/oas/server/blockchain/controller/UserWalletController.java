@@ -107,7 +107,6 @@ public class UserWalletController {
     Calendar calendar = new GregorianCalendar();
     Date now = new Date();
     calendar.setTime(now);
-
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
@@ -120,6 +119,25 @@ public class UserWalletController {
     else 
       offset = 0;
     
+    Integer inOrOut;
+    
+    if(pageInfo.getInOrOut()!=null) {
+    inOrOut=pageInfo.getInOrOut();
+    List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByInOrOut(ShiroUtils.getUserUuid(),offset,limit, inOrOut);
+    Integer count =userWalletDetailList.size();
+	PageDomain<UserWalletDetail> pageUserWalletDetail= new PageDomain<>();
+	pageUserWalletDetail.setTotal(count);
+	pageUserWalletDetail.setAsc("desc");
+	pageUserWalletDetail.setOffset(offset);
+	pageUserWalletDetail.setPageNum(pageNum);
+	pageUserWalletDetail.setPageSize(pageSize);
+	pageUserWalletDetail.setRows(userWalletDetailList);
+	return new ResponseEntity.Builder<PageDomain<UserWalletDetail>>()
+	    .setData(pageUserWalletDetail)
+	    .setErrorCode(ErrorCode.SUCCESS)
+	    .build();
+    }
+    else{
     List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(
     				ShiroUtils.getUserUuid(), offset,limit);
     Integer count = userWalletDetailMapper.selectCount(ShiroUtils.getUserUuid());
@@ -134,6 +152,7 @@ public class UserWalletController {
             .setData(pageUserWalletDetail)
             .setErrorCode(ErrorCode.SUCCESS)
             .build();
+   }
   }
 
   @PostMapping(value="/transfer")
