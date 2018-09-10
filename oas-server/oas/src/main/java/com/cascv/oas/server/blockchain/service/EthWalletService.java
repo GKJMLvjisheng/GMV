@@ -321,8 +321,10 @@ public class EthWalletService {
     for (int i = 0; i < quota.size(); i++) {
     	if (addressList.get(i).isEmpty() || addressList.get(i).equals("0")) {
     		returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS); 
+    		break;
     	}else if (amountIntList.get(i).intValue() == 0) {
     		returnValue.setErrorCode(ErrorCode.WRONG_AMOUNT);
+    		break;
     	}else if (txHash!=null) {
     	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
     	      for (TransferQuota q: quota) {
