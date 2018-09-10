@@ -13,6 +13,8 @@ import com.cascv.oas.server.energy.vo.*;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.news.model.NewsModel;
+import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,8 @@ public class EnergyPointController {
 
     @Autowired
     private EnergyService energyService;
-
+    @Autowired
+    private NewsService newsService;
 
     @PostMapping(value = "/checkin")
     @ResponseBody
@@ -160,40 +163,70 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireNews")
     @ResponseBody
-    public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo) {
-
-        String[] titleArray = {"A", "B", "C"};
-        String[] summaryArray = {"中国人民大学宿舍起火 目击者：楼顶几乎烧没了", "国内核心互联网软件无一幸免", "你的微信或已被操控"};
-        String[] newsArray = {
-                "http://news.sina.com.cn/gov/xlxw/2018-08-21/doc-ihhzsnea3430780.shtml",
-                "http://news.sina.com.cn/o/2018-08-21/doc-ihhzsnea4009465.shtml",
-                "http://news.sina.com.cn/c/2018-08-21/doc-ihhzsnea0935440.shtml"
-        };
-
-        List<EnergyNews> energyNewsList = new ArrayList<>();
-        for (Integer i = 0; i < 3; i++) {
-            EnergyNews energyNews = new EnergyNews();
-            energyNews.setId(i + 1);
-            energyNews.setTitle(titleArray[i]);
-            energyNews.setSummary(summaryArray[i]);
-            energyNews.setImageLink("http://18.219.19.160:8080/img/" + String.valueOf(i + 1) + ".jpg");
-            energyNews.setNewsLink(newsArray[i]);
-            energyNewsList.add(energyNews);
+    public ResponseEntity<?> inquireNews(@RequestBody PageDomain<Integer> pageInfo) {
+        List<NewsModel> list=newsService.selectAllNews();
+        int length=list.size();
+        //默认一页显示3条
+        int pageSize=3;
+        //总共的页数
+        int pageTotalNum=0;
+        if(length/pageSize>0) {
+        	if(length%pageSize!=0) {
+        		pageTotalNum=length/pageSize+1;
+        	}
+        	else {
+        		pageTotalNum=length/pageSize;
+        	}
+        }else {
+        	pageTotalNum=1;
         }
-        PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
-        pageEnergyNews.setTotal(3);
-        pageEnergyNews.setAsc("asc");
-        pageEnergyNews.setOffset(0);
-        pageEnergyNews.setPageNum(1);
-        pageEnergyNews.setPageSize(3);
-        pageEnergyNews.setRows(energyNewsList);
+        //入参为第几页(pageNum>=1,若pageNum=0或者不存在,则报错)
+        int pageNum;       
+        if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
+        pageNum=pageInfo.getPageNum();
+        //每页从第几条开始(offset>=0)
+        int offset=(pageNum-1)*pageSize;
+        //所在页数的数据量
+        int pageEnd=(pageNum<pageTotalNum)?(offset+pageSize):length;          
+           List<EnergyNews> energyNewsList = new ArrayList<>();
+         try {  for (int i=offset; i<pageEnd; i++){
+               EnergyNews energyNews = new EnergyNews();
+               log.info(String.valueOf(list.get(i).getNewsId()));
+               log.info(String.valueOf(offset));
+               log.info(String.valueOf(pageEnd));
+               energyNews.setId(list.get(i).getNewsId());
+               energyNews.setTitle(list.get(i).getNewsTitle());
+               energyNews.setSummary(list.get(i).getNewsTitle());
+               energyNews.setImageLink(list.get(i).getNewsPicturePath());
+               energyNews.setNewsLink(list.get(i).getNewsUrl());            
+               energyNewsList.add(energyNews);
+           }
+         }
+         catch(Exception e) {
+        	 log.info(e.getMessage());
+        	 e.printStackTrace();
+         }
+           PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
+           pageEnergyNews.setTotal(length);
+           pageEnergyNews.setAsc("asc");
+           pageEnergyNews.setOffset(offset);
+           pageEnergyNews.setPageNum(pageNum);
+           pageEnergyNews.setPageSize(pageSize);
+           pageEnergyNews.setRows(energyNewsList);
 
-        return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
-                .setData(pageEnergyNews)
-                .setErrorCode(ErrorCode.SUCCESS)
-                .build();
+           return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
+                   .setData(pageEnergyNews)
+                   .setErrorCode(ErrorCode.SUCCESS)
+                   .build();
+        }
+        else { 
+        	return new ResponseEntity.Builder<Integer>()
+                    .setData(1)
+                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+                    .build();
+        }
     }
-
+    
     @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")
     @ResponseBody
     public ResponseEntity<?> inquireCurrentPeriodEnergyPoint() {
