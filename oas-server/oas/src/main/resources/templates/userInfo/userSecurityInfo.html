@@ -15,7 +15,7 @@ CSS样式
 *{margin:0px;padding:0px}
 /* h5*/
 body{
-    background-color:#eceddd;
+/*     background-color:#eceddd; */
     font-family:Arial, Verdana,'Lucida Grande', Helvetica, sans-serif;
     text-align: left;
     color: #333333;
@@ -75,12 +75,14 @@ nav ul li{                  /*调整基本信息格式*/
 
 nav ul li button{              /*调整基本信息格式字体大小*/
     display:block;
-    background-color:#37210c;
+     background-color:#293846; 
+
     border-right:1px solid #fff;     /*调整基本信息框高度*/
     line-height:1.5em;         /*调整基本信息格式字体大小*/
     margin-right:0px;         
     padding:8px 14px 8px 14px;    /*调整基本信息框高度和宽度*/
-    color: #ecf9ff;
+      color: #ecf9ff;  /*白色*/
+    
     font-weight:normal;
      font-size: 1em;       /*调整基本信息字体大小*/
     text-decoration: none;
@@ -89,17 +91,23 @@ nav ul li button{              /*调整基本信息格式字体大小*/
 
 nav ul li .selected{           /*调整基本信息框颜色*/
     color: #ecf9ff;
-    background-color:#e67e1f;
+/*       background-color:#e67e1f; /*橘色*/  
+      background-color:#f0ad4e; 
+/*      background-color:#293846;*/ /*深蓝色*/ 
+/* background-color:#d8dbde; */
     }
 
 
 
 #content{                   /*调整整个个人信息框的位置*/
-    margin:0 auto;
+   	   margin:0 auto; 
+       padding-top: 50px;
     width:902px;
-    background-color:#dfeef9;
-    height:480px;            /*调整整个个人信息蓝色底框的高度，需与表格高度一致*/
+/*     background-color:#dfeef9; */
+/*     height:480px;            /*调整整个个人信息蓝色底框的高度，需与表格高度一致*/
     clear:both;
+/*     top:300px; */
+
     }
 
 
@@ -117,23 +125,22 @@ section{                       /*调整头像和保存按钮的位置*/
     }
 
 
-
 </style>
 
 </head>
 <body> 
-<header> 
-  <h1> 
-      <span class="orange"> 个人信息</span>
-  </h1>
-</header>
+<!-- <header>  -->
+<!--   <h1>  -->
+<!--       <span class="orange"> 个人信息</span> -->
+<!--   </h1> -->
+<!-- </header> -->
 
 
 <nav>
       <ul>
         <li><button onclick="userinfo()">基本信息 </button> </li>
         <li><button onclick="userimginfo()">更换头像 </button></li>
-        <li><button class="selected" onclick="usersecurityinfo()">安全设置 </button></li>
+        <li><button class="selected" onclick="usersecurityinfo()"disabled="disabled">安全设置 </button></li>
       </ul>
 </nav> 
 
@@ -142,6 +149,7 @@ section{                       /*调整头像和保存按钮的位置*/
 <form id="userSecurityInfoForm" action="/user/editUserSecurityInfo" method="post" class="form-horizontal">
 
                         <div class="modal-body">                       
+
                            <div class="form-group">
 								<label for="userName" class="col-sm-3 control-label">用户名：</label>
 								<div class="col-sm-4">
@@ -170,7 +178,7 @@ section{                       /*调整头像和保存按钮的位置*/
 </form>
 </div>
 
-<script type="text/javascript" th:src="@{/js/userInfo/resetPassword.js}"></script> 
+ 
 <script type="text/javascript" th:src="@{/js/userInfo/userInfo.js}"></script> 
 
 </body>
