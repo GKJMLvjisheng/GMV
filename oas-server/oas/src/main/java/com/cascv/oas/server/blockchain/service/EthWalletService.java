@@ -301,7 +301,7 @@ public class EthWalletService {
       total=total.add(q.getAmount());
       addressList.add(q.getToUserAddress());
       BigInteger amountInt=q.getAmount().multiply(userCoin.getWeiFactor()).toBigInteger();
-      amountIntList.add(amountInt);
+      amountIntList.add(amountInt);      
     }
 //    String len = "0"; //需要得到前端传过来的需要转账的总共的条数
 //    Integer length = Integer.parseInt(len);
@@ -318,15 +318,21 @@ public class EthWalletService {
     			net, ethWallet.getAddress(), ethWallet.getPrivateKey(), 
     			addressList, contract, amountIntList, gasPrice,gasLimit);
     log.info("txhash {}", txHash);
-    if (txHash!=null) {
-      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
-      for (TransferQuota q: quota) {
-        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
-      }
-      returnValue.setErrorCode(ErrorCode.SUCCESS);
-      returnValue.setData(txHash);
-    } else {
-      returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
+    for (int i = 0; i < quota.size(); i++) {
+    	if (addressList.get(i).isEmpty() || addressList.get(i).equals("0")) {
+    		returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS); 
+    	}else if (amountIntList.get(i).intValue() == 0) {
+    		returnValue.setErrorCode(ErrorCode.WRONG_AMOUNT);
+    	}else if (txHash!=null) {
+    	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
+    	      for (TransferQuota q: quota) {
+    	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
+    	      }
+    	      returnValue.setErrorCode(ErrorCode.SUCCESS);
+    	      returnValue.setData(txHash);
+    	} else {
+    	      returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
+    	    }
     }
     return returnValue;
   }
