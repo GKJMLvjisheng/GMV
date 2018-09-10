@@ -15,4 +15,5 @@ public class PageDomain<T> implements Serializable {
   @Getter @Setter private Integer total;
   @Getter @Setter private Integer offset;
   @Getter @Setter private List<T> rows;
+  @Getter @Setter private Integer inOrOut;
 }
