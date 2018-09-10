@@ -167,7 +167,14 @@ public class EnergyPointController {
         List<NewsModel> list=newsService.selectAllNews();
         int length=list.size();
         //默认一页显示3条
-        int pageSize=3;
+        int pageSize=0;
+        try{
+        	pageSize=(pageInfo.getPageSize()>0&&pageInfo.getPageSize()<=length)?pageInfo.getPageSize():length;
+        	}
+        catch(NullPointerException e){
+        	pageSize=length;
+            log.info(e.getMessage());
+        }
         //总共的页数
         int pageTotalNum=0;
         if(length/pageSize>0) {
@@ -182,18 +189,17 @@ public class EnergyPointController {
         }
         //入参为第几页(pageNum>=1,若pageNum=0或者不存在,则报错)
         int pageNum;       
-        if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
+        try {
+        	if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
+
         pageNum=pageInfo.getPageNum();
         //每页从第几条开始(offset>=0)
         int offset=(pageNum-1)*pageSize;
         //所在页数的数据量
         int pageEnd=(pageNum<pageTotalNum)?(offset+pageSize):length;          
            List<EnergyNews> energyNewsList = new ArrayList<>();
-         try {  for (int i=offset; i<pageEnd; i++){
+          for (int i=offset; i<pageEnd; i++){
                EnergyNews energyNews = new EnergyNews();
-               log.info(String.valueOf(list.get(i).getNewsId()));
-               log.info(String.valueOf(offset));
-               log.info(String.valueOf(pageEnd));
                energyNews.setId(list.get(i).getNewsId());
                energyNews.setTitle(list.get(i).getNewsTitle());
                energyNews.setSummary(list.get(i).getNewsTitle());
@@ -201,11 +207,7 @@ public class EnergyPointController {
                energyNews.setNewsLink(list.get(i).getNewsUrl());            
                energyNewsList.add(energyNews);
            }
-         }
-         catch(Exception e) {
-        	 log.info(e.getMessage());
-        	 e.printStackTrace();
-         }
+
            PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
            pageEnergyNews.setTotal(length);
            pageEnergyNews.setAsc("asc");
@@ -218,8 +220,15 @@ public class EnergyPointController {
                    .setData(pageEnergyNews)
                    .setErrorCode(ErrorCode.SUCCESS)
                    .build();
-        }
+        	}
         else { 
+        	return new ResponseEntity.Builder<Integer>()
+                    .setData(1)
+                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+                    .build();
+             }
+         }
+        catch(NullPointerException e){
         	return new ResponseEntity.Builder<Integer>()
                     .setData(1)
                     .setErrorCode(ErrorCode.GENERAL_ERROR)
