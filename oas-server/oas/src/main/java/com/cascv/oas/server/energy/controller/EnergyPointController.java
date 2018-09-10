@@ -4,7 +4,6 @@ package com.cascv.oas.server.energy.controller;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -85,8 +84,10 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
-//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-        String userUuid = ShiroUtils.getUserUuid();
+        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+//        String userUuid = ShiroUtils.getUserUuid();
+        // 挖矿查询
+        energyService.miningEnergyBall(userUuid);
         ErrorCode errorCode = ErrorCode.SUCCESS;
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
