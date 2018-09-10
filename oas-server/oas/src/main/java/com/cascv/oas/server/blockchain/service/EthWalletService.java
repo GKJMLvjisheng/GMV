@@ -322,7 +322,7 @@ public class EthWalletService {
     	if (addressList.get(i).isEmpty() || addressList.get(i).equals("0")) {
     		returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS); 
     		break;
-    	}else if (amountIntList.get(i).intValue() == 0) {
+    	}else if (amountIntList.get(i).intValue() == 0 || amountIntList.get(i).equals(null)) {
     		returnValue.setErrorCode(ErrorCode.WRONG_AMOUNT);
     		break;
     	}else if (txHash!=null) {
