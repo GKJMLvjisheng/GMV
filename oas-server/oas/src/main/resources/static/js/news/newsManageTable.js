@@ -37,7 +37,6 @@ function initNewsGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
-			formatter: title
 
 		}, {
 
@@ -47,7 +46,6 @@ function initNewsGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
-			formatter: abstract
 
 		},
 		{
@@ -57,6 +55,7 @@ function initNewsGrid(data) {
 			field : "newsPicturePath",
 			align: 'center',
 			valign: 'middle',
+			width:  '200px',
 			formatter: picturePath
 
 		}, 
@@ -67,20 +66,18 @@ function initNewsGrid(data) {
 			field : "newsUrl",
 			align: 'center',
 			valign: 'middle',
-			formatter: url		
+			formatter: actionFormatter		
 
 		},
 		{
 
 			title : " 操作",
-
+			
 			field : "newsId",
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
-			formatter: actionFormatter
-
-
+			formatter: actionFormatter1
 		}],
 		
 		search : true,//搜索
@@ -89,56 +86,23 @@ function initNewsGrid(data) {
 	});
 }
 
-//每行countInLine个字符
-function changeLine(newsClass,countInLine){
-	var str="";	    	
-	var newsClass1 = newsClass.split('');	//字符串转数组	 
-	for(var i = 0; i < newsClass1.length; i++){ 
-	    if((i + 1) % countInLine == 0){ 
-	        str += newsClass1[i] + "<br>"; 
-	    } 
-	    else { 
-	        str += newsClass1[i]; 
-	    } 
-	}
-	return str;
-}
-
-
-function title(value, row, index) {	
-	var result = "";
-	var newsTitle = value;
-	var str=changeLine(newsTitle,20);
-	 result +="<span>"+str+"</span>";    
-	 return result;
-}
-
-function abstract(value, row, index) {	
-	var result = "";
-	var abstract = value;
-	var str=changeLine(abstract,30);
-	 result +="<span>"+str+"</span>";    
-	 return result;
-}
  
 function picturePath(value, row, index) {
 	var result = "";
-	var newsPicturePath = value; 
-	var str=changeLine(newsPicturePath,20);      
+	var newsPicturePath = value;      
     result += "<img src="+newsPicturePath+ " width='120px' height='80'><br>"+
-    			"<span>"+str+"</span>";    
+    			"<span>"+newsPicturePath+"</span>";    
     return result;
 }
 
-function url(value, row, index) {	
+function actionFormatter(value, row, index) {	
 	var result = "";
-	var newsUrl = value;    	
-	var str=changeLine(newsUrl,40);
-    result += "<a href="+str+">"+str+"</a>" ;    
+	var newsUrl = value;  
+	result +="<a href="+newsUrl+ ">"+newsUrl+"</a>";
     return result;
 }
 
-function actionFormatter(value, row, index) {
+function actionFormatter1(value, row, index) {
         var id = value;
         var result = "";
         
