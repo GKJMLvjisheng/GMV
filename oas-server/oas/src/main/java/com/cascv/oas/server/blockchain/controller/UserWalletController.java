@@ -104,6 +104,7 @@ public class UserWalletController {
           .setErrorCode(ErrorCode.SUCCESS).build();
   }
 
+  @SuppressWarnings("unused")
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
   public ResponseEntity<?> transactionDetail(@RequestBody PageDomain<Integer> pageInfo){
@@ -111,10 +112,8 @@ public class UserWalletController {
     Date now = new Date();
     calendar.setTime(now);
     Integer pageNum = pageInfo.getPageNum();
-    Integer pageSize=pageInfo.getPageSize();
-
-    log.info("pageSize{}",pageSize.toString());
-    
+    Integer pageSize;
+    pageSize=pageInfo.getPageSize();
     Integer limit = pageSize;
     Integer offset;
     
