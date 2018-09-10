@@ -107,9 +107,7 @@ public class UserWalletController {
     Calendar calendar = new GregorianCalendar();
     Date now = new Date();
     calendar.setTime(now);
-    
 
-    
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
@@ -121,11 +119,9 @@ public class UserWalletController {
       offset = (pageNum - 1) * limit;
     else 
       offset = 0;
-
-    System.out.println(ShiroUtils.getUserUuid());
+    
     List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(
     				ShiroUtils.getUserUuid(), offset,limit);
-    System.out.println(userWalletDetailList);
     Integer count = userWalletDetailMapper.selectCount(ShiroUtils.getUserUuid());
     PageDomain<UserWalletDetail> pageUserWalletDetail= new PageDomain<>();
     pageUserWalletDetail.setTotal(count);
