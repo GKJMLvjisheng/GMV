@@ -303,14 +303,6 @@ public class EthWalletService {
       BigInteger amountInt=q.getAmount().multiply(userCoin.getWeiFactor()).toBigInteger();
       amountIntList.add(amountInt);      
     }
-//    String len = "0"; //需要得到前端传过来的需要转账的总共的条数
-//    Integer length = Integer.parseInt(len);
-//    if (addressList == null || (addressList != null && addressList.size() < length))
-//    	return ErrorCode.WRONG_ADDRESS;
-//    if (amountIntList == null || (amountIntList != null && amountIntList.size() < length))
-//    	return ErrorCode.WRONG_AMOUNT;
-//    if (userCoin.getBalance().compareTo(total) < 0)
-//      return ErrorCode.BALANCE_NOT_ENOUGH;
     String net = ethWallet.getPreferNetwork();
     if (net == null)
   	  net = coinClient.getDefaultNet();
@@ -345,7 +337,9 @@ public class EthWalletService {
   
   public ErrorCode setPreferNetwork(String userUuid, String preferNetwork) {
 	  Set<String> networkSet = this.listNetwork();
-	  if (networkSet == null || preferNetwork == null || !networkSet.contains(preferNetwork))
+	  if (preferNetwork == null)
+		  preferNetwork = "ropstrn";
+	  if (networkSet == null || !networkSet.contains(preferNetwork))
 		  return ErrorCode.INVALID_BLOCKCHAIN_NETWORK;
 	  EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
 	  if (ethWallet == null)
