@@ -3,6 +3,7 @@ package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.wrapper.*;
@@ -265,9 +266,10 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireEnergyPointDetail")
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
+    public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageIODomain<Integer> pageInfo) {
         Integer pageNum = pageInfo.getPageNum();
         Integer pageSize = pageInfo.getPageSize();
+        Integer inOrOut=pageInfo.getInOrOut();
         Integer limit = pageSize;
         Integer offset;
  
@@ -280,7 +282,7 @@ public class EnergyPointController {
         else 
         	offset = 0;
  
-        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
+        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit, inOrOut);
         Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
         
         PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();

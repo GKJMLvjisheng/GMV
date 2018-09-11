@@ -19,4 +19,6 @@ public interface EnergyTradeRecordMapper {
     Integer updateStatus(@Param("uuid") String uuid, @Param("newStatus") Integer newStatus);
     Integer countByUserUuid(@Param("userUuid") String userUuid);
     List<EnergyChangeDetail> selectByPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
+    List<EnergyChangeDetail> selectByOutPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
+    List<EnergyChangeDetail> selectByAllPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }

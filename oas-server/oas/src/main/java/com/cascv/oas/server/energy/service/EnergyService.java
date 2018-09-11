@@ -538,18 +538,45 @@ public class EnergyService {
     public Integer countEnergyChange(String userUuid) {
     	return energyTradeRecordMapper.countByUserUuid(userUuid);
     }
-    
-    public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit) {
-    	List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
-    	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList) {
-    		if (energyChangeDetail.getInOrOut() == 0) {
-    			energyChangeDetail.setActivity("积分兑换");
-    			energyChangeDetail.setCategory("OASES redeem");
-    		}
-    		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+       
+    public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit,Integer inOrOut) {
+    if(inOrOut!=null){
+    	if(inOrOut==1)
+    	{ 	
+    		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
+    	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
+    		   //.intValue()方法是把Integer转为Int?
+    		   energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+    	   }
+    	    return energyChangeDetailList;
     	}
-    	return energyChangeDetailList;
+    	else{
+      		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByOutPage(userUuid, offset, limit);
+        	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
+        		energyChangeDetail.setActivity("积分兑换");
+    			energyChangeDetail.setCategory("OASES redeem");
+        		//.intValue()方法是把Integer转为Int?
+        		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());  
+        	}
+        	return energyChangeDetailList;
+    	}
     }
+    	else {
+    		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByAllPage(userUuid, offset, limit);
+    	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
+    		System.out.println(energyChangeDetail.getInOrOut());
+    		 if(energyChangeDetail.getInOrOut()==0){
+    		 energyChangeDetail.setActivity("积分兑换");
+			 energyChangeDetail.setCategory("OASES redeem");
+    		   //.intValue()方法是把Integer转为Int?
+    		 energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+    	     }
+    	   }
+    	    return energyChangeDetailList;
+    	}
+    }
+ 
+    
 
     public static void main(String[] args) {
         BigDecimal decimal = new BigDecimal(12.12345).setScale(2, BigDecimal.ROUND_HALF_UP);
