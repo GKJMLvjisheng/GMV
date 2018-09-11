@@ -169,6 +169,7 @@ public class EnergyPointController {
         int length=list.size();
         //默认一页显示3条
         int pageSize=0;
+        System.out.println(pageInfo.getPageSize());
         try{
         	pageSize=(pageInfo.getPageSize()>0&&pageInfo.getPageSize()<=length)?pageInfo.getPageSize():length;
         	}

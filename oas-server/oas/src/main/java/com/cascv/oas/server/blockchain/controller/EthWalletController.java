@@ -2,6 +2,7 @@ package com.cascv.oas.server.blockchain.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
@@ -135,7 +136,7 @@ public class EthWalletController {
 
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
-  public ResponseEntity<?> transactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> transactionDetail(@RequestBody PageIODomain<Integer> pageInfo){
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
     Integer limit = pageSize;
