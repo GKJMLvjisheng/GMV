@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
@@ -107,7 +108,7 @@ public class UserWalletController {
   @SuppressWarnings("unused")
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
-  public ResponseEntity<?> transactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> transactionDetail(@RequestBody PageIODomain<Integer> pageInfo){
     Calendar calendar = new GregorianCalendar();
     Date now = new Date();
     calendar.setTime(now);

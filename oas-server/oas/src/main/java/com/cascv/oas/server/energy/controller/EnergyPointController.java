@@ -192,8 +192,19 @@ public class EnergyPointController {
         int pageNum;       
         try {
         	if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
-
-        pageNum=pageInfo.getPageNum();
+            pageNum=pageInfo.getPageNum();
+            
+            }
+            else { 
+            	return new ResponseEntity.Builder<Integer>()
+                        .setData(1)
+                        .setErrorCode(ErrorCode.GENERAL_ERROR)
+                        .build();
+                 }
+        }
+        catch(NullPointerException e){
+        	pageNum=1;
+        }
         //每页从第几条开始(offset>=0)
         int offset=(pageNum-1)*pageSize;
         //所在页数的数据量
@@ -222,20 +233,6 @@ public class EnergyPointController {
                    .setErrorCode(ErrorCode.SUCCESS)
                    .build();
         	}
-        else { 
-        	return new ResponseEntity.Builder<Integer>()
-                    .setData(1)
-                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-                    .build();
-             }
-         }
-        catch(NullPointerException e){
-        	return new ResponseEntity.Builder<Integer>()
-                    .setData(1)
-                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-                    .build();
-        }
-    }
     
     @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")
     @ResponseBody
