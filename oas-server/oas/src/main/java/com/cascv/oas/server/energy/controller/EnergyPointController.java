@@ -14,6 +14,7 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
+import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,10 +167,9 @@ public class EnergyPointController {
     @ResponseBody
     public ResponseEntity<?> inquireNews(@RequestBody PageDomain<Integer> pageInfo) {
         List<NewsModel> list=newsService.selectAllNews();
-        int length=list.size();
-        //默认一页显示3条
+        int length=list.size();        
         int pageSize=0;
-        System.out.println(pageInfo.getPageSize());
+        
         try{
         	pageSize=(pageInfo.getPageSize()>0&&pageInfo.getPageSize()<=length)?pageInfo.getPageSize():length;
         	}
@@ -194,7 +194,6 @@ public class EnergyPointController {
         try {
         	if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
             pageNum=pageInfo.getPageNum();
-            
             }
             else { 
             	return new ResponseEntity.Builder<Integer>()
@@ -205,7 +204,11 @@ public class EnergyPointController {
         }
         catch(NullPointerException e){
         	pageNum=1;
+        	System.out.println(pageNum);
         }
+        //获取本机IP地址
+        String localhostIp=HostIpUtils.getHostIp();
+        log.info(localhostIp);
         //每页从第几条开始(offset>=0)
         int offset=(pageNum-1)*pageSize;
         //所在页数的数据量
@@ -215,8 +218,10 @@ public class EnergyPointController {
                EnergyNews energyNews = new EnergyNews();
                energyNews.setId(list.get(i).getNewsId());
                energyNews.setTitle(list.get(i).getNewsTitle());
-               energyNews.setSummary(list.get(i).getNewsTitle());
-               energyNews.setImageLink(list.get(i).getNewsPicturePath());
+               energyNews.setSummary(list.get(i).getNewsAbstract());
+               String ImageLink = "http://"+localhostIp+":8080"+list.get(i).getNewsPicturePath();
+               log.info(ImageLink);
+               energyNews.setImageLink(ImageLink);
                energyNews.setNewsLink(list.get(i).getNewsUrl());            
                energyNewsList.add(energyNews);
            }
