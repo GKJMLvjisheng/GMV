@@ -3,6 +3,7 @@ package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.wrapper.*;
@@ -166,10 +167,9 @@ public class EnergyPointController {
     @ResponseBody
     public ResponseEntity<?> inquireNews(@RequestBody PageDomain<Integer> pageInfo) {
         List<NewsModel> list=newsService.selectAllNews();
-        int length=list.size();
-        //默认一页显示3条
+        int length=list.size();        
         int pageSize=0;
-        System.out.println(pageInfo.getPageSize());
+        
         try{
         	pageSize=(pageInfo.getPageSize()>0&&pageInfo.getPageSize()<=length)?pageInfo.getPageSize():length;
         	}
@@ -194,7 +194,7 @@ public class EnergyPointController {
         try {
         	if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
             pageNum=pageInfo.getPageNum();
-            
+            System.out.println(pageNum);
             }
             else { 
             	return new ResponseEntity.Builder<Integer>()
@@ -205,7 +205,9 @@ public class EnergyPointController {
         }
         catch(NullPointerException e){
         	pageNum=1;
+        	System.out.println(pageNum);
         }
+
         //每页从第几条开始(offset>=0)
         int offset=(pageNum-1)*pageSize;
         //所在页数的数据量
@@ -260,12 +262,13 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireEnergyPointDetail")
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
+    public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageIODomain<Integer> pageInfo) {
         Integer pageNum = pageInfo.getPageNum();
         Integer pageSize = pageInfo.getPageSize();
+        Integer inOrOut =pageInfo.getInOrOut();
         Integer limit = pageSize;
         Integer offset;
- 
+              
         if (limit == null) {
           limit = 10;
         }
@@ -274,24 +277,20 @@ public class EnergyPointController {
         	offset = (pageNum - 1) * limit;
         else 
         	offset = 0;
- 
-        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
-        Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
-        
+        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit,inOrOut);
+        //Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());       
         PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();
-        pageEnergyPointDetail.setTotal(count);
+        pageEnergyPointDetail.setTotal(energyPointDetailList.size());
         pageEnergyPointDetail.setAsc("asc");
         pageEnergyPointDetail.setOffset(offset);
         pageEnergyPointDetail.setPageNum(pageNum);
         pageEnergyPointDetail.setPageSize(pageSize);
         pageEnergyPointDetail.setRows(energyPointDetailList);
-
         return new ResponseEntity.Builder<PageDomain<EnergyChangeDetail>>()
                 .setData(pageEnergyPointDetail)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
     }
-
 
     @PostMapping(value = "/redeemPoint")
     @ResponseBody
