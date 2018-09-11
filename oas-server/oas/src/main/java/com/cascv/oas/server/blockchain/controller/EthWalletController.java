@@ -47,7 +47,7 @@ public class EthWalletController {
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
   
-  @PostMapping(value="/selectContractSymbol")
+/*  @PostMapping(value="/selectContractSymbol")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> selectContractSymbol(@RequestBody SelectContractSymbolName selectContractSymbolName){
@@ -60,7 +60,7 @@ public class EthWalletController {
 			.setErrorCode(ErrorCode.SUCCESS)
 			.build();
 	  
-  }
+  }*/
 
   @PostMapping(value="/transfer")
   @ResponseBody
