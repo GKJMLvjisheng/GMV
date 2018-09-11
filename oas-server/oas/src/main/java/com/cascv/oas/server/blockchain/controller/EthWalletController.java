@@ -8,6 +8,7 @@ import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
+import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
@@ -18,6 +19,8 @@ import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.SelectContractSymbolName;
 import com.cascv.oas.server.utils.ShiroUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.web3j.utils.Convert;
-
+@Slf4j
 @RestController
 @RequestMapping(value="/api/v1/ethWallet")
 public class EthWalletController {
@@ -144,9 +147,28 @@ public class EthWalletController {
       offset = (pageNum - 1) * limit;
     else 
       offset = 0;
-    
     EthWallet ethWallet = ethWalletService.getEthWalletByUserUuid(ShiroUtils.getUserUuid());
-  
+    Integer inOrOut;
+    log.info("inOrOut{}",pageInfo.getInOrOut());
+    if(pageInfo.getInOrOut()!=null) {
+    inOrOut=pageInfo.getInOrOut();
+    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByInOrOut(
+            ethWallet.getAddress(), offset,limit,inOrOut);
+    Integer count = ethWalletDetailList.size();
+    PageDomain<EthWalletDetail> pageEthWalletDetail= new PageDomain<>();
+    pageEthWalletDetail.setTotal(count);
+    pageEthWalletDetail.setAsc("desc");
+    pageEthWalletDetail.setOffset(offset);
+    pageEthWalletDetail.setPageNum(pageNum);
+    pageEthWalletDetail.setPageSize(pageSize);
+    pageEthWalletDetail.setRows(ethWalletDetailList);
+    log.info("****转入/转出****");
+    return new ResponseEntity.Builder<PageDomain<EthWalletDetail>>()
+    	    .setData(pageEthWalletDetail)
+    	    .setErrorCode(ErrorCode.SUCCESS)
+    	    .build();
+    }else
+    {
     List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByPage(
         ethWallet.getAddress(), offset,limit);
     Integer count = ethWalletDetailMapper.selectCount(ethWallet.getAddress());
@@ -157,10 +179,12 @@ public class EthWalletController {
     pageEthWalletDetail.setPageNum(pageNum);
     pageEthWalletDetail.setPageSize(pageSize);
     pageEthWalletDetail.setRows(ethWalletDetailList);
+    log.info("****全部****");
     return new ResponseEntity.Builder<PageDomain<EthWalletDetail>>()
             .setData(pageEthWalletDetail)
             .setErrorCode(ErrorCode.SUCCESS)
             .build();
+    }
   }
   
   
