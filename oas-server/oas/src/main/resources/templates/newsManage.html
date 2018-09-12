@@ -6,17 +6,10 @@
     <title>NewsManager</title>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-	
 	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
-<!--     <script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script> -->
-<!--     <link rel="stylesheet" type="text/css"  th:href="@{/webjars/jquery-treegrid/0.3.0/css/jquery.treegrid.css}">   -->
     <link rel="stylesheet" type="text/css"  th:href="@{js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
-<!--     <script type="text/javascript" th:src="@{/webjars/jquery-treegrid/0.3.0/js/jquery.treegrid.js}"></script>  -->
-<!--     <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/extensions/treegrid/bootstrap-table-treegrid.min.js}"></script>   -->
-<!--  	<script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>   -->
 	<script type="text/javascript" th:src="@{js/news/newsManage.js}"></script>
 	<script type="text/javascript" th:src="@{js/news/newsManageTable.js}"></script>	
    
@@ -43,19 +36,17 @@
 	<section class="content table-content">
 
 		<form class="form-inline" >
-
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
 					<input type="button" value="新增新闻" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addNewsModal"></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
-
 		</form>
-
-		<table id="newsGrid">
-
-		</table>
+		
+		<div class = "container">
+			<table id="newsGrid"></table>
+		</div>
 
 	</section>
 

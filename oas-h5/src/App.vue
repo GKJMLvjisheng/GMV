@@ -5,9 +5,11 @@
 </template>
 
 <script>
-import Index from '@/views/Index.vue'
+import Index from '@/views/Index.vue'//引用组件
 export default {
   name: 'app',
+  
+  //把引用的组件给申明到 components 里面去
   components: {
     Index
   }

@@ -45,7 +45,7 @@ function initNewsGrid(data) {
 			field : "newsAbstract",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '230px',
 
 		},
 		{
