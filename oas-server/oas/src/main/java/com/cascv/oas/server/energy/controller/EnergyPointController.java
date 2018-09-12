@@ -3,8 +3,8 @@ package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -15,6 +15,7 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
+import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,8 +89,10 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
-//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+ //       String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
+        // 挖矿查询
+        energyService.miningEnergyBall(userUuid);
         ErrorCode errorCode = ErrorCode.SUCCESS;
         EnergyBallTakenResult energyBallTakenResult = energyService
                 .getEnergyBallTakenResult(userUuid, energyBallTokenRequest.getBallId());
@@ -163,77 +166,47 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireNews")
     @ResponseBody
-    public ResponseEntity<?> inquireNews(@RequestBody PageDomain<Integer> pageInfo) {
-        List<NewsModel> list=newsService.selectAllNews();
-        int length=list.size();
-        //默认一页显示3条
-        int pageSize=0;
-        try{
-        	pageSize=(pageInfo.getPageSize()>0&&pageInfo.getPageSize()<=length)?pageInfo.getPageSize():length;
-        	}
-        catch(NullPointerException e){
-        	pageSize=length;
-            log.info(e.getMessage());
-        }
-        //总共的页数
-        int pageTotalNum=0;
-        if(length/pageSize>0) {
-        	if(length%pageSize!=0) {
-        		pageTotalNum=length/pageSize+1;
-        	}
-        	else {
-        		pageTotalNum=length/pageSize;
-        	}
-        }else {
-        	pageTotalNum=1;
-        }
-        //入参为第几页(pageNum>=1,若pageNum=0或者不存在,则报错)
-        int pageNum;       
-        try {
-        	if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
+    public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo) {// here don't use RequestBody  
+      Integer pageSize=pageInfo.getPageSize();
+      Integer pageNum = pageInfo.getPageNum();
+      Integer limit = 3,offset=0;
+      if (pageSize != null && pageSize > 0)
+        limit = pageSize;
+      if (pageNum != null && pageNum > 1)
+        offset = (pageNum - 1) * limit;
+      
+      Integer total = newsService.countTotal();
+      List<NewsModel> newsModelList=newsService.selectPage(offset, limit);
+      log.info("pageSize {} total size {}", pageSize, total);
+      
+      String localhostIp=HostIpUtils.getHostIp();
+      log.info(localhostIp);
+      
+      List<EnergyNews> energyNewsList = new ArrayList<>();
+      
+      for (NewsModel newsModel : newsModelList){
+        EnergyNews energyNews = new EnergyNews();
+        energyNews.setId(newsModel.getNewsId());
+        energyNews.setTitle(newsModel.getNewsTitle());
+        energyNews.setSummary(newsModel.getNewsAbstract());
 
-        pageNum=pageInfo.getPageNum();
-        //每页从第几条开始(offset>=0)
-        int offset=(pageNum-1)*pageSize;
-        //所在页数的数据量
-        int pageEnd=(pageNum<pageTotalNum)?(offset+pageSize):length;          
-           List<EnergyNews> energyNewsList = new ArrayList<>();
-          for (int i=offset; i<pageEnd; i++){
-               EnergyNews energyNews = new EnergyNews();
-               energyNews.setId(list.get(i).getNewsId());
-               energyNews.setTitle(list.get(i).getNewsTitle());
-               energyNews.setSummary(list.get(i).getNewsTitle());
-               energyNews.setImageLink(list.get(i).getNewsPicturePath());
-               energyNews.setNewsLink(list.get(i).getNewsUrl());            
-               energyNewsList.add(energyNews);
-           }
+        energyNews.setImageLink(newsModel.getNewsPicturePath());
+        log.info(energyNews.getImageLink());
+        energyNews.setNewsLink(newsModel.getNewsUrl());            
+        energyNewsList.add(energyNews);
+      }
+      PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
+      pageEnergyNews.setTotal(total);
+      pageEnergyNews.setAsc("desc");
+      pageEnergyNews.setOffset(offset);
+      pageEnergyNews.setPageNum(pageNum);
+      pageEnergyNews.setPageSize(pageSize);
+      pageEnergyNews.setRows(energyNewsList);
 
-           PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
-           pageEnergyNews.setTotal(length);
-           pageEnergyNews.setAsc("asc");
-           pageEnergyNews.setOffset(offset);
-           pageEnergyNews.setPageNum(pageNum);
-           pageEnergyNews.setPageSize(pageSize);
-           pageEnergyNews.setRows(energyNewsList);
-
-           return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
-                   .setData(pageEnergyNews)
-                   .setErrorCode(ErrorCode.SUCCESS)
-                   .build();
-        	}
-        else { 
-        	return new ResponseEntity.Builder<Integer>()
-                    .setData(1)
-                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-                    .build();
-             }
-         }
-        catch(NullPointerException e){
-        	return new ResponseEntity.Builder<Integer>()
-                    .setData(1)
-                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-                    .build();
-        }
+      return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
+               .setData(pageEnergyNews)
+               .setErrorCode(ErrorCode.SUCCESS)
+               .build();
     }
     
     @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")
@@ -261,9 +234,10 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireEnergyPointDetail")
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageDomain<Integer> pageInfo) {
+    public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageIODomain<Integer> pageInfo) {
         Integer pageNum = pageInfo.getPageNum();
         Integer pageSize = pageInfo.getPageSize();
+        Integer inOrOut=pageInfo.getInOrOut();
         Integer limit = pageSize;
         Integer offset;
  
@@ -276,7 +250,7 @@ public class EnergyPointController {
         else 
         	offset = 0;
  
-        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit);
+        List<EnergyChangeDetail> energyPointDetailList = energyService.searchEnergyChange(ShiroUtils.getUserUuid(), offset, limit, inOrOut);
         Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
         
         PageDomain<EnergyChangeDetail> pageEnergyPointDetail = new PageDomain<>();

@@ -4,75 +4,49 @@
 <meta charset="utf-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NewsManager</title>
-   <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
-   
-<!--     <link rel="stylesheet" type="text/css"  th:href="@{/webjars/bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css}"> -->
-    <link rel="stylesheet" type="text/css"  th:href="@{/org/tinygroup/bootstrapvalidator/css/bootstrapValidator.tiny.min.css}">
-   
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">
 	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
-<!--     <link rel="stylesheet" type="text/css"  th:href="@{/org/tinygroup/bootstraptable/css/bootstrap-table.tiny.min.css}"> -->
-<!--     <script type="text/javascript" th:src="@{/org/tinygroup/bootstraptable/js/bootstrap-table.tiny.min.js}"></script> -->
-<!--    <script type="text/javascript" th:src="@{/org/tinygroup/bootstraptable/js/locale/bootstrap-table-zh-CN.tiny.min.js}"></script> -->
-   <script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>
-    
-<!--     <script type="text/javascript" th:src="@{/webjars/bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js}"></script> -->
-   
-    <link rel="stylesheet" type="text/css"  th:href="@{/webjars/jquery-treegrid/0.3.0/css/jquery.treegrid.css}">  
     <link rel="stylesheet" type="text/css"  th:href="@{js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
-
-    <script type="text/javascript" th:src="@{/webjars/jquery-treegrid/0.3.0/js/jquery.treegrid.js}"></script> 
-    <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/extensions/treegrid/bootstrap-table-treegrid.min.js}"></script>  
- 	<script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>  
-    <script type="text/javascript" th:src="@{/webjars/bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js}"></script>
 	<script type="text/javascript" th:src="@{js/news/newsManage.js}"></script>
 	<script type="text/javascript" th:src="@{js/news/newsManageTable.js}"></script>	
    
    
-    <style>
-		.input-group .datetimepicker{
-		z-index:100000;
-		}
-		.form-group span.required {
-		color: red;
-		font-size: 150%;
-		} 
-		
-/* 		.table{ */
-/*     table-layout: fixed; */
-/* } */
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
 	
     </style>
 </head>
 
 <body>
-	<section class="content-header">
-
-		<h1>新闻管理</h1>
-
-	</section>
 
 	<section class="content table-content">
 
 		<form class="form-inline" >
-
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
-					<input type="button" value="新增新闻" id="addBtn" data-toggle="modal" data-target="#addNewsModal" class="btn btn-primary"></input>
-
+					<input type="button" value="新增新闻" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addNewsModal"></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
-
 		</form>
-
-		<table id="newsGrid">
-
-		</table>
+		
+		<div class = "container">
+			<table id="newsGrid"></table>
+		</div>
 
 	</section>
 
@@ -96,7 +70,7 @@
 						<div class="form-group">
 							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
 							<div class="col-sm-8">
-								<textarea name="newsTitle" class="form-control" id="newsTitle" required="required"  placeholder="请输入标题" /></textarea>
+								<textarea name="newsTitle" class="form-control" id="newsTitle" required="required"  placeholder="标题长度最多为100个字符" /></textarea>
 								<span id='msg_newsTitle'></span>
 							</div>						
 						</div>
@@ -105,8 +79,8 @@
 						<div class="form-group">
 							<label for="newsAbstract" class="col-sm-3 control-label">摘要：</label>
 							<div class="col-sm-8">
- 								<textarea name="newsAbstract" class="col-sm-4 form-control" id="newsAbstract" required="required"  placeholder="请输入摘要"/></textarea>
- 								<span id="newsAbstract_span"></span> 				
+ 								<textarea name="newsAbstract" class="col-sm-4 form-control" id="newsAbstract" style="height: 80px;" required="required" placeholder="摘要长度最多为200个字符"/></textarea>
+ 								<span id="msg_newsAbstract"></span> 				
 							</div>
 						</div>
 						
@@ -114,7 +88,7 @@
 						<div class="form-group">
 							<label for="newsUrl" class="col-sm-3 control-label">新闻链接：</label>
 							<div class="col-sm-8">
-								<textarea name="newsUrl" class="col-sm-4 form-control" id="newsUrl" required="required"  placeholder="请输入链接"/></textarea>
+								<textarea name="newsUrl" class="col-sm-4 form-control" id="newsUrl" required="required" placeholder="请输入有效链接"/></textarea>
 								<span id="newsUrl_span"></span>
 							</div>
 						</div>
@@ -166,62 +140,6 @@
 	</div>
 			
 		
-	<!-- 查看详细信息的模态框 -->
-           
-    <div class="modal fade" id="qureyNewsModal" tabindex="-1" role="dialog">
-
-        <div class="modal-dialog" role="document">
-
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">查看新闻</h3>
-				</div>
-				
-				<div class="modal-body">
-
-					<form id="queryNewsForm" action="/news/querydNews" method="post" class="form-horizontal">
-								
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
-							<div class="col-sm-8">
-								<textarea name="QnewsTitle" class="form-control" id="QnewsTitle" required="required"  readonly="readonly"/></textarea>
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">摘要：</label>
-							<div class="col-sm-8">
-								<textarea name="QnewsAbstract" class="form-control" id="QnewsAbstract" required="required"  readonly="readonly"/></textarea>
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">新闻URL：</label>
-							<div class="col-sm-8">
-								<textarea name="QnewsUrl" class="form-control" id="QnewsUrl" required="required"  readonly="readonly"/></textarea>
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">图片URL：</label>
-							<div class="col-sm-8">
-								<textarea name="QnewsPicturePath" class="form-control" id="QnewsPicturePath" required="required"  readonly="readonly"/></textarea>							
-								
-							</div>
-						</div>
-					</form>
-					
-				</div>
-
-			</div>
-
-		</div>
-
-	</div>
-		
-		
 	<!-- 编辑新闻的模态框 -->
     <div class="modal fade" id="updateNewsModal" tabindex="-1" role="dialog">
 
@@ -240,14 +158,16 @@
 						<div class="form-group">
 							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
 							<div class="col-sm-8">
-								<textarea name="EnewsTitle" class="form-control" id="EnewsTitle" required="required"  placeholder="请输入标题" /></textarea>
+								<textarea name="EnewsTitle" class="form-control" id="EnewsTitle" required="required"  onblur="EcheckTitle()" placeholder="请输入标题" /></textarea>
+								<span id="msg_EnewsTitle"></span> 
 							</div>						
 						</div>
 						
 						<div class="form-group">
 							<label for="newsTitle" class="col-sm-3 control-label">摘要：</label>
 							<div class="col-sm-8">
-								<textarea name="EnewsAbstract" class="form-control" id="EnewsAbstract" required="required"  placeholder="请输入摘要" /></textarea>
+								<textarea name="EnewsAbstract" class="form-control" id="EnewsAbstract" style="height: 80px;" required="required" onblur="EcheckAbstract()" placeholder="请输入摘要" /></textarea>
+								<span id="msg_EnewsAbstract"></span> 
 							</div>						
 						</div>
 						

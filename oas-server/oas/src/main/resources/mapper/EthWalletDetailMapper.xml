@@ -92,7 +92,11 @@
       <include refid="Base_Column_List" />
     from eth_wallet_detail where address = #{address}
   </select>
-  
+  <select id="selectByInOrOut" resultMap="ethWalletDetailMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from eth_wallet_detail where address = #{address} and in_or_out = #{inOrOut} order by created desc limit #{offset},#{limit};
+  </select>
 </mapper>
 
 

@@ -14,5 +14,5 @@ public interface UserWalletDetailMapper {
   Integer deleteByUserUuid(String userUuid);
   Integer deleteByUuid(String uuid);
   
-  List<UserWalletDetail> selectByInOrOut(@Param("userUuid") String userUuid,@Param("offset") Integer offset, @Param("limit") Integer limit,@Param("inOrOut") Integer inOrOut);
+  List<UserWalletDetail> selectByInOrOut(@Param("userUuid") String userUuid,@Param("offset") Integer offset,@Param("limit") Integer limit, @Param("inOrOut") Integer inOrOut);
 }

@@ -109,6 +109,32 @@
     	order by U.time_created desc 
     	limit #{offset}, #{limit}
   </select>
+  
+  <select id="selectByOutPage" resultMap="detailResultMap">
+<!-- as用作与上面的map对应 -->
+  	select 
+  	  uuid,user_uuid as userUuid,point_change as point,time_created,in_or_out
+	  from energy_trade_record 
+    	where user_uuid=#{userUuid} and in_or_out=0
+        order by time_created desc 
+    	limit #{offset}, #{limit}
+  </select>
+  
+  <select id="selectByAllPage" resultMap="detailResultMap">
+    select 
+		U.uuid as uuid,
+		U.user_uuid as userUuid, 
+    	U.point_change as point, 
+    	U.time_created as time_created, 
+    	U.in_or_out as in_or_out,
+    	T.source_name as source_name, 
+    	T.type as type from energy_trade_record U 
+    	left outer join energy_ball A on U.energy_ball_uuid = A.uuid 
+    	left outer join energy_source_point T on A.point_source = T.source_code
+    	where U.user_uuid = #{userUuid} 
+    	order by U.time_created desc 
+    	limit #{offset}, #{limit}
+  </select>
 
   <update id="updateStatus">
   	update energy_trade_record set

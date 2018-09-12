@@ -8,6 +8,8 @@ package com.cascv.oas.server.news.mapper;
 import java.util.List;
 
 import com.cascv.oas.server.news.model.NewsModel;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +20,10 @@ public interface NewsModelMapper {
 	 
 	 Integer updateNews(NewsModel newsModel);
 	 
-	 List<NewsModel> selectAllNews();
+	 List<NewsModel> selectAllNews();	 
+	 
+	 List<NewsModel> selectPage(@Param("offset") Integer offset, @Param("limit") Integer limit);
+   Integer countTotal();
+
 }
 

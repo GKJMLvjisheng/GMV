@@ -10,6 +10,7 @@ import java.util.Map;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
@@ -21,9 +22,12 @@ import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.news.controller.NewsController;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
+@Slf4j
 @RestController
 @RequestMapping(value="/api/v1/userWallet")
 public class UserWalletController {
@@ -101,26 +105,28 @@ public class UserWalletController {
           .setErrorCode(ErrorCode.SUCCESS).build();
   }
 
+  @SuppressWarnings("unused")
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
-  public ResponseEntity<?> transactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> transactionDetail(@RequestBody PageIODomain<Integer> pageInfo){
     Calendar calendar = new GregorianCalendar();
     Date now = new Date();
     calendar.setTime(now);
     Integer pageNum = pageInfo.getPageNum();
-    Integer pageSize = pageInfo.getPageSize();
+    Integer pageSize;
+    pageSize=pageInfo.getPageSize();
     Integer limit = pageSize;
     Integer offset;
-
+    
     if (limit == null)
-      limit = 10;
+        limit = 10;
     if (pageNum != null && pageNum > 0)
       offset = (pageNum - 1) * limit;
     else 
       offset = 0;
     
     Integer inOrOut;
-    
+    log.info("inOrOut{}",pageInfo.getInOrOut());
     if(pageInfo.getInOrOut()!=null) {
     inOrOut=pageInfo.getInOrOut();
     List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByInOrOut(ShiroUtils.getUserUuid(),offset,limit, inOrOut);
@@ -132,6 +138,7 @@ public class UserWalletController {
 	pageUserWalletDetail.setPageNum(pageNum);
 	pageUserWalletDetail.setPageSize(pageSize);
 	pageUserWalletDetail.setRows(userWalletDetailList);
+	log.info("****转入/转出****");
 	return new ResponseEntity.Builder<PageDomain<UserWalletDetail>>()
 	    .setData(pageUserWalletDetail)
 	    .setErrorCode(ErrorCode.SUCCESS)
@@ -148,6 +155,7 @@ public class UserWalletController {
     pageUserWalletDetail.setPageNum(pageNum);
     pageUserWalletDetail.setPageSize(pageSize);
     pageUserWalletDetail.setRows(userWalletDetailList);
+    log.info("****全部****");
     return new ResponseEntity.Builder<PageDomain<UserWalletDetail>>()
             .setData(pageUserWalletDetail)
             .setErrorCode(ErrorCode.SUCCESS)

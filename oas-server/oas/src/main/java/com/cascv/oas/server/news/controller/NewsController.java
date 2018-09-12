@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +82,7 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            newsModel.setNewsAbstract(newsInfo.getNewsAbstract());
            newsModel.setNewsUrl(newsInfo.getNewsUrl());
            newsModel.setNewsPicturePath(newsPicturePath);
+           newsModel.setCreated(DateUtils.getTime());
            
            newsService.addNews(newsModel);
            log.info("新闻进行了上传图片");
