@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <!-- Header部分 Start -->
     <header>
@@ -119,7 +119,6 @@ const energyBall = require("@/assets/images/ball.png");
 import { randomNum } from '@/utils/utils.js'
 export default {
   name: "index",
-//data在该组件中定义的模板数据
   data() {
     return {
       avatar: avatar,
@@ -130,7 +129,7 @@ export default {
       energyBall: energyBall,
       width: "80%",
       isShowMask: false,
-      energyBallList:[], //在 template 中，使用 this.energyBallList 来使用数据
+      energyBallList:[],
       currentEnergy:0,
       currentPower:0,
       articleList:[],
@@ -148,7 +147,6 @@ export default {
       }
     }
   },
-//created 表示当我们的组件加载完成时，需要执行的内容
   created() {
     this.getEnergyBall()
     this.getCurrentEnergy()
@@ -159,8 +157,6 @@ export default {
   },
   filters: {
   },
-
-//methods定义了组件的方法（函数）
   methods: {
     // 签到按钮点击事件
     handleAttendance () {
@@ -271,7 +267,6 @@ export default {
 };
 </script>
 
-//<style>标签包含scoped和module属性，分别表示css作用域和css模块，一般会写上scoped属性，表示样式仅对当前组件以及其子组件的模板部分生效，
 <style lang="scss" scoped>
 header {
   box-sizing: border-box;
