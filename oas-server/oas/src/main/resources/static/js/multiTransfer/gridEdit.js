@@ -20,39 +20,32 @@ var token;
 $(function ()
 	{
 
-	var url = window.location.href;
-	var strInfo=getInfoAndAnalysis(url);
-	//console.log(JSON.stringify(strInfo));
-	var len=strInfo.length;
-	if(len>0)
-	{
-		token=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
-		var name=decodeURI(decodeURI(strInfo[1]));
-		
-		}
-	//data={"name":name}
 	
-	var userName=$("#userNickname",parent.document).text();
 	token=$("#userToken",parent.document).val();
-	data={"name":userName}
-
+	//data={"name":userName}
+	
 	$.ajax({
 		   type: 'post',
-		   url: '/api/v1/ethWallet/selectContractSymbol',
-		   data: JSON.stringify(data),
+		   url: '/api/v1/ethWallet/listCoin',
+		  // data: JSON.stringify(data),
 		   contentType : 'application/json;charset=utf8',
 		   dataType: 'json',
 		   cache: false,
 		   success: function (res) {
+			   alert(JSON.stringify(res));
 		     if (res.code == 0) {
 		    	 
-		    	
+		    	 $("#userAddress").val(res.data[0].address);
+		    	 var objAddress=document.getElementById("userAddress");
+		    	// $("#userAddress").text(res.data[0].address);
+		    	 objAddress.innerHTML=res.data[0].address;
+		    	 //$("#precision").val(6000000);
 		    	 var optionData=res.data;
 		    	 
 		    	 var len=optionData.length;
 		    	 
 		    	 
-		    	 var selections = document.getElementById("contract");
+		    	 var selections = document.getElementById("contractSymbol");
 		    	 //var string=res.data[];
 		    	 for(var i =0;i<len;i++){
                      //设置下拉列表中的值的属性
@@ -76,8 +69,144 @@ $(function ()
 	var tabProduct = document.getElementById("tabProduct");    
 	
     editTables(tabProduct);  
-	});   
+	});
 
+//	$("#contractSymbol").change(function(){
+//	alert($(this).children('option:selected').val()); 
+//	})
+	$('#contractSymbol').on('change',function(){
+                //获取对应值--后期作为类选择器
+		 var objContractAddress=document.getElementById("contractAddress");
+		 var objMoney=document.getElementById("money");
+		 var objPrecision=document.getElementById("precision");
+                var thisVal = $(this).val();
+                if(thisVal!="请选择")
+                { $.ajax({
+         		   type: 'post',
+         		   url: '/api/v1/ethWallet/listCoin',
+         		   //data: JSON.stringify(data),
+         		   contentType : 'application/json;charset=utf8',
+         		   dataType: 'json',
+         		   cache: false,
+         		   success: function (res) {
+         			  
+         		     if (res.code == 0) {
+         		    	  
+         		    	 var optionData=res.data;
+         		    	 
+         		    	 var len=optionData.length;
+
+         		    	 for(var i =0;i<len;i++){
+         		    		 
+                              if(thisVal==optionData[i].contract)
+                            	 {
+                            	 
+                  		    	// $("#userAddress").text(res.data[0].address);
+                  		    	 objContractAddress.innerHTML=optionData[i].contract;
+                            	  //$("#contractAddress").val(optionData[i].contract);
+                  		    	
+                  		    	objMoney.innerHTML=optionData[i].balance;
+                            	 // $("#money").val(optionData[i].balance);
+                            	  var precision=optionData[i].weiFactor;
+                            	  var pre=JSON.stringify(precision).length-1;
+                            	  //alert(Math.log(precision)/Math.log(10));
+                            	 
+                    		    	objPrecision.innerHTML=pre;
+                            	  $("#precision").val(pre);
+                            	  }
+                          }
+         			     
+         		     } else {
+         		    	 alert(res.message);
+         		     }
+         		   },
+         		   error: function (res) {
+         			  alert("option错误"+JSON.stringify(res));
+         		   },
+         		  
+         		  });
+                }
+                else{
+//              $("#contractAddress").val("");
+//          	  $("#money").val("");
+//        	  $("#precision").val("");
+               objContractAddress.innerHTML="";
+               objMoney.innerHTML="";
+               objPrecision.innerHTML="";
+        	  }
+               
+            })
+     $(function(){
+    	 $.ajax({
+         		   type: 'post',
+         		   url: '/api/v1/ethWallet/listNetwork',
+         		   //data: JSON.stringify(data),
+         		   contentType : 'application/json;charset=utf8',
+         		   dataType: 'json',
+         		   cache: false,
+         		   success: function (res) {
+         			  alert(JSON.stringify(res));
+         		     if (res.code == 0) {
+         		    	  
+         		    	 var optionData=res.data;
+         		    	 
+         		    	 var len=optionData.length;
+         		    	 var objNetwork=document.getElementById("network");
+         		    	 for(var i =0;i<len;i++){
+         		    		  //设置下拉列表中的值的属性
+                            var option = document.createElement("option");
+                                option.value = optionData[i];
+                               
+                                option.text= optionData[i];
+                            //将option增加到下拉列表中。
+                                objNetwork.options.add(option);
+                            	  }
+                          }
+         		     else {
+         		    	 alert(res.message);
+         		     }
+         		   },
+         		   error: function (res) {
+         			  alert("option错误"+JSON.stringify(res));
+         		   },
+         		  
+         		  });
+     })
+     $('#network').on('change',function(){
+                //获取对应值--后期作为类选择器
+		
+                var thisVal = $(this).val();
+                
+                if(thisVal=="kovan"||thisVal=="rinkeby")
+                {
+                	$("#network").removeAttr("selected");//根据值去除选中状态
+                	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
+                	thisVal = $(this).val();
+                }
+                data={"preferNetwork":thisVal};
+               $.ajax({
+         		   type: 'post',
+         		   url: '/api/v1/ethWallet/setPreferNetwork',
+         		   data: JSON.stringify(data),
+         		   contentType : 'application/json;charset=utf8',
+         		   dataType: 'json',
+         		   cache: false,
+         		   success: function (res) {
+         			 
+         		     if (res.code == 0) {
+         		    	 
+         		     } else {
+         		    	 alert(res.message);
+         		     }
+         		   },
+         		   error: function (res) {
+         			  alert("option错误"+JSON.stringify(res));
+         		   },
+         		  
+         		  });
+        	 
+            })
+//子窗口会跳转到大页面外window.parent.location.href=url ;
     //设置多个表格可编辑  
 
     function editTables(){  
@@ -433,19 +562,18 @@ $(function ()
     var startIndex = $.inArray(lastRow,table.rows);//查找lastRow在table里的索引
     
    // var endIndex = table.rows.length; 
-<<<<<<< HEAD:oas-server/oas/src/main/resources/static/js/gridEdit.js
-   
-=======
+
     //alert(endIndex);
     newRow.cells[2].setAttribute("Value", 0);  
     newRow.cells[2].innerHTML=0;
->>>>>>> 51a5169e2c01ff4d45d38e4d267bc859ccf6b16e:oas-server/oas/src/main/resources/static/js/multiTransfer/gridEdit.js
+    newRow.cells[3].setAttribute("Value", 0);  
+    newRow.cells[3].innerHTML=0;
     table.tBodies[0].appendChild(newRow);  
 
     //newRow.cells[1].innerHTML=endIndex-startIndex;
     newRow.cells[1].innerHTML=table.rows.length-1;
     setRowCanEdit(newRow);  
-
+    numberRowsInTable=table.rows.length;
     return newRow;  
 
       
@@ -481,6 +609,7 @@ $(function ()
           		{
           		table.rows[j].cells[1].innerHTML=j;
           		}
+          	numberRowsInTable=table.rows.length;
           	}
           }
          
@@ -495,25 +624,27 @@ $(function ()
 
     }  
        
-      
-
+    function selectAll(table)  
+    { var chkOrder = table.rows[0].cells[0].firstChild;
+    	if(chkOrder.checked)
+    	{$("input:checkbox").prop("checked", true);}
+    	else{$("input:checkbox").prop("checked", false);}
+    	//if($("#mail").prop("checked")==true)}
+    }
       
 
     //提取表格的值,JSON格式  
 
     function getTableData(table){  
-    var contract=$('#contract option:selected') .val();
+    var contract=$('#contractSymbol option:selected') .val();
     if(contract=="请选择")
     {alert("请选择货币类型");
     return;}
-    
-    Ewin.confirm({ message: "确认要提交表格的数据吗？" }).on(function (e) {
-		if (!e) {
-		  return;
-		 }
+    var gasPrice=$("#gasPrice").val();
+	var gasLimit=$("#gasLimit").val();
+	if(gasPrice==0)
+	{console.log("price"+gasPrice);}
     var tableData = new Array();  
-
-   
 
     for(var i=1; i<table.rows.length;i++){  
 
@@ -523,22 +654,28 @@ $(function ()
    
     var tableDataLen=tableData.length;
     var tableData1=[];
+    var sunmary=null;
     for(var i=0;i<tableDataLen;i++)
     {
      var rowAdd={};
      rowAdd['toUserAddress']=tableData[i]['toUserAddress'];
 		
      rowAdd['amount']=tableData[i]['candy'];
-     //alert(JSON.stringify(rowAdd));
+    sunmary=sunmary+parseInt(rowAdd['amount']);
      tableData1.push(rowAdd);
 		}
     alert(JSON.stringify(tableData1))
-   
-	//alert("contract"+$('#contract option:selected') .val());//选中的值
-	
-    
+    var userAddress=$("#userAddress").val();
+    var userName=$("#userNickname",parent.document).text();
+    Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】." }).on(function (e) {
+		if (!e) {
+		  return;
+		 }
+		
     data={
     		"contract": contract,
+    		"gasPrice":gasPrice,
+    		"gasLimit":gasLimit,
     	    "quota":tableData1,
     	};
     
@@ -669,18 +806,19 @@ $(function ()
     for(var j=0;j<row.cells.length; j++){  
 
        name = row.parentNode.rows[0].cells[j].getAttribute("Name");  
-
+      
        if(name){  
 		//alert("111");
         var reg = new RegExp(name, "i");  //如果regexp(a,b)里a是是正则表达式，那么b可省略；b包含属性 "g"、"i" 和 "m"，分别用于指定全局匹配、区分大小写的匹配和多行匹配
-
+    	   
         expn = expn.replace(reg, rowData[name].replace(/\,/g, ""));  //用reg表达式或字符串去匹配expn，匹配上了用rowData[name].replace取代
         //expn = expn.replace(reg, rowData[name]);rowData[name]是值 
        
        }  
-
-    }  
-   
+    } 
+    //alert($("#precision").val());
+    var reg = new RegExp("precision", "i");
+    expn = expn.replace(reg, $("#precision").val());
    // Math.pow(2,4);//返回的是浮点数，最好再取整
 
     //var c=Math.round(Math.pow(2,4)); 
@@ -929,7 +1067,7 @@ $(function ()
     function getExcelData()
     {	
     	
-    	 var contract=$('#contract option:selected') .val();
+    	 var contract=$('#contractSymbol option:selected') .val();
     	 if(contract=="请选择")
     	    {alert("请选择货币类型");
     	    return;}
@@ -946,3 +1084,130 @@ $(function ()
     		});
     	
     }
+    //表格
+  $(function(){
+	 
+    $('#transferTable').bootstrapTable({
+        //url: createUrl(''),
+        striped: true,
+        uniqueId: 'attrValue',
+        pagination: true,
+        pageSize:3,//分页，页面数据条数
+        data:[{"index":"2","attrValue":"123","sellPrice":"100"}],
+        columns: [{
+            title: 'ID',
+            field: 'index',
+            formatter: formatterIndex
+        },{
+            title: '规格',
+            field: 'attrValue',
+            class: 'editable',
+            //editable:true,
+
+        },{
+            title: '价格',
+            field: 'sellPrice',
+            class: 'editable'
+        },{
+            title: '操作',
+            field: 'operate',
+            formatter: formatterOperate
+        }]
+    });
+  });
+    function formatterIndex(value, row, index){
+    	alert("index"+index);
+        var i = index + 1;
+        if(i < 10){
+            return "0" + i;
+        }else{
+            return i;
+        }
+    }
+    function formatterOperate(value, row, index){
+        return "<button onclick='saveRow("+index+")' class='btn small'><i class='fa fa-edit'></i> 保存</button><button onclick='editRow("+index+")' class='btn small blue'><i class='fa fa-edit'></i> 编辑</button><button onclick='delRow(\""+row.attrValue+"\")' class='btn small red'><i class='fa fa-trash-o'></i> 删除</button>";
+// var result = "";
+//        
+//        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRow('" + index + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+//        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRow('" + row.attrValue + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+//
+//        return result;
+    }
+    var num = 1;  //计数器
+   function add(){
+    	alert("1");
+        var data = {
+            attrValue: '',
+            sellPrice: ''
+        };
+        //$('#transferTable').bootstrapTable('selectPage', 1);
+       // $('#transferTable').bootstrapTable('prepend', data);
+        $('#transferTable').bootstrapTable('insertRow',{
+            index : num,
+            row : data
+        });
+        //num++;
+       // $("#transferTable").bootstrapTable('append', data);
+        $("#transferTable tr:first-child td.editable").each(function(){
+        	alert("add");
+            $(this).html("<input>");
+        });
+        //$("#dataTable tr:eq(1) td:eq(0)").trigger("dblclick");
+
+       // $("#dataTable input")[0].focus();
+    }
+    //var num = 1;  //计数器
+    function primaryAssets(){
+        var data = {   //要插入的数据，这里要和table列名一致
+                ID : num,
+                recUid : 1,
+                assetsType : $('#assetsType').val(),  //获取模态框input的值
+                assetsAmt : $('#assetsAmt').val(),
+                coefficient : $('#coefficient').val(),
+                valueAmt : $('#valueAmt').val()
+        }
+        $('#tb_assets').bootstrapTable('insertRow',{
+            index : num,
+            row : data
+        });
+        num++;
+       }
+    function saveRow(index, value){
+        var obj = $("#transferTable tr:nth-child("+ (index+1) +") td.editable");
+        var attrValue = obj.first().find("input").val().trim();
+        var sellPrice = obj.last().find("input").val().trim();
+        var newData = {
+            attrValue: attrValue,
+            sellPrice: sellPrice
+        };
+        $("#transferTable").bootstrapTable('updateRow', {
+            index: index,
+            row: newData
+        });
+        obj.find("input").remove();
+    }
+    function editRow(index){
+    	alert("1");
+        $("#transferTable tr:nth-child("+ (index+1) +") td.editable").each(function(){
+        	alert("2");
+            var value = $(this).text();
+            $(this).html("<input value='"+value+"'>");
+        });
+    }
+    function delRow(value){
+        $("#transferTable").bootstrapTable('removeByUniqueId', value);
+    }
+function display1()
+{document.getElementById("page2").style.display="none";
+document.getElementById("page1").style.display="block";
+$('#btn1').removeClass('active').addClass('active1');
+$('#btn2').removeClass('active1').addClass('active');
+}
+function display2()
+{
+	//$("#page2").attr()
+	document.getElementById("page1").style.display="none";
+	document.getElementById("page2").style.display="block";
+	$('#btn2').removeClass('active').addClass('active1');
+	$('#btn1').removeClass('active1').addClass('active');
+}

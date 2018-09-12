@@ -3,12 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-  <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-  <script type="text/javascript" th:src="@{js/multiTransfer/gridEdit.js}"></script>
-  <script type="text/javascript" th:src="@{/webjars/js-xlsx/0.8.0/dist/xlsx.core.min.js}"></script>
-
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+  	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+  	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+  
+  	<script type="text/javascript" th:src="@{/webjars/js-xlsx/0.8.0/dist/xlsx.core.min.js}"></script>
+  	 <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>
+  	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/x-editable-bootstrap/1.5.1/css/bootstrap-editable.css}">
+ 	<link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script> 
+    <script type="text/javascript" th:src="@{/webjars/x-editable-bootstrap/1.5.1/js/bootstrap-editable.min.js}"></script>
+<!--     <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/extensions/editable/bootstrap-table-editable.min.js}"></script> -->
+   
+    
     <title>一对多转账</title>  
 
     <style type="text/css">  
@@ -19,7 +27,7 @@
 
     font-size:10pt;  
 
-    line-height:35px;  
+     line-height:30px;   
 
     }  
 
@@ -112,11 +120,28 @@
 /*      padding-right: 20px;  */
  } 
    .col-sm-3 { 
-     width: 11.1%;
+/*      width: 11.1%; */
+		width: 9.1%;
      margin-right:auto;  
 /*       padding-right: 20px;  */
  } 
- 
+ .content-tabs {
+    border-bottom: solid 1px #d8dbde;
+/*     #d8dbde; */
+/*     #2f4050;黑色 */
+}
+.page-tabs a.active {
+/*     background:#2F4F4F; */
+    color: #a7b1c2;
+}
+.active1{
+background:#d8dbde
+/* #C0C0C0; */
+}
+/* @media (min-width: 768px) */
+.modal-sm {
+    width: 400px;
+}
     </style>  
 
 
@@ -126,34 +151,31 @@
       
 
     <body>  
+
+  
+ 
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+<!--                 <div class="navbar-header">  -->
+<br/>
 <div class="container">
-  
-    <h3>一对多转账</h3>  
-     <input type="button" name="Submit" value="新增" onclick="addRow(document.getElementById('tabProduct'),1)" />  
-
-    <input type="button" name="Submit2" value="删除" onclick="deleteRow(document.getElementById('tabProduct'),1)" />  
-
-    <input type="button" name="Submit22" value="重置" onclick="window.location.reload()" />  
-
-    <input type="submit" name="Submit3" value="提交" onclick="getTableData(document.getElementById('tabProduct'));return false;" />
-   
-
-  
-   <hr/> 
-
-		 <div class=" col-sm-12 ">
+<!-- 		 <div class=" col-sm-12 "> -->
 				 <form id="form1" name="form1" method="post" action=""class="form-horizontal"> 
 
 			               		
 			               		 <div class="form-group">
 								<label for="useAddress" class="col-sm-1 control-label">账户地址:</label>
+									
 								<div class="col-sm-4">
-								<input type="text"class="form-control "readonly="readonly" name="useAddress" id="useAddress"/>
+<!-- 								<input type="text"class="form-control "readonly="readonly" name="userAddress" id="userAddress"/> -->
+								<label id="userAddress" class="control-label"></label>
 								</div>
-								<label for="contractAddress" class=" col-sm-1 control-label">协议地址:</label>
-								<div class="col-sm-4">
-								<input type="text" class="form-control "readonly="readonly"name="contractAddress" id="contractAddress">
-							</div>
+								 
+								
+<!-- 							<label for="contractAddress" class=" col-sm-1 control-label">gas price:</label> -->
+<!-- 								<div class="col-sm-3"> -->
+<!-- 								<input type="text" class="form-control "readonly="readonly"name="gasPrice" id="gasPrice"> -->
+<!-- 							</div> -->
 							</div>
 							
 							 <div class="form-group">
@@ -163,41 +185,109 @@
 			                    <option >请选择</option>
 			               		 </select>
 								</div>
+								<label for="money" class=" col-sm-1 control-label">账户余额:</label>
+								<div class="col-sm-2">
+<!-- 								<input type="text" class="form-control "readonly="readonly"name="money" id="money"/> -->
+							<label id="money" class="control-label"></label>
+							</div>
 								<label for="precision" class=" col-sm-1 control-label">货币精度:</label>
 								<div class="col-sm-3">
-								<input type="text" class="form-control "readonly="readonly"name="precision" id="precision"/>
+<!-- 								<input type="text" class="form-control "readonly="readonly"name="precision" id="precision"/> -->
+							<label id="precision" class="control-label"></label>
 							</div>
-							<label for="money" class=" col-sm-1 control-label">账户余额:</label>
+							
+							<label for="contractAddress" class=" col-sm-1 control-label">协议地址:</label>
 								<div class="col-sm-4">
-								<input type="text" class="form-control "readonly="readonly"name="money" id="money"/>
+<!-- 								<input type="text" class="form-control "readonly="readonly"name="contractAddress" id="contractAddress"> -->
+							<label id="contractAddress" class="control-label"></label>
 							</div>
+<!-- 							<label for="money" class=" col-sm-1 control-label">gas&nbsp;&nbsp;limit:</label> -->
+<!-- 								<div class="col-sm-3"> -->
+<!-- 								<input type="text" class="form-control "readonly="readonly"name="gasLimit" id="gasLimit"/> -->
+<!-- 							</div> -->
+							</div>
+							 <div class="form-group">
+								<label for="network" class="col-sm-1 control-label">网络选择:</label>
+									
+								<div class="col-sm-2">
+								<select class="form-control " name="network" id="network">
+								 </select>
+								</div>
+
+								<label for="gasPrice" class=" col-sm-1 control-label">gas price:</label>
+								<div class="col-sm-2">
+								<input type="text" class="form-control "name="gasPrice" id="gasPrice">
+								</div>
+								<label for="gasLimit" class=" col-sm-1 control-label">gas&nbsp;&nbsp;limit:</label> 
+								<div class="col-sm-2">
+								<input type="text" class="form-control "name="gasLimit" id="gasLimit"/>
+								</div>
 							</div>
 							
 					  </form>  		
 							
 			
-					
-					</div>
+				</div>	
+<!-- 					</div> -->
 				
-			
-			
-			
-			
+<!-- 	</div> -->
+             </nav> 
+             </div>
+	
+		<div class="row content-tabs">
 
-               	
+            <nav class="page-tabs menuTabs">
+                <div class="page-tabs-content">
+                    <a href="javascript:;" class="active1 menuTab" onclick="display1()"id="btn1">页面转账</a>
+                </div>
+                <div class="page-tabs-content">
+                    <a href="javascript:;" class="active menuTab" onclick="display2()"id="btn2">excel转账</a>
+                </div>
+            </nav>	
+             </div> 
+             
+            
+<!-- 		<nav class="navbar navbar-default" role="navigation"> -->
+<!--     <div class="container-fluid"> -->
+<!-- <!--     <div class="navbar-header"> --> 
+<!-- <!--         <a class="navbar-brand" href="#">一对多转账</a> --> 
+<!-- <!--     </div> --> 
+<!--     <div> -->
+<!--         <ul class="nav navbar-nav"> -->
+<!--             <li class="active"><a href="#" onclick="display1()">页面转账</a></li> -->
+<!--             <li class="active"><a href="#" onclick="display2()">excel表格导入</a></li> -->
+        
+<!--         </ul> -->
+<!--     </div> -->
+<!--     </div> -->
+<!-- </nav>	 -->
+	<br/>		
+
+  <div class="container" id="page1">             	
             
        
-         
-        <br /> 
+     <input type="button" class="btn btn-primary" name="Submit" value="新增" onclick="addRow(document.getElementById('tabProduct'),1)" />  
+
+    <input type="button" class="btn btn-primary"name="Submit2" value="删除" onclick="deleteRow(document.getElementById('tabProduct'),1)" />  
+
+    <input type="button"class="btn btn-primary" name="Submit22" value="重置" onclick="window.location.reload()" />  
+
+    <input type="submit" class="btn btn-primary"name="Submit3" value="提交" onclick="getTableData(document.getElementById('tabProduct'));return false;" />
+   
+
+  
+ <hr/>         
+        
         
     <table width="698" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
 
+
         <tr>  
 
-          <td width="32" align="center" bgcolor="#EFEFEF" Name="Num"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
+          <td width="32" align="center" bgcolor="#EFEFEF" Name="Num"><input type="checkbox" name="checkbox" value="checkbox" onclick="selectAll(document.getElementById('tabProduct'))" /></td>  
 
-          <td width="103" bgcolor="#EFEFEF" Name="Num" style="text-align:center"EditType="TextBox">index</td>  
-
+          <td width="103" bgcolor="#EFEFEF" Name="Num" style="text-align:center">index</td>  
+<!-- EditType="TextBox" -->
            
 
           	<td width="200" bgcolor="#EFEFEF" Name="toUserAddress"style="text-align:center" EditType="TextBox">_to(address)</td>  
@@ -206,7 +296,7 @@
 
          
 
-          <td width="200" bgcolor="#EFEFEF" Name="amount"style="text-align:center;display:none" Expression="candy*Math.pow(10,precision)" >value</td>  
+          <td width="200" bgcolor="#EFEFEF" Name="amount"style="text-align:center;display:none"; Expression="candy*Math.pow(10,precision)" >value</td>  
 <!-- Format="#,###.00";display:none -->
         </tr>  
 
@@ -245,19 +335,24 @@
         </tr>  
 
     </table>  
-
+    </div>
+<!-- <span id="spanFirst">第一页</span> <span id="spanPre">上一页</span> <span id="spanNext">下一页</span> <span id="spanLast">最后一页</span> 第<span id="spanPageNum"></span>页/共<span id="spanTotalPage"></span>页 -->
       
 
-    <br />  
- <hr/> 
+   
+    	
+
+
+<div class="container" style="display:none" id="page2">
+
 <!--  style="background:yellow" -->
      <div id="drop"><h4>If you need to transfer more than 15 people, please use the excel attachment form to transfer money.</h4> </div>
     <input type="file" name="xlfile" class="btn-primary fileBtn"id="excelFile" /> <input type="submit" class=" btn-primary submitBtn"name="Submit3" value="提交" onclick="getExcelData();return false;" />
-    
-
+    <table id="excelTable"></table>
+</div> 
   
 
- </div>     
+   
 
   
  
@@ -267,12 +362,13 @@
 
 
 
-      
 
       
 
+      
 
 
+<script type="text/javascript" th:src="@{/js/multiTransfer/gridEdit.js}"></script>
     </body>  
 
     </html>  

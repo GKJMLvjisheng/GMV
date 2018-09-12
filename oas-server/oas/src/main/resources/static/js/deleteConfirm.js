@@ -2,7 +2,7 @@
  * 
  */
 (function ($) {
-
+	//modal-dm
     window.Ewin = function () {
         var html = '<div id="[Id]" class="modal fade" role="dialog" aria-labelledby="modalLabel">' +
                               '<div class="modal-dialog modal-sm">' +
@@ -47,7 +47,7 @@
                 btnok: "确定",
                 btncl: "取消",
                 width: 200,
-                auto: false
+                auto: true
             }, options || {});
             var modalId = generateId();
             var content = html.replace(reg, function (node, key) {

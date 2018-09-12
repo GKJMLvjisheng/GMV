@@ -147,6 +147,7 @@ function usersecurityinfo(){
 
 //个人信息二维码
 function QRcode() {
+				$("#QRuserinfocode").addClass("selected");
 	            var userName=$("#userName").val();
 	            var info="your account is:"+userName;
 	            var qrcode=$('#qrcodeCanvas').qrcode(info).hide();
@@ -155,10 +156,12 @@ function QRcode() {
 	                  $("#qrcode").fadeIn("slow");
 	              $("#qrcode").click(function() {
 	                  $("#qrcode").fadeOut("slow");
+	                  $("#QRuserinfocode").removeClass("selected");
 	              })
 	          }
 //交易二维码
 function QRtradecode() {
+	$("#QRtradecode").addClass("selected");
 	  var userName=$("#userName").val(); 
 		 var num = '';
 		 for (i = 0; i <= 31; i++){
@@ -195,6 +198,7 @@ function QRtradecode() {
                $("#qrcode").fadeIn("slow");
            $("#qrcode").click(function() {
                $("#qrcode").fadeOut("slow");
+               $("#QRtradecode").removeClass("selected");
            })
 }
 

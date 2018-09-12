@@ -53,6 +53,7 @@ dependencies{
   compile group: 'org.webjars.bower', name: 'js-xlsx', version: '0.8.0'
   compile('com.aliyun:aliyun-java-sdk-core:3.3.1')
   compile('com.aliyun:aliyun-java-sdk-dysmsapi:1.1.0')
+  compile group: 'org.webjars', name: 'x-editable-bootstrap', version: '1.5.1'
   /*
  * Name:EmailBuild
  * Author:lvjisheng
