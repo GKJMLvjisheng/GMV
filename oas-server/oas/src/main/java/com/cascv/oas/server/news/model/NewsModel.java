@@ -18,4 +18,5 @@ public class NewsModel implements Serializable {
 	@Getter @Setter private String newsAbstract;
 	@Getter @Setter private String newsUrl;
 	@Getter @Setter private String newsPicturePath;
+	@Getter @Setter private String created;
 }

@@ -9,16 +9,13 @@ import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
-import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
-import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
-import com.cascv.oas.server.blockchain.wrapper.SelectContractSymbolName;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;

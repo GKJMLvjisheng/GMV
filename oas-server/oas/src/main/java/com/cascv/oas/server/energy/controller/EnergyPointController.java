@@ -166,80 +166,48 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireNews")
     @ResponseBody
-    public ResponseEntity<?> inquireNews(@RequestBody PageDomain<Integer> pageInfo) {
-        List<NewsModel> list=newsService.selectAllNews();
-        int length=list.size();        
-        int pageSize=0;
-        
-        try{
-        	pageSize=(pageInfo.getPageSize()>0&&pageInfo.getPageSize()<=length)?pageInfo.getPageSize():length;
-        	}
-        catch(NullPointerException e){
-        	pageSize=length;
-            log.info(e.getMessage());
-        }
-        //总共的页数
-        int pageTotalNum=0;
-        if(length/pageSize>0) {
-        	if(length%pageSize!=0) {
-        		pageTotalNum=length/pageSize+1;
-        	}
-        	else {
-        		pageTotalNum=length/pageSize;
-        	}
-        }else {
-        	pageTotalNum=1;
-        }
-        //入参为第几页(pageNum>=1,若pageNum=0或者不存在,则报错)
-        int pageNum;       
-        try {
-        	if(pageInfo.getPageNum()>0&&pageInfo.getPageNum()<=pageTotalNum){
-            pageNum=pageInfo.getPageNum();
-            }
-            else { 
-            	return new ResponseEntity.Builder<Integer>()
-                        .setData(1)
-                        .setErrorCode(ErrorCode.GENERAL_ERROR)
-                        .build();
-                 }
-        }
-        catch(NullPointerException e){
-        	pageNum=1;
-        	System.out.println(pageNum);
-        }
-        //获取本机IP地址
-        String localhostIp=HostIpUtils.getHostIp();
-        log.info(localhostIp);
-        //每页从第几条开始(offset>=0)
-        int offset=(pageNum-1)*pageSize;
-        //所在页数的数据量
-        int pageEnd=(pageNum<pageTotalNum)?(offset+pageSize):length;          
-           List<EnergyNews> energyNewsList = new ArrayList<>();
-          for (int i=offset; i<pageEnd; i++){
-               EnergyNews energyNews = new EnergyNews();
-               energyNews.setId(list.get(i).getNewsId());
-               energyNews.setTitle(list.get(i).getNewsTitle());
-               energyNews.setSummary(list.get(i).getNewsAbstract());
-               String ImageLink = "http://"+localhostIp+":8080"+list.get(i).getNewsPicturePath();
-               log.info(ImageLink);
-               energyNews.setImageLink(ImageLink);
-               energyNews.setNewsLink(list.get(i).getNewsUrl());            
-               energyNewsList.add(energyNews);
-           }
+    public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo) {// here don't use RequestBody  
+      Integer pageSize=pageInfo.getPageSize();
+      Integer pageNum = pageInfo.getPageNum();
+      Integer limit = 3,offset=0;
+      if (pageSize != null && pageSize > 0)
+        limit = pageSize;
+      if (pageNum != null && pageNum > 1)
+        offset = (pageNum - 1) * limit;
+      
+      Integer total = newsService.countTotal();
+      List<NewsModel> newsModelList=newsService.selectPage(offset, limit);
+      log.info("pageSize {} total size {}", pageSize, total);
+      
+      String localhostIp=HostIpUtils.getHostIp();
+      log.info(localhostIp);
+      
+      List<EnergyNews> energyNewsList = new ArrayList<>();
+      
+      for (NewsModel newsModel : newsModelList){
+        EnergyNews energyNews = new EnergyNews();
+        energyNews.setId(newsModel.getNewsId());
+        energyNews.setTitle(newsModel.getNewsTitle());
+        energyNews.setSummary(newsModel.getNewsAbstract());
 
-           PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
-           pageEnergyNews.setTotal(length);
-           pageEnergyNews.setAsc("asc");
-           pageEnergyNews.setOffset(offset);
-           pageEnergyNews.setPageNum(pageNum);
-           pageEnergyNews.setPageSize(pageSize);
-           pageEnergyNews.setRows(energyNewsList);
+        energyNews.setImageLink(newsModel.getNewsPicturePath());
+        log.info(energyNews.getImageLink());
+        energyNews.setNewsLink(newsModel.getNewsUrl());            
+        energyNewsList.add(energyNews);
+      }
+      PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
+      pageEnergyNews.setTotal(total);
+      pageEnergyNews.setAsc("desc");
+      pageEnergyNews.setOffset(offset);
+      pageEnergyNews.setPageNum(pageNum);
+      pageEnergyNews.setPageSize(pageSize);
+      pageEnergyNews.setRows(energyNewsList);
 
-           return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
-                   .setData(pageEnergyNews)
-                   .setErrorCode(ErrorCode.SUCCESS)
-                   .build();
-        	}
+      return new ResponseEntity.Builder<PageDomain<EnergyNews>>()
+               .setData(pageEnergyNews)
+               .setErrorCode(ErrorCode.SUCCESS)
+               .build();
+    }
     
     @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")
     @ResponseBody

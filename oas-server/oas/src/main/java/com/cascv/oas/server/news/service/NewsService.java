@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.news.mapper.NewsModelMapper;
 import com.cascv.oas.server.news.model.NewsModel;
 
@@ -19,6 +20,9 @@ import com.cascv.oas.server.news.model.NewsModel;
 public class NewsService {
 	@Autowired
 	private NewsModelMapper newsModelMapper;
+	
+	@Autowired
+  private MediaServer mediaServer;
 	
 	public Integer addNews(NewsModel newsModel) 
 	{
@@ -48,4 +52,16 @@ public class NewsService {
 		
 	}
 	
+	public List<NewsModel> selectPage(Integer offset,  Integer limit){
+	  List<NewsModel> newsModelList = newsModelMapper.selectPage(offset, limit);
+	  for (NewsModel newsModel : newsModelList) {
+	    String fullLink = mediaServer.getImageHost() + newsModel.getNewsPicturePath();
+	    newsModel.setNewsPicturePath(fullLink);
+	  }
+	  return newsModelList;
+	}
+	
+	public Integer countTotal() {
+	  return newsModelMapper.countTotal();
+	}
 }

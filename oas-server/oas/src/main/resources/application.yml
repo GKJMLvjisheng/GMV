@@ -63,6 +63,10 @@ server:
   port: 8080
   session-timeout: 1800
 
+media:
+  server:
+    imageHost : http://18.219.19.160:8080
+
 wallet:
   providers:
     ropstrn: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"

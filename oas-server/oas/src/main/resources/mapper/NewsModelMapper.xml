@@ -11,6 +11,7 @@
 	<result column="news_abstract" property="newsAbstract"/>
 	<result column="news_url" property="newsUrl"/>
   	<result column="news_picture_path" property="newsPicturePath"/>
+  	<result column="created" property="created"/>
   </resultMap>
  
   <sql id="Base_Column_List">
@@ -18,7 +19,8 @@
     	news_title,
     	news_abstract,
     	news_url,
-    	news_picture_path
+    	news_picture_path,
+    	created
   </sql>
   
   <!-- insert news -->
@@ -28,6 +30,7 @@
     </selectKey>
     insert into news_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      
       <if test="newsTitle != null">
         news_title,
       </if>
@@ -40,7 +43,9 @@
       <if test="newsPicturePath != null">
         news_picture_path,
       </if>
-    
+      <if test="created != null">
+        created,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
     
@@ -56,6 +61,9 @@
       <if test="newsPicturePath != null">
         #{newsPicturePath,jdbcType=VARCHAR},
       </if>
+	  <if test="created != null">
+         #{created,jdbcType=VARCHAR},
+      </if>
     </trim>
    </insert>
   
@@ -69,6 +77,18 @@
   	<include refid="Base_Column_List" />
   	from news_info
   </select>
+
+  <select id="selectPage" resultMap="newsModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from news_info order by created  desc limit #{offset},#{limit};
+  </select>
+
+  <select id="countTotal" resultType="java.lang.Integer">
+  	select count(*) from news_info;
+  </select>
+  
+
 
     <update id="updateNews" parameterType="com.cascv.oas.server.news.model.NewsModel">
 update 

@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-HOST='http://18.219.19.160:8080/api/v1'
-#HOST='http://localhost:8080/api/v1'
+#HOST='http://18.219.19.160:8080/api/v1'
+HOST='http://localhost:8080/api/v1'
 
 filename=str(time.time())
 print "filename %s" % filename
@@ -362,6 +362,16 @@ def inquireCurrentPeriodEnergyPoint(token):
   if res.get('code') == 0:
     return res.get('data')
 
+def inquireNews(token):
+  url=HOST+"/energyPoint/inquireNews"
+  data={
+    "pageSize":3,
+    "pageNum" :1
+  }
+  res=callRpc(url,data,token)
+  print res
+  if res.get('code') == 0:
+    return res.get('data')
 
 #testUserWalletTransfer()
 
@@ -371,7 +381,7 @@ token=login("caikov","cai120501")
 if token is None:
   raise Exception("[Fail] login")
 
-inquire=inquireCurrentPeriodEnergyPoint(token)
+inquire=inquireNews(token)
 
 #testEnergyPoint()
 #testUserWallet()
