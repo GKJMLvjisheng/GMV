@@ -32,7 +32,7 @@ $(function ()
 		   dataType: 'json',
 		   cache: false,
 		   success: function (res) {
-			   alert(JSON.stringify(res));
+			  
 		     if (res.code == 0) {
 		    	 
 		    	 $("#userAddress").val(res.data[0].address);
@@ -145,7 +145,7 @@ $(function ()
          		   dataType: 'json',
          		   cache: false,
          		   success: function (res) {
-         			  alert(JSON.stringify(res));
+         			 
          		     if (res.code == 0) {
          		    	  
          		    	 var optionData=res.data;
@@ -642,8 +642,15 @@ $(function ()
     return;}
     var gasPrice=$("#gasPrice").val();
 	var gasLimit=$("#gasLimit").val();
-	if(gasPrice==0)
-	{console.log("price"+gasPrice);}
+	if(gasLimit==="")
+    {
+		gasLimit="";
+		
+    }else if(gasLimit<1)
+    	{
+    	alert("gasLimit请输入大于0的数或不输入");
+    	 return;}
+	
     var tableData = new Array();  
 
     for(var i=1; i<table.rows.length;i++){  
@@ -667,7 +674,8 @@ $(function ()
     alert(JSON.stringify(tableData1))
     var userAddress=$("#userAddress").val();
     var userName=$("#userNickname",parent.document).text();
-    Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】." }).on(function (e) {
+    var symbol=$('#contractSymbol option:selected') .text();
+    Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
 		if (!e) {
 		  return;
 		 }
@@ -678,6 +686,8 @@ $(function ()
     		"gasLimit":gasLimit,
     	    "quota":tableData1,
     	};
+    alert(token);
+    alert(JSON.stringify(data));
     
     transfer(data);
     });
@@ -702,7 +712,11 @@ $(function ()
 		success:function(res){
 			alert("success"+JSON.stringify(res));
 			if(res.code==0)
-         {  alert("转账成功！");
+         {  
+				//alert("转账成功！");
+				res.data.taxHash;
+				$("#Tip").modal('show');
+				document.getElementById("tipContent").innerText="恭喜您，转账成功";
          }
          else{
         	 alert("转账失败");
@@ -1087,7 +1101,7 @@ $(function ()
     //表格
   $(function(){
 	 
-    $('#transferTable').bootstrapTable({
+    $('#excelTable').bootstrapTable({
         //url: createUrl(''),
         striped: true,
         uniqueId: 'attrValue',
@@ -1116,7 +1130,7 @@ $(function ()
     });
   });
     function formatterIndex(value, row, index){
-    	alert("index"+index);
+    	
         var i = index + 1;
         if(i < 10){
             return "0" + i;
@@ -1200,14 +1214,14 @@ $(function ()
 function display1()
 {document.getElementById("page2").style.display="none";
 document.getElementById("page1").style.display="block";
-$('#btn1').removeClass('active').addClass('active1');
-$('#btn2').removeClass('active1').addClass('active');
+$('#btn1').removeClass('active1').addClass('active');
+$('#btn2').removeClass('active').addClass('active1');
 }
 function display2()
 {
 	//$("#page2").attr()
 	document.getElementById("page1").style.display="none";
 	document.getElementById("page2").style.display="block";
-	$('#btn2').removeClass('active').addClass('active1');
-	$('#btn1').removeClass('active1').addClass('active');
+	$('#btn2').removeClass('active1').addClass('active');
+	$('#btn1').removeClass('active').addClass('active1');
 }

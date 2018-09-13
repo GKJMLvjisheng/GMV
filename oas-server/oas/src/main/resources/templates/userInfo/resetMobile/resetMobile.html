@@ -9,9 +9,6 @@
 <link rel="stylesheet" type="text/css"
 	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
 
-<link rel="stylesheet" type="text/css"
-	th:href="@{/webjars/bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css}">
-
 <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 
 <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
@@ -243,7 +240,7 @@ i:after {
 
 					<div class="col-sm-6">
 
-						<input type="userMobileIn" name="userMobileIn" class="form-control"
+						<input type="text" name="userMobileIn" class="form-control"
 							onblur="checkUserMobile(this)" id="userMobileIn"
 							required="required" placeholder="请输入手机号码" /> <span
 							id="userMobile_span"></span>
@@ -260,9 +257,9 @@ i:after {
 							onclick="sendMobileCode()">获取验证码</button></span>
 					<div class="col-sm-4">
 						<input type="text" id="identifyCodeNext" class="form-control"
-							placeholder="请输入验证码" onblur='checkMobileIdentify()' /> 
+							placeholder="请输入验证码"  /> 
 						<span id='msgNext'></span>
-
+<!-- onblur='checkMobileIdentify()' -->
 					</div>
 				</div>
 

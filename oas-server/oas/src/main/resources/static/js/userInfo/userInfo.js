@@ -2,7 +2,7 @@
  * 
  */
 
-document.write("<script language=javascript src='resetPassword.js'></script>");
+
 
 
 //个人信息主页数据显示

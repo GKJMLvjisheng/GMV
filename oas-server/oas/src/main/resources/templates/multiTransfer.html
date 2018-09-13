@@ -13,7 +13,7 @@
  	<link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script> 
-    <script type="text/javascript" th:src="@{/webjars/x-editable-bootstrap/1.5.1/js/bootstrap-editable.min.js}"></script>
+<!--     <script type="text/javascript" th:src="@{/webjars/x-editable-bootstrap/1.5.1/js/bootstrap-editable.min.js}"></script> -->
 <!--     <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/extensions/editable/bootstrap-table-editable.min.js}"></script> -->
    
     
@@ -238,10 +238,10 @@ background:#d8dbde
 
             <nav class="page-tabs menuTabs">
                 <div class="page-tabs-content">
-                    <a href="javascript:;" class="active1 menuTab" onclick="display1()"id="btn1">页面转账</a>
+                    <a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">页面转账</a>
                 </div>
                 <div class="page-tabs-content">
-                    <a href="javascript:;" class="active menuTab" onclick="display2()"id="btn2">excel转账</a>
+                    <a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">excel转账</a>
                 </div>
             </nav>	
              </div> 
@@ -348,9 +348,38 @@ background:#d8dbde
 <!--  style="background:yellow" -->
      <div id="drop"><h4>If you need to transfer more than 15 people, please use the excel attachment form to transfer money.</h4> </div>
     <input type="file" name="xlfile" class="btn-primary fileBtn"id="excelFile" /> <input type="submit" class=" btn-primary submitBtn"name="Submit3" value="提交" onclick="getExcelData();return false;" />
+   
     <table id="excelTable"></table>
 </div> 
-  
+ <div class="modal fade" id="Tip" role="dialog">
+
+			<div class="modal-dialog modal-sm"  role="document">
+
+				<div class="modal-content">
+
+					<div class="modal-header">
+
+						<h3>提示</h3>
+
+					</div>
+
+					<div class="modal-body" align="center">
+
+						<h4 id="tipContent">新增成功</h4>
+
+					</div>
+
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div> 
 
    
 
