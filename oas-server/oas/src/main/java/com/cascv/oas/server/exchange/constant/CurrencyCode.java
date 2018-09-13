@@ -36,7 +36,8 @@ public enum CurrencyCode {
         CurrencyCode.DEM,
         CurrencyCode.FRF,
         CurrencyCode.CAD,
-        CurrencyCode.HKD
+        CurrencyCode.HKD,
+        CurrencyCode.OAS
     };
     for (CurrencyCode currencyCode:codeSet) {
       if (code == currencyCode.getCode())
