@@ -101,12 +101,9 @@ public class EthWalletController {
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
 	  
 		  BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice();
-		  System.out.println("gasPrice"+gasPrice);
 		  if (gasPrice == null)
-			  System.out.println("gasPrice1"+gasPrice);
 			gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
 		  BigInteger gasLimit = ethWalletMultiTransfer.getGasLimit();
-		  System.out.println("gasLimit"+gasLimit);
 		  if (gasLimit == null)
 			  gasLimit = BigInteger.valueOf(600000);
 		  ReturnValue<String> returnValue=ethWalletService.multiTransfer(

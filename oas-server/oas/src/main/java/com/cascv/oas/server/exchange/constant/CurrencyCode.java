@@ -5,7 +5,7 @@ import lombok.Setter;
 
 public enum CurrencyCode {
   POINT(1, "POINT", "_"),
-  CNY(2, "RMB", ""),
+  CNY(2, "CNY", ""),
   USD(3, "USD", ""),
   JPY(4, "JPY", ""),
   EUR(5, "EUR", ""),
@@ -13,7 +13,8 @@ public enum CurrencyCode {
   FRF(7, "FRF", ""),
   CAD(8, "CAD", ""),
   AUD(9, "AUD", ""),
-  HKD(10, "HKD", "");
+  HKD(10, "HKD", ""),
+  OAS(255, "OAS", "");
   
   @Setter @Getter private Integer code;
   @Setter @Getter private String name;
@@ -35,7 +36,8 @@ public enum CurrencyCode {
         CurrencyCode.DEM,
         CurrencyCode.FRF,
         CurrencyCode.CAD,
-        CurrencyCode.HKD
+        CurrencyCode.HKD,
+        CurrencyCode.OAS
     };
     for (CurrencyCode currencyCode:codeSet) {
       if (code == currencyCode.getCode())

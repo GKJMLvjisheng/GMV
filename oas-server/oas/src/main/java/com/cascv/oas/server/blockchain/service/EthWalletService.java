@@ -312,23 +312,29 @@ public class EthWalletService {
     log.info("txhash {}", txHash);
     for (int i = 0; i < quota.size(); i++) {
     	if (addressList.get(i).isEmpty() || addressList.get(i).equals("0")) {
-    		returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS); 
-    		break;
-    	}else if (amountIntList.get(i).intValue() == 0 || amountIntList.get(i).equals(null)) {
-    		returnValue.setErrorCode(ErrorCode.WRONG_AMOUNT);
-    		break;
-    	}else if (txHash!=null) {
-    	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
-    	      for (TransferQuota q: quota) {
-    	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
-    	      }
-    	      returnValue.setErrorCode(ErrorCode.SUCCESS);
-    	      returnValue.setData(txHash);
-    	} else {
-    	      returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
-    	    }
+    		returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS);
+    	    return returnValue;
+    	}
     }
-    return returnValue;
+    for (int i = 0; i < quota.size(); i++) {
+    	if (amountIntList.get(i).intValue() == 0 || amountIntList.get(i).equals(null)) {
+    		returnValue.setErrorCode(ErrorCode.WRONG_AMOUNT);
+    		return returnValue;
+    	}
+    }
+    if (txHash!=null) {
+	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
+	      for (TransferQuota q: quota) {
+	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
+	      }
+	      returnValue.setErrorCode(ErrorCode.SUCCESS);
+	      returnValue.setData(txHash);
+	      return returnValue;
+	} else {
+	      returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
+	      return returnValue;
+	    }
+
   }
   
   public Set<String> listNetwork() {
