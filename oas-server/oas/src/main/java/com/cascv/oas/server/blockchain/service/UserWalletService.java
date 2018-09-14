@@ -35,7 +35,7 @@ public class UserWalletService {
   }
   
   
-  private void addDetail(UserWallet userWallet, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment) {
+  private void addDetail(UserWallet userWallet, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
 	  UserWalletDetail userWalletDetail = new UserWalletDetail();
 	  userWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
 	  userWalletDetail.setUserUuid(userWallet.getUserUuid());
@@ -45,6 +45,7 @@ public class UserWalletService {
 	  userWalletDetail.setValue(value);
 	  userWalletDetail.setCreated(DateUtils.getTime());
 	  userWalletDetail.setComment(comment);
+	  userWalletDetail.setRemark(remark);;
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
   
@@ -67,7 +68,7 @@ public class UserWalletService {
     return 0;
   }
 
-  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value) {
+  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value, String remark) {
     UserWallet fromUserWallet = userWalletMapper.selectByUserUuid(fromUserUuid);
     UserWallet toUserWallet = userWalletMapper.selectByUserUuid(toUserUuid);
     if(value.compareTo(BigDecimal.ZERO) == 0) {
@@ -78,10 +79,12 @@ public class UserWalletService {
     }
     
     userWalletMapper.decreaseBalance(fromUserWallet.getUuid(), value);
-    this.addDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value,"");
+    //this.addDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value,"");
+    this.addDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value, "", remark);
     
     userWalletMapper.increaseBalance(toUserWallet.getUuid(), value);
-    this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"");
+    //this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"");
+    this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"", remark);
     return ErrorCode.SUCCESS;
   }
   
@@ -93,6 +96,6 @@ public class UserWalletService {
 	        time, CurrencyCode.POINT);
 	  BigDecimal token = returnValue.getData();
 	  userWalletMapper.increaseBalance(userWallet.getUuid(), token);
-	  this.addDetail(userWallet, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString());
+	  this.addDetail(userWallet, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "");
   } 
 }

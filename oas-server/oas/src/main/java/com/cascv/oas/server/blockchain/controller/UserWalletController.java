@@ -169,6 +169,7 @@ public class UserWalletController {
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
     UserModel fromUser=ShiroUtils.getUser();
     UserModel toUser =  userService.findUserByName(userWalletTransfer.getToUserName());
+    //String rank = userWalletTransfer.getRank();
     if (fromUser == null || toUser == null) {
         return new ResponseEntity.Builder<Integer>()
         .setData(1)
@@ -183,7 +184,7 @@ public class UserWalletController {
     			.setErrorCode(ErrorCode.CAN_NOT_TRANSFER_TO_SELF)
     	    .build();
     }
-    ErrorCode errorCode = userWalletService.transfer(fromUser.getUuid(), toUser.getUuid(), userWalletTransfer.getValue());
+    ErrorCode errorCode = userWalletService.transfer(fromUser.getUuid(), toUser.getUuid(), userWalletTransfer.getValue(), userWalletTransfer.getRemark());
     return new ResponseEntity.Builder<Integer>()
         .setData(1)
         .setErrorCode(errorCode)
