@@ -57,15 +57,15 @@
                 <shiro:hasRole name="admin">
                 
                  <li class="active">
-                    <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label">用户管理</span> </a>
+                    <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">用户管理</span> </a>
                    
                 </li>
                 <li class="active">
-                    <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label">角色管理</span> </a>
+                    <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">角色管理</span> </a>
                    
                 </li>
                 <li class="active">
-                    <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label">模块管理</span> </a>
+                    <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">模块管理</span> </a>
                    
                 </li>
                 <li class="active">
@@ -150,6 +150,8 @@
 var stringT;
 var stringName;
 $(function(){
+	 $("[data-toggle='tooltip']").tooltip(); 
+
 	//String name=Request.QueryString("name");
 	//document.getElementById("").innerHTML=window.location.split('')[];
 // 	var url = window.location.href;
