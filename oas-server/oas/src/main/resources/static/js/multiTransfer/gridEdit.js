@@ -661,88 +661,111 @@ $(function ()
     //提取表格的值,JSON格式  
 
     function getTableData(table){  
-    var contract=$('#contractSymbol option:selected') .val();
-    if(contract=="请选择")
-    {alert("请选择货币类型");
-    return;}
-    var gasPrice=$("#gasPrice").val();
-	var gasLimit=$("#gasLimit").val();
-	var check1=true;
-	var check2=true;
-	if (Number(gasLimit)>=0)
-	{check1=false;}
-	if (Number(gasPrice)>=0)
-	{check2=false;}
-	 if(check1||check2)
-	{	
-		 alert("gasLimit/gasPrice请输入正数");
-		return;}
-	else if(gasLimit==="")
-    {
-		gasLimit="";	
-    }else if(gasLimit<1)
-    	{
-    	 alert("gasLimit请输入大于0的数或不输入");
-    	 return;}
-    
-	
-    var tableData = new Array();  
+    	 var tableData = new Array();  
 
-    for(var i=1; i<table.rows.length;i++){  
+         for(var i=1; i<table.rows.length;i++){  
 
-       tableData.push(getRowData(table.rows[i]));  
+            tableData.push(getRowData(table.rows[i]));  
 
-    }  
-   
-    var tableDataLen=tableData.length;
-    var tableData1=[];
-    var sunmary=0;
-    for(var i=0;i<tableDataLen;i++)
-    {
-     var rowAdd={};
-     rowAdd['toUserAddress']=tableData[i]['toUserAddress'];
-		
-     rowAdd['amount']=tableData[i]['candy'];
+         }
+         var tableData1=[];
+         var tableDataLen=tableData.length;
+         for(var i=0;i<tableDataLen;i++)
+         {
+          var rowAdd={};
+          rowAdd['toUserAddress']=tableData[i]['toUserAddress'];
+     		
+          rowAdd['amount']=tableData[i]['candy'];
+        
+          tableData1.push(rowAdd);
+     		}
 
-     //sunmary=sunmary+parseInt(rowAdd['amount']);
-     //sunmary=numAdd(sunmary,rowAdd['amount']);
-     sunmary=sunmary+parseFloat(rowAdd['amount']);
-     tableData1.push(rowAdd);
-		}
-  
-    var userAddress=$("#userAddress").val();
-    var userName=$("#userNickname",parent.document).text();
-    var symbol=$('#contractSymbol option:selected') .text();
-    Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
-		if (!e) {
-		  return;
-		 }
-		
-    data={
-    		"contract": contract,
-    		"gasPrice":gasPrice,
-    		"gasLimit":gasLimit,
-    	    "quota":tableData1,
-    	};
-
-    transfer(data);
-    });
+    transfer(tableData1);
+    }
     //return tableData;  
 
-    }
+   
     //判断正数
     function validate(num)
     {
      
-    var reg = /^[1-9]+[0-9]*$/;
-      if(reg.test(num)) return false;
-      return true ;  
+      var reg = /^\d+(?=\.{0,1}\d+$|$)/;
+      if(reg.test(num)) return true;
+      return false ;  
     } 
     
     //转账接口
     function transfer(data)
     {
-    	 
+    	var contract=$('#contractSymbol option:selected') .val();
+        if(contract=="请选择")
+        {alert("请选择货币类型");
+        return;}
+        var gasPrice=$("#gasPrice").val();
+    	var gasLimit=$("#gasLimit").val();
+    	var check1=true;
+    	var check2=true;
+    	if (Number(gasLimit)>=0)
+    	{check1=false;}
+    	if (Number(gasPrice)>=0)
+    	{check2=false;}
+    	 if(check1||check2)
+    	{	
+    		 alert("gasLimit/gasPrice请输入正数");
+    		return;}
+    	else if(gasLimit==="")
+        {
+    		gasLimit="";	
+        }else if(gasLimit<1)
+        	{
+        	 alert("gasLimit请输入大于0的数或不输入");
+        	 return;}
+
+        var tableDataLen=data.length;
+        
+        var sunmary=0;
+        var flag=false;
+        var flag1=false;
+      
+        for(var i=0;i<tableDataLen;i++)
+        {
+
+         if(data[i]['toUserAddress']==0||data[i]['amount']==0)
+     	{		
+    	 		flag=true;
+    	 		break;}
+         else if(!validate(data[i]['amount']))
+      	{		
+    	 		flag1=true;
+    	 		break;
+      	}
+         //sunmary=sunmary+parseInt(rowAdd['amount']);
+         //sunmary=numAdd(sunmary,rowAdd['amount']);
+         sunmary=sunmary+parseFloat(data[i]['amount']);
+         
+    		}
+
+       if(flag)
+       	{	alert("输入的地址或金额不能为空");
+       		return;}
+       if(flag1)
+    	{	alert("金额请输入正数");
+    		return;}
+        
+        var userAddress=$("#userAddress").val();
+        var userName=$("#userNickname",parent.document).text();
+        var symbol=$('#contractSymbol option:selected') .text();
+        Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
+    		if (!e) {
+    		  return;
+    		 }
+    		
+       var dataSum={
+        		"contract": contract,
+        		"gasPrice":gasPrice,
+        		"gasLimit":gasLimit,
+        	    "quota":data,
+        	}; 
     $.ajax({
 
 		url:"/api/v1/ethWallet/multiTtransfer",
@@ -752,7 +775,7 @@ $(function ()
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:JSON.stringify(data),
+		data:JSON.stringify(dataSum),
 			
 		success:function(res){
 			
@@ -765,8 +788,8 @@ $(function ()
 					{str=strTest;}
 				else{str=strMain;}
 				$("#Tip").modal('show');
-				//document.getElementById("tipContent").innerText="恭喜您，转账成功<br/>"+"刚刚操作的转账记录请点击"+<a>res.data.taxHash</a>;
-				document.getElementById("tipContent").innerHTML="恭喜您，转账成功"+"<br/>"+"刚刚操作的转账记录请"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
+				
+				document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
          }
          else{
         	 alert("转账失败");
@@ -778,6 +801,7 @@ $(function ()
 					alert("请求失败！")
 				}
 	}); 
+    });
     }
 
     //提取指定行的数据，JSON格式  
@@ -886,7 +910,7 @@ $(function ()
    // Math.pow(2,4);//返回的是浮点数，最好再取整
 
     //var c=Math.round(Math.pow(2,4)); 
-    var value=eval(expn)
+    var value=eval(expn);
     return Math.round(value);  
 
     }  
@@ -1149,48 +1173,8 @@ $(function ()
     function getExcelData()
     {	
     	
-    	 var contract=$('#contractSymbol option:selected') .val();
-    	 if(contract=="请选择")
-    	    {alert("请选择货币类型");
-    	    return;}
-    	 var gasPrice=$("#gasPrice").val();
-    	 var gasLimit=$("#gasLimit").val();
-    	 var check1=isNaN(gasLimit); 
-    	 var check2=isNaN(gasPrice); 
-    	 
-    	 if(check1||check2)
-    	{	
-    		 alert("gasLimit/gasPrice请输入阿拉伯数字");
-    		return;}
-    	else if(gasLimit==="")
-        {
-    		gasLimit="";	
-        }else if(gasLimit<1)
-        	{
-        	 alert("gasLimit请输入大于0的数或不输入");
-        	 return;}
-    		 var userAddress=$("#userAddress").val();
-    		 var userName=$("#userNickname",parent.document).text();
-    		 var symbol=$('#contractSymbol option:selected') .text();
-    		 var tableDataLen=transferData.length;
-    		 var sunmary=null;
-    		 for(var i=0;i<tableDataLen;i++)
-    		    { 
-    			 sunmary=sunmary+parseFloat(transferData[i]['amount']);
-    			 }
-    		 Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
-    				if (!e) {
-    				  return;
-    				 }
-    	     data={
-    	    		"contract": contract,
-    	    		"gasPrice":gasPrice,
-    	    		"gasLimit":gasLimit,
-    	    	    "quota":transferData,
-    	    	};
-    	    alert(JSON.stringify(data));
-    	    transfer(data);
-    		});
+    	    transfer(transferData);
+    		
     	
     }
     //表格
