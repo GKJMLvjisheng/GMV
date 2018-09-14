@@ -23,7 +23,7 @@ $(function ()
 //	$("input").blur(function(){
 //		$(this).css({"outline":"none","border":"0px"});
 //	})
-	token=$("#userToken",parent.document).val();
+	//token=$("#userToken",parent.document).val();
 	//data={"name":userName}
 	
 	$.ajax({
@@ -636,6 +636,28 @@ $(function ()
     }
       
 
+    /**
+     * 加法运算，避免数据相加小数点后产生多位数和计算精度损失。
+     * 
+     * @author: QQQ
+     * @param num1加数1 | num2加数2
+     */
+    function numAdd(num1, num2) {
+        var baseNum, baseNum1, baseNum2;
+        try {
+            baseNum1 = num1.toString().split(".")[1].length;
+        } catch (e) {
+            baseNum1 = 0;
+        }
+        try {
+            baseNum2 = num2.toString().split(".")[1].length;
+        } catch (e) {
+            baseNum2 = 0;
+        }
+        baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
+        return (num1 * baseNum + num2 * baseNum) / baseNum;
+    };
+    
     //提取表格的值,JSON格式  
 
     function getTableData(table){  
@@ -674,13 +696,14 @@ $(function ()
    
     var tableDataLen=tableData.length;
     var tableData1=[];
-    var sunmary=null;
+    var sunmary=0;
     for(var i=0;i<tableDataLen;i++)
     {
      var rowAdd={};
      rowAdd['toUserAddress']=tableData[i]['toUserAddress'];
 		
      rowAdd['amount']=tableData[i]['candy'];
+
      //sunmary=sunmary+parseInt(rowAdd['amount']);
      //sunmary=numAdd(sunmary,rowAdd['amount']);
      sunmary=sunmary+parseFloat(rowAdd['amount']);
@@ -701,6 +724,7 @@ $(function ()
     		"gasLimit":gasLimit,
     	    "quota":tableData1,
     	};
+
     transfer(data);
     });
     //return tableData;  
@@ -714,22 +738,7 @@ $(function ()
       if(reg.test(num)) return false;
       return true ;  
     } 
-    //加法
-    function numAdd(num1, num2) {
-        var baseNum, baseNum1, baseNum2;
-        try {
-            baseNum1 = num1.toString().split(".")[1].length;
-        } catch (e) {
-            baseNum1 = 0;
-        }
-        try {
-            baseNum2 = num2.toString().split(".")[1].length;
-        } catch (e) {
-            baseNum2 = 0;
-        }
-        baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
-        return (num1 * baseNum + num2 * baseNum) / baseNum;
-    };
+    
     //转账接口
     function transfer(data)
     {

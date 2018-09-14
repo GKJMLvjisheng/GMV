@@ -303,13 +303,6 @@ public class EthWalletService {
       BigInteger amountInt=q.getAmount().multiply(userCoin.getWeiFactor()).toBigInteger();
       amountIntList.add(amountInt);      
     }
-    String net = ethWallet.getPreferNetwork();
-    if (net == null)
-  	  net = coinClient.getDefaultNet();
-    String txHash=coinClient.multiTransfer(
-    			net, ethWallet.getAddress(), ethWallet.getPrivateKey(), 
-    			addressList, contract, amountIntList, gasPrice,gasLimit);
-    log.info("txhash {}", txHash);
     for (int i = 0; i < quota.size(); i++) {
     	if (addressList.get(i).isEmpty() || addressList.get(i).equals("0")) {
     		returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS);
@@ -322,6 +315,13 @@ public class EthWalletService {
     		return returnValue;
     	}
     }
+    String net = ethWallet.getPreferNetwork();
+    if (net == null)
+  	  net = coinClient.getDefaultNet();
+    String txHash=coinClient.multiTransfer(
+    			net, ethWallet.getAddress(), ethWallet.getPrivateKey(), 
+    			addressList, contract, amountIntList, gasPrice,gasLimit);
+    log.info("txhash {}", txHash);
     if (txHash!=null) {
 	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
 	      for (TransferQuota q: quota) {
