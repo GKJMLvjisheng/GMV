@@ -645,12 +645,15 @@ $(function ()
     return;}
     var gasPrice=$("#gasPrice").val();
 	var gasLimit=$("#gasLimit").val();
-	 var check1=isNaN(gasLimit); 
-	 var check2=isNaN(gasPrice); 
-	 
+	var check1=true;
+	var check2=true;
+	if (Number(gasLimit)>=0)
+	{check1=false;}
+	if (Number(gasPrice)>=0)
+	{check2=false;}
 	 if(check1||check2)
 	{	
-		 alert("gasLimit/gasPrice请输入阿拉伯数字");
+		 alert("gasLimit/gasPrice请输入正数");
 		return;}
 	else if(gasLimit==="")
     {
@@ -702,7 +705,15 @@ $(function ()
     });
     //return tableData;  
 
-    }  
+    }
+    //判断正数
+    function validate(num)
+    {
+     
+    var reg = /^[1-9]+[0-9]*$/;
+      if(reg.test(num)) return false;
+      return true ;  
+    } 
     //加法
     function numAdd(num1, num2) {
         var baseNum, baseNum1, baseNum2;
@@ -735,13 +746,18 @@ $(function ()
 		data:JSON.stringify(data),
 			
 		success:function(res){
-			alert("success"+JSON.stringify(res));
+			
 			if(res.code==0)
          {  
-				//alert("转账成功！");
-				res.data.taxHash;
+				var strMain="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				var network=$("#network").val();
+				if(strTest.indexOf(network)!=-1)
+					{str=strTest;}
+				else{str=strMain;}
 				$("#Tip").modal('show');
-				document.getElementById("tipContent").innerText="恭喜您，转账成功";
+				//document.getElementById("tipContent").innerText="恭喜您，转账成功<br/>"+"刚刚操作的转账记录请点击"+<a>res.data.taxHash</a>;
+				document.getElementById("tipContent").innerHTML="恭喜您，转账成功"+"<br/>"+"刚刚操作的转账记录请"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
          }
          else{
         	 alert("转账失败");
