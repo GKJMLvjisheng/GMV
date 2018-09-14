@@ -10,12 +10,13 @@
 	<result column="sub_title" property="subTitle"/>
 	<result column="in_or_out" property="inOrOut" jdbcType="INTEGER"/>
 	<result column="comment" property="comment"/>
+	<result column="remark" property="remark"/>
 	<result column="created" property="created"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, title, sub_title,in_or_out, comment, created
+    uuid, user_uuid, value, title, sub_title,in_or_out, comment, remark, created
   </sql>
   
   
@@ -38,6 +39,9 @@
     	<if test="comment != null">
     		comment,
     	</if>
+    	<if test="remark != null">
+    		remark,
+    	</if>
     	created
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -55,6 +59,9 @@
     	</if>
     	<if test="comment != null">
     		#{comment,jdbcType=VARCHAR},
+    	</if>
+    	<if test="remark != null">
+    		#{remark,jdbcType=VARCHAR},
     	</if>
     		#{created,jdbcType=VARCHAR}
     </trim>

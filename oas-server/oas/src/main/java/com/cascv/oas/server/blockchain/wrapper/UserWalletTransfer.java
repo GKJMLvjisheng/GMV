@@ -9,5 +9,6 @@ import lombok.Setter;
 public class UserWalletTransfer implements Serializable {
   private static final long serialVersionUID = 1L;
 	@Getter @Setter private String toUserName;
-  @Getter @Setter private BigDecimal value;
+    @Getter @Setter private BigDecimal value;
+    @Getter @Setter private String remark;
 }
