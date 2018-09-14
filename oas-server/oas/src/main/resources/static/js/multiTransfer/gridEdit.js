@@ -185,7 +185,7 @@ $(function ()
                 	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
                 	thisVal = $(this).val();
                 }
-                data={"preferNetwork":thisVal};
+                var data={"preferNetwork":thisVal};
                $.ajax({
          		   type: 'post',
          		   url: '/api/v1/ethWallet/setPreferNetwork',
@@ -686,14 +686,21 @@ $(function ()
 
    
     //判断正数
-    function validate(num)
+    function validateValue(num)
     {
      
       var reg = /^\d+(?=\.{0,1}\d+$|$)/;
       if(reg.test(num)) return true;
       return false ;  
+    }
+    function validateAddress(num)
+    {
+     
+    	 var reg = /^[0-9a-zA-Z]{42}$/;
+      if(reg.test(num)) return true;
+      return false ;  
     } 
-    
+   
     //转账接口
     function transfer(data)
     {
@@ -726,7 +733,7 @@ $(function ()
         var sunmary=0;
         var flag=false;
         var flag1=false;
-      
+        var flag2=false;
         for(var i=0;i<tableDataLen;i++)
         {
 
@@ -734,11 +741,13 @@ $(function ()
      	{		
     	 		flag=true;
     	 		break;}
-         else if(!validate(data[i]['amount']))
+         else if(!validateValue(data[i]['amount']))
       	{		
     	 		flag1=true;
     	 		break;
-      	}
+      	}else if(!validateAddress(data[i]['toUserAddress']))
+      		{flag2=true;
+    	 		break;}
          //sunmary=sunmary+parseInt(rowAdd['amount']);
          sunmary=numAdd(sunmary,data[i]['amount']);
          //sunmary=sunmary+parseFloat(data[i]['amount']);
@@ -751,7 +760,9 @@ $(function ()
        if(flag1)
     	{	alert("金额请输入正数");
     		return;}
-        
+       if(flag2)
+   	{	alert("地址由42位的字母数字组成");
+   		return;}
         var userAddress=$("#userAddress").val();
         var userName=$("#userNickname",parent.document).text();
         var symbol=$('#contractSymbol option:selected') .text();
