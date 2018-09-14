@@ -221,25 +221,29 @@ public class EnergyPointController {
      Gson gson=new Gson();
      Map<String,Object> info=new HashMap<>();
      Integer pageSize=pageInfo.getPageSize();
-     Integer count=3;
+//     Integer count=3;
      Integer pageNum = pageInfo.getPageNum();
      String msg="";
      log.info("pageNum={}",pageNum);
-     Integer limit = 3,offset=0,listCount=0,length=0;
+     Integer limit = 3,offset=0,listCount=0,maxPageNum=0;
      if (pageSize != null && pageSize > 0)
      {
      limit = pageSize;
      }
      else
      {
-     limit=pageNum*count;
+     limit=3;
      log.info("limit={}",limit);
      }
-//     if (pageNum != null && pageNum > 1)
-//     offset = (pageNum - 1) * limit;
-//     else
-//     offset=0;
+     if (pageNum != null && pageNum > 1)
+     offset = (pageNum - 1) * limit;
+     else
+     offset=0;
      Integer total = newsService.countTotal();
+     if(total%limit==0)
+    	 maxPageNum=total/limit;
+     else
+    	 maxPageNum=(total/limit)+1;
      List<NewsModel> newsModelList=newsService.selectPage(offset, limit);
      log.info("pageNum {} limit size {}", pageNum, limit);
      List<EnergyNews> energyNewsList = new ArrayList<>();
@@ -261,12 +265,14 @@ public class EnergyPointController {
      pageEnergyNews.setPageNum(pageNum);
      pageEnergyNews.setPageSize(pageSize);
      pageEnergyNews.setRows(energyNewsList); 
+     
      listCount=newsModelList.size();
      log.info("listCount={}",listCount);
-     length=total%count==0?total:listCount;
+     
+     
      log.info("limit={}",limit);
      
-     if(listCount>0&&limit<=total+1) {
+     if(listCount>0&&pageNum<=maxPageNum) {
         info.put("data", newsModelList);
         log.info("***success***");
         callbackFianl=callback+"("+gson.toJson(info)+")";
