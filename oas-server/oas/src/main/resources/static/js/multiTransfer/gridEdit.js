@@ -740,8 +740,8 @@ $(function ()
     	 		break;
       	}
          //sunmary=sunmary+parseInt(rowAdd['amount']);
-         //sunmary=numAdd(sunmary,rowAdd['amount']);
-         sunmary=sunmary+parseFloat(data[i]['amount']);
+         sunmary=numAdd(sunmary,data[i]['amount']);
+         //sunmary=sunmary+parseFloat(data[i]['amount']);
          
     		}
 
