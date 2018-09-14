@@ -1089,7 +1089,7 @@ $(function ()
    
     //excel表导入
     var transferData=[]; 
-    $(document).ready(function(){
+  
     	
     $('#excelFile').change(function(e) {
     	
@@ -1180,7 +1180,7 @@ $(function ()
 
         }
     });
-    });
+    //发送excel数据
     function getExcelData()
     {	
     	
