@@ -343,9 +343,7 @@ public class EthWalletService {
   
   public ErrorCode setPreferNetwork(String userUuid, String preferNetwork) {
 	  Set<String> networkSet = this.listNetwork();
-	  if (preferNetwork == null)
-		  preferNetwork = "ropstrn";
-	  if (networkSet == null || !networkSet.contains(preferNetwork))
+	  if (networkSet == null || preferNetwork == null || !networkSet.contains(preferNetwork))
 		  return ErrorCode.INVALID_BLOCKCHAIN_NETWORK;
 	  EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
 	  if (ethWallet == null)
