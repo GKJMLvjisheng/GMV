@@ -1,5 +1,6 @@
 <template>
-  <div>
+<div>
+  <scroller :on-refresh="refresh">
     <!-- Header部分 Start -->
     <header>
       <div class="left">
@@ -83,7 +84,7 @@
               <p>{{item.title}}</p>
               <p>{{item.summary}}</p>
             </div>
-            <img :src="avatar" alt="">
+            <img :src="item.imageLink" alt="">
           </li>
         </ul>
       </div>
@@ -100,11 +101,13 @@
       <div class="content">
         <img :src="attendanceSuccess" alt="">
         <p class="tips">{{attendanceMsg.msg}}</p>
-        <p class="info">恭喜您获得{{attendanceMsg.energy}}点能量,{{attendanceMsg.power}}点算力</p>
+        <p v-if="isShowSuccessMsg" class="info">恭喜您获得{{attendanceMsg.energy}}点能量,{{attendanceMsg.power}}点算力</p>
         <button @click="handleAttendanceConfirm">确认</button>
       </div>
     </div>
     <!-- 签到弹框 End -->
+  </scroller>
+   <div class="toast" v-if="isShowToast">{{toastMsg}}</div>
   </div>
 </template>
 
@@ -129,6 +132,8 @@ export default {
       energyBall: energyBall,
       width: "80%",
       isShowMask: false,
+      isShowSuccessMsg: false,
+      isShowToast: false,
       energyBallList:[],
       currentEnergy:0,
       currentPower:0,
@@ -136,6 +141,7 @@ export default {
       analysis:'',
       analysisCount:0,
       tempArr:[],
+      toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
         energy:0,
@@ -165,10 +171,11 @@ export default {
         if (data.code == 0) {
           this.currentEnergy += data.data.newEnergyPoint
           this.currentPower += data.data.newPower
+          this.attendanceMsg.energy = data.data.newEnergyPoint
+          this.attendanceMsg.power = data.data.newPower
+          this.isShowSuccessMsg = true
         }
         this.attendanceMsg.msg = data.message
-        this.attendanceMsg.energy = data.data.newEnergyPoint
-        this.attendanceMsg.power = data.data.newPower
         this.isShowMask = true
       })
     },
@@ -232,20 +239,31 @@ export default {
       if (value > 999) {
         return 64 / 75 + 'rem'
       }
-      if (value > 0) {
+      if (value >= 0) {
         return 52 / 75 + 'rem'
       }
     },
     // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
+      let currentTime = new Date().getTime()
+      let endTime = new Date(data.endDate).getTime()
+      if (currentTime < endTime) {
+        this.Toast('能量暂不可收取')
+        return
+      }
       let ele = event.currentTarget
-      this.$axios.post('/energyPoint/takeEnergyBall',{}).then(({data:{data}}) => {
+      this.$axios.post('/energyPoint/takeEnergyBall',{ballId: data.uuid}).then(({data}) => {
         console.log(data)
-      })
+        if (data.code != 0) {
+          this.Toast(data.message)
+          return
+        }
       ele.classList.add('fadeOutUp')
       ele.classList.remove('flash')
       ele.classList.remove('infinite')
-      this.currentEnergy += data.value
+      this.getCurrentEnergy()
+      this.getCurrentPower()
+      })
     },
     // 随机生成不重复坐标点方法
     randomPoint() {
@@ -262,6 +280,27 @@ export default {
       }
       this.tempArr.push(p)
       return p
+    },
+    // 下拉刷新
+    refresh (done) {
+      this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+      this.getEnergyBall()
+      this.getCurrentEnergy()
+      this.getCurrentPower()
+      this.getEnergyAnalysis()
+      this.getArticleList()
+      this.getUserInfo()
+      setTimeout(() => {
+        done()
+      },1000)
+    },
+    // 提示信息
+    Toast (msg, delay) {
+      this.toastMsg = msg
+      this.isShowToast = true
+      setTimeout(() => {
+        this.isShowToast = false
+      },delay || 1500)
     }
   }
 };
@@ -329,6 +368,7 @@ header {
     background-size: 100% 100%;
     .energy-ball {
       // animation: 1.5s twinkling infinite;
+      width: 75px;
       position: absolute;
       top: 0;
       left: 0;
@@ -543,8 +583,26 @@ header {
   }
 }
 
+.toast {
+    position: fixed;
+    left:50%;
+    top: 50%;
+    transform:translate(-50%,-50%) scale(1);
+    word-wrap:break-word;
+    line-height: 50px;
+    padding:10px 20px;
+    text-align: center;
+    z-index:9999;
+    max-width:80%;
+    color: #fff;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.7);
+    overflow: hidden;
+
+}
+
 .flash {
-  animation-duration: 2.5s;
+  animation-duration: 5s;
 }
 
 @keyframes twinkling {
