@@ -12,32 +12,143 @@
         <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
         <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
     </resultMap>
-    <select id="selectByTimeFuzzyQuery" parameterType="com.cascv.oas.server.energy.model.EnergyBall"
-            resultMap="BaseResultMap">
-        select * FROM energy_ball
+
+    <sql id="Base_Column_List">
+        uuid, user_uuid, point_source, point, power_source, power, status, time_created, time_updated
+    </sql>
+    <!-- 根据能量球id查询 -->
+    <select id="selectByUuid" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from energy_ball where uuid = #{uuid}
+    </select>
+
+    <!-- 某用户的某个积分来源、根据提供的时间模糊查询 -->
+    <select id="selectByTimeFuzzyQuery" resultMap="BaseResultMap">
+          select
+        <include refid="Base_Column_List" />
+          from energy_ball
         <where>
-            user_uuid = #{userUuid} and point_source = #{status} and time_created like #{timeCreated}"%"
+            <if test="userUuid != null">
+                user_uuid = #{userUuid}
+            </if>
+            <if test="pointSource != null">
+                and point_source = #{pointSource}
+            </if>
+            <if test="timeCreated != null">
+                and time_created like #{timeCreated}"%"
+            </if>
         </where>
     </select>
 
-    <select id="selectByStatus" resultMap="BaseResultMap">
-      select * from energy_ball where status = #{status}
+    <!-- 查询某用户某种积分的所有能量球 -->
+    <select id="selectByPointSourceCode" resultMap="BaseResultMap">
+          select
+        <include refid="Base_Column_List" />
+          from energy_ball
+        <where>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid}
+            </if>
+            <if test="pointSource != null">
+                and point_source = #{pointSource}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
     </select>
 
-    <select id="selectByPointSourceCode" parameterType="com.cascv.oas.server.energy.model.EnergyBall" resultMap="BaseResultMap">
-        select * from energy_ball where user_uuid = #{userUuid} and point_source = #{pointSource}
+    <!-- 查询某用户某种积分的最近创建的一个球 -->
+    <select id="selectLatestOneByPointSourceCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from energy_ball
+        <where>
+            <if test="userUuid != null">
+                user_uuid = #{userUuid}
+            </if>
+            <if test="pointSource != null">
+                and point_source = #{pointSource}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by time_created desc limit 1
     </select>
 
-    <update id="updateEnergyBallStatusById" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-        update energy_ball set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
+    <!-- 查询某用户某种积分的所有能量球 部分信息 -->
+    <select id="selectPartByPointSourceCode" resultMap="EnergyBallWrapper">
+        select
+            b.uuid,
+            b.user_uuid,
+            b.point as value,
+            DATE_FORMAT(b.start_date, '%Y-%m-%d %H:%i:%S') as start_date,
+            date_add( b.start_date, interval #{timeGap} second ) as end_date,
+            p.source_code as type,
+            p.source_name as name
+        from
+            (
+            select
+                uuid,
+                user_uuid,
+                point_source,
+                point,
+                status,
+                DATE_FORMAT( STR_TO_DATE( time_created, '%Y-%m-%d %H:%i:%S' ), '%Y-%m-%d %H:%i:%S') as start_date
+            from
+                energy_ball
+            ) b
+            inner join energy_source_point p
+        where
+            b.point_source = p.source_code
+            and b.point_source = #{pointSource}
+            and b.status = #{status}
+            and b.user_uuid = #{userUuid}
+    </select>
+    <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
+        <id column="uuid" property="uuid"/>
+        <result column="value" property="value"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date"  property="endDate"/>
+        <result column="type" property="type" />
+        <result column="name" property="name" />
+    </resultMap>
+
+    <!-- 变更能量球的状态 -->
+    <update id="updateStatusByUuid">
+        update energy_ball
+        set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
     </update>
 
+    <!-- 变更能量球积分 -->
+    <update id="updatePointByUuid">
+        update energy_ball
+        set point = #{point}, time_updated = #{timeUpdated} where uuid = #{uuid}
+    </update>
+    <!-- 插入能量球 -->
     <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-      insert into energy_ball (uuid, user_uuid, point_source, point, power_source, power, status,
-      time_created, time_updated)
-      values (#{uuid, jdbcType=VARCHAR}, #{userUuid,jdbcType=VARCHAR}, #{pointSource,jdbcType=INTEGER},
-      #{point,jdbcType=DECIMAL}, #{powerSource,jdbcType=INTEGER}, #{power,jdbcType=DECIMAL},
-      #{status,jdbcType=INTEGER}, #{timeCreated,jdbcType=VARCHAR}, #{timeUpdated,jdbcType=VARCHAR}
-      )
+        insert into energy_ball (
+        uuid,
+        user_uuid,
+        point_source,
+        point,
+        power_source,
+        power,
+        status,
+        time_created,
+        time_updated)
+        values (
+        #{uuid},
+        #{userUuid},
+        #{pointSource},
+        #{point},
+        #{powerSource},
+        #{power},
+        #{status},
+        #{timeCreated},
+        #{timeUpdated})
     </insert>
+
 </mapper>

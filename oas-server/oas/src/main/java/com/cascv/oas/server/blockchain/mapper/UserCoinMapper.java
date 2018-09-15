@@ -6,6 +6,7 @@ import com.cascv.oas.server.blockchain.model.UserCoin;
 
 import org.apache.ibatis.annotations.Param;
 
+
 public interface UserCoinMapper {
   Integer insertSelective(UserCoin userCoin);
   Integer deleteOne(@Param("userUuid") String userUuid, @Param("contract") String contract);

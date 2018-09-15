@@ -1,16 +1,16 @@
 package com.cascv.oas.server.user.model;
 
-import com.cascv.oas.core.common.BaseEntity;
 import com.cascv.oas.server.user.model.OnlineSession.OnlineStatus;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
 /**
  */
-public class UserOnline extends BaseEntity {
+public class UserOnline implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @Getter @Setter private String sessionId;

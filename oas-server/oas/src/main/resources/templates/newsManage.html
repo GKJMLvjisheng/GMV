@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{js/news/newsManage.js}"></script>
+	<script type="text/javascript" th:src="@{js/news/newsManageTable.js}"></script>	
+   
+   
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
+	
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+
+		<form class="form-inline" >
+			<!-- 工具栏 -->
+			<div id="toolbar">
+
+					<input type="button" value="新增新闻" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addNewsModal"></input>
+<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			</div>
+		</form>
+		
+		<div class = "container">
+			<table id="newsGrid"></table>
+		</div>
+
+	</section>
+
+	<!-- 新增新闻的模态框-->
+
+	<div class="modal fade" id="addNewsModal" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">新增新闻</h3>
+				</div>
+
+				<div class="modal-body">
+
+					<form id="addNewsForm" action="/News/addNews" method="post" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
+							<div class="col-sm-8">
+								<textarea name="newsTitle" class="form-control" id="newsTitle" required="required"  placeholder="标题长度最多为100个字符" /></textarea>
+								<span id='msg_newsTitle'></span>
+							</div>						
+						</div>
+
+						
+						<div class="form-group">
+							<label for="newsAbstract" class="col-sm-3 control-label">摘要：</label>
+							<div class="col-sm-8">
+ 								<textarea name="newsAbstract" class="col-sm-4 form-control" id="newsAbstract" style="height: 80px;" required="required" placeholder="摘要长度最多为200个字符"/></textarea>
+ 								<span id="msg_newsAbstract"></span> 				
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label for="newsUrl" class="col-sm-3 control-label">新闻链接：</label>
+							<div class="col-sm-8">
+								<textarea name="newsUrl" class="col-sm-4 form-control" id="newsUrl" required="required" placeholder="请输入有效链接"/></textarea>
+								<span id="newsUrl_span"></span>
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label for="newsPicturePath" class="col-sm-3 control-label">选择图片：</label>
+							<div class="col-sm-8">
+								<input type="file" name="newsPicturePath" id="newsPicturePath" onblur='checkPic()'/><span id='msg_newsPicPath'></span>
+							</div>
+						</div>
+						
+					
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="conf" class="btn btn-default" onclick="addNews()">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+			
+		
+	<!-- 编辑新闻的模态框 -->
+    <div class="modal fade" id="updateNewsModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">修改新闻</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EnewsId" id="EnewsId">
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
+							<div class="col-sm-8">
+								<textarea name="EnewsTitle" class="form-control" id="EnewsTitle" required="required"  onblur="EcheckTitle()" placeholder="请输入标题" /></textarea>
+								<span id="msg_EnewsTitle"></span> 
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">摘要：</label>
+							<div class="col-sm-8">
+								<textarea name="EnewsAbstract" class="form-control" id="EnewsAbstract" style="height: 80px;" required="required" onblur="EcheckAbstract()" placeholder="请输入摘要" /></textarea>
+								<span id="msg_EnewsAbstract"></span> 
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">新闻URL：</label>
+							<div class="col-sm-8">
+								<textarea name="EnewsUrl" class="form-control" id="EnewsUrl" required="required"  placeholder="请输入标题" /></textarea>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">图片URL：</label>
+							<div class="col-sm-8">
+								<textarea name="EnewsPicturePath" class="form-control" id="EnewsPicturePath" required="required"  readonly="readonly"/></textarea>							
+								
+							</div>
+						</div>
+							
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">修改图片：</label>
+							<div class="col-sm-8">
+								<input type="file" name="AnewsPicturePath" id="AnewsPicturePath"/><span id='msg_EnewsPicPath'></span>
+							</div>
+						</div>
+																			
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveNews" aria-label="Close" class="btn btn-default" onclick="updateNews()"><span aria-hidden="true">保存</span></button>
+				</div>
+						
+			</div>
+					
+		</div>
+	</div>
+			
+</body>
+
+</html>
+

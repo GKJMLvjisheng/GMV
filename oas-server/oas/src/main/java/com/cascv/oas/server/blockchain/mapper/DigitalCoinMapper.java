@@ -10,5 +10,5 @@ public interface DigitalCoinMapper {
   DigitalCoin selectByContract(String contract);
   List<DigitalCoin> selectAll();
   Integer deleteByContract(String contract);
-  ContractSymbol selectContractSymbol(String userUuid);
+  List<ContractSymbol> selectContractSymbol(String name);
 }

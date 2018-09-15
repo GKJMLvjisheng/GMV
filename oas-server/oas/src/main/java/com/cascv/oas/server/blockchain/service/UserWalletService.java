@@ -6,11 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
+import com.cascv.oas.server.blockchain.model.UserWalletDetail;
+import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.service.ExchangeRateService;
 
 @Service
 public class UserWalletService {
@@ -18,9 +24,31 @@ public class UserWalletService {
   @Autowired
   private UserWalletMapper userWalletMapper;
   
+  @Autowired 
+  private UserWalletDetailMapper userWalletDetailMapper; 
+  
+  @Autowired
+  private ExchangeRateService exchangeRateService;
+  
   public UserWallet find(String userUuid){
     return userWalletMapper.selectByUserUuid(userUuid);
   }
+  
+  
+  private void addDetail(UserWallet userWallet, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+	  UserWalletDetail userWalletDetail = new UserWalletDetail();
+	  userWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
+	  userWalletDetail.setUserUuid(userWallet.getUserUuid());
+	  userWalletDetail.setTitle(userWalletDetailScope.getTitle());
+	  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
+	  userWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
+	  userWalletDetail.setValue(value);
+	  userWalletDetail.setCreated(DateUtils.getTime());
+	  userWalletDetail.setComment(comment);
+	  userWalletDetail.setRemark(remark);;
+	  userWalletDetailMapper.insertSelective(userWalletDetail);
+  }
+  
   
   public UserWallet create(String userUuid){
     UserWallet userWallet = new UserWallet();
@@ -40,7 +68,7 @@ public class UserWalletService {
     return 0;
   }
 
-  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value) {
+  public ErrorCode transfer(String fromUserUuid, String toUserUuid, BigDecimal value, String remark) {
     UserWallet fromUserWallet = userWalletMapper.selectByUserUuid(fromUserUuid);
     UserWallet toUserWallet = userWalletMapper.selectByUserUuid(toUserUuid);
     if(value.compareTo(BigDecimal.ZERO) == 0) {
@@ -49,8 +77,25 @@ public class UserWalletService {
     else if (fromUserWallet == null || toUserWallet== null || fromUserWallet.getBalance().compareTo(value) < 0) {
       return ErrorCode.BALANCE_NOT_ENOUGH;
     }
+    
     userWalletMapper.decreaseBalance(fromUserWallet.getUuid(), value);
+    //this.addDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value,"");
+    this.addDetail(fromUserWallet, UserWalletDetailScope.TRANSFER_OUT, value, "", remark);
+    
     userWalletMapper.increaseBalance(toUserWallet.getUuid(), value);
+    //this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"");
+    this.addDetail(toUserWallet, UserWalletDetailScope.TRANSFER_IN, value,"", remark);
     return ErrorCode.SUCCESS;
   }
+  
+  public void addFromEnergy(String userUuid, String time, BigDecimal point) {
+	  UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
+	  
+	  ReturnValue<BigDecimal> returnValue = exchangeRateService.exchangeFrom(
+	        point, 
+	        time, CurrencyCode.POINT);
+	  BigDecimal token = returnValue.getData();
+	  userWalletMapper.increaseBalance(userWallet.getUuid(), token);
+	  this.addDetail(userWallet, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "");
+  } 
 }

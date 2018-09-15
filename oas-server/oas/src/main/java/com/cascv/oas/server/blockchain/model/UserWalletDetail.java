@@ -9,9 +9,11 @@ public class UserWalletDetail {
   @Getter @Setter private String uuid;
   @Getter @Setter private String userUuid;
   @Getter @Setter private BigDecimal value;
-  @Getter @Setter private String scope;
-  @Getter @Setter private String name;
+  @Getter @Setter private String title;
+  @Getter @Setter private String subTitle;
+  @Getter @Setter private Integer inOrOut;
   @Getter @Setter private String comment;
   @Getter @Setter private String created;
+  @Getter @Setter private String remark;
   
 }

@@ -26,7 +26,18 @@ public enum ErrorCode {
   NO_ETH_WALLET(10010, "没有创建交易账号"),
   NO_ENERGY_POINT_ACCOUNT(10011, "没有积分帐户"),
   ALREADY_CHECKIN_TODAY(10012, "已经签到"),
-  MULTIPLE_TRANSFER_FAILURE(10013, "多路转账失败");
+  MULTIPLE_TRANSFER_FAILURE(10013, "多路转账失败"),
+  WRONG_ADDRESS(10014, "地址不正确，请检查"),
+  WRONG_AMOUNT(10015, "金额不正确，请检查"),
+  SELECT_THE_CONTRACT(10016, "请选择币种"),
+  RATE_NOT_ACCEPTABLE(10017,"汇率出错"),
+  NO_AVAILABLE_POINT(10018,"没有相应的积分"),
+  NO_DATE_SPECIFIED(10019,"没有指定日期"),
+  NO_AVAILABLE_EXCHANGE_RATE(10020,"没有指定汇率"),
+  NO_TIME_SPECIFIED(10021,"没有指定时间"),
+  NO_CURRENCY_SPECIFIED(10022,"没有指定货币"),
+  NO_BLOCKCHAIN_NETWORK(10023,"没有指定区块网络"),
+  INVALID_BLOCKCHAIN_NETWORK(10024,"无效的区块网络");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

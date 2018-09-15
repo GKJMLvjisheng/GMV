@@ -10,13 +10,13 @@
 	<result column="mnemonic" property="mnemonicList"/>
 	<result column="mnemonic_path" property="mnemonicPath"/>
 	<result column="address" property="address"/>
-	<result column="keystore" property="keystore"/>
+	<result column="prefer_network" property="preferNetwork"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, keystore,created,updated
+    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, prefer_network, created,updated
   </sql>
   
   
@@ -30,7 +30,6 @@
     	mnemonic,
     	mnemonic_path,
     	address,
-    	keystore,
     	created,
     	updated
 	)  values (
@@ -41,12 +40,33 @@
 		#{mnemonicList,jdbcType=VARCHAR},
 		#{mnemonicPath,jdbcType=VARCHAR},
 		#{address,jdbcType=VARCHAR},
-		#{keystore,jdbcType=VARCHAR},
 		#{created,jdbcType=VARCHAR},
 		#{updated,jdbcType=VARCHAR}
 	)
   </insert>
 
+  <update id="update" parameterType="com.cascv.oas.server.blockchain.model.EthWallet">
+    update eth_wallet
+    	<trim prefix="set" suffixOverrides=",">
+    		<if test="privateKey != null">
+    			private_key = #{privateKey},
+    		</if>
+    		<if test="publicKey != null">
+    			public_key = #{publicKey},
+    		</if>
+			<if test="address != null">
+    			address = #{address},
+    		</if>
+			<if test="updated != null">
+    			updated = #{updated},
+    		</if>
+			<if test="preferNetwork != null">
+    			prefer_network = #{preferNetwork},
+    		</if>
+    	</trim>
+    	where user_uuid = #{userUuid}
+  </update>
+  
   <!-- delete by uuid -->
   <delete id="deleteByUuid">
     delete from eth_wallet where uuid = #{uuid}

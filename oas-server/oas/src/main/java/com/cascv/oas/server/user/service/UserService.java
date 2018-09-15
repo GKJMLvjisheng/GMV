@@ -1,6 +1,8 @@
 package com.cascv.oas.server.user.service;
 
 
+import java.util.List;
+
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.core.utils.InviteCodeUtils;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,4 +87,51 @@ public class UserService {
     return ErrorCode.SUCCESS;
   }
   
+	/*
+	 * Name:upadateUserInfo
+	 * Author:lvjisheng
+	 * Date:2018.09.03
+	 */
+	public Integer updateUser(UserModel userModel) {
+		return userModelMapper.updateUserInfo(userModel);
+	}
+	
+	/*
+	 * Name:upadateUserInfo
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	public Integer updateUserProfile(UserModel userModel) {
+		return userModelMapper.updateUserProfile(userModel);
+	}
+	
+	/*
+	 * Name:resetMobile
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	public Integer resetMobileByName(UserModel userModel) {
+		return userModelMapper.resetMobileByName(userModel);
+	}	
+	
+	/*
+	 * Name:resetEmail
+	 * Author:lvjisheng
+	 * Date:2018.09.04
+	 */
+	public Integer resetEmailByName(UserModel userModel) {
+		return userModelMapper.resetEmailByName(userModel);
+	}	
+	
+
+	public List<String> selectUserMail(String email){
+		return userModelMapper.selectUserMail(email);
+	}	
+
+	public List<String> selectUserMobile(String mobile){
+		return userModelMapper.selectUserMobile(mobile);
+	}	
 }
+
+
+

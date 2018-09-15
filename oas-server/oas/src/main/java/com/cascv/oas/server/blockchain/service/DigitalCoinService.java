@@ -28,8 +28,8 @@ public class DigitalCoinService {
       return digitalCoinMapper.selectByContract(contract);
     }
     
-    public ContractSymbol selectContractSymbol(String userUuid) {
-		return digitalCoinMapper.selectContractSymbol(userUuid);
+    public List<ContractSymbol> selectContractSymbol(String name) {
+		return digitalCoinMapper.selectContractSymbol(name);
     }
 
     public Integer create(CoinClient coinClient, String contract){
@@ -42,11 +42,11 @@ public class DigitalCoinService {
         }
         digitalCoin = new DigitalCoin();
         digitalCoin.setContract(contract);
-        BigDecimal weiFactor = coinClient.weiFactorOf(contract);
+        BigDecimal weiFactor = coinClient.weiFactorOf(coinClient.getDefaultNet(), contract);
         digitalCoin.setWeiFactor(weiFactor);
-        digitalCoin.setName(coinClient.nameOf(contract));
-        digitalCoin.setSymbol(coinClient.symbolOf(contract));
-        BigDecimal supply = coinClient.supplyOf(contract, weiFactor);
+        digitalCoin.setName(coinClient.nameOf(coinClient.getDefaultNet(),contract));
+        digitalCoin.setSymbol(coinClient.symbolOf(coinClient.getDefaultNet(),contract));
+        BigDecimal supply = coinClient.supplyOf(coinClient.getDefaultNet(), contract, weiFactor);
         digitalCoin.setSupply(supply);
         ret=digitalCoinMapper.insertSelective(digitalCoin);
         log.info("new coin name {} symbol {} weiFactor {} contract {} supply {} loaded",
