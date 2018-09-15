@@ -272,7 +272,7 @@ public class EnergyPointController {
      
      log.info("limit={}",limit);
      
-     if(listCount>0&&pageNum<=maxPageNum) {
+     if(listCount>0&&pageNum<maxPageNum) {
         info.put("data", newsModelList);
         log.info("***success***");
         callbackFianl=callback+"("+gson.toJson(info)+")";
@@ -281,6 +281,7 @@ public class EnergyPointController {
      }else
      {
        msg="无更多数据";
+       info.put("data", newsModelList);
        info.put("msg", msg);
        log.info("no more news in mysql");
        callbackFianl=callback+"("+gson.toJson(info)+")";
