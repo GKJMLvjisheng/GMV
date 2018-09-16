@@ -93,7 +93,7 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
- //       String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
         energyService.miningEnergyBall(userUuid);

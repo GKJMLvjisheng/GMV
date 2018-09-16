@@ -285,6 +285,13 @@ public class EnergyService {
         }
         if (energyBallMapper.selectByUuid(energyBallUuid)
                 .getStatus().equals(STATUS_OF_DIE_ENERGYBALL)) {
+            System.out.println("该能量球已经被获取！");
+            return null;
+        }
+        if (!energyBallMapper.selectByUuid(energyBallUuid).getPoint()
+                .equals(energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING)
+                        .getPointCapacityEachBall())) {
+            System.out.println("该能量球尚未满！");
             return null;
         }
         List<EnergyBall> energyBallsBefore = energyBallMapper
