@@ -280,18 +280,18 @@ public class EnergyService {
      */
     public EnergyBallTakenResult getEnergyBallTakenResult(String userUuid, String energyBallUuid) {
         if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
-            System.out.println("userUuid or energyBallUuid is null");
+            log.info("userUuid or energyBallUuid is null");
             return null;
         }
         if (energyBallMapper.selectByUuid(energyBallUuid)
                 .getStatus().equals(STATUS_OF_DIE_ENERGYBALL)) {
-            System.out.println("该能量球已经被获取！");
+            log.info("该能量球已经被获取！");
             return null;
         }
         if (!energyBallMapper.selectByUuid(energyBallUuid).getPoint()
                 .equals(energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING)
                         .getPointCapacityEachBall())) {
-            System.out.println("该能量球尚未满！");
+            log.info("该能量球尚未满！");
             return null;
         }
         List<EnergyBall> energyBallsBefore = energyBallMapper
