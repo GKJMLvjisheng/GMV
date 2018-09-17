@@ -50,12 +50,12 @@ public class RootController {
 //          return "userInfo/restMail/resetMMSuccess";
 //    }
     
-  //修改邮箱/手机成功主页
-  @GetMapping(value="/userInfo/resetMMSuccess")
-  public String resetMMSuccess() {
+    //修改邮箱/手机成功主页
+    @GetMapping(value="/userInfo/resetMMSuccess")
+    public String resetMMSuccess() {
     
         return "userInfo/resetMMSuccess";
-  }
+    }
   
     //修改邮箱主页
     @GetMapping(value="/userInfo/resetMail/resetMail")
@@ -67,12 +67,9 @@ public class RootController {
     //修改手机主页
     @GetMapping(value="/userInfo/resetMobile/resetMobile")
     public String resetMobile() {
-      
-          return "userInfo/resetMobile/resetMobile";
+      return "userInfo/resetMobile/resetMobile";
     }
-    
-   
-	
+
     // Login 
 	  @GetMapping("/login")
 	  public String login(HttpServletRequest request, HttpServletResponse response) {

@@ -448,7 +448,7 @@ $(function() {
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == "parsererror") {
-          window.location.href = "login";
+        	window.parent.location.href= "login";
 //          $.modal.confirm("登陆超时！请重新登陆！", function() {
 //            window.location.href = ctx + "login";
 //          })

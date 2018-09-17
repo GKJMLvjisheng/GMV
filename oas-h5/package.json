@@ -12,7 +12,8 @@
     "axios": "^0.18.0",
     "lib-flexible": "^0.3.2",
     "normalize.css": "^8.0.0",
-    "vue": "^2.5.17"
+    "vue": "^2.5.17",
+    "vue-scroller": "^2.2.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0",

@@ -453,6 +453,20 @@ function selectImg(file) {
 	}
 	
 	reader.readAsDataURL(file.files[0]);
+	var file = document.getElementById("chooseImg");
+
+    // for IE, Opera, Safari, Chrome
+
+    if (file.outerHTML) {
+   	
+        //file.outerHTML = file.outerHTML;
+        file.value = "";
+
+    } else { // FF(包括3.5)
+
+        file.value = "";
+
+    }
 	
 }
 //cropper图片裁剪
@@ -537,7 +551,7 @@ $("#sureCut").on("click", function() {
 			//cache: false,//由于信息涉及到隐私,禁止浏览器将数据缓存(根据需求使用)
 	            success: function (res) {
 	            	
-	            	alert("success");
+	            	//alert("success");
 	                //$("#userProfile").attr("src", res.data.profile);
 
 	            	window.parent.func();

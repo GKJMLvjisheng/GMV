@@ -17,6 +17,7 @@ import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
@@ -89,7 +92,7 @@ public class EnergyPointController {
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
- //       String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
         energyService.miningEnergyBall(userUuid);
@@ -208,6 +211,87 @@ public class EnergyPointController {
                .setErrorCode(ErrorCode.SUCCESS)
                .build();
     }
+    
+    @GetMapping(value = "/inquireHNews")
+    @ResponseBody
+     public String inquireHNews(PageDomain<Integer> pageInfo,@RequestParam("callback") String callback){
+     String callbackFianl="";
+     log.info(callback);
+     Gson gson=new Gson();
+     Map<String,Object> info=new HashMap<>();
+     Integer pageSize=pageInfo.getPageSize();
+//     Integer count=3;
+     Integer pageNum = pageInfo.getPageNum();
+     String msg="";
+     log.info("pageNum={}",pageNum);
+     Integer limit = 3,offset=0,listCount=0,maxPageNum=0;
+     if (pageSize != null && pageSize > 0)
+     {
+     limit = pageSize;
+     }
+     else
+     {
+     limit=3;
+     log.info("limit={}",limit);
+     }
+     if (pageNum != null && pageNum > 1)
+     offset = (pageNum - 1) * limit;
+     else
+     offset=0;
+     Integer total = newsService.countTotal();
+     if(total%limit==0)
+    	 maxPageNum=total/limit;
+     else
+    	 maxPageNum=(total/limit)+1;
+     List<NewsModel> newsModelList=newsService.selectPage(offset, limit);
+     log.info("pageNum {} limit size {}", pageNum, limit);
+     List<EnergyNews> energyNewsList = new ArrayList<>();
+ 
+     for (NewsModel newsModel : newsModelList){
+     EnergyNews energyNews = new EnergyNews();
+     energyNews.setId(newsModel.getNewsId());
+     energyNews.setTitle(newsModel.getNewsTitle());
+     energyNews.setSummary(newsModel.getNewsAbstract());
+     energyNews.setImageLink(newsModel.getNewsPicturePath());
+     log.info(energyNews.getImageLink());
+     energyNews.setNewsLink(newsModel.getNewsUrl());            
+     energyNewsList.add(energyNews);
+    }
+     PageDomain<EnergyNews> pageEnergyNews = new PageDomain<>();
+     pageEnergyNews.setTotal(total);
+     pageEnergyNews.setAsc("desc");
+     pageEnergyNews.setOffset(offset);
+     pageEnergyNews.setPageNum(pageNum);
+     pageEnergyNews.setPageSize(pageSize);
+     pageEnergyNews.setRows(energyNewsList); 
+     
+     listCount=newsModelList.size();
+     log.info("listCount={}",listCount);
+     
+     
+     log.info("limit={}",limit);
+     
+     if(listCount>0&&pageNum<maxPageNum) {
+        info.put("data", newsModelList);
+        log.info("***success***");
+        callbackFianl=callback+"("+gson.toJson(info)+")";
+        log.info(callbackFianl);
+        return callbackFianl;
+     }else
+     {
+       msg="无更多数据";
+       info.put("data", newsModelList);
+       info.put("msg", msg);
+       log.info("no more news in mysql");
+       callbackFianl=callback+"("+gson.toJson(info)+")";
+       log.info("data传出= {}",callbackFianl);
+       return callbackFianl;
+     }
+     
+
+   //  return new ResponseEntity.Builder<String>()
+//             .setData(callbackFianl).build();
+     }
     
     @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")
     @ResponseBody

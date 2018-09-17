@@ -57,15 +57,15 @@
                 <shiro:hasRole name="admin">
                 
                  <li class="active">
-                    <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label">用户管理</span> </a>
+                    <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">用户管理</span> </a>
                    
                 </li>
                 <li class="active">
-                    <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label">角色管理</span> </a>
+                    <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">角色管理</span> </a>
                    
                 </li>
                 <li class="active">
-                    <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label">模块管理</span> </a>
+                    <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">模块管理</span> </a>
                    
                 </li>
                 <li class="active">
@@ -150,36 +150,38 @@
 var stringT;
 var stringName;
 $(function(){
+	 $("[data-toggle='tooltip']").tooltip(); 
+
 	//String name=Request.QueryString("name");
 	//document.getElementById("").innerHTML=window.location.split('')[];
-	var url = window.location.href;
-	var strInfo=getInfoAndAnalysis(url);    //
+// 	var url = window.location.href;
+// 	var strInfo=getInfoAndAnalysis(url);    
 	//console.log(JSON.stringify(strInfo));
-	var len=strInfo.length;
+// 	var len=strInfo.length;
 	
-	if(len>0)
-	{
-		stringT=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+// 	if(len>0)
+// 	{
+// 		stringT=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
 	
-		//string="您好，"+string1;
+// 		//string="您好，"+string1;
 
 		
-		stringName=decodeURI(decodeURI(strInfo[1]));//获取第一个参数的值
+// 		stringName=decodeURI(decodeURI(strInfo[1]));//获取第一个参数的值
 
-		var obj = document.getElementById("userNickname");
-	 	obj.innerHTML=(stringName);
+// 		var obj = document.getElementById("userNickname");
+// 	 	obj.innerHTML=(stringName);
 	 	
-	 	$("#userNickname").val(stringName);
-	 	$("#userToken").val(stringT);
-		}
+// 	 	$("#userNickname").val(stringName);
+// 	 	$("#userToken").val(stringT);
+// 		}
 	
-		var name=$("#userNickname").val();
-		var string=$("#userToken").val();
-	   // alert("userNickname-->"+name);
-	   // alert("token-->"+string);
-	    var data={
-	 	       "userNickname":name
-	 	   };
+// 		var name=$("#userNickname").val();
+// 		var string=$("#userToken").val();
+// 	   // alert("userNickname-->"+name);
+// 	   // alert("token-->"+string);
+// 	    var data={
+// 	 	       "userNickname":name
+// 	 	   };
 	 
 	    var objTime = document.getElementById("time");
 	    

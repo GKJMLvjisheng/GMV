@@ -86,13 +86,15 @@
     -->  
 .fileBtn { 
 /*  width: 25%;  */
- margin-top: 25px; 
+ margin-top: 20px; 
  margin-left:10px;
  float:left;
+ 
 }
+
 .submitBtn { 
 /*  width: 25%;  */
- margin-top: 25px; 
+ margin-top: 20px; 
  margin-left:15px;
  float:left;
 }
@@ -142,6 +144,24 @@ background:#d8dbde
 .modal-sm {
     width: 400px;
 }
+.excel{
+ 	margin:0 auto; 
+    padding-top: 90px;}
+ .toolbar{
+ 	margin:0 auto; 
+    padding-top: 15px;
+    padding-bottom: 20px;}
+ #drop{
+ 	margin:0 auto; 
+    padding-top: 15px;
+ }
+/*   input:focus{  */
+/*   	outline:none;  */
+/*   	border:0px;  */
+/*   	box-shadow:none;  */
+/*   }  */
+h4{
+line-height:2;}
     </style>  
 
 
@@ -216,11 +236,13 @@ background:#d8dbde
 
 								<label for="gasPrice" class=" col-sm-1 control-label">gas price:</label>
 								<div class="col-sm-2">
-								<input type="text" class="form-control "name="gasPrice" id="gasPrice">
+								<input type="text" class="form-control "name="gasPrice" id="gasPrice" >
+<!-- 								<span id="msgP"></span> onblur="checkgasPrice()-->
 								</div>
 								<label for="gasLimit" class=" col-sm-1 control-label">gas&nbsp;&nbsp;limit:</label> 
 								<div class="col-sm-2">
-								<input type="text" class="form-control "name="gasLimit" id="gasLimit"/>
+								<input type="text" class="form-control "name="gasLimit" id="gasLimit" />
+<!-- 								<span id="msgL"></span> -->
 								</div>
 							</div>
 							
@@ -247,25 +269,12 @@ background:#d8dbde
              </div> 
              
             
-<!-- 		<nav class="navbar navbar-default" role="navigation"> -->
-<!--     <div class="container-fluid"> -->
-<!-- <!--     <div class="navbar-header"> --> 
-<!-- <!--         <a class="navbar-brand" href="#">一对多转账</a> --> 
-<!-- <!--     </div> --> 
-<!--     <div> -->
-<!--         <ul class="nav navbar-nav"> -->
-<!--             <li class="active"><a href="#" onclick="display1()">页面转账</a></li> -->
-<!--             <li class="active"><a href="#" onclick="display2()">excel表格导入</a></li> -->
-        
-<!--         </ul> -->
-<!--     </div> -->
-<!--     </div> -->
-<!-- </nav>	 -->
-	<br/>		
+
+			
 
   <div class="container" id="page1">             	
             
-       
+    <div class="toolbar" >  
      <input type="button" class="btn btn-primary" name="Submit" value="新增" onclick="addRow(document.getElementById('tabProduct'),1)" />  
 
     <input type="button" class="btn btn-primary"name="Submit2" value="删除" onclick="deleteRow(document.getElementById('tabProduct'),1)" />  
@@ -273,10 +282,10 @@ background:#d8dbde
     <input type="button"class="btn btn-primary" name="Submit22" value="重置" onclick="window.location.reload()" />  
 
     <input type="submit" class="btn btn-primary"name="Submit3" value="提交" onclick="getTableData(document.getElementById('tabProduct'));return false;" />
-   
+   </div> 
 
   
- <hr/>         
+<!--  <hr/>          -->
         
         
     <table width="698" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
@@ -346,10 +355,19 @@ background:#d8dbde
 <div class="container" style="display:none" id="page2">
 
 <!--  style="background:yellow" -->
-     <div id="drop"><h4>If you need to transfer more than 15 people, please use the excel attachment form to transfer money.</h4> </div>
-    <input type="file" name="xlfile" class="btn-primary fileBtn"id="excelFile" /> <input type="submit" class=" btn-primary submitBtn"name="Submit3" value="提交" onclick="getExcelData();return false;" />
-   
+     <div id="drop"><h4 >If you need to transfer money to more people,  you can also use the excel table to import.</h4> </div>
+   <div id="excelToolbar">
+<input type="file" name="xlfile" id="excelFile" class="btn btn-primary fileBtn"></input> 
+<input type="submit" class="btn btn-primary submitBtn"name="Submit3" value="提交" onclick="getExcelData();return false;" ></input>
+<!-- 					<input type="button" value="新增新闻" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addNewsModal"></input> -->
+<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			</div>
+    
+  
+<!--    <div class=excel> -->
+<div class = "container">
     <table id="excelTable"></table>
+    </div>
 </div> 
  <div class="modal fade" id="Tip" role="dialog">
 
@@ -365,13 +383,13 @@ background:#d8dbde
 
 					<div class="modal-body" align="center">
 
-						<h4 id="tipContent">新增成功</h4>
+						<h4  id="tipContent">新增成功</h4>
 
 					</div>
 
 					<div class="modal-footer">
 
-						<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+						<button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
 
 					</div>
 

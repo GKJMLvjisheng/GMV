@@ -20,8 +20,10 @@ var token;
 $(function ()
 	{
 
-	
-	token=$("#userToken",parent.document).val();
+//	$("input").blur(function(){
+//		$(this).css({"outline":"none","border":"0px"});
+//	})
+	//token=$("#userToken",parent.document).val();
 	//data={"name":userName}
 	
 	$.ajax({
@@ -183,7 +185,7 @@ $(function ()
                 	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
                 	thisVal = $(this).val();
                 }
-                data={"preferNetwork":thisVal};
+                var data={"preferNetwork":thisVal};
                $.ajax({
          		   type: 'post',
          		   url: '/api/v1/ethWallet/setPreferNetwork',
@@ -554,7 +556,8 @@ $(function ()
     function addRow(table, index){  
 
     var lastRow = table.rows[table.rows.length-1];  
-    
+    if(lastRow==20)
+    	{alert("超过20人转账，建议你使用excel表导入转账");}
     var newRow = lastRow.cloneNode(true);  
 
     //计算新增加行的序号，需要引入jquery 的jar包
@@ -658,88 +661,146 @@ $(function ()
     //提取表格的值,JSON格式  
 
     function getTableData(table){  
-    var contract=$('#contractSymbol option:selected') .val();
-    if(contract=="请选择")
-    {alert("请选择货币类型");
-    return;}
-    var gasPrice=$("#gasPrice").val();
-	var gasLimit=$("#gasLimit").val();
-	if(gasLimit==="")
-    {
-		gasLimit="";
-		
-    }else if(gasLimit<1)
-    	{
-    	alert("gasLimit请输入大于0的数或不输入");
-    	 return;}
-	
-    var tableData = new Array();  
+    	 var tableData = new Array();  
 
-    for(var i=1; i<table.rows.length;i++){  
+         for(var i=1; i<table.rows.length;i++){  
 
-       tableData.push(getRowData(table.rows[i]));  
+            tableData.push(getRowData(table.rows[i]));  
 
-    }  
-   
-    var tableDataLen=tableData.length;
-    var tableData1=[];
-    var sunmary=0;
-    for(var i=0;i<tableDataLen;i++)
-    {
-     var rowAdd={};
-     rowAdd['toUserAddress']=tableData[i]['toUserAddress'];
-		
-     rowAdd['amount']=tableData[i]['candy'];
-     sunmary = numAdd(sunmary, rowAdd['amount']);
-    //sunmary=sunmary+parseInt(rowAdd['amount']);
-     tableData1.push(rowAdd);
-		}
-    //alert(JSON.stringify(tableData1))
-    var userAddress=$("#userAddress").val();
-    var userName=$("#userNickname",parent.document).text();
-    var symbol=$('#contractSymbol option:selected') .text();
-    Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
-		if (!e) {
-		  return;
-		 }
-		
-    data={
-    		"contract": contract,
-    		"gasPrice":gasPrice,
-    		"gasLimit":gasLimit,
-    	    "quota":tableData1,
-    	};
-//    alert(token);
-//    alert(JSON.stringify(data));
-    
-    transfer(data);
-    });
+         }
+         var tableData1=[];
+         var tableDataLen=tableData.length;
+         for(var i=0;i<tableDataLen;i++)
+         {
+          var rowAdd={};
+          rowAdd['toUserAddress']=tableData[i]['toUserAddress'];
+     		
+          rowAdd['amount']=tableData[i]['candy'];
+        
+          tableData1.push(rowAdd);
+     		}
+
+    transfer(tableData1);
+    }
     //return tableData;  
 
-    }  
+   
+    //判断正数
+    function validateValue(num)
+    {
+     
+      var reg = /^\d+(?=\.{0,1}\d+$|$)/;
+      if(reg.test(num)) return true;
+      return false ;  
+    }
+    function validateAddress(num)
+    {
+     
+    	 var reg = /^[0-9a-zA-Z]{42}$/;
+      if(reg.test(num)) return true;
+      return false ;  
+    } 
+   
     //转账接口
     function transfer(data)
     {
-    	 
+    	var contract=$('#contractSymbol option:selected') .val();
+        if(contract=="请选择")
+        {alert("请选择货币类型");
+        return;}
+        var gasPrice=$("#gasPrice").val();
+    	var gasLimit=$("#gasLimit").val();
+    	var check1=true;
+    	var check2=true;
+    	if (Number(gasLimit)>=0)
+    	{check1=false;}
+    	if (Number(gasPrice)>=0)
+    	{check2=false;}
+    	 if(check1||check2)
+    	{	
+    		 alert("gasLimit/gasPrice请输入正数");
+    		return;}
+    	else if(gasLimit==="")
+        {
+    		gasLimit="";	
+        }else if(gasLimit<1)
+        	{
+        	 alert("gasLimit请输入大于0的数或不输入");
+        	 return;}
+
+        var tableDataLen=data.length;
+        
+        var sunmary=0;
+        var flag=false;
+        var flag1=false;
+        var flag2=false;
+        for(var i=0;i<tableDataLen;i++)
+        {
+
+         if(data[i]['toUserAddress']==0||data[i]['amount']==0)
+     	{		
+    	 		flag=true;
+    	 		break;}
+         else if(!validateValue(data[i]['amount']))
+      	{		
+    	 		flag1=true;
+    	 		break;
+      	}else if(!validateAddress(data[i]['toUserAddress']))
+      		{flag2=true;
+    	 		break;}
+         //sunmary=sunmary+parseInt(rowAdd['amount']);
+         sunmary=numAdd(sunmary,data[i]['amount']);
+         //sunmary=sunmary+parseFloat(data[i]['amount']);
+         
+    		}
+
+       if(flag)
+       	{	alert("输入的地址或金额不能为空");
+       		return;}
+       if(flag1)
+    	{	alert("金额请输入正数");
+    		return;}
+       if(flag2)
+   	{	alert("地址由42位的字母数字组成");
+   		return;}
+        var userAddress=$("#userAddress").val();
+        var userName=$("#userNickname",parent.document).text();
+        var symbol=$('#contractSymbol option:selected') .text();
+        Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
+    		if (!e) {
+    		  return;
+    		 }
+    		
+       var dataSum={
+        		"contract": contract,
+        		"gasPrice":gasPrice,
+        		"gasLimit":gasLimit,
+        	    "quota":data,
+        	}; 
     $.ajax({
 
 		url:"/api/v1/ethWallet/multiTtransfer",
-		headers: {'Authorization': token},
+		//headers: {'Authorization': token},
 
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:JSON.stringify(data),
+		data:JSON.stringify(dataSum),
 			
 		success:function(res){
-			alert("success"+JSON.stringify(res));
+			
 			if(res.code==0)
          {  
-				//alert("转账成功！");
-				res.data.taxHash;
+				var strMain="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				var network=$("#network").val();
+				if(strTest.indexOf(network)!=-1)
+					{str=strTest;}
+				else{str=strMain;}
 				$("#Tip").modal('show');
-				document.getElementById("tipContent").innerText="恭喜您，转账成功";
+				
+				document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
          }
          else{
         	 alert("转账失败");
@@ -751,6 +812,7 @@ $(function ()
 					alert("请求失败！")
 				}
 	}); 
+    });
     }
 
     //提取指定行的数据，JSON格式  
@@ -859,7 +921,7 @@ $(function ()
    // Math.pow(2,4);//返回的是浮点数，最好再取整
 
     //var c=Math.round(Math.pow(2,4)); 
-    var value=eval(expn)
+    var value=eval(expn);
     return Math.round(value);  
 
     }  
@@ -1023,11 +1085,12 @@ $(function ()
 
     return retstr.replace(/^,+/,'').replace(/\.$/,'');    
     
-    }  
-    
+    } 
+   
+    //excel表导入
     var transferData=[]; 
-    $(document).ready(function(){
-
+  
+    	
     $('#excelFile').change(function(e) {
     	
         var files = e.target.files;
@@ -1055,6 +1118,10 @@ $(function ()
                     fromTo = workbook.Sheets[sheet]['!ref'];
                    
                     console.log(fromTo);
+//                    if (fromTo[0] === 'A' && fromTo[3] === 'C') {
+//                        excelIsOk = true;
+//                        alert("1");
+//                   }
                     persons = persons.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
                     // break; // 如果只取第一张表，就取消注释这行
                 }
@@ -1063,23 +1130,21 @@ $(function ()
            
             
           
-            var headStr = '_to(address),Number of Candy,Decimals of Precision';
+            var headStr = '_to(address),Number of Candy';
             
-            
+            //,Decimals of Precision
             for (var i=0; i<persons.length; i++) {
             	
             	
-                if (Object.keys(persons[i]).join(',') !== headStr) {//join(',')数组创建字符串，用逗号来隔离
-                	
+                //if (Object.keys(persons[i]).join(',') !== headStr) {//join(',')数组创建字符串，用逗号来隔离
+            	if (Object.keys(persons[i]).join(',').indexOf(headStr)==-1) {
                     persons.splice(i, 1);//splice() 方法向/从数组中添加/删除项目，然后返回被删除的项目。第i行的数据被删掉
                     i--;
                 }
             }
 
             console.log(persons);
-           // if (fromTo[0] === 'A' && fromTo[3] === 'C') {
-           //     excelIsOk = true;
-          // }
+
            
             var excelData = new Array();
             var personsLen=persons.length
@@ -1093,147 +1158,96 @@ $(function ()
     		//alert(JSON.stringify(rowAdd));
     		excelData.push(rowAdd);
     		}
+            initExcelTable(excelData);
             transferData=excelData;
             
         };
-
+       
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);
+        var file = document.getElementById("excelFile");
+
+        // for IE, Opera, Safari, Chrome
+
+        if (file.outerHTML) {
+       	
+            //file.outerHTML = file.outerHTML;
+            file.value = "";
+
+        } else { // FF(包括3.5)
+
+            file.value = "";
+
+        }
     });
-    });
+    //发送excel数据
     function getExcelData()
     {	
     	
-    	 var contract=$('#contractSymbol option:selected') .val();
-    	 if(contract=="请选择")
-    	    {alert("请选择货币类型");
-    	    return;}
-    		Ewin.confirm({ message: "确认要提交导入的excel数据吗？" }).on(function (e) {
-    			if (!e) {
-    			  return;
-    			 }
-    	    data={
-    	    		"contract": contract,
-    	    	    "quota":transferData,
-    	    	};
-    	    alert(JSON.stringify(data));
-    	   transfer(data);
-    		});
+    	    transfer(transferData);
+    		
     	
     }
     //表格
-  $(function(){
-	 
+ function initExcelTable(data){
+	$('#excelTable').bootstrapTable('destroy');
     $('#excelTable').bootstrapTable({
         //url: createUrl(''),
         striped: true,
-        uniqueId: 'attrValue',
+        //uniqueId: 'attrValue',
         pagination: true,
-        pageSize:3,//分页，页面数据条数
-        data:[{"index":"2","attrValue":"123","sellPrice":"100"}],
+        pageNumber:1,//首页页码
+        pageSize:10,//分页，页面数据条数
+        toolbar:"#excelToolbar",//工具栏
+        data:data,
         columns: [{
+			
+			checkbox:"true",
+			
+			align: 'center',// 居中显示
+			
+			field : "box",
+		},{
             title: 'ID',
             field: 'index',
+            align: 'center',
+			valign: 'middle',
             formatter: formatterIndex
+            
         },{
-            title: '规格',
-            field: 'attrValue',
-            class: 'editable',
-            //editable:true,
-
+            title: '_to(address)',
+            field: 'toUserAddress',
+            align: 'center',
+			valign: 'middle',
+  
         },{
-            title: '价格',
-            field: 'sellPrice',
-            class: 'editable'
+            title: 'Number of Candy',
+            field: 'amount',
+            align: 'center',
+			valign: 'middle',
+            
         },{
             title: '操作',
             field: 'operate',
-            formatter: formatterOperate
+            align: 'center',
+			valign: 'middle',
+           
+            visible: false,
+           
         }]
     });
-  });
+  }
     function formatterIndex(value, row, index){
-    	
-        var i = index + 1;
-        if(i < 10){
-            return "0" + i;
-        }else{
-            return i;
-        }
+    	   var value="";
+           var pageSize=10;
+         	
+           //获取当前是第几页        
+           var pageNumber=1;       
+           //返回序号，注意index是从0开始的，所以要加上1         
+            value=pageSize*(pageNumber-1)+index+1;
+            return value;
     }
-    function formatterOperate(value, row, index){
-        return "<button onclick='saveRow("+index+")' class='btn small'><i class='fa fa-edit'></i> 保存</button><button onclick='editRow("+index+")' class='btn small blue'><i class='fa fa-edit'></i> 编辑</button><button onclick='delRow(\""+row.attrValue+"\")' class='btn small red'><i class='fa fa-trash-o'></i> 删除</button>";
-// var result = "";
-//        
-//        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRow('" + index + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-//        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRow('" + row.attrValue + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
-//
-//        return result;
-    }
-    var num = 1;  //计数器
-   function add(){
-    	alert("1");
-        var data = {
-            attrValue: '',
-            sellPrice: ''
-        };
-        //$('#transferTable').bootstrapTable('selectPage', 1);
-       // $('#transferTable').bootstrapTable('prepend', data);
-        $('#transferTable').bootstrapTable('insertRow',{
-            index : num,
-            row : data
-        });
-        //num++;
-       // $("#transferTable").bootstrapTable('append', data);
-        $("#transferTable tr:first-child td.editable").each(function(){
-        	alert("add");
-            $(this).html("<input>");
-        });
-        //$("#dataTable tr:eq(1) td:eq(0)").trigger("dblclick");
 
-       // $("#dataTable input")[0].focus();
-    }
-    //var num = 1;  //计数器
-    function primaryAssets(){
-        var data = {   //要插入的数据，这里要和table列名一致
-                ID : num,
-                recUid : 1,
-                assetsType : $('#assetsType').val(),  //获取模态框input的值
-                assetsAmt : $('#assetsAmt').val(),
-                coefficient : $('#coefficient').val(),
-                valueAmt : $('#valueAmt').val()
-        }
-        $('#tb_assets').bootstrapTable('insertRow',{
-            index : num,
-            row : data
-        });
-        num++;
-       }
-    function saveRow(index, value){
-        var obj = $("#transferTable tr:nth-child("+ (index+1) +") td.editable");
-        var attrValue = obj.first().find("input").val().trim();
-        var sellPrice = obj.last().find("input").val().trim();
-        var newData = {
-            attrValue: attrValue,
-            sellPrice: sellPrice
-        };
-        $("#transferTable").bootstrapTable('updateRow', {
-            index: index,
-            row: newData
-        });
-        obj.find("input").remove();
-    }
-    function editRow(index){
-    	alert("1");
-        $("#transferTable tr:nth-child("+ (index+1) +") td.editable").each(function(){
-        	alert("2");
-            var value = $(this).text();
-            $(this).html("<input value='"+value+"'>");
-        });
-    }
-    function delRow(value){
-        $("#transferTable").bootstrapTable('removeByUniqueId', value);
-    }
 function display1()
 {document.getElementById("page2").style.display="none";
 document.getElementById("page1").style.display="block";
