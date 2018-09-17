@@ -28,7 +28,7 @@ function newsReady(){
 		success: function(res) {
 			//alert(JSON.stringify(res));
 			data2=res.data.list;
-			alert(JSON.stringify(data2));
+			//alert(JSON.stringify(data2));
 			initNewsGrid(data2);
 		}, 
 		error: function(){
