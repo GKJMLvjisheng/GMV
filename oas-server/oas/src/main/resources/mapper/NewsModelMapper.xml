@@ -75,7 +75,7 @@
   <select id="selectAllNews" resultMap="newsModelMap">
   	select 
   	<include refid="Base_Column_List" />
-  	from news_info
+  	from news_info order by created desc;
   </select>
 
   <select id="selectPage" resultMap="newsModelMap">
