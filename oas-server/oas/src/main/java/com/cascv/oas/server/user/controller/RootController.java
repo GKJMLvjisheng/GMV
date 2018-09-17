@@ -12,7 +12,7 @@ import io.swagger.models.Model;
 
 @Controller
 public class RootController {
-	
+		
 	@GetMapping(value="/")
 	public String home() {
 		return "redirect:/swagger-ui.html";
