@@ -36,6 +36,7 @@ import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
@@ -57,11 +58,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Api(value="User Interface")
 @RequestMapping(value="/api/v1/userCenter")
+
 public class UserController {
 	
   @Autowired
   private UserService userService;
-  
+  @Autowired
+  private MediaServer mediaServer;
   @Autowired
 	private EthWalletService ethWalletService;
 	
@@ -188,7 +191,8 @@ public class UserController {
 	  info.put("birthday", userModel.getBirthday());
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
-	  info.put("profile", userModel.getProfile());
+	  String fullLink = mediaServer.getImageHost() + userModel.getProfile();
+	  info.put("profile", fullLink);
 	  log.info("****end****");
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
@@ -278,7 +282,8 @@ public class UserController {
 	    	usermodel.setProfile(proUrl);
 	    	ShiroUtils.setUser(usermodel);
 	        //图片存储的相对路径
-	    	info.put("ImageUrl",proUrl);
+	    	String fullLink = mediaServer.getImageHost() + proUrl;
+	    	info.put("ImageUrl",fullLink);
 	    	log.info("UpLoadSuccuss-->");
 	        return new ResponseEntity.Builder<Map<String, String>>()
 		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();

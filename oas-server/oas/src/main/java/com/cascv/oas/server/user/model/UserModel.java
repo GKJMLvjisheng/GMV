@@ -25,6 +25,8 @@ public class UserModel implements Serializable {
 	@Getter @Setter private String updated;
 	@Getter @Setter private Integer mobileChecked;
 	@Getter @Setter private Integer emailChecked;
+	@Getter @Setter private Integer mobileCodeChecked;
+	@Getter @Setter private Integer emailCodeChecked;
 	@Getter @Setter private Integer confirmed;
 	@Getter @Setter private Set<String> roles = new HashSet<>();
 	@Getter @Setter private Set<String> perms = new HashSet<>();

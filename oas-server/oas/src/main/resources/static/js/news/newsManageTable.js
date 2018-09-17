@@ -31,12 +31,22 @@ function initNewsGrid(data) {
 		data:data,
 		columns : [{
 
+			title : "创建时间",
+
+			field : "created",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
+
+		},
+			{
+
 			title : "标题",
 
 			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '120px',
 
 		}, {
 
@@ -45,7 +55,7 @@ function initNewsGrid(data) {
 			field : "newsAbstract",
 			align: 'center',
 			valign: 'middle',
-			width:  '230px',
+			width:  '200px',
 
 		},
 		{
@@ -55,7 +65,7 @@ function initNewsGrid(data) {
 			field : "newsPicturePath",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '140px',
 			formatter: picturePath
 
 		}, 
@@ -90,8 +100,8 @@ function initNewsGrid(data) {
 function picturePath(value, row, index) {
 	var result = "";
 	var newsPicturePath = value;      
-    result += "<img src="+newsPicturePath+ " width='120px' height='80'><br>"+
-    			"<span>"+newsPicturePath+"</span>";    
+    result += "<a href="+newsPicturePath+"><img src="+newsPicturePath+" width='120px' height='80'></a>";
+    			//"<span>"+newsPicturePath+"</span>";      
     return result;
 }
 
