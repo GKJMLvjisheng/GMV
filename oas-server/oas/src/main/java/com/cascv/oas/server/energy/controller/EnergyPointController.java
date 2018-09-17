@@ -17,6 +17,7 @@ import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
+import com.google.gson.Gson;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
