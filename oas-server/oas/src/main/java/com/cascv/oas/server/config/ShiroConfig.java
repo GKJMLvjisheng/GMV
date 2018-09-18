@@ -204,6 +204,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/web3j/**", "anon");
 		filterChainDefinitionMap.put("/logout", "logout");
 		
+		//让微信接口免登录访问
+		filterChainDefinitionMap.put("/api/v1/wx/**", "anon");
+		
 		filterChainDefinitionMap.put("/api/v1/userCenter/login", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/registerConfirm", "anon");
