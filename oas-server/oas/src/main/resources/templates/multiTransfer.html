@@ -236,12 +236,16 @@ line-height:2;}
 
 								<label for="gasPrice" class=" col-sm-1 control-label">gas price:</label>
 								<div class="col-sm-2">
-								<input type="text" class="form-control "name="gasPrice" id="gasPrice" >
+								 <div class="input-group ">
+								
+								<input type="number" class="form-control "name="gasPrice" id="gasPrice" min="1" >
+								  <span class="input-group-addon">GWEI</span>
 <!-- 								<span id="msgP"></span> onblur="checkgasPrice()-->
+								</div>
 								</div>
 								<label for="gasLimit" class=" col-sm-1 control-label">gas&nbsp;&nbsp;limit:</label> 
 								<div class="col-sm-2">
-								<input type="text" class="form-control "name="gasLimit" id="gasLimit" />
+								<input type="number" class="form-control "name="gasLimit" id="gasLimit" min="1" />
 <!-- 								<span id="msgL"></span> -->
 								</div>
 							</div>

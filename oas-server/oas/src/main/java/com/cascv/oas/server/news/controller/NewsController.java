@@ -121,7 +121,12 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 			newsModel.setNewsId(newsInfo.getNewsId());
 			newsModel.setNewsTitle(newsInfo.getNewsTitle());
 		    newsModel.setNewsAbstract(newsInfo.getNewsAbstract());
-		    newsModel.setNewsUrl(newsInfo.getNewsUrl());
+		    newsModel.setNewsUrl(newsInfo.getNewsUrl());    
+	File dir=new File(UPLOADED_FOLDER);
+	if(!dir.exists())
+	{
+		dir.mkdirs();
+	}
 	       
 	 if(file!=null)
 	 { 
@@ -138,7 +143,6 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	            log.info("--------获取路径--------:{}",newsPicturePath);
 
 	            log.info("newsPicturePath={}",newsPicturePath);
-//	            String pictureName=file.getOriginalFilename();
 	            String pictureName=fileName;
 	            log.info("pictureName=",pictureName);            
 	            String str="/image/news/";
