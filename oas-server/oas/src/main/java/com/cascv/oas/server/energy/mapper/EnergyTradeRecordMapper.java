@@ -2,6 +2,7 @@ package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
+import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -21,4 +22,6 @@ public interface EnergyTradeRecordMapper {
     List<EnergyChangeDetail> selectByPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
     List<EnergyChangeDetail> selectByOutPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
     List<EnergyChangeDetail> selectByAllPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
+    
+    List<EnergyPowerChangeDetail> selectPowerByPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
 }
