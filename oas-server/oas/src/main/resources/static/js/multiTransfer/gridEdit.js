@@ -179,12 +179,12 @@ $(function ()
 		
                 var thisVal = $(this).val();
                 
-                if(thisVal=="kovan"||thisVal=="rinkeby")
-                {
-                	$("#network").removeAttr("selected");//根据值去除选中状态
-                	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
-                	thisVal = $(this).val();
-                }
+//                if(thisVal=="kovan"||thisVal=="rinkeby")
+//                {
+//                	$("#network").removeAttr("selected");//根据值去除选中状态
+//                	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
+//                	thisVal = $(this).val();
+//                }
                 var data={"preferNetwork":thisVal};
                $.ajax({
          		   type: 'post',
@@ -690,6 +690,7 @@ $(function ()
     {
      
       var reg = /^\d+(?=\.{0,1}\d+$|$)/;
+    	
       if(reg.test(num)) return true;
       return false ;  
     }
@@ -700,6 +701,16 @@ $(function ()
       if(reg.test(num)) return true;
       return false ;  
     } 
+    function validateGas(num)
+    {
+    
+      var reg = /^[0-9]*[1-9][0-9]*$/;//不包括0和“”
+    	//var reg =/^[+]{0,1}(\d+)$/;//包括0不包括“”
+      if(reg.test(num)){
+    	 
+    	  return true;}
+      return false ;  
+    }
    
     //转账接口
     function transfer(data)
@@ -710,23 +721,36 @@ $(function ()
         return;}
         var gasPrice=$("#gasPrice").val();
     	var gasLimit=$("#gasLimit").val();
+    	
     	var check1=true;
     	var check2=true;
-    	if (Number(gasLimit)>=0)
+    	
+    	if (validateGas(gasLimit))
     	{check1=false;}
-    	if (Number(gasPrice)>=0)
+    	if (validateGas(gasPrice))
     	{check2=false;}
-    	 if(check1||check2)
+    	 if(gasLimit===""&&gasPrice==="")
     	{	
-    		 alert("gasLimit/gasPrice请输入正数");
-    		return;}
-    	else if(gasLimit==="")
+    		gasLimit="";
+    		gasPrice="";
+    		 }
+    	 else if(gasLimit===""||gasPrice==="")
+     	{	
+    		 if(gasLimit==="")
+    			 {if(check2)
+    				 {alert("gasLimit/gasPrice请输入大于0的正整数或默认不输入");
+    		     		return;}}
+    		 else if(gasPrice==="")
+    			 {if(check1)
+    				 {alert("gasLimit/gasPrice请输入大于0的正整数默认不输入");
+    		     		return;}}
+    		 
+     		 }
+    	else if(check1||check2)
         {
-    		gasLimit="";	
-        }else if(gasLimit<1)
-        	{
-        	 alert("gasLimit请输入大于0的数或不输入");
-        	 return;}
+    		alert("gasLimit/gasPrice请输入大于0的正整数默认不输入");
+    		return;
+        }
 
         var tableDataLen=data.length;
         
@@ -758,7 +782,7 @@ $(function ()
        	{	alert("输入的地址或金额不能为空");
        		return;}
        if(flag1)
-    	{	alert("金额请输入正数");
+    	{	alert("金额请输入大于0的正数");
     		return;}
        if(flag2)
    	{	alert("地址由42位的字母数字组成");
