@@ -2,6 +2,7 @@ package com.cascv.oas.server.energy.controller;
 
 import java.util.List;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,9 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
+import com.cascv.oas.server.energy.vo.InviteUserInfo;
+import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +30,43 @@ public class ComputingPowerController {
 	
 	@Autowired
     private EnergyService energyService;
+	@Autowired
+	private UserService userService;
+	
+	@PostMapping(value = "/promotePowerByFriendsShared")
+    @ResponseBody
+    public ResponseEntity<?> promotePowerByFriendsShared(@RequestBody InviteUserInfo inviteUserInfo) {
+		UserModel userModel =new UserModel();
+		Integer inviteFrom=inviteUserInfo.getInviteFrom();
+		//查询邀请用户的上一级userModel
+		userModel=userService.findUserByInviteCode(inviteFrom);
+		
+		if(inviteFrom!=0) {
+			//查询邀请用户的上一级用户的Uuid
+			String userUuid=userModel.getUuid();
+			log.info("userUuid={}",userUuid);
+			//插入上级用户的power变化
+			energyService.saveCheckinEnergyBall(userUuid);
+			
+			
+			
+		}else {
+			log.info("用户是自主注册用户，无人邀请");
+		}
+		
+		
+		return null;
+		
+	}
+	
+	@PostMapping(value = "/inqureInviteStatistical")
+    @ResponseBody
+    public ResponseEntity<?> inqureInviteStatistical() {
+		
+		return null;
+		
+	}
+	
 	
 	@PostMapping(value = "/inquirePower")
     @ResponseBody

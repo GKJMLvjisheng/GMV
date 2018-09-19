@@ -46,5 +46,11 @@ public interface UserModelMapper {
 	 List<String> selectUserMail(String email);
 	 
 	 List<String> selectUserMobile(String mobile);
+	/*
+	 * Name:selectByInviteFrom		
+	 * Author:yangming
+	 * Date:2018.09.19
+	 */	
+	 UserModel selectByInviteFrom(@Param("InviteFrom") Integer InviteFrom);
 }
 
