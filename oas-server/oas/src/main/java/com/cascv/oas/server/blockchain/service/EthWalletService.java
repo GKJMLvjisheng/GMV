@@ -293,7 +293,6 @@ public class EthWalletService {
     if (contract == null)
       contract = coinClient.getToken();
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
-    
     List<BigInteger> amountIntList= new ArrayList<>();
     List<String> addressList = new ArrayList<>();
     BigDecimal total = BigDecimal.ZERO;

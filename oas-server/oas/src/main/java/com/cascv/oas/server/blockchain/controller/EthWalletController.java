@@ -103,8 +103,12 @@ public class EthWalletController {
   @ResponseBody
   @Transactional
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
-	  
-		  BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice();
+		  
+		//前端传的值单位从wei改为Gwei，差额为10的9次方
+		  BigInteger k = new BigInteger("10");
+		  int m = new Integer("9");
+		  BigInteger price = k.pow(m);  
+		  BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice().multiply(price);
 		  if (gasPrice == null)
 			gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
 		  BigInteger gasLimit = ethWalletMultiTransfer.getGasLimit();

@@ -141,4 +141,29 @@
   	  status = #{newStatus}
     where uuid = #{uuid}
   </update>
+  
+  <resultMap id="detailPowerResultMap" type="com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail">
+    <id column="uuid" property="uuid"/>
+    <result column="user_uuid" property="userUuid"/>
+    <result column="time_created" property="created"/>
+    <result column="type" property="category"/>
+    <result column="source_name" property="activity"/>
+    <result column="power_change" property="powerChange"/>
+  </resultMap>
+  
+  <select id="selectPowerByPage" resultMap="detailPowerResultMap">
+    select 
+		U.uuid as uuid,
+		U.user_uuid as userUuid, 
+    	U.power_change as power_change, 
+    	U.time_created as time_created, 
+    	T.source_name as source_name, 
+    	T.type as type from energy_trade_record U 
+    	left outer join energy_ball A on U.energy_ball_uuid = A.uuid 
+    	left outer join energy_source_power T on A.power_source = T.source_code
+    	where U.user_uuid = #{userUuid} 
+    	order by U.time_created desc 
+    	limit #{offset}, #{limit}
+  </select>
+  
 </mapper>

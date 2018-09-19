@@ -570,7 +570,6 @@ public class EnergyService {
     	else {
     		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByAllPage(userUuid, offset, limit);
     	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
-    		System.out.println(energyChangeDetail.getInOrOut());
     		 if(energyChangeDetail.getInOrOut()==0){
     		 energyChangeDetail.setActivity("积分兑换");
 			 energyChangeDetail.setCategory("OASES redeem");
@@ -580,6 +579,17 @@ public class EnergyService {
     	   }
     	    return energyChangeDetailList;
     	}
+    }
+    
+    public List<EnergyPowerChangeDetail> searchEnergyPowerChange(String userUuid, Integer offset, Integer limit){
+    	
+    	List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyTradeRecordMapper.selectPowerByPage(userUuid, offset, limit);
+    	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
+    		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange().intValue());
+    	}
+    	
+		return energyPowerChangeDetailList;
+    	
     }
  
     
