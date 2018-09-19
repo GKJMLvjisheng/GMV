@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
+
+import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.wechat.Utils.WechatMessageUtil;
 import com.cascv.oas.server.wechat.vo.TextMessage;
 

@@ -139,7 +139,6 @@ public class EnergyService {
         return energyBallResult;
     }
 
-
     public BigDecimal miningGenerator(String userUuid, EnergySourcePoint energySourcePoint) {
         BigDecimal ongoingEnergySummary = new BigDecimal(0);
         List<EnergyBall> energyBalls = energyBallMapper
