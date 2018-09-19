@@ -237,7 +237,8 @@ public class EthWalletService {
   }
 
   
-  private void addDetail(String address, EthWalletDetailScope userWalletDetailScope, BigDecimal value, String txHash, String comment) {
+  private void addDetail(String address, EthWalletDetailScope userWalletDetailScope, 
+		  BigDecimal value, String txHash, String comment, String changeAddress) {
     EthWalletDetail ethWalletDetail = new EthWalletDetail();
     ethWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
     ethWalletDetail.setAddress(address);
@@ -248,10 +249,11 @@ public class EthWalletService {
     ethWalletDetail.setCreated(DateUtils.getTime());
     ethWalletDetail.setComment(comment);
     ethWalletDetail.setTxHash(txHash);
+    ethWalletDetail.setChangeAddress(changeAddress);
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
   
-  public ReturnValue<String> transfer(String userUuid, String contract, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
+  public ReturnValue<String> transfer(String userUuid, String contract, String toUserAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment, String changeAddress) {
 
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     ReturnValue<String> returnValue = new ReturnValue<>();
@@ -270,20 +272,21 @@ public class EthWalletService {
     String net = ethWallet.getPreferNetwork();
     if (net == null)
   	  net = coinClient.getDefaultNet();
-    String txHash=coinClient.transfer(net, ethWallet.getAddress(), ethWallet.getPrivateKey(), toAddress, contract, 
+    String txHash=coinClient.transfer(net, ethWallet.getAddress(), ethWallet.getPrivateKey(), toUserAddress, contract, 
     		amountDec.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
-      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, "");
-      addDetail(toAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, "");
+      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, comment, toUserAddress);
+      addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress());
     }
+    System.out.println(txHash);
     returnValue.setErrorCode(ErrorCode.SUCCESS);
     returnValue.setData(txHash);
     return returnValue;
   }
   
   public ReturnValue<String> multiTransfer(String userUuid, String contract, List<TransferQuota> quota,
-		  BigInteger gasPrice, BigInteger gasLimit) {
+		  BigInteger gasPrice, BigInteger gasLimit, String remark) {
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     ReturnValue<String> returnValue = new ReturnValue<>();
     if (ethWallet == null) {
@@ -322,9 +325,11 @@ public class EthWalletService {
     			addressList, contract, amountIntList, gasPrice,gasLimit);
     log.info("txhash {}", txHash);
     if (txHash!=null) {
-	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, total, txHash, "");
+    	for (TransferQuota q: quota) {
+	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, q.getAmount(), txHash, "", q.getToUserAddress());
+    	}
 	      for (TransferQuota q: quota) {
-	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "");  
+	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "", ethWallet.getAddress()	);  
 	      }
 	      returnValue.setErrorCode(ErrorCode.SUCCESS);
 	      returnValue.setData(txHash);
