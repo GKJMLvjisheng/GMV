@@ -86,6 +86,12 @@ public class UserController {
       try {
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
+          //设置头像
+          UserModel userModel=new UserModel();
+    	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
+          userModel=ShiroUtils.getUser();
+          userModel.setProfile(fullLink);
+          ShiroUtils.setUser(userModel);
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)

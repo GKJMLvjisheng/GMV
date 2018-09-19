@@ -160,9 +160,9 @@ public class ComputingPowerController {
 	}
 	
 	
-	@PostMapping(value = "/environmentalProtection")
+	@PostMapping(value = "/addQuestion")
     @ResponseBody
-	public ResponseEntity<?> environmentalProtection(){
+	public ResponseEntity<?> addQuestion(){
 		
 		
 		
