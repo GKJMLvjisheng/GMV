@@ -15,5 +15,6 @@ public class UserWalletDetail {
   @Getter @Setter private String comment;
   @Getter @Setter private String created;
   @Getter @Setter private String remark;
+  @Getter @Setter private String changeUserName;
   
 }
