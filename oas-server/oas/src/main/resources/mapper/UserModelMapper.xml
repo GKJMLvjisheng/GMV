@@ -199,5 +199,14 @@
      <!-- select user mobile-->
     <select id="selectUserMobile" resultMap="userModelMap">
     select mobile from user_info where mobile = #{mobile} </select>
+    
+    <!-- selectByInviteFrom -->
+   	<!-- @Author:yangming -->
+	<!-- @Date:2018.09.19 -->
+    <select id="selectByInviteFrom" parameterType="java.lang.Integer" resultMap="userModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from user_info where invite_from=#{inviteFrom}
+  </select>
 </mapper>
 

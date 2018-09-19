@@ -129,12 +129,23 @@ public class UserService {
 
 	public List<String> selectUserMobile(String mobile){
 		return userModelMapper.selectUserMobile(mobile);
-	}	
+	}
+	
+	/*
+	 * findUserByInviteFrom
+	 * Author:yangming
+	 * Date:2018.09.19
+	 */	
+	public UserModel findUserByInviteFrom(Integer inviteFrom) {
+		UserModel userModel = userModelMapper.selectByInviteFrom(inviteFrom);
+		return userModel;
+	  }
+
 	//验证码
 	public Integer updateIdentifyCode(UserModel userModel) {
 		return userModelMapper.updateIdentifyCode(userModel);
 	}
-	
+
 }
 
 
