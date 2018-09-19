@@ -2,22 +2,15 @@ package com.cascv.oas.server.wechat.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.Utils.StringUtils;
-import com.cascv.oas.server.wechat.vo.IdenCodeDomain;
-
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
@@ -64,22 +57,5 @@ public void messageHandle(HttpServletRequest request,HttpServletResponse respons
 	out.print(responseMessage);
 	out.flush();
 }
-@PostMapping(value="/checkIdenCode")
-public String messageHandle(@RequestBody IdenCodeDomain code){
-   Map<String,Object> userInfo=wechatService.inquireUserInfo();
-   String idenCode=code.getIdenCode();
-   log.info(String.valueOf(userInfo));
-   String name= ShiroUtils.getUser().getName();
-   log.info(userInfo.get(name).toString());
-   log.info(idenCode);
-   if(userInfo.get(name).equals(idenCode)){
-	   log.info("验证成功,提升算力！");
-	   return "success";
-   }
-   else {
-	   log.info("验证失败！");
-	   return "failure";
-        }
-   }
 }
 
