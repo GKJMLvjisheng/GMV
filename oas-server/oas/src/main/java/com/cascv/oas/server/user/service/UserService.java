@@ -46,8 +46,7 @@ public class UserService {
 //		  return GenerateInviteCode();		  
 //		  }	  
 //  }
-  
-  
+   
   public ErrorCode addUser(String uuid, UserModel userModel) {
 	  String s = userModel.getName();
 	  if(s == "") {
@@ -131,6 +130,11 @@ public class UserService {
 	public List<String> selectUserMobile(String mobile){
 		return userModelMapper.selectUserMobile(mobile);
 	}	
+	//验证码
+	public Integer updateIdentifyCode(UserModel userModel) {
+		return userModelMapper.updateIdentifyCode(userModel);
+	}
+	
 }
 
 

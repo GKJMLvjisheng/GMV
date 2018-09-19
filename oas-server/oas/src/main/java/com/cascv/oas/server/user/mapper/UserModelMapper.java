@@ -46,5 +46,8 @@ public interface UserModelMapper {
 	 List<String> selectUserMail(String email);
 	 
 	 List<String> selectUserMobile(String mobile);
+	 
+	 //验证码
+	 Integer updateIdentifyCode(UserModel userModel);
 }
 

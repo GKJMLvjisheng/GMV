@@ -45,13 +45,14 @@ public class PowerService {
      * @param userUuid
      * @return
      */
-    public int saveOAEnergyBall(String userUuid){    	       
-    	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    public int saveOAEnergyBall(String userUuid,String now){    	       
+    	//String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
     	oaEnergyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
         oaEnergyBall.setUserUuid(userUuid);
         oaEnergyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
         oaEnergyBall.setPoint(this.getOAEnergy().getNewEnergyPoint());
         oaEnergyBall.setPower(this.getOAEnergy().getNewPower());
+        log.info(this.getOAEnergy().getNewPower().toString());
         oaEnergyBall.setPointSource(POINT_SOURCE_CODE_OF_OFFICIALACCOUNT);
         oaEnergyBall.setPowerSource(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
         oaEnergyBall.setTimeCreated(now);
@@ -65,7 +66,7 @@ public class PowerService {
      * @return
      */
     public int saveOAEnergyRecord(String userUuid,String now){
-    	this.saveOAEnergyBall(userUuid);
+    	this.saveOAEnergyBall(userUuid,now);
         EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
         energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
         energyTradeRecord.setUserUuid(userUuid);
