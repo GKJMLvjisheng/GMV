@@ -83,7 +83,7 @@ public class ComputingPowerController {
 			            log.info(name);
 			            userNameSet.add(name);
 			            return new ResponseEntity.Builder<Integer>()
-			                    .setData(1)
+			                    .setData(0)
 			                    .setErrorCode(ErrorCode.SUCCESS)
 				                .build();
 			   }else {
@@ -97,7 +97,7 @@ public class ComputingPowerController {
 			   else {
 				   log.info("验证码输入错误!");
 				   return new ResponseEntity.Builder<Integer>()
-		                    .setData(0)
+		                    .setData(1)
 		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
 		                    .build();
 			        }
@@ -105,7 +105,7 @@ public class ComputingPowerController {
 		   else {
 			   log.info("用户名不存在！");
 			   return new ResponseEntity.Builder<Integer>()
-	                    .setData(0)
+	                    .setData(1)
 	                    .setErrorCode(ErrorCode.GENERAL_ERROR)
 	                    .build(); 
 		   }
@@ -160,7 +160,7 @@ public class ComputingPowerController {
 	}
 	
 	
-	@PostMapping(value = "environmentalProtection")
+	@PostMapping(value = "/environmentalProtection")
     @ResponseBody
 	public ResponseEntity<?> environmentalProtection(){
 		
