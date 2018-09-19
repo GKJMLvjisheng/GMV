@@ -1,8 +1,11 @@
 package com.cascv.oas.server.energy.controller;
 
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +20,7 @@ import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
+import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.vo.IdenCodeDomain;
@@ -36,6 +40,10 @@ public class ComputingPowerController {
     private PowerService powerService;
 	@Autowired
 	private WechatService wechatService;
+//	@Autowired
+//	private UserService userService;
+	
+	Set<String> userNameSet=new HashSet();
 	
 	@PostMapping(value = "/inquirePower")
     @ResponseBody
@@ -55,28 +63,42 @@ public class ComputingPowerController {
     }
 	@PostMapping(value = "/promotePowerByOfficialAccount")
     @ResponseBody
-    public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code) {
-		  
+    public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
+	 		   
 		   Map<String,Object> userInfo=wechatService.inquireUserInfo();
+		   String name=ShiroUtils.getUser().getName();
+//		   Integer identifyCode=userService.findUserByName(name).getIdentifyCode();		   
+		   log.info(userNameSet.toString());
 		   String idenCode=code.getIdenCode();
-		   String name= ShiroUtils.getUser().getName();
 		   if(code!=null&&userInfo.get(name)!=null){
 			   if(userInfo.get(name).equals(idenCode)){
+				   if(!userNameSet.contains(name)){
 				   log.info("验证成功,提升算力！");
+				   log.info(userNameSet.toString());
 			        String userUuid = ShiroUtils.getUserUuid();
 			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
 			        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-			            powerService.saveOAEnergyBall(userUuid);
+			            //powerService.saveOAEnergyBall(userUuid,now);
 			            powerService.saveOAEnergyRecord(userUuid,now);
 			            energyOAResult = powerService.getOAEnergy();			      
-			            powerService.updateOAEnergyWallet(userUuid);	                       			   			   			   			   				   
-			            return new ResponseEntity.Builder<EnergyOfficialAccountResult>()
-			                    .setData(energyOAResult)
+			            powerService.updateOAEnergyWallet(userUuid);
+			            //一个验证码只能使用一次
+			            log.info(name);
+			            userNameSet.add(name);
+			            return new ResponseEntity.Builder<Integer>()
+			                    .setData(1)
 			                    .setErrorCode(ErrorCode.SUCCESS)
 				                .build();
+			   }else {
+				   log.info("每个用户只能使用一次验证码来提升算力!");
+				   return new ResponseEntity.Builder<Integer>()
+		                    .setData(2)
+		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                    .build();
+			        }
 			   }
 			   else {
-				   log.info("验证失败！");
+				   log.info("验证码输入错误!");
 				   return new ResponseEntity.Builder<Integer>()
 		                    .setData(0)
 		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
@@ -84,7 +106,7 @@ public class ComputingPowerController {
 			        }
 			     }
 		   else {
-			   log.info("请输入验证码...");
+			   log.info("用户名不存在！");
 			   return new ResponseEntity.Builder<Integer>()
 	                    .setData(0)
 	                    .setErrorCode(ErrorCode.GENERAL_ERROR)
