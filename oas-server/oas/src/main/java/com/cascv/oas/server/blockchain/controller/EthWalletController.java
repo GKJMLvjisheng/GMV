@@ -74,22 +74,26 @@ public class EthWalletController {
 				  .setErrorCode(ErrorCode.WRONG_AMOUNT)
 				  .build();
 	  }else {
-		  //前端传的值单位从wei改为Gwei，差额为10的9次方
-		  BigInteger k = new BigInteger("10");
-		  int m = new Integer("9");
-		  BigInteger price = k.pow(m);
-		  BigInteger gasPrice = ethWalletTransfer.getGasPrice().multiply(price);
+		  BigInteger gasPrice = ethWalletTransfer.getGasPrice();
 		  if (gasPrice == null)
 			  gasPrice=Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
-	      
+		  else {
+			//前端传的值单位从wei改为Gwei，差额为10的9次方
+			  BigInteger k = new BigInteger("10");
+			  int m = new Integer("9");
+			  BigInteger price = k.pow(m);
+			  gasPrice = gasPrice.multiply(price);
+		  }
 		  BigInteger gasLimit =  ethWalletTransfer.getGasLimit();
 	      if (gasLimit == null)
 	    	  gasLimit = BigInteger.valueOf(60000);
+	      
 	      ReturnValue<String> returnValue=ethWalletService.transfer(
 	        ShiroUtils.getUserUuid(), 
 	        ethWalletTransfer.getContract(),
 	        ethWalletTransfer.getToUserAddress(),
-	        ethWalletTransfer.getAmount(),gasPrice,gasLimit);	  
+	        ethWalletTransfer.getAmount(),gasPrice,gasLimit, 
+	        ethWalletTransfer.getComment(), ethWalletTransfer.getChangeAddress());	  
       EthWalletTransferResp resp = new EthWalletTransferResp();
       resp.setTxHash(returnValue.getData());
 	    return new ResponseEntity.Builder<EthWalletTransferResp>()
@@ -105,19 +109,24 @@ public class EthWalletController {
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
 		  
 		//前端传的值单位从wei改为Gwei，差额为10的9次方
-		  BigInteger k = new BigInteger("10");
-		  int m = new Integer("9");
-		  BigInteger price = k.pow(m);  
-		  BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice().multiply(price);
-		  if (gasPrice == null)
-			gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
+	      BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice();
+	      if (gasPrice == null)
+				gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
+	      else {
+	    	  BigInteger k = new BigInteger("10");
+			  int m = new Integer("9");
+			  BigInteger price = k.pow(m);  
+			  gasPrice = ethWalletMultiTransfer.getGasPrice().multiply(price);
+	      }
+		  
 		  BigInteger gasLimit = ethWalletMultiTransfer.getGasLimit();
 		  if (gasLimit == null)
 			  gasLimit = BigInteger.valueOf(600000);
+		  
 		  ReturnValue<String> returnValue=ethWalletService.multiTransfer(
 	        ShiroUtils.getUserUuid(), 
 	        ethWalletMultiTransfer.getContract(),
-          ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit);
+          ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit, "");
       EthWalletMultiTransferResp resp = new EthWalletMultiTransferResp();
       resp.setTxHash(returnValue.getData());
 	    return new ResponseEntity.Builder<EthWalletMultiTransferResp>()
