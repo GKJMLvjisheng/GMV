@@ -184,7 +184,7 @@ public class UserWalletController {
     			.setErrorCode(ErrorCode.CAN_NOT_TRANSFER_TO_SELF)
     	    .build();
     }
-    ErrorCode errorCode = userWalletService.transfer(fromUser.getUuid(), toUser.getUuid(), userWalletTransfer.getValue(), userWalletTransfer.getRemark());
+    ErrorCode errorCode = userWalletService.transfer(fromUser.getUuid(), toUser.getUuid(), userWalletTransfer.getValue(), userWalletTransfer.getRemark(), userWalletTransfer.getComment());
     return new ResponseEntity.Builder<Integer>()
         .setData(1)
         .setErrorCode(errorCode)

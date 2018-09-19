@@ -11,12 +11,13 @@
 	<result column="in_or_out" property="inOrOut" jdbcType="INTEGER"/>
 	<result column="tx_hash" property="txHash"/>
 	<result column="comment" property="comment"/>
+	<result column="change_address" property="changeAddress"/>
 	<result column="created" property="created"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, address, value, title, sub_title,in_or_out, tx_hash, comment, created
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, comment, change_address, created
   </sql>
   
   
@@ -42,6 +43,9 @@
     	<if test="comment != null">
     		comment,
     	</if>
+    	<if test="changeAddress != null">
+    		change_address,
+    	</if>
     	created
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -62,6 +66,9 @@
     	</if>
     	<if test="comment != null">
     		#{comment,jdbcType=VARCHAR},
+    	</if>
+    	<if test="changeAddress != null">
+    		#{changeAddress,jdbcType=VARCHAR},
     	</if>
     		#{created,jdbcType=VARCHAR}
     </trim>
