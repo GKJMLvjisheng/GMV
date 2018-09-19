@@ -20,6 +20,7 @@ public class LoginResult implements Serializable {
   @Getter @Setter private String mobile;
   @Getter @Setter private String email;
   @Getter @Setter private Integer inviteCode;
+  @Getter @Setter private String  profile;
   
   public void fromUserModel(UserModel userModel) {
     this.setName(userModel.getName());
@@ -42,7 +43,10 @@ public class LoginResult implements Serializable {
     if (this.getEmail() == null) {
       this.setEmail("未设置");  
     }
-    
+    this.setProfile(userModel.getProfile());
+    if (this.getProfile() == null) {
+      this.setProfile("未设置");  
+    }
     this.setAddress(userModel.getAddress());
     if (this.getAddress() == null) {
       this.setAddress("未设置");  
