@@ -15,10 +15,11 @@ Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 Axios.interceptors.request.use(config => {
   config.headers['Content-type'] = 'application/json;charset=UTF-8'
   config.headers['token'] = token || '99e04e02-fb5c-4f65-a6cf-a93006c351b6'
-  // config.headers = {
-  //   'Content-Type': 'application/json;charset=utf-8',
-  //   'token': token || 'de97ef47-0ce5-4af0-985a-6703718d50e9',
-  // }
+   /*config.headers = {
+    
+     'Content-Type': 'application/json;charset=utf-8',
+     'token': token || 'de97ef47-0ce5-4af0-985a-6703718d50e9',
+   }*/
   return config
 })
 
