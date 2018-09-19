@@ -584,11 +584,16 @@ public class EnergyService {
     public List<EnergyPowerChangeDetail> searchEnergyPowerChange(String userUuid, Integer offset, Integer limit){
     	
     	List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyTradeRecordMapper.selectPowerByPage(userUuid, offset, limit);
+    	List<EnergyPowerChangeDetail> powerList = new ArrayList<>();
     	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
     		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange().intValue());
+    		
+    		if(energyPowerChangeDetail.getValue() != 0) {
+    			powerList.add(energyPowerChangeDetail);
+    		}
     	}
     	
-		return energyPowerChangeDetailList;
+		return powerList;
     	
     }
  

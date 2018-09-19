@@ -1,11 +1,9 @@
 package com.cascv.oas.server.energy.controller;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -20,12 +19,9 @@ import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
-import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.vo.IdenCodeDomain;
-import com.cascv.oas.core.common.PageDomain;
-
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,6 +57,7 @@ public class ComputingPowerController {
                     .build();
         }
     }
+
 	@PostMapping(value = "/promotePowerByOfficialAccount")
     @ResponseBody
     public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
@@ -133,17 +130,17 @@ public class ComputingPowerController {
         else 
         	offset = 0;
         
-        List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyService.searchEnergyPowerChange(ShiroUtils.getUserUuid(), offset, limit);
-        Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());
-        
+        List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyService
+        		.searchEnergyPowerChange(ShiroUtils.getUserUuid(), offset, limit);
+     
+		Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());                
         PageDomain<EnergyPowerChangeDetail> pageEnergyPowerDetail = new PageDomain<>();
         pageEnergyPowerDetail.setTotal(count);
         pageEnergyPowerDetail.setAsc("asc");
         pageEnergyPowerDetail.setOffset(offset);
         pageEnergyPowerDetail.setPageNum(pageNum);
         pageEnergyPowerDetail.setPageSize(pageSize);
-        pageEnergyPowerDetail.setRows(energyPowerChangeDetailList);
-        
+		pageEnergyPowerDetail.setRows(energyPowerChangeDetailList);
 		return new ResponseEntity.Builder<PageDomain<EnergyPowerChangeDetail>>()
 				.setData(pageEnergyPowerDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -170,6 +167,8 @@ public class ComputingPowerController {
 		
 		
 		return null;
-				
+		
+		
 	}
+
 }
