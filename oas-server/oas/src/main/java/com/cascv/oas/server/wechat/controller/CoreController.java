@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cascv.oas.server.energy.controller.EnergyPowerController;
+import com.cascv.oas.server.energy.controller.ComputingPowerController;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.Utils.StringUtils;

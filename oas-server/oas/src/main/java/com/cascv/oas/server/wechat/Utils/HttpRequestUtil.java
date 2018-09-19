@@ -16,9 +16,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
  
 /**
- * @author wanghang
+ * @author Lvjisheng
  * @Description
- * @date: 2018/04/07 17:49
+ * @date: 2018/09/17 17:49
  */
 public class HttpRequestUtil {
     private static CloseableHttpClient httpClient;

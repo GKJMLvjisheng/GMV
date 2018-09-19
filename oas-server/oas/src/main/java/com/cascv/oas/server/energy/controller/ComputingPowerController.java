@@ -20,9 +20,9 @@ import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping(value = "/api/v1/energyPower")
+@RequestMapping(value = "/api/v1/computingPower")
 @Slf4j
-public class EnergyPowerController {
+public class ComputingPowerController {
 	
 	@Autowired
     private EnergyService energyService;
