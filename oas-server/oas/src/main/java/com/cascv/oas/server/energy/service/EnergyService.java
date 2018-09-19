@@ -546,35 +546,48 @@ public class EnergyService {
     }
        
     public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit,Integer inOrOut) {
+    	
     if(inOrOut!=null){
     	if(inOrOut==1)
     	{ 	
     		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByPage(userUuid, offset, limit);
+    		List<EnergyChangeDetail> energyList = new ArrayList<>();
     	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
     		   //.intValue()方法是把Integer转为Int?
     		   energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+    		   if(energyChangeDetail.getValue() != 0) {
+    			   energyList.add(energyChangeDetail);
+       		}
     	   }
-    	    return energyChangeDetailList;
+    	    return energyList;
     	}
     	else{
       		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByOutPage(userUuid, offset, limit);
+      		List<EnergyChangeDetail> energyList = new ArrayList<>();
         	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
         		energyChangeDetail.setActivity("积分兑换");
     			energyChangeDetail.setCategory("OASES redeem");
         		//.intValue()方法是把Integer转为Int?
-        		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());  
+        		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue()); 
+     		   if(energyChangeDetail.getValue() != 0) {
+    			   energyList.add(energyChangeDetail);
+       		}
         	}
         	return energyChangeDetailList;
     	}
     }
     	else {
     		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByAllPage(userUuid, offset, limit);
+    		List<EnergyChangeDetail> energyList = new ArrayList<>();
     	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
     		 if(energyChangeDetail.getInOrOut()==0){
     		 energyChangeDetail.setActivity("积分兑换");
 			 energyChangeDetail.setCategory("OASES redeem");
     		   //.intValue()方法是把Integer转为Int?
     		 energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+   		   if(energyChangeDetail.getValue() != 0) {
+  			   energyList.add(energyChangeDetail);
+     		}
     	     }
     	   }
     	    return energyChangeDetailList;
