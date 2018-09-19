@@ -15,4 +15,6 @@ public class EthWalletTransfer implements Serializable {
   @Getter @Setter private BigInteger gasPrice;
   @Getter @Setter private BigInteger gasLimit;
   @Getter @Setter private BigDecimal amount;
+  @Getter @Setter private String changeAddress;
+  @Getter @Setter private String comment;
 }
