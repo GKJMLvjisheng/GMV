@@ -11,4 +11,6 @@ public class UserWalletTransfer implements Serializable {
 	@Getter @Setter private String toUserName;
     @Getter @Setter private BigDecimal value;
     @Getter @Setter private String remark;
+    @Getter @Setter private String changeUserName;
+    @Getter @Setter private String comment;
 }
