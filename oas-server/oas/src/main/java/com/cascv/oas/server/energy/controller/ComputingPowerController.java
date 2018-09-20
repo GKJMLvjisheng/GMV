@@ -43,8 +43,9 @@ public class ComputingPowerController {
     private UserService userService;
 	@Autowired
     private EnergyService energyService;
+
 	@Autowired
-	private PowerService powerService;
+    private PowerService powerService;
 	@Autowired
 	private EnergyTopicMapper energyTopicMapper;
 	@Autowired
@@ -57,7 +58,6 @@ public class ComputingPowerController {
 	@PostMapping(value = "/firstPageOfPower")
     @ResponseBody
     public ResponseEntity<?> firstPageOfPower(){
-		
 		List<ActivityResult> activityResult = powerService.searchActivityStatus(ShiroUtils.getUserUuid());
 		ActivityResultList activityResultList = new ActivityResultList();
 		activityResultList.setActivityResultList(activityResult);
