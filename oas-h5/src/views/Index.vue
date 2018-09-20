@@ -28,7 +28,7 @@
         </div>
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
-      <img :src="promote" class="promote" />
+      <img @click="handlePromote" :src="promote" class="promote" />
     </div>
     <!-- 挖矿部分 End -->
     
@@ -125,7 +125,6 @@ const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
 
 import { randomNum } from '@/utils/utils.js'
-import Math from 'mathjs'
 export default {
   name: "index",
   data() {
@@ -188,7 +187,7 @@ export default {
       formData.append("pageSize", "3");
       this.$axios.post('/energyPoint/inquireNews',formData)
       .then(({data:{data}}) =>{
-        console.log(data);
+        //console.log(data);
         this.newsTotal=data.data.total;
         if(data.msg=="无更多数据"){
           this.isShowNewsTip=false;
@@ -226,12 +225,15 @@ export default {
       this.$axios.post('/energyPoint/checkin').then(({data}) => {
         console.log(data)
         if (data.code == 0) {
+         
           this.currentEnergy += data.data.newEnergyPoint
           this.currentPower += data.data.newPower
           this.attendanceMsg.energy = data.data.newEnergyPoint
           this.attendanceMsg.power = data.data.newPower
           this.isShowSuccessMsg = true
         }
+        else(data.code=10012)
+        {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
       })
@@ -243,14 +245,19 @@ export default {
     // 获取用户信息
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
-        console.log(data)
         this.userInfo.nickname = data.nickname
       })
+    },
+    handlePromote(){
+      console.log("调用安卓")
+    window.Android.startLiftComputingPower()
+    
     },
     // 获取悬浮能量球数据
     getEnergyBall () {
       this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
+        console.log(data.energyBallList)
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
           let p = this.randomPoint()
@@ -259,7 +266,8 @@ export default {
           el.y = p.y / 75 + 'rem'
           return el
         })
-      })
+        
+      })              
     },
     // 获取当前能量
     getCurrentEnergy () {
@@ -269,7 +277,7 @@ export default {
     },
     // 获取当前算力
     getCurrentPower () {
-      this.$axios.post('/energyPoint/inquirePower').then(({data:{data}}) => {
+      this.$axios.post('/computingPower/inquirePower').then(({data:{data}}) => {
         this.currentPower = data
       })
     },
@@ -290,10 +298,16 @@ export default {
     // },
     // 根据能量数格式化能量球大小
     formatSize: function (value) {
-      if (value > 9999) {
+      /*if (value > 9999) {
         return 75 / 75 + 'rem'
       }
       if (value > 999) {
+        return 64 / 75 + 'rem'
+      }*/
+      if (value >= 100) {
+        return 75 / 75 + 'rem'
+      }
+      if (value >= 50) {
         return 64 / 75 + 'rem'
       }
       if (value >= 0) {
@@ -302,9 +316,16 @@ export default {
     },
     // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
-      let currentTime = new Date().getTime()
+      console.log(data);
+      console.log(event)
+      /*let currentTime = new Date().getTime()
       let endTime = new Date(data.endDate).getTime()
       if (currentTime < endTime) {
+        this.Toast('能量暂不可收取')
+        return
+      }*/
+      let value = data.value
+      if (value <50) {
         this.Toast('能量暂不可收取')
         return
       }
