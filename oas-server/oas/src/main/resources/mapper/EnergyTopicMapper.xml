@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.energy.mapper.NewsModelMapper">
+
+  <resultMap id="topicModelMap" type="com.cascv.oas.server.energy.model.EnergyTopicModel">
+	<id column="topic_id" property="topicId" />
+	<result column="question" property="question"/>
+	<result column="choice_A" property="choiceA"/>
+	<result column="choice_B" property="choiceB"/>
+  	<result column="choice_C" property="choiceC"/>
+  	<result column="choice_right" property="choiceRight"/>
+  	<result column="created" property="created"/>
+  </resultMap>
+ 
+  <sql id="Base_Column_List">
+  		topic_id,
+    	question,
+    	choice_A,
+    	choice_B,
+    	choice_C,
+    	choice_right,
+    	created
+  </sql>
+  
+  <!-- insert news -->
+  <insert id="insertTopic" parameterType="com.cascv.oas.server.energy.model.EnergyTopicModel">
+    <selectKey keyProperty="topicId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into topic_bank
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      
+      <if test="question != null">
+        question,
+      </if>
+      <if test="choiceA != null">
+        choice_A,
+      </if>
+      <if test="choiceB != null">
+        choice_B,
+      </if>
+       <if test="choiceC != null">
+        choice_C,
+      </if>
+      <if test="choiceRight != null">
+        choice_right,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    
+      <if test="question != null">
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="choiceA != null">
+        #{choiceA,jdbcType=VARCHAR},
+      </if>
+      <if test="choiceB != null">
+        #{choiceB,jdbcType=VARCHAR},
+      </if>
+      <if test="choiceC != null">
+        #{choiceC,jdbcType=VARCHAR},
+      </if>
+       <if test="choiceRight != null">
+        #{choiceRight,jdbcType=VARCHAR},
+      </if>
+	  <if test="created != null">
+         #{created,jdbcType=VARCHAR},
+      </if>
+    </trim>
+   </insert>
+  
+  <!-- delete news -->
+  <delete id="deleteTopic">
+    delete from topic_bank where topic_id = #{topicId}
+  </delete>
+  <select id="selectAllTopic" resultMap="topicModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from topic_bank order by created desc;
+  </select>
+  <select id="selectPage" resultMap="topicModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from topic_bank order by created  desc limit #{offset},#{limit};
+  </select>
+
+  <select id="countTotal" resultType="java.lang.Integer">
+  	select count(*) from topic_bank;
+  </select>
+  
+
+
+    <update id="updateTopic" parameterType="com.cascv.oas.server.energy.model.EnergyTopicModel">
+update 
+		topic_bank 
+set     
+    	question={#question},
+    	choice_A={#choiceA},
+    	choice_B={#choiceB},
+    	choice_C={#choiceC},
+    	choice_right={#choiceRight}
+where 
+		topic_id = #{topicId}
+    </update>
+    
+</mapper>
+

@@ -1,7 +1,10 @@
 package com.cascv.oas.server.energy.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +18,7 @@ import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
+import com.cascv.oas.server.energy.model.EnergyTopicModel;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.model.QAModel.EnergyQuestion;
 import com.cascv.oas.server.energy.service.EnergyService;
@@ -98,13 +102,18 @@ public class ComputingPowerController {
 		   String idenCode=code.getIdenCode();
 
 		   	String userUuid=ShiroUtils.getUserUuid();
-		   	if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+		   	try{
+		   		if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
 	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
 	        	log.info("activityCompletionStatus is not null");
 	          }else {
 	        	  activityCompletionStatus=null;
 	        	  log.info("next");
-	                }		   	
+	                }
+		   		}catch(Exception e) {
+		   			log.info(e.getMessage());
+		   			e.getStackTrace();
+		   		}	   	
 		   	
 		   	UserModel userModel=new UserModel();
 		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
@@ -210,17 +219,65 @@ public class ComputingPowerController {
 
 	}
 		
-	
 	@PostMapping(value = "/addTopic")
     @ResponseBody
-	public ResponseEntity<?> addTopic(@RequestBody EnergyTopicResult energytopic){
+	public ResponseEntity<?> addTopic(@RequestBody EnergyTopicModel energytopic){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-		EnergyQuestion energyQuestion=new EnergyQuestion();
-		energyQuestion.setQuestionContent(energytopic.getQuestionContent());
-		energyQuestion.setCreated(now);
-        //List<EnergyChoice> answers=energytopic.getAnswers();
-//        energyTopicMapper.insertQuestions(energyQuestion);
-//        energyTopicMapper.insertAnswers(answers);
-		return null;				
+		EnergyTopicModel energyTopicModel = new EnergyTopicModel();	
+		energyTopicModel.setChoiceA(energytopic.getChoiceA());
+		energyTopicModel.setChoiceB(energytopic.getChoiceB());
+		energyTopicModel.setChoiceC(energytopic.getChoiceC());
+		energyTopicModel.setChoiceRight(energytopic.getChoiceRight()); 
+		energyTopicModel.setCreated(now);
+		  return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();				
 	}
+	
+	@PostMapping(value = "/deleteTopic")
+    @ResponseBody
+	public ResponseEntity<?> deleteTopic(@RequestBody EnergyTopicModel energytopic){
+		Integer topicId=energytopic.getTopicId();
+		log.info("topicId={}",topicId);
+		
+		energyTopicMapper.deleteTopic(topicId);
+		
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+						
+	}
+	@PostMapping(value = "/updateTopic")
+    @ResponseBody
+	public ResponseEntity<?> updateTopic(@RequestBody EnergyTopicModel energytopic){
+		log.info("--------start--------");
+		EnergyTopicModel energyTopicModel = new EnergyTopicModel();		
+		//Map<String,String> info = new HashMap<>();	
+		energyTopicModel.setTopicId(energytopic.getTopicId());
+		energyTopicModel.setChoiceA(energytopic.getChoiceA());
+		energyTopicModel.setChoiceB(energytopic.getChoiceB());
+		energyTopicModel.setChoiceC(energytopic.getChoiceC());
+		energyTopicModel.setChoiceRight(energytopic.getChoiceRight());  
+		energyTopicMapper.updateTopic(energyTopicModel);
+	    return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();				
+	}
+	@PostMapping(value = "/selectAllTopic")
+    @ResponseBody
+	public ResponseEntity<?> selectAllTopic(){
+		 Map<String,Object> info=new HashMap<>();
+		  List<EnergyTopicModel> list=energyTopicMapper.selectAllTopic();
+		  int length=list.size();
+		  if(length>0) {
+		     info.put("list", list);
+		  }else
+		  {
+		    log.info("no news in mysql");
+		  }
+		    return new ResponseEntity.Builder<Map<String, Object>>()
+		              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+		  }
+
 }
