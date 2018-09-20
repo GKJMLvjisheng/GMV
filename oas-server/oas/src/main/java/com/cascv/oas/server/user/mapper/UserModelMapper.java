@@ -53,6 +53,8 @@ public interface UserModelMapper {
 	 * Date:2018.09.19
 	 */	
 	 UserModel selectByInviteFrom(@Param("inviteFrom") Integer InviteFrom);
+	 
+	 Integer userInvitedCountTotal();
 
 	 //验证码
 	 Integer updateIdentifyCode(UserModel userModel);

@@ -28,6 +28,7 @@ import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.EnergyTopicResult;
+import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -72,6 +73,10 @@ public class ComputingPowerController {
 	@PostMapping(value = "/inqureInviteStatistical")
     @ResponseBody
     public ResponseEntity<?> inqureInviteStatistical() {
+		UserModel userModel=ShiroUtils.getUser();
+		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
+		Integer SumUserInvited,SumPowerPromoted;
+		Integer inviteCode=userModel.getInviteCode();
 		
 		return null;
 		
