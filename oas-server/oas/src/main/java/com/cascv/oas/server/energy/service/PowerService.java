@@ -6,26 +6,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
-import com.cascv.oas.server.energy.mapper.EnergySourcePointMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTradeRecordMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
-import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.vo.ActivityResult;
-import com.cascv.oas.server.energy.vo.ActivityResultList;
-import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
-import com.cascv.oas.server.utils.ShiroUtils;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -114,11 +106,8 @@ public class PowerService {
     	fsEnergyBall.setUserUuid(userUuid);
     	
     	fsEnergyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-    	System.out.println(this.getFsEnergy().getNewEnergyPoint());
-    	System.out.println(this.getFsEnergy().getNewPower());
     	fsEnergyBall.setPoint(this.getFsEnergy().getNewEnergyPoint());
     	fsEnergyBall.setPower(this.getFsEnergy().getNewPower());
-        //log.info(this.getFsEnergy().getNewPower().toString());
         fsEnergyBall.setPointSource(POINT_SOURCE_CODE_OF_FRIENDSSHARED);
         fsEnergyBall.setPowerSource(POWER_SOURCE_CODE_OF_FRIENDSSHARED);
         fsEnergyBall.setTimeCreated(now);
@@ -127,7 +116,7 @@ public class PowerService {
     }
     /**
      * 
-     * 插入算力提升的记录
+     * 插入好友分享算力提升的记录
      * @param userUuid
      * @return
      */
@@ -187,8 +176,8 @@ public class PowerService {
      */
     public void updateFsEnergyWallet(String userUuid){
         String uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
-        energyWalletMapper.increasePoint(uuid, this.getOAEnergy().getNewEnergyPoint());
-        energyWalletMapper.increasePower(uuid, this.getOAEnergy().getNewPower());
+        energyWalletMapper.increasePoint(uuid, this.getFsEnergy().getNewEnergyPoint());
+        energyWalletMapper.increasePower(uuid, this.getFsEnergy().getNewPower());
     }
     /**
      * 关注公众号获取到的属性：增加积分、算力的数值
