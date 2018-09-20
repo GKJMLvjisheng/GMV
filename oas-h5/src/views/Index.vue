@@ -246,7 +246,7 @@ export default {
     handlePromote(){
       console.log("调用安卓")
     window.Android.startLiftComputingPower()
-    console.log("调用完成")
+    
     },
     // 获取悬浮能量球数据
     getEnergyBall () {
