@@ -15,7 +15,7 @@ function questionReady(){
 	var data2;
 	 $.ajax({
 		
-		url: "/api/v1/userCenter/selectAllQuestion",
+		url: "/api/v1/userCenter/selectAllNews",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -34,17 +34,15 @@ function questionReady(){
 
 //新增问题
 function addQuestion(){	
-	//var param = $("#addUserForm").serializeArray();	
+	//var param = $("#addUserForm").serializeArray();		
+	// var select=new Array();
+	// select[0] = $("#choiceContent1").val();
+	// select[1] = $("#choiceContent2").val();
+	//alert(JSON.stringify(select));
 	var formData = new FormData();
-	var select = {};
-	select["a"] = $("#choiceContent1").val();
-	select["b"] = $("#choiceContent2").val();
-	alert(JSON.stringify(select));
-
 	formData.append("questionContent", $("#questionContent").val());
-	//formData.append("choiceContent1", $("#choiceContent1").val());
-	//formData.append("choiceContent2", $("#choiceContent2").val());
-	formData.append("list", select);
+	formData.append("A", $("#choiceContent1").val());
+	formData.append("B", $("#choiceContent1").val());
 	formData.append("answer", $("#answer").val());
 
 	$.ajax({
@@ -57,12 +55,12 @@ function addQuestion(){
 		
 		processData : false,
 		contentType : false,
-		async:false,
+		async : false,
 
 		success:function(res){	
 				
 				$("#Tip").modal('show');
-				$("#addNewsModal").modal('hide');
+				$("#addQuestionModal").modal('hide');
 				 questionReady();
 				$("#questionGrid").bootstrapTable('refresh');							
 		},
@@ -81,7 +79,8 @@ function resetAddModal(){
 	location.reload();
 }
 
-function updateQuestion(){	  	
+function updateQuestion(){
+	formData.append("questionId", $("#EquestionId").val());	  	
 	formData.append("questionContent", $("#EquestionContent").val());
 	formData.append("choiceContent1", $("#EchoiceContent1").val());
 	formData.append("choiceContent2", $("#EchoiceContent2").val());

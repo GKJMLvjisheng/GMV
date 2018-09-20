@@ -25,53 +25,59 @@ function initQuestionGrid(data) {
 		uniqueId:"questionId",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
-		sortName: 'ID', // 要排序的字段
+		sortable: true,//是否启用排序
+		sortName: 'questionId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-
 		data:data,
+		
 		columns : [{
 
-			title : "问题内容",
+			title : "问题",
 
-			field : "questionContent",
+			//field : "questionContent",
+			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '200px',
 
 		},
 			{
 
-			title : "选项1",
+			title : "A",
 
-			field : "choiceContent1",
+			//field : "choiceContent1",
+			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
 
 		}, {
 
-			title : "选项2",
+			title : "B",
 
-			field : "choiceContent2",
+			//field : "choiceContent2",
+			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '120px',
 
 		},
 		{
 
 			title : "答案",
 
-			field : "answer",
+			//field : "answer",
+			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '140px',
+			width:  '120px',
 		}, 
 		{
 
 			title : " 操作",
 			
-			field : "questionId",
+			//field : "questionId",
+			field : "newsId",
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',

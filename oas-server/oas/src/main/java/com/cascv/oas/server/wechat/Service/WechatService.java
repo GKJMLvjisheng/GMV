@@ -6,6 +6,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.user.model.UserModel;
@@ -25,7 +28,8 @@ public class WechatService {
     //判断是否输入"获取验证码"
     Boolean isChecked=false;
     private static final Integer POWER_SOURCE_CODE_OF_OFFICIALACCOUNT = 3; 
-    public String processRequest(HttpServletRequest request){
+    @SuppressWarnings("null")
+	public String processRequest(HttpServletRequest request){
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
         // 发送方帐号（一个OpenID）
         String fromUserName = map.get("FromUserName");
@@ -40,7 +44,8 @@ public class WechatService {
         String result="";
         ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();
         UserModel userModel=new UserModel();
-        
+        String userUuid="";
+        String uuid="";
         //获取验证码
         for(int j = 0; j< 6; j++){
             result+=((int)((Math.random()*9+1)));
@@ -50,8 +55,20 @@ public class WechatService {
         // 对消息进行处理       
         if (WechatMessageUtil.MESSAGE_TEXT.equals(msgType)) {
         	//*****可能会报错
-        	String userUuid=userService.findUserByName(map.get("Content")).getUuid();
-        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+        	log.info("****warning***");
+        	if(userService.findUserByName(map.get("Content"))!=null){
+        	userUuid=userService.findUserByName(map.get("Content")).getUuid();
+        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+        	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+        	        	log.info("activityCompletionStatus is not null");
+        	          }else {
+        	        	  activityCompletionStatus=null;
+        	        	  log.info("next");
+        	                }
+        	}else {
+        		activityCompletionStatus=null;
+        		log.info("next");
+        	      }
         	//******
             //判断回复的内容
             if ("获取验证码".equals(map.get("Content"))) {
@@ -61,16 +78,19 @@ public class WechatService {
             //根据用户名生成验证码
             else if(isChecked&& activityCompletionStatus==null){
             	log.info("正在获取验证码..");
+            	activityCompletionStatus=new ActivityCompletionStatus();
                 responseContent="用户"+map.get("Content")+"的验证码是:"+result+"\n";
                 isChecked=false;
-
+                log.info(userUuid);
                 activityCompletionStatus.setUserUuid(userUuid);
                 activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
                 //未使用表示1
                 activityCompletionStatus.setStatus(0);
+                uuid=UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
+                activityCompletionStatus.setUuid(uuid);
                 energySourcePowerMapper.insertActivity(activityCompletionStatus);
                 userModel.setName(map.get("Content"));
-                userModel.setIdentifyCode(Integer.valueOf(result));;
+                userModel.setIdentifyCode(Integer.valueOf(result));
                 userService.updateIdentifyCode(userModel);
             } 
             
