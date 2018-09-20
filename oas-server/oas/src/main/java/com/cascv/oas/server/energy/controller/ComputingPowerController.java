@@ -1,9 +1,7 @@
 package com.cascv.oas.server.energy.controller;
 
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,9 +53,9 @@ public class ComputingPowerController {
 	
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   
 	
-	@PostMapping(value = "/firstPageOfPower")
+	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
-    public ResponseEntity<?> firstPageOfPower(){
+    public ResponseEntity<?> inquirePowerActivityStatus(){
 		List<ActivityResult> activityResult = powerService.searchActivityStatus(ShiroUtils.getUserUuid());
 		ActivityResultList activityResultList = new ActivityResultList();
 		activityResultList.setActivityResultList(activityResult);

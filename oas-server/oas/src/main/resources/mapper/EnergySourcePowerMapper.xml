@@ -18,6 +18,7 @@
   
   <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.vo.ActivityResult">
         <result column="source_code" property="sourceCode"/>
+        <result column="source_name" property="sourceName"/>
         <result column="status" property="status"/>
     </resultMap>
     
