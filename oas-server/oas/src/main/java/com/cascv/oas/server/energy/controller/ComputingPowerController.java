@@ -43,7 +43,7 @@ public class ComputingPowerController {
     private EnergyService energyService;
 	@Autowired
 	private UserService userService;
-	
+	@Autowired
     private PowerService powerService;
 	@Autowired
 	private WechatService wechatService;
@@ -56,7 +56,6 @@ public class ComputingPowerController {
 	@PostMapping(value = "/firstPageOfPower")
     @ResponseBody
     public ResponseEntity<?> firstPageOfPower(){
-		
 		List<ActivityResult> activityResult = powerService.searchActivityStatus(ShiroUtils.getUserUuid());
 		ActivityResultList activityResultList = new ActivityResultList();
 		activityResultList.setActivityResultList(activityResult);

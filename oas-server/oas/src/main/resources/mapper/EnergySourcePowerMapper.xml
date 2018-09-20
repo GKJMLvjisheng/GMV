@@ -16,9 +16,7 @@
     select power_single from energy_source_power where source_code = #{sourceCode}
   </select>
   
-  <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
-        <id column="uuid" property="uuid"/>
-        <result column="user_uuid" property="userUuid"/>
+  <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.vo.ActivityResult">
         <result column="source_code" property="sourceCode"/>
         <result column="status" property="status"/>
     </resultMap>

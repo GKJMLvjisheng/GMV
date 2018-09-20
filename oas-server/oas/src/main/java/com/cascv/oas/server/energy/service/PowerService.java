@@ -73,7 +73,6 @@ public class PowerService {
     	for(ActivityResult activityResult : activityResultList) {
     		statusList.add(activityResult);
     	}
-    	
 		return statusList;    	
     }
     
