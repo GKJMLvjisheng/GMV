@@ -20,6 +20,8 @@ import com.cascv.oas.server.energy.model.EnergyQuestion;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
+import com.cascv.oas.server.energy.vo.ActivityResult;
+import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.EnergyTopicResult;
@@ -50,6 +52,19 @@ public class ComputingPowerController {
 	private EnergyTopicMapper energyTopicMapper;
 	
 	Set<String> userNameSet=new HashSet();
+	
+	@PostMapping(value = "/firstPageOfPower")
+    @ResponseBody
+    public ResponseEntity<?> firstPageOfPower(){
+		
+		List<ActivityResult> activityResult = powerService.searchActivityStatus(ShiroUtils.getUserUuid());
+		ActivityResultList activityResultList = new ActivityResultList();
+		activityResultList.setActivityResultList(activityResult);
+		return new ResponseEntity.Builder<ActivityResultList>()
+				.setData(activityResultList)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
 	
 	@PostMapping(value = "/promotePowerByFriendsShared")
     @ResponseBody
@@ -207,13 +222,9 @@ public class ComputingPowerController {
 		}else {
 			errorCode = ErrorCode.IS_BACKUPS_WALLET;
 			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
-		}
-		
-		
-		
-		
+		}		
 	}
-	
+		
 	
 	@PostMapping(value = "/addTopic")
     @ResponseBody

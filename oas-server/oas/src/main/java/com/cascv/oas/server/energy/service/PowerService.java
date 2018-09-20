@@ -15,8 +15,11 @@ import com.cascv.oas.server.energy.mapper.EnergySourcePointMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTradeRecordMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
+import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.vo.ActivityResult;
+import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
@@ -47,19 +50,32 @@ public class PowerService {
     
     
     /**
-     * 判断是否已经备份过钱包，已经备份过返回status=1，没有备份返回status=0
+     * 判断是否已经备份过钱包，已经备份过返回1，没有备份返回0
      * @return
      */
     public Integer isBackupsWallet(String userUuid) {
     	
-    	
-    	
-    	
-    	
-		return null;
+    	ActivityResult activityStatus = energySourcePowerMapper.selectStatusByUserUuid(userUuid);
+    	Integer status = activityStatus.getStatus();
+		return status;
     	
     }
     
+    
+    /**
+     * 查询各活动的完成情况表
+     * @return
+     */
+    
+    public List<ActivityResult> searchActivityStatus(String userUuid){
+    	List<ActivityResult> activityResultList = energySourcePowerMapper.selectByUserUuid(userUuid);
+    	List<ActivityResult> statusList = new ArrayList<>();
+    	for(ActivityResult activityResult : activityResultList) {
+    		statusList.add(activityResult);
+    	}
+    	
+		return statusList;    	
+    }
     
     /**
      * 
