@@ -14,6 +14,7 @@ import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.vo.EnergyCheckinResult;
+import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -31,13 +32,16 @@ public class PowerService {
     @Autowired
     private EnergySourcePowerMapper energySourcePowerMapper;
     
-    private EnergyBall oaEnergyBall = new EnergyBall();   
+    private EnergyBall oaEnergyBall = new EnergyBall();//微信关注能量球
+    private EnergyBall fsEnergyBall = new EnergyBall();//好友分享能量球
     private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
 //    private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
 //    private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，不可被获取
-    private static final Integer POWER_SOURCE_CODE_OF_OFFICIALACCOUNT = 3;            // 算力提升来源：关注公众号为3   
+    private static final Integer POWER_SOURCE_CODE_OF_OFFICIALACCOUNT = 3;            // 算力提升来源：关注公众号为3
+    private static final Integer POWER_SOURCE_CODE_OF_FRIENDSSHARED = 4;            // 算力提升来源：好友分享为4
     private static final Integer POINT_SOURCE_CODE_OF_OFFICIALACCOUNT = 0;            // 与积分相关的都为0
+    private static final Integer POINT_SOURCE_CODE_OF_FRIENDSSHARED = 0;			// 与积分相关的都为0
     private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
     /**
      * 
@@ -58,6 +62,51 @@ public class PowerService {
         oaEnergyBall.setTimeCreated(now);
         oaEnergyBall.setTimeUpdated(now);
         return energyBallMapper.insertEnergyBall(oaEnergyBall);
+    }
+    
+    /**
+     * 
+      * 插入好友分享获取到的fsEnergyBall
+     * @param userUuid
+     * @param now
+     * @return
+     */
+    public int saveFsEnergyBall(String userUuid,String now){    	       
+    	//String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    	fsEnergyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+    	fsEnergyBall.setUserUuid(userUuid);
+    	
+    	fsEnergyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+    	System.out.println(this.getFsEnergy().getNewEnergyPoint());
+    	System.out.println(this.getFsEnergy().getNewPower());
+    	fsEnergyBall.setPoint(this.getFsEnergy().getNewEnergyPoint());
+    	fsEnergyBall.setPower(this.getFsEnergy().getNewPower());
+        //log.info(this.getFsEnergy().getNewPower().toString());
+        fsEnergyBall.setPointSource(POINT_SOURCE_CODE_OF_FRIENDSSHARED);
+        fsEnergyBall.setPowerSource(POWER_SOURCE_CODE_OF_FRIENDSSHARED);
+        fsEnergyBall.setTimeCreated(now);
+        fsEnergyBall.setTimeUpdated(now);
+        return energyBallMapper.insertEnergyBall(fsEnergyBall);
+    }
+    /**
+     * 
+     * 插入算力提升的记录
+     * @param userUuid
+     * @return
+     */
+    public int saveFsEnergyRecord(String userUuid,String now){
+    	this.saveFsEnergyBall(userUuid,now);
+        EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
+        energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+        energyTradeRecord.setUserUuid(userUuid);
+        energyTradeRecord.setEnergyBallUuid(fsEnergyBall.getUuid());
+        energyTradeRecord.setInOrOut(ENEGY_IN);
+        energyTradeRecord.setTimeCreated(now);
+        energyTradeRecord.setTimeUpdated(now);
+        energyTradeRecord.setStatus(STATUS_OF_DIE_ENERGYRECORD);
+        energyTradeRecord.setPointChange(this.getFsEnergy().getNewEnergyPoint());
+        energyTradeRecord.setPowerChange(this.getFsEnergy().getNewPower());
+        return energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
     }
     /**
      * 
@@ -93,6 +142,18 @@ public class PowerService {
         energyWalletMapper.increasePower(uuid, this.getOAEnergy().getNewPower());
     }
     /**
+     * 
+     * 在能量钱包(EnergyWallet)中添加记录
+     * @param
+     * @param userUuid
+     * @return
+     */
+    public void updateFsEnergyWallet(String userUuid){
+        String uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
+        energyWalletMapper.increasePoint(uuid, this.getOAEnergy().getNewEnergyPoint());
+        energyWalletMapper.increasePower(uuid, this.getOAEnergy().getNewPower());
+    }
+    /**
      * 关注公众号获取到的属性：增加积分、算力的数值
      * @return
      */
@@ -103,5 +164,17 @@ public class PowerService {
         energyOAResult.setNewEnergyPoint(point);
         energyOAResult.setNewPower(power);
         return energyOAResult;
+    }
+    /**
+     * 好友分享获取到的属性：增加积分、算力的数值
+     * @return
+     */
+    public EnergyFriendsSharedResult getFsEnergy() {
+        BigDecimal point = BigDecimal.ZERO;
+        BigDecimal power = energySourcePowerMapper.queryPowerSingle(POWER_SOURCE_CODE_OF_FRIENDSSHARED);
+        EnergyFriendsSharedResult energyFsResult = new EnergyFriendsSharedResult();
+        energyFsResult.setNewEnergyPoint(point);
+        energyFsResult.setNewPower(power);
+        return energyFsResult;
     }
 }
