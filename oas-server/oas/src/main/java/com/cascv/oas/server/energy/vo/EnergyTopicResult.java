@@ -3,8 +3,7 @@ package com.cascv.oas.server.energy.vo;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-
-import com.cascv.oas.server.energy.model.EnergyAnswer;
+import com.cascv.oas.server.energy.model.EnergyChoice;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +16,5 @@ public class EnergyTopicResult  implements Serializable {
   @Getter @Setter private Integer questionDone;
   @Getter @Setter private String questionContent;
   @Getter @Setter private String created;
-  @Getter @Setter private List<EnergyAnswer> answers;
+  @Getter @Setter private List<EnergyChoice> answers;
 }

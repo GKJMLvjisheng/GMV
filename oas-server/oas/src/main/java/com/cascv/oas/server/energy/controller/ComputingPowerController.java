@@ -15,7 +15,6 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
-import com.cascv.oas.server.energy.model.EnergyAnswer;
 import com.cascv.oas.server.energy.model.EnergyQuestion;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
@@ -211,9 +210,9 @@ public class ComputingPowerController {
 		EnergyQuestion energyQuestion=new EnergyQuestion();
 		energyQuestion.setQuestionContent(energytopic.getQuestionContent());
 		energyQuestion.setCreated(now);
-        List<EnergyAnswer> answers=energytopic.getAnswers();
-        energyTopicMapper.insertQuestions(energyQuestion);
-        energyTopicMapper.insertAnswers(answers);
+        //List<EnergyChoice> answers=energytopic.getAnswers();
+//        energyTopicMapper.insertQuestions(energyQuestion);
+//        energyTopicMapper.insertAnswers(answers);
 		return null;
 				
 	}

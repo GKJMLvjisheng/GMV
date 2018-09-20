@@ -3,10 +3,8 @@ package com.cascv.oas.server.energy.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.math.BigDecimal;
 @ToString
-public class EnergyAnswer {
+public class EnergyChoice {
     @Getter @Setter private Integer answerId;
     @Getter @Setter private Integer answerParentId;
     @Getter @Setter private Integer answerRight;
