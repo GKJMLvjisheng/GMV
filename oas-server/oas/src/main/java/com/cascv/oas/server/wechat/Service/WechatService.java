@@ -24,6 +24,8 @@ public class WechatService {
     //判断是否输入"获取验证码"
     Boolean isChecked=false;
     public String processRequest(HttpServletRequest request){
+    	//?获取不到shiro里的值？
+    	//System.out.println(ShiroUtils.getUser().getName());
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
         // 发送方帐号（一个OpenID）
         String fromUserName = map.get("FromUserName");

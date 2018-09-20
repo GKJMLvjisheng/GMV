@@ -14,11 +14,15 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
+import com.cascv.oas.server.energy.model.EnergyAnswer;
+import com.cascv.oas.server.energy.model.EnergyQuestion;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
+import com.cascv.oas.server.energy.vo.EnergyTopicResult;
 import com.cascv.oas.server.energy.vo.InviteUserInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
@@ -41,6 +45,10 @@ public class ComputingPowerController {
     private PowerService powerService;
 	@Autowired
 	private WechatService wechatService;
+	
+	@Autowired
+	private EnergyTopicMapper energyTopicMapper;
+	
 	Set<String> userNameSet=new HashSet();
 	
 	@PostMapping(value = "/promotePowerByFriendsShared")
@@ -94,7 +102,7 @@ public class ComputingPowerController {
         }
     }
 
-	@PostMapping(value = "/promotePowerByOfficialAccount")
+	@PostMapping(value = "/promotePowerByWechatAccount")
     @ResponseBody
     public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
 	 		   
@@ -196,15 +204,17 @@ public class ComputingPowerController {
 	}
 	
 	
-	@PostMapping(value = "/addQuestion")
+	@PostMapping(value = "/addTopic")
     @ResponseBody
-	public ResponseEntity<?> addQuestion(){
-		
-		
-		
+	public ResponseEntity<?> addTopic(@RequestBody EnergyTopicResult energytopic){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		EnergyQuestion energyQuestion=new EnergyQuestion();
+		energyQuestion.setQuestionContent(energytopic.getQuestionContent());
+		energyQuestion.setCreated(now);
+        List<EnergyAnswer> answers=energytopic.getAnswers();
+        energyTopicMapper.insertQuestions(energyQuestion);
+        energyTopicMapper.insertAnswers(answers);
 		return null;
-		
-		
+				
 	}
-
 }
