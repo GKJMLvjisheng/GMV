@@ -14,4 +14,9 @@ public String newsManage() {
 	public String newInformation() {
 		return "newInformation";
 	}
+
+@GetMapping("/QA/QAManage")
+public String QAManage() {
+	    return "QA/QAManage";  
+	    }
 }
