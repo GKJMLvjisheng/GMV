@@ -86,6 +86,12 @@ public class UserController {
       try {
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
+          //设置头像
+          UserModel userModel=new UserModel();
+    	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
+          userModel=ShiroUtils.getUser();
+          userModel.setProfile(fullLink);
+          ShiroUtils.setUser(userModel);
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -283,7 +289,7 @@ public class UserController {
 	    	ShiroUtils.setUser(usermodel);
 	        //图片存储的相对路径
 	    	String fullLink = mediaServer.getImageHost() + proUrl;
-	    	info.put("ImageUrl",fullLink);
+	    	info.put("profile",fullLink);
 	    	log.info("UpLoadSuccuss-->");
 	        return new ResponseEntity.Builder<Map<String, String>>()
 		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();

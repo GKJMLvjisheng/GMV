@@ -1,6 +1,6 @@
 <template>
 <div>
-  <scroller :on-refresh="refresh">
+  <scroller :on-refresh="refresh" :on-infinite="infinite">
     <!-- Header部分 Start -->
     <header>
       <div class="left">
@@ -28,9 +28,10 @@
         </div>
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
-      <img :src="promote" class="promote" />
+      <img @click="handlePromote" :src="promote" class="promote" />
     </div>
     <!-- 挖矿部分 End -->
+    
     <!-- 能量分析部分 Start -->
     <div class="analysis">
       <div class="title">
@@ -68,6 +69,7 @@
       </ul>
     </div>
     <!-- 能量分析部分 End -->
+
     <!-- OASES咨询 Start-->
     <div class="consult">
       <div class="title">
@@ -80,22 +82,24 @@
       <div class="news-list">
         <ul>
           <li :key="index" v-for="(item, index) in articleList">
+            <a :href='item.newsLink' target="_blank">
             <div class="left">
               <p>{{item.title}}</p>
               <p>{{item.summary}}</p>
             </div>
             <img :src="item.imageLink" alt="">
+            </a>
           </li>
         </ul>
       </div>
     </div>
+    <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <!-- OASES咨询 End -->
     <!-- 底部 Start -->
     <div class="bottom">
       <img :src="bottom" alt="">
     </div>
     <!-- 底部 End -->
-
     <!-- 签到弹框 Start -->
     <div v-if="isShowMask" class="mask">
       <div class="content">
@@ -134,9 +138,12 @@ export default {
       isShowMask: false,
       isShowSuccessMsg: false,
       isShowToast: false,
+      isShowNewsTip: false,
       energyBallList:[],
       currentEnergy:0,
       currentPower:0,
+      page:1,
+      newsTotal:1,
       articleList:[],
       analysis:'',
       analysisCount:0,
@@ -164,17 +171,73 @@ export default {
   filters: {
   },
   methods: {
+
+    //预先加载3条新闻
+    getArticleList () {
+      var page=this.page; 
+      this.loadArticleList(page);
+      this.isShowNewsTip=true;    
+    },
+    // 获取新闻文章列表
+    loadArticleList (page) {
+      var formData = new FormData();
+      formData.append("pageNum", page);
+      formData.append("pageSize", "3");
+      this.$axios.post('/energyPoint/inquireNews',formData)
+      .then(({data:{data}}) =>{
+        //console.log(data);
+        this.newsTotal=data.data.total;
+        if(data.msg=="无更多数据"){
+          this.isShowNewsTip=false;  
+          this.articleList=[...this.articleList,...data.data.rows];
+        } 
+        else
+        {
+          this.articleList=[...this.articleList,...data.data.rows]; 
+        }   
+      })
+      .catch(function (err) {
+        console.log(err);
+      })
+    },   
+
+   //上拉加载新闻
+   infinite (done) { 
+      this.page+=1
+      var page=this.page
+      var newsTotal=this.newsTotal     
+      var pageTotal=Math.ceil(newsTotal/3)
+      //alert(pageTotal)
+      if(page<=pageTotal){
+        this.isShowNewsTip=true                     
+        this.loadArticleList(page)  
+        setTimeout(() => {
+          done()
+        },1000)
+      }
+      else{
+        setTimeout(() => {
+            done(true)
+            this.infinite = undefined
+          }, 500)
+          return;
+      }   
+    },
+
     // 签到按钮点击事件
     handleAttendance () {
       this.$axios.post('/energyPoint/checkin').then(({data}) => {
         console.log(data)
         if (data.code == 0) {
+         
           this.currentEnergy += data.data.newEnergyPoint
           this.currentPower += data.data.newPower
           this.attendanceMsg.energy = data.data.newEnergyPoint
           this.attendanceMsg.power = data.data.newPower
           this.isShowSuccessMsg = true
         }
+        else(data.code=10012)
+        {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
       })
@@ -186,14 +249,19 @@ export default {
     // 获取用户信息
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
-        console.log(data)
         this.userInfo.nickname = data.nickname
       })
+    },
+    handlePromote(){
+      console.log("调用安卓")
+    window.Android.startLiftComputingPower()
+    
     },
     // 获取悬浮能量球数据
     getEnergyBall () {
       this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
+        console.log(data.energyBallList)
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
           let p = this.randomPoint()
@@ -202,7 +270,8 @@ export default {
           el.y = p.y / 75 + 'rem'
           return el
         })
-      })
+        
+      })              
     },
     // 获取当前能量
     getCurrentEnergy () {
@@ -212,7 +281,7 @@ export default {
     },
     // 获取当前算力
     getCurrentPower () {
-      this.$axios.post('/energyPoint/inquirePower').then(({data:{data}}) => {
+      this.$axios.post('/computingPower/inquirePower').then(({data:{data}}) => {
         this.currentPower = data
       })
     },
@@ -226,17 +295,23 @@ export default {
       })
     },
     // 获取新闻文章列表
-    getArticleList () {
-      this.$axios.post('/energyPoint/inquireNews').then(({data:{data}}) =>{
-        this.articleList = data.rows
-      })
-    },
+    // getArticleList () {
+    //   this.$axios.post('/energyPoint/inquireNews').then(({data:{data}}) =>{
+    //     this.articleList = data.rows
+    //   })
+    // },
     // 根据能量数格式化能量球大小
     formatSize: function (value) {
-      if (value > 9999) {
+      /*if (value > 9999) {
         return 75 / 75 + 'rem'
       }
       if (value > 999) {
+        return 64 / 75 + 'rem'
+      }*/
+      if (value >= 100) {
+        return 75 / 75 + 'rem'
+      }
+      if (value >= 50) {
         return 64 / 75 + 'rem'
       }
       if (value >= 0) {
@@ -245,9 +320,16 @@ export default {
     },
     // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
-      let currentTime = new Date().getTime()
+      console.log(data);
+      console.log(event)
+      /*let currentTime = new Date().getTime()
       let endTime = new Date(data.endDate).getTime()
       if (currentTime < endTime) {
+        this.Toast('能量暂不可收取')
+        return
+      }*/
+      let value = data.value
+      if (value <50) {
         this.Toast('能量暂不可收取')
         return
       }
@@ -288,12 +370,11 @@ export default {
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
-      this.getArticleList()
       this.getUserInfo()
       setTimeout(() => {
         done()
       },1000)
-    },
+    },   
     // 提示信息
     Toast (msg, delay) {
       this.toastMsg = msg
@@ -476,39 +557,61 @@ header {
   .tips {
     margin-top: 10px;
   }
-  li {
-    display: flex;
-    justify-content: space-between;
-    height: 352px;
-    padding: 40px 0;
-    border-bottom: 1px solid #ddd;
-    img {
-      width: 448px;
-      height: 256px;
-      margin-left: 26px;
-    }
-    .left {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      p:first-child {
-        font-size: 28px;
-        line-height: 36px;
-        height: 72px;
-        overflow: hidden;
+  li {    
+    a {
+        display: flex;
+        justify-content: space-between;
+        height: 280px;
+        padding: 40px 0;
+        border-bottom: 1px solid #ddd;    
+        word-wrap:break-word;
+        word-break:break-all;
+      img {
+        width: 248px;
+        height: 156px;
+        margin-left: 26px;
       }
-      p:last-child {
+      .left {
         flex: 1;
-        font-size: 24px;
-        line-height: 34px;
-        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;  //1行
+        -webkit-box-orient: vertical;
+          p:first-child {
+            font-size: 28px;
+            line-height: 36px;
+            height: 72px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;  //2行
+            -webkit-box-orient: vertical;            
+          }
+          p:last-child {
+            flex: 1;
+            font-size: 24px;
+            line-height: 34px;
+            margin-top: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;  //3行
+            -webkit-box-orient: vertical;
+          }
       }
     }
   }
 }
-
+.news-tips {
+  //position: relative;
+  font-size: 25px;
+  line-height: 50px;
+  text-align: center; 
+}
 .bottom {
   position: relative;
   display: block;
