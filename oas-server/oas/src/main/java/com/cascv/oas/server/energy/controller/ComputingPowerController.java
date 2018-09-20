@@ -96,14 +96,21 @@ public class ComputingPowerController {
 	 		   
 		   String name=ShiroUtils.getUser().getName();	   
 		   String idenCode=code.getIdenCode();
-		   	//*****可能会报错
+
 		   	String userUuid=ShiroUtils.getUserUuid();
-		   	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
-		   	//******
+		   	if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+	        	log.info("activityCompletionStatus is not null");
+	          }else {
+	        	  activityCompletionStatus=null;
+	        	  log.info("next");
+	                }		   	
+		   	
 		   	UserModel userModel=new UserModel();
 		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
+		   	log.info(idenCode);
 		   if(code!=null&&activityCompletionStatus!=null){
-			   if(userModel.getIdentifyCode().equals(idenCode)){
+			   if(userModel.getIdentifyCode().toString().equals(idenCode)){
 				   if(activityCompletionStatus.getStatus()!=1){
 				   log.info("验证成功,提升算力！");
 			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
@@ -112,6 +119,9 @@ public class ComputingPowerController {
 			            powerService.saveOAEnergyRecord(userUuid,now);
 			            energyOAResult = powerService.getOAEnergy();			      
 			            powerService.updateOAEnergyWallet(userUuid);
+			            activityCompletionStatus.setStatus(1);
+			            activityCompletionStatus.setUserUuid(userUuid);
+			            energySourcePowerMapper.updateStatus(activityCompletionStatus);
 			            //一个验证码只能使用一次
 			            log.info(name);
 			            return new ResponseEntity.Builder<Integer>()
