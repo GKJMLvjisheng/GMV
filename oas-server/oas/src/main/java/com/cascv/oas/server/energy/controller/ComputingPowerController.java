@@ -14,6 +14,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
@@ -166,7 +167,7 @@ public class ComputingPowerController {
         else 
         	offset = 0;
         
-        List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyService
+        List<EnergyPowerChangeDetail> energyPowerChangeDetailList = powerService
         		.searchEnergyPowerChange(ShiroUtils.getUserUuid(), offset, limit);
      
 		Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());                
@@ -188,9 +189,20 @@ public class ComputingPowerController {
     @ResponseBody
 	public ResponseEntity<?> backupsWallet(){
 		
+		String userUuid = ShiroUtils.getUserUuid();
+		ErrorCode errorCode = ErrorCode.SUCCESS;
+		
+		if(powerService.isBackupsWallet(userUuid) == 0) {
+			//do backupsWallet
+			
+			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
+			
+		}else {
+			errorCode = ErrorCode.IS_BACKUPS_WALLET;
+			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
+		}
 		
 		
-		return null;
 		
 		
 	}

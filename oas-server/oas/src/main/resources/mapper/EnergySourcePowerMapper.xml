@@ -15,4 +15,18 @@
   <select id="queryPowerSingle" resultType="java.math.BigDecimal">
     select power_single from energy_source_power where source_code = #{sourceCode}
   </select>
+  
+  <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+        <id column="uuid" property="uuid"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="source_code" property="sourceCode"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    
+  <insert id="insertActivity" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+      insert into activity_completion_status 
+      (uuid, user_uuid, source_code, status)
+      values (#{uuid}, #{userUuid}, #{sourceCode}, #{status})
+  </insert>
+  
 </mapper>
