@@ -29,4 +29,25 @@
       values (#{uuid}, #{userUuid}, #{sourceCode}, #{status})
   </insert>
   
+  <select id="selectByUserUuid" resultMap="ActivityCompletionStatus">
+      select * from activity_completion_status A left join energy_source_power B 
+             on A.source_code = B.source_code 
+             where A.user_uuid = #{userUuid}
+  </select>
+  
+    <select id="selectACSByUserUuid" resultMap="ActivityCompletionStatus">
+      select * from activity_completion_status A left join energy_source_power B 
+             on A.source_code = B.source_code 
+             where A.user_uuid = #{userUuid}
+  </select>
+  
+  <select id="selectStatusByUserUuid" resultMap="ActivityCompletionStatus">
+      select * from activity_completion_status 
+             where user_uuid = #{userUuid}
+  </select>
+  
+  <update id="update" parameterType="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+      update activity_completion_status set status = #{status} where user_uuid=#{userUuid}
+  </update>
+  
 </mapper>

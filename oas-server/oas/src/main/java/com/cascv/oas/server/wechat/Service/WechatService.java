@@ -51,7 +51,7 @@ public class WechatService {
         if (WechatMessageUtil.MESSAGE_TEXT.equals(msgType)) {
         	//*****可能会报错
         	String userUuid=userService.findUserByName(map.get("Content")).getUuid();
-        	activityCompletionStatus=energySourcePowerMapper.selectByUserUuid(userUuid);
+        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
         	//******
             //判断回复的内容
             if ("获取验证码".equals(map.get("Content"))) {

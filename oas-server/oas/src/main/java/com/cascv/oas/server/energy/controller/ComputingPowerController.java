@@ -21,10 +21,11 @@ import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.model.QAModel.EnergyQuestion;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
+import com.cascv.oas.server.energy.vo.ActivityResult;
+import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.EnergyTopicResult;
-import com.cascv.oas.server.energy.vo.InviteUserInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -39,45 +40,33 @@ import lombok.extern.slf4j.Slf4j;
 public class ComputingPowerController {
 	
 	@Autowired
+    private UserService userService;
+	@Autowired
     private EnergyService energyService;
 	@Autowired
-	private UserService userService;
-	
-    private PowerService powerService;
+	private PowerService powerService;
 	@Autowired
 	private EnergyTopicMapper energyTopicMapper;
-	
+	@Autowired
+	private WechatService wechatService;
 	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   
 	
-	@PostMapping(value = "/promotePowerByFriendsShared")
+	@PostMapping(value = "/firstPageOfPower")
     @ResponseBody
-    public ResponseEntity<?> promotePowerByFriendsShared(@RequestBody InviteUserInfo inviteUserInfo) {
-		UserModel userModel =new UserModel();
-		Integer inviteFrom=inviteUserInfo.getInviteFrom();
-		//查询邀请用户的上一级userModel
-		userModel=userService.findUserByInviteCode(inviteFrom);
+    public ResponseEntity<?> firstPageOfPower(){
 		
-		if(inviteFrom!=0) {
-			//查询邀请用户的上一级用户的Uuid
-			String userUuid=userModel.getUuid();
-			log.info("userUuid={}",userUuid);
-			//插入上级用户的power变化
-			energyService.saveCheckinEnergyBall(userUuid);
-			
-			
-			
-		}else {
-			log.info("用户是自主注册用户，无人邀请");
-		}
-		
-		
-		return null;
-		
+		List<ActivityResult> activityResult = powerService.searchActivityStatus(ShiroUtils.getUserUuid());
+		ActivityResultList activityResultList = new ActivityResultList();
+		activityResultList.setActivityResultList(activityResult);
+		return new ResponseEntity.Builder<ActivityResultList>()
+				.setData(activityResultList)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
 	}
-	
+		
 	@PostMapping(value = "/inqureInviteStatistical")
     @ResponseBody
     public ResponseEntity<?> inqureInviteStatistical() {
@@ -111,7 +100,7 @@ public class ComputingPowerController {
 		   String idenCode=code.getIdenCode();
 		   	//*****可能会报错
 		   	String userUuid=ShiroUtils.getUserUuid();
-		   	activityCompletionStatus=energySourcePowerMapper.selectByUserUuid(userUuid);
+		   	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
 		   	//******
 		   	UserModel userModel=new UserModel();
 		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
@@ -208,9 +197,11 @@ public class ComputingPowerController {
 		}else {
 			errorCode = ErrorCode.IS_BACKUPS_WALLET;
 			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
-		}	
+
+		}		
+
 	}
-	
+		
 	
 	@PostMapping(value = "/addTopic")
     @ResponseBody
