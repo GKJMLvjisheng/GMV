@@ -289,7 +289,7 @@ public class UserController {
 	    	ShiroUtils.setUser(usermodel);
 	        //图片存储的相对路径
 	    	String fullLink = mediaServer.getImageHost() + proUrl;
-	    	info.put("ImageUrl",fullLink);
+	    	info.put("profile",fullLink);
 	    	log.info("UpLoadSuccuss-->");
 	        return new ResponseEntity.Builder<Map<String, String>>()
 		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();

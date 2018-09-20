@@ -110,23 +110,6 @@ public class EnergyPointController {
                 .build();
     }
 
-//    @PostMapping(value = "/inquirePower")
-//    @ResponseBody
-//    public ResponseEntity<?> inquirePower() {
-//        EnergyWallet energyWallet = energyService.findByUserUuid(ShiroUtils.getUserUuid());
-//        if (energyWallet != null) {
-//            return new ResponseEntity.Builder<Integer>()
-//                    .setData(energyWallet.getPower().intValue())
-//                    .setErrorCode(ErrorCode.SUCCESS)
-//                    .build();
-//        } else {
-//            return new ResponseEntity.Builder<Integer>()
-//                    .setData(0)
-//                    .setErrorCode(ErrorCode.NO_ENERGY_POINT_ACCOUNT)
-//                    .build();
-//        }
-//    }
-
     @PostMapping(value = "/inquireEnergyPoint")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPoint() {
