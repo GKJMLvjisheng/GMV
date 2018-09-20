@@ -2,8 +2,10 @@ package com.cascv.oas.server.energy.mapper;
 
 import java.util.List;
 import org.springframework.stereotype.Component;
-import com.cascv.oas.server.energy.model.EnergyChoice;
-import com.cascv.oas.server.energy.model.EnergyQuestion;
+
+import com.cascv.oas.server.energy.model.QAModel.EnergyChoice;
+import com.cascv.oas.server.energy.model.QAModel.EnergyQuestion;
+
 
 
 

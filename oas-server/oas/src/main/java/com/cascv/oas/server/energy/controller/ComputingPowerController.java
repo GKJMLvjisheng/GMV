@@ -14,10 +14,11 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
-
+import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
-import com.cascv.oas.server.energy.model.EnergyQuestion;
+import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.model.QAModel.EnergyQuestion;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
@@ -44,12 +45,12 @@ public class ComputingPowerController {
 	
     private PowerService powerService;
 	@Autowired
-	private WechatService wechatService;
-	
-	@Autowired
 	private EnergyTopicMapper energyTopicMapper;
 	
-	Set<String> userNameSet=new HashSet();
+	@Autowired
+	private EnergySourcePowerMapper energySourcePowerMapper;
+	
+    ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   
 	
 	@PostMapping(value = "/promotePowerByFriendsShared")
     @ResponseBody
@@ -106,17 +107,18 @@ public class ComputingPowerController {
     @ResponseBody
     public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
 	 		   
-		   Map<String,Object> userInfo=wechatService.inquireUserInfo();
-		   String name=ShiroUtils.getUser().getName();
-//		   Integer identifyCode=userService.findUserByName(name).getIdentifyCode();		   
-		   log.info(userNameSet.toString());
+		   String name=ShiroUtils.getUser().getName();	   
 		   String idenCode=code.getIdenCode();
-		   if(code!=null&&userInfo.get(name)!=null){
-			   if(userInfo.get(name).equals(idenCode)){
-				   if(!userNameSet.contains(name)){
+		   	//*****可能会报错
+		   	String userUuid=ShiroUtils.getUserUuid();
+		   	activityCompletionStatus=energySourcePowerMapper.selectByUserUuid(userUuid);
+		   	//******
+		   	UserModel userModel=new UserModel();
+		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
+		   if(code!=null&&activityCompletionStatus!=null){
+			   if(userModel.getIdentifyCode().equals(idenCode)){
+				   if(activityCompletionStatus.getStatus()!=1){
 				   log.info("验证成功,提升算力！");
-				   log.info(userNameSet.toString());
-			        String userUuid = ShiroUtils.getUserUuid();
 			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
 			        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			            //powerService.saveOAEnergyBall(userUuid,now);
@@ -125,7 +127,6 @@ public class ComputingPowerController {
 			            powerService.updateOAEnergyWallet(userUuid);
 			            //一个验证码只能使用一次
 			            log.info(name);
-			            userNameSet.add(name);
 			            return new ResponseEntity.Builder<Integer>()
 			                    .setData(0)
 			                    .setErrorCode(ErrorCode.SUCCESS)
@@ -207,11 +208,7 @@ public class ComputingPowerController {
 		}else {
 			errorCode = ErrorCode.IS_BACKUPS_WALLET;
 			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
-		}
-		
-		
-		
-		
+		}	
 	}
 	
 	
@@ -225,7 +222,6 @@ public class ComputingPowerController {
         //List<EnergyChoice> answers=energytopic.getAnswers();
 //        energyTopicMapper.insertQuestions(energyQuestion);
 //        energyTopicMapper.insertAnswers(answers);
-		return null;
-				
+		return null;				
 	}
 }
