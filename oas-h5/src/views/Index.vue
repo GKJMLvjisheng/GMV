@@ -93,8 +93,7 @@
         </ul>
       </div>
     </div>
-    <div v-if="isShowNewsTip" class="news-tips">Loading...</div>
-    <div v-if="isShowNoNews" class="news-tips">No more message</div>
+    <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <!-- OASES咨询 End -->
     <!-- 底部 Start -->
     <div class="bottom">
@@ -140,7 +139,6 @@ export default {
       isShowSuccessMsg: false,
       isShowToast: false,
       isShowNewsTip: false,
-      isShowNoNews: false,
       energyBallList:[],
       currentEnergy:0,
       currentPower:0,
@@ -190,8 +188,7 @@ export default {
         //console.log(data);
         this.newsTotal=data.data.total;
         if(data.msg=="无更多数据"){
-          this.isShowNewsTip=false;
-          this.isShowNoNews=true;    
+          this.isShowNewsTip=false;  
           this.articleList=[...this.articleList,...data.data.rows];
         } 
         else
@@ -217,7 +214,14 @@ export default {
         setTimeout(() => {
           done()
         },1000)
-      }      
+      }
+      else{
+        setTimeout(() => {
+            done(true)
+            this.infinite = undefined
+          }, 500)
+          return;
+      }   
     },
 
     // 签到按钮点击事件

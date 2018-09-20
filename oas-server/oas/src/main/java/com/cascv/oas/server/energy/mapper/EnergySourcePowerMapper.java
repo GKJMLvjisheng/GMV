@@ -12,6 +12,9 @@ public interface EnergySourcePowerMapper {
     BigDecimal queryPowerSingle(@Param("sourceCode")Integer sourceCode);
     List<ActivityResult> selectByUserUuid(@Param("userUuid")String userUuid);
     ActivityResult selectStatusByUserUuid(@Param("userUuid")String userUuid);
+    
+    
     Integer insertActivity(ActivityCompletionStatus activityCompletionStatus);
     Integer update(ActivityCompletionStatus activityCompletionStatus);
+    ActivityCompletionStatus selectACSByUserUuid(@Param("userUuid")String userUuid);
 }

@@ -1,4 +1,4 @@
-package com.cascv.oas.server.energy.model;
+package com.cascv.oas.server.energy.model.QAModel;
 
 import lombok.Getter;
 import lombok.Setter;
