@@ -72,9 +72,14 @@ public class ComputingPowerController {
 		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
 		Integer SumUserInvited,SumPowerPromoted;
 		Integer inviteCode=userModel.getInviteCode();
-		
-		return null;
-		
+		SumUserInvited=10;
+		SumPowerPromoted=150;
+		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
+		queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
+		return new ResponseEntity.Builder<QueryInvitePowerInfo>()
+                .setData(queryInvitePowerInfo)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
 	}
 
 	@PostMapping(value = "/inquirePower")
