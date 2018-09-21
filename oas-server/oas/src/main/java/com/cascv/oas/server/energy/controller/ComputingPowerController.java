@@ -348,6 +348,7 @@ public class ComputingPowerController {
 			              .setData(1).setErrorCode(ErrorCode.SUCCESS).build();
 			     }			
 	  }else{
+		        log.info("还没做过这道题");
 			return new ResponseEntity.Builder<Integer>()
 		              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		   }	    
