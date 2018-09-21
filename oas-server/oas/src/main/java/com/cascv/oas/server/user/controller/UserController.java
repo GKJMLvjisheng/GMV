@@ -200,7 +200,7 @@ public class UserController {
     	    			log.info("无三级用户！");
     	    		}
     	        return new ResponseEntity.Builder<Integer>()
-    	                .setData(0)
+    	                .setData(1)
     	                .setErrorCode(ErrorCode.SUCCESS)
     	                .build();
     	    	
@@ -208,7 +208,7 @@ public class UserController {
     	    	log.info("用户不是邀请用户，自主注册用户！");
 				return new ResponseEntity.Builder<Integer>()
 		                   .setData(1)
-		                   .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                   .setErrorCode(ErrorCode.SUCCESS)
 		                   .build();
     	    }
     }

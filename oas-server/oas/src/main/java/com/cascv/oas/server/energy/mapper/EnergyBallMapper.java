@@ -38,4 +38,6 @@ public interface EnergyBallMapper {
                           @Param("timeUpdated") String timeUpdated);
 
     int insertEnergyBall(EnergyBall energyBall);
+    
+    Integer countByUserUuidAndPowerSource(@Param("userUuid") String userUuid,@Param("powerSource") Integer powerSource);
 }
