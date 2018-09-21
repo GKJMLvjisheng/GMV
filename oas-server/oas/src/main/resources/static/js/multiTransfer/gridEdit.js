@@ -154,6 +154,8 @@ $(function ()
          		    	 
          		    	 var len=optionData.length;
          		    	 var objNetwork=document.getElementById("network");
+         		    	
+                   // 将option增加到下拉列表中。
          		    	 for(var i =0;i<len;i++){
          		    		  //设置下拉列表中的值的属性
                             var option = document.createElement("option");
@@ -161,8 +163,9 @@ $(function ()
                                
                                 option.text= optionData[i];
                             //将option增加到下拉列表中。
-                                objNetwork.options.add(option);
+                                objNetwork.options.add(option); 
                             	  }
+         		    	$("#network option[value='ropsten']").prop("selected","selected");//根据值让option选中
                           }
          		     else {
          		    	 alert(res.message);

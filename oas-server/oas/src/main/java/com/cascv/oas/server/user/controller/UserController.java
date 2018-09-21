@@ -197,8 +197,7 @@ public class UserController {
 	  info.put("birthday", userModel.getBirthday());
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
-	  String fullLink = mediaServer.getImageHost() + userModel.getProfile();
-	  info.put("profile", fullLink);
+	  info.put("profile", userModel.getProfile());
 	  log.info("****end****");
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  

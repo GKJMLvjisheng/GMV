@@ -220,7 +220,7 @@ function refreshUserInfo(){
 	    	  
 	          var userName=res.data.name;
 	          var userProfile=res.data.profile;
-	         
+	         //alert(userProfile);
 	          var userNickname=res.data.nickname;
 	          var userGender=res.data.gender;
 	          var userAddress=res.data.address;
