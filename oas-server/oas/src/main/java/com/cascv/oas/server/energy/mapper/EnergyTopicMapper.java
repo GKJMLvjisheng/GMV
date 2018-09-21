@@ -1,25 +1,21 @@
 package com.cascv.oas.server.energy.mapper;
 
-import java.util.List;
-import org.springframework.stereotype.Component;
 
-import com.cascv.oas.server.energy.model.QAModel.EnergyChoice;
-import com.cascv.oas.server.energy.model.QAModel.EnergyQuestion;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
+import com.cascv.oas.server.energy.model.EnergyTopicModel;
+
 
 
 
 
 @Component
 public interface EnergyTopicMapper {
-	 Integer insertQuestions(EnergyQuestion energyQuestion);
-
-	 Integer insertAnswers(List<EnergyChoice> answers);
-	 
-//	 Integer updateNews(NewsModel newsModel);
-//	 
-//	 List<NewsModel> selectAllNews();	 
-//	 
-//	 List<NewsModel> selectPage(@Param("offset") Integer offset, @Param("limit") Integer limit);
-	 
+	 Integer insertTopic(EnergyTopicModel energyTopicModel);
+	 Integer deleteTopic(Integer topicId);
+	 Integer updateTopic(EnergyTopicModel energyTopicModel);
+	 List<EnergyTopicModel> selectAllTopic();	 
+	 List<EnergyTopicModel> selectPage(@Param("offset") Integer offset, @Param("limit") Integer limit); 
      Integer countTotal();
 }
