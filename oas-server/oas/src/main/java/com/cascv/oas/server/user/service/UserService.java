@@ -21,8 +21,7 @@ public class UserService {
   private UserModelMapper userModelMapper;
 	
   public UserModel findUserByName(String name){
-	  //System.out.println(name);
-    UserModel userModel = userModelMapper.selectByName(name); 
+    UserModel userModel = userModelMapper.selectByName(name);
     return userModel;
   }
 
