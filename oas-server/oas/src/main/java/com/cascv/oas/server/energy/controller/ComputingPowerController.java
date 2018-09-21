@@ -1,9 +1,10 @@
 package com.cascv.oas.server.energy.controller;
 
-import java.util.HashSet;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,16 +15,21 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
+import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
+import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
+import com.cascv.oas.server.energy.model.EnergyTopicModel;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
+import com.cascv.oas.server.energy.vo.ActivityResult;
+import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
-import com.cascv.oas.server.energy.vo.InviteUserInfo;
+import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
-import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.vo.IdenCodeDomain;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,47 +40,46 @@ import lombok.extern.slf4j.Slf4j;
 public class ComputingPowerController {
 	
 	@Autowired
-    private EnergyService energyService;
+    private UserService userService;
 	@Autowired
-	private UserService userService;
-	
+    private EnergyService energyService;
+
+	@Autowired
     private PowerService powerService;
 	@Autowired
-	private WechatService wechatService;
-	Set<String> userNameSet=new HashSet();
+	private EnergyTopicMapper energyTopicMapper;
+	@Autowired
+	private EnergySourcePowerMapper energySourcePowerMapper;
 	
-	@PostMapping(value = "/promotePowerByFriendsShared")
+    ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   
+	
+	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
-    public ResponseEntity<?> promotePowerByFriendsShared(@RequestBody InviteUserInfo inviteUserInfo) {
-		UserModel userModel =new UserModel();
-		Integer inviteFrom=inviteUserInfo.getInviteFrom();
-		//查询邀请用户的上一级userModel
-		userModel=userService.findUserByInviteCode(inviteFrom);
-		
-		if(inviteFrom!=0) {
-			//查询邀请用户的上一级用户的Uuid
-			String userUuid=userModel.getUuid();
-			log.info("userUuid={}",userUuid);
-			//插入上级用户的power变化
-			energyService.saveCheckinEnergyBall(userUuid);
-			
-			
-			
-		}else {
-			log.info("用户是自主注册用户，无人邀请");
-		}
-		
-		
-		return null;
-		
+    public ResponseEntity<?> inquirePowerActivityStatus(){
+		List<ActivityResult> activityResult = powerService.searchActivityStatus(ShiroUtils.getUserUuid());
+		ActivityResultList activityResultList = new ActivityResultList();
+		activityResultList.setActivityResultList(activityResult);
+		return new ResponseEntity.Builder<ActivityResultList>()
+				.setData(activityResultList)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
 	}
-	
+		
 	@PostMapping(value = "/inqureInviteStatistical")
     @ResponseBody
     public ResponseEntity<?> inqureInviteStatistical() {
-		
-		return null;
-		
+		UserModel userModel=ShiroUtils.getUser();
+		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
+		Integer SumUserInvited,SumPowerPromoted;
+		Integer inviteCode=userModel.getInviteCode();
+		SumUserInvited=10;
+		SumPowerPromoted=150;
+		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
+		queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
+		return new ResponseEntity.Builder<QueryInvitePowerInfo>()
+                .setData(queryInvitePowerInfo)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
 	}
 
 	@PostMapping(value = "/inquirePower")
@@ -94,30 +99,44 @@ public class ComputingPowerController {
         }
     }
 
-	@PostMapping(value = "/promotePowerByOfficialAccount")
+	@PostMapping(value = "/promotePowerByWechatAccount")
     @ResponseBody
     public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
 	 		   
-		   Map<String,Object> userInfo=wechatService.inquireUserInfo();
-		   String name=ShiroUtils.getUser().getName();
-//		   Integer identifyCode=userService.findUserByName(name).getIdentifyCode();		   
-		   log.info(userNameSet.toString());
-		   String idenCode=code.getIdenCode();
-		   if(code!=null&&userInfo.get(name)!=null){
-			   if(userInfo.get(name).equals(idenCode)){
-				   if(!userNameSet.contains(name)){
+		    String name=ShiroUtils.getUser().getName();	   
+		    String idenCode=code.getIdenCode();
+		   	String userUuid=ShiroUtils.getUserUuid();
+		   	try{
+		   		if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+	        	log.info("activityCompletionStatus is not null");
+	          }else {
+	        	  activityCompletionStatus=null;
+	        	  log.info("next");
+	                }
+		   		}catch(Exception e) {
+		   			log.info(e.getMessage());
+		   			e.getStackTrace();
+		   		}	   	
+		   	
+		   	UserModel userModel=new UserModel();
+		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
+		   	log.info(idenCode);
+		   if(code!=null&&activityCompletionStatus!=null){
+			   if(userModel.getIdentifyCode().toString().equals(idenCode)){
+				   if(activityCompletionStatus.getStatus()!=1){
 				   log.info("验证成功,提升算力！");
-				   log.info(userNameSet.toString());
-			        String userUuid = ShiroUtils.getUserUuid();
 			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
 			        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			            //powerService.saveOAEnergyBall(userUuid,now);
 			            powerService.saveOAEnergyRecord(userUuid,now);
 			            energyOAResult = powerService.getOAEnergy();			      
 			            powerService.updateOAEnergyWallet(userUuid);
+			            activityCompletionStatus.setStatus(1);
+			            activityCompletionStatus.setUserUuid(userUuid);
+			            energySourcePowerMapper.updateStatus(activityCompletionStatus);
 			            //一个验证码只能使用一次
 			            log.info(name);
-			            userNameSet.add(name);
 			            return new ResponseEntity.Builder<Integer>()
 			                    .setData(0)
 			                    .setErrorCode(ErrorCode.SUCCESS)
@@ -166,7 +185,7 @@ public class ComputingPowerController {
         else 
         	offset = 0;
         
-        List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyService
+        List<EnergyPowerChangeDetail> energyPowerChangeDetailList = powerService
         		.searchEnergyPowerChange(ShiroUtils.getUserUuid(), offset, limit);
      
 		Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());                
@@ -188,23 +207,85 @@ public class ComputingPowerController {
     @ResponseBody
 	public ResponseEntity<?> backupsWallet(){
 		
+		String userUuid = ShiroUtils.getUserUuid();
+		ErrorCode errorCode = ErrorCode.SUCCESS;
 		
-		
-		return null;
-		
-		
+		if(powerService.isBackupsWallet(userUuid) == 0) {
+			//do backupsWallet
+			
+			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
+			
+		}else {
+			errorCode = ErrorCode.IS_BACKUPS_WALLET;
+			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
+
+		}		
+
 	}
-	
-	
-	@PostMapping(value = "/addQuestion")
+		
+	@PostMapping(value = "/addTopic")
     @ResponseBody
-	public ResponseEntity<?> addQuestion(){
-		
-		
-		
-		return null;
-		
-		
+	public ResponseEntity<?> addTopic(EnergyTopicModel energytopic){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		log.info("***Start***");
+		EnergyTopicModel energyTopicModel = new EnergyTopicModel();	
+		energyTopicModel.setQuestion(energytopic.getQuestion());
+		energyTopicModel.setChoiceA(energytopic.getChoiceA());
+		energyTopicModel.setChoiceB(energytopic.getChoiceB());
+		energyTopicModel.setChoiceC(energytopic.getChoiceC());
+		energyTopicModel.setChoiceRight(energytopic.getChoiceRight()); 
+		energyTopicModel.setCreated(now);
+		energyTopicMapper.insertTopic(energyTopicModel);
+		  return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();				
 	}
+	
+	@PostMapping(value = "/deleteTopic")
+    @ResponseBody
+	public ResponseEntity<?> deleteTopic(@RequestBody EnergyTopicModel energytopic){
+		Integer topicId=energytopic.getTopicId();
+		log.info("topicId={}",topicId);
+		
+		energyTopicMapper.deleteTopic(topicId);
+		
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+						
+	}
+	@PostMapping(value = "/updateTopic")
+    @ResponseBody
+	public ResponseEntity<?> updateTopic(EnergyTopicModel energytopic){
+		log.info("--------start--------");
+		log.info("topicId{}",energytopic.getTopicId());
+		EnergyTopicModel energyTopicModel = new EnergyTopicModel();		
+		energyTopicModel.setTopicId(energytopic.getTopicId());
+		energyTopicModel.setQuestion(energytopic.getQuestion());
+		energyTopicModel.setChoiceA(energytopic.getChoiceA());
+		energyTopicModel.setChoiceB(energytopic.getChoiceB());
+		energyTopicModel.setChoiceC(energytopic.getChoiceC());
+		energyTopicModel.setChoiceRight(energytopic.getChoiceRight());  
+		energyTopicMapper.updateTopic(energyTopicModel);
+	    return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();				
+	}
+	@PostMapping(value = "/selectAllTopic")
+    @ResponseBody
+	public ResponseEntity<?> selectAllTopic(){
+		 Map<String,Object> info=new HashMap<>();
+		  List<EnergyTopicModel> list=energyTopicMapper.selectAllTopic();
+		  int length=list.size();
+		  if(length>0) {
+		     info.put("list", list);
+		  }else
+		  {
+		    log.info("no news in mysql");
+		  }
+		    return new ResponseEntity.Builder<Map<String, Object>>()
+		              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+		  }
 
 }

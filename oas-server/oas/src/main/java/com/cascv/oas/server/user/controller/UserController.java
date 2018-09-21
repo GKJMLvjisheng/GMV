@@ -30,12 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.service.PowerService;
+import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserModel;
@@ -46,7 +50,6 @@ import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.AuthenticationUtils;
-import com.cascv.oas.server.utils.FileUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
@@ -66,6 +69,8 @@ public class UserController {
   @Autowired
   private MediaServer mediaServer;
   @Autowired
+  private PowerService powerService;
+  @Autowired
 	private EthWalletService ethWalletService;
 	
 	@Autowired
@@ -77,11 +82,12 @@ public class UserController {
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
+	@WriteLog(value="Login")
 	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo) {
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
-      LoginResult loginResult = new LoginResult();
+        LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
       try {
           subject.login(token);
@@ -108,6 +114,7 @@ public class UserController {
 	@PostMapping(value="/register")
 	@ResponseBody
 	@Transactional
+	@WriteLog(value="Register")
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 
 	  String password = userModel.getPassword();
@@ -132,6 +139,7 @@ public class UserController {
 	@PostMapping(value="/destroy")
 	@ResponseBody
 	@Transactional
+	@WriteLog(value="Destroy")
 	public ResponseEntity<?> destroy() {
 		UserModel userModel = ShiroUtils.getUser();
 		String uuid = userModel.getUuid();
@@ -145,21 +153,65 @@ public class UserController {
 
   @PostMapping(value="/registerConfirm")
   @ResponseBody
-//  @Transactional
+  @WriteLog(value="RegisterConfirm")
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
+	  
+	  //根据前端返回uuid找到新注册用户
 	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
+	  
     if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
+    		//用户注册失败
 			String uuid = userModel.getUuid();
 			System.out.println(uuid);
 			ethWalletService.destroy(uuid);
 			userWalletService.destroy(uuid);
 			energyPointService.destroy(uuid);
-      userService.deleteUserByUuid(uuid);
+            userService.deleteUserByUuid(uuid);
+            //注册未完成
+			return new ResponseEntity.Builder<Integer>()
+	                   .setData(2)
+	                   .setErrorCode(ErrorCode.GENERAL_ERROR)
+	                   .build();
+    }else {
+    		//用户注册成功
+    	    Integer inviteFrom=userModel.getInviteFrom();
+    	    log.info("inviteFrom={}",inviteFrom);
+    	    if(inviteFrom!=0 && inviteFrom!=null) {
+    	    	UserModel userModelInvited =userService.findUserByInviteCode(inviteFrom);
+    	    	String UuidInvited=userModelInvited.getUuid();
+    	    	log.info("UuidInvited={}",UuidInvited);
+    	    	EnergyFriendsSharedResult energyFsResult = new EnergyFriendsSharedResult();
+    	    	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+    	    	powerService.saveFsEnergyBall(UuidInvited, now);
+    	    	energyFsResult=powerService.getFsEnergy();
+    	    	powerService.updateFsEnergyWallet(UuidInvited);
+    	    	
+    	    	//三级用户
+    	    	Integer inviteFromThreeLevel=userModelInvited.getInviteFrom();
+    	    	log.info("inviteFromThreeLevel={}",inviteFromThreeLevel);
+    	    		if(inviteFromThreeLevel!=0 && inviteFromThreeLevel!=null) {
+    	    			UserModel userModelThreeLevel=userService.findUserByInviteCode(inviteFromThreeLevel);
+    	    			String UuidThreeLevel=userModelThreeLevel.getUuid();
+    	    			log.info("UuidThreeLevel={}",UuidThreeLevel);
+    	    			powerService.saveFsEnergyBall(UuidThreeLevel, now);
+    	    	    	energyFsResult=powerService.getFsEnergy();
+    	    	    	powerService.updateFsEnergyWallet(UuidThreeLevel);
+    	    		}else {
+    	    			log.info("无三级用户！");
+    	    		}
+    	        return new ResponseEntity.Builder<Integer>()
+    	                .setData(0)
+    	                .setErrorCode(ErrorCode.SUCCESS)
+    	                .build();
+    	    	
+    	    }else {
+    	    	log.info("用户不是邀请用户，自主注册用户！");
+				return new ResponseEntity.Builder<Integer>()
+		                   .setData(1)
+		                   .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                   .build();
+    	    }
     }
-    return new ResponseEntity.Builder<Integer>()
-          .setData(0)
-          .setErrorCode(ErrorCode.SUCCESS)
-          .build();
 	}
 	
 	
@@ -210,6 +262,7 @@ public class UserController {
 	 */
 	@PostMapping(value="/updateUserInfo")
 	@ResponseBody
+	@WriteLog(value="UpdateUserInfo")
 	public ResponseEntity<?> updateUserInfo(@RequestBody updateUserInfo userInfo){
 	  Map<String,String> info = new HashMap<>();
 	  UserModel userModel=new UserModel();   
@@ -249,6 +302,7 @@ public class UserController {
 	 * Date:2018.09.04
 	 */
 	@PostMapping(value="/upLoadImg")
+	@WriteLog(value="UpLoadImg")
 	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file)
 	{   
 		 String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
@@ -288,7 +342,7 @@ public class UserController {
 	    	ShiroUtils.setUser(usermodel);
 	        //图片存储的相对路径
 	    	String fullLink = mediaServer.getImageHost() + proUrl;
-	    	info.put("ImageUrl",fullLink);
+	    	info.put("profile",fullLink);
 	    	log.info("UpLoadSuccuss-->");
 	        return new ResponseEntity.Builder<Map<String, String>>()
 		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
@@ -312,6 +366,7 @@ public class UserController {
 	 * Date:2018.09.04
 	 */
 	@RequestMapping(value = "/resetMobile", method = RequestMethod.POST)
+	@WriteLog(value="ResetMobile")
 	public ResponseEntity<?> resetMobile(@RequestBody UserModel userModel) throws Exception {
     Map<String,String> info=new HashMap<>();
 	String name = ShiroUtils.getUser().getName();
@@ -348,6 +403,7 @@ public class UserController {
 	 * Date:2018.09.04
 	 */
 	@RequestMapping(value = "/resetMail", method = RequestMethod.POST)
+	@WriteLog(value="ResetMail")
 	public ResponseEntity<?> resetMail(@RequestBody UserModel userModel) throws Exception {
 
     Map<String,String> info=new HashMap<>();
@@ -380,6 +436,7 @@ public class UserController {
 	 * Date:2018.09.04
 	 */
 	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
+	@WriteLog(value="SendMobile")
 	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
     Map<String,Boolean> info=new HashMap<>();
 	
@@ -429,6 +486,7 @@ public class UserController {
 	 */	
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
+	@WriteLog(value="MobileCheckCode")
 	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
 		log.info("--------mobileCheckCode   start--------");
 
@@ -458,6 +516,7 @@ public class UserController {
 	
     @RequestMapping(value="/checkPassword",method = RequestMethod.POST)
     @ResponseBody
+    @WriteLog(value="CheckPassword")
     public ResponseEntity<?> checkPassword(@RequestBody UserModel userModel) {
        log.info("--------doCheckPassword start--------");
        Map<String,Boolean> info=new HashMap<>();
@@ -482,6 +541,7 @@ public class UserController {
     }
 	@PostMapping(value = "/sendMail")
 	@ResponseBody
+	@WriteLog(value="SendMail")
 	public ResponseEntity<?> sendMail(@RequestBody UserModel userModel)throws ServletException, IOException {
  
 		log.info("-----------sendMail start---------------");
@@ -552,6 +612,7 @@ public class UserController {
 	// 对比前端输入验证码与邮箱中值是否一致
 	@PostMapping(value = "/mailCheckCode")
 	@ResponseBody
+	@WriteLog(value="MailCheckCode")
 	public ResponseEntity<?> mailCheckCode(@RequestBody AuthCode authCode) throws Exception {
 		log.info("--------mailCheckCode start--------");
 
@@ -577,6 +638,7 @@ public class UserController {
 	
     @RequestMapping(value="/CheckUserEmail",method = RequestMethod.POST)
     @ResponseBody
+    @WriteLog(value="CheckUserEmail")
     public ResponseEntity<?> CheckUserEmail(@RequestBody UserModel userModel) {
        log.info("*********start**********");
        String email= userModel.getEmail();
@@ -605,6 +667,7 @@ public class UserController {
 }
     @RequestMapping(value="/CheckUserMobile",method = RequestMethod.POST)
     @ResponseBody
+    @WriteLog(value="CheckUserMobile")
     public ResponseEntity<?> CheckUserMobile(@RequestBody UserModel userModel) {
        log.info("*********CheckUserMobile start**********");
        String mobile= userModel.getMobile();

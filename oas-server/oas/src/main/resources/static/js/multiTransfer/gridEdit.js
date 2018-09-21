@@ -58,6 +58,7 @@ $(function ()
                      //将option增加到下拉列表中。
                      selections.options.add(option);
                  }
+		    	
 			     
 		     } else {
 		    	 alert(res.message);

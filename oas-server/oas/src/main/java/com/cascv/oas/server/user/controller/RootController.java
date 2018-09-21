@@ -79,9 +79,11 @@ public class RootController {
 	      return "login";  }
   
 	  @GetMapping(value="/main")
-	  public String main() {
+	  public String main(){
 	    
 	        return "main";
-  }
-   }
+     }
+	  
+
+}
 

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/QA/QAManage.js}"></script>
+	<script type="text/javascript" th:src="@{/js/QA/QAManageTable.js}"></script>	
+   
+   
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
+	
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+
+		<form class="form-inline" >
+			<!-- 工具栏 -->
+			<div id="toolbar">
+
+					<input type="button" value="新增问题" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addQuestionModal"></input>
+<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			</div>
+		</form>
+		
+		<div class = "container">
+			<table id="questionGrid"></table>
+		</div>
+
+	</section>
+
+	<!-- 新增问题的模态框-->
+
+	<div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">新增问题</h3>
+				</div>
+
+				<div class="modal-body">
+
+					<form id="addQuestionForm" action="/Question/addQuestion" method="post" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
+							<div class="col-sm-8">
+								<textarea name="question" class="form-control" id="question" required="required"  placeholder="请输入问题" /></textarea>
+								<span id="msg_question"></span>
+							</div>						
+						</div>
+
+						
+						<div class="form-group">
+							<label for="choiceContent1" class="col-sm-3 control-label">选项A：</label>
+							<div class="col-sm-8">
+ 								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" placeholder="请输入选项A"/></textarea>
+ 								<span id="msg_choiceA"></span> 				
+							</div>
+						</div>
+						
+						
+						<div class="form-group">
+							<label for="choiceB" class="col-sm-3 control-label">选项B：</label>
+							<div class="col-sm-8">
+								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" placeholder="请输入选项B"/></textarea>
+								<span id="choiceB_span"></span>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceC" class="col-sm-3 control-label">选项C：</label>
+							<div class="col-sm-8">
+								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" placeholder="请输入选项C"/></textarea>
+								<span id="choiceC_span"></span>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceRight" class="col-sm-3 control-label">答案：</label>
+							<div class="col-sm-8">
+								<textarea name="choiceRight" class="col-sm-4 form-control" id="choiceRight" required="required" placeholder="请输入答案"/></textarea>
+								<span id="choiceRight_span"></span>
+							</div>
+						</div>
+						
+					
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="conf" class="btn btn-default" onclick="addQuestion()">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+			
+	
+	<!-- 查看新闻的模态框 -->
+    <div class="modal fade" id="qureyQuestionModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">查看问题</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="qureyQuestionForm" action="/question/qureyQuestion" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="QtopicId" id="QtopicId">
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">问题：</label>
+							<div class="col-sm-8">
+								<textarea name="Qquestion" class="form-control" id="Qquestion" required="required"  readonly="readonly" onblur="EcheckQuestion()" /></textarea>
+								<span id="msg_Qquestion"></span> 
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceA" class="col-sm-3 control-label">选项A：</label>
+							<div class="col-sm-8">
+								<textarea name="QchoiceA" class="form-control" id="QchoiceA" readonly="readonly" required="required" /></textarea>
+								<span id="msg_QchoiceA"></span> 
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceB" class="col-sm-3 control-label">选项B：</label>
+							<div class="col-sm-8">
+								<textarea name="QchoiceB" class="form-control" id="QchoiceB" readonly="readonly" required="required"/></textarea>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="choiceC" class="col-sm-3 control-label">选项C：</label>
+							<div class="col-sm-8">
+								<textarea name="QchoiceC" class="form-control" id="QchoiceC" readonly="readonly" required="required"/></textarea>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceRight" class="col-sm-3 control-label">答案：</label>
+							<div class="col-sm-8">
+								<textarea name="QchoiceRight" class="form-control" id="QchoiceRight" readonly="readonly" required="required"/></textarea>
+							</div>						
+						</div>
+																			
+					</form>
+				</div>						
+			</div>					
+		</div>
+	</div>
+
+	<!-- 编辑新闻的模态框 -->
+    <div class="modal fade" id="updateQuestionModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">修改问题</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateQuestionForm" action="/question/updatedQuestion" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EtopicId" id="EtopicId">
+						<div class="form-group">
+							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
+							<div class="col-sm-8">
+								<textarea name="Equestion" class="form-control" id="Equestion" required="required"  onblur="EcheckQuestion()" /></textarea>
+								<span id="msg_EquestionContent"></span> 
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceContent1" class="col-sm-3 control-label">选项A：</label>
+							<div class="col-sm-8">
+								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" /></textarea>
+								<span id="msg_EchoiceA"></span> 
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceB" class="col-sm-3 control-label">选项B：</label>
+							<div class="col-sm-8">
+								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required"/></textarea>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="choiceC" class="col-sm-3 control-label">选项C：</label>
+							<div class="col-sm-8">
+								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required"/></textarea>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="choiceRight" class="col-sm-3 control-label">答案：</label>
+							<div class="col-sm-8">
+								<textarea name="EchoiceRight" class="form-control" id="EchoiceRight" required="required"/></textarea>
+							</div>						
+						</div>
+																			
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveQuestion" aria-label="Close" class="btn btn-default" onclick="updateQuestion()"><span aria-hidden="true">保存</span></button>
+				</div>
+						
+			</div>
+					
+		</div>
+	</div>
+			
+</body>
+
+</html>
+

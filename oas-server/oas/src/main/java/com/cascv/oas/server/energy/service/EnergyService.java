@@ -571,45 +571,28 @@ public class EnergyService {
         		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue()); 
      		   if(energyChangeDetail.getValue() != 0) {
     			   energyList.add(energyChangeDetail);
-       		}
+       		   }
         	}
-        	return energyChangeDetailList;
+        	return energyList;
     	}
     }
     	else {
     		List<EnergyChangeDetail> energyChangeDetailList = energyTradeRecordMapper.selectByAllPage(userUuid, offset, limit);
     		List<EnergyChangeDetail> energyList = new ArrayList<>();
-    	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
-    		 if(energyChangeDetail.getInOrOut()==0){
-    		 energyChangeDetail.setActivity("积分兑换");
-			 energyChangeDetail.setCategory("OASES redeem");
-    		   //.intValue()方法是把Integer转为Int?
-    		 energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
-   		   if(energyChangeDetail.getValue() != 0) {
-  			   energyList.add(energyChangeDetail);
-     		}
-    	     }
+    	    for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
+	    		 //if(energyChangeDetail.getInOrOut()==0){
+	    		 energyChangeDetail.setActivity("积分兑换");
+				 energyChangeDetail.setCategory("OASES redeem");
+	    		   //.intValue()方法是把Integer转为Int?
+	    		 energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
+	   		   if(energyChangeDetail.getValue() != 0) {
+	  			   energyList.add(energyChangeDetail);
+	     		}
+    	     //}
     	   }
-    	    return energyChangeDetailList;
+    	    return energyList;
     	}
-    }
-    
-    public List<EnergyPowerChangeDetail> searchEnergyPowerChange(String userUuid, Integer offset, Integer limit){
-    	
-    	List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyTradeRecordMapper.selectPowerByPage(userUuid, offset, limit);
-    	List<EnergyPowerChangeDetail> powerList = new ArrayList<>();
-    	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
-    		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange().intValue());
-    		
-    		if(energyPowerChangeDetail.getValue() != 0) {
-    			powerList.add(energyPowerChangeDetail);
-    		}
-    	}
-    	
-		return powerList;
-    	
-    }
- 
+    } 
     
 
     public static void main(String[] args) {

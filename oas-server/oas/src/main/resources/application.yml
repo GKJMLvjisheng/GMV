@@ -69,7 +69,7 @@ media:
 
 wallet:
   providers:
-    ropstrn: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
+    ropsten: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
     mainnet: "https://mainnet.infura.io/16897256b61d42689d088039a362a61b"
     kovan:   "https://kovan.infura.io/16897256b61d42689d088039a362a61b"
     rinkeby: "https://rinkeby.infura.io/16897256b61d42689d088039a362a61b"

@@ -95,8 +95,7 @@
         </ul>
       </div>
     </div>
-    <div v-if="isShowNewsTip" class="news-tips">Loading...</div>
-    <div v-if="isShowNoNews" class="news-tips">No more message</div>
+    <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <!-- OASES咨询 End -->
     <!-- 底部 Start -->
     <div class="bottom">
@@ -143,11 +142,11 @@ export default {
       isShowSuccessMsg: false,
       isShowToast: false,
       isShowNewsTip: false,
-      isShowNoNews: false,
       energyBallList:[],
       currentEnergy:0,
       currentPower:0,
       page:1,
+      newsTotal:1,
       articleList:[],
       analysis:'',
       analysisCount:0,
@@ -191,10 +190,10 @@ export default {
       formData.append("pageSize", "3");
       this.$axios.post('/energyPoint/inquireNews',formData)
       .then(({data:{data}}) =>{
-        //console.log(data.msg);
+        //console.log(data);
+        this.newsTotal=data.data.total;
         if(data.msg=="无更多数据"){
-          this.isShowNewsTip=false;
-          this.isShowNoNews=true;    
+          this.isShowNewsTip=false;  
           this.articleList=[...this.articleList,...data.data.rows];
         } 
         else
@@ -207,16 +206,27 @@ export default {
       })
     },   
 
-     //上拉加载新闻
+   //上拉加载新闻
    infinite (done) { 
       this.page+=1
       var page=this.page
-      //alert(page);
-      this.isShowNewsTip=true                     
-      this.loadArticleList(page)  
-      setTimeout(() => {
-        done()
-      },1000)
+      var newsTotal=this.newsTotal     
+      var pageTotal=Math.ceil(newsTotal/3)
+      //alert(pageTotal)
+      if(page<=pageTotal){
+        this.isShowNewsTip=true                     
+        this.loadArticleList(page)  
+        setTimeout(() => {
+          done()
+        },1000)
+      }
+      else{
+        setTimeout(() => {
+            done(true)
+            this.infinite = undefined
+          }, 500)
+          return;
+      }   
     },
 
     // 签到按钮点击事件
@@ -584,14 +594,14 @@ header {
     a {
         display: flex;
         justify-content: space-between;
-        height: 352px;
+        height: 280px;
         padding: 40px 0;
         border-bottom: 1px solid #ddd;    
         word-wrap:break-word;
         word-break:break-all;
       img {
-        width: 448px;
-        height: 256px;
+        width: 248px;
+        height: 156px;
         margin-left: 26px;
       }
       .left {
@@ -618,7 +628,7 @@ header {
             flex: 1;
             font-size: 24px;
             line-height: 34px;
-            margin-top: 40px;
+            margin-top: 30px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
