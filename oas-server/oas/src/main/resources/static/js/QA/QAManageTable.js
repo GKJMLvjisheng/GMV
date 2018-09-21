@@ -22,11 +22,11 @@ function initQuestionGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"questionId",//Indicate an unique identifier for each row
+		uniqueId:"TopicId",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
-		sortName: 'questionId', // 要排序的字段
+		sortName: 'TopicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
@@ -34,8 +34,7 @@ function initQuestionGrid(data) {
 
 			title : "问题",
 
-			//field : "questionContent",
-			field : "newsTitle",
+			field : "question",
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
@@ -45,7 +44,7 @@ function initQuestionGrid(data) {
 
 			title : "A",
 
-			//field : "choiceContent1",
+			field : "choiceA",
 			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
@@ -55,8 +54,17 @@ function initQuestionGrid(data) {
 
 			title : "B",
 
-			//field : "choiceContent2",
-			field : "newsTitle",
+			field : "choiceB",
+			align: 'center',
+			valign: 'middle',
+			width:  '120px',
+
+		},
+		{
+
+			title : "C",
+
+			field : "choiceC",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
@@ -66,8 +74,7 @@ function initQuestionGrid(data) {
 
 			title : "答案",
 
-			//field : "answer",
-			field : "newsTitle",
+			field : "choiceRight",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
@@ -76,8 +83,7 @@ function initQuestionGrid(data) {
 
 			title : " 操作",
 			
-			//field : "questionId",
-			field : "newsId",
+			field : "topicId",
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
@@ -104,11 +110,12 @@ function ViewQuestionById(id){
 
 		//获取选中行的数据		
 		var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-		$('#QquestionId').val(rows.questionId);
-		$('#QquestionContent').val(rows.questionContent);
-		$('#QchoiceContent1').val(rows.choiceContent1);
-		$('#QchoiceContent2').val(rows.choiceContent2);
-		$('#Qanswer').val(rows.answer);
+		$('#QchoiceId').val(rows.choiceId);
+		$('#Qquestion').val(rows.question);
+		$('#QchoiceA').val(rows.choiceA);
+		$('#QchoiceB').val(rows.choiceB);
+		$('#QchoiceC').val(rows.choiceC);
+		$('#QchoiceRight').val(rows.choiceRight);
 		$("#qureyQuestionModal").modal("show");
 		
 
@@ -117,11 +124,12 @@ function EditQuestionById(id){
     
     //获取选中行的数据
     var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-	$('#EquestionId').val(rows.questionId);
-	$('#EquestionContent').val(rows.questionContent);
-	$('#EchoiceContent1').val(rows.choiceContent1);
-	$('#EchoiceContent2').val(rows.choiceContent2);
-	$('#Eanswer').val(rows.answer);				
+	$('#QchoiceId').val(rows.choiceId);
+		$('#Equestion').val(rows.question);
+		$('#EchoiceA').val(rows.choiceA);
+		$('#EchoiceB').val(rows.choiceB);
+		$('#EchoiceC').val(rows.choiceC);
+		$('#EchoiceRight').val(rows.choiceRight);			
     $("#updateQuestionModal").modal("show");           
   }
 
@@ -133,11 +141,11 @@ function deleteQuestionById(id)
 		  return;
 		 }
 
-	data={"questionId":id};
+	data={"choiceId":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 
-		url:"/api/v1/userCenter/deleteQuestion",
+		url:"/api/v1/computingPower/deleteTopic",
 		data: JSON.stringify(data),
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',

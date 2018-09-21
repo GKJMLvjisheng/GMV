@@ -70,8 +70,8 @@
 						<div class="form-group">
 							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
 							<div class="col-sm-8">
-								<textarea name="questionContent" class="form-control" id="questionContent" required="required"  placeholder="请输入问题" /></textarea>
-								<span id="msg_questionContent"></span>
+								<textarea name="question" class="form-control" id="question" required="required"  placeholder="请输入问题" /></textarea>
+								<span id="msg_question"></span>
 							</div>						
 						</div>
 
@@ -79,26 +79,33 @@
 						<div class="form-group">
 							<label for="choiceContent1" class="col-sm-3 control-label">选项1：</label>
 							<div class="col-sm-8">
- 								<textarea name="choiceContent1" class="col-sm-4 form-control" id="choiceContent1" required="required" placeholder="请输入选项1"/></textarea>
- 								<span id="msg_choiceContent1"></span> 				
+ 								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" placeholder="请输入选项1"/></textarea>
+ 								<span id="msg_choiceA"></span> 				
 							</div>
 						</div>
 						
 						
 						<div class="form-group">
-							<label for="choiceContent2" class="col-sm-3 control-label">选项2：</label>
+							<label for="choiceB" class="col-sm-3 control-label">选项2：</label>
 							<div class="col-sm-8">
-								<textarea name="choiceContent2" class="col-sm-4 form-control" id="choiceContent2" required="required" placeholder="请输入选项2"/></textarea>
-								<span id="choiceContent2_span"></span>
+								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" placeholder="请输入选项2"/></textarea>
+								<span id="choiceB_span"></span>
 							</div>
 						</div>
 						
+						<div class="form-group">
+							<label for="choiceC" class="col-sm-3 control-label">选项3：</label>
+							<div class="col-sm-8">
+								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" placeholder="请输入选项2"/></textarea>
+								<span id="choiceC_span"></span>
+							</div>
+						</div>
 						
 						<div class="form-group">
-							<label for="answer" class="col-sm-3 control-label">答案：</label>
+							<label for="choiceRight" class="col-sm-3 control-label">答案：</label>
 							<div class="col-sm-8">
-								<textarea name="answer" class="col-sm-4 form-control" id="answer" required="required" placeholder="请输入答案"/></textarea>
-								<span id="answer_span"></span>
+								<textarea name="choiceRight" class="col-sm-4 form-control" id="choiceRight" required="required" placeholder="请输入答案"/></textarea>
+								<span id="choiceRight_span"></span>
 							</div>
 						</div>
 						
@@ -155,34 +162,41 @@
 
 				<div class="modal-body">
 					<form id="qureyQuestionForm" action="/question/qureyQuestion" method="post" class="form-horizontal">
-						<input  style="display:none" type="hidden" name="QquestionId" id="QquestionId">
+						<input  style="display:none" type="hidden" name="QtopicId" id="QtopicId">
 						<div class="form-group">
-							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
+							<label for="question" class="col-sm-3 control-label">问题：</label>
 							<div class="col-sm-8">
-								<textarea name="QquestionContent" class="form-control" id="QquestionContent" required="required"  readonly="readonly" onblur="EcheckQuestion()" /></textarea>
-								<span id="msg_QquestionContent"></span> 
+								<textarea name="Qquestion" class="form-control" id="Qquestion" required="required"  readonly="readonly" onblur="EcheckQuestion()" /></textarea>
+								<span id="msg_Qquestion"></span> 
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="choiceContent1" class="col-sm-3 control-label">A：</label>
+							<label for="choiceA" class="col-sm-3 control-label">A：</label>
 							<div class="col-sm-8">
-								<textarea name="QchoiceContent1" class="form-control" id="QchoiceContent1" readonly="readonly" required="required" /></textarea>
-								<span id="msg_QchoiceContent1"></span> 
+								<textarea name="QchoiceA" class="form-control" id="QchoiceA" readonly="readonly" required="required" /></textarea>
+								<span id="msg_QchoiceA"></span> 
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="choiceContent2" class="col-sm-3 control-label">B：</label>
+							<label for="choiceB" class="col-sm-3 control-label">B：</label>
 							<div class="col-sm-8">
-								<textarea name="QchoiceContent2" class="form-control" id="QchoiceContent2" readonly="readonly" required="required"/></textarea>
+								<textarea name="QchoiceB" class="form-control" id="QchoiceB" readonly="readonly" required="required"/></textarea>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="choiceC" class="col-sm-3 control-label">C：</label>
+							<div class="col-sm-8">
+								<textarea name="QchoiceC" class="form-control" id="QchoiceC" readonly="readonly" required="required"/></textarea>
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="answer" class="col-sm-3 control-label">答案：</label>
+							<label for="choiceRight" class="col-sm-3 control-label">答案：</label>
 							<div class="col-sm-8">
-								<textarea name="Qanswer" class="form-control" id="Qanswer" readonly="readonly" required="required"/></textarea>
+								<textarea name="QchoiceRight" class="form-control" id="QchoiceRight" readonly="readonly" required="required"/></textarea>
 							</div>						
 						</div>
 																			
@@ -206,7 +220,7 @@
 
 				<div class="modal-body">
 					<form id="updateQuestionForm" action="/question/updatedQuestion" method="post" class="form-horizontal">
-						<input  style="display:none" type="hidden" name="EquestionId" id="EquestionId">
+						<input  style="display:none" type="hidden" name="EtopicId" id="EtopicId">
 						<div class="form-group">
 							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
 							<div class="col-sm-8">
@@ -218,22 +232,29 @@
 						<div class="form-group">
 							<label for="choiceContent1" class="col-sm-3 control-label">A：</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceContent1" class="form-control" id="EchoiceContent1" required="required" /></textarea>
-								<span id="msg_EchoiceContent1"></span> 
+								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" /></textarea>
+								<span id="msg_EchoiceA"></span> 
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="choiceContent2" class="col-sm-3 control-label">B：</label>
+							<label for="choiceB" class="col-sm-3 control-label">B：</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceContent2" class="form-control" id="EchoiceContent2" required="required"/></textarea>
+								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required"/></textarea>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="choiceC" class="col-sm-3 control-label">C：</label>
+							<div class="col-sm-8">
+								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required"/></textarea>
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="answer" class="col-sm-3 control-label">答案：</label>
+							<label for="choiceRight" class="col-sm-3 control-label">答案：</label>
 							<div class="col-sm-8">
-								<textarea name="Eanswer" class="form-control" id="Eanswer" required="required"/></textarea>
+								<textarea name="EchoiceRight" class="form-control" id="EchoiceRight" required="required"/></textarea>
 							</div>						
 						</div>
 																			
