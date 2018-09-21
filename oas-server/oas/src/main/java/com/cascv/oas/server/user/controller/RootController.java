@@ -79,9 +79,14 @@ public class RootController {
 	      return "login";  }
   
 	  @GetMapping(value="/main")
-	  public String main() {
+	  public String main(){
 	    
 	        return "main";
-  }
-   }
+     }
+	  
+//	  @GetMapping("/QA/QAManage")
+//	  public String QAManage(){
+//	        return "QA/QAManage";  
+//	 }
+}
 

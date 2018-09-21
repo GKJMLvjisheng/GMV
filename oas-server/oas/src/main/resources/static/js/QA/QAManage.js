@@ -15,7 +15,7 @@ function questionReady(){
 	var data2;
 	 $.ajax({
 		
-		url: "/api/v1/userCenter/selectAllNews",
+		url: "/api/v1/computingPower/selectAllTopic",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -40,13 +40,14 @@ function addQuestion(){
 	// select[1] = $("#choiceContent2").val();
 	//alert(JSON.stringify(select));
 	var formData = new FormData();
-	formData.append("questionContent", $("#questionContent").val());
-	formData.append("A", $("#choiceContent1").val());
-	formData.append("B", $("#choiceContent1").val());
-	formData.append("answer", $("#answer").val());
+	formData.append("question", $("#question").val());
+	formData.append("choiceA", $("#choiceA").val());
+	formData.append("choiceB", $("#choiceB").val());
+	formData.append("choiceC", $("#choiceC").val());
+	formData.append("choiceRight", $("#choiceRight").val());
 
 	$.ajax({
-		url:"/api/v1/userCenter/addQuestion",
+		url:"/api/v1/computingPower/addTopic",
 		data:formData,
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
@@ -80,14 +81,15 @@ function resetAddModal(){
 }
 
 function updateQuestion(){
-	formData.append("questionId", $("#EquestionId").val());	  	
-	formData.append("questionContent", $("#EquestionContent").val());
-	formData.append("choiceContent1", $("#EchoiceContent1").val());
-	formData.append("choiceContent2", $("#EchoiceContent2").val());
-	formData.append("answer", $("#Eanswer").val());	
+	formData.append("topicId", $("#EtopicId").val());	  	
+	formData.append("question", $("#Equestion").val());
+	formData.append("choiceA", $("#EchoiceA").val());
+	formData.append("choiceB", $("#EchoiceB").val());
+	formData.append("choiceC", $("#EchoiceC").val());
+	formData.append("choiceRight", $("#EchoiceRight").val());	
 	
 	$.ajax({
-		url:"/api/v1/userCenter/updateQuestion",
+		url:"/api/v1/computingPower/updateTopic",
 		data:formData,
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
