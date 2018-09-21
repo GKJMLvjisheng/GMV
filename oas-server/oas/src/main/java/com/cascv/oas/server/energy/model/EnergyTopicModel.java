@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 @ToString
 public class EnergyTopicModel{
+	private static final long serialVersionUID = 1L;
     @Getter @Setter private Integer topicId;
     @Getter @Setter private String question;
     @Getter @Setter private String choiceA;

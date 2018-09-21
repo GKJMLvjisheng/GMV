@@ -54,7 +54,6 @@ public class WechatService {
         try {       
         // 对消息进行处理       
         if (WechatMessageUtil.MESSAGE_TEXT.equals(msgType)) {
-        	//*****可能会报错
         	if(userService.findUserByName(map.get("Content"))!=null){
         	userUuid=userService.findUserByName(map.get("Content")).getUuid();
         	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {

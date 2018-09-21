@@ -34,7 +34,7 @@ function questionReady(){
 
 //新增问题
 function addQuestion(){	
-	//var param = $("#addUserForm").serializeArray();		
+//	var param = $("#addQuestionForm").serializeArray();		
 	// var select=new Array();
 	// select[0] = $("#choiceContent1").val();
 	// select[1] = $("#choiceContent2").val();
@@ -45,7 +45,7 @@ function addQuestion(){
 	formData.append("choiceB", $("#choiceB").val());
 	formData.append("choiceC", $("#choiceC").val());
 	formData.append("choiceRight", $("#choiceRight").val());
-
+//  alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/computingPower/addTopic",
 		data:formData,
@@ -81,6 +81,8 @@ function resetAddModal(){
 }
 
 function updateQuestion(){
+	
+	var formData = new FormData();
 	formData.append("topicId", $("#EtopicId").val());	  	
 	formData.append("question", $("#Equestion").val());
 	formData.append("choiceA", $("#EchoiceA").val());

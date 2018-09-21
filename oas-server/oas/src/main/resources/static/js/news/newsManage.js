@@ -116,7 +116,7 @@ function addNews(){
 	formData.append("newsTitle", $("#newsTitle").val());
 	formData.append("newsAbstract", $("#newsAbstract").val());
 	formData.append("newsUrl", $("#newsUrl").val());
-	
+	//alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/userCenter/addNews",
 		data:formData,
@@ -160,6 +160,7 @@ function updateNews(){
 	//alert(img_file);
 	var fileobj = img_file.files[0];//使用files获取文件
 	//alert(fileobj);
+	//alert($("#EnewsId").val());
 	formData.append("file",fileobj);//添加fileobj到formData的键file中
 	formData.append("newsId", $("#EnewsId").val());
 	formData.append("newsTitle", $("#EnewsTitle").val());
@@ -211,7 +212,7 @@ function newsIndexReady() {
 		type: 'post',
 	    success: function(res) {
 	    	var len=res.data.list.length;
-	    	
+	    	//alert(JSON.stringify(res.data.list));
 	      if (len>0) {
 	        list="";
 	        for(i=0;i<len;i++){
