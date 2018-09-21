@@ -212,7 +212,7 @@ function newsIndexReady() {
 		type: 'post',
 	    success: function(res) {
 	    	var len=res.data.list.length;
-	    	
+	    	//alert(JSON.stringify(res.data.list));
 	      if (len>0) {
 	        list="";
 	        for(i=0;i<len;i++){

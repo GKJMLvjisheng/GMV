@@ -17,6 +17,7 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
@@ -47,7 +48,8 @@ public class ComputingPowerController {
     private UserService userService;
 	@Autowired
     private EnergyService energyService;
-
+	@Autowired
+	EnergyBallMapper energyBallMapper;
 	@Autowired
     private PowerService powerService;
 	@Autowired
@@ -75,9 +77,10 @@ public class ComputingPowerController {
 		UserModel userModel=ShiroUtils.getUser();
 		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
 		Integer SumUserInvited,SumPowerPromoted;
-		Integer inviteCode=userModel.getInviteCode();
+		String userUuid=userModel.getUuid();//算力提升用户Uuid
+		Integer powerSource=4;//好友分享方式为4
 		SumUserInvited=10;
-		SumPowerPromoted=150;
+		SumPowerPromoted=energyBallMapper.countByUserUuidAndPowerSource(userUuid, powerSource);
 		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
 		queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
 		return new ResponseEntity.Builder<QueryInvitePowerInfo>()

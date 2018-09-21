@@ -22,9 +22,11 @@
     <!-- 挖矿部分 Start -->
     <div class="map">
       <div class="energy-block">
-        <div @click="handleClickEnergy($event,item)"  v-for="(item,index) in energyBallList" :key="index" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite  animated">
+        <div @click="handleClickEnergy($event,item)"  v-for="(item,index) in energyBallList" :key="index" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
+          <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
+         <h4>{{index}}</h4>
         </div>
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
@@ -124,6 +126,7 @@ const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
 
 import { randomNum } from '@/utils/utils.js'
+import $ from 'jquery'
 export default {
   name: "index",
   data() {
@@ -161,12 +164,14 @@ export default {
     }
   },
   created() {
-    this.getEnergyBall()
+   
+    this.getEnergyBall()  
     this.getCurrentEnergy()
     this.getCurrentPower()
     this.getEnergyAnalysis()
     this.getArticleList()
     this.getUserInfo()
+
   },
   filters: {
   },
@@ -229,14 +234,13 @@ export default {
       this.$axios.post('/energyPoint/checkin').then(({data}) => {
         console.log(data)
         if (data.code == 0) {
-         
           this.currentEnergy += data.data.newEnergyPoint
           this.currentPower += data.data.newPower
           this.attendanceMsg.energy = data.data.newEnergyPoint
           this.attendanceMsg.power = data.data.newPower
           this.isShowSuccessMsg = true
         }
-        else(data.code=10012)
+        else if(data.code==10012)
         {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
@@ -259,20 +263,28 @@ export default {
     },
     // 获取悬浮能量球数据
     getEnergyBall () {
+      
       this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
         console.log(data.energyBallList)
+        //let i=0
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
           let p = this.randomPoint()
           // pArr.splice(randomIdx,1)
           el.x = p.x / 75 + 'rem'
           el.y = p.y / 75 + 'rem'
+          
+          //console.log("{"+i+"}"+JSON.stringify(el))
+          //i++
           return el
-        })
+        }) 
+      }) 
         
-      })              
+       
+                 
     },
+   
     // 获取当前能量
     getCurrentEnergy () {
       this.$axios.post('/energyPoint/inquireEnergyPoint').then(({data:{data}}) => {
@@ -320,7 +332,7 @@ export default {
     },
     // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
-      console.log(data);
+      console.log(JSON.stringify(data));
       console.log(event)
       /*let currentTime = new Date().getTime()
       let endTime = new Date(data.endDate).getTime()
@@ -335,7 +347,6 @@ export default {
       }
       let ele = event.currentTarget
       this.$axios.post('/energyPoint/takeEnergyBall',{ballId: data.uuid}).then(({data}) => {
-        console.log(data)
         if (data.code != 0) {
           this.Toast(data.message)
           return
@@ -345,8 +356,11 @@ export default {
       ele.classList.remove('infinite')
       this.getCurrentEnergy()
       this.getCurrentPower()
+       
       })
+      
     },
+    
     // 随机生成不重复坐标点方法
     randomPoint() {
       let p = {x:randomNum(20,650),y: randomNum(50, 550)}
@@ -366,14 +380,32 @@ export default {
     // 下拉刷新
     refresh (done) {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+      
+      //this.removeclass() 
       this.getEnergyBall()
+      this.removeclass()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
       this.getUserInfo()
+   
       setTimeout(() => {
         done()
+       
       },1000)
+    /*var aaa =  this.$el.childNodes[0].childNodes[0].childNodes[3].childNodes[0].childNodes
+    for(var i = 0;i<aaa.length;i++){
+       aaa[i].classList.remove("fadeOutUp")
+      aaa[i].classList.add("infinite")
+       aaa[i].classList.add("flash")
+      // aaa[i].classList.add("animated") 
+    }*/
+    },
+    removeclass(){
+       $(".energy-ball").addClass("flash")
+      $(".energy-ball").addClass("infinite")
+      $(".energy-ball").addClass( "animated")
+      $(".energy-ball").removeClass("fadeOutUp")
     },   
     // 提示信息
     Toast (msg, delay) {
@@ -385,6 +417,7 @@ export default {
     }
   }
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -705,7 +738,7 @@ header {
 }
 
 .flash {
-  animation-duration: 5s;
+  animation-duration: 5s;//完成动画时间
 }
 
 @keyframes twinkling {
