@@ -22,11 +22,11 @@ function initQuestionGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"TopicId",//Indicate an unique identifier for each row
+		uniqueId:"topicId",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
-		sortName: 'TopicId', // 要排序的字段
+		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
@@ -42,17 +42,16 @@ function initQuestionGrid(data) {
 		},
 			{
 
-			title : "A",
+			title : "选项A",
 
 			field : "choiceA",
-			field : "newsTitle",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
 
 		}, {
 
-			title : "B",
+			title : "选项B",
 
 			field : "choiceB",
 			align: 'center',
@@ -62,7 +61,7 @@ function initQuestionGrid(data) {
 		},
 		{
 
-			title : "C",
+			title : "选项C",
 
 			field : "choiceC",
 			align: 'center',
@@ -110,7 +109,7 @@ function ViewQuestionById(id){
 
 		//获取选中行的数据		
 		var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-		$('#QchoiceId').val(rows.choiceId);
+		$('#QtopicId').val(rows.topicId);
 		$('#Qquestion').val(rows.question);
 		$('#QchoiceA').val(rows.choiceA);
 		$('#QchoiceB').val(rows.choiceB);
@@ -124,13 +123,13 @@ function EditQuestionById(id){
     
     //获取选中行的数据
     var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-	$('#QchoiceId').val(rows.choiceId);
+	    $('#EtopicId').val(rows.topicId);
 		$('#Equestion').val(rows.question);
 		$('#EchoiceA').val(rows.choiceA);
 		$('#EchoiceB').val(rows.choiceB);
 		$('#EchoiceC').val(rows.choiceC);
 		$('#EchoiceRight').val(rows.choiceRight);			
-    $("#updateQuestionModal").modal("show");           
+		$("#updateQuestionModal").modal("show");           
   }
 
 
@@ -141,7 +140,7 @@ function deleteQuestionById(id)
 		  return;
 		 }
 
-	data={"choiceId":id};
+	data={"topicId":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 

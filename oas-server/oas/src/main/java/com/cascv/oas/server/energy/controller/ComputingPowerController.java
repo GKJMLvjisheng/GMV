@@ -225,14 +225,17 @@ public class ComputingPowerController {
 		
 	@PostMapping(value = "/addTopic")
     @ResponseBody
-	public ResponseEntity<?> addTopic(@RequestBody EnergyTopicModel energytopic){
+	public ResponseEntity<?> addTopic(EnergyTopicModel energytopic){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		log.info("***Start***");
 		EnergyTopicModel energyTopicModel = new EnergyTopicModel();	
+		energyTopicModel.setQuestion(energytopic.getQuestion());
 		energyTopicModel.setChoiceA(energytopic.getChoiceA());
 		energyTopicModel.setChoiceB(energytopic.getChoiceB());
 		energyTopicModel.setChoiceC(energytopic.getChoiceC());
 		energyTopicModel.setChoiceRight(energytopic.getChoiceRight()); 
 		energyTopicModel.setCreated(now);
+		energyTopicMapper.insertTopic(energyTopicModel);
 		  return new ResponseEntity.Builder<Integer>()
 					.setData(0)
 					.setErrorCode(ErrorCode.SUCCESS)
@@ -253,11 +256,12 @@ public class ComputingPowerController {
 	}
 	@PostMapping(value = "/updateTopic")
     @ResponseBody
-	public ResponseEntity<?> updateTopic(@RequestBody EnergyTopicModel energytopic){
+	public ResponseEntity<?> updateTopic(EnergyTopicModel energytopic){
 		log.info("--------start--------");
+		log.info("topicId{}",energytopic.getTopicId());
 		EnergyTopicModel energyTopicModel = new EnergyTopicModel();		
-		//Map<String,String> info = new HashMap<>();	
 		energyTopicModel.setTopicId(energytopic.getTopicId());
+		energyTopicModel.setQuestion(energytopic.getQuestion());
 		energyTopicModel.setChoiceA(energytopic.getChoiceA());
 		energyTopicModel.setChoiceB(energytopic.getChoiceB());
 		energyTopicModel.setChoiceC(energytopic.getChoiceC());
