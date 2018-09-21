@@ -96,11 +96,11 @@ public class ComputingPowerController {
     @ResponseBody
     public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
 	 		   
-		   String name=ShiroUtils.getUser().getName();	   
-		   String idenCode=code.getIdenCode();
-
+		    String name=ShiroUtils.getUser().getName();	   
+		    String idenCode=code.getIdenCode();
 		   	String userUuid=ShiroUtils.getUserUuid();
-		   	if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+		   	log.info(userUuid);
+		   	if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null){
 	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
 	        	log.info("activityCompletionStatus is not null");
 	          }else {

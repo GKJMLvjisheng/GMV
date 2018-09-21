@@ -16,7 +16,13 @@
     select power_single from energy_source_power where source_code = #{sourceCode}
   </select>
   
-  <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.vo.ActivityResult">
+  <resultMap id="ActivityResultMap" type="com.cascv.oas.server.energy.vo.ActivityResult">
+        <result column="source_code" property="sourceCode"/>
+        <result column="status" property="status"/>
+    </resultMap>
+      <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+        <result column="user_uuid" property="userUuid"/>
+        <result column="status" property="status"/>
         <result column="source_code" property="sourceCode"/>
         <result column="status" property="status"/>
     </resultMap>
@@ -27,7 +33,7 @@
       values (#{uuid}, #{userUuid}, #{sourceCode}, #{status})
   </insert>
   
-  <select id="selectByUserUuid" resultMap="ActivityCompletionStatus">
+  <select id="selectByUserUuid" resultMap="ActivityResultMap">
       select * from activity_completion_status A left join energy_source_power B 
              on A.source_code = B.source_code 
              where A.user_uuid = #{userUuid}
@@ -38,7 +44,7 @@
              where user_uuid = #{userUuid}
   </select>
   
-  <select id="selectStatusByUserUuid" resultMap="ActivityCompletionStatus">
+  <select id="selectStatusByUserUuid" resultMap="ActivityResultMap">
       select * from activity_completion_status A left join energy_source_power B 
              on A.source_code = B.source_code 
              where A.user_uuid = #{userUuid}
