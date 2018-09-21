@@ -58,6 +58,7 @@ $(function ()
                      //将option增加到下拉列表中。
                      selections.options.add(option);
                  }
+		    	
 			     
 		     } else {
 		    	 alert(res.message);
@@ -163,6 +164,7 @@ $(function ()
                             //将option增加到下拉列表中。
                                 objNetwork.options.add(option);
                             	  }
+         		    	$("#network option[value='ropsten']").prop("selected","selected");//根据值让option选中
                           }
          		     else {
          		    	 alert(res.message);

@@ -65,17 +65,11 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            byte[] bytes = file.getBytes();
            Path path = Paths.get(UPLOADED_FOLDER + fileName);
            Files.write(path, bytes);
-           
-           String  newsPicturePath=String.valueOf(path);
-           
-           log.info("--------获取路径--------:{}",newsPicturePath);
-           log.info("SYSTEM_USER_HOME={}",SYSTEM_USER_HOME);
-
-           log.info("newsPicturePath={}",newsPicturePath); 
            String pictureName=fileName;
            log.info("pictureName=",pictureName);            
            String str="/image/news/";
-           newsPicturePath=str+pictureName;
+           String newsPicturePath=str+pictureName;
+           
            NewsModel newsModel=new NewsModel();
           	
            newsModel.setNewsTitle(newsInfo.getNewsTitle());
@@ -102,8 +96,8 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
    		}else
    			{
    			log.info("新闻未上传图片");
-   			return new ResponseEntity.Builder<Map<String, String>>()
-   					.setData(info)
+   			return new ResponseEntity.Builder<Integer>()
+   					.setData(1)
    					.setErrorCode(ErrorCode.GENERAL_ERROR)
    					.build();
    			}
@@ -130,6 +124,7 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	       
 	 if(file!=null)
 	 { 
+		 log.info("11111");
 	    //生成唯一的文件名
 	   	String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
 	      try 
@@ -137,16 +132,11 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	            // Get the file and save it somewhere
 	            byte[] bytes = file.getBytes();
 	            Path path = Paths.get(UPLOADED_FOLDER + fileName);
-	            Files.write(path, bytes);
-	            String newsPicturePath=String.valueOf(path);
-	            
-	            log.info("--------获取路径--------:{}",newsPicturePath);
-
-	            log.info("newsPicturePath={}",newsPicturePath);
+	            Files.write(path, bytes);	            
 	            String pictureName=fileName;
 	            log.info("pictureName=",pictureName);            
 	            String str="/image/news/";
-	            newsPicturePath=str+pictureName;
+	            String newsPicturePath=str+pictureName;
 	            newsModel.setNewsPicturePath(newsPicturePath);
 	            
 	            newsService.updateNews(newsModel);
@@ -158,13 +148,14 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	        } catch (Exception e)
 	    		{
 	        		log.info("修改失败"+e);
-	           	    return new ResponseEntity.Builder<Map<String, String>>()
-	               	      .setData(info)
+	           	    return new ResponseEntity.Builder<Integer>()
+	               	      .setData(1)
 	               	      .setErrorCode(ErrorCode.GENERAL_ERROR)
 	               	      .build();
 	    		}
 	 		}else
 	 			{
+	 			log.info("newsInfo.getNewsPicturePath()={}",newsInfo.getNewsPicturePath());
 	 			newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
 	 			newsService.updateNews(newsModel);
 	 			log.info("--------end-------");
