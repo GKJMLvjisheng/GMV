@@ -55,7 +55,6 @@ public class WechatService {
         // 对消息进行处理       
         if (WechatMessageUtil.MESSAGE_TEXT.equals(msgType)) {
         	//*****可能会报错
-        	log.info("****warning***");
         	if(userService.findUserByName(map.get("Content"))!=null){
         	userUuid=userService.findUserByName(map.get("Content")).getUuid();
         	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
@@ -70,7 +69,6 @@ public class WechatService {
         		activityCompletionStatus=null;
         		log.info("next");
         	      }
-        	//******
             //判断回复的内容
             if ("获取验证码".equals(map.get("Content"))) {
             	responseContent="请输入OasDapp的登录账号\n";
@@ -96,9 +94,13 @@ public class WechatService {
             } 
             
 			/**
-			 * 判断输入的用户名是否存在（日后再改进）
-			 */
-            
+			 * 判断输入的用户名是否存在
+			 */                      
+            else if(isChecked&&(userService.findUserByName(map.get("Content"))==null)){
+            	log.info("您输入的用户名不存在!");
+                responseContent="您输入的用户名不存在!";
+                isChecked=false;
+            } 
             else if(activityCompletionStatus!=null){
             	log.info("你重复输入了..");
                 responseContent="每个用户只能使用一次验证码来提升算力！";
@@ -123,9 +125,8 @@ public class WechatService {
         System.out.print(responseMessage);
         }catch(Exception e){
         	log.info("error");
-        	e.getStackTrace();
         	log.info(e.getMessage());
-        	
+        	e.getStackTrace();
         }
         return responseMessage;   
    }

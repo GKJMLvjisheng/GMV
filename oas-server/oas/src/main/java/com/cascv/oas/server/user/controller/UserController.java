@@ -30,12 +30,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.service.PowerService;
+import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserModel;
@@ -66,6 +69,8 @@ public class UserController {
   @Autowired
   private MediaServer mediaServer;
   @Autowired
+  private PowerService powerService;
+  @Autowired
 	private EthWalletService ethWalletService;
 	
 	@Autowired
@@ -81,7 +86,7 @@ public class UserController {
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
-      LoginResult loginResult = new LoginResult();
+        LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
       try {
           subject.login(token);
@@ -147,19 +152,63 @@ public class UserController {
   @ResponseBody
 //  @Transactional
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
+	  
+	  //根据前端返回uuid找到新注册用户
 	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
+	  
     if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
+    		//用户注册失败
 			String uuid = userModel.getUuid();
 			System.out.println(uuid);
 			ethWalletService.destroy(uuid);
 			userWalletService.destroy(uuid);
 			energyPointService.destroy(uuid);
-      userService.deleteUserByUuid(uuid);
+            userService.deleteUserByUuid(uuid);
+            //注册未完成
+			return new ResponseEntity.Builder<Integer>()
+	                   .setData(2)
+	                   .setErrorCode(ErrorCode.GENERAL_ERROR)
+	                   .build();
+    }else {
+    		//用户注册成功
+    	    Integer inviteFrom=userModel.getInviteFrom();
+    	    log.info("inviteFrom={}",inviteFrom);
+    	    if(inviteFrom!=0 && inviteFrom!=null) {
+    	    	UserModel userModelInvited =userService.findUserByInviteCode(inviteFrom);
+    	    	String UuidInvited=userModelInvited.getUuid();
+    	    	log.info("UuidInvited={}",UuidInvited);
+    	    	EnergyFriendsSharedResult energyFsResult = new EnergyFriendsSharedResult();
+    	    	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+    	    	powerService.saveFsEnergyBall(UuidInvited, now);
+    	    	energyFsResult=powerService.getFsEnergy();
+    	    	powerService.updateFsEnergyWallet(UuidInvited);
+    	    	
+    	    	//三级用户
+    	    	Integer inviteFromThreeLevel=userModelInvited.getInviteFrom();
+    	    	log.info("inviteFromThreeLevel={}",inviteFromThreeLevel);
+    	    		if(inviteFromThreeLevel!=0 && inviteFromThreeLevel!=null) {
+    	    			UserModel userModelThreeLevel=userService.findUserByInviteCode(inviteFromThreeLevel);
+    	    			String UuidThreeLevel=userModelThreeLevel.getUuid();
+    	    			log.info("UuidThreeLevel={}",UuidThreeLevel);
+    	    			powerService.saveFsEnergyBall(UuidThreeLevel, now);
+    	    	    	energyFsResult=powerService.getFsEnergy();
+    	    	    	powerService.updateFsEnergyWallet(UuidThreeLevel);
+    	    		}else {
+    	    			log.info("无三级用户！");
+    	    		}
+    	        return new ResponseEntity.Builder<Integer>()
+    	                .setData(0)
+    	                .setErrorCode(ErrorCode.SUCCESS)
+    	                .build();
+    	    	
+    	    }else {
+    	    	log.info("用户不是邀请用户，自主注册用户！");
+				return new ResponseEntity.Builder<Integer>()
+		                   .setData(1)
+		                   .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                   .build();
+    	    }
     }
-    return new ResponseEntity.Builder<Integer>()
-          .setData(0)
-          .setErrorCode(ErrorCode.SUCCESS)
-          .build();
 	}
 	
 	

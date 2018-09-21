@@ -24,7 +24,6 @@
         <result column="user_uuid" property="userUuid"/>
         <result column="status" property="status"/>
         <result column="source_code" property="sourceCode"/>
-        <result column="status" property="status"/>
     </resultMap>
     
   <insert id="insertActivity" parameterType="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
