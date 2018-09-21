@@ -56,7 +56,7 @@ public class WechatService {
         if (WechatMessageUtil.MESSAGE_TEXT.equals(msgType)) {
         	if(userService.findUserByName(map.get("Content"))!=null){
         	userUuid=userService.findUserByName(map.get("Content")).getUuid();
-        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {        	        
         	        	log.info("activityCompletionStatus is not null");
         	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
         	        	
@@ -103,7 +103,9 @@ public class WechatService {
             } 
             else if(isChecked&&activityCompletionStatus!=null){
             	log.info("你重复输入了..");
-                responseContent="每个用户只能使用一次验证码来提升算力！";
+                //responseContent="每个用户只能使用一次验证码来提升算力！";
+            	Integer idenfyCode=userService.findUserByName(map.get("Content")).getIdentifyCode();
+            	responseContent="用户"+map.get("Content")+"的验证码是:"+idenfyCode.toString()+"\n";
             } 
             else {
                 responseContent="您的输入有误!请重新输入:'获取验证码'";

@@ -15,15 +15,19 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyTopicModel;
+import com.cascv.oas.server.energy.model.EnergyUserTopicModel;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.ActivityResult;
 import com.cascv.oas.server.energy.vo.ActivityResultList;
+import com.cascv.oas.server.energy.vo.ChoiceResult;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
@@ -287,5 +291,78 @@ public class ComputingPowerController {
 		    return new ResponseEntity.Builder<Map<String, Object>>()
 		              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 		  }
-
+	/**
+	 * 判断题目是否正确
+	 * @param energyTopicModel
+	 * @return
+	 */
+	@PostMapping(value = "/judgeChoice")
+    @ResponseBody
+	public ResponseEntity<?> judgeChoice(@RequestBody ChoiceResult choiceResult){
+		//前端传回 topicId,topicChoiced
+		Map<String,Object> info=new HashMap<>();
+		EnergyUserTopicModel energyUserTopicModel =new EnergyUserTopicModel();
+		Integer topicId=choiceResult.getTopicId();
+		EnergyTopicModel energyTopicModel=energyTopicMapper.findTopicByTopicId(topicId);
+        String choiceRight =energyTopicModel.getChoiceRight();        
+        if(choiceRight.equals(choiceResult.getTopicChoiced())){
+        	//将正确的记录存入数据库，答错的话不作处理
+        	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+        	String userTopicUuid=UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
+        	energyUserTopicModel.setTopicId(topicId);
+        	String userUuid=ShiroUtils.getUserUuid();
+        	energyUserTopicModel.setUserUuid(userUuid);
+        	energyUserTopicModel.setUserTopicUuid(userTopicUuid);
+        	energyUserTopicModel.setCreated(now);
+        	energyTopicMapper.insertUserTopic(energyUserTopicModel);
+    	    return new ResponseEntity.Builder<Integer>()
+  	              .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+        }else{
+    	    return new ResponseEntity.Builder<Integer>()
+  	              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+  		     }
+        }
+	
+	/**
+	 * 判断题目是否做过
+	 * @param energyTopicModel
+	 * @return
+	 */
+	@PostMapping(value = "/judgeTopicIsDone")
+    @ResponseBody
+	public ResponseEntity<?> judgeTopicIsDone(@RequestBody ChoiceResult choiceResult){
+		Map<String,Object> info=new HashMap<>();
+		Integer topicId=choiceResult.getTopicId();
+		UserModel userModel=ShiroUtils.getUser();
+		EnergyUserTopicModel energyUserTopicModel=new EnergyUserTopicModel();
+		String UserUuid=userModel.getUuid();
+		if(energyTopicMapper.findTopicByUserUuid(UserUuid)!=null){
+			energyUserTopicModel= energyTopicMapper.findTopicByUserUuid(UserUuid);
+			if(energyUserTopicModel.getTopicId()!=topicId){
+				log.info("还没做过这道题");
+			return new ResponseEntity.Builder<Integer>()
+		              .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+		    }else{
+				log.info("已经做过这道题了");
+				return new ResponseEntity.Builder<Integer>()
+			              .setData(1).setErrorCode(ErrorCode.SUCCESS).build();
+			     }			
+	  }else{
+			return new ResponseEntity.Builder<Integer>()
+		              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		   }	    
+}
+	/**
+	 * 分页显示题目(已经做过的不显示)
+	 * @param energyTopicModel
+	 * @return
+	 */
+	@PostMapping(value = "/inquireTopicByPage")
+    @ResponseBody
+	public ResponseEntity<?> inquireTopicByPage(@RequestBody EnergyTopicModel energyTopicModel){
+		Map<String,Object> info=new HashMap<>();
+        
+	    return new ResponseEntity.Builder<Map<String, Object>>()
+	              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+		  }
 }
