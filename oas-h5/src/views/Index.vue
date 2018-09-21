@@ -240,7 +240,7 @@ export default {
           this.attendanceMsg.power = data.data.newPower
           this.isShowSuccessMsg = true
         }
-        else if(data.code=10012)
+        else if(data.code==10012)
         {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
@@ -383,7 +383,7 @@ export default {
       
       //this.removeclass() 
       this.getEnergyBall()
-      
+      this.removeclass()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
@@ -391,7 +391,7 @@ export default {
    
       setTimeout(() => {
         done()
-       this.removeclass()
+       
       },1000)
     /*var aaa =  this.$el.childNodes[0].childNodes[0].childNodes[3].childNodes[0].childNodes
     for(var i = 0;i<aaa.length;i++){
