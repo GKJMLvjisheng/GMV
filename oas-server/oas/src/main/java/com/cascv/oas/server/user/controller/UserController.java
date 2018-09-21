@@ -87,7 +87,7 @@ public class UserController {
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
-      LoginResult loginResult = new LoginResult();
+        LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
       try {
           subject.login(token);

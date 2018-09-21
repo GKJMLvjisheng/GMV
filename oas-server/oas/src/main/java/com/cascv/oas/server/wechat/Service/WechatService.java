@@ -58,8 +58,9 @@ public class WechatService {
         	if(userService.findUserByName(map.get("Content"))!=null){
         	userUuid=userService.findUserByName(map.get("Content")).getUuid();
         	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
-        	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
         	        	log.info("activityCompletionStatus is not null");
+        	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+        	        	
         	          }else {
         	        	  activityCompletionStatus=null;
         	        	  log.info("next");

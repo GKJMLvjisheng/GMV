@@ -20,19 +20,16 @@ import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyTopicModel;
 import com.cascv.oas.server.energy.model.EnergyWallet;
-import com.cascv.oas.server.energy.model.QAModel.EnergyQuestion;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.ActivityResult;
 import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
-import com.cascv.oas.server.energy.vo.EnergyTopicResult;
 import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
-import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.vo.IdenCodeDomain;
 
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +48,6 @@ public class ComputingPowerController {
     private PowerService powerService;
 	@Autowired
 	private EnergyTopicMapper energyTopicMapper;
-	@Autowired
-	private WechatService wechatService;
 	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
@@ -103,9 +98,8 @@ public class ComputingPowerController {
     @ResponseBody
     public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
 	 		   
-		   String name=ShiroUtils.getUser().getName();	   
-		   String idenCode=code.getIdenCode();
-
+		    String name=ShiroUtils.getUser().getName();	   
+		    String idenCode=code.getIdenCode();
 		   	String userUuid=ShiroUtils.getUserUuid();
 		   	try{
 		   		if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
