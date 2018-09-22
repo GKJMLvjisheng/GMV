@@ -57,12 +57,10 @@ public class PowerService {
      * 判断是否已经备份过钱包，已经备份过返回1，没有备份返回0
      * @return
      */
-    public Integer isBackupsWallet(String userUuid) {
-    	
+    public Integer isBackupsWallet(String userUuid) {    	
     	ActivityResult activityStatus = energySourcePowerMapper.selectStatusByUserUuid(userUuid);
     	Integer status = activityStatus.getStatus();
-		return status;
-    	
+		return status;    	
     }
     
     
