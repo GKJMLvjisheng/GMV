@@ -32,8 +32,16 @@ function initQuestionGrid(data) {
 		
 		columns : [{
 
-			title : "问题",
+			title : "序号",
+			field : "topicId",
+			align: 'center',
+			valign: 'middle',
+			width:  '60px',
 
+		},
+			{
+
+			title : "问题",
 			field : "question",
 			align: 'center',
 			valign: 'middle',
@@ -43,7 +51,6 @@ function initQuestionGrid(data) {
 			{
 
 			title : "选项A",
-
 			field : "choiceA",
 			align: 'center',
 			valign: 'middle',
@@ -52,7 +59,6 @@ function initQuestionGrid(data) {
 		}, {
 
 			title : "选项B",
-
 			field : "choiceB",
 			align: 'center',
 			valign: 'middle',
@@ -62,7 +68,6 @@ function initQuestionGrid(data) {
 		{
 
 			title : "选项C",
-
 			field : "choiceC",
 			align: 'center',
 			valign: 'middle',
@@ -72,7 +77,6 @@ function initQuestionGrid(data) {
 		{
 
 			title : "答案",
-
 			field : "choiceRight",
 			align: 'center',
 			valign: 'middle',
@@ -80,8 +84,7 @@ function initQuestionGrid(data) {
 		}, 
 		{
 
-			title : " 操作",
-			
+			title : " 操作",			
 			field : "topicId",
 			align: 'center',
 			valign: 'middle',
@@ -98,27 +101,13 @@ function initQuestionGrid(data) {
 function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewQuestionById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+    
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditQuestionById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteQuestionById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
 }
  
-function ViewQuestionById(id){	
-
-		//获取选中行的数据		
-		var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-		$('#QtopicId').val(rows.topicId);
-		$('#Qquestion').val(rows.question);
-		$('#QchoiceA').val(rows.choiceA);
-		$('#QchoiceB').val(rows.choiceB);
-		$('#QchoiceC').val(rows.choiceC);
-		$('#QchoiceRight').val(rows.choiceRight);
-		$("#qureyQuestionModal").modal("show");
-		
-
-}	
 function EditQuestionById(id){
     
     //获取选中行的数据
@@ -128,7 +117,8 @@ function EditQuestionById(id){
 		$('#EchoiceA').val(rows.choiceA);
 		$('#EchoiceB').val(rows.choiceB);
 		$('#EchoiceC').val(rows.choiceC);
-		$('#EchoiceRight').val(rows.choiceRight);			
+		$('#EchoiceRight').val(rows.choiceRight);
+		$(":radio[name='radio'][value='" + rows.choiceRight + "']").prop("checked", "checked");			
 		$("#updateQuestionModal").modal("show");           
   }
 

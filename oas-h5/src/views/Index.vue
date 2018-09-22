@@ -593,7 +593,7 @@ header {
   li {    
     a {
         display: flex;
-        justify-content: space-between;
+        //justify-content: space-between;
         height: 280px;
         padding: 40px 0;
         border-bottom: 1px solid #ddd;    
@@ -608,7 +608,7 @@ header {
         flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        //justify-content: space-between;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
