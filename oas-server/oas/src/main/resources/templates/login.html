@@ -45,7 +45,8 @@
 					<br/>
                     <input type="text"   id="nameId"  name="username" class="form-control uname"     placeholder="用户名"     />
                     <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"    />
-
+					<input type="text"  id="identifyCodeNext"class="form-control" placeholder="请输入验证码"onblur='checkIdentifyFirst()'/>
+					<span id='msgFirst'></span>
                     <button class="btn btn-primary btn-block" type=button id="btnSubmit" onclick="submitLogin()">登录</button>
                      <br/>
                      <br/>
@@ -97,6 +98,44 @@ if (top != window)
 	   }
 	  });
 	}
+	
+	//检查log验证码正确与否
+	function checkIdentifyFirst()
+	{var identifyCode = $("#identifyCode").val();
+	//alert(identifyCode);
+	//alert(code);
+	    var data = {
+	      "identifyCode" : identifyCode,
+	    };
+	    
+	    //alert(JSON.stringify(data));
+	    $.ajax({
+	      url : "/contrastCode",
+	      type : "POST",
+	      dataType : 'json',
+	      async : false,
+	      data : data,
+	      success : function(flag) {
+	        //根据判断提示用户
+	        if (flag == true) {
+	          $("#msgFirst").html("验证码正确！");
+	          $("#msgFirst").css("color", "#00ff00");
+	          check2 = 1;
+	          return check2;
+	        } else {
+	          $("#msgFirst").html("验证码错误");
+	          
+	          $("#msgFirst").css("color", "#ff0000");
+	          check2 = 0;
+	          return check2;
+	        }
+	      },
+	      error : function() {
+	        alert('检查用户是否存在发生错误');
+	      }
+	    });
+
+	  }
 
 </script>
 </html>
