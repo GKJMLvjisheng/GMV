@@ -5,10 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import com.cascv.oas.server.energy.model.EnergyTopicModel;
-
-
-
-
+import com.cascv.oas.server.energy.model.EnergyUserTopicModel;
 
 @Component
 public interface EnergyTopicMapper {
@@ -18,4 +15,8 @@ public interface EnergyTopicMapper {
 	 List<EnergyTopicModel> selectAllTopic();	 
 	 List<EnergyTopicModel> selectPage(@Param("offset") Integer offset, @Param("limit") Integer limit); 
      Integer countTotal();
+     
+     EnergyTopicModel findTopicByTopicId(Integer topicId);
+     EnergyUserTopicModel findTopicByUserUuid(String userUuid);
+     Integer insertUserTopic(EnergyUserTopicModel energyUserTopicModel);
 }
