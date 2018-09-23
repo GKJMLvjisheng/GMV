@@ -49,12 +49,17 @@
 					
 					
 					<!-- <label for="identifyCode" class="col-sm-3 control-label">验证码:</label> -->									 
-					
-					<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码" onblur="checkIdentifyFirst()"/>
-					<span id="msgFirst"></span>	
-					<img style="margin-top: 3px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" align="middle" class="checkcode"
-                         onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 
-										
+					<!-- <div class="col-sm-8"> -->
+						<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码" onblur="checkIdentifyFirst()"/>
+						<!-- <span id="msgFirst"></span>	 -->
+						<br/>
+					<!-- </div> -->
+					<!-- <div class="col-sm-2"> -->
+						<img style="margin-top: 3px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" align="middle" class="checkcode"
+						 onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 
+						 <span id="msgFirst"></span>	
+						<br/> 
+					<!-- </div>					 -->
 					
 					
 
@@ -77,52 +82,56 @@
 
 </body>
 <script>
-if (top != window)  
 
-    top.location.href = window.location.href;  
+	var check1 = 0;
+	var check2 = 0;
+
+	if (top != window)  
+		top.location.href = window.location.href;  
 	
 	function submitLogin(){
-	data={
-		"name": $('#nameId').val(),
-	    "password": $('#passwordId').val(),
-	};
-	
-	var name=$('#nameId').val();
-	$.ajax({
-	   type: 'post',
-	   url: '/api/v1/userCenter/login',
-	   data: JSON.stringify(data),
-	   contentType : 'application/json;charset=utf8',
-	   dataType: 'json',
-	   cache: false,
-	   success: function (res) {
-	     if (res.code == 0) {
-	    	// var string=res.data.token;
-	    	 
-	    	 //window.location.replace(encodeURI(encodeURI("/main?string="+string+"&用户名字="+name)));
-	    	 window.location.replace("main")
-	     } else {
-	    	 alert(res.message);
-	     }
-	   },
-	   error: function (res) {
-		  alert(JSON.stringify(res));
-	   },
-	   complete: function () {
-	   }
-	  });
-	}
+		data={
+			"name": $('#nameId').val(),
+			"password": $('#passwordId').val(),
+		};		
+		var name=$('#nameId').val();
+
+		$.ajax({
+		type: 'post',
+		url: '/api/v1/userCenter/login',
+		data: JSON.stringify(data),
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		success: function (res) {
+			if (res.code == 0) {
+				// var string=res.data.token;				
+				//window.location.replace(encodeURI(encodeURI("/main?string="+string+"&用户名字="+name)));
+				// window.location.replace("main")
+				check1 = 1;
+				return check1;
+			} else {
+				alert(res.message);
+				check1 = 0;
+				return check1;
+			}
+		},
+		error: function (res) {
+			alert(JSON.stringify(res));
+		},
+		complete: function () {
+		}
+		});
+		}
 	
 	//检查log验证码正确与否
 	function checkIdentifyFirst(){
 		var identifyCode = $("#identifyCode").val();
-		//alert(identifyCode);
-		//alert(code);
 	    var data = {
 	      "identifyCode" : identifyCode
-	    };
-	    
-	    //alert(JSON.stringify(data));
+	    };	    
+		//alert(JSON.stringify(data));
+		
 	    $.ajax({
 	      url : "/api/v1/userCenter/contrastCode",
 		  data :JSON.stringify(data),
@@ -133,20 +142,36 @@ if (top != window)
 		  cache: false,
 
 	      success : function(res) {
-	        //根据判断提示用户
-	        if (res.code == 0) {
-	          $("#msgFirst").html("验证码正确！");
-	          $("#msgFirst").css("color", "#00ff00");	          
-			} 
-			else {
-	          $("#msgFirst").html("验证码错误");	          
-	          $("#msgFirst").css("color", "#ff0000");	         
-	        }
-	      },
+			  if(res.msg=="null"){
+				$("#msgFirst").html("请输入验证码");	          
+				$("#msgFirst").css("color", "#ff0000");	
+			  }
+			  else{
+				  if (res.code == 0) {
+					$("#msgFirst").html("验证码正确！");
+					$("#msgFirst").css("color", "#00ff00");
+					check2 = 1;
+					return check2;	          
+				  } 
+				  else {
+						$("#msgFirst").html("验证码错误");	          
+						$("#msgFirst").css("color", "#ff0000");	
+						check2 = 0;
+						return check2;         
+					}
+			  }			
+		  },
 	      error : function() {
-	        alert('检查验证码是否存在发生错误');
+		  	alert('检查验证码是否存在发生错误');
 	      }
 	    });
+	  }
+
+	  function login(){
+		  if (check1 && check2 ) {
+			  alert("success");
+			  window.location.replace("main");
+		  }
 	  }
 
 </script>
