@@ -43,11 +43,24 @@
                     <h4 class="no-margins text-center">欢迎登录</h4>
 <!--                    <p class="no-margins">登录：</p> -->
 					<br/>
-                    <input type="text"   id="nameId"  name="username" class="form-control uname"     placeholder="用户名"     />
-                    <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"    />
-					<input type="text"  id="identifyCodeNext"class="form-control" placeholder="请输入验证码"onblur='checkIdentifyFirst()'/>
-					<span id='msgFirst'></span>
-                    <button class="btn btn-primary btn-block" type=button id="btnSubmit" onclick="submitLogin()">登录</button>
+                    <input type="text" id="nameId" name="username" class="form-control uname" placeholder="用户名"/>
+                    <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"/>
+					
+					
+					
+					<!-- <label for="identifyCode" class="col-sm-3 control-label">验证码:</label> -->									 
+					
+					<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码" onblur="checkIdentifyFirst()"/>
+					<span id="msgFirst"></span>	
+					<img style="margin-top: 3px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" align="middle" class="checkcode"
+                         onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 
+										
+					
+					
+
+
+
+                    <button class="btn btn-primary btn-block" type="button" id="btnSubmit" onclick="submitLogin()">登录</button>
                      <br/>
                      <br/>
                 </form>
@@ -67,6 +80,7 @@
 if (top != window)  
 
     top.location.href = window.location.href;  
+	
 	function submitLogin(){
 	data={
 		"name": $('#nameId').val(),
@@ -100,41 +114,39 @@ if (top != window)
 	}
 	
 	//检查log验证码正确与否
-	function checkIdentifyFirst()
-	{var identifyCode = $("#identifyCode").val();
-	//alert(identifyCode);
-	//alert(code);
+	function checkIdentifyFirst(){
+		var identifyCode = $("#identifyCode").val();
+		//alert(identifyCode);
+		//alert(code);
 	    var data = {
-	      "identifyCode" : identifyCode,
+	      "identifyCode" : identifyCode
 	    };
 	    
 	    //alert(JSON.stringify(data));
 	    $.ajax({
-	      url : "/contrastCode",
-	      type : "POST",
-	      dataType : 'json',
-	      async : false,
-	      data : data,
-	      success : function(flag) {
+	      url : "/api/v1/userCenter/contrastCode",
+		  data :JSON.stringify(data),
+		  contentType : 'application/json;charset=utf8',
+		  dataType: 'json',
+		  type: 'post',
+		  async : false,
+		  cache: false,
+
+	      success : function(res) {
 	        //根据判断提示用户
-	        if (flag == true) {
+	        if (res.code == 0) {
 	          $("#msgFirst").html("验证码正确！");
-	          $("#msgFirst").css("color", "#00ff00");
-	          check2 = 1;
-	          return check2;
-	        } else {
-	          $("#msgFirst").html("验证码错误");
-	          
-	          $("#msgFirst").css("color", "#ff0000");
-	          check2 = 0;
-	          return check2;
+	          $("#msgFirst").css("color", "#00ff00");	          
+			} 
+			else {
+	          $("#msgFirst").html("验证码错误");	          
+	          $("#msgFirst").css("color", "#ff0000");	         
 	        }
 	      },
 	      error : function() {
-	        alert('检查用户是否存在发生错误');
+	        alert('检查验证码是否存在发生错误');
 	      }
 	    });
-
 	  }
 
 </script>

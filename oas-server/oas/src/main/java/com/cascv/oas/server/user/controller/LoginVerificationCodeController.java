@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +22,7 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
+//@Controller
 @Slf4j
 @Api(value="User Interface")
 @RequestMapping(value="/api/v1/userCenter")
@@ -44,6 +46,7 @@ public class LoginVerificationCodeController {
 	// 获取第一张验证码
 	public void getCode(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 设置不缓存图片
+		log.info("111");
 		response.setHeader("Pragma", "No-cache");
 		response.setHeader("Cache-Control", "No-cache");
 		response.setDateHeader("Expires", 0);
