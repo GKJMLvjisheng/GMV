@@ -29,7 +29,7 @@ public class UserModel implements Serializable {
 	@Getter @Setter private Integer emailCodeChecked;
 	@Getter @Setter private Integer confirmed;
 	
-	@Getter @Setter private Integer identifyCode;
+	@Getter @Setter private Integer identifyCode;//验证码
 	
 	@Getter @Setter private Set<String> roles = new HashSet<>();
 	@Getter @Setter private Set<String> perms = new HashSet<>();

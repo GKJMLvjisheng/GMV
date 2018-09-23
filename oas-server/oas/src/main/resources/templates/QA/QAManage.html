@@ -26,7 +26,10 @@
 	table{ 
     word-wrap:break-word;
     word-break:break-all;
-    }
+	}
+	label{ 
+    vertical-align:middle;
+	}
 	
     </style>
 </head>
@@ -68,41 +71,48 @@
 					<form id="addQuestionForm" action="/Question/addQuestion" method="post" class="form-horizontal">
 
 						<div class="form-group">
-							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
+							<label for="question" class="col-sm-3 control-label">问题内容</label>
 							<div class="col-sm-8">
-								<textarea name="questionContent" class="form-control" id="questionContent" required="required"  placeholder="请输入问题" /></textarea>
-								<span id="msg_questionContent"></span>
+								<textarea name="question" class="form-control" id="question" required="required"  placeholder="问题长度最多为40个字符" /></textarea>
+								<span id="msg_question"></span>
 							</div>						
 						</div>
 
 						
 						<div class="form-group">
-							<label for="choiceContent1" class="col-sm-3 control-label">选项1：</label>
+							<label for="choiceA" class="col-sm-3 control-label">选项A 
+								<input type="radio" name="radio" id="A"  value="A">
+							</label>
+
 							<div class="col-sm-8">
- 								<textarea name="choiceContent1" class="col-sm-4 form-control" id="choiceContent1" required="required" placeholder="请输入选项1"/></textarea>
- 								<span id="msg_choiceContent1"></span> 				
+ 								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" placeholder="选项A长度最多为20个字符"/></textarea>
+ 								<span id="msg_choiceA"></span> 				
 							</div>
 						</div>
 						
 						
 						<div class="form-group">
-							<label for="choiceContent2" class="col-sm-3 control-label">选项2：</label>
+							<label for="choiceB" class="col-sm-3 control-label">选项B 
+								<input type="radio" name="radio" id="B"  value="B">
+							</label>
 							<div class="col-sm-8">
-								<textarea name="choiceContent2" class="col-sm-4 form-control" id="choiceContent2" required="required" placeholder="请输入选项2"/></textarea>
-								<span id="choiceContent2_span"></span>
+								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" placeholder="选项B长度最多为20个字符"/></textarea>
+								<span id="msg_choiceB"></span>
 							</div>
 						</div>
-						
 						
 						<div class="form-group">
-							<label for="answer" class="col-sm-3 control-label">答案：</label>
+							<label for="choiceC" class="col-sm-3 control-label">选项C 
+								<input type="radio" name="radio" id="C"  value="C">
+							</label>
 							<div class="col-sm-8">
-								<textarea name="answer" class="col-sm-4 form-control" id="answer" required="required" placeholder="请输入答案"/></textarea>
-								<span id="answer_span"></span>
+								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" placeholder="选项C长度最多为20个字符"/></textarea>
+								<span id="msg_choiceC"></span>
 							</div>
-						</div>
-						
-					
+						</div>	
+																
+						<input name="choiceRight" class="form-control" id="choiceRight" required="required" type="hidden"/></input>
+													
 					</form>
 				</div>
 
@@ -139,58 +149,6 @@
 		</div>
 
 	</div>
-			
-	
-	<!-- 查看新闻的模态框 -->
-    <div class="modal fade" id="qureyQuestionModal" tabindex="-1" role="dialog">
-
-        <div class="modal-dialog" role="document">
-
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">查看问题</h3>			
-				</div>
-
-				<div class="modal-body">
-					<form id="qureyQuestionForm" action="/question/qureyQuestion" method="post" class="form-horizontal">
-						<input  style="display:none" type="hidden" name="QquestionId" id="QquestionId">
-						<div class="form-group">
-							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
-							<div class="col-sm-8">
-								<textarea name="QquestionContent" class="form-control" id="QquestionContent" required="required"  readonly="readonly" onblur="EcheckQuestion()" /></textarea>
-								<span id="msg_QquestionContent"></span> 
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="choiceContent1" class="col-sm-3 control-label">A：</label>
-							<div class="col-sm-8">
-								<textarea name="QchoiceContent1" class="form-control" id="QchoiceContent1" readonly="readonly" required="required" /></textarea>
-								<span id="msg_QchoiceContent1"></span> 
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="choiceContent2" class="col-sm-3 control-label">B：</label>
-							<div class="col-sm-8">
-								<textarea name="QchoiceContent2" class="form-control" id="QchoiceContent2" readonly="readonly" required="required"/></textarea>
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="answer" class="col-sm-3 control-label">答案：</label>
-							<div class="col-sm-8">
-								<textarea name="Qanswer" class="form-control" id="Qanswer" readonly="readonly" required="required"/></textarea>
-							</div>						
-						</div>
-																			
-					</form>
-				</div>						
-			</div>					
-		</div>
-	</div>
 
 	<!-- 编辑新闻的模态框 -->
     <div class="modal fade" id="updateQuestionModal" tabindex="-1" role="dialog">
@@ -201,42 +159,52 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">修改问题</h3>			
+					<h3 class="modal-title" id="ModalLabel">修改问题</h3>			
 				</div>
 
 				<div class="modal-body">
 					<form id="updateQuestionForm" action="/question/updatedQuestion" method="post" class="form-horizontal">
-						<input  style="display:none" type="hidden" name="EquestionId" id="EquestionId">
+						<input  style="display:none" type="hidden" name="EtopicId" id="EtopicId">
 						<div class="form-group">
-							<label for="questionContent" class="col-sm-3 control-label">问题：</label>
+							<label for="question" class="col-sm-3 control-label">问题内容：</label>
 							<div class="col-sm-8">
-								<textarea name="EquestionContent" class="form-control" id="EquestionContent" required="required"  onblur="EcheckQuestion()" /></textarea>
-								<span id="msg_EquestionContent"></span> 
+								<textarea name="Equestion" class="form-control" id="Equestion" required="required"  onblur="EcheckQuestion()" /></textarea>
+								<span id="msg_Equestion"></span> 
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="choiceContent1" class="col-sm-3 control-label">A：</label>
+							<label for="choiceContent1" class="col-sm-3 control-label">选项A 
+								<input type="radio" name="radio" id="A1"  value="A">
+							</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceContent1" class="form-control" id="EchoiceContent1" required="required" /></textarea>
-								<span id="msg_EchoiceContent1"></span> 
+								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" onblur="EcheckChoiceA()"/></textarea>
+								<span id="msg_EchoiceA"></span> 
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="choiceContent2" class="col-sm-3 control-label">B：</label>
+							<label for="choiceB" class="col-sm-3 control-label">选项B 
+								<input type="radio" name="radio" id="B1"  value="B">
+							</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceContent2" class="form-control" id="EchoiceContent2" required="required"/></textarea>
+								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required" onblur="EcheckChoiceB()"/></textarea>
+								<span id="msg_EchoiceB"></span> 
 							</div>						
 						</div>
-						
+
 						<div class="form-group">
-							<label for="answer" class="col-sm-3 control-label">答案：</label>
+							<label for="choiceC" class="col-sm-3 control-label">选项C 
+								<input type="radio" name="radio" id="C1"  value="C">
+							</label>
 							<div class="col-sm-8">
-								<textarea name="Eanswer" class="form-control" id="Eanswer" required="required"/></textarea>
+								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required" onblur="EcheckChoiceC()"/></textarea>
+								<span id="msg_EchoiceC"></span>  
 							</div>						
-						</div>
-																			
+						</div>						
+						
+						<input name="EchoiceRight" class="form-control" id="EchoiceRight" required="required" type="hidden"/></input>
+																											
 					</form>
 				</div>
 
@@ -248,8 +216,16 @@
 					
 		</div>
 	</div>
-			
-</body>
 
+<script type="text/javascript">	
+
+	$(":radio").click(function(){
+		var choiceRight=$(this).val();
+		$('#choiceRight').val(choiceRight);
+		$('#EchoiceRight').val(choiceRight);
+	});
+
+</script>			
+</body>
 </html>
 

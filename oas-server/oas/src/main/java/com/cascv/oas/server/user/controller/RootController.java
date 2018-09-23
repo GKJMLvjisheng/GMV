@@ -4,12 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.cascv.oas.server.utils.ServletUtils;
-
-import io.swagger.models.Model;
-
 @Controller
 public class RootController {
 		
@@ -79,9 +74,11 @@ public class RootController {
 	      return "login";  }
   
 	  @GetMapping(value="/main")
-	  public String main() {
+	  public String main(){
 	    
 	        return "main";
-  }
-   }
+     }
+	  
+
+}
 

@@ -8,10 +8,10 @@ $(function() {
 
 	//初始加载	
 	newsReady();
-	newsTitle.setAttribute("maxlength",100);
-	EnewsTitle.setAttribute("maxlength",100);
-	newsAbstract.setAttribute("maxlength",200);
-	EnewsAbstract.setAttribute("maxlength",200);
+	newsTitle.setAttribute("maxlength",40);
+	EnewsTitle.setAttribute("maxlength",40);
+	newsAbstract.setAttribute("maxlength",100);
+	EnewsAbstract.setAttribute("maxlength",100);
 });
 
 function newsReady(){
@@ -80,12 +80,12 @@ function EcheckTitle() {
 	var abstract = $("#EnewsTitle").val(); 
 	var len=abstract.length;
 	//alert(len);
-	if (len==200) {
-		$("#msg_EnewsTitle").html("输入标题长度为100个字符，已达上限");
+	if (len==40) {
+		$("#msg_EnewsTitle").html("输入标题长度为40个字符，已达上限");
         $("#msg_EnewsTitle").css("color", "red");
 	}
 	else {
-		$("#msg_EnewsTitle").html("输入标题不超过100个字符，符合要求");
+		$("#msg_EnewsTitle").html("输入标题不超过40个字符，符合要求");
         $("#msg_EnewsTitle").css("color", "green");
 	}
 }
@@ -96,11 +96,11 @@ function EcheckAbstract() {
 	var len=abstract.length;
 	//alert(len);
 	if (len==100) {
-		$("#msg_EnewsAbstract").html("输入摘要长度为200个字符，已达上限");
+		$("#msg_EnewsAbstract").html("输入摘要长度为100个字符，已达上限");
         $("#msg_EnewsAbstract").css("color", "red");
 	}
 	else {
-		$("#msg_EnewsAbstract").html("输入摘要不超过200个字符，符合要求");
+		$("#msg_EnewsAbstract").html("输入摘要不超过100个字符，符合要求");
         $("#msg_EnewsAbstract").css("color", "green");
 	}
 }
@@ -116,7 +116,7 @@ function addNews(){
 	formData.append("newsTitle", $("#newsTitle").val());
 	formData.append("newsAbstract", $("#newsAbstract").val());
 	formData.append("newsUrl", $("#newsUrl").val());
-	
+	//alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/userCenter/addNews",
 		data:formData,
@@ -160,6 +160,7 @@ function updateNews(){
 	//alert(img_file);
 	var fileobj = img_file.files[0];//使用files获取文件
 	//alert(fileobj);
+	//alert($("#EnewsId").val());
 	formData.append("file",fileobj);//添加fileobj到formData的键file中
 	formData.append("newsId", $("#EnewsId").val());
 	formData.append("newsTitle", $("#EnewsTitle").val());
@@ -211,7 +212,7 @@ function newsIndexReady() {
 		type: 'post',
 	    success: function(res) {
 	    	var len=res.data.list.length;
-	    	
+	    	//alert(JSON.stringify(res.data.list));
 	      if (len>0) {
 	        list="";
 	        for(i=0;i<len;i++){

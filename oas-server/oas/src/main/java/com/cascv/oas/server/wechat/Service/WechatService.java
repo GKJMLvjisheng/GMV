@@ -54,10 +54,9 @@ public class WechatService {
         try {       
         // 对消息进行处理       
         if (WechatMessageUtil.MESSAGE_TEXT.equals(msgType)) {
-        	//*****可能会报错
         	if(userService.findUserByName(map.get("Content"))!=null){
         	userUuid=userService.findUserByName(map.get("Content")).getUuid();
-        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {        	        
         	        	log.info("activityCompletionStatus is not null");
         	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
         	        	
@@ -66,7 +65,7 @@ public class WechatService {
         	        	  log.info("next");
         	                }
         	}else {
-        		activityCompletionStatus=null;
+        		//activityCompletionStatus=null;
         		log.info("next");
         	      }
             //判断回复的内容
@@ -78,8 +77,7 @@ public class WechatService {
             else if(isChecked&& activityCompletionStatus==null){
             	log.info("正在获取验证码..");
             	activityCompletionStatus=new ActivityCompletionStatus();
-                responseContent="用户"+map.get("Content")+"的验证码是:"+result+"\n";
-                isChecked=false;
+                responseContent="用户"+map.get("Content")+"的验证码是:"+result+"\n";               
                 log.info(userUuid);
                 activityCompletionStatus.setUserUuid(userUuid);
                 activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
@@ -91,6 +89,8 @@ public class WechatService {
                 userModel.setName(map.get("Content"));
                 userModel.setIdentifyCode(Integer.valueOf(result));
                 userService.updateIdentifyCode(userModel);
+                log.info("***end***");
+                isChecked=false;
             } 
             
 			/**
@@ -101,9 +101,11 @@ public class WechatService {
                 responseContent="您输入的用户名不存在!";
                 isChecked=false;
             } 
-            else if(activityCompletionStatus!=null){
+            else if(isChecked&&activityCompletionStatus!=null){
             	log.info("你重复输入了..");
-                responseContent="每个用户只能使用一次验证码来提升算力！";
+                //responseContent="每个用户只能使用一次验证码来提升算力！";
+            	Integer idenfyCode=userService.findUserByName(map.get("Content")).getIdentifyCode();
+            	responseContent="用户"+map.get("Content")+"的验证码是:"+idenfyCode.toString()+"\n";
             } 
             else {
                 responseContent="您的输入有误!请重新输入:'获取验证码'";

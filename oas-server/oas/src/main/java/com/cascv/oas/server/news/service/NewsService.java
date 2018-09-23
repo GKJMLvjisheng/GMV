@@ -47,12 +47,14 @@ public class NewsService {
 	
 	public List<NewsModel> selectAllNews() 
 	{
-		List<NewsModel> newsModelList = newsModelMapper.selectAllNews();
-		for (NewsModel newsModel : newsModelList) {
-		    String fullLink = mediaServer.getImageHost() + newsModel.getNewsPicturePath();
-		    newsModel.setNewsPicturePath(fullLink);
-		  }
-		return newsModelList;
+//		List<NewsModel> newsModelList = newsModelMapper.selectAllNews();
+//		for (NewsModel newsModel : newsModelList) {
+//		    String fullLink = mediaServer.getImageHost() + newsModel.getNewsPicturePath();
+//		    newsModel.setNewsPicturePath(fullLink);
+//		  }
+//		return newsModelList;
+		
+	return newsModelMapper.selectAllNews();
 		
 	}
 	

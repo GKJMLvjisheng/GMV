@@ -107,6 +107,13 @@
             and b.status = #{status}
             and b.user_uuid = #{userUuid}
     </select>
+    
+    <!-- 查询某用户通过某种方式累计算力提升 -->
+    <select id="countByUserUuidAndPowerSource" resultType="java.lang.Integer">
+    select SUM(power) from energy_ball 
+    where power_source=#{powerSource} and user_uuid=#{userUuid}
+    </select>
+    
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
         <id column="uuid" property="uuid"/>
         <result column="value" property="value"/>

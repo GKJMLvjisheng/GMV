@@ -75,8 +75,10 @@ public class UserService {
     
     userModel.setCreated(now);
     userModel.setUpdated(now);
+    
     userModelMapper.insertUser(userModel);
     log.info("inviteCode {}", userModel.getInviteCode());
+    log.info("inviteFrom {}", userModel.getInviteFrom());
     return ErrorCode.SUCCESS;
   }
   

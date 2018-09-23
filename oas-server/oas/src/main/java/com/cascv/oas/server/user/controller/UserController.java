@@ -117,7 +117,7 @@ public class UserController {
 	@WriteLog(value="Register")
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 
-	  String password = userModel.getPassword();
+	    String password = userModel.getPassword();
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
@@ -200,7 +200,7 @@ public class UserController {
     	    			log.info("无三级用户！");
     	    		}
     	        return new ResponseEntity.Builder<Integer>()
-    	                .setData(0)
+    	                .setData(1)
     	                .setErrorCode(ErrorCode.SUCCESS)
     	                .build();
     	    	
@@ -208,7 +208,7 @@ public class UserController {
     	    	log.info("用户不是邀请用户，自主注册用户！");
 				return new ResponseEntity.Builder<Integer>()
 		                   .setData(1)
-		                   .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                   .setErrorCode(ErrorCode.SUCCESS)
 		                   .build();
     	    }
     }
@@ -249,8 +249,7 @@ public class UserController {
 	  info.put("birthday", userModel.getBirthday());
 	  info.put("email", userModel.getEmail());
 	  info.put("mobile", userModel.getMobile());
-	  String fullLink = mediaServer.getImageHost() + userModel.getProfile();
-	  info.put("profile", fullLink);
+	  info.put("profile", userModel.getProfile());
 	  log.info("****end****");
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  

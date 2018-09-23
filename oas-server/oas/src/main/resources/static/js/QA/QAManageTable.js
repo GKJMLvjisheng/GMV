@@ -22,20 +22,27 @@ function initQuestionGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"questionId",//Indicate an unique identifier for each row
+		uniqueId:"topicId",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
-		sortName: 'questionId', // 要排序的字段
+		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
 		columns : [{
 
-			title : "问题",
+			title : "序号",
+			field : "topicId",
+			align: 'center',
+			valign: 'middle',
+			width:  '60px',
 
-			//field : "questionContent",
-			field : "newsTitle",
+		},
+			{
+
+			title : "问题",
+			field : "question",
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
@@ -43,20 +50,25 @@ function initQuestionGrid(data) {
 		},
 			{
 
-			title : "A",
-
-			//field : "choiceContent1",
-			field : "newsTitle",
+			title : "选项A",
+			field : "choiceA",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
 
 		}, {
 
-			title : "B",
+			title : "选项B",
+			field : "choiceB",
+			align: 'center',
+			valign: 'middle',
+			width:  '120px',
 
-			//field : "choiceContent2",
-			field : "newsTitle",
+		},
+		{
+
+			title : "选项C",
+			field : "choiceC",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
@@ -65,19 +77,15 @@ function initQuestionGrid(data) {
 		{
 
 			title : "答案",
-
-			//field : "answer",
-			field : "newsTitle",
+			field : "choiceRight",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
 		}, 
 		{
 
-			title : " 操作",
-			
-			//field : "questionId",
-			field : "newsId",
+			title : " 操作",			
+			field : "topicId",
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
@@ -93,36 +101,25 @@ function initQuestionGrid(data) {
 function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewQuestionById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+    
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditQuestionById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteQuestionById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
 }
  
-function ViewQuestionById(id){	
-
-		//获取选中行的数据		
-		var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-		$('#QquestionId').val(rows.questionId);
-		$('#QquestionContent').val(rows.questionContent);
-		$('#QchoiceContent1').val(rows.choiceContent1);
-		$('#QchoiceContent2').val(rows.choiceContent2);
-		$('#Qanswer').val(rows.answer);
-		$("#qureyQuestionModal").modal("show");
-		
-
-}	
 function EditQuestionById(id){
     
     //获取选中行的数据
     var rows=$("#questionGrid").bootstrapTable('getRowByUniqueId', id);
-	$('#EquestionId').val(rows.questionId);
-	$('#EquestionContent').val(rows.questionContent);
-	$('#EchoiceContent1').val(rows.choiceContent1);
-	$('#EchoiceContent2').val(rows.choiceContent2);
-	$('#Eanswer').val(rows.answer);				
-    $("#updateQuestionModal").modal("show");           
+	    $('#EtopicId').val(rows.topicId);
+		$('#Equestion').val(rows.question);
+		$('#EchoiceA').val(rows.choiceA);
+		$('#EchoiceB').val(rows.choiceB);
+		$('#EchoiceC').val(rows.choiceC);
+		$('#EchoiceRight').val(rows.choiceRight);
+		$(":radio[name='radio'][value='" + rows.choiceRight + "']").prop("checked", "checked");			
+		$("#updateQuestionModal").modal("show");           
   }
 
 
@@ -133,11 +130,11 @@ function deleteQuestionById(id)
 		  return;
 		 }
 
-	data={"questionId":id};
+	data={"topicId":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 
-		url:"/api/v1/userCenter/deleteQuestion",
+		url:"/api/v1/computingPower/deleteTopic",
 		data: JSON.stringify(data),
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
