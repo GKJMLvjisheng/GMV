@@ -129,7 +129,7 @@ public class LoginVerificationCodeController {
 		log.info("前端输入：{}",identifyCode);
 		log.info("contrastCode");
 		log.info("后端session保存：{}",session.getAttribute("randCheckCode"));
-		log.info("前后端验证码比对：{}",identifyCode.equalsIgnoreCase((String) session.getAttribute("randCheckCode")));
+		if(identifyCode!=null) {
 		int code=0;
 		if (identifyCode.equalsIgnoreCase((String) session.getAttribute("randCheckCode"))==true) {
 			code = 0;
@@ -141,5 +141,14 @@ public class LoginVerificationCodeController {
 	              .setData(info)
 	              .setErrorCode(ErrorCode.SUCCESS)
 	              .build();
+		}else
+		{
+			String msg="null";
+			info.put("msg", msg);
+			return new ResponseEntity.Builder<Map<String, Object>>()
+		              .setData(info)
+		              .setErrorCode(ErrorCode.SUCCESS)
+		              .build();
+		}
 	}
 }
