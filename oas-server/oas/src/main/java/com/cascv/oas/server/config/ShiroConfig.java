@@ -206,7 +206,7 @@ public class ShiroConfig {
 		
 		//让微信接口免登录访问
 		filterChainDefinitionMap.put("/api/v1/wx/**", "anon");
-		//让验证码接口免登录访问
+		//验证码接口免登录访问
 		filterChainDefinitionMap.put("/api/v1/userCenter/getCode", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/contrastCode", "anon");
 		
