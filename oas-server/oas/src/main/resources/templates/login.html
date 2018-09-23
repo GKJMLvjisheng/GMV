@@ -11,7 +11,7 @@
     <link href="../static/css/login.css" th:href="@{css/login.css}" rel="stylesheet"/>
     <!-- 全局js -->
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 </head>
 
 <body class="signin">
@@ -38,15 +38,27 @@
             <div class="col-sm-5">
                 <form id="signupForm">
                     <h4 class="no-margins text-center">欢迎登录</h4>
-<!--                    <p class="no-margins">登录：</p> -->
 					<br/>
                     <input type="text" id="nameId" name="username" class="form-control uname" placeholder="用户名"/>
-                    <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"/>											
-					<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码(区分大小写)"/>				
+					<input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"/>
+
+					<div class="row" >
+						<div class="col-xs-6">
+							<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码" maxlength="5"/>										
+						</div>						
+						<div class="col-xs-6">							
+							<img style="margin-top: 17px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" width="85%"  class="checkcode"
+							onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 												
+						</div>							
+					</div>					
+					<span id="msgFirst"></span>	
+
+					<!-- <input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码(区分大小写)"/>				
 					<br/>				
-					<img style="margin-top: 3px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" align="middle" class="checkcode"
+					<img src="/api/v1/userCenter/getCode" id="CreateCheckCode" align="middle" class="checkcode"
 					onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 
-					<span id="msgFirst"></span>														
+					<span id="msgFirst"></span> -->
+
                     <button class="btn btn-primary btn-block" type="button" id="btnSubmit" onclick="submitLogin()">登录</button>
                     <br/>
                     <br/>

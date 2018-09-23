@@ -55,7 +55,7 @@ public class LoginVerificationCodeController {
 		response.setDateHeader("Expires", 0);
 		// 指定生成的响应图片,一定不能缺少这句话,否则错误.
 		response.setContentType("image/jpeg");
-		int width = 100, height = 30; // 指定生成验证码的宽度和高度
+		int width = 100, height = 35; // 指定生成验证码的宽度和高度
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 创建BufferedImage对象,其作用相当于一图片
 		Graphics g = image.getGraphics(); // 创建Graphics对象,其作用相当于画笔
 		Graphics2D g2d = (Graphics2D) g; // 创建Grapchics2D对象
