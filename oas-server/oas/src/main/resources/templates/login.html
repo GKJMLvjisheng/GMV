@@ -129,15 +129,9 @@
 		var identifyCode = $("#identifyCode").val();
 	    var data = {
 	      "identifyCode" : identifyCode
-<<<<<<< HEAD
 	    };	    
-		//alert(JSON.stringify(data));
-		
-=======
-	    };
-	    
 // 	    alert(JSON.stringify(data));
->>>>>>> 9ea25117ac97892a98405b0fca5d549edb5e6c03
+
 	    $.ajax({
 	      url : "/api/v1/userCenter/contrastCode",
 		  data :JSON.stringify(data),
