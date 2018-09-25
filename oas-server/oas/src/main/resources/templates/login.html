@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <title>web登陆系统 - 登录</title>
-    <meta name="keywords" content="web登陆系统">
-    
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-   
+    <meta name="keywords" content="web登陆系统">   
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>  
 <!--       <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>    -->
     <link href="../static/css/login.css" th:href="@{css/login.css}" rel="stylesheet"/>
     <!-- 全局js -->
- <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 </head>
 
 <body class="signin">
-
     <div class="signinpanel"> 
         <div class="row">
             <div class="col-sm-7">
@@ -41,14 +38,30 @@
             <div class="col-sm-5">
                 <form id="signupForm">
                     <h4 class="no-margins text-center">欢迎登录</h4>
-<!--                    <p class="no-margins">登录：</p> -->
 					<br/>
-                    <input type="text"   id="nameId"  name="username" class="form-control uname"     placeholder="用户名"     />
-                    <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"    />
+                    <input type="text" id="nameId" name="username" class="form-control uname" placeholder="用户名"/>
+					<input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"/>
 
-                    <button class="btn btn-primary btn-block" type=button id="btnSubmit" onclick="submitLogin()">登录</button>
-                     <br/>
-                     <br/>
+					<div class="row" >
+						<div class="col-xs-6">
+							<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码" maxlength="5"/>										
+						</div>						
+						<div class="col-xs-6">							
+							<img style="margin-top: 17px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" width="85%"  class="checkcode"
+							onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 												
+						</div>							
+					</div>					
+					<span id="msgFirst"></span>	
+
+					<!-- <input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码(区分大小写)"/>				
+					<br/>				
+					<img src="/api/v1/userCenter/getCode" id="CreateCheckCode" align="middle" class="checkcode"
+					onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 
+					<span id="msgFirst"></span> -->
+
+                    <button class="btn btn-primary btn-block" type="button" id="btnSubmit" onclick="submitLogin()">登录</button>
+                    <br/>
+                    <br/>
                 </form>
             </div>
         </div>
@@ -59,44 +72,80 @@
         </div>
     </div> 
 
-
-
 </body>
 <script>
-if (top != window)  
 
-    top.location.href = window.location.href;  
-	function submitLogin(){
-	data={
-		"name": $('#nameId').val(),
-	    "password": $('#passwordId').val(),
-	};
+	if (top != window)  
+		top.location.href = window.location.href;  
 	
-	var name=$('#nameId').val();
-	$.ajax({
-	   type: 'post',
-	   url: '/api/v1/userCenter/login',
-	   data: JSON.stringify(data),
-	   contentType : 'application/json;charset=utf8',
-	   dataType: 'json',
-	   cache: false,
-	   success: function (res) {
-	     if (res.code == 0) {
-	    	// var string=res.data.token;
-	    	 
-	    	 //window.location.replace(encodeURI(encodeURI("/main?string="+string+"&用户名字="+name)));
-	    	 window.location.replace("main")
-	     } else {
-	    	 alert(res.message);
-	     }
-	   },
-	   error: function (res) {
-		  alert(JSON.stringify(res));
-	   },
-	   complete: function () {
-	   }
-	  });
-	}
+	function submitLogin(){
+		data={
+			"name": $('#nameId').val(),
+			"password": $('#passwordId').val(),
+		};		
+		var name=$('#nameId').val();
 
+		$.ajax({
+		type: 'post',
+		url: '/api/v1/userCenter/login',
+		data: JSON.stringify(data),
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		success: function (res) {
+			if (res.code == 0) {
+				// var string=res.data.token;				
+				//window.location.replace(encodeURI(encodeURI("/main?string="+string+"&用户名字="+name)));
+				checkIdentify();
+			} else {
+				alert(res.message);
+			}
+		},
+		error: function (res) {
+			alert(JSON.stringify(res));
+		},
+		complete: function () {
+		}
+		});
+		}
+	
+	//检查log验证码正确与否
+	function checkIdentify(){
+		var identifyCode = $("#identifyCode").val();
+	    var data = {
+	      "identifyCode" : identifyCode
+	    };	    
+ 	    //alert(JSON.stringify(data));
+
+	    $.ajax({
+			url : "/api/v1/userCenter/contrastCode",
+			data :JSON.stringify(data),
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			type: 'post',
+			async : false,
+			cache: false,
+			success : function(res) {
+				if(res.data.msg=="null"){
+					$("#msgFirst").html("请输入四位验证码!");	          
+					$("#msgFirst").css("color", "#ff0000");	
+				}
+				else{
+					if (res.data.flag == 0) {
+						$("#msgFirst").html("输入的验证码正确！");
+						$("#msgFirst").css("color", "#00ff00");
+						window.location.replace("main");	          
+					} 
+					else {
+							$("#msgFirst").html("输入的验证码有误!");	          
+							$("#msgFirst").css("color", "#ff0000");	         
+						}
+				}			
+			},
+			error : function() {
+				alert('检查验证码是否存在发生错误');
+			}
+			});
+		}
 </script>
 </html>

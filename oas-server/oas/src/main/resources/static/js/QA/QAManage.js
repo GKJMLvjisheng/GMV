@@ -7,7 +7,73 @@ document.write("<script language=javascript src='/js/QA/QAManageTable.js'></scri
 $(function() {
 	//初始加载	
 	questionReady();
+	question.setAttribute("maxlength",40);
+	choiceA.setAttribute("maxlength",20);
+	choiceB.setAttribute("maxlength",20);
+	choiceC.setAttribute("maxlength",20);
+	Equestion.setAttribute("maxlength",40);
+	EchoiceA.setAttribute("maxlength",20);
+	EchoiceB.setAttribute("maxlength",20);
+	EchoiceC.setAttribute("maxlength",20);
 });
+
+//修改环保题目-检查标题
+function EcheckQuestion() {
+	var question = $("#Equestion").val(); 
+	var len=question.length;
+	//alert(len);
+	if (len==40) {
+		$("#msg_Equestion").html("输入标题长度为40个字符，已达上限");
+        $("#msg_Equestion").css("color", "red");
+	}
+	else {
+		$("#msg_Equestion").html("输入标题不超过40个字符，符合要求");
+        $("#msg_Equestion").css("color", "green");
+	}
+}
+
+//修改环保题目-检查选项A
+function EcheckChoiceA() {
+	var choiceA = $("#EchoiceA").val(); 
+	var len=choiceA.length;
+	//alert(len);
+	if (len==20) {
+		$("#msg_EchoiceA").html("输入标题长度为20个字符，已达上限");
+        $("#msg_EchoiceA").css("color", "red");
+	}
+	else {
+		$("#msg_EchoiceA").html("输入标题不超过20个字符，符合要求");
+        $("#msg_EchoiceA").css("color", "green");
+	}
+}
+//修改环保题目-检查选项B
+function EcheckChoiceB() {
+	var choiceB = $("#EchoiceB").val(); 
+	var len=choiceB.length;
+	//alert(len);
+	if (len==20) {
+		$("#msg_EchoiceB").html("输入标题长度为20个字符，已达上限");
+        $("#msg_EchoiceB").css("color", "red");
+	}
+	else {
+		$("#msg_EchoiceB").html("输入标题不超过20个字符，符合要求");
+        $("#msg_EchoiceB").css("color", "green");
+	}
+}
+//修改环保题目-检查选项C
+function EcheckChoiceC() {
+	var choiceC = $("#EchoiceC").val(); 
+	var len=choiceC.length;
+	//alert(len);
+	if (len==20) {
+		$("#msg_EchoiceC").html("输入标题长度为20个字符，已达上限");
+        $("#msg_EchoiceC").css("color", "red");
+	}
+	else {
+		$("#msg_EchoiceC").html("输入标题不超过20个字符，符合要求");
+        $("#msg_EchoiceC").css("color", "green");
+	}
+}
 
 function questionReady(){
 
@@ -34,18 +100,12 @@ function questionReady(){
 
 //新增问题
 function addQuestion(){	
-//	var param = $("#addQuestionForm").serializeArray();		
-	// var select=new Array();
-	// select[0] = $("#choiceContent1").val();
-	// select[1] = $("#choiceContent2").val();
-	//alert(JSON.stringify(select));
 	var formData = new FormData();
 	formData.append("question", $("#question").val());
 	formData.append("choiceA", $("#choiceA").val());
 	formData.append("choiceB", $("#choiceB").val());
-	formData.append("choiceC", $("#choiceC").val());
+	formData.append("choiceC", $("#choiceC").val());	
 	formData.append("choiceRight", $("#choiceRight").val());
-//  alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/computingPower/addTopic",
 		data:formData,
@@ -104,15 +164,13 @@ function updateQuestion(){
 
 		success:function(res){	
 			
-			if(res.code==0){
-				alert("success");
+			if(res.code==0){		
+				alert("修改成功");
 				location.reload();
-			    //newsReady();
 			}
 			else{
-				alert("修改失败");
-				}			
-			
+				lert("修改失败");
+				}						
 		},
 		error:function(){
 			alert("修改失败");

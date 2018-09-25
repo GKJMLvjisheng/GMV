@@ -117,7 +117,7 @@ public class UserController {
 	@WriteLog(value="Register")
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 
-	  String password = userModel.getPassword();
+	    String password = userModel.getPassword();
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
