@@ -16,6 +16,12 @@
     	where user_uuid = #{userUuid} 
   </select>
   
+    <select id="findWechatRecordByOpenid" resultMap="wechatModelMap">
+    select 
+		created from user_wechat
+    	where wechat_openid = #{wechatOpenid} 
+  </select>
+  
      <!-- insert wechatRecord -->
     <insert id="insertWechatRecord" parameterType="com.cascv.oas.server.energy.model.EnergyWechatModel">
     insert into user_wechat(

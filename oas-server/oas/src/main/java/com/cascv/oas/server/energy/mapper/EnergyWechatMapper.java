@@ -8,4 +8,5 @@ import com.cascv.oas.server.energy.model.EnergyWechatModel;
 public interface EnergyWechatMapper {
 	 Integer insertWechatRecord(EnergyWechatModel energyWechatModel);
 	 EnergyWechatModel findWechatRecordByUserUuid(String userUuid);
+	 EnergyWechatModel findWechatRecordByOpenid(String wechatOpenid);
 }
