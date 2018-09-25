@@ -118,7 +118,7 @@ function EditQuestionById(id){
 		$('#EchoiceB').val(rows.choiceB);
 		$('#EchoiceC').val(rows.choiceC);
 		$('#EchoiceRight').val(rows.choiceRight);
-		$(":radio[name='radio'][value='" + rows.choiceRight + "']").prop("checked", "checked");			
+		$(":radio[name='radio1'][value='" + rows.choiceRight + "']").prop("checked", "checked");			
 		$("#updateQuestionModal").modal("show");           
   }
 
