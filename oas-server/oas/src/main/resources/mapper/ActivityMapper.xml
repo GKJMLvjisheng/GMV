@@ -80,7 +80,14 @@
       select 
       <include refid="Base_Column_List" />
       from activity_source;
-  </select>    
+  </select> 
+  
+  <!-- select activity capacity_each_ball -->
+  <select id="selectActivityBySourceCode" resultMap="activityMap">
+      select 
+      <include refid="Base_Column_List" />
+      from activity_source where source_code = #{source_code};
+  </select> 
   
   <!-- update activity -->
   <update id="updateActivity" parameterType="com.cascv.oas.server.activity.model.ActivityModel">
@@ -101,7 +108,7 @@
           
   </update>
   
-  <resultMap id="EnergyBallMap" type="com.cascv.oas.server.energy.model.EnergyBall">
+  <resultMap id="EnergyBall" type="com.cascv.oas.server.energy.model.EnergyBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
         <result column="point_source" jdbcType="INTEGER" property="pointSource" />
@@ -122,7 +129,67 @@
         #{status}, #{timeCreated}, #{timeUpdated})
     </insert>
     
+    <resultMap id="EnergyTradeRecord" type="com.cascv.oas.server.energy.model.EnergyTradeRecord">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="energy_ball_uuid" jdbcType="VARCHAR" property="energyBallUuid" />
+        <result column="in_or_out" javaType="INTEGER" property="inOrOut" />
+        <result column="point_change" jdbcType="DECIMAL" property="pointChange"/>
+        <result column="power_change" jdbcType="DECIMAL" property="powerChange"/>
+        <result column="status" javaType="INTEGER" property="status" />
+        <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
+        <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
+    </resultMap>
+
+    <!-- 插入记录 -->
+    <insert id="insertEnergyTradeRecord" parameterType="com.cascv.oas.server.energy.model.EnergyTradeRecord">
+        insert into energy_trade_record (
+        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, power_change, status, time_created, time_updated)
+        values (
+        #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{pointChange}, #{powerChange},
+        #{status}, #{timeCreated}, #{timeUpdated})
+    </insert>
     
+    <resultMap id="EnergyWall" type="com.cascv.oas.server.energy.model.EnergyWallet">
+        <id column="uuid" property="uuid"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="point" property="point" jdbcType="DECIMAL"/>
+        <result column="power" property="power" jdbcType="DECIMAL"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+    </resultMap>
+    
+    <update id="increasePoint" >
+      update energy_wallet set point=point + #{value} where user_uuid = #{userUuid}
+    </update>
+
+    <update id="decreasePoint">
+      update energy_wallet set point=point - #{value} where user_uuid = #{userUuid}
+    </update>
+
+    <update id="increasePower">
+      update energy_wallet set power=power + #{value} where user_uuid = #{userUuid}
+    </update>
+
+    <update id="decreasePower">
+      update energy_wallet set power=power - #{value} where user_uuid = #{userUuid}
+    </update>
+  
+    
+    <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+        <id column="uuid" property="uuid"/>
+        <result column="user_uuid" property="userUuid"/>
+        <result column="status" property="status"/>
+        <result column="source_code" property="sourceCode"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
+    </resultMap>
+    
+  <insert id="insertActivityCompletionStatus" parameterType="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+      insert into activity_completion_status 
+      (uuid, user_uuid, source_code, status, created, updated)
+      values (#{uuid}, #{userUuid}, #{sourceCode}, #{status}, #{created}, #{updated})
+  </insert>
   
   
     

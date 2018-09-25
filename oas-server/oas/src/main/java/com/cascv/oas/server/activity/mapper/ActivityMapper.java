@@ -18,12 +18,10 @@ public interface ActivityMapper {
 	Integer insertActivity(ActivityModel activityModel);
 	List<ActivityModel> selectAllActivity();
 	Integer updateActivity(ActivityModel activityModel);
-	ActivityCompletionStatus selectUserActivityStatusByUserUuid(@Param("userUuid")String userUuid);
 	ActivityModel selectActivityBySourceCode(@Param("sourceCode")Integer sourceCode);
 	
 	Integer insertEnergyBall(EnergyBall energyBall);
 	Integer insertEnergyTradeRecord(EnergyTradeRecord energyTradeRecord);
-	Integer updateEnergyWallet(EnergyWallet energyWallet);
 	Integer insertActivityCompletionStatus(ActivityCompletionStatus activityCompletionStatus);
 	
 	Integer increasePoint(@Param("userUuid")  String userUuid, @Param("value") BigDecimal value);
