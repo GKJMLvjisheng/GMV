@@ -1,4 +1,4 @@
-package com.cascv.oas.server.verson.controller;
+package com.cascv.oas.server.version.controller;
 /**
  * @author Ming Yang
  */
