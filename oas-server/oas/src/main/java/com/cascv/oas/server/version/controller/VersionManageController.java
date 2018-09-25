@@ -1,4 +1,4 @@
-package com.cascv.oas.server.verson.controller;
+package com.cascv.oas.server.version.controller;
 /**
  * @author Ming Yang
  */
@@ -21,8 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
-import com.cascv.oas.server.verson.model.VersionModel;
-import com.cascv.oas.server.verson.vo.VersionInfo;
+import com.cascv.oas.server.version.model.VersionModel;
+import com.cascv.oas.server.version.vo.VersionInfo;
 
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -87,5 +87,22 @@ public ResponseEntity<?> upLoadApp(VersionInfo versionInfo,@RequestParam("file")
 				.setErrorCode(ErrorCode.GENERAL_ERROR)
 				.build();
   		  }
-} 	
+} 
+@PostMapping(value="/downloadApp")
+@ResponseBody
+public ResponseEntity<?> downloadApp(){
+	
+	VersionInfo versionInfo=new VersionInfo();
+	
+	Integer code=2;
+	String versionCode=code.toString();
+	versionInfo.setVersionCode(versionCode);
+	String appUrl="http://18.219.19.160:8080/Apps/FirstVersion/App-release.apk";
+	versionInfo.setAppUrl(appUrl);
+	
+	return new ResponseEntity.Builder<VersionInfo>()
+			.setData(versionInfo)
+			.setErrorCode(ErrorCode.SUCCESS)
+			.build();
+}
 }
