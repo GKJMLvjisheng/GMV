@@ -40,11 +40,11 @@
                     <h4 class="no-margins text-center">欢迎登录</h4>
 					<br/>
                     <input type="text" id="nameId" name="username" class="form-control uname" placeholder="用户名"/>
-					<input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"/>
+					<input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码" onblur="checkUser()"/>
 
 					<div class="row" >
 						<div class="col-xs-6">
-							<input type="text" id="identifyCode" class="form-control checkinput" placeholder="验证码" maxlength="5"/>										
+							<input type="text" id="identifyCode" oninput="checkIdentify(event)" class="form-control checkinput" placeholder="四位验证码" maxlength="4"/>										
 						</div>						
 						<div class="col-xs-6">							
 							<img style="margin-top: 17px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" width="85%"  class="checkcode"
@@ -75,10 +75,13 @@
 </body>
 <script>
 
+	var check1 = 0;
+	var check2 = 0;
+
 	if (top != window)  
 		top.location.href = window.location.href;  
 	
-	function submitLogin(){
+	function checkUser(){
 		data={
 			"name": $('#nameId').val(),
 			"password": $('#passwordId').val(),
@@ -94,9 +97,9 @@
 		cache: false,
 		success: function (res) {
 			if (res.code == 0) {
-				// var string=res.data.token;				
-				//window.location.replace(encodeURI(encodeURI("/main?string="+string+"&用户名字="+name)));
-				checkIdentify();
+				//checkIdentify();
+				check1 = 1;
+				return check1;
 			} else {
 				alert(res.message);
 			}
@@ -109,15 +112,16 @@
 		});
 		}
 	
-	//检查log验证码正确与否
-	function checkIdentify(){
+	//检查验证码正确与否
+	function checkIdentify(e){
 		var identifyCode = $("#identifyCode").val();
+		len = identifyCode.length;
 	    var data = {
 	      "identifyCode" : identifyCode
-	    };	    
- 	    //alert(JSON.stringify(data));
-
-	    $.ajax({
+		};
+			    
+		if(len==4){
+			$.ajax({
 			url : "/api/v1/userCenter/contrastCode",
 			data :JSON.stringify(data),
 			contentType : 'application/json;charset=utf8',
@@ -126,26 +130,62 @@
 			async : false,
 			cache: false,
 			success : function(res) {
-				if(res.data.msg=="null"){
-					$("#msgFirst").html("请输入四位验证码!");	          
-					$("#msgFirst").css("color", "#ff0000");	
-				}
-				else{
-					if (res.data.flag == 0) {
-						$("#msgFirst").html("输入的验证码正确！");
-						$("#msgFirst").css("color", "#00ff00");
-						window.location.replace("main");	          
-					} 
-					else {
-							$("#msgFirst").html("输入的验证码有误!");	          
-							$("#msgFirst").css("color", "#ff0000");	         
-						}
-				}			
+				if (res.data.flag == 0) {
+					$("#msgFirst").html("输入的验证码正确！");
+					$("#msgFirst").css("color", "#00ff00");
+					//window.location.replace("main");
+					check2 = 1;	
+					return check2;          
+				} 
+				else {
+					$("#msgFirst").html("输入的验证码有误!");	          
+					$("#msgFirst").css("color", "#ff0000");
+					return;	         
+					}	
 			},
 			error : function() {
 				alert('检查验证码是否存在发生错误');
 			}
 			});
+		} 
+		else {
+			$("#msgFirst").html("请确认输入验证码位数!");	          
+			$("#msgFirst").css("color", "#ff0000");	 
+		}	    
+	}
+
+	function submitLogin(){
+		var identifyCode = $("#identifyCode").val();
+		var data = {
+	      "identifyCode" : identifyCode
+		};
+		
+		$.ajax({
+		url : "/api/v1/userCenter/contrastCode",
+		data :JSON.stringify(data),
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		type: 'post',
+		async : false,
+		cache: false,
+		success : function(res) {
+			if(res.data.msg=="null"){
+				$("#msgFirst").html("请输入四位验证码!");	          
+				$("#msgFirst").css("color", "#ff0000");
+				return;	
+			}
+		},
+		error : function() {
+			alert('检查验证码是否存在发生错误');
 		}
+		});
+
+		if(check1 && check2){
+			window.location.replace("main");
+		}	
+
+
+						
+	}
 </script>
 </html>
