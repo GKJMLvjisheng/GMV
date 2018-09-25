@@ -26,7 +26,7 @@
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
-         <h4>{{index}}</h4>
+         <!--<h4>{{index}}</h4>-->
         </div>
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
@@ -390,8 +390,8 @@ export default {
       this.getCurrentPower()
       this.getEnergyAnalysis()
       this.getUserInfo()*/
-     // location.reload()
-     this.reload()
+     location.reload()
+     //this.reload()
       setTimeout(() => {
         done()
       //s this.removeclass()

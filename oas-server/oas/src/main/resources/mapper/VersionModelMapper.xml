@@ -20,7 +20,7 @@
     </selectKey>
     insert into version_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      uuid,
+<!--       uuid, -->
       <if test="versionCode!= null">
         version_code,
       </if>
@@ -33,7 +33,7 @@
         created,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      #{uuid,jdbcType=VARCHAR},
+<!--       #{uuid,jdbcType=INTEGER}, -->
       <if test="versionCode!= null">
         #{version_code,jdbcType=INTEGER},
       </if>

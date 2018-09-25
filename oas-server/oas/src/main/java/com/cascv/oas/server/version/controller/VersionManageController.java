@@ -70,7 +70,8 @@ public ResponseEntity<?> upLoadApp(VersionInfo versionInfo,@RequestParam("file")
 		log.info("versionCode={}",versionCode);
 		String str=mediaServer.getImageHost()+"/Apps/FirstVersion/";
 		String appUrl=str+fileName;
-		
+		log.info("appUrl={}",appUrl);
+		log.info("status={}",versionInfo.getVersionStatus()); 
 		versionModel.setVersionCode(versionCode);
 		versionModel.setCreated(now);
 		versionModel.setAppUrl(appUrl);

@@ -2,7 +2,7 @@
   <div id="app">
   
     <index></index>
-     <router-view v-if="isRouterAlive"></router-view>
+     <!--<router-view v-if="isRouterAlive"></router-view>-->
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import Index from '@/views/Index.vue'
 export default {
   name: 'app',
   //
-  provide (){
+  /*provide (){
 
      return {
 
@@ -45,7 +45,7 @@ export default {
 
     }
 
-  },
+  },*/
 //
   components: {
     Index
