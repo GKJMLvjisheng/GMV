@@ -91,7 +91,9 @@ public ResponseEntity<?> upLoadApp(VersionInfo versionInfo,@RequestParam("file")
 @PostMapping(value="/downloadApp")
 @ResponseBody
 public ResponseEntity<?> downloadApp(){
+	
 	VersionInfo versionInfo=new VersionInfo();
+	
 	Integer code=2;
 	String versionCode=code.toString();
 	versionInfo.setVersionCode(versionCode);
