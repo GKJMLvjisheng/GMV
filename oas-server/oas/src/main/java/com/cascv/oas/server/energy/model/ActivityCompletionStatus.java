@@ -8,5 +8,5 @@ public class ActivityCompletionStatus {
 	@Getter @Setter private String userUuid;
 	@Getter @Setter private Integer sourceCode;
 	@Getter @Setter private Integer status;
-
+	@Getter @Setter private String created;
 }
