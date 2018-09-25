@@ -10,5 +10,4 @@ public class ActivityCompletionStatus {
 	@Getter @Setter private Integer status;
 	@Getter @Setter private String created;
 	@Getter @Setter private String updated;
-
 }

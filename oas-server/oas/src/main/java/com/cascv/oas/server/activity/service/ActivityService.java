@@ -34,11 +34,6 @@ public class ActivityService {
 	private EnergyTradeRecord addEnergyTradeRecord = new EnergyTradeRecord();
 	private ActivityCompletionStatus addActivityCompletionStatus = new ActivityCompletionStatus();
 	
-//	public ActivityCompletionStatus selectUserActivityByUserUuid(String userUuid) {
-//		ActivityCompletionStatus activityCompletionStatus = activityMapper.selectUserActivityStatusByUserUuid(userUuid);
-//		return activityCompletionStatus;
-//		
-//	}
 	/**
      * 得到增加的point和power
      * @param sourceCode

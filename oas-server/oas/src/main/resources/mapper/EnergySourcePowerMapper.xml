@@ -29,8 +29,8 @@
     
   <insert id="insertActivity" parameterType="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
       insert into activity_completion_status 
-      (uuid, user_uuid, source_code, status)
-      values (#{uuid}, #{userUuid}, #{sourceCode}, #{status})
+      (uuid, user_uuid, source_code, status,created)
+      values (#{uuid}, #{userUuid}, #{sourceCode}, #{status},#{created})
   </insert>
   
   <select id="selectByUserUuid" resultMap="ActivityResultMap">
