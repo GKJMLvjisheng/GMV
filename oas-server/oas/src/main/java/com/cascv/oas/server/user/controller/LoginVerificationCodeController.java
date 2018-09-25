@@ -13,14 +13,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.user.wrapper.IdentifyCodeInfo;
 
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
+//@Controller
 @Slf4j
 @Api(value="User Interface")
 @RequestMapping(value="/api/v1/userCenter")
@@ -49,7 +55,7 @@ public class LoginVerificationCodeController {
 		response.setDateHeader("Expires", 0);
 		// 指定生成的响应图片,一定不能缺少这句话,否则错误.
 		response.setContentType("image/jpeg");
-		int width = 100, height = 30; // 指定生成验证码的宽度和高度
+		int width = 100, height = 35; // 指定生成验证码的宽度和高度
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); // 创建BufferedImage对象,其作用相当于一图片
 		Graphics g = image.getGraphics(); // 创建Graphics对象,其作用相当于画笔
 		Graphics2D g2d = (Graphics2D) g; // 创建Grapchics2D对象
@@ -108,7 +114,7 @@ public class LoginVerificationCodeController {
 		HttpSession session = request.getSession(true);
 		// 把当前生成的验证码存在session中，当用户输入后进行对比
 		session.setAttribute("randCheckCode", sRand);
-		log.info("hello" + sRand);
+		log.info("后端产生验证码={}",sRand);
 		g.dispose(); // 释放g所占用的系统资源
 		ImageIO.write(image, "JPEG", response.getOutputStream()); // 输出图片
 	}
@@ -116,18 +122,36 @@ public class LoginVerificationCodeController {
 	// 对比前端输入验证码是否正确
 	@PostMapping(value = "/contrastCode")
 	@ResponseBody
-	public int contrastCode(String identifyCode, HttpSession session) throws Exception {
+	public ResponseEntity<?> contrastCode(@RequestBody IdentifyCodeInfo identifyCodeInfo, HttpSession session) throws Exception {
+		Map<String,Object> info=new HashMap<>();
+		String identifyCode=identifyCodeInfo.getIdentifyCode();
 		log.info("--------对比验证码--------");
 		log.info("前端输入：{}",identifyCode);
 		log.info("contrastCode");
 		log.info("后端session保存：{}",session.getAttribute("randCheckCode"));
-		log.info("前后端验证码比对：{}",identifyCode.equalsIgnoreCase((String) session.getAttribute("randCheckCode")));
-		int flag = 0;
-		if (identifyCode.equalsIgnoreCase((String) session.getAttribute("randCheckCode"))) {
-			flag = 1;
-		} else {
+		if(identifyCode!="") {
+			log.info("--------对比验证码-------2222-");	
+		int flag;
+		String randCheckCode=session.getAttribute("randCheckCode").toString();
+		if (identifyCode.equals(randCheckCode)) {
 			flag = 0;
+		} else {
+			flag = 1;
 		}
-		return flag;
+		info.put("flag", flag);
+		return new ResponseEntity.Builder<Map<String, Object>>()
+	              .setData(info)
+	              .setErrorCode(ErrorCode.SUCCESS)
+	              .build();
+		}else
+		{
+			log.info("--------对比验证码-------333-");
+			String msg="null";
+			info.put("msg", msg);
+			return new ResponseEntity.Builder<Map<String, Object>>()
+		              .setData(info)
+		              .setErrorCode(ErrorCode.GENERAL_ERROR)
+		              .build();
+		}
 	}
 }

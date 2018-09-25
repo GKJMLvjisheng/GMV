@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.log.mapper.LogModelMapper">
+  <resultMap id="logModelMap" type="com.cascv.oas.server.log.model.LogModel">
+	<id column="uuid" property="uuid" />
+	<result column="user" property="user"/>
+	<result column="host" property="host"/>
+	<result column="session_id" property="sessionId"/>
+    <result column="action" property="action"/>
+    <result column="comment" property="comment"/>
+	<result column="time" property="time"/>
+  </resultMap>
+ 
+  <sql id="Base_Column_List">
+    uuid, user, host, session_id, action, comment, time 
+  </sql>
+  
+  <!-- insert user -->
+  <insert id="insertSelective" parameterType="com.cascv.oas.server.log.model.LogModel">
+    insert into log_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      uuid,
+      action,
+      time,
+      <if test="user != null">
+        user,
+      </if>
+      <if test="host != null">
+        host,
+      </if>
+      <if test="sessionId != null">
+        session_id,
+      </if>
+      <if test="comment != null">
+        comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{uuid,jdbcType=VARCHAR},
+      #{action,jdbcType=VARCHAR},
+      #{time,jdbcType=VARCHAR},
+      <if test="user != null">
+        #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="host != null">
+        #{host,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionId != null">
+        #{sessionId,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+ 
+  <select id="selectPage" resultMap="logModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from log_info order by time  desc limit #{offset},#{limit};
+  </select>
+  
+  
+  <select id="countTotal" resultType="java.lang.Integer">
+  	select count(*) from log_info;
+  </select>
+  
+</mapper>
+
