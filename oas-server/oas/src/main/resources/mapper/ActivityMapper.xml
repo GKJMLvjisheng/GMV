@@ -101,5 +101,29 @@
           
   </update>
   
+  <resultMap id="EnergyBallMap" type="com.cascv.oas.server.energy.model.EnergyBall">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="point_source" jdbcType="INTEGER" property="pointSource" />
+        <result column="point" jdbcType="DECIMAL" property="point"/>
+        <result column="power_source" jdbcType="INTEGER" property="powerSource"/>
+        <result column="power" jdbcType="DECIMAL" property="power"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
+        <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
+    </resultMap>
+    
+  <!-- 插入能量球 -->
+    <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
+        insert into energy_ball (
+        uuid, user_uuid, point_source, point, power_source, power, status, time_created, time_updated)
+        values (
+        #{uuid}, #{userUuid}, #{pointSource}, #{point}, #{powerSource}, #{power},
+        #{status}, #{timeCreated}, #{timeUpdated})
+    </insert>
+    
+    
+  
+  
     
 </mapper>

@@ -101,31 +101,5 @@ public class ActivityController {
 				.build();
 		
 	}
-	
-	@PostMapping(value = "/getReward")
-    @ResponseBody
-    public ResponseEntity<?> getReward(){
-		//userUuid = ShiroUtils.getUserUuid();
-		
-		ActivityCompletionStatus activityStatus = activityService.selectUserActivityByUserUuid(ShiroUtils.getUserUuid());
-		if(activityStatus.getStatus() == 1) {
-			activityService.addEnergyBall();
-			activityService.addEnergyTradeRecord();
-			activityService.addActivityCompletionStatus();
-			activityService.addEnergyWallet();
-			return new ResponseEntity.Builder<Integer>()
-					.setData(0)
-					.setErrorCode(ErrorCode.SUCCESS)
-					.build();
-		}
-		else {
-			return new ResponseEntity.Builder<Integer>()
-					.setData(0)
-					.setErrorCode(ErrorCode.SUCCESS)
-					.build();
-		}
-		
-		
-	}
 
 }
