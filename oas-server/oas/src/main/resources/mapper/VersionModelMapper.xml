@@ -15,7 +15,7 @@
   
   <!-- insert app -->
   <insert id="insertApp" parameterType="com.cascv.oas.server.version.model.VersionModel">
-    <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.String">
+    <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into version_info
@@ -35,7 +35,7 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       #{uuid,jdbcType=VARCHAR},
       <if test="versionCode!= null">
-        #{version_code,jdbcType=VARCHAR},
+        #{version_code,jdbcType=INTEGER},
       </if>
       <if test="versionStatus!= null">
         #{version_status,jdbcType=VARCHAR},
