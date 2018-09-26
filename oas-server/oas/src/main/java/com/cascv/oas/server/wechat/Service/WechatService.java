@@ -118,7 +118,8 @@ public class WechatService {
 			             }   	
 			        }
 		        else if (eventType.equals(WechatMessageUtil.MESSAGE_EVENT_SUBSCRIBE)) {//如果用户发送的是event类型的消息
-		            responseContent="欢迎国科云景的小伙伴们!\n"+"输入'获取验证码'即可获得相应的验证码来提升算力";
+		            //responseContent="欢迎国科云景的小伙伴们!\n"+"输入'获取验证码'即可获得相应的验证码来提升算力";
+		        	responseContent="你好，欢迎关注oaseschain！";
 		        }
 		        else if ("unsubscribe".equals(WechatMessageUtil.MESSAGE_EVENT_UNSUBSCRIBE)) {
 		        	log.info("用户:"+toUserName+"已经取消了关注！");
