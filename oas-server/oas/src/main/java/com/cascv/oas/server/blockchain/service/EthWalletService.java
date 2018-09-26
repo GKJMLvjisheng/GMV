@@ -196,7 +196,7 @@ public class EthWalletService {
       balance = coinClient.balanceOf(net, ethWallet.getAddress(), contract, weiFactor);
       log.info("getBalance of {}", balance);
     } catch (Exception e) {
-
+    	e.printStackTrace();
     }
     return balance;
   }
