@@ -700,11 +700,13 @@ public class UserController {
 	@PostMapping(value = "/inquireUserInfoByMobile")
     @ResponseBody
 	public ResponseEntity<?> inquireUserInfoByMobile(@RequestBody UserModel userModel){
-		String mobile=userModel.getMobile();				
+		String mobile=userModel.getMobile();
+		Map<String,String> info =new HashMap<String,String>();
         if(userService.findUserByMobile(mobile)!=null){
         	 String name=userService.findUserByMobile(mobile);
-        	 return new ResponseEntity.Builder<String>()
-   	              .setData(name).setErrorCode(ErrorCode.SUCCESS).build();
+        	 info.put("name", name);
+        	 return new ResponseEntity.Builder<Map<String,String>>()
+   	              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
         }else{
         	log.info("用户名不存在");
         	return new ResponseEntity.Builder<String>()
