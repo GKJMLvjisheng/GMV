@@ -88,4 +88,7 @@
       <include refid="Base_Column_List" />
     from eth_wallet where user_uuid = #{userUuid}
   </select>
+  
+  
+  
 </mapper>

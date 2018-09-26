@@ -139,6 +139,78 @@ public class ComputingPowerController {
 //		                    .build();
 //			        }			
 //		 }
+	/**
+	 * 暂时先用这块的代码
+	 * @param code
+	 * @return
+	 */
+	@PostMapping(value = "/promotePowerByWechatAccount")
+    @ResponseBody
+    public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
+	 		   
+		    String name=ShiroUtils.getUser().getName();	   
+		    String idenCode=code.getIdenCode();
+		   	String userUuid=ShiroUtils.getUserUuid();
+		   	try{
+		   		if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+	        	log.info("activityCompletionStatus is not null");
+	          }else {
+	        	  activityCompletionStatus=null;
+	        	  log.info("next");
+	                }
+		   		}catch(Exception e) {
+		   			log.info(e.getMessage());
+		   			e.getStackTrace();
+		   		}	   	
+		   	
+		   	UserModel userModel=new UserModel();
+		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
+		   	log.info(idenCode);
+		   if(code!=null&&activityCompletionStatus!=null){
+			   if(userModel.getIdentifyCode().toString().equals(idenCode)){
+				   if(activityCompletionStatus.getStatus()!=1){
+				   log.info("验证成功,提升算力！");
+			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
+			        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+			            //powerService.saveOAEnergyBall(userUuid,now);
+			            powerService.saveOAEnergyRecord(userUuid,now);
+			            energyOAResult = powerService.getOAEnergy();			      
+			            powerService.updateOAEnergyWallet(userUuid);
+			            activityCompletionStatus.setStatus(1);
+			            activityCompletionStatus.setUserUuid(userUuid);
+			            energySourcePowerMapper.updateStatus(activityCompletionStatus);
+			            //一个验证码只能使用一次
+			            log.info(name);
+			            return new ResponseEntity.Builder<Integer>()
+			                    .setData(0)
+			                    .setErrorCode(ErrorCode.SUCCESS)
+				                .build();
+			   }else {
+				   log.info("每个用户只能使用一次验证码来提升算力!");
+				   return new ResponseEntity.Builder<Integer>()
+		                    .setData(2)
+		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                    .build();
+			        }
+			   }
+			   else {
+				   log.info("验证码输入错误!");
+				   return new ResponseEntity.Builder<Integer>()
+		                    .setData(1)
+		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+		                    .build();
+			        }
+			     }
+		   else {
+			   log.info("用户名不存在！");
+			   return new ResponseEntity.Builder<Integer>()
+	                    .setData(1)
+	                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+	                    .build(); 
+		   }
+		 }		
+	
 	
   @PostMapping(value = "/checkIdentifyCode")
   @ResponseBody

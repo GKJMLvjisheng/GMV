@@ -44,20 +44,20 @@ function versionReady(){
 }
 
 //检查图片格式是否符合要求
-
-function checkVersionFile(fileName)
-{
-	var imgarr=fileName.split('\\'); //分割
+$(function(){
+$('#versionFile').change(function(e) {
+	var animateimg = $("#versionFile").val();
+	var imgarr=animateimg.split('\\'); //分割
 	var myimg=imgarr[imgarr.length-1]; // 获取图片名
 	//alert("picName="+myimg);
 	var houzui = myimg.lastIndexOf('.'); //获取 . 出现的位置
 	var ext = myimg.substring(houzui, myimg.length).toUpperCase();  //切割 . 获取文件后缀
 	console.log(ext);
-	var file = $('#versionFile').get(0).files[0]; //获取上传的文件
+	var file = $("#versionFile").get(0).files[0]; //获取上传的文件
 	var fileSize = file.size;           //获取上传的文件大小
 	//alert("fileSize="+fileSize/1000+"KB");
 	var maxSize = 10485760;//最大10MB
-	
+	check2=1;
 	if(ext !='.APK'){
 		
 	    $("#msg_versionFile").html("app类型错误,请上传.apk后缀的文件");
@@ -76,39 +76,46 @@ function checkVersionFile(fileName)
 	    $("#msg_versionFile").css("color", "green");
 	    
 	}
-}
-function checkEversionFile(fileName)
-{
-	var imgarr=fileName.split('\\'); //分割
-	var myimg=imgarr[imgarr.length-1]; // 获取图片名
-	//alert("picName="+myimg);
-	var houzui = myimg.lastIndexOf('.'); //获取 . 出现的位置
-	var ext = myimg.substring(houzui, myimg.length).toUpperCase();  //切割 . 获取文件后缀
-	console.log(ext);
-	var file = $('#EversionFile').get(0).files[0]; //获取上传的文件
-	var fileSize = file.size;           //获取上传的文件大小
-	//alert("fileSize="+fileSize/1000+"KB");
-	var maxSize = 10485760;//最大10MB
+});
+	$('#EversionFile').change(function(e) {
 	
-	if(ext !='.APK'){
+		var animateimg = $("#EversionFile").val();
+		var imgarr=animateimg.split('\\'); //分割
 		
-	    $("#msg_EversionFile").html("app类型错误,请上传.apk后缀的文件");
-	    $("#msg_EversionFile").css("color", "red");
-	    check3=0;
-	    return;
-	   
-	}
-	//else if(parseInt(fileSize) >= parseInt(maxSize)){
-	//    $("#msg_versionFile").html("上传的文件不能超过1MB");
-	//    $("#msg_versionFile").css("color", "red");
-	//    
-	//}
-	else {
-		$("#msg_EversionFile").html("上传的版本格式符合要求");
-	    $("#msg_EversionFile").css("color", "green");
-	    
-	}
-}
+		var myimg=imgarr[imgarr.length-1]; // 获取图片名
+		//alert("picName="+myimg);
+		var houzui = myimg.lastIndexOf('.'); //获取 . 出现的位置
+		var ext = myimg.substring(houzui, myimg.length).toUpperCase();  //切割 . 获取文件后缀
+		console.log(ext);
+		var file = $('#EversionFile').get(0).files[0]; //获取上传的文件
+		var fileSize = file.size;           //获取上传的文件大小
+		//alert("fileSize="+fileSize/1000+"KB");
+		var maxSize = 10485760;//最大10MB
+		check3=1;
+		if(ext !='.APK'){
+			
+		    $("#msg_EversionFile").html("app类型错误,请上传.apk后缀的文件");
+		    $("#msg_EversionFile").css("color", "red");
+		    check3=0;
+		    return;
+		   
+		}
+		//else if(parseInt(fileSize) >= parseInt(maxSize)){
+		//    $("#msg_versionFile").html("上传的文件不能超过1MB");
+		//    $("#msg_versionFile").css("color", "red");
+		//    
+		//}
+		else {
+			$("#msg_EversionFile").html("上传的版本格式符合要求");
+		    $("#msg_EversionFile").css("color", "green");
+		    
+		}
+	});
+
+});
+
+
+
 function validateNumber(num)
 {
  
@@ -122,12 +129,14 @@ function checkVersionCode() {
 	var abstract = $("#versionCode").val(); 
 	var len=abstract.length;
 	//alert(len);
-
+	check1=1;
 	if(!validateNumber(abstract))
 		{
+		
+		check1=0;
 		$("#msg_versionCode").html("输入版本号由0-9十位数字组成");
         $("#msg_versionCode").css("color", "red");
-		check1=0;
+		
 		return;}
 	if (len==40) {
 		$("#msg_versionCode").html("输入版本号长度为40个字符，已达上限");
@@ -163,6 +172,7 @@ function addVersion(){
 		alert("版本号不能为空");
 		return;
 		}
+
 	if(check1===0)
 		{alert("请输入正确的版本号");
 		return;}
@@ -189,8 +199,8 @@ function addVersion(){
 	        $("#msg_versionFile").css("color", "red");
 	        return;
 		}
-		checkVersionFile(animateimg);
-		if(!check2)
+		//checkVersionFile(animateimg);
+		if(check2===0)
 			{return;}
 		var formData = new FormData();
 		var version_file = document.getElementById("versionFile");
@@ -262,13 +272,8 @@ function resteUpdate(){
 }
 
 function updateVersion(){
-	var eFile=$("#EversionFile").val();
-	
-	if(eFile)
-	{
-		checkEversionFile(eFile);}
-	
-	if(!check3)
+
+	if(check3===0)
 		{return;}
 	var formData = new FormData();
 	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
@@ -387,13 +392,13 @@ function initVersionGrid(data) {
 		},
 		{
 
-			title : "版本存放路径",
+			title : "版本下载地址",
 
 			field : "appUrl",
 			align: 'center',
 			valign: 'middle',
 			//width:  '140px',
-			//formatter: versionPath
+			formatter: versionPath
 
 		}, 
 		{
@@ -435,8 +440,13 @@ function formatterIndex(value, row, index){
 }
 function versionPath(value, row, index) {
 	var result = "";
-	var versionPath = value;      
-    result += "<a href="+versionPath+"><img src="+versionPath+" width='120px' height='80'></a>";
+	
+	var versionPath = value; 
+	var imgarr=versionPath.split('/'); //分割
+	var myimg=imgarr[imgarr.length-1]; // 获取图片名
+	
+    result += "<a href='javascript:;' onclick=\"displayQrcode('" + versionPath + "')\">"+myimg+"</a>";
+    //<img src="+versionPath+" width='120px' height='80'>
     			//"<span>"+newsPicturePath+"</span>";      
     return result;
 }
@@ -530,3 +540,18 @@ function deleteVersionById(id)
 	});
 });
 }
+function displayQrcode(value) {
+	//$("#QRuserinfocode").addClass("selected");
+    //var userName=$("#userName").val();
+	//alert(value);
+    var info=value;
+    var qrcode=$('#qrcodeCanvas').qrcode(info).hide();
+       var canvas=qrcode.find('canvas').get(0);
+       $('#image').attr('src',canvas.toDataURL('img/1.jpg'));        
+      
+          $("#qrcode").fadeIn("slow");
+      $("#qrcode").click(function() {
+          $("#qrcode").fadeOut("slow");
+          //$("#QRuserinfocode").removeClass("selected");
+      })
+  }
