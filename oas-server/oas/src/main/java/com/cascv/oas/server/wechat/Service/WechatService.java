@@ -110,7 +110,6 @@ public class WechatService {
 			        	         }
 			        		 }
 			        		 else{
-			        			 //responseContent="用户"+map.get("Content")+"已经绑定了其他微信号\n";
 			        			 responseContent="你已经绑定了用户，每个微信号只能绑定一个OasDapp账号!\n";
 			        			 log.info("该微信号已经绑定了其他用户!"); 
 			        			 isChecked=false;
