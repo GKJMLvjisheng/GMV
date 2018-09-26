@@ -99,17 +99,20 @@ public class WechatService {
 			        		 }else if(energyWechatMapper.findWechatRecordByUserUuid(userUuid)!=null){
 					        	Integer idenfyCode=userService.findUserByName(map.get("Content")).getIdentifyCode();
 					        	responseContent="用户"+map.get("Content")+"的验证码是:"+idenfyCode.toString()+"\n"; 
-			        	         log.info("该微信号绑定了当前用户!"); 			        			 
+			        	         log.info("该微信号绑定了当前用户!"); 
+			        	         isChecked=false;
 			        		 }
 			        		 else{
 			        			 //responseContent="用户"+map.get("Content")+"已经绑定了其他微信号\n";
 			        			 responseContent="每个微信号只能绑定一个OasDapp账号!\n";
 			        			 log.info("该微信号已经绑定了其他用户!"); 
+			        			 isChecked=false;
 			        		     }
 			        		
 			        	 }else{  
 			        		     responseContent="用户名不存在!\n";
 			        		     log.info("用户名不存在!");
+			        		     isChecked=false;
 			        	      }			     
 			        }    
 			        
