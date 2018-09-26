@@ -1118,7 +1118,7 @@ $(function ()
     //excel表导入
     var transferData=[]; 
   
-    	
+   $(function(){	
     $('#excelFile').change(function(e) {
     	
         var files = e.target.files;
@@ -1208,6 +1208,7 @@ $(function ()
 
         }
     });
+   });
     //发送excel数据
     function getExcelData()
     {	
