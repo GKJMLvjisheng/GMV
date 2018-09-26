@@ -369,4 +369,44 @@ public class ComputingPowerController {
 	    return new ResponseEntity.Builder<Map<String, Object>>()
 	              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 		  }
+	
+	/**
+	 * 查询用户的手机号是否为空，为空返回0，不为空返回1
+	 * @param null
+	 * @return
+	 */
+	@PostMapping(value = "/inquireUserMobile")
+    @ResponseBody
+	public ResponseEntity<?> inquireUserMobile(){
+		UserModel userModel=new UserModel();
+		String name=ShiroUtils.getUser().getName();
+        userModel=userService.findUserByName(name);
+        if(userModel.getMobile()!=null){
+        	 return new ResponseEntity.Builder<Integer>()
+   	              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+        }else{
+        	return new ResponseEntity.Builder<Integer>()
+     	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+        }	   
+     }
+	
+	/**
+	 * 查询用户的邮箱是否为空，为空返回0，不为空返回1
+	 * @param null
+	 * @return
+	 */
+	@PostMapping(value = "/inquireUserEmail")
+    @ResponseBody
+	public ResponseEntity<?> inquireUserEmail(){
+		UserModel userModel=new UserModel();
+		String name=ShiroUtils.getUser().getName();
+        userModel=userService.findUserByName(name);
+        if(userModel.getEmail()!=null){
+        	 return new ResponseEntity.Builder<Integer>()
+   	              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+        }else{
+        	return new ResponseEntity.Builder<Integer>()
+     	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+        }	   
+     }
 }
