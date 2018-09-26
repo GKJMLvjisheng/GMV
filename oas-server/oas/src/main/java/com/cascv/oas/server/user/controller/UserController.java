@@ -717,12 +717,13 @@ public class UserController {
 	@PostMapping(value = "/resetPassword")
     @ResponseBody
 	public ResponseEntity<?> resetPassword(@RequestBody UserModel userModel){
-		
+ 	       
       String name=userModel.getName();
   	  UserModel userNewModel=new UserModel();
   	  userNewModel=userService.findUserByName(name);
 	  String password=userModel.getPassword();
-	  String calcPassword=new Md5Hash(name + password + userModel.getSalt()).toHex().toString();
+	  String salt=userNewModel.getSalt();
+	  String calcPassword=new Md5Hash(name+password+salt).toHex().toString();
 	  log.info(calcPassword);
 	  userNewModel.setPassword(calcPassword);
 		  try{

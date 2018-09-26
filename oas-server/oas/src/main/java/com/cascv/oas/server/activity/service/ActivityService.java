@@ -72,15 +72,18 @@ public class ActivityService {
 	}
 	
 	/**
-     * 产生新的能量记录
+       * 产生新的能量记录
 	 * @param sourceCode 
      * @param userUuid, energyBallUuid
      * @return
      */
-	public EnergyTradeRecord getEnergyTradeRecord(String userUuid, String energyBallUuid, Integer sourceCode) {
+	public EnergyTradeRecord getEnergyTradeRecord(String userUuid, Integer sourceCode) {
 		addEnergyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addEnergyTradeRecord.setUserUuid(userUuid);
-		addEnergyTradeRecord.setEnergyBallUuid(energyBallUuid);
+		
+		EnergyBall energyBall = this.getEnergyBall(userUuid, sourceCode);
+		addEnergyTradeRecord.setEnergyBallUuid(energyBall.getUuid());
+		
 		addEnergyTradeRecord.setInOrOut(ENEGY_IN);
 		addEnergyTradeRecord.setPointChange(this.getNewEnergy(sourceCode).getNewPoint());
 		addEnergyTradeRecord.setPowerChange(this.getNewEnergy(sourceCode).getNewPower());
@@ -100,6 +103,8 @@ public class ActivityService {
      * @return
      */
 	public ActivityCompletionStatus getActivityCompletionStatus(String userUuid, Integer sourceCode) {
+		log.info("uuid{}",UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS));
+		addActivityCompletionStatus.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS));
 		addActivityCompletionStatus.setUserUuid(userUuid);
 		addActivityCompletionStatus.setSourceCode(sourceCode);
 		addActivityCompletionStatus.setStatus(STATUS_OF_ACTIVITY);
@@ -127,8 +132,8 @@ public class ActivityService {
      * @param userUuid, energyBallUuid
      * @return
      */
-	public Integer addEnergyTradeRecord(String userUuid, String energyBallUuid, Integer sourceCode) {
-		this.getEnergyTradeRecord(userUuid, energyBallUuid, sourceCode);		
+	public Integer addEnergyTradeRecord(String userUuid, Integer sourceCode) {
+		this.getEnergyTradeRecord(userUuid, sourceCode);		
 		return activityMapper.insertEnergyTradeRecord(addEnergyTradeRecord);		
 	}
 	

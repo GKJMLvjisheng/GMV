@@ -17,6 +17,7 @@ import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.ActivityModel;
 import com.cascv.oas.server.activity.service.ActivityService;
+import com.cascv.oas.server.activity.wrapper.ActivityGetReward;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -96,6 +97,22 @@ public class ActivityController {
 		activityModel.setUpdated(now);
 		activityMapper.updateActivity(activityModel);
 		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+		
+	}
+	
+	@PostMapping(value = "/getReward")
+    @ResponseBody
+    public ResponseEntity<?> getReward(@RequestBody ActivityGetReward activityGetReward ){
+		String userUuid = ShiroUtils.getUserUuid();
+		Integer sourceCode = activityGetReward.getSourceCode();
+		activityService.addEnergyBall(userUuid, sourceCode);
+		activityService.addEnergyTradeRecord(userUuid, sourceCode);
+		activityService.updateEnergyWallet(userUuid, sourceCode);
+		activityService.addActivityCompletionStatus(userUuid, sourceCode);
+		return new ResponseEntity.Builder<>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
