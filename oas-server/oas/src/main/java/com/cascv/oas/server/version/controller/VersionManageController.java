@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.List;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,10 @@ private VersionModelMapper versionModelMapper;
 private MediaServer mediaServer;
 	
 private static String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
-private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Apps"+File.separator+"FirstVersion"+File.separator;
+private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+File.separator+"Apps" + File.separator;
 @PostMapping(value="/upLoadApp")
 @ResponseBody
-public ResponseEntity<?> upLoadApp(VersionInfo versionInfo,@RequestParam("file") MultipartFile file){
+public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam("file") MultipartFile file){
 	File dir=new File(UPLOADED_FOLDER);
  	 if(!dir.exists()){
  	   dir.mkdirs();
@@ -55,8 +56,8 @@ public ResponseEntity<?> upLoadApp(VersionInfo versionInfo,@RequestParam("file")
   	Map<String,String> info = new HashMap<>();
   	
   	if(file!=null) {
-  		String fileName=file.getOriginalFilename();
-  		
+//  		String fileName=file.getOriginalFilename();
+  		String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
   		try {
   	    // Get the file and save it somewhere
         byte[] bytes = file.getBytes();
@@ -64,24 +65,34 @@ public ResponseEntity<?> upLoadApp(VersionInfo versionInfo,@RequestParam("file")
         Files.write(path, bytes);
         
 		VersionModel versionModel=new VersionModel();
-		String now=DateUtils.getTime();
 		
-		Integer versionCode=versionInfo.getVersionCode();
-		log.info("versionCode={}",versionCode);
 		String str=mediaServer.getImageHost()+"/Apps/FirstVersion/";
 		String appUrl=str+fileName;
+		log.info("appUrl={}",appUrl);
+		log.info("status={}",versionInfo.getVersionStatus());
 		
-		versionModel.setVersionCode(versionCode);
-		versionModel.setCreated(now);
-		versionModel.setAppUrl(appUrl);
+		versionModel.setVersionCode(versionInfo.getVersionCode());
 	    versionModel.setVersionStatus(versionInfo.getVersionStatus());
-	    
+	    versionModel.setAppUrl(appUrl);
+	    versionModel.setCreated(DateUtils.getTime());
+	    try {
 	    versionModelMapper.insertApp(versionModel);
-	    
+	    }catch(Exception e)
+	    {
+	    	e.printStackTrace();
+	  		String msg="no";
+	  		info.put("msg",msg);
+	  		log.info("文件上传失败，请重试！----");
+			return new ResponseEntity.Builder<Map<String, String>>()
+					.setData(info)
+					.setErrorCode(ErrorCode.GENERAL_ERROR)
+					.build();
+	    }
 		return new ResponseEntity.Builder<VersionModel>()
 				.setData(versionModel)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
+		
   	}catch (Exception e) {
   		String msg="error";
   		info.put("msg",msg);
@@ -192,7 +203,7 @@ public ResponseEntity<?> downloadApp(){
 	
 	Integer versionCode=2;
 	downloadVersionInfo.setVersionCode(versionCode);
-	String appUrl="http://18.219.19.160:8080/Apps/FirstVersion/App-release.apk";
+	String appUrl="http://18.219.19.160:8080/image/Apps/App-release.apk";
 	downloadVersionInfo.setAppUrl(appUrl);
 	return new ResponseEntity.Builder<DownloadVersionInfo>()
 			.setData(downloadVersionInfo)

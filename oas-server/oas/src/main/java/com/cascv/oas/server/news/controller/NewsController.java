@@ -66,7 +66,7 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            Path path = Paths.get(UPLOADED_FOLDER + fileName);
            Files.write(path, bytes);
            String pictureName=fileName;
-           log.info("pictureName=",pictureName);            
+           log.info("pictureName={}",pictureName);            
            String str="/image/news/";
            String newsPicturePath=str+pictureName;
            
@@ -80,8 +80,8 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            
            newsService.addNews(newsModel);
            log.info("新闻进行了上传图片");
-           return new ResponseEntity.Builder<Map<String, String>>()
-        	  	      .setData(info)
+           return new ResponseEntity.Builder<NewsModel>()
+        	  	      .setData(newsModel)
         	  	      .setErrorCode(ErrorCode.SUCCESS)
         	  	      .build();
        	}catch (Exception e)

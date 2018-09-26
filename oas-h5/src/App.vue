@@ -1,6 +1,8 @@
 <template>
   <div id="app">
+  
     <index></index>
+     <!--<router-view v-if="isRouterAlive"></router-view>-->
   </div>
 </template>
 
@@ -8,9 +10,47 @@
 import Index from '@/views/Index.vue'
 export default {
   name: 'app',
+  //
+  /*provide (){
+
+     return {
+
+       reload:this.reload
+
+     }
+
+  },
+
+  data(){
+
+    return {
+
+       isRouterAlive:true
+
+    }
+
+  },
+
+  methods:{
+
+    reload (){
+
+       this.isRouterAlive = false
+
+       this.$nextTick(function(){
+
+          this.isRouterAlive = true
+
+       })
+
+    }
+
+  },*/
+//
   components: {
     Index
   }
+  
 }
 </script>
 

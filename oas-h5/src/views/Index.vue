@@ -26,7 +26,7 @@
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
-         <h4>{{index}}</h4>
+         <!--<h4>{{index}}</h4>-->
         </div>
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
@@ -128,6 +128,8 @@ const energyBall = require("@/assets/images/ball.png");
 import { randomNum } from '@/utils/utils.js'
 import $ from 'jquery'
 export default {
+  //
+  inject:['reload'],
   name: "index",
   data() {
     return {
@@ -382,16 +384,17 @@ export default {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       
       //this.removeclass() 
-      this.getEnergyBall()
-      this.removeclass()
+      /*this.getEnergyBall()
+      
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
-      this.getUserInfo()
-   
+      this.getUserInfo()*/
+     location.reload()
+     //this.reload()
       setTimeout(() => {
         done()
-       
+      //s this.removeclass()
       },1000)
     /*var aaa =  this.$el.childNodes[0].childNodes[0].childNodes[3].childNodes[0].childNodes
     for(var i = 0;i<aaa.length;i++){
