@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.List;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,11 +143,10 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 	
 	Map<String,String> info = new HashMap<>();
 	VersionModel versionModel=new VersionModel();
-	String now=DateUtils.getTime();
+	
 	versionModel.setUuid(versionInfo.getUuid());
 	versionModel.setVersionCode(versionInfo.getVersionCode());
 	versionModel.setVersionStatus(versionInfo.getVersionStatus());
-	versionModel.setCreated(now);
 	
 	if(file!=null) {
 		//日期时间生成唯一标识文件名
@@ -190,7 +188,7 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
   		
 		return new ResponseEntity.Builder<VersionModel>()
 				.setData(versionModel)
-				.setErrorCode(ErrorCode.GENERAL_ERROR)
+				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
   		  }	
 }
@@ -198,16 +196,18 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 @PostMapping(value="/downloadApp")
 @ResponseBody
 public ResponseEntity<?> downloadApp(){
-	
+	List<VersionModel> stableVersionModels=versionModelMapper.selectAllAppsByStableVersion();
 	DownloadVersionInfo downloadVersionInfo=new DownloadVersionInfo();
-	
-	Integer versionCode=2;
+
+	Integer versionCode=stableVersionModels.get(0).getVersionCode();
 	downloadVersionInfo.setVersionCode(versionCode);
-	String appUrl="http://18.219.19.160:8080/image/Apps/App-release.apk";
+	String appUrl=stableVersionModels.get(0).getAppUrl();
 	downloadVersionInfo.setAppUrl(appUrl);
+	
 	return new ResponseEntity.Builder<DownloadVersionInfo>()
 			.setData(downloadVersionInfo)
 			.setErrorCode(ErrorCode.SUCCESS)
 			.build();
+
 }
 }

@@ -19,4 +19,5 @@ public interface VersionModelMapper {
 	 
 	 List<VersionModel> selectAllApps();	 
 	 
+	 List<VersionModel> selectAllAppsByStableVersion();
 }
