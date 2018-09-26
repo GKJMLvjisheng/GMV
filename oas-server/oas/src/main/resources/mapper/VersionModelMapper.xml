@@ -14,41 +14,56 @@
   </sql>
   
   <!-- insert app -->
+<!--   <insert id="insertApp" parameterType="com.cascv.oas.server.version.model.VersionModel"> -->
+<!--     <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer"> -->
+<!--       SELECT LAST_INSERT_ID() -->
+<!--     </selectKey> -->
+<!--     insert into version_info -->
+<!--     <trim prefix="(" suffix=")" suffixOverrides=","> -->
+<!--       <if test="versionCode != null"> -->
+<!--         version_code, -->
+<!--       </if> -->
+<!--       <if test="versionStatus != null"> -->
+<!--         version_status, -->
+<!--       </if> -->
+<!--       <if test="appUrl != null"> -->
+<!--         app_url, -->
+<!--       </if> -->
+<!--       <if test="created != null"> -->
+<!--         created, -->
+<!--        </if> -->
+<!--     </trim> -->
+<!--     <trim prefix="values (" suffix=")" suffixOverrides=","> -->
+<!--       <if test="versionCode != null"> -->
+<!--         #{version_code,jdbcType=INTEGER}, -->
+<!--       </if> -->
+<!--       <if test="versionStatus != null"> -->
+<!--         #{version_status,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="appUrl != null"> -->
+<!--         #{app_url,jdbcType=VARCHAR}, -->
+<!--       </if> -->
+<!--       <if test="created != null"> -->
+<!--         #{created,jdbcType=VARCHAR}, -->
+<!--       </if>     -->
+<!--     </trim> -->
+<!--    </insert> -->
+  
   <insert id="insertApp" parameterType="com.cascv.oas.server.version.model.VersionModel">
     <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into version_info
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-<!--       uuid, -->
-      <if test="versionCode!= null">
-        version_code,
-      </if>
-      <if test="versionStatus!= null">
-        version_status,
-      </if>
-      <if test="appUrl!= null">
-        app_url,
-      </if>
-        created,
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-<!--       #{uuid,jdbcType=INTEGER}, -->
-      <if test="versionCode!= null">
-        #{version_code,jdbcType=INTEGER},
-      </if>
-      <if test="versionStatus!= null">
-        #{version_status,jdbcType=VARCHAR},
-      </if>
-      <if test="appUrl!= null">
-        #{app_url,jdbcType=VARCHAR},
-      </if>
-        #{created,jdbcType=VARCHAR},
-    </trim>
-   </insert>
-  
+    (version_code,version_status,app_url,created)
+    values(
+    #{version_code,jdbcType=INTEGER},
+    #{version_status,jdbcType=VARCHAR},
+    #{app_url,jdbcType=VARCHAR}, 
+    #{created,jdbcType=VARCHAR}
+    )
+    </insert>
   <!-- delete app -->
-  <delete id="deleteApp" parameterType="java.lang.String">
+  <delete id="deleteApp" parameterType="java.lang.Integer">
     delete from version_info where uuid = #{uuid}
   </delete>
 
