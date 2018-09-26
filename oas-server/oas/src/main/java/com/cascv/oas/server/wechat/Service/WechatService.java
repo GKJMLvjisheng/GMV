@@ -78,7 +78,7 @@ public class WechatService {
 						            activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
 						            //未使用表示1
 						            activityCompletionStatus.setStatus(0);
-						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
+						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS);
 						            activityCompletionStatus.setUuid(uuid);
 						            activityCompletionStatus.setCreated(now);;
 						            energySourcePowerMapper.insertActivity(activityCompletionStatus);
@@ -88,8 +88,8 @@ public class WechatService {
 						            
 						            //进行微信与OasDapp用户的绑定
 						            EnergyWechatModel energyWechatModel=new EnergyWechatModel();			            						            
-						            log.info("uuid{}",UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-						            energyWechatModel.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+						            log.info("uuid{}",UuidUtils.getPrefixUUID(UuidPrefix.WECHAT_STATUS));
+						            energyWechatModel.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.WECHAT_STATUS));
 						            energyWechatModel.setUserUuid(userUuid);
 						            energyWechatModel.setWechatOpenid(openId);
 						            energyWechatModel.setCreated(now);

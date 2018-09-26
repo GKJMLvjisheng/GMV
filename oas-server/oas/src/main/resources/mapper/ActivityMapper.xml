@@ -86,7 +86,7 @@
   <select id="selectActivityBySourceCode" resultMap="activityMap">
       select 
       <include refid="Base_Column_List" />
-      from activity_source where source_code = #{source_code};
+      from activity_source where source_code = #{sourceCode};
   </select> 
   
   <!-- update activity -->
