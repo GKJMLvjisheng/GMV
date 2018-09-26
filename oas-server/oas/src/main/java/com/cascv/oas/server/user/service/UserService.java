@@ -146,7 +146,15 @@ public class UserService {
 	public Integer updateIdentifyCode(UserModel userModel) {
 		return userModelMapper.updateIdentifyCode(userModel);
 	}
-
+	
+	
+	public String findUserByMobile(String mobile) {
+		return userModelMapper.findUserByMobile(mobile);
+	}
+	
+	public Integer updateUserPassworde(UserModel userModel) {
+		return userModelMapper.updateUserPassworde(userModel);
+	}
 }
 
 

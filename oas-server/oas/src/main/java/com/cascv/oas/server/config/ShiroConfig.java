@@ -3,6 +3,7 @@ package com.cascv.oas.server.config;
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 
 import com.cascv.oas.server.filter.CaptchaValidateFilter;
+import com.cascv.oas.server.filter.KickoutSessionControlFilter;
 import com.cascv.oas.server.filter.LogoutFilter;
 import com.cascv.oas.server.filter.OnlineSessionFilter;
 import com.cascv.oas.server.filter.SyncOnlineSessionFilter;
@@ -38,10 +39,18 @@ public class ShiroConfig {
 	    @Value("${shiro.session.expireTime}")
 	    private int expireTime;
 
+	    @Value("${shiro.session.sessionCount}")
+	    private Integer sessionCount;
+	    
+	    
+	    @Value("${shiro.session.kickoutUrl}")
+	    private String kickoutUrl;
 	    // 相隔多久检查一次session的有效性，单位毫秒，默认就是10分钟
 	    @Value("${shiro.session.validationInterval}")
 	    private int validationInterval;
 
+	    @Value("${shiro.cache.prefix}")
+	    private String cachePrefix;
 	    // 验证码开关
 	    @Value("${shiro.user.captchaEbabled}")
 	    private boolean captchaEbabled;
@@ -209,11 +218,17 @@ public class ShiroConfig {
 		//验证码接口免登录访问
 		filterChainDefinitionMap.put("/api/v1/userCenter/getCode", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/contrastCode", "anon");
+		//忘记密码接口免登陆访问
+		filterChainDefinitionMap.put("/api/v1/userCenter/inquireUserInfoByMobile", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
 		
 		filterChainDefinitionMap.put("/api/v1/userCenter/login", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/registerConfirm", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/inquireName", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/mobileCheckCode", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/sendMobile", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
 		//filterChainDefinitionMap.put("/api/v1/ethWallet/selectContractSymbol", "anon");
 		filterChainDefinitionMap.put(loginUrl, "anon");		
 		
@@ -222,6 +237,7 @@ public class ShiroConfig {
 		filters.put("syncOnlineSession", syncOnlineSessionFilter());
 
 		filters.put("logout", logoutFilter());
+		filters.put("kickout", kickoutSessionControlFilter());
 		shiroFilterFactoryBean.setFilters(filters);
 
 
@@ -231,6 +247,21 @@ public class ShiroConfig {
 		return shiroFilterFactoryBean;
 	}
 
+	 @Bean
+	  public KickoutSessionControlFilter kickoutSessionControlFilter() {
+	    EhCacheManager cacheManager = getEhCacheManager();
+	    KickoutSessionControlFilter kickoutSessionControlFilter = new KickoutSessionControlFilter();
+	    // 
+	    kickoutSessionControlFilter.setCache(cacheManager.getCache(cachePrefix));
+	    
+	    kickoutSessionControlFilter.setSessionManager(sessionManager());
+	    
+	    // kickout the one come after, default is false, that is kickout the one before this login user
+	    kickoutSessionControlFilter.setMaxSession(sessionCount);  // max session for one user
+	    kickoutSessionControlFilter.setKickoutUrl(kickoutUrl);    // kickout to url
+	    return kickoutSessionControlFilter;
+	  }
+	 
 	// * 自定义在线用户处理过滤器
 	@Bean
 	public OnlineSessionFilter onlineSessionFilter()  {

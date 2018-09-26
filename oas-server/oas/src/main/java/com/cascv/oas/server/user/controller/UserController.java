@@ -255,6 +255,28 @@ public class UserController {
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
 	
+	@PostMapping(value="/inquireTradeRecordUserInfo")
+	@ResponseBody
+	public ResponseEntity<?> inquireTradeRecordUserInfo(@RequestBody String name){
+	  Map<String, String> info = new HashMap<>();
+	  UserModel userModel = new UserModel();
+	  userModel=userService.findUserByName(name);
+	  log.info("inviteCode11 {}", userModel.getInviteCode());	  
+	  info.put("name", userModel.getName());
+	  info.put("nickname", userModel.getNickname());
+	  info.put("inviteCode", userModel.getInviteCode().toString());
+	  info.put("gender", userModel.getGender());
+	  info.put("address", userModel.getAddress());
+	  info.put("birthday", userModel.getBirthday());
+	  info.put("email", userModel.getEmail());
+	  info.put("mobile", userModel.getMobile());
+	  log.info("****end****");
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info)
+	      .setErrorCode(ErrorCode.SUCCESS)
+	      .build();	  
+	}
+	
 	/*
 	 * Name:upadateUserInfo
 	 * Author:lvjisheng
@@ -692,5 +714,50 @@ public class UserController {
      	          .build();
        }
       
-}
+    }
+    
+    /**
+     * 根据手机号查询用户名
+     */
+	@PostMapping(value = "/inquireUserInfoByMobile")
+    @ResponseBody
+	public ResponseEntity<?> inquireUserInfoByMobile(@RequestBody UserModel userModel){
+		String mobile=userModel.getMobile();
+		Map<String,String> info =new HashMap<String,String>();
+        if(userService.findUserByMobile(mobile)!=null){
+        	 String name=userService.findUserByMobile(mobile);
+        	 info.put("name", name);
+        	 return new ResponseEntity.Builder<Map<String,String>>()
+   	              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+        }else{
+        	log.info("用户名不存在");
+        	return new ResponseEntity.Builder<String>()
+     	          .setData("empty").setErrorCode(ErrorCode.GENERAL_ERROR).build();
+        }	   
+     }
+    /**
+     * 重置密码
+     */
+	@PostMapping(value = "/resetPassword")
+    @ResponseBody
+	public ResponseEntity<?> resetPassword(@RequestBody UserModel userModel){
+ 	       
+      String name=userModel.getName();
+  	  UserModel userNewModel=new UserModel();
+  	  userNewModel=userService.findUserByName(name);
+	  String password=userModel.getPassword();
+	  String salt=userNewModel.getSalt();
+	  String calcPassword=new Md5Hash(name+password+salt).toHex().toString();
+	  log.info(calcPassword);
+	  userNewModel.setPassword(calcPassword);
+		  try{
+			  userService.updateUserPassworde(userNewModel);
+			  return new ResponseEntity.Builder<Integer>()
+		     	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();	 
+		  }catch(Exception e){
+			  log.info(e.getMessage());
+			  return new ResponseEntity.Builder<Integer>()
+		 	          .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		  }         
+     }
 }

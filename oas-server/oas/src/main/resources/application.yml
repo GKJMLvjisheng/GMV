@@ -53,15 +53,19 @@ shiro:
     maxAge: 30
   session:
     # default 30 minutes
-    expireTime: 30
+    expireTime: -100000000
     # interval syn session to db(default 1 minutes)
     dbSyncPeriod: 1
     # interval to validate session(default 10 minutes)
     validationInterval: 10
+    sessionCount: 1
+    kickoutUrl: "/kickout"
+  cache:
+    prefix: "shiro"
 
 server:
   port: 8080
-  session-timeout: 1800
+  session-timeout: -100000000 #1800
 
 media:
   server:

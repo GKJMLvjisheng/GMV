@@ -6,6 +6,7 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
@@ -13,9 +14,11 @@ import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +47,9 @@ public class EthWalletController {
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
   
+  @Autowired
+  private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
+  
 /*  @PostMapping(value="/selectContractSymbol")
   @ResponseBody
   @Transactional
@@ -62,6 +68,7 @@ public class EthWalletController {
   @PostMapping(value="/transfer")
   @ResponseBody
   @Transactional
+  @WriteLog(value="transfer")
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
 	  if(ethWalletTransfer.getToUserAddress().equals("0")) {
 		  return new ResponseEntity.Builder<Integer>()
@@ -106,6 +113,7 @@ public class EthWalletController {
   @PostMapping(value="/multiTtransfer")
   @ResponseBody
   @Transactional
+  @WriteLog(value="multiTransfer")
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
 		  
 		//前端传的值单位从wei改为Gwei，差额为10的9次方
@@ -252,6 +260,21 @@ public class EthWalletController {
         .setData(1)
         .setErrorCode(errorCode)
         .build();
+  }
+  
+  /**
+   * @author Ming Yang
+   * @return 交易钱包交易明细接口
+   */
+  @PostMapping(value="/inqureEthWalletTradeRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureEthWalletTradeRecord(){
+	  List<EthWalletTradeRecordInfo> ethWalletTradeRecords=ethWalletTradeRecordMapper.selectAllTradeRecord();
+		return new ResponseEntity.Builder<List<EthWalletTradeRecordInfo>>()
+		        .setData(ethWalletTradeRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
   }
   
 }

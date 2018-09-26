@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>  
+<!-- Name:upadateApp -->
+<!-- Author:yangming -->
+<!-- Date:2018.09.25 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cascv.oas.server.version.mapper.VersionModelMapper">
   <resultMap id="versionModelMap" type="com.cascv.oas.server.version.model.VersionModel">
@@ -13,42 +16,44 @@
     uuid, version_code, version_status,app_url,created
   </sql>
   
-  <!-- insert app -->
+<!--   insert app -->
   <insert id="insertApp" parameterType="com.cascv.oas.server.version.model.VersionModel">
     <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into version_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-<!--       uuid, -->
-      <if test="versionCode!= null">
+      <if test="versionCode != null">
         version_code,
       </if>
-      <if test="versionStatus!= null">
+      <if test="versionStatus != null">
         version_status,
       </if>
-      <if test="appUrl!= null">
+      <if test="appUrl != null">
         app_url,
       </if>
+      <if test="created != null">
         created,
+       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-<!--       #{uuid,jdbcType=INTEGER}, -->
-      <if test="versionCode!= null">
-        #{version_code,jdbcType=INTEGER},
+      <if test="versionCode != null">
+        #{versionCode,jdbcType=INTEGER},
       </if>
-      <if test="versionStatus!= null">
-        #{version_status,jdbcType=VARCHAR},
+      <if test="versionStatus != null">
+        #{versionStatus,jdbcType=VARCHAR},
       </if>
-      <if test="appUrl!= null">
-        #{app_url,jdbcType=VARCHAR},
+      <if test="appUrl != null">
+        #{appUrl,jdbcType=VARCHAR},
       </if>
+      <if test="created != null">
         #{created,jdbcType=VARCHAR},
+      </if>    
     </trim>
    </insert>
   
   <!-- delete app -->
-  <delete id="deleteApp" parameterType="java.lang.String">
+  <delete id="deleteApp" parameterType="java.lang.Integer">
     delete from version_info where uuid = #{uuid}
   </delete>
 
@@ -57,11 +62,14 @@
   	<include refid="Base_Column_List" />
   	from version_info order by created desc;
   </select>
-  
-	<!-- Name:upadateApp -->
-	<!-- Author:yangming -->
-	<!-- Date:2018.09.25 -->
-    <update id="upadateApp" parameterType="com.cascv.oas.server.version.model.VersionModel"> 
+
+  <select id="selectAllAppsByStableVersion" resultMap="versionModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from version_info where version_status="稳定版" order by created desc;
+  </select>
+
+    <update id="updateApp" parameterType="com.cascv.oas.server.version.model.VersionModel"> 
       update version_info 
       <trim prefix="SET" suffixOverrides=",">
       <if test="versionCode!= null">

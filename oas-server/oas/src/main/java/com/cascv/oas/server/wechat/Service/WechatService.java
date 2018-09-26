@@ -67,7 +67,7 @@ public class WechatService {
 			        	 if(userService.findUserByName(map.get("Content"))!=null){
 			        		 userUuid=userService.findUserByName(map.get("Content")).getUuid();
 			        		 //判断该微信号是否已经绑定了其他用户
-			        		 if(energyWechatMapper.findWechatRecordByOpenid(openId)==null){
+			        		 if(energyWechatMapper.findWechatRecordByOpenid(openId)==null&&energyWechatMapper.findWechatRecordByUserUuid(userUuid)==null){
 						        	log.info("正在获取验证码..");
 						        	//将已获取验证码的用户状态进行绑定
 						        	activityCompletionStatus=new ActivityCompletionStatus();
@@ -78,7 +78,7 @@ public class WechatService {
 						            activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
 						            //未使用表示1
 						            activityCompletionStatus.setStatus(0);
-						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);
+						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS);
 						            activityCompletionStatus.setUuid(uuid);
 						            activityCompletionStatus.setCreated(now);;
 						            energySourcePowerMapper.insertActivity(activityCompletionStatus);
@@ -88,8 +88,8 @@ public class WechatService {
 						            
 						            //进行微信与OasDapp用户的绑定
 						            EnergyWechatModel energyWechatModel=new EnergyWechatModel();			            						            
-						            log.info("uuid{}",UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-						            energyWechatModel.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+						            log.info("uuid{}",UuidUtils.getPrefixUUID(UuidPrefix.WECHAT_STATUS));
+						            energyWechatModel.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.WECHAT_STATUS));
 						            energyWechatModel.setUserUuid(userUuid);
 						            energyWechatModel.setWechatOpenid(openId);
 						            energyWechatModel.setCreated(now);
@@ -97,29 +97,39 @@ public class WechatService {
 						            log.info("***end***"); 
 						            isChecked=false;
 			        		 }else if(energyWechatMapper.findWechatRecordByUserUuid(userUuid)!=null){
-					        	Integer idenfyCode=userService.findUserByName(map.get("Content")).getIdentifyCode();
-					        	responseContent="用户"+map.get("Content")+"的验证码是:"+idenfyCode.toString()+"\n"; 
-			        	         log.info("该微信号绑定了当前用户!"); 			        			 
+			        			    String oldOpenId=energyWechatMapper.findWechatRecordByUserUuid(userUuid).getWechatOpenid();
+			        			   if(oldOpenId.equals(openId)) {
+					        	        Integer idenfyCode=userService.findUserByName(map.get("Content")).getIdentifyCode();
+							        	responseContent="用户"+map.get("Content")+"的验证码是:"+idenfyCode.toString()+"\n"; 
+					        	         log.info("该微信号绑定了当前用户!"); 
+					        	         isChecked=false;
+			        	         }else{
+			        	        	 responseContent="该用户已经绑定了其他微信号!\n"; 
+			        	        	 log.info("该微信号已经绑定了其他用户!"); 
+			        	        	 isChecked=false;
+			        	         }
 			        		 }
 			        		 else{
 			        			 //responseContent="用户"+map.get("Content")+"已经绑定了其他微信号\n";
-			        			 responseContent="每个微信号只能绑定一个OasDapp账号!\n";
+			        			 responseContent="你已经绑定了用户，每个微信号只能绑定一个OasDapp账号!\n";
 			        			 log.info("该微信号已经绑定了其他用户!"); 
+			        			 isChecked=false;
 			        		     }
 			        		
 			        	 }else{  
 			        		     responseContent="用户名不存在!\n";
 			        		     log.info("用户名不存在!");
+			        		     isChecked=false;
 			        	      }			     
 			        }    
 			        
 			        else {
-			            responseContent="您的输入有误!请重新输入:'获取验证码'";
+			            responseContent="您的输入有误!如需获取验证码,请按照以下提示输入:'获取验证码'";
 			             }   	
 			        }
 		        else if (eventType.equals(WechatMessageUtil.MESSAGE_EVENT_SUBSCRIBE)) {//如果用户发送的是event类型的消息
 		            //responseContent="欢迎国科云景的小伙伴们!\n"+"输入'获取验证码'即可获得相应的验证码来提升算力";
-		        	responseContent="你好，欢迎关注oaseschain！";
+		        	responseContent="你好，欢迎关注oaseschain!";
 		        }
 		        else if ("unsubscribe".equals(WechatMessageUtil.MESSAGE_EVENT_UNSUBSCRIBE)) {
 		        	log.info("用户:"+toUserName+"已经取消了关注！");

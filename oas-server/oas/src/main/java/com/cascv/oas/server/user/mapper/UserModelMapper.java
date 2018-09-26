@@ -58,6 +58,11 @@ public interface UserModelMapper {
 
 	 //验证码
 	 Integer updateIdentifyCode(UserModel userModel);
-
+     
+	 //根据手机号查询用户名
+	 String findUserByMobile(@Param("mobile") String mobile);
+	 
+	 //更改密码
+	 Integer updateUserPassworde(UserModel userModel);
 }
 

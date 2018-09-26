@@ -9,9 +9,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,16 +60,18 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
 
   if(file!=null)
   {
-   	//生成唯一的文件名
-   	String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
-   	try 
-   	{
+	    //日期时间生成唯一标识文件名
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
+   
+		try 
+   	     {
            // Get the file and save it somewhere
            byte[] bytes = file.getBytes();
            Path path = Paths.get(UPLOADED_FOLDER + fileName);
            Files.write(path, bytes);
            String pictureName=fileName;
-           log.info("pictureName=",pictureName);            
+           log.info("pictureName={}",pictureName);            
            String str="/image/news/";
            String newsPicturePath=str+pictureName;
            
@@ -80,8 +85,8 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
            
            newsService.addNews(newsModel);
            log.info("新闻进行了上传图片");
-           return new ResponseEntity.Builder<Map<String, String>>()
-        	  	      .setData(info)
+           return new ResponseEntity.Builder<NewsModel>()
+        	  	      .setData(newsModel)
         	  	      .setErrorCode(ErrorCode.SUCCESS)
         	  	      .build();
        	}catch (Exception e)
@@ -124,10 +129,11 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 	       
 	 if(file!=null)
 	 { 
-		 log.info("11111");
-	    //生成唯一的文件名
-	   	String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
-	      try 
+		//日期时间生成唯一标识文件名
+	  	SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+	  	String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
+	      
+	  	try 
 	    	{
 	            // Get the file and save it somewhere
 	            byte[] bytes = file.getBytes();

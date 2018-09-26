@@ -39,5 +39,4 @@ public class EnergyPointControllerTest {
         System.out.println("code: " + responseEntity.getCode());
         System.out.println("message: " + responseEntity.getMessage());
     }
-
 }

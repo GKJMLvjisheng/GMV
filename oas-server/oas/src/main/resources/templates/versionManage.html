@@ -11,8 +11,10 @@
     <link rel="stylesheet" type="text/css"  th:href="@{js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{js/versionManage/versionManage.js}"></script>
-<!-- 	<script type="text/javascript" th:src="@{js/news/newsManageTable.js}"></script>	 -->
-   
+	<script type="text/javascript" src="/js/qrcode/jquery.qrcode.js" ></script>
+ 	<script type="text/javascript" src="/js/qrcode/qrcode.js" ></script> 
+    <script type="text/javascript" src="/js/qrcode/utf.js" ></script>
+    
    
    <style>
 	.input-group .datetimepicker{
@@ -27,7 +29,25 @@
     word-wrap:break-word;
     word-break:break-all;
     }
-	
+ /*  二维码弹框    */
+ #qrcode img { 
+     position: absolute; 
+     top: 25%;  
+     left: 35%;  
+     width: 350px; 
+     height: 350px; 
+     display: block; 
+ } 
+#qrcode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 9999;
+    display: none;
+} 	
     </style>
 </head>
 
@@ -49,7 +69,10 @@
 		</div>
 
 	</section>
-
+<div id="qrcode">
+        <div id="qrcodeCanvas"></div>
+        <img id="image" width="100%" height="100%" >
+    </div>
 	<!-- 新增版本的模态框-->
 
 	<div class="modal fade" id="addVersionModal" tabindex="-1" role="dialog">
@@ -144,7 +167,7 @@
 			
 		
 	<!-- 编辑新闻的模态框 -->
-    <div class="modal fade" id="updateNewsModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="updateVersionModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
 
@@ -152,7 +175,7 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">修改新闻</h3>			
+					<h3 class="modal-title" id="myModalLabel">版本修改</h3>			
 				</div>
 
 				<div class="modal-body">
@@ -161,26 +184,26 @@
 						<input  style="display:none" type="hidden" name="EversionId" id="EversionId">
 						
 						<div class="form-group">
-							<label for="versionCode" class="col-sm-3 control-label">版本号：</label>
+							<label for="EversionCode" class="col-sm-3 control-label">版本号：</label>
 							<div class="col-sm-8">
-								<textarea name="versionCode" class="form-control" id="versionCode" required="required" oninput="checkVersionCode()" placeholder="版本号长度最多为40个字符" /></textarea>
-								<span id='msg_versionCode'></span>
+								<textarea name="EversionCode" class="form-control" id="EversionCode" readonly="readonly" required="required"  placeholder="版本号长度最多为40个字符" /></textarea>
+								
 
 							</div>						
 						</div>
 					
 								
 							<div class="form-group">
-					        	<label for="versionStatus" class="col-sm-3 control-label">版本状态：</label>
+					        	<label for="EversionStatus" class="col-sm-3 control-label">版本状态：</label>
 					       		 <div class="col-sm-8">
 								 <label class="radio-inline control-label">
-						        	<input type="radio"  name="versionStatus" id="versionStatus1" value="体验版"> 体验版
+						        	<input type="radio"  name="EversionStatus" id="EversionStatus1" value="体验版"> 体验版
 						        </label>
 							    <label class="radio-inline control-label">
-							        <input type="radio"   name="versionStatus" id="versionStatus2" value="开发版" > 开发版
+							        <input type="radio"   name="EversionStatus" id="EversionStatus2" value="开发版" > 开发版
 							    </label>
 							    <label class="radio-inline control-label">
-							        <input type="radio"   name="versionStatus" id="versionStatus3" value="稳定版" /> 稳定版
+							        <input type="radio"   name="EversionStatus" id="EversionStatus3" value="稳定版" /> 稳定版
 							   
 							    </label>
 							    
@@ -188,17 +211,17 @@
 						      			
 						   </div>	
 						   <div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">图片URL：</label>
+							<label for="newsTitle" class="col-sm-3 control-label">版本存放URL：</label>
 							<div class="col-sm-8">
-								<textarea name="EnewsPicturePath" class="form-control" id="EnewsPicturePath" required="required"  readonly="readonly"/></textarea>							
+								<textarea name="EversionPath" class="form-control" id="EversionPath" required="required"  readonly="readonly"/></textarea>							
 								
 							</div>
 						</div>	
 						
 						<div class="form-group">
-							<label for="versionFile" class="col-sm-3 control-label">版本修改：</label>
+							<label for="EversionFile" class="col-sm-3 control-label">版本修改：</label>
 							<div class="col-sm-8">
-								<input type="file" name="versionFile" id="versionFile" /><span id='msg_versionFile'></span>
+								<input type="file" name="EversionFile" id="EversionFile" onblur="checkEversionFile()" /><span id='msg_EversionFile'></span>
 							</div>
 <!-- 							onblur='checkVersionFile()' -->
 						</div>
@@ -210,7 +233,9 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" data-dismiss="modal" id="saveNews" aria-label="Close" class="btn btn-default" onclick="updateNews()"><span aria-hidden="true">保存</span></button>
+<!-- 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button> -->
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="updateVersion()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resteUpdate()">取消</button>
 				</div>
 						
 			</div>
