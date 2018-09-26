@@ -6,8 +6,11 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.List;
 import org.apache.commons.lang3.SystemUtils;
@@ -44,10 +47,13 @@ private VersionModelMapper versionModelMapper;
 private MediaServer mediaServer;
 	
 private static String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
-private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+File.separator+"Apps" + File.separator;
+private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" 
++File.separator+File.separator+"Apps"+File.separator;
+
 @PostMapping(value="/upLoadApp")
 @ResponseBody
-public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam("file") MultipartFile file){
+public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
+	
 	File dir=new File(UPLOADED_FOLDER);
  	 if(!dir.exists()){
  	   dir.mkdirs();
@@ -56,8 +62,10 @@ public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam("file"
   	Map<String,String> info = new HashMap<>();
   	
   	if(file!=null) {
-//  		String fileName=file.getOriginalFilename();
-  		String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
+  		//日期时间生成唯一标识文件名
+  		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+  		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
+  		
   		try {
   	    // Get the file and save it somewhere
         byte[] bytes = file.getBytes();
@@ -66,7 +74,7 @@ public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam("file"
         
 		VersionModel versionModel=new VersionModel();
 		
-		String str=mediaServer.getImageHost()+"/Apps/FirstVersion/";
+		String str=mediaServer.getImageHost()+"/image/Apps/";
 		String appUrl=str+fileName;
 		log.info("appUrl={}",appUrl);
 		log.info("status={}",versionInfo.getVersionStatus());
@@ -75,19 +83,9 @@ public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam("file"
 	    versionModel.setVersionStatus(versionInfo.getVersionStatus());
 	    versionModel.setAppUrl(appUrl);
 	    versionModel.setCreated(DateUtils.getTime());
-	    try {
+	   
 	    versionModelMapper.insertApp(versionModel);
-	    }catch(Exception e)
-	    {
-	    	e.printStackTrace();
-	  		String msg="no";
-	  		info.put("msg",msg);
-	  		log.info("文件上传失败，请重试！----");
-			return new ResponseEntity.Builder<Map<String, String>>()
-					.setData(info)
-					.setErrorCode(ErrorCode.GENERAL_ERROR)
-					.build();
-	    }
+
 		return new ResponseEntity.Builder<VersionModel>()
 				.setData(versionModel)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -142,19 +140,20 @@ public ResponseEntity<?> deleteApp(@RequestBody VersionInfo versionInfo){
 
 @PostMapping(value="/updateApp")
 @ResponseBody
-public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam("file") MultipartFile file){
+public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
 	
 	Map<String,String> info = new HashMap<>();
 	VersionModel versionModel=new VersionModel();
 	String now=DateUtils.getTime();
-	
+	versionModel.setUuid(versionInfo.getUuid());
 	versionModel.setVersionCode(versionInfo.getVersionCode());
 	versionModel.setVersionStatus(versionInfo.getVersionStatus());
 	versionModel.setCreated(now);
 	
 	if(file!=null) {
-		
-  		String fileName=file.getOriginalFilename();
+		//日期时间生成唯一标识文件名
+  		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+  		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
   		
   		try {
   	    // Get the file and save it somewhere
@@ -162,7 +161,7 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam("file")
         Path path = Paths.get(UPLOADED_FOLDER + fileName);
         Files.write(path, bytes);
 		
-		String str=mediaServer.getImageHost()+"/Apps/FirstVersion/";
+		String str=mediaServer.getImageHost()+"/image/Apps/";
 		String appUrl=str+fileName;
 		versionModel.setAppUrl(appUrl);
 	    
@@ -184,7 +183,8 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam("file")
   		}
   	}else {
   		
-  		versionModel.setAppUrl(versionModel.getAppUrl());
+  		log.info("versionInfo.getAppUrl()={}",versionInfo.getAppUrl());
+  		versionModel.setAppUrl(versionInfo.getAppUrl());
   		
   		versionModelMapper.updateApp(versionModel);
   		
