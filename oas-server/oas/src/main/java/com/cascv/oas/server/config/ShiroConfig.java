@@ -218,6 +218,9 @@ public class ShiroConfig {
 		//验证码接口免登录访问
 		filterChainDefinitionMap.put("/api/v1/userCenter/getCode", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/contrastCode", "anon");
+		//忘记密码接口免登陆访问
+		filterChainDefinitionMap.put("/api/v1/userCenter/inquireUserInfoByMobile", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
 		
 		filterChainDefinitionMap.put("/api/v1/userCenter/login", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
