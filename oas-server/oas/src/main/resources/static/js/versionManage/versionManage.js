@@ -3,7 +3,7 @@
  */
 //新闻管理界面创建bootstrapTable
 document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
-var check1=0;
+var check1=1;
 //主界面用户表格回显
 $(function() {
 
@@ -42,43 +42,67 @@ function versionReady(){
 }
 
 //检查图片格式是否符合要求
-function checkVersionFile() {
-	var animateimg = $("#versionFile").val(); //获取上传的图片名 0\1\2
-    //alert("PicPath="+animateimg);
-	if (animateimg=="") {
-		$("#msg_versionFile").html("版本上传不能为空");
-        $("#msg_versionFile").css("color", "red");
-        return;
-	}
-    var imgarr=animateimg.split('\\'); //分割
-    var myimg=imgarr[imgarr.length-1]; // 获取图片名
-    //alert("picName="+myimg);
-    var houzui = myimg.lastIndexOf('.'); //获取 . 出现的位置
-    var ext = myimg.substring(houzui, myimg.length).toUpperCase();  //切割 . 获取文件后缀
-    console.log(ext);
-    var file = $('#versionFile').get(0).files[0]; //获取上传的文件
-    var fileSize = file.size;           //获取上传的文件大小
-    //alert("fileSize="+fileSize/1000+"KB");
-    var maxSize = 10485760;//最大10MB
-    
-    if(ext !='.APK'){
-        $("#msg_versionFile").html("app类型错误,请上传.apk后缀的文件");
-        $("#msg_versionFile").css("color", "red");
-        return;
-       
-    }
-//    else if(parseInt(fileSize) >= parseInt(maxSize)){
-//        $("#msg_versionFile").html("上传的文件不能超过1MB");
-//        $("#msg_versionFile").css("color", "red");
-//        
-//    }
-    else {
-    	$("#msg_versionFile").html("上传的图片符合要求");
-        $("#msg_versionFile").css("color", "green");
-        
-    }
-}
 
+function checkVersionFile(fileName)
+{
+	var imgarr=fileName.split('\\'); //分割
+	var myimg=imgarr[imgarr.length-1]; // 获取图片名
+	//alert("picName="+myimg);
+	var houzui = myimg.lastIndexOf('.'); //获取 . 出现的位置
+	var ext = myimg.substring(houzui, myimg.length).toUpperCase();  //切割 . 获取文件后缀
+	console.log(ext);
+	var file = $('#versionFile').get(0).files[0]; //获取上传的文件
+	var fileSize = file.size;           //获取上传的文件大小
+	//alert("fileSize="+fileSize/1000+"KB");
+	var maxSize = 10485760;//最大10MB
+	
+	if(ext !='.APK'){
+	    $("#msg_versionFile").html("app类型错误,请上传.apk后缀的文件");
+	    $("#msg_versionFile").css("color", "red");
+	    return;
+	   
+	}
+	//else if(parseInt(fileSize) >= parseInt(maxSize)){
+	//    $("#msg_versionFile").html("上传的文件不能超过1MB");
+	//    $("#msg_versionFile").css("color", "red");
+	//    
+	//}
+	else {
+		$("#msg_versionFile").html("上传的版本格式符合要求");
+	    $("#msg_versionFile").css("color", "green");
+	    
+	}
+}
+function checkEversionFile(fileName)
+{
+	var imgarr=fileName.split('\\'); //分割
+	var myimg=imgarr[imgarr.length-1]; // 获取图片名
+	//alert("picName="+myimg);
+	var houzui = myimg.lastIndexOf('.'); //获取 . 出现的位置
+	var ext = myimg.substring(houzui, myimg.length).toUpperCase();  //切割 . 获取文件后缀
+	console.log(ext);
+	var file = $('#EversionFile').get(0).files[0]; //获取上传的文件
+	var fileSize = file.size;           //获取上传的文件大小
+	//alert("fileSize="+fileSize/1000+"KB");
+	var maxSize = 10485760;//最大10MB
+	
+	if(ext !='.APK'){
+	    $("#msg_EversionFile").html("app类型错误,请上传.apk后缀的文件");
+	    $("#msg_EversionFile").css("color", "red");
+	    return;
+	   
+	}
+	//else if(parseInt(fileSize) >= parseInt(maxSize)){
+	//    $("#msg_versionFile").html("上传的文件不能超过1MB");
+	//    $("#msg_versionFile").css("color", "red");
+	//    
+	//}
+	else {
+		$("#msg_EversionFile").html("上传的版本格式符合要求");
+	    $("#msg_EversionFile").css("color", "green");
+	    
+	}
+}
 function validateNumber(num)
 {
  
@@ -133,6 +157,9 @@ function addVersion(){
 		alert("版本号不能为空");
 		return;
 		}
+	if(!check1)
+		{alert("请输入正确的版本号");
+		return;}
 	 var versionStatus = document.getElementsByName("versionStatus");
 	 
 	 var status=null;
@@ -149,15 +176,22 @@ function addVersion(){
 	 if(status==null)
 		 {alert("请选择版本状态");
 		 return;}
-	 checkVersionFile();
+	 var animateimg = $("#versionFile").val(); //获取上传的图片名 0\1\2
+	    //alert("PicPath="+animateimg);
+		if (animateimg=="") {
+			$("#msg_versionFile").html("版本上传不能为空");
+	        $("#msg_versionFile").css("color", "red");
+	        return;
+		}
+		checkVersionFile(animateimg);
 
 		var formData = new FormData();
-		var img_file = document.getElementById("versionFile");
-		var fileobj = img_file.files[0];
+		var version_file = document.getElementById("versionFile");
+		var fileobj = version_file.files[0];
 		 
 		formData.append("file",fileobj);//添加fileobj到formData的键file中
-	formData.append("versionCode", $("#versionCode").val());
-	formData.append("versionStatus", status);
+		formData.append("versionCode", $("#versionCode").val());
+		formData.append("versionStatus", status);
 	//alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/userCenter/upLoadApp",
@@ -173,14 +207,15 @@ function addVersion(){
 
 		success:function(res){	
 			alert(JSON.stringify(res));
-				if(res.code==10001)
-				{document.getElementById("tipContent").innerText="上传失败";
+				if(res.code==0)
+				{document.getElementById("tipContent").innerText="上传成功";
 				$("#Tip").modal('show');
 				$("#addVersionModal").modal('hide');}
 				else{
-				document.getElementById("tipContent").innerText="上传成功";
+				document.getElementById("tipContent").innerText="上传失败";
 				$("#Tip").modal('show');
 				$("#addVersionModal").modal('hide');
+				resetAddModal();
 				 versionReady();
 				//$("#newsGrid").bootstrapTable('refresh');	
 				 }						
@@ -198,27 +233,51 @@ function addVersion(){
 //点击取消后清空表单中已写信息
 function resetAddModal(){
 	//document.getElementById("addVersionForm").reset();
-	location.reload();
+	 $("#addVersionForm").find('textarea,input[type=file],select').each(function() {
+		          $(this).val('');
+		      });
+	 $("input[type=radio]").prop("checked",false);
+	 $("span").html("");
+//	 $("#updateVersionForm").find('input[type=text],select,input[type=file],span').each(function() {
+//         $(this).val('');
+//     });
+	
+	//location.reload();
 }
 
 
-function updateNews(){	  	
+function updateVersion(){
+	var eFile=$("#EversionFile").val();
+	alert(eFile);
+	if(eFile)
+	{checkEversionFile(eFile);}
 	var formData = new FormData();
-	var img_file = document.getElementById("AnewsPicturePath");//获取类型为文件的输入元素
+	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
 	//alert(img_file);
-	var fileobj = img_file.files[0];//使用files获取文件
+	var fileobj = version_file.files[0];//使用files获取文件
 	//alert(fileobj);
 	//alert($("#EnewsId").val());
 	formData.append("file",fileobj);//添加fileobj到formData的键file中
-	formData.append("newsId", $("#EnewsId").val());
-	formData.append("newsTitle", $("#EnewsTitle").val());
-	formData.append("newsAbstract", $("#EnewsAbstract").val());
-	formData.append("newsUrl", $("#EnewsUrl").val());
-	formData.append("newsPicturePath", $("#EnewsPicturePath").val());
+	formData.append("uuid", $("#EversionId").val());
+	formData.append("versionCode", $("#EversionCode").val());
 	
+	formData.append("appUrl", $("#EversionPath").val());
+	 var versionStatus = document.getElementsByName("EversionStatus");
+	 var status=null;
+	 for(var i = 0; i < versionStatus.length; i++)
+	    {
+
+	        if(versionStatus[i].checked)
+
+	        {
+	        status=versionStatus[i].value;}
+
+	    }
+	 console.log("status"+status);
+	 formData.append("versionStatus", status);
 	
 	$.ajax({
-		url:"/api/v1/userCenter/updateNews",
+		url:"/api/v1/userCenter/updateApp",
 		data:formData,
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
@@ -232,8 +291,9 @@ function updateNews(){
 		success:function(res){	
 			
 			if(res.code==0){
-				alert("success");
-				location.reload();
+				alert("修改成功");
+				
+				versionReady();
 			    //newsReady();
 			}
 			else{
@@ -308,11 +368,11 @@ function initVersionGrid(data) {
 
 			title : "版本存放路径",
 
-			field : "versionPath",
+			field : "appUrl",
 			align: 'center',
 			valign: 'middle',
 			//width:  '140px',
-			formatter: versionPath
+			//formatter: versionPath
 
 		}, 
 		{
@@ -394,23 +454,23 @@ function editVersionById(id){
     
     //获取选中行的数据
     var rows=$("#versionGrid").bootstrapTable('getRowByUniqueId', id);
-	$('#versionId').val(rows.uuid);  
-    $('#versionCode').val(rows.versionCode);
+	$('#EversionId').val(rows.uuid);  
+    $('#EversionCode').val(rows.versionCode);
     if(rows.versionStatus=="体验版")
-    	{$("#versionStatus1").prop("checked",true)}
+    	{$("#EversionStatus1").prop("checked",true)}
     if(rows.versionStatus=="开发版")
-    	{$("#versionStatus2").prop("checked",true)}
+    	{$("#EversionStatus2").prop("checked",true)}
     if(rows.versionStatus=="稳定版")
-		{$("#versionStatus3").prop("checked",true)}
-	
+		{$("#EversionStatus3").prop("checked",true)}
+    $('#EversionPath').val(rows.appUrl);
 	//$('#EnewsUrl').val(rows.newsUrl);
 	
 	//$('#versionFile').val(rows.versionFile); 
-	file_input_obj=document.getElementById("versionFile");
-	file_input_obj.outerHTML=file_input_obj.outerHTML.replace(/(value=111\").+\"/i,"$1\"11");
-	
-	versionCode.setAttribute("readonly", "readonly" );
-    $("#addVersionModal").modal("show");           
+//	file_input_obj=document.getElementById("EversionFile");
+//	file_input_obj.outerHTML=file_input_obj.outerHTML.replace(/(value=111\").+\"/i,"$1\"11");
+//	
+//	versionCode.setAttribute("readonly", "readonly" );
+    $("#updateVersionModal").modal("show");           
   }
 
 
@@ -421,11 +481,11 @@ function deleteNewsById(id)
 		  return;
 		 }
 
-	data={"newsId":id};
+	data={"uuid":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 
-		url:"/api/v1/userCenter/deleteNews",
+		url:"/api/v1/userCenter/deleteApp",
 		data: JSON.stringify(data),
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
@@ -435,7 +495,7 @@ function deleteNewsById(id)
 		success:function(res){
 			
 			if(res.code==0){
-				$("#newsGrid").bootstrapTable('removeByUniqueId', id);
+				$("#versionGrid").bootstrapTable('removeByUniqueId', id);
 				alert("删除成功！");
 			}
 			else{
