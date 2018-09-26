@@ -147,11 +147,7 @@
 				alert('检查验证码是否存在发生错误');
 			}
 			});
-		} 
-		else {
-			$("#msgFirst").html("请确认输入验证码位数!");	          
-			$("#msgFirst").css("color", "#ff0000");	 
-		}	    
+		}     
 	}
 
 	function submitLogin(){
@@ -179,13 +175,10 @@
 			alert('检查验证码是否存在发生错误');
 		}
 		});
-
+		
 		if(check1 && check2){
 			window.location.replace("main");
-		}	
-
-
-						
+		}							
 	}
 </script>
 </html>

@@ -13,7 +13,7 @@ public interface VersionModelMapper {
 	
 	 Integer insertApp(VersionModel versionModel);
 
-	 Integer deleteApp(String uuid);
+	 Integer deleteApp(Integer uuid);
 	 
 	 Integer updateApp(VersionModel versionModel);
 	 

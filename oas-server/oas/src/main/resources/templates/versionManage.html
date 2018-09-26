@@ -10,8 +10,8 @@
 	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
     <link rel="stylesheet" type="text/css"  th:href="@{js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
-	<script type="text/javascript" th:src="@{js/news/newsManage.js}"></script>
-	<script type="text/javascript" th:src="@{js/news/newsManageTable.js}"></script>	
+	<script type="text/javascript" th:src="@{js/versionManage/versionManage.js}"></script>
+<!-- 	<script type="text/javascript" th:src="@{js/news/newsManageTable.js}"></script>	 -->
    
    
    <style>
@@ -39,20 +39,20 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
-					<input type="button" value="新增新闻" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addNewsModal"></input>
+					<input type="button" value="版本新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addVersionModal"></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
 		</form>
 		
 		<div class = "container">
-			<table id="newsGrid"></table>
+			<table id="versionGrid"></table>
 		</div>
 
 	</section>
 
-	<!-- 新增新闻的模态框-->
+	<!-- 新增版本的模态框-->
 
-	<div class="modal fade" id="addNewsModal" tabindex="-1" role="dialog">
+	<div class="modal fade" id="addVersionModal" tabindex="-1" role="dialog">
 
 		<div class="modal-dialog" role="document">
 
@@ -60,45 +60,48 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">新增新闻</h3>
+					<h3 class="modal-title" id="myModalLabel">版本新增</h3>
 				</div>
 
 				<div class="modal-body">
+				
 
-					<form id="addNewsForm" action="/News/addNews" method="post" class="form-horizontal">
+					<form id="addVersionForm" action="/version" method="post" class="form-horizontal">
 
 						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
+							<label for="versionCode" class="col-sm-3 control-label">版本号：</label>
 							<div class="col-sm-8">
-								<textarea name="newsTitle" class="form-control" id="newsTitle" required="required"  placeholder="标题长度最多为40个字符" /></textarea>
-								<span id='msg_newsTitle'></span>
+								<textarea name="versionCode" class="form-control" id="versionCode" required="required" oninput="checkVersionCode()" placeholder="版本号长度最多为40个字符" /></textarea>
+								<span id='msg_versionCode'></span>
+
 							</div>						
 						</div>
-
+					
+								
+							<div class="form-group">
+					        	<label for="versionStatus" class="col-sm-3 control-label">版本状态：</label>
+					       		 <div class="col-sm-8">
+								 <label class="radio-inline control-label">
+						        	<input type="radio"  name="versionStatus" id="versionStatus1" value="体验版"> 体验版
+						        </label>
+							    <label class="radio-inline control-label">
+							        <input type="radio"   name="versionStatus" id="versionStatus2" value="开发版" > 开发版
+							    </label>
+							    <label class="radio-inline control-label">
+							        <input type="radio"   name="versionStatus" id="versionStatus3" value="稳定版" /> 稳定版
+							   
+							    </label>
+							    
+						       </div>	
+						      			
+						   </div>		
 						
 						<div class="form-group">
-							<label for="newsAbstract" class="col-sm-3 control-label">摘要：</label>
+							<label for="versionFile" class="col-sm-3 control-label">版本上传：</label>
 							<div class="col-sm-8">
- 								<textarea name="newsAbstract" class="col-sm-4 form-control" id="newsAbstract" style="height: 80px;" required="required" placeholder="摘要长度最多为100个字符"/></textarea>
- 								<span id="msg_newsAbstract"></span> 				
+								<input type="file" name="versionFile" id="versionFile" /><span id='msg_versionFile'></span>
 							</div>
-						</div>
-						
-						
-						<div class="form-group">
-							<label for="newsUrl" class="col-sm-3 control-label">新闻链接：</label>
-							<div class="col-sm-8">
-								<textarea name="newsUrl" class="col-sm-4 form-control" id="newsUrl" required="required" placeholder="请输入有效链接"/></textarea>
-								<span id="newsUrl_span"></span>
-							</div>
-						</div>
-						
-						
-						<div class="form-group">
-							<label for="newsPicturePath" class="col-sm-3 control-label">选择图片：</label>
-							<div class="col-sm-8">
-								<input type="file" name="newsPicturePath" id="newsPicturePath" onblur='checkPic()'/><span id='msg_newsPicPath'></span>
-							</div>
+<!-- 							onblur='checkVersionFile()' -->
 						</div>
 						
 					
@@ -106,7 +109,7 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" id="conf" class="btn btn-default" onclick="addNews()">提交</button>
+					<button type="button" id="conf" class="btn btn-default" onclick="addVersion()">提交</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
 				</div>
 
@@ -141,7 +144,7 @@
 			
 		
 	<!-- 编辑新闻的模态框 -->
-    <div class="modal fade" id="updateNewsModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="updateVersionModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
 
@@ -149,55 +152,66 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">修改新闻</h3>			
+					<h3 class="modal-title" id="myModalLabel">版本修改</h3>			
 				</div>
 
 				<div class="modal-body">
-					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
-						<input  style="display:none" type="hidden" name="EnewsId" id="EnewsId">
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">标题：</label>
-							<div class="col-sm-8">
-								<textarea name="EnewsTitle" class="form-control" id="EnewsTitle" required="required"  onblur="EcheckTitle()"/></textarea>
-								<span id="msg_EnewsTitle"></span> 
-							</div>						
-						</div>
+				
+					<form id="updateVersionForm" action="/updatedVersion" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EversionId" id="EversionId">
 						
 						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">摘要：</label>
+							<label for="EversionCode" class="col-sm-3 control-label">版本号：</label>
 							<div class="col-sm-8">
-								<textarea name="EnewsAbstract" class="form-control" id="EnewsAbstract" style="height: 80px;" required="required" onblur="EcheckAbstract()"/></textarea>
-								<span id="msg_EnewsAbstract"></span> 
+								<textarea name="EversionCode" class="form-control" id="EversionCode" readonly="readonly" required="required"  placeholder="版本号长度最多为40个字符" /></textarea>
+								
+
 							</div>						
 						</div>
-						
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">新闻URL：</label>
+					
+								
+							<div class="form-group">
+					        	<label for="EversionStatus" class="col-sm-3 control-label">版本状态：</label>
+					       		 <div class="col-sm-8">
+								 <label class="radio-inline control-label">
+						        	<input type="radio"  name="EversionStatus" id="EversionStatus1" value="体验版"> 体验版
+						        </label>
+							    <label class="radio-inline control-label">
+							        <input type="radio"   name="EversionStatus" id="EversionStatus2" value="开发版" > 开发版
+							    </label>
+							    <label class="radio-inline control-label">
+							        <input type="radio"   name="EversionStatus" id="EversionStatus3" value="稳定版" /> 稳定版
+							   
+							    </label>
+							    
+						       </div>	
+						      			
+						   </div>	
+						   <div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">版本存放URL：</label>
 							<div class="col-sm-8">
-								<textarea name="EnewsUrl" class="form-control" id="EnewsUrl" required="required"  placeholder="请输入标题" /></textarea>
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">图片URL：</label>
-							<div class="col-sm-8">
-								<textarea name="EnewsPicturePath" class="form-control" id="EnewsPicturePath" required="required"  readonly="readonly"/></textarea>							
+								<textarea name="EversionPath" class="form-control" id="EversionPath" required="required"  readonly="readonly"/></textarea>							
 								
 							</div>
-						</div>
-							
+						</div>	
+						
 						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">修改图片：</label>
+							<label for="EversionFile" class="col-sm-3 control-label">版本修改：</label>
 							<div class="col-sm-8">
-								<input type="file" name="AnewsPicturePath" id="AnewsPicturePath"/><span id='msg_EnewsPicPath'></span>
+								<input type="file" name="EversionFile" id="EversionFile" /><span id='msg_EversionFile'></span>
 							</div>
+<!-- 							onblur='checkVersionFile()' -->
 						</div>
+						
+						
+						
 																			
 					</form>
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" data-dismiss="modal" id="saveNews" aria-label="Close" class="btn btn-default" onclick="updateNews()"><span aria-hidden="true">保存</span></button>
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" >取消</button>
 				</div>
 						
 			</div>

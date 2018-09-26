@@ -82,7 +82,12 @@ public class ComputingPowerController {
 		SumUserInvited=10;
 		SumPowerPromoted=energyBallMapper.countByUserUuidAndPowerSource(userUuid, powerSource);
 		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
+		if(SumPowerPromoted!=null) {
 		queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
+		}else {
+			SumPowerPromoted=0;
+			queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
+		}
 		return new ResponseEntity.Builder<QueryInvitePowerInfo>()
                 .setData(queryInvitePowerInfo)
                 .setErrorCode(ErrorCode.SUCCESS)

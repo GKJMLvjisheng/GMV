@@ -9,8 +9,8 @@ import lombok.Setter;
 
 public class VersionModel implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Getter @Setter private String uuid;
-	@Getter @Setter private String versionCode;
+	@Getter @Setter private Integer uuid;
+	@Getter @Setter private Integer versionCode;
 	@Getter @Setter private String versionStatus;
 	@Getter @Setter private String appUrl;
 	@Getter @Setter private String created;
