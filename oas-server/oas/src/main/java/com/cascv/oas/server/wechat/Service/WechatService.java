@@ -67,7 +67,7 @@ public class WechatService {
 			        	 if(userService.findUserByName(map.get("Content"))!=null){
 			        		 userUuid=userService.findUserByName(map.get("Content")).getUuid();
 			        		 //判断该微信号是否已经绑定了其他用户
-			        		 if(energyWechatMapper.findWechatRecordByOpenid(openId)==null){
+			        		 if(energyWechatMapper.findWechatRecordByOpenid(openId)==null&&energyWechatMapper.findWechatRecordByUserUuid(userUuid)==null){
 						        	log.info("正在获取验证码..");
 						        	//将已获取验证码的用户状态进行绑定
 						        	activityCompletionStatus=new ActivityCompletionStatus();
@@ -96,7 +96,7 @@ public class WechatService {
 						            energyWechatMapper.insertWechatRecord(energyWechatModel);
 						            log.info("***end***"); 
 						            isChecked=false;
-			        		 }else if(energyWechatMapper.findWechatRecordByUserUuid(userUuid)!=null){
+			        		 }else if(energyWechatMapper.findWechatRecordByUserUuid(userUuid).getWechatOpenid().equals(openId)){
 					        	Integer idenfyCode=userService.findUserByName(map.get("Content")).getIdentifyCode();
 					        	responseContent="用户"+map.get("Content")+"的验证码是:"+idenfyCode.toString()+"\n"; 
 			        	         log.info("该微信号绑定了当前用户!"); 
