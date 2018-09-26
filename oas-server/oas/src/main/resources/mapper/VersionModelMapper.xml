@@ -64,20 +64,16 @@
 	<!-- Author:yangming -->
 	<!-- Date:2018.09.25 -->
     <update id="upadateApp" parameterType="com.cascv.oas.server.version.model.VersionModel"> 
-      update version_info 
-      <trim prefix="SET" suffixOverrides=",">
-      <if test="versionCode!= null">
-       version_code = #{versionCode},
-      </if>
-      <if test="versionStatus!= null">
-       version_status = #{versionStatus},
-      </if>
-      <if test="appUrl!= null">
-       app_url = #{appUrl},
-      </if>
-    </trim>
+      update 
+      		   version_info 
+      set
+		       version_code = #{versionCode},
+		       version_status = #{versionStatus},
+		       app_url = #{appUrl},
+
       where uuid = #{uuid}
-    </update>
+      
+     </update>
     
 </mapper>
 

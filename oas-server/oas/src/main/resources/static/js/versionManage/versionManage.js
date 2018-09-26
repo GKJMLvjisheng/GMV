@@ -216,7 +216,7 @@ function addVersion(){
 				$("#Tip").modal('show');
 				$("#addVersionModal").modal('hide');
 				resetAddModal();
-				 versionReady();
+				 
 				//$("#newsGrid").bootstrapTable('refresh');	
 				 }						
 		},
@@ -226,7 +226,8 @@ function addVersion(){
 			$("#addVersionModal").modal('hide');
 
 		},
-	});	   
+	});
+	versionReady();
 }
 
 
@@ -244,13 +245,20 @@ function resetAddModal(){
 	
 	//location.reload();
 }
-
+function resteUpdate(){
+	$("#updateVersionForm").find('textarea,input[type=file],select').each(function() {
+        $(this).val('');
+    });
+$("input[type=radio]").prop("checked",false);
+$("span").html("");
+}
 
 function updateVersion(){
 	var eFile=$("#EversionFile").val();
 	alert(eFile);
 	if(eFile)
-	{checkEversionFile(eFile);}
+	{
+		checkEversionFile(eFile);}
 	var formData = new FormData();
 	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
 	//alert(img_file);
