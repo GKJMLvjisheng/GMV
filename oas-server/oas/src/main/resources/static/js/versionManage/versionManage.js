@@ -33,11 +33,11 @@ function versionReady(){
 		if(res.code==0)
 			{data=res.data;}
 			
-		else{alert("新闻回显失败！");}
+		else{alert("回显失败！");}
 			
 		}, 
 		error: function(){
-			alert("新闻回显失败！")
+			alert("回显失败！")
 		}
 		}); 
 	 initVersionGrid(data);
@@ -214,7 +214,7 @@ function addVersion(){
 		async:false,
 
 		success:function(res){	
-			alert(JSON.stringify(res));
+			//alert(JSON.stringify(res));
 				if(res.code==0)
 				{document.getElementById("tipContent").innerText="上传成功";
 				$("#Tip").modal('show');
@@ -258,8 +258,8 @@ function resteUpdate(){
 	$("#updateVersionForm").find('textarea,input[type=file],select').each(function() {
         $(this).val('');
     });
-$("input[type=radio]").prop("checked",false);
-$("span").html("");
+	$("input[type=radio]").prop("checked",false);
+	$("span").html("");
 }
 
 function updateVersion(){
@@ -268,7 +268,7 @@ function updateVersion(){
 	if(eFile)
 	{
 		checkEversionFile(eFile);}
-	alert(check3);
+	
 	if(!check3)
 		{return;}
 	var formData = new FormData();
@@ -309,7 +309,7 @@ function updateVersion(){
 		async:false,
 
 		success:function(res){	
-			alert(JSON.stringify(res));
+			//alert(JSON.stringify(res));
 			
 			if(res.code==0){
 				alert("修改成功");
