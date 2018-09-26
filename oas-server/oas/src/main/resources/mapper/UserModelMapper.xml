@@ -182,6 +182,12 @@
       where name = #{name}  
     </update>
     
+        <update id="updateUserPassworde" parameterType="com.cascv.oas.server.user.model.UserModel">
+        update user_info set 
+      	password = #{password}
+      where name = #{name}  
+    </update>
+    
     <!-- resetMobileByName -->
    	<!-- @Author:lvjisheng -->
 	<!-- @Date:2018.09.06 -->
@@ -199,6 +205,11 @@
      <!-- select user mobile-->
     <select id="selectUserMobile" resultMap="userModelMap">
     select mobile from user_info where mobile = #{mobile} </select>
+    
+    <!-- select userInfo by mobile-->
+    <select id="findUserByMobile" resultType="java.lang.String">
+    select name from user_info where mobile = #{mobile} </select>
+    
     
     <!-- selectByInviteFrom -->
    	<!-- @Author:yangming -->

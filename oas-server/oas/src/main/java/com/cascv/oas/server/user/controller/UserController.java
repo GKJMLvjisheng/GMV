@@ -692,5 +692,47 @@ public class UserController {
      	          .build();
        }
       
-}
+    }
+    
+    /**
+     * 根据手机号查询用户名
+     */
+	@PostMapping(value = "/inquireUserInfoByMobile")
+    @ResponseBody
+	public ResponseEntity<?> inquireUserInfoByMobile(@RequestBody UserModel userModel){
+		String mobile=userModel.getMobile();				
+        if(userService.findUserByMobile(mobile)!=null){
+        	 String name=userService.findUserByMobile(mobile);
+        	 return new ResponseEntity.Builder<String>()
+   	              .setData(name).setErrorCode(ErrorCode.SUCCESS).build();
+        }else{
+        	log.info("用户名不存在");
+        	return new ResponseEntity.Builder<String>()
+     	          .setData("empty").setErrorCode(ErrorCode.GENERAL_ERROR).build();
+        }	   
+     }
+    /**
+     * 重置密码
+     */
+	@PostMapping(value = "/resetPassword")
+    @ResponseBody
+	public ResponseEntity<?> resetPassword(@RequestBody UserModel userModel){
+		
+      String name=userModel.getName();
+  	  UserModel userNewModel=new UserModel();
+  	  userNewModel=userService.findUserByName(name);
+	  String password=userModel.getPassword();
+	  String calcPassword=new Md5Hash(name + password + userModel.getSalt()).toHex().toString();
+	  log.info(calcPassword);
+	  userNewModel.setPassword(calcPassword);
+		  try{
+			  userService.updateUserPassworde(userNewModel);
+			  return new ResponseEntity.Builder<Integer>()
+		     	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();	 
+		  }catch(Exception e){
+			  log.info(e.getMessage());
+			  return new ResponseEntity.Builder<Integer>()
+		 	          .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		  }         
+     }
 }
