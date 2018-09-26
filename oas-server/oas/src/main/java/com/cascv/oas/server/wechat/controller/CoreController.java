@@ -41,21 +41,23 @@ public class CoreController{
         out = null;
 }
  
-/**
-* @param request
-* @param response
-* @throws Exception 
-*/
-@PostMapping(value="/handle")
-public void messageHandle(HttpServletRequest request,HttpServletResponse response) throws Exception{
-	log.info("***接受微信服务端发来的请求***");
-	request.setCharacterEncoding("UTF-8");
-	response.setCharacterEncoding("UTF-8");
-	log.info(String.valueOf(request.getContentLength()));
-	String responseMessage = wechatService.processRequest(request);
-	PrintWriter out=response.getWriter(); 
-	out.print(responseMessage);
-	out.flush();
-}
+		/**
+		* @param request
+		* @param response
+		* @throws Exception 
+		*/
+		@PostMapping(value="/handle")
+		public void messageHandle(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			log.info("***接受微信服务端发来的请求***");
+			request.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			log.info(String.valueOf(request.getContentLength()));
+			String responseMessage = wechatService.processRequest(request);
+			PrintWriter out=response.getWriter(); 
+			out.print(responseMessage);
+			out.flush();
+		}
+        
+
 }
 
