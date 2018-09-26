@@ -4,6 +4,8 @@
 //新闻管理界面创建bootstrapTable
 document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
 var check1=1;
+var check2=1;
+var check3=1;
 //主界面用户表格回显
 $(function() {
 
@@ -57,8 +59,10 @@ function checkVersionFile(fileName)
 	var maxSize = 10485760;//最大10MB
 	
 	if(ext !='.APK'){
+		
 	    $("#msg_versionFile").html("app类型错误,请上传.apk后缀的文件");
 	    $("#msg_versionFile").css("color", "red");
+	    check2=0;
 	    return;
 	   
 	}
@@ -87,8 +91,10 @@ function checkEversionFile(fileName)
 	var maxSize = 10485760;//最大10MB
 	
 	if(ext !='.APK'){
+		
 	    $("#msg_EversionFile").html("app类型错误,请上传.apk后缀的文件");
 	    $("#msg_EversionFile").css("color", "red");
+	    check3=0;
 	    return;
 	   
 	}
@@ -157,6 +163,7 @@ function addVersion(){
 		alert("版本号不能为空");
 		return;
 		}
+	
 	if(!check1)
 		{alert("请输入正确的版本号");
 		return;}
@@ -184,7 +191,8 @@ function addVersion(){
 	        return;
 		}
 		checkVersionFile(animateimg);
-
+		if(!check2)
+			{return;}
 		var formData = new FormData();
 		var version_file = document.getElementById("versionFile");
 		var fileobj = version_file.files[0];
@@ -215,7 +223,7 @@ function addVersion(){
 				document.getElementById("tipContent").innerText="上传失败";
 				$("#Tip").modal('show');
 				$("#addVersionModal").modal('hide');
-				resetAddModal();
+				
 				 
 				//$("#newsGrid").bootstrapTable('refresh');	
 				 }						
@@ -227,6 +235,7 @@ function addVersion(){
 
 		},
 	});
+	resetAddModal();
 	versionReady();
 }
 
@@ -255,10 +264,13 @@ $("span").html("");
 
 function updateVersion(){
 	var eFile=$("#EversionFile").val();
-	alert(eFile);
+	
 	if(eFile)
 	{
 		checkEversionFile(eFile);}
+	alert(check3);
+	if(!check3)
+		{return;}
 	var formData = new FormData();
 	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
 	//alert(img_file);
@@ -297,6 +309,7 @@ function updateVersion(){
 		async:false,
 
 		success:function(res){	
+			alert(JSON.stringify(res));
 			
 			if(res.code==0){
 				alert("修改成功");
@@ -314,6 +327,7 @@ function updateVersion(){
 
 		},
 	});
+	resteUpdate();
 	
 	}
 
@@ -482,7 +496,7 @@ function editVersionById(id){
   }
 
 
-function deleteNewsById(id)
+function deleteVersionById(id)
 { 
 	 Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
 		if (!e) {

@@ -52,7 +52,7 @@ private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+Fi
 
 @PostMapping(value="/upLoadApp")
 @ResponseBody
-public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam("file") MultipartFile file){
+public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
 	
 	File dir=new File(UPLOADED_FOLDER);
  	 if(!dir.exists()){
@@ -145,13 +145,12 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 	Map<String,String> info = new HashMap<>();
 	VersionModel versionModel=new VersionModel();
 	String now=DateUtils.getTime();
-	
+	versionModel.setUuid(versionInfo.getUuid());
 	versionModel.setVersionCode(versionInfo.getVersionCode());
 	versionModel.setVersionStatus(versionInfo.getVersionStatus());
 	versionModel.setCreated(now);
 	
 	if(file!=null) {
-		
 		//日期时间生成唯一标识文件名
   		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
   		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
@@ -184,7 +183,8 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
   		}
   	}else {
   		
-  		versionModel.setAppUrl(versionModel.getAppUrl());
+  		log.info("versionInfo.getAppUrl()={}",versionInfo.getAppUrl());
+  		versionModel.setAppUrl(versionInfo.getAppUrl());
   		
   		versionModelMapper.updateApp(versionModel);
   		
