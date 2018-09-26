@@ -145,13 +145,12 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 	Map<String,String> info = new HashMap<>();
 	VersionModel versionModel=new VersionModel();
 	String now=DateUtils.getTime();
-	
+	versionModel.setUuid(versionInfo.getUuid());
 	versionModel.setVersionCode(versionInfo.getVersionCode());
 	versionModel.setVersionStatus(versionInfo.getVersionStatus());
 	versionModel.setCreated(now);
 	
 	if(file!=null) {
-		log.info("111");
 		//日期时间生成唯一标识文件名
   		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
   		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
@@ -183,6 +182,7 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 				.build();
   		}
   	}else {
+  		
   		log.info("versionInfo.getAppUrl()={}",versionInfo.getAppUrl());
   		versionModel.setAppUrl(versionInfo.getAppUrl());
   		

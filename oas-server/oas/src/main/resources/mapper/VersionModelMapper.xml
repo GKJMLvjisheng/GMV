@@ -63,7 +63,7 @@
 	<!-- Name:upadateApp -->
 	<!-- Author:yangming -->
 	<!-- Date:2018.09.25 -->
-    <update id="upadateApp" parameterType="com.cascv.oas.server.version.model.VersionModel"> 
+    <update id="updateApp" parameterType="com.cascv.oas.server.version.model.VersionModel"> 
       update version_info 
       <trim prefix="SET" suffixOverrides=",">
       <if test="versionCode!= null">
