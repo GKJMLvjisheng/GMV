@@ -163,8 +163,7 @@ function addVersion(){
 		alert("版本号不能为空");
 		return;
 		}
-	
-	if(!check1)
+	if(check1===0)
 		{alert("请输入正确的版本号");
 		return;}
 	 var versionStatus = document.getElementsByName("versionStatus");
