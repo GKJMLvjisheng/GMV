@@ -114,7 +114,7 @@ public class WechatService {
 			        }    
 			        
 			        else {
-			            responseContent="您的输入有误!请重新输入:'获取验证码'";
+			            responseContent="您的输入有误!如需获取验证码,请输入以下文字:'获取验证码'";
 			             }   	
 			        }
 		        else if (eventType.equals(WechatMessageUtil.MESSAGE_EVENT_SUBSCRIBE)) {//如果用户发送的是event类型的消息
