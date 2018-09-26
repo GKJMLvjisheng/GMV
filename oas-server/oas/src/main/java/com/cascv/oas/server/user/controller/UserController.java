@@ -255,6 +255,28 @@ public class UserController {
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
 	
+	@PostMapping(value="/inquireTradeRecordUserInfo")
+	@ResponseBody
+	public ResponseEntity<?> inquireTradeRecordUserInfo(@RequestBody String name){
+	  Map<String, String> info = new HashMap<>();
+	  UserModel userModel = new UserModel();
+	  userModel=userService.findUserByName(name);
+	  log.info("inviteCode11 {}", userModel.getInviteCode());	  
+	  info.put("name", userModel.getName());
+	  info.put("nickname", userModel.getNickname());
+	  info.put("inviteCode", userModel.getInviteCode().toString());
+	  info.put("gender", userModel.getGender());
+	  info.put("address", userModel.getAddress());
+	  info.put("birthday", userModel.getBirthday());
+	  info.put("email", userModel.getEmail());
+	  info.put("mobile", userModel.getMobile());
+	  log.info("****end****");
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info)
+	      .setErrorCode(ErrorCode.SUCCESS)
+	      .build();	  
+	}
+	
 	/*
 	 * Name:upadateUserInfo
 	 * Author:lvjisheng
