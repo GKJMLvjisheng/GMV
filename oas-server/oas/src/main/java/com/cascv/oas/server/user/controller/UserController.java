@@ -462,20 +462,22 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
 	@WriteLog(value="SendMobile")
-	//public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+//	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
 	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
     Map<String,Boolean> info=new HashMap<>();
 	
     log.info("-----------sendMobile start---------------");
 	
-	//String mobile = userModel.getMobile();
-    String mobile=request.getParameter("mobile");
-
-	try {
-	
+//	String mobile = userModel.getMobile();
+    
+    //String mobile=request.getParameter("mobile");
+    String oldMobile =request.getReader().readLine();
+    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+13);
+    log.info(mobile);
+	try {	
 		String vcode = AuthenticationUtils.createRandomVcode();
 		log.info("vcode = "+vcode);
-		//Session session = ShiroUtils.getSession();
+//		Session session = ShiroUtils.getSession();
 		HttpSession session=request.getSession();
 		
 		session.setAttribute("mobileCheckCode", vcode);
