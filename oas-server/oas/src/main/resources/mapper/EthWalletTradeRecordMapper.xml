@@ -19,5 +19,32 @@ where
 	ed.address=e.address and e.user_uuid=u.uuid
 order by ed.created desc;
 </select>
+
+
+<resultMap id="ethWalletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.EthWalletTotalTradeRecordInfo">
+    <result column="name" property="name"/>
+	<result column="value" property="value"/>
+</resultMap>
+
+   <select id="selectAllInTotalTradeRecord" resultMap="ethWalletTotalTradeRecordMap">
+   select 
+		u.name,SUM(ed.value) as value
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1
+group by u.name 
+order by value desc
+   </select>
    
+      <select id="selectAllOutTotalTradeRecord" resultMap="ethWalletTotalTradeRecordMap">
+   select 
+		u.name,SUM(ed.value) as value
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0
+group by u.name 
+order by value desc
+   </select>
 </mapper>
