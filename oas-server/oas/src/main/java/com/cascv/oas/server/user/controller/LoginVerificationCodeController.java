@@ -85,11 +85,13 @@ public class LoginVerificationCodeController {
 		for (int i = 0; i < 4; i++) {
 			switch (random.nextInt(3)) {
 			case 1: // 生成a-z的字母
-				//itmp = random.nextInt(26) + 65;
-				itmp = random.nextInt(26)+97;
+				itmp = random.nextInt(26) + 97;
 				ctmp = String.valueOf((char) itmp);
 				break;
- 
+			case 2:
+				itmp = random.nextInt(26) + 65;
+				ctmp = String.valueOf((char) itmp);
+				break;
 			default:
 				itmp = random.nextInt(10) + 48;
 				ctmp = String.valueOf((char) itmp);
