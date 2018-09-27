@@ -12,8 +12,9 @@
     <script type="text/javascript" th:src="@{js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{js/versionManage/versionManage.js}"></script>
 	<script type="text/javascript" src="/js/qrcode/jquery.qrcode.js" ></script>
- 	<script type="text/javascript" src="/js/qrcode/qrcode.js" ></script> 
+<!--  	<script type="text/javascript" src="/js/qrcode/qrcode.js" ></script>  -->
     <script type="text/javascript" src="/js/qrcode/utf.js" ></script>
+
     
    
    <style>
@@ -30,24 +31,24 @@
     word-break:break-all;
     }
  /*  二维码弹框    */
- #qrcode img { 
-     position: absolute; 
-     top: 25%;  
-     left: 35%;  
-     width: 350px; 
-     height: 350px; 
-     display: block; 
- } 
-#qrcode {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.6);
-    z-index: 9999;
-    display: none;
-} 	
+  #qrcode img {  
+      position: absolute;  
+      top: 25%;   
+     left: 35%;   
+      width: 350px;  
+      height: 350px;  
+      display: block;  
+  }  
+ #qrcode { 
+    position: fixed; 
+     top: 0; 
+    left: 0; 
+     width: 100%; 
+    height: 100%; 
+     background: rgba(255, 255, 255, 0.6); 
+     z-index: 9999; 
+     display: none; 
+ } 	 
     </style>
 </head>
 
@@ -70,8 +71,8 @@
 
 	</section>
 <div id="qrcode">
-        <div id="qrcodeCanvas"></div>
-        <img id="image" width="100%" height="100%" >
+<!--         <div id="qrcodeCanvas"></div> -->
+<!--         <img id="image" width="100%" height="100%" > -->
     </div>
 	<!-- 新增版本的模态框-->
 

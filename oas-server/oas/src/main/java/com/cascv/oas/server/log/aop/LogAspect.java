@@ -32,11 +32,17 @@ public class LogAspect {
     LogModel logModel = new LogModel();
     logModel.setAction(value);
     logModel.setTime(DateUtils.getTime());
-    logModel.setSessionId(ShiroUtils.getSessionId());
+    String sessionId = ShiroUtils.getSessionId();
+    if (sessionId == null)
+      sessionId="0";
+    logModel.setSessionId(sessionId);
     logModel.setHost(ShiroUtils.getIp());
-    logModel.setUser(ShiroUtils.getLoginName());
+    String name = ShiroUtils.getLoginName();
+    if (name == null)
+      name="ann";
+    logModel.setUser(name);
     logModel.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.LOG));
     logService.addLog(logModel);
-    log.info("## {} {}", ShiroUtils.getLoginName(), value);
+    log.info("## {} {}", name, value);
   }
 }
