@@ -63,6 +63,12 @@ public class UserService {
     if (userModel.getNickname() == null) {
       userModel.setNickname(userModel.getName());
     }
+    if (userModel.getInviteCode() == null) {
+        userModel.setInviteCode(userModel.getInviteCode());
+      }
+    if (userModel.getInviteFrom() == null) {
+        userModel.setInviteFrom(userModel.getInviteFrom());
+      }
     userModel.setUuid(uuid);
     userModel.setSalt(DateUtils.dateTimeNow());
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
