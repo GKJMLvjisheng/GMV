@@ -220,15 +220,16 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/api/v1/userCenter/contrastCode", "anon");
 		//忘记密码接口免登陆访问
 		filterChainDefinitionMap.put("/api/v1/userCenter/inquireUserInfoByMobile", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/sendMobile", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/mobileCheckCode", "anon");		
 		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
 		
 		filterChainDefinitionMap.put("/api/v1/userCenter/login", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/registerConfirm", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/inquireName", "anon");
-		filterChainDefinitionMap.put("/api/v1/userCenter/mobileCheckCode", "anon");
-		filterChainDefinitionMap.put("/api/v1/userCenter/sendMobile", "anon");
-		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
+
 		//filterChainDefinitionMap.put("/api/v1/ethWallet/selectContractSymbol", "anon");
 		filterChainDefinitionMap.put(loginUrl, "anon");		
 		

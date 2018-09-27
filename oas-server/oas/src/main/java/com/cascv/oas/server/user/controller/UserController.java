@@ -476,7 +476,8 @@ public class UserController {
     
     //String mobile=request.getParameter("mobile");
     String oldMobile =request.getReader().readLine();
-    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+13);
+    int length=11+2;
+    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+length);
     log.info(mobile);
 	try {	
 		String vcode = AuthenticationUtils.createRandomVcode();
@@ -485,32 +486,28 @@ public class UserController {
 		HttpSession session=request.getSession();
 		
 		session.setAttribute("mobileCheckCode", vcode);
-		AuthenticationUtils sms = new AuthenticationUtils();
-		
-		if(sms.SendCode(mobile,vcode).getCode().equals("OK")) {
-			
-
-			info.put("state",true);
-			return new ResponseEntity.Builder<Map<String, Boolean>>()
-			  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-		}else {
+		AuthenticationUtils sms = new AuthenticationUtils();		
+		if(sms.SendCode(mobile,vcode).getCode().equals("OK")){
+				info.put("state",true);
+				log.info("success");
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();			
+		}else{
 			
 			info.put("state",false);
-
+			log.info("failure1");
 			return new ResponseEntity.Builder<Map<String, Boolean>>()
 			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		}
 		
-		
 	} catch (Exception e) {
-		e.printStackTrace();
-	
+		log.info(e.getMessage());
+		log.info("failure2");
+		e.printStackTrace();	
 		info.put("state",false);
-
 		return new ResponseEntity.Builder<Map<String, Boolean>>()
 		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-	}
-		
+	}		
 }
 	/*
 	 * @Name:mobileCheckCode
@@ -520,30 +517,37 @@ public class UserController {
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
 	@WriteLog(value="MobileCheckCode")
-	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
+//	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
+	public ResponseEntity<?> mobileCheckCode(HttpServletRequest request) throws Exception {
 		log.info("--------mobileCheckCode   start--------");
 
-		String mobilecode = authCode.getMobileCode();
-        
-		Session session=ShiroUtils.getSession();
-		log.info("mail hello" + mobilecode);
-		log.info("mail hello" + session.getAttribute("mobileCheckCode"));
+		//String mobilecode = authCode.getMobileCode();
+		String oldCode =request.getReader().readLine();
+		int length=6+2;	    String mobilecode = oldCode.substring(oldCode.indexOf(":")+2,oldCode.indexOf(":")+length);
+	    log.info(mobilecode);
+		//Session session=ShiroUtils.getSession();
+	    HttpSession session=request.getSession();
+		//log.info("mail hello" + mobilecode);
+		//log.info("mail hello" + session.getAttribute("mobileCheckCode"));
 		
 		Map<String,Boolean> info = new HashMap<>();
-		
-		if (mobilecode.equalsIgnoreCase((String) session.getAttribute("mobileCheckCode"))) {
-			info.put("state",true);
-			return new ResponseEntity.Builder<Map<String, Boolean>>()
-			  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-
-		} else {
+		try{
+			if (mobilecode.equalsIgnoreCase((String) session.getAttribute("mobileCheckCode"))) {
+				info.put("state",true);
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	
+			} else {
+				info.put("state",false);
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+				  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();	
+			}
+		}catch(Exception e){
+			log.info(e.getMessage());
+			e.getStackTrace();		
 			info.put("state",false);
 			return new ResponseEntity.Builder<Map<String, Boolean>>()
 			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-
-		}
-		
-		
+		}		
 	}
 	 
 	
