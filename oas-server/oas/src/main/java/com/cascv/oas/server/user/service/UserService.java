@@ -47,6 +47,9 @@ public class UserService {
 //  }
    
   public ErrorCode addUser(String uuid, UserModel userModel) {
+	  log.info("111");
+//	  log.info("userModel.getInviteCode()={}",userModel.getInviteCode());
+//	  log.info("userModel.getInviteFrom()={}",userModel.getInviteFrom());
 	  String s = userModel.getName();
 	  if(s == "") {
       return ErrorCode.USERNAME_NULL;
@@ -63,12 +66,14 @@ public class UserService {
     if (userModel.getNickname() == null) {
       userModel.setNickname(userModel.getName());
     }
-    if (userModel.getInviteCode() == null) {
-        userModel.setInviteCode(userModel.getInviteCode());
-      }
-    if (userModel.getInviteFrom() == null) {
-        userModel.setInviteFrom(userModel.getInviteFrom());
-      }
+    
+//    if (userModel.getInviteCode() == null) {
+//        userModel.setInviteCode(userModel.getInviteCode());
+//      }
+//    
+//    if (userModel.getInviteFrom() == null) {
+//        userModel.setInviteFrom(userModel.getInviteFrom());
+//      }
     userModel.setUuid(uuid);
     userModel.setSalt(DateUtils.dateTimeNow());
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
