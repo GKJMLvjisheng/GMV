@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -254,6 +257,32 @@ public class UserController {
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
+	/**
+	 * @author Ming Yang
+	 * @param name
+	 * @return UserModel 
+	 */
+	@PostMapping(value="/inquireTradeRecordUserInfo")
+	@ResponseBody
+	public ResponseEntity<?> inquireTradeRecordUserInfo(String name){
+	  Map<String, String> info = new HashMap<>();
+	  UserModel userModel = new UserModel();
+	  userModel=userService.findUserByName(name);
+	  log.info("inviteCode11 {}", userModel.getInviteCode());	  
+	  info.put("name", userModel.getName());
+	  info.put("nickname", userModel.getNickname());
+	  info.put("inviteCode", userModel.getInviteCode().toString());
+	  info.put("gender", userModel.getGender());
+	  info.put("address", userModel.getAddress());
+	  info.put("birthday", userModel.getBirthday());
+	  info.put("email", userModel.getEmail());
+	  info.put("mobile", userModel.getMobile());
+	  log.info("****end****");
+	  return new ResponseEntity.Builder<Map<String, String>>()
+	      .setData(info)
+	      .setErrorCode(ErrorCode.SUCCESS)
+	      .build();	  
+	}
 	
 	/*
 	 * Name:upadateUserInfo
@@ -437,19 +466,23 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
 	@WriteLog(value="SendMobile")
-	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+//	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
     Map<String,Boolean> info=new HashMap<>();
 	
     log.info("-----------sendMobile start---------------");
 	
-	String mobile = userModel.getMobile();
-
-	try {
-	
+//	String mobile = userModel.getMobile();
+    
+    //String mobile=request.getParameter("mobile");
+    String oldMobile =request.getReader().readLine();
+    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+13);
+    log.info(mobile);
+	try {	
 		String vcode = AuthenticationUtils.createRandomVcode();
 		log.info("vcode = "+vcode);
-		Session session = ShiroUtils.getSession();
-//		HttpSession session=request.getSession();
+//		Session session = ShiroUtils.getSession();
+		HttpSession session=request.getSession();
 		
 		session.setAttribute("mobileCheckCode", vcode);
 		AuthenticationUtils sms = new AuthenticationUtils();

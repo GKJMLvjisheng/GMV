@@ -18,6 +18,7 @@ import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,7 @@ public class EthWalletController {
   @PostMapping(value="/transfer")
   @ResponseBody
   @Transactional
+  @WriteLog(value="transfer")
   public ResponseEntity<?> transfer(@RequestBody EthWalletTransfer ethWalletTransfer){
 	  if(ethWalletTransfer.getToUserAddress().equals("0")) {
 		  return new ResponseEntity.Builder<Integer>()
@@ -111,6 +113,7 @@ public class EthWalletController {
   @PostMapping(value="/multiTtransfer")
   @ResponseBody
   @Transactional
+  @WriteLog(value="multiTransfer")
   public ResponseEntity<?> multiTtransfer(@RequestBody EthWalletMultiTransfer ethWalletMultiTransfer){
 		  
 		//前端传的值单位从wei改为Gwei，差额为10的9次方

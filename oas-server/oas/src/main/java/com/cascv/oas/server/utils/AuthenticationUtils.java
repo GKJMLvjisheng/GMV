@@ -29,7 +29,7 @@ public class AuthenticationUtils {
 	public  SendSmsResponse SendCode(String PhoneNumbers, String mobilecode ) throws ClientException{
         
 		System.out.println("*********SendCode start********************");
-		
+		System.out.println("PhoneNumbers="+PhoneNumbers);
 		
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/wallet/userWallet.js}"></script>
+	<script type="text/javascript" th:src="@{/js/wallet/userWalletTable.js}"></script>		
+   
+   
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+	}
+	label{ 
+    vertical-align:middle;
+	}
+	
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+		
+		<div class = "container">
+			<table id="userWalletGrid"></table>
+		</div>
+
+	</section>
+
+</body>
+</html>
+

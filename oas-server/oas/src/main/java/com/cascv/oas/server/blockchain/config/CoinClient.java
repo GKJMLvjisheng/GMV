@@ -52,8 +52,7 @@ public class CoinClient {
   
   // balance
   public BigDecimal balanceOf(String net, String fromAddress, String contract, BigDecimal weiFactor) {
-
-    String methodName = "balanceOf";
+	String methodName = "balanceOf";
     List<Type> inputParameters = new ArrayList<>();
     List<TypeReference<?>> outputParameters = new ArrayList<>();
     Address address = new Address(fromAddress);
@@ -65,11 +64,12 @@ public class CoinClient {
     Function function = new Function(methodName, inputParameters, outputParameters);
     String data = FunctionEncoder.encode(function);
     Transaction transaction = Transaction.createEthCallTransaction(fromAddress, contract, data);
-
+    
     EthCall ethCall;
     BigInteger balanceInt = BigInteger.ZERO;
+        
     try {
-      Web3j web3j = providerMap.get(net); 
+      Web3j web3j = providerMap.get(net);
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       balanceInt = (BigInteger) results.get(0).getValue();
