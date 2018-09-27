@@ -257,10 +257,14 @@ public class UserController {
 	  return new ResponseEntity.Builder<Map<String, String>>()
 	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();	  
 	}
-	
+	/**
+	 * @author Ming Yang
+	 * @param name
+	 * @return UserModel 
+	 */
 	@PostMapping(value="/inquireTradeRecordUserInfo")
 	@ResponseBody
-	public ResponseEntity<?> inquireTradeRecordUserInfo(@RequestBody String name){
+	public ResponseEntity<?> inquireTradeRecordUserInfo(String name){
 	  Map<String, String> info = new HashMap<>();
 	  UserModel userModel = new UserModel();
 	  userModel=userService.findUserByName(name);
