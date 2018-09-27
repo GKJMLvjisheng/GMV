@@ -53,27 +53,36 @@
                             <li class="active"><a class="menuItem" th:href="@{/userInfo/userInfo}">个人中心</a></li> 
                         </ul>
                     </li>
+
+                    <li class="">
+                        <a href="main"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >钱包管理</span></a>
+                        <ul class="nav nav-second-level">
+                            <li class="active"><a class="menuItem" th:href="@{/wallet/eneryWallet}">能量钱包</a></li>
+                            <li class="active"><a class="menuItem" th:href="@{/wallet/ethWallet}">交易钱包</a></li> 
+                            <li class="active"><a class="menuItem" th:href="@{/wallet/userWallet}">用户钱包</a></li>
+                        </ul>
+                    </li>
                     
                     <shiro:hasRole name="admin">                
-                        <li class="active">
+                        <li class="">
                             <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">用户管理</span> </a>                   
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">角色管理</span> </a>                    
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">模块管理</span> </a>                    
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a class="menuItem" href="newsManage"><i class="glyphicon glyphicon-film"></i> <span class="nav-label">新闻管理</span> </a>        
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a class="menuItem" href="QA/QAManage"><i class="glyphicon glyphicon-pencil"></i> <span class="nav-label">环保答题</span> </a>        
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a class="menuItem"href="multiTransfer"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label">一对多转账</span>  </a>                         
                         </li>
-                        <li class="active">
+                        <li class="">
                             <a class="menuItem"href="versionManage"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">版本管理</span>  </a>                         
                         </li>
                     </shiro:hasRole>
@@ -83,13 +92,13 @@
         <!--     右侧导航栏开始 -->
         <!-- <input   type="text" style="display:none" name="userToken" id="userToken"> -->
             <div id="page-wrapper" class="gray-bg dashbard-1">
-                <div class="row border-bottom" style="background:url(../img/3.jpg);">
+                <div class="row border-bottom" style="background:url(../img/3.jpg);background-size:100%;">
 
                     <ul class="nav navbar-top-links navbar-right">
                          
                         <li>
-                            <span class="m-r-sm text-muted welcome-message" style="font-weight:bold;color: black;">
-                                                                                    欢迎来到OAS DAPP管理后台。</span>
+                            <span class="m-r-sm text-muted welcome-message" style="font-weight:bold;color:black;">
+                                                                                    欢迎来到OAS DAPP管理后台</span>
                         </li>
 
                         <li>
