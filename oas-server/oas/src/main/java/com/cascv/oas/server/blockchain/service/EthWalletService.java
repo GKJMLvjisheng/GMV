@@ -253,7 +253,7 @@ public class EthWalletService {
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
   
-  public ReturnValue<String> transfer(String userUuid, String contract, String toUserAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment, String changeAddress) {
+  public ReturnValue<String> transfer(String userUuid, String contract, String toUserAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
 
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     ReturnValue<String> returnValue = new ReturnValue<>();
@@ -279,7 +279,6 @@ public class EthWalletService {
       addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, comment, toUserAddress);
       addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress());
     }
-    System.out.println(txHash);
     returnValue.setErrorCode(ErrorCode.SUCCESS);
     returnValue.setData(txHash);
     return returnValue;

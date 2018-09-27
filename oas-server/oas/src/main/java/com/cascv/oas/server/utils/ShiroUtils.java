@@ -21,7 +21,8 @@ public class ShiroUtils {
 
     public static Session getSession()
     {
-        return SecurityUtils.getSubject().getSession();
+      Subject subject = getSubjct();
+      return subject != null ? subject.getSession() : null;
     }
 
     public static void logout()
@@ -63,21 +64,25 @@ public class ShiroUtils {
 
     public static String getUserUuid()
     {
-        return getUser().getUuid();
+      UserModel userModel = getUser();
+      return userModel != null ? userModel.getUuid() : null;
     }
 
     public static String getLoginName()
     {
-        return getUser().getName();
+      UserModel userModel = getUser();
+      return userModel != null ? userModel.getName() : null;
     }
 
     public static String getIp()
     {
-        return getSubjct().getSession().getHost();
+      Session session = getSession();
+      return session != null ? session.getHost() : null;
     }
 
     public static String getSessionId()
     {
-        return String.valueOf(getSubjct().getSession().getId());
+      Session session = getSession();
+      return session != null ? String.valueOf(session.getId()) : null;
     }
 }
