@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -463,19 +466,21 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
 	@WriteLog(value="SendMobile")
-	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+	//public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
     Map<String,Boolean> info=new HashMap<>();
 	
     log.info("-----------sendMobile start---------------");
 	
-	String mobile = userModel.getMobile();
+	//String mobile = userModel.getMobile();
+    String mobile=request.getParameter("mobile");
 
 	try {
 	
 		String vcode = AuthenticationUtils.createRandomVcode();
 		log.info("vcode = "+vcode);
-		Session session = ShiroUtils.getSession();
-//		HttpSession session=request.getSession();
+		//Session session = ShiroUtils.getSession();
+		HttpSession session=request.getSession();
 		
 		session.setAttribute("mobileCheckCode", vcode);
 		AuthenticationUtils sms = new AuthenticationUtils();
