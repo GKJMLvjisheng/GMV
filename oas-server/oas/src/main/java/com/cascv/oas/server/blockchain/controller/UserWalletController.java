@@ -15,14 +15,15 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
-import com.cascv.oas.server.news.controller.NewsController;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -50,6 +51,8 @@ public class UserWalletController {
   @Autowired
   private UserWalletDetailMapper userWalletDetailMapper;
 
+  @Autowired
+  private UserWalletTradeRecordMapper userWalletTradeRecordMapper;
   
   @Autowired
   private ExchangeRateService exchangeRateService;
@@ -105,7 +108,6 @@ public class UserWalletController {
           .setErrorCode(ErrorCode.SUCCESS).build();
   }
 
-  @SuppressWarnings("unused")
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
   public ResponseEntity<?> transactionDetail(@RequestBody PageIODomain<Integer> pageInfo){
@@ -190,4 +192,20 @@ public class UserWalletController {
         .setErrorCode(errorCode)
         .build();
   }
+  
+  /**
+   * @author Ming Yang
+   * @return 在线钱包交易明细接口
+   */
+  @PostMapping(value="/inqureUserWalletTradeRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureUserWalletTradeRecord(){
+	  List<UserWalletTradeRecordInfo> userWalletTradeRecords=userWalletTradeRecordMapper.selectAllTradeRecord();
+		return new ResponseEntity.Builder<List<UserWalletTradeRecordInfo>>()
+		        .setData(userWalletTradeRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
+  
 }
