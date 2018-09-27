@@ -67,7 +67,7 @@
         </div>
         <div class="signup-footer">
             <div class="pull-left">
-                &copy; 2018 All Rights Reserved. web区块链
+                &copy; 2018 All Rights Reserved by OASES Chain
             </div>
         </div>
     </div> 
@@ -105,7 +105,7 @@
 			}
 		},
 		error: function (res) {
-			alert(JSON.stringify(res));
+			alert(JSON.stringify(res.message));
 		},
 		complete: function () {
 		}
@@ -175,7 +175,7 @@
 			alert('检查验证码是否存在发生错误');
 		}
 		});
-		
+
 		if(check1 && check2){
 			window.location.replace("main");
 		}							
