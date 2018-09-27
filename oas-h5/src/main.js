@@ -6,6 +6,7 @@ import './assets/css/common.css' // 动画css
 import 'animate.css'
 import Axios from 'axios'
 import VueScroller from 'vue-scroller'
+//import router from 'vue-router' 
 Vue.use(VueScroller)
 var token = null
 if(window.Android) {
@@ -27,5 +28,6 @@ Vue.prototype.$axios = Axios
 Vue.config.productionTip = false
 
 new Vue({
+  //router ,
   render: h => h(App)
 }).$mount('#app')
