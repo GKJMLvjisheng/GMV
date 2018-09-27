@@ -3,6 +3,7 @@
  */
 //新闻管理界面创建bootstrapTable
 document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
+//document.write("<script language=javascript src='js/qrcode.js'></script>");
 var check1=1;
 var check2=1;
 var check3=1;
@@ -18,6 +19,7 @@ $(function() {
 
 function versionReady(){
 	
+	
     $('#versionGrid').bootstrapTable('destroy');
 	var data;
 	 $.ajax({
@@ -32,7 +34,7 @@ function versionReady(){
 		//alert(JSON.stringify(res));
 		if(res.code==0)
 			{data=res.data;}
-			
+		
 		else{alert("回显失败！");}
 			
 		}, 
@@ -541,17 +543,55 @@ function deleteVersionById(id)
 });
 }
 function displayQrcode(value) {
-	//$("#QRuserinfocode").addClass("selected");
-    //var userName=$("#userName").val();
-	//alert(value);
+	
     var info=value;
-    var qrcode=$('#qrcodeCanvas').qrcode(info).hide();
-       var canvas=qrcode.find('canvas').get(0);
-       $('#image').attr('src',canvas.toDataURL('img/1.jpg'));        
-      
-          $("#qrcode").fadeIn("slow");
-      $("#qrcode").click(function() {
-          $("#qrcode").fadeOut("slow");
-          //$("#QRuserinfocode").removeClass("selected");
-      })
-  }
+    console.log(info);
+    
+//    var qrcode=$('#qrcodeCanvas').qrcode(info).hide();
+//       var canvas=qrcode.find('canvas').get(0);
+//       //$("#image").prop("src",canvas.toDataURL('img/1.jpg'));
+//      var img=canvas.toDataURL('image/png');
+//    	 
+//       $("#image").prop("src",img);  
+
+//          $("#qrcode").fadeIn("slow");
+    //生成二维码
+   
+	$("#qrcode").empty();
+	$('#qrcode').qrcode(value); //任意字符串
+// 将生成后的二维码加入到容器·
+//            //获取页面的cavase对象插入DOM中
+	var mycanvas1 = document.getElementsByTagName('canvas')[0];
+	//将转换后的img标签插入到html中
+	var img = convertCanvasToImage(mycanvas1);
+	//防止重复加载，加载前先清空装img 的容器
+	$('#qrcode').empty();
+	//qrcode表示你要插入的容器id
+	$('#qrcode').append(img);
+	$("#qrcode").fadeIn("slow");
+
+}
+//转换时需要的方法
+//从canvas中提取图片image
+ function convertCanvasToImage(canvas) {
+//新Image对象，可以理解为DOM
+var image = new Image();
+// canvas.toDataURL 返回的是一串Base64编码的URL，当然,浏览器自己肯定支持
+// 指定格式PNG
+image.src = canvas.toDataURL("image/png");
+     return image;
+}
+
+
+
+$(function(){
+	$("#qrcode").click(function() {
+    $("#qrcode").fadeOut("slow");
+    //location.reload();
+	
+
+	})
+ 
+})
+
+

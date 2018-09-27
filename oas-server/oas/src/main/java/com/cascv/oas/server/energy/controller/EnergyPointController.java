@@ -7,6 +7,7 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.wrapper.*;
+import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.*;
@@ -15,10 +16,7 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
-import com.cascv.oas.server.utils.HostIpUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
-import com.google.gson.Gson;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +40,8 @@ public class EnergyPointController {
     private EnergyService energyService;
     @Autowired
     private NewsService newsService;
+    @Autowired
+    private EnergyWalletTradeRecordMapper energyWalletTradeRecordMapper;
 
     @PostMapping(value = "/checkin")
     @ResponseBody
@@ -397,6 +397,21 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
                 .setData(energyPointFactor)
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
+    }
+    
+    /**
+     * @author Ming Yang
+     * @return 在线钱包交易明细接口
+     */
+    @PostMapping(value="/inqureEnergyWalletTradeRecord")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<?> inqureEnergyWalletTradeRecord(){
+  	  List<EnergyWalletTradeRecordInfo> energyWalletTradeRecords=energyWalletTradeRecordMapper.selectAllTradeRecord();
+  		return new ResponseEntity.Builder<List<EnergyWalletTradeRecordInfo>>()
+  		        .setData(energyWalletTradeRecords)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
     }
    
 }

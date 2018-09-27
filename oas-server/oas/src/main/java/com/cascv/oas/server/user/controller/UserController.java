@@ -127,7 +127,7 @@ public class UserController {
 		userWalletService.create(uuid);
 		energyPointService.create(uuid);
 		ErrorCode ret = userService.addUser(uuid, userModel);
-		log.info("inviteCode {}", userModel.getInviteCode());
+//		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
   	  registerResult.setMnemonicList(EthWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
