@@ -18,9 +18,9 @@ public class RootEthWalletTradeRecordController {
 	    return "wallet/ethWallet";  
 	    }
 
-	@GetMapping("/wallet/eneryWallet")
+	@GetMapping("/wallet/energyWallet")
 	public String eneryWallet() {
-	    return "wallet/eneryWallet";  
+	    return "wallet/energyWallet";  
 	    }
 	
 }

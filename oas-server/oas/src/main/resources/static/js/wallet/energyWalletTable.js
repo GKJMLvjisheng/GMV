@@ -1,7 +1,7 @@
 
-function initEthWalletGrid(data) {	
+function initEnergyWalletGrid(data) {	
 
-	$("#ethWalletGrid").bootstrapTable({
+	$("#energyWalletGrid").bootstrapTable({
 
 		//极为重要，缺失无法执行queryParams，传递page参数
 
@@ -12,16 +12,15 @@ function initEthWalletGrid(data) {
 		pagination:true,//显示分页条：页码，条数等
 
 		striped:true,//隔行变色
-		uniqueId:"name",//Indicate an unique identifier for each row
+
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
 
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
-		sortName: 'topicId', // 要排序的字段
+		//sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
@@ -34,44 +33,44 @@ function initEthWalletGrid(data) {
 			width:  '100px',
 
 		},
-			{
-			title : "交易金额",
-			field : "value",
-			align: 'center',
-			valign: 'middle',
-			width:  '100px',
-
-		},
 		{
 			title : "交易类型",
-			field : "title",
+			field : "inOrOut",
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',
 
 		},
 		{
-			title : "接收人",
-			field : "changeAddress",
+			title : "交易积分",
+			field : "pointChange",
 			align: 'center',
 			valign: 'middle',
-			width:  '190px',
+			width:  '150px',
+
+		},
+		{
+			title : "获得算力",
+			field : "powerChange",
+			align: 'center',
+			valign: 'middle',
+			width:  '150px',
+
+		},
+		{
+			title : "兑换状态",
+			field : "status",
+			align: 'center',
+			valign: 'middle',
+			width:  '150px',
 
 		},
 			{
 			title : "交易时间",
-			field : "created",
+			field : "timeCreated",
 			align: 'center',
 			valign: 'middle',
-			width:  '190px',
-
-		}, {
-
-			title : "交易备注",
-			field : "comment",
-			align: 'center',
-			valign: 'middle',
-			width:  '100px',
+			width:  '200px',
 
 		},{
 
@@ -80,6 +79,7 @@ function initEthWalletGrid(data) {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
+			width:  '60px',
 			formatter: actionFormatter
 		}],
 		
@@ -97,7 +97,8 @@ function initEthWalletGrid(data) {
         
         return result;
 	}
-	
+
+
 	function ViewViewById(id){	
 		var formData = new FormData();
 		$('#Qname').val(id);	
@@ -125,7 +126,7 @@ function initEthWalletGrid(data) {
 			$('#Qemail').val(rows.email);
 			$('#Qaddress').val(rows.address);
 			$('#QinviteCode').val(rows.inviteCode);
-			$("#queryEthModal").modal("show");
+			$("#queryEnergyModal").modal("show");
 			}
 			else{
 				alert("查询失败1");

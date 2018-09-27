@@ -84,8 +84,9 @@ public class LoginVerificationCodeController {
 		// 制定输出的验证码为四位
 		for (int i = 0; i < 4; i++) {
 			switch (random.nextInt(3)) {
-			case 1: // 生成A-Z的字母
-				itmp = random.nextInt(26) + 65;
+			case 1: // 生成a-z的字母
+				//itmp = random.nextInt(26) + 65;
+				itmp = random.nextInt(26)+97;
 				ctmp = String.valueOf((char) itmp);
 				break;
  

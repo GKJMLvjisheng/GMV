@@ -10,8 +10,9 @@
 	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/wallet/ethWallet.js}"></script>
-	<script type="text/javascript" th:src="@{/js/wallet/ethWalletTable.js}"></script>		
+	<script type="text/javascript" th:src="@{/js/wallet/energyWallet.js}"></script>
+	<script type="text/javascript" th:src="@{/js/wallet/energyWalletTable.js}"></script>
+	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>		
    
    
    <style>
@@ -29,23 +30,26 @@
 	}
 	label{ 
     vertical-align:middle;
-	}
-	
+	}	
     </style>
 </head>
 
 <body>
 
-	<section class="content table-content">
-		
-		<div class = "container">
-			<table id="ethWalletGrid"></table>
-		</div>
+	
 
-	</section>
+
+	<div class = "container" id="page1">
+			<table id="energyWalletGrid"></table>
+	</div> 
+	
+	<div class = "container" style="display:none" id="page2">
+			123456
+	</div>
+
 
 	<!-- 查看用户信息的模态框 -->
-    <div class="modal fade" id="queryEthModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="queryEnergyModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
 
@@ -115,6 +119,7 @@
 			</div>					
 		</div>
 	</div>
+
 
 </body>
 </html>
