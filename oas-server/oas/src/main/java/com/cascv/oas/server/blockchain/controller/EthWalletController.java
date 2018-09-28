@@ -5,7 +5,6 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
-import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -28,17 +27,17 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.web3j.utils.Convert;
@@ -268,6 +267,8 @@ public class EthWalletController {
         .build();
   }
   
+  
+  
   /**
    * @author Ming Yang
    * @return 交易钱包交易明细接口
@@ -292,8 +293,34 @@ public class EthWalletController {
   @Transactional
 
   public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  
+	  //获取当月第一天
+	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	  Calendar c = Calendar.getInstance();
+	  c.add(Calendar.MONTH, 0);
+	  c.set(Calendar.DAY_OF_MONTH,1);
+	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate:{}",nowDate);
+      
 	  String startTime=timeLimitInfo.getStartTime();
 	  String endTime=timeLimitInfo.getEndTime();
+	  
+	  if(startTime=="") {
+		  startTime=nowMonthOfFirstDay;
+	  }else {
+		  startTime=timeLimitInfo.getStartTime();
+	  }
+	  if(endTime=="") {
+		  endTime=nowDate;
+	  }else {
+		  endTime=timeLimitInfo.getEndTime();
+	  }
+	  
 	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletInTotalTradeRecords)
@@ -309,8 +336,34 @@ public class EthWalletController {
   @Transactional
 
   public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  
+	  //获取当月第一天
+	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	  Calendar c = Calendar.getInstance();
+	  c.add(Calendar.MONTH, 0);
+	  c.set(Calendar.DAY_OF_MONTH,1);
+	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate={}",nowDate);
+      
 	  String startTime=timeLimitInfo.getStartTime();
 	  String endTime=timeLimitInfo.getEndTime();
+	  
+	  if(startTime=="") {
+		  startTime=nowMonthOfFirstDay;
+	  }else {
+		  startTime=timeLimitInfo.getStartTime();
+	  }
+	  if(endTime=="") {
+		  endTime=nowDate;
+	  }else {
+		  endTime=timeLimitInfo.getEndTime();
+	  }
+	  
 	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletOutTotalTradeRecords)

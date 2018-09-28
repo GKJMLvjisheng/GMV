@@ -1,6 +1,7 @@
 package com.cascv.oas.server.blockchain.controller;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,7 +20,9 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
+import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletTotalTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
@@ -204,6 +207,90 @@ public class UserWalletController {
 	  List<UserWalletTradeRecordInfo> userWalletTradeRecords=userWalletTradeRecordMapper.selectAllTradeRecord();
 		return new ResponseEntity.Builder<List<UserWalletTradeRecordInfo>>()
 		        .setData(userWalletTradeRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
+  /**
+   * @author Ming Yang
+   * @return 在线钱包个人转入统计
+   */
+  @PostMapping(value="/inqureUserWalletInTotalTradeRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureUserWalletInTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  
+	  //获取当月第一天
+	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	  Calendar c = Calendar.getInstance();
+	  c.add(Calendar.MONTH, 0);
+	  c.set(Calendar.DAY_OF_MONTH,1);
+	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate:{}",nowDate);
+      
+	  String startTime=timeLimitInfo.getStartTime();
+	  String endTime=timeLimitInfo.getEndTime();
+	  
+	  if(startTime=="") {
+		  startTime=nowMonthOfFirstDay;
+	  }else {
+		  startTime=timeLimitInfo.getStartTime();
+	  }
+	  if(endTime=="") {
+		  endTime=nowDate;
+	  }else {
+		  endTime=timeLimitInfo.getEndTime();
+	  }
+	  
+	  List<UserWalletTotalTradeRecordInfo> userWalletInTotalTradeRecords=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<UserWalletTotalTradeRecordInfo>>()
+		        .setData(userWalletInTotalTradeRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
+  /**
+   * @author Ming Yang
+   * @return 在线钱包个人转出统计
+   */
+  @PostMapping(value="/inqureUserWalletOutTotalTradeRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureUserWalletOutTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  
+	  //获取当月第一天
+	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	  Calendar c = Calendar.getInstance();
+	  c.add(Calendar.MONTH, 0);
+	  c.set(Calendar.DAY_OF_MONTH,1);
+	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate={}",nowDate);
+      
+	  String startTime=timeLimitInfo.getStartTime();
+	  String endTime=timeLimitInfo.getEndTime();
+	  
+	  if(startTime=="") {
+		  startTime=nowMonthOfFirstDay;
+	  }else {
+		  startTime=timeLimitInfo.getStartTime();
+	  }
+	  if(endTime=="") {
+		  endTime=nowDate;
+	  }else {
+		  endTime=timeLimitInfo.getEndTime();
+	  }
+	  
+	  List<UserWalletTotalTradeRecordInfo> userWalletOutTotalTradeRecords=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<UserWalletTotalTradeRecordInfo>>()
+		        .setData(userWalletOutTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
