@@ -155,7 +155,7 @@ public class ActivityController {
 		else
 			return new ResponseEntity.Builder<Integer>()
 			        .setData(0)
-			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+			        .setErrorCode(ErrorCode.REWARD_ALREADY_EXIST).build();
 		
 	}
 	
