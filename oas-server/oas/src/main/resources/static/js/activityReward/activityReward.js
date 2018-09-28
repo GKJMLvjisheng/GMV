@@ -11,20 +11,20 @@ var check3=1;
 $(function() {
 
 	//初始加载	
-	versionReady();
-	versionCode.setAttribute("maxlength",40);
+	activityReady();
+	
 	
 	
 });
 
-function versionReady(){
+function activityReady(){
 	
 	
-    $('#versionGrid').bootstrapTable('destroy');
+    $('#activityGrid').bootstrapTable('destroy');
 	var data;
 	 $.ajax({
 		
-		url: "/api/v1/userCenter/selectAllApps",
+		url: "/api/v1/activityConfig/selectAllActivity",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -42,7 +42,7 @@ function versionReady(){
 			alert("回显失败！")
 		}
 		}); 
-	 initVersionGrid(data);
+	 initActivityGrid(data);
 }
 
 //检查图片格式是否符合要求
@@ -336,10 +336,9 @@ function updateVersion(){
 	resteUpdate();
 	
 	}
+function initActivityRewardGrid(data) {	
 
-function initVersionGrid(data) {	
-
-	$("#versionGrid").bootstrapTable({
+	$("#activityRewardGrid").bootstrapTable({
 
 		//极为重要，缺失无法执行queryParams，传递page参数
 
@@ -358,7 +357,118 @@ function initVersionGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"uuid",//Indicate an unique identifier for each row
+		uniqueId:"rewardCode",//Indicate an unique identifier for each row
+
+		toolbar:"#rewardToolbar",//工具栏
+		sortName: 'ID', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+
+		data:data,
+		columns : [{
+            title: '序号',
+            field: 'index',
+            align: 'center',
+			valign: 'middle',
+            formatter: formatterIndex
+            
+        },{
+
+			title : "奖励名称",
+
+			field : "rewardName",
+			align: 'center',
+			valign: 'middle',
+			//width:  '200px',
+
+		},
+			{
+
+			title : "奖励基础值",
+
+			field : "baseValue",
+			align: 'center',
+			valign: 'middle',
+			//width:  '120px',
+
+		},{
+
+			title : "奖励增长速度",
+
+			field : "increaseSpeed",
+			align: 'center',
+			valign: 'middle',
+			//width:  '120px',
+
+		}, 
+		{
+
+			title : "奖励增长速度单位",
+
+			field : "increaseSpeedUnit",
+			align: 'center',
+			valign: 'middle',
+			//width:  '120px',
+
+		},
+		{
+
+			title : "奖励满值",
+
+			field : "maxValue",
+			align: 'center',
+			valign: 'middle',
+			//width:  '120px',
+
+		},
+		{
+
+			title : "活动创建时间",
+
+			field : "created",
+			align: 'center',
+			valign: 'middle',
+			//width:  '90px',
+
+		},
+		{
+
+			title : " 操作",
+			
+			field : "rewardCode",
+			align: 'center',
+			valign: 'middle',
+			//width:  '90px',
+			formatter: actionFormatter
+		}],
+		
+		search : true,//搜索
+        searchOnEnterKey : true,
+		clickToSelect: false,         
+	});
+}
+
+function initActivityGrid(data) {	
+
+	$("#activityGrid").bootstrapTable({
+
+		//极为重要，缺失无法执行queryParams，传递page参数
+
+		contentType : "application/x-www-form-urlencoded",
+
+		dataType:"json",
+
+		pagination:true,//显示分页条：页码，条数等
+
+		striped:true,//隔行变色
+
+		pageNumber:1,//首页页码
+		sidePagination:"client",//在服务器分页
+
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		
+
+		uniqueId:"sourceCode",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
@@ -375,37 +485,27 @@ function initVersionGrid(data) {
         },
 			{
 
-			title : "版本号",
+			title : "活动名称",
 
-			field : "versionCode",
+			field : "sourceName",
 			align: 'center',
 			valign: 'middle',
 			//width:  '120px',
 
 		}, {
 
-			title : "版本状态",
+			title : "活动类型",
 
-			field : "versionStatus",
+			field : "type",
 			align: 'center',
 			valign: 'middle',
 			//width:  '200px',
 
 		},
+		
 		{
 
-			title : "版本下载地址",
-
-			field : "appUrl",
-			align: 'center',
-			valign: 'middle',
-			//width:  '140px',
-			formatter: versionPath
-
-		}, 
-		{
-
-			title : "创建时间",
+			title : "活动创建时间",
 
 			field : "created",
 			align: 'center',
@@ -417,7 +517,7 @@ function initVersionGrid(data) {
 
 			title : " 操作",
 			
-			field : "uuid",
+			field : "sourceCode",
 			align: 'center',
 			valign: 'middle',
 			//width:  '90px',
@@ -453,31 +553,70 @@ function versionPath(value, row, index) {
     return result;
 }
 
-
+//function actionFormatter(value, row, index) {	
+//	var result = "";
+//	var newsUrl = value;  
+//	result +="<a href="+newsUrl+ ">"+newsUrl+"</a>";
+//    return result;
+//}
 
 function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"viewActivityById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-zoom-in'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editVersionById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteVersionById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
 }
  
-function ViewNewsById(id){	
+function viewActivityById(id){	
 
 		//获取选中行的数据		
-		var rows=$("#versionGrid").bootstrapTable('getRowByUniqueId', id);
-		$('#QnewsId').val(rows.newsId);
-		$('#QnewsTitle').val(rows.newsTitle);
-		$('#QnewsAbstract').val(rows.newsAbstract);
-		$('#QnewsUrl').val(rows.newsUrl);
-		$('#QnewsPicturePath').val(rows.newsPicturePath);
-		$("#qureyNewsModal").modal("show");
-		
+		var rows=$("#activityGrid").bootstrapTable('getRowByUniqueId', id);
+		var sourceName=rows.sourceName;
+		//var sourceCode=rows.sourceCode;
+		  
+			 
+				var str1="活动";
+				var str2="的奖励配置";
+				var str3=sourceName;
+				var str=str1+"【"+str3+"】"+str2;
+				
+				document.getElementById("activityModalLabel").innerHTML=(str);
+				//$('#allotRoleUserId').val(rows.userId);                         
+				activityRewardReady(id);
+				
+			 $("#activityRewardModal").modal("show"); 
 
 }	
+
+function activityRewardReady(id)
+{var data={"sourceCode":id};
+var data1;
+$.ajax({
+	
+	url: "/api/v1/activityConfig/selectAllActivityReward",
+   contentType : 'application/json;charset=utf8',
+   data: JSON.stringify(data),
+	dataType: 'json',
+	cache: false,
+	type: 'post',
+	async : false,
+	success: function(res) {
+	alert(JSON.stringify(res));
+	if(res.code==0)
+		{data1=res.data;}
+	
+	else{alert("回显失败！");}
+		
+	}, 
+	error: function(){
+		alert("回显失败！")
+	}
+	}); 
+initActivityRewardGrid(data1);
+}
 function editVersionById(id){
     
     //获取选中行的数据
