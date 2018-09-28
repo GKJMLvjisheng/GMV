@@ -285,8 +285,8 @@ public class EthWalletController {
   @PostMapping(value="/inqureEthWalletInTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(){
-	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord();
+  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(String startTime,String endTime){
+	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletInTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
@@ -299,8 +299,8 @@ public class EthWalletController {
   @PostMapping(value="/inqureEthWalletOutTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(){
-	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord();
+  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(String startTime,String endTime){
+	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletOutTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)

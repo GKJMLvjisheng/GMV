@@ -32,9 +32,9 @@ order by ed.created desc;
 from 
 		eth_wallet e,eth_wallet_detail ed,user_info u
 where
-		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name 
-order by value desc
+order by value desc;
    </select>
    
       <select id="selectAllOutTotalTradeRecord" resultMap="ethWalletTotalTradeRecordMap">
@@ -43,8 +43,8 @@ order by value desc
 from 
 		eth_wallet e,eth_wallet_detail ed,user_info u
 where
-		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name 
-order by value desc
+order by value desc;
    </select>
 </mapper>
