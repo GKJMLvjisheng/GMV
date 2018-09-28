@@ -7,9 +7,9 @@ document.write("<script language=javascript src='/js/wallet/userWalletTable.js'>
 $(function() {
 	//初始加载	
 	UserWalletReady();
-	FundBigReady();
-	FundInReady();
-	FundOutReady();
+	// FundBigReady();
+	// FundInReady();
+	// FundOutReady();
 });
 
 //时间控件

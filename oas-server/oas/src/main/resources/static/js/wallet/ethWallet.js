@@ -12,12 +12,27 @@ $(function () {
     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
-	});
+	})
+	// .on('changeDate',function(ev){
+    //      var starttime=$("#userEd").val();
+    //      $("#userEd1").datetimepicker('setStartDate',starttime);
+    //      $("#userEd").datetimepicker('hide');
+	// })
+	;
+
  	
 	$('#userEd1').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
-	});
+	})
+// 	.on('changeDate',function(ev){
+//        var starttime=$("#userEd").val();
+//        var endtime=$("#userEd1").val();
+//        $("#userEd").datetimepicker('setEndDate',endtime);
+//        $("#userEd1").datetimepicker('hide'); 
+//   })
+  ;
+
 
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
