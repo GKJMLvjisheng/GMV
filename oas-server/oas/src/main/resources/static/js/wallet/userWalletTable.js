@@ -57,7 +57,7 @@ function initUserWalletGrid(data) {
 			width:  '200px',
 		},
 		{
-			title : "接收人",
+			title : "交易对方",
 			field : "changeUserName",
 			align: 'center',
 			valign: 'middle',
@@ -226,7 +226,7 @@ function initFundInGrid(data) {
 
 		},
 		{
-			title : "交易类型",
+			title : "资金流入总额",
 			field : "title",
 			align: 'center',
 			valign: 'middle',
@@ -307,7 +307,7 @@ function initFundOutGrid(data) {
 
 		},
 			{
-			title : "交易金额",
+			title : "资金流出总额",
 			field : "value",
 			align: 'center',
 			valign: 'middle',

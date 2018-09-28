@@ -12,6 +12,34 @@ $(function() {
 	// FundOutReady();
 });
 
+//时间控件
+$(function () {
+    $('#userEd').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+	});	
+	$('#userEd1').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+	});
+	$('#userEd2').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+	});
+	$('#userEd3').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+	});
+	$('#userEd4').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+	});
+	$('#userEd5').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+    });
+});
+
 function UserWalletReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
@@ -34,14 +62,24 @@ function UserWalletReady(){
 }
 
 function FundBigReady(){
+	var formData = new FormData();
+	formData.append("startTime",$("#startTime1").val());
+	formData.append("endTime",$("#endTime1").val());
+	alert(JSON.stringify($("#startTime1").val()));
+	alert(JSON.stringify($("#endTime1").val()));
+
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
+		data:formData,
+		processData : false,
+		async : false,
+
 		success: function(res) {
 			//alert(JSON.stringify(res));
 			data2=res.data;
@@ -54,14 +92,24 @@ function FundBigReady(){
 		}); 
 }
 function FundInReady(){
+	var formData = new FormData();
+	formData.append("startTime",$("#startTime2").val());
+	formData.append("endTime",$("#endTime2").val());
+	alert(JSON.stringify($("#startTime2").val()));
+	alert(JSON.stringify($("#endTime2").val()));	
+
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
+		data:formData,
+		processData : false,
+		async : false,
+
 		success: function(res) {
 			//alert(JSON.stringify(res));
 			data2=res.data;
@@ -74,14 +122,24 @@ function FundInReady(){
 		}); 
 }
 function FundOutReady(){
+	var formData = new FormData();
+	formData.append("startTime",$("#startTime3").val());
+	formData.append("endTime",$("#endTime3").val());
+	alert(JSON.stringify($("#startTime3").val()));
+	alert(JSON.stringify($("#endTime3").val()));
+
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
+		data:formData,
+		processData : false,
+		async : false,
+
 		success: function(res) {
 			//alert(JSON.stringify(res));
 			data2=res.data;

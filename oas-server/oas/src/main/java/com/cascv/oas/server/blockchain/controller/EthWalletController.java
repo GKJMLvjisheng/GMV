@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.web3j.utils.Convert;
@@ -285,7 +286,7 @@ public class EthWalletController {
   @PostMapping(value="/inqureEthWalletInTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(String startTime,String endTime){
+  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestParam("startTime") String startTime,@RequestParam("endTime") String endTime){
 	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletInTotalTradeRecords)
@@ -299,7 +300,7 @@ public class EthWalletController {
   @PostMapping(value="/inqureEthWalletOutTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(String startTime,String endTime){
+  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestParam("startTime") String startTime,@RequestParam("endTime") String endTime){
 	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletOutTotalTradeRecords)
