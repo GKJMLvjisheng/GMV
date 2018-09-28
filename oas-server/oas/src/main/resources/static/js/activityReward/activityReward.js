@@ -166,99 +166,63 @@ function checkVersionStatus() {
 }
 
 //新增版本
-function addVersion(){
+function addActivity(){
 	
     
-	if($("#versionCode").val()==="")
+	if($("#sourceName").val()==="")
 		{
-		alert("版本号不能为空");
+		alert("活动名称不能为空");
 		return;
 		}
 
-	if(check1===0)
-		{alert("请输入正确的版本号");
-		return;}
-	 var versionStatus = document.getElementsByName("versionStatus");
-	 
-	 var status=null;
-	 for(var i = 0; i < versionStatus.length; i++)
-	    {
-
-	        if(versionStatus[i].checked)
-
-	        {
-	        status=versionStatus[i].value;}
-
-	    }
-	 console.log("status"+status);
-	 if(status==null)
-		 {alert("请选择版本状态");
-		 return;}
-	 var animateimg = $("#versionFile").val(); //获取上传的图片名 0\1\2
-	    //alert("PicPath="+animateimg);
-		if (animateimg=="") {
-			$("#msg_versionFile").html("版本上传不能为空");
-	        $("#msg_versionFile").css("color", "red");
-	        return;
-		}
-		//checkVersionFile(animateimg);
-		if(check2===0)
-			{return;}
-		var formData = new FormData();
-		var version_file = document.getElementById("versionFile");
-		var fileobj = version_file.files[0];
-		 
-		formData.append("file",fileobj);//添加fileobj到formData的键file中
-		formData.append("versionCode", $("#versionCode").val());
-		formData.append("versionStatus", status);
-	//alert(JSON.stringify(formData));
+	
+	var data={"sourceName":$("#sourceName").val(),
+				"type":$("#sourceType").val()
+			}
 	$.ajax({
-		url:"/api/v1/userCenter/upLoadApp",
-		data:formData,
+		url:"/api/v1/activityConfig/addActivity",
+		data: JSON.stringify(data),
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
-		type: 'post',
 		cache: false,
-		
-		processData : false,
-		contentType : false,
-		async:false,
-
+		type: 'post',
+		async : false,
 		success:function(res){	
 			//alert(JSON.stringify(res));
 				if(res.code==0)
-				{document.getElementById("tipContent").innerText="上传成功";
+				{document.getElementById("tipContent").innerText="新增成功";
 				$("#Tip").modal('show');
-				$("#addVersionModal").modal('hide');}
+				$("#addActivityModal").modal('hide');}
 				else{
-				document.getElementById("tipContent").innerText="上传失败";
+				document.getElementById("tipContent").innerText="新增失败";
 				$("#Tip").modal('show');
-				$("#addVersionModal").modal('hide');
+				$("#addActivityModal").modal('hide');
 				
 				 
 				//$("#newsGrid").bootstrapTable('refresh');	
 				 }						
 		},
 		error:function(){
-			document.getElementById("tipContent").innerText="上传失败";
+			document.getElementById("tipContent").innerText="新增失败";
 			$("#Tip").modal('show');
-			$("#addVersionModal").modal('hide');
+			$("#addActivityModal").modal('hide');
 
 		},
 	});
 	resetAddModal();
-	versionReady();
+	activityReady();
 }
 
 
 //点击取消后清空表单中已写信息
 function resetAddModal(){
-	//document.getElementById("addVersionForm").reset();
-	 $("#addVersionForm").find('textarea,input[type=file],select').each(function() {
+	document.getElementById("addActivityForm").reset();
+	//document.getElementById("allotRewardForm").reset();
+ $("#allotRewardForm").find('textarea,input[type=text],select').each(function() {
 		          $(this).val('');
 		      });
-	 $("input[type=radio]").prop("checked",false);
-	 $("span").html("");
+//	 $("input[type=radio]").prop("checked",false);
+//	 $("span").html("");
 //	 $("#updateVersionForm").find('input[type=text],select,input[type=file],span').each(function() {
 //         $(this).val('');
 //     });
@@ -353,7 +317,7 @@ function initActivityRewardGrid(data) {
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
 
-		pageSize:10,//分页，页面数据条数
+		pageSize:5,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		
 
@@ -419,7 +383,17 @@ function initActivityRewardGrid(data) {
 			valign: 'middle',
 			//width:  '120px',
 
+		},{
+
+			title : "有效期",
+
+			field : "period",
+			align: 'center',
+			valign: 'middle',
+			//width:  '120px',
+
 		},
+		
 		{
 
 			title : "活动创建时间",
@@ -438,13 +412,121 @@ function initActivityRewardGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			//width:  '90px',
-			formatter: actionFormatter
+			formatter: actionFormatterReward
 		}],
 		
 		search : true,//搜索
         searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
+}
+function actionFormatterReward(value, row, index) {
+    var id = value;
+    var result = "";
+    result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editActivityRewardById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+    result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteActivityRewardById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+    return result;
+}
+function allotReward(){
+	//初始加载
+	
+	var sourceCode=$('#activityId').val();
+
+	$('#activityRewardId').val(sourceCode);
+	
+$.ajax({
+	url:"/api/v1/activityConfig/selectAllReward",
+	//data: JSON.stringify(data),
+	contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	cache: false,
+	type: 'post',
+	async : false,
+	success:function(res){	
+		alert(JSON.stringify(res));
+			if(res.code==0)
+			{
+		    	 var optionData=res.data;
+		    	 
+		    	 var len=optionData.length;
+		    	 
+		    	 
+		    	 var selections = document.getElementById("rewardName");
+		    	 //var string=res.data[];
+		    	 for(var i =0;i<len;i++){
+                     //设置下拉列表中的值的属性
+                     var option = document.createElement("option");
+                         option.value = optionData[i].rewardCode;
+                        
+                         option.text= optionData[i].rewardName;
+                     //将option增加到下拉列表中。
+                     selections.options.add(option);
+			
+			 
+			//$("#newsGrid").bootstrapTable('refresh');	
+		    	 }
+		    }else{
+				 alert("下拉选择回显失败")
+				 }						
+			 
+	},
+	error:function(res){
+		alert(res.message);
+
+	},
+});
+	
+	$("#allotRewardModal").modal("show");
+}
+function addAllotReward(){
+	$("#allot").attr("onclick","addAllotReward()");
+	//var param = $("#allotRewardForm").serializeArray();
+	var sourceCode=$("#activityRewardId").val();
+	var rewardCode=$("#rewardName").val();
+	var baseValue=$("#baseValue").val();
+	var increaseSpeed=$("#increaseSpeed").val();
+	var increaseSpeedUnit=$("#increaseSpeedUnit").val();
+	var maxValue=$("#maxValue").val();
+	var period=$("#period").val();
+	var data={
+		  "baseValue":baseValue,
+		  "increaseSpeed":increaseSpeed,
+		  "increaseSpeedUnit": increaseSpeedUnit,
+		  "maxValue": maxValue,
+		  "period":period,
+		  "rewardCode": rewardCode,
+		  "sourceCode":sourceCode
+		};
+	$.ajax({
+		url:"/api/v1/activityConfig/activityRewardConfig",
+		data: JSON.stringify(data),
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		async : false,
+		success:function(res){	
+			alert(JSON.stringify(res));
+				if(res.code==0)
+				{
+					document.getElementById("tipContent").innerText="配置成功";
+					$("#Tip").modal('show');
+					$("#addActivityModal").modal('hide');}
+					else{
+					document.getElementById("tipContent").innerText="配置失败";
+					$("#Tip").modal('show');
+					$("#addActivityModal").modal('hide');
+			    	 }					
+				 
+		},
+		error:function(res){
+			alert(res.message);
+
+		},
+	});
+	resetAddModal();
+	activityRewardReady(sourceCode);
 }
 
 function initActivityGrid(data) {	
@@ -584,7 +666,7 @@ function viewActivityById(id){
 				var str=str1+"【"+str3+"】"+str2;
 				
 				document.getElementById("activityModalLabel").innerHTML=(str);
-				//$('#allotRoleUserId').val(rows.userId);                         
+				$('#activityId').val(id);                         
 				activityRewardReady(id);
 				
 			 $("#activityRewardModal").modal("show"); 
@@ -592,19 +674,21 @@ function viewActivityById(id){
 }	
 
 function activityRewardReady(id)
-{var data={"sourceCode":id};
+{
+	$('#activityRewardGrid').bootstrapTable('destroy');
+	var data={"sourceCode":id};
 var data1;
 $.ajax({
 	
 	url: "/api/v1/activityConfig/selectAllActivityReward",
-   contentType : 'application/json;charset=utf8',
-   data: JSON.stringify(data),
+	contentType : 'application/json;charset=utf8',
+	data: JSON.stringify(data),
 	dataType: 'json',
 	cache: false,
 	type: 'post',
 	async : false,
 	success: function(res) {
-	alert(JSON.stringify(res));
+	//alert(JSON.stringify(res));
 	if(res.code==0)
 		{data1=res.data;}
 	

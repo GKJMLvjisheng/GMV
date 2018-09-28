@@ -30,7 +30,7 @@
     word-break:break-all;
     }
  .modal-lm {
-    width: 800px;
+    width: 850px;
     }
     </style>
 </head>
@@ -43,7 +43,7 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
-					<input type="button" value="版本新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addActivityModal"></input>
+					<input type="button" value="新增活动" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addActivityModal"></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
 		</form>
@@ -75,7 +75,7 @@
 						<div class="form-group">
 							<label for="sourceName" class="col-sm-3 control-label">活动名称：</label>
 							<div class="col-sm-8">
-								<input type="text" name="sourceName" class=" form-control" id="sourceName"/>
+								<input type="text" name="sourceName" class=" form-control" id="sourceName" maxlength="20" placeholder="活动名称最多为20个字符" />
 								<span id='msg_sourceName'></span>
 
 							</div>						
@@ -98,7 +98,7 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" id="conf" class="btn btn-default" onclick="addVersion()">提交</button>
+					<button type="button" id="conf" class="btn btn-default" onclick="addActivity()">提交</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
 				</div>
 
@@ -123,9 +123,9 @@
 				<div class="modal-body">
 				
 					<div id="rewardToolbar"><!--  type="hidden" style="display:none"-->
-					<input   type="text" style="display:none" name="allotRoleUserId" id="allotRoleUserId">
+					<input   type="text" style="display:none" name="activityId" id="activityId">
 				<!-- data-toggle="modal" data-target="#selectRoleModal" -->
-					<input type="button" value="给活动配置奖励" id="addRoleBtn"  data-toggle="modal"  class="btn btn-primary"onclick="selectRoleFunction()"></input>
+					<input type="button" value="给活动配置奖励" id="allotRewardBtn"  data-toggle="modal"  class="btn btn-primary"onclick="allotReward()"></input>
 					
 					</div>
 				<!-- <form id="allotroleForm" action="/user/allotrole" method="post" class="form-horizontal"> -->
@@ -145,7 +145,7 @@
 	<!-- 提示信息 -->
 	<div class="modal fade" id="Tip" role="dialog">
 
-		<div class="modal-dialog " role="document">
+		<div class="modal-dialog modal-sm" role="document">
 
 			<div class="modal-content">
 
@@ -167,7 +167,94 @@
 
 	</div>
 			
-		
+	<!-- 奖励配置模态框 style="display:block;margin:0 auto"-->
+
+<div class="modal fade" id="allotRewardModal" tabindex="-1" role="dialog">
+
+	<div class="modal-dialog" role="document">
+
+		<div class="modal-content">
+
+				<div class="modal-header">
+ 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+					<h3 class="modal-title" id="allotRewardModalLabel">请给活动配置奖励</h3>
+
+				</div>
+
+				<div class="modal-body">
+				
+					
+				 <form id="allotRewardForm" action="/user/allotRewardForm" method="post" class="form-horizontal"> 
+				
+				<input   type="text" style="display:none" name="activityRewardId" id="activityRewardId">
+        
+				<div class="form-group">
+
+				<label for="rewardName" class="col-sm-4 control-label">奖励名称：</label>
+
+				<div class="col-sm-7">
+								
+                <select id="rewardName" class="form-control" name="rewardName"  required="required" >
+                  
+                </select>
+            </div>
+        </div>	
+        	<div class="form-group">
+
+				<label for="baseValue" class="col-sm-4 control-label">奖励基础值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="baseValue" class=" form-control" id="baseValue" required="required" onblur="checkUserName(this)" placeholder="请输入奖励基础值"/>
+            </div>
+        </div>	
+        	<div class="form-group">
+
+				<label for="increaseSpeed" class="col-sm-4 control-label">奖励增长速度：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="increaseSpeed" class=" form-control" id="increaseSpeed" required="required" onblur="checkUserName(this)" placeholder="请输入奖励增长速度"/>
+            </div>
+        </div>	
+        <div class="form-group">
+
+				<label for="increaseSpeedUnit" class="col-sm-4 control-label">奖励增长速度单位：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="increaseSpeedUnit" class=" form-control" id="increaseSpeedUnit" required="required" onblur="checkUserName(this)" placeholder="请输入奖励增长速度单位"/>
+            </div>
+        </div>	
+        <div class="form-group">
+
+				<label for="maxValue" class="col-sm-4 control-label">奖励满值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="maxValue" class=" form-control" id="maxValue" required="required" onblur="checkUserName(this)" placeholder="请输入奖励满值"/>
+            </div>
+        </div>	
+         <div class="form-group">
+
+				<label for="period" class="col-sm-4 control-label">奖励满值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="period" class=" form-control" id="period" required="required" onblur="checkUserName(this)" placeholder="请输入奖励满值"/>
+            </div>
+        </div>	
+			</form>
+				</div>
+				<div class="modal-footer">
+
+				<button type="button" id="allot" class="btn btn-default" data-dismiss="modal" onclick="addAllotReward()">奖励配置</button>
+				<button type="button"  class="btn btn-default"   data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>			
 	<!-- 编辑新闻的模态框 -->
     <div class="modal fade" id="updateVersionModal" tabindex="-1" role="dialog">
 
