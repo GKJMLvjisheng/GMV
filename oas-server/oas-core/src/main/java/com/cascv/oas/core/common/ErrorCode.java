@@ -38,6 +38,7 @@ public enum ErrorCode {
   NO_CURRENCY_SPECIFIED(10022,"没有指定货币"),
   NO_BLOCKCHAIN_NETWORK(10023,"没有指定区块网络"),
   INVALID_BLOCKCHAIN_NETWORK(10024,"无效的区块网络"),
+  REWARD_ALREADY_EXIST(10026,"该奖励配置已存在"),
   IS_BACKUPS_WALLET(10025,"已备份过钱包");
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;

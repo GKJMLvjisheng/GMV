@@ -194,46 +194,80 @@
           
   </update>
   
-  <resultMap id="EnergyBall" type="com.cascv.oas.server.energy.model.EnergyBall">
+  <resultMap id="EnergyPointBall" type="com.cascv.oas.server.activity.model.EnergyPointBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
-        <result column="point_source" jdbcType="INTEGER" property="pointSource" />
+        <result column="source_code" jdbcType="INTEGER" property="sourceCode" />
         <result column="point" jdbcType="DECIMAL" property="point"/>
-        <result column="power_source" jdbcType="INTEGER" property="powerSource"/>
-        <result column="power" jdbcType="DECIMAL" property="power"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
-        <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
-        <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
+        <result column="created" jdbcType="VARCHAR" property="created"/>
+        <result column="updated" jdbcType="VARCHAR" property="updated"/>
     </resultMap>
     
-  <!-- 插入能量球 -->
-    <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-        insert into energy_ball (
-        uuid, user_uuid, point_source, point, power_source, power, status, time_created, time_updated)
+  <!-- 插入积分球 -->
+    <insert id="insertEnergyPointBall" parameterType="com.cascv.oas.server.activity.model.EnergyPointBall">
+        insert into energy_point_ball (
+        uuid, user_uuid, source_code, point, status, created, updated)
         values (
-        #{uuid}, #{userUuid}, #{pointSource}, #{point}, #{powerSource}, #{power},
-        #{status}, #{timeCreated}, #{timeUpdated})
+        #{uuid}, #{userUuid}, #{sourceCode}, #{point},
+        #{status}, #{created}, #{updated})
     </insert>
     
-    <resultMap id="EnergyTradeRecord" type="com.cascv.oas.server.energy.model.EnergyTradeRecord">
+    <resultMap id="EnergyPowerBall" type="com.cascv.oas.server.activity.model.EnergyPowerBall">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="source_code" jdbcType="INTEGER" property="sourceCode" />
+        <result column="power" jdbcType="DECIMAL" property="power"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="created" jdbcType="VARCHAR" property="created"/>
+        <result column="updated" jdbcType="VARCHAR" property="updated"/>
+    </resultMap>
+    
+  <!-- 插入算力球 -->
+    <insert id="insertEnergyPowerBall" parameterType="com.cascv.oas.server.activity.model.EnergyPowerBall">
+        insert into energy_power_ball (
+        uuid, user_uuid, source_code, power, status, created, updated)
+        values (
+        #{uuid}, #{userUuid}, #{sourceCode}, #{power},
+        #{status}, #{created}, #{updated})
+    </insert>
+    
+    <resultMap id="PointTradeRecord" type="com.cascv.oas.server.activity.model.PointTradeRecord">
         <id column="uuid" jdbcType="VARCHAR" property="uuid" />
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
         <result column="energy_ball_uuid" jdbcType="VARCHAR" property="energyBallUuid" />
         <result column="in_or_out" javaType="INTEGER" property="inOrOut" />
         <result column="point_change" jdbcType="DECIMAL" property="pointChange"/>
-        <result column="power_change" jdbcType="DECIMAL" property="powerChange"/>
         <result column="status" javaType="INTEGER" property="status" />
-        <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
-        <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
+        <result column="created" jdbcType="VARCHAR" property="created"/>
     </resultMap>
 
-    <!-- 插入记录 -->
-    <insert id="insertEnergyTradeRecord" parameterType="com.cascv.oas.server.energy.model.EnergyTradeRecord">
-        insert into energy_trade_record (
-        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, power_change, status, time_created, time_updated)
+    <!-- 插入积分记录 -->
+    <insert id="insertPointTradeRecord" parameterType="com.cascv.oas.server.activity.model.PointTradeRecord">
+        insert into point_trade_record (
+        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created)
         values (
-        #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{pointChange}, #{powerChange},
-        #{status}, #{timeCreated}, #{timeUpdated})
+        #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{pointChange},
+        #{status}, #{created})
+    </insert>
+    
+    <resultMap id="PowerTradeRecord" type="com.cascv.oas.server.activity.model.PowerTradeRecord">
+        <id column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
+        <result column="energy_ball_uuid" jdbcType="VARCHAR" property="energyBallUuid" />
+        <result column="in_or_out" javaType="INTEGER" property="inOrOut" />
+        <result column="power_change" jdbcType="DECIMAL" property="powerChange"/>
+        <result column="status" javaType="INTEGER" property="status" />
+        <result column="created" jdbcType="VARCHAR" property="created"/>
+    </resultMap>
+
+    <!-- 插入算力记录 -->
+    <insert id="insertPowerTradeRecord" parameterType="com.cascv.oas.server.activity.model.PowerTradeRecord">
+        insert into power_trade_record (
+        uuid, user_uuid, energy_ball_uuid, in_or_out, power_change, status, created)
+        values (
+        #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{powerChange},
+        #{status}, #{created})
     </insert>
     
     <resultMap id="EnergyWall" type="com.cascv.oas.server.energy.model.EnergyWallet">

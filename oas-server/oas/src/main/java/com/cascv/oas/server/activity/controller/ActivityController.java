@@ -27,6 +27,7 @@ import com.cascv.oas.server.activity.wrapper.ActivityRewardAdd;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
+import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -155,11 +156,9 @@ public class ActivityController {
 		else
 			return new ResponseEntity.Builder<Integer>()
 			        .setData(0)
-			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+			        .setErrorCode(ErrorCode.REWARD_ALREADY_EXIST).build();
 		
-	}
-	
-	
+	}	
 	
 	@PostMapping(value = "/activityRewardConfig")
     @ResponseBody
@@ -243,16 +242,23 @@ public class ActivityController {
 	
 	@PostMapping(value = "/getReward")
     @ResponseBody
-    public ResponseEntity<?> getReward(@RequestBody ActivityGetReward activityGetReward ){
+    public ResponseEntity<?> getReward(@RequestBody RewardSourceCode rewardSourceCode ){
 		String userUuid = ShiroUtils.getUserUuid();
-		Integer sourceCode = activityGetReward.getSourceCode();
-		Integer rewardCode = activityGetReward.getRewardCode();
-		activityService.addEnergyPointBall(userUuid, sourceCode, rewardCode);
-		activityService.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
-		activityService.addPointTradeRecord(userUuid, sourceCode, rewardCode);
-		activityService.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
-		activityService.updateEnergyWallet(userUuid, sourceCode, rewardCode);
-		activityService.addActivityCompletionStatus(userUuid, sourceCode);
+		Integer sourceCode = rewardSourceCode.getSourceCode();
+		List<ActivityRewardConfig> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
+		Integer len = activityRewardConfigList.size();
+		log.info("len={}",len);
+		for(int i=0; i<len; i++) {
+			Integer rewardCode = activityRewardConfigList.get(i).getRewardCode();
+			log.info("rewardCode={}",rewardCode);
+			activityService.addEnergyPointBall(userUuid, sourceCode, rewardCode);
+			activityService.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
+			activityService.addPointTradeRecord(userUuid, sourceCode, rewardCode);
+			activityService.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
+			activityService.updateEnergyWallet(userUuid, sourceCode, rewardCode);
+			activityService.addActivityCompletionStatus(userUuid, sourceCode);
+		}
+		
 		return new ResponseEntity.Builder<>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
