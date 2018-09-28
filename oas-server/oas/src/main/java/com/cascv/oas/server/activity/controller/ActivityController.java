@@ -26,7 +26,6 @@ import com.cascv.oas.server.activity.wrapper.ActivityRequest;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardAdd;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
-import com.cascv.oas.server.activity.wrapper.RewardDelete;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -122,7 +121,7 @@ public class ActivityController {
 	
 	@PostMapping(value = "/deleteReward")
     @ResponseBody
-    public ResponseEntity<?> deleteReward(@RequestBody RewardDelete rewardDelete){
+    public ResponseEntity<?> deleteReward(@RequestBody RewardCode rewardDelete){
 		Integer rewardCode = rewardDelete.getRewardCode();
 		log.info("sourceCode={}",rewardCode);
 		activityMapper.deleteReward(rewardCode);
