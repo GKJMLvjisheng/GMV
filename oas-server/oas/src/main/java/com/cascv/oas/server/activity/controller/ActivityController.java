@@ -143,6 +143,22 @@ public class ActivityController {
 		
 	}
 	
+	@PostMapping(value="/inquireRewardByRewardCode")
+	@ResponseBody
+	public ResponseEntity<?> inquireRewardByRewardCode(@RequestBody ActivityGetReward activityGetReward){
+		Integer sourceCode = activityGetReward.getSourceCode();
+		Integer rewardCode = activityGetReward.getRewardCode();
+		if(activityService.inquireRewardByRewardCode(sourceCode, rewardCode) == null)
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.SUCCESS).build();
+		else
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		
+	}
+	
 	
 	
 	@PostMapping(value = "/activityRewardConfig")

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
+import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.EnergyPowerBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
@@ -39,6 +40,19 @@ public class ActivityService {
 	private PointTradeRecord addPointTradeRecord = new PointTradeRecord();
 	private PowerTradeRecord addPowerTradeRecord = new PowerTradeRecord();
 	private ActivityCompletionStatus addActivityCompletionStatus = new ActivityCompletionStatus();
+	
+	/**
+     * 查询某奖励活动是否已存在
+     * @param sourceCode
+	 * @param rewardCode 
+     * @return
+     */
+	public ActivityRewardConfig inquireRewardByRewardCode(Integer sourceCode, Integer rewardCode) {
+		ActivityRewardConfig activityRewardConfig = activityMapper.selectMaxValueBySourceCodeAndrewardCode(sourceCode, rewardCode);
+		return activityRewardConfig;
+		
+	}
+	
 	
 	/**
      * 得到增加的point和power
@@ -125,10 +139,7 @@ public class ActivityService {
 			return addPointTradeRecord;
 		}else {
 			return null;			
-		}
-		
-			
-		
+		}		
 		
 	}
 	
