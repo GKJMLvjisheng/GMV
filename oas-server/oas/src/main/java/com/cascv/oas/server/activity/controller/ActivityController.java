@@ -157,9 +157,7 @@ public class ActivityController {
 			        .setData(0)
 			        .setErrorCode(ErrorCode.REWARD_ALREADY_EXIST).build();
 		
-	}
-	
-	
+	}	
 	
 	@PostMapping(value = "/activityRewardConfig")
     @ResponseBody
