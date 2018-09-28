@@ -7,9 +7,9 @@ document.write("<script language=javascript src='/js/wallet/userWalletTable.js'>
 $(function() {
 	//初始加载	
 	UserWalletReady();
-	// FundBigReady();
-	// FundInReady();
-	// FundOutReady();
+	FundBigReady();
+	FundInReady();
+	FundOutReady();
 });
 
 //时间控件
@@ -62,11 +62,11 @@ function UserWalletReady(){
 }
 
 function FundBigReady(){
-	var formData = new FormData();
-	formData.append("startTime",$("#startTime1").val());
-	formData.append("endTime",$("#endTime1").val());
-	alert(JSON.stringify($("#startTime1").val()));
-	alert(JSON.stringify($("#endTime1").val()));
+	var startTime1=$("#startTime1").val();
+	var endTime1=$("#endTime1").val();
+	// alert(JSON.stringify(startTime1));
+	// alert(JSON.stringify(endTime1));
+	data={"startTime":startTime1,"endTime":endTime1};
 
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
@@ -76,7 +76,7 @@ function FundBigReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:formData,
+		data:JSON.stringify(data),
 		processData : false,
 		async : false,
 
@@ -92,11 +92,11 @@ function FundBigReady(){
 		}); 
 }
 function FundInReady(){
-	var formData = new FormData();
-	formData.append("startTime",$("#startTime2").val());
-	formData.append("endTime",$("#endTime2").val());
-	alert(JSON.stringify($("#startTime2").val()));
-	alert(JSON.stringify($("#endTime2").val()));	
+	var startTime2=$("#startTime2").val();
+	var endTime2=$("#endTime2").val();
+	// alert(JSON.stringify(startTime2));
+	// alert(JSON.stringify(endTime2));
+	data={"startTime":startTime2,"endTime":endTime2};
 
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
@@ -106,7 +106,7 @@ function FundInReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:formData,
+		data:JSON.stringify(data),
 		processData : false,
 		async : false,
 
@@ -122,11 +122,11 @@ function FundInReady(){
 		}); 
 }
 function FundOutReady(){
-	var formData = new FormData();
-	formData.append("startTime",$("#startTime3").val());
-	formData.append("endTime",$("#endTime3").val());
-	alert(JSON.stringify($("#startTime3").val()));
-	alert(JSON.stringify($("#endTime3").val()));
+	var startTime3=$("#startTime3").val();
+	var endTime3=$("#endTime3").val();
+	// alert(JSON.stringify(startTime3));
+	// alert(JSON.stringify(endTime3));
+	data={"startTime":startTime3,"endTime":endTime3};
 
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
@@ -136,7 +136,7 @@ function FundOutReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:formData,
+		data:JSON.stringify(data),
 		processData : false,
 		async : false,
 

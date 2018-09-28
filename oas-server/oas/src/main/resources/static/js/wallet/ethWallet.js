@@ -11,12 +11,14 @@ $(function() {
 $(function () {
     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});	
+		locale: moment.locale('zh-cn'),
+	});
+ 	
 	$('#userEd1').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
+		locale: moment.locale('zh-cn'),
 	});
+
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
@@ -24,7 +26,7 @@ $(function () {
 	$('#userEd3').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-    });
+	});
 });
 
 function EthWalletReady(){
@@ -49,12 +51,12 @@ function EthWalletReady(){
 		}); 
 }
 
-function FundInReady(){
-	var formData = new FormData();
-	formData.append("startTime",$("#startTime2").val());
-	formData.append("endTime",$("#endTime2").val());
-	alert(JSON.stringify($("#startTime2").val()));
-	alert(JSON.stringify($("#endTime2").val()));	
+function FundInReady(){	
+	var startTime2=$("#startTime2").val();
+	var endTime2=$("#endTime2").val();
+	// alert(JSON.stringify(startTime2));
+	// alert(JSON.stringify(endTime2));
+	data={"startTime":startTime2,"endTime":endTime2};
 
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
@@ -64,7 +66,7 @@ function FundInReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:formData,
+		data:JSON.stringify(data),
 		processData : false,
 		async : false,
 
@@ -80,11 +82,12 @@ function FundInReady(){
 		}); 
 }
 function FundOutReady(){
-	var formData = new FormData();
-	formData.append("startTime",$("#startTime3").val());
-	formData.append("endTime",$("#endTime3").val());
-	// alert(JSON.stringify($("#startTime3").val()));
-	// alert(JSON.stringify($("#endTime3").val()));
+	var startTime3=$("#startTime3").val();
+	var endTime3=$("#endTime3").val();
+	// alert(JSON.stringify(startTime3));
+	// alert(JSON.stringify(endTime3));
+	data={"startTime":startTime3,"endTime":endTime3};
+
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
@@ -93,7 +96,7 @@ function FundOutReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		data:formData,
+		data:JSON.stringify(data),
 		processData : false,
 		async : false,
 
