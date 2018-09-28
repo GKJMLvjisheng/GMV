@@ -4,7 +4,7 @@
     <!-- Header部分 Start -->
     <header>
       <div class="left">
-        <img :src="avatar" alt="">
+        <img :src="userInfo.avatar" alt="">
         <span class="name">{{userInfo.nickname}}</span>
       </div>
       <div class="right">
@@ -129,7 +129,7 @@ import { randomNum } from '@/utils/utils.js'
 import $ from 'jquery'
 export default {
   //
-  inject:['reload'],
+  //inject:['reload'],
   name: "index",
   data() {
     return {
@@ -255,7 +255,10 @@ export default {
     // 获取用户信息
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
+        console.log(data);
+        this.userInfo.avatar=data.profile;
         this.userInfo.nickname = data.nickname
+        
       })
     },
     handlePromote(){
@@ -268,7 +271,7 @@ export default {
       
       this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
-        console.log(data.energyBallList)
+        //console.log(data.energyBallList)
         //let i=0
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
@@ -382,19 +385,19 @@ export default {
     // 下拉刷新
     refresh (done) {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
-      
+     
       //this.removeclass() 
-      /*this.getEnergyBall()
-      
+     this.energyBallList=0
+      this.getEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
-      this.getUserInfo()*/
-     location.reload()
+      this.getUserInfo()
+     
+     //location.reload()
      //this.reload()
       setTimeout(() => {
         done()
-      //s this.removeclass()
       },1000)
     /*var aaa =  this.$el.childNodes[0].childNodes[0].childNodes[3].childNodes[0].childNodes
     for(var i = 0;i<aaa.length;i++){
@@ -404,6 +407,10 @@ export default {
       // aaa[i].classList.add("animated") 
     }*/
     },
+    
+
+
+
     removeclass(){
        $(".energy-ball").addClass("flash")
       $(".energy-ball").addClass("infinite")
@@ -417,8 +424,10 @@ export default {
       setTimeout(() => {
         this.isShowToast = false
       },delay || 1500)
-    }
+    },
+    
   }
+   
 };
 
 </script>
@@ -620,7 +629,7 @@ header {
           p:first-child {
             font-size: 28px;
             line-height: 36px;
-            height: 72px;
+            //height: 72px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;

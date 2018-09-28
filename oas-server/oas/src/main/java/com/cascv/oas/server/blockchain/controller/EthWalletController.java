@@ -14,6 +14,7 @@ import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTotalTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
@@ -273,6 +274,35 @@ public class EthWalletController {
 	  List<EthWalletTradeRecordInfo> ethWalletTradeRecords=ethWalletTradeRecordMapper.selectAllTradeRecord();
 		return new ResponseEntity.Builder<List<EthWalletTradeRecordInfo>>()
 		        .setData(ethWalletTradeRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
+  
+  /**
+   * @author Ming Yang
+   * @return 交易钱包个人转入统计
+   */
+  @PostMapping(value="/inqureEthWalletInTotalTradeRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(){
+	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord();
+		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
+		        .setData(ethWalletInTotalTradeRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
+  /**
+   * @author Ming Yang
+   * @return 交易钱包个人转出统计
+   */
+  @PostMapping(value="/inqureEthWalletOutTotalTradeRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(){
+	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord();
+		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
+		        .setData(ethWalletOutTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }

@@ -59,12 +59,14 @@ public class AuthenticationUtils {
         System.out.println("***********mobilecode = ************" + mobilecode);
       
          SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-         if(sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {
+         if(sendSmsResponse.getCode()!=null&& sendSmsResponse.getCode().equals("OK")) {
  
             System.out.println(sendSmsResponse.getMessage());
+            System.out.println("successEnd");
          }
          else {
         	 System.out.println(sendSmsResponse.getMessage());
+        	 System.out.println("failureEnd");
          }
          
          return sendSmsResponse;
