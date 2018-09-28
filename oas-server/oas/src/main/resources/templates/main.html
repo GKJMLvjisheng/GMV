@@ -84,6 +84,13 @@
                         <li class="">
                             <a class="menuItem"href="versionManage"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">版本管理</span>  </a>                         
                         </li>
+                         <li class="">
+                        <a href="#"><i class="glyphicon glyphicon-gift"></i> <span class="nav-label" >活动奖励管理</span></a>
+                        <ul class="nav nav-second-level">
+                            <li class="active"><a class="menuItem" th:href="@{/activityReward/activityReward}">活动管理</a></li>
+                            <li class="active"><a class="menuItem" th:href="@{/activityReward/activityReward}">奖励管理</a></li> 
+                        </ul>
+                    </li>
                     </shiro:hasRole>
                 </ul>
             </div>
