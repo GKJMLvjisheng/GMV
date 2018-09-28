@@ -1,110 +1,190 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cascv.oas.server.activity.mapper.ActivityMapper">
+    
+    <resultMap id="activityMap" type="com.cascv.oas.server.activity.model.ActivityModel">
+		<id column="source_code" property="sourceCode" />
+		<result column="source_name" property="sourceName"/>
+		<result column="type" property="type"/>
+	  	<result column="created" property="created"/>
+    </resultMap>
+  
+    <sql id="activity_List">
+  		source_code, source_name, type, created
+    </sql>
+    
+    <!-- insert activity -->
+    <insert id="insertActivity" parameterType="com.cascv.oas.server.activity.model.ActivityModel">
+	    <selectKey keyProperty="sourceCode" order="AFTER" resultType="java.lang.Integer">
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+	    insert into activity
+	    <trim prefix="(" suffix=")" suffixOverrides=",">
+	        source_name,
+	        <if test="type != null">
+	          type,
+	        </if>
+	        created
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{sourceName,jdbcType=VARCHAR}, 
+	        <if test="type != null">
+	           #{type,jdbcType=VARCHAR},
+	        </if>
+	        #{created,jdbcType=VARCHAR}
+	    </trim>
+    </insert>
+    
+    <select id="selectAllActivity" resultMap="activityMap">
+        select
+         <include refid="activity_List" />
+        from activity
+    </select>
+    
+    <delete id="deleteActivity" parameterType="com.cascv.oas.server.activity.model.ActivityModel">
+        delete from activity where source_code = #{sourceCode}
+    </delete>
+    
+    
+    <resultMap id="rewardMap" type="com.cascv.oas.server.activity.model.RewardModel">
+		<id column="reward_code" property="rewardCode" />
+		<result column="reward_name" property="rewardName"/>
+		<result column="reward_description" property="rewardDescription"/>
+	  	<result column="created" property="created"/>
+    </resultMap>
+    
+    <sql id="reward_List">
+  		reward_code, reward_name, reward_description, created
+    </sql>
+    
+    <!-- insert activity -->
+    <insert id="insertRewardType" parameterType="com.cascv.oas.server.activity.model.RewardModel">
+	    <selectKey keyProperty="rewardCode" order="AFTER" resultType="java.lang.Integer">
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+	    insert into activity
+	    <trim prefix="(" suffix=")" suffixOverrides=",">
+	        reward_name,
+	        <if test="type != null">
+	          reward_description,
+	        </if>
+	        created
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{rewardName,jdbcType=VARCHAR}, 
+	        <if test="type != null">
+	           #{rewardDescription,jdbcType=VARCHAR},
+	        </if>
+	        #{created,jdbcType=VARCHAR}
+	    </trim>
+    </insert>
+    
+    <select id="selectAllReward" resultMap="rewardMap">
+        select
+         <include refid="reward_List" />
+        from reward_source
+    </select>
+    
+    <delete id="deleteReward" parameterType="com.cascv.oas.server.activity.model.RewardModel">
+        delete from reward_source where reward_code = #{rewardCode}
+    </delete>
+    
+    
 
-  <resultMap id="activityMap" type="com.cascv.oas.server.activity.model.ActivityModel">
-	<id column="source_code" property="sourceCode" />
-	<result column="source_name" property="sourceName"/>
+  <resultMap id="activityRewardConfigMap" type="com.cascv.oas.server.activity.model.ActivityRewardConfig">
+	<id column="uuid" property="uuid" />
+	<result column="source_code" property="sourceCode"/>
 	<result column="type" property="type"/>
-	<result column="point_single" property="pointSingle"/>
-	<result column="power_single" property="powerSingle"/>
-  	<result column="point_increase_speed" property="pointIncreaseSpeed"/>
-  	<result column="power_increase_speed" property="powerIncreaseSpeed"/>
-  	<result column="point_increase_speed_unit" property="pointIncreaseSpeedUnit"/>
-  	<result column="power_increase_speed_unit" property="powerIncreaseSpeedUnit"/>
-  	<result column="point_capacity_each_ball" property="pointCapacityEachBall"/>
-  	<result column="power_capacity_each_ball" property="powerCapacityEachBall"/>
+	<result column="base_value" property="baseValue"/>
+  	<result column="increase_speed" property="increaseSpeed"/>
+  	<result column="increase_speed_unit" property="increaseSpeedUnit"/>
+  	<result column="max_value" property="maxValue"/>
+  	<result column="period" property="period"/>
   	<result column="created" property="created"/>
   	<result column="updated" property="updated"/>
   </resultMap>
  
-  <sql id="Base_Column_List">
-  		source_code, source_name, type, point_single, power_single, point_increase_speed, power_increase_speed,
-    	point_increase_speed_unit, power_increase_speed_unit, 
-    	point_capacity_each_ball, power_capacity_each_ball,
-    	created, updated
+  <sql id="activity_Reward_Connfig_List">
+  		uuid, source_code, type, base_value, increase_speed, increase_speed_unit,
+    	max_value, period, created, updated
   </sql>
   
-  <!-- insert activity -->
-  <insert id="insertActivity" parameterType="com.cascv.oas.server.activity.model.ActivityModel">
-    <selectKey keyProperty="sourceCode" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into activity_source
+  <!-- insert activity reward config -->
+  <insert id="insertActivityRewardConfig" parameterType="com.cascv.oas.server.activity.model.ActivityRewardConfig">    
+    insert into activity_reward_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      source_name, type,
-      point_single, power_single,
-      point_increase_speed, power_increase_speed,      
-      <if test="pointIncreaseSpeedUnit != null">
-        point_increase_speed_unit,
+      uuid, source_code, type,     
+      <if test="baseValue != null">
+        base_value,
       </if>
-      <if test="powerIncreaseSpeedUnit != null">
-        power_increase_speed_unit,
+      <if test="increaseSpeed != null">
+        increase_speed,
       </if>
-      point_capacity_each_ball, power_capacity_each_ball,
-      <if test="created != null">
-        created,
+      <if test="increaseSpeedUnit != null">
+        increase_speed_unit,
       </if>
-       <if test="updated != null">
-        updated
-      </if>      
+      <if test="maxValue != null">
+        max_value,
+      </if>
+      <if test="period != null">
+        period,
+      </if>
+        created, updated
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{sourceName,jdbcType=VARCHAR}, 
+        #{uuid,jdbcType=VARCHAR},
+        #{sourceCode}, 
         #{type,jdbcType=VARCHAR},
-        #{pointSingle,jdbcType=DECIMAL},
-        #{powerSingle,jdbcType=DECIMAL},
-        #{pointIncreaseSpeed,jdbcType=DECIMAL},
-        #{powerIncreaseSpeed,jdbcType=DECIMAL},
         
-        <if test="pointIncreaseSpeedUnit != null">
-           #{pointIncreaseSpeedUnit,jdbcType=VARCHAR},
+        <if test="baseValue != null">
+	       #{baseValue, jdbcType=DECIMAL},
+	    </if>
+        <if test="increaseSpeed != null">
+           #{increaseSpeed,jdbcType=DECIMAL},
         </if>
-        <if test="powerIncreaseSpeedUnit != null">
-           #{powerIncreaseSpeedUnit,jdbcType=VARCHAR},
+        <if test="increaseSpeedUnit != null">
+           #{increaseSpeedUnit,jdbcType=VARCHAR},
         </if>
+	    <if test="maxValue != null">
+	       #{maxValue,jdbcType=DECIMAL},
+	    </if>
+	    <if test="period != null">
+	       #{period,jdbcType=DECIMAL},
+	    </if>
         
-        #{pointCapacityEachBall,jdbcType=DECIMAL},
-        #{powerCapacityEachBall,jdbcType=DECIMAL},
-      
-		<if test="created != null">
-	       #{created,jdbcType=VARCHAR},
-	    </if>
-	    <if test="updated != null">
-	       #{updated,jdbcType=VARCHAR},
-	    </if>
+        #{created,jdbcType=VARCHAR},
+        #{updated,jdbcType=VARCHAR}
     </trim>
    </insert>
    
-  <!-- select all activity -->
-  <select id="selectAllActivity" resultMap="activityMap">
+  <!-- select all activityReward -->
+  <select id="selectActivityRewardBySourceCode" resultMap="activityRewardConfigMap">
       select 
-      <include refid="Base_Column_List" />
-      from activity_source;
+      <include refid="activity_Reward_Connfig_List" />
+      from activity_reward_config where source_code = #{sourceCode};
   </select> 
   
-  <!-- select activity capacity_each_ball -->
-  <select id="selectActivityBySourceCode" resultMap="activityMap">
+  <!-- select activity max_value -->
+  <select id="selectMaxValueBySourceCodeAndType" resultMap="activityRewardConfigMap">
       select 
-      <include refid="Base_Column_List" />
-      from activity_source where source_code = #{sourceCode};
+      <include refid="activity_Reward_Connfig_List" />
+      from activity_reward_config where source_code = #{sourceCode} and type = #{type};
   </select> 
   
-  <!-- update activity -->
-  <update id="updateActivity" parameterType="com.cascv.oas.server.activity.model.ActivityModel">
-      update activity_source
+  <delete id="deleteActivityReward" parameterType="com.cascv.oas.server.activity.model.ActivityRewardConfig">
+      delete from activity_reward_config where source_code = #{sourceCode} and type = #{type};
+  </delete>
+  
+  <!-- update activity reward-->
+  <update id="updateActivityReward" parameterType="com.cascv.oas.server.activity.model.ActivityRewardConfig">
+      update activity_reward_config
       set
-          source_name = #{sourceName},
-          type = #{type},
-          point_single = #{pointSingle},
-          power_single = #{powerSingle},
-          point_increase_speed = #{pointIncreaseSpeed},
-          power_increase_speed = #{powerIncreaseSpeed},
-          point_increase_speed_unit = #{pointIncreaseSpeedUnit},
-          power_increase_speed_unit = #{powerIncreaseSpeedUnit},
-          point_capacity_each_ball = #{pointCapacityEachBall},
-          power_capacity_each_ball = #{powerCapacityEachBall},
+          base_value = #{baseValue},
+          increase_speed = #{increaseSpeed},
+          increase_speed_unit = #{increaseSpeedUnit},
+          max_value = #{maxValue},
+          period = #{period},
           updated = #{updated}
-       where source_code = #{sourceCode}
+       where source_code = #{sourceCode} and type = #{type}
           
   </update>
   

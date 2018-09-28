@@ -5,11 +5,10 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ActivityGetReward implements Serializable {
-	
+public class RewardRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Getter @Setter private Integer sourceCode;
-	@Getter @Setter private Integer type;
+	@Getter @Setter private String rewardName;
+	@Getter @Setter private String rewardDescription;
 
 }

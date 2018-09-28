@@ -37,11 +37,12 @@ public class ActivityService {
 	/**
      * 得到增加的point和power
      * @param sourceCode
+	 * @param type 
      * @return
      */
-	public EnergyResult getNewEnergy(Integer sourceCode) {
-		BigDecimal point = activityMapper.selectActivityBySourceCode(sourceCode).getPointCapacityEachBall();
-		BigDecimal power = activityMapper.selectActivityBySourceCode(sourceCode).getPowerCapacityEachBall();
+	public EnergyResult getNewEnergy(Integer sourceCode, Integer type) {
+		BigDecimal point = activityMapper.selectMaxValueBySourceCodeAndType(sourceCode, type).getMaxValue();
+		BigDecimal power = activityMapper.selectMaxValueBySourceCodeAndType(sourceCode, type).getMaxValue();
 		EnergyResult energyResult = new EnergyResult();
 		energyResult.setNewPoint(point);
 		energyResult.setNewPower(power);
@@ -51,17 +52,18 @@ public class ActivityService {
 	
 	/**
      * 产生新的能量球
+	 * @param type 
      * @param userUuid, sourceCode
      * @return
      */
-	public EnergyBall getEnergyBall(String userUuid, Integer sourceCode) {
+	public EnergyBall getEnergyBall(String userUuid, Integer sourceCode, Integer type) {
 		addEnergyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		addEnergyBall.setUserUuid(userUuid);
 		addEnergyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		addEnergyBall.setPointSource(sourceCode);
 		addEnergyBall.setPowerSource(sourceCode);
 		
-		EnergyResult energyResult = this.getNewEnergy(sourceCode);
+		EnergyResult energyResult = this.getNewEnergy(sourceCode, type);
 		addEnergyBall.setPoint(energyResult.getNewPoint());
 		addEnergyBall.setPower(energyResult.getNewPower());
 		
@@ -74,19 +76,20 @@ public class ActivityService {
 	/**
        * 产生新的能量记录
 	 * @param sourceCode 
+	 * @param type 
      * @param userUuid, energyBallUuid
      * @return
      */
-	public EnergyTradeRecord getEnergyTradeRecord(String userUuid, Integer sourceCode) {
+	public EnergyTradeRecord getEnergyTradeRecord(String userUuid, Integer sourceCode, Integer type) {
 		addEnergyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addEnergyTradeRecord.setUserUuid(userUuid);
 		
-		EnergyBall energyBall = this.getEnergyBall(userUuid, sourceCode);
+		EnergyBall energyBall = this.getEnergyBall(userUuid, sourceCode, type);
 		addEnergyTradeRecord.setEnergyBallUuid(energyBall.getUuid());
 		
 		addEnergyTradeRecord.setInOrOut(ENEGY_IN);
-		addEnergyTradeRecord.setPointChange(this.getNewEnergy(sourceCode).getNewPoint());
-		addEnergyTradeRecord.setPowerChange(this.getNewEnergy(sourceCode).getNewPower());
+		addEnergyTradeRecord.setPointChange(this.getNewEnergy(sourceCode, type).getNewPoint());
+		addEnergyTradeRecord.setPowerChange(this.getNewEnergy(sourceCode, type).getNewPower());
 		addEnergyTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
 		
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
@@ -118,34 +121,37 @@ public class ActivityService {
 	
 	/**
      * 奖励接口，往energy_ball中添加数据
+	 * @param type 
      * @param userUuid, sourceCode
      * @return
      */
-	public Integer addEnergyBall(String userUuid, Integer sourceCode) {
-		this.getEnergyBall(userUuid, sourceCode);		
-		return activityMapper.insertEnergyBall(addEnergyBall);
+	public Integer addEnergyBall(String userUuid, Integer sourceCode, Integer type) {
+		this.getEnergyBall(userUuid, sourceCode, type);		
+		return activityMapper.insertEnergyPointBall(addEnergyBall);
 	}
 	
 	/**
      * 奖励接口，往energy_trade_record中添加数据
 	 * @param sourceCode 
+	 * @param type 
      * @param userUuid, energyBallUuid
      * @return
      */
-	public Integer addEnergyTradeRecord(String userUuid, Integer sourceCode) {
-		this.getEnergyTradeRecord(userUuid, sourceCode);		
-		return activityMapper.insertEnergyTradeRecord(addEnergyTradeRecord);		
+	public Integer addEnergyTradeRecord(String userUuid, Integer sourceCode, Integer type) {
+		this.getEnergyTradeRecord(userUuid, sourceCode, type);		
+		return activityMapper.insertPointTradeRecord(addEnergyTradeRecord);		
 	}
 	
 	/**
      * 更新能量钱包
 	 * @param sourceCode 
      * @param userUuid
+	 * @param type 
      * @return
      */
-	public void updateEnergyWallet(String userUuid, Integer sourceCode) {
-		activityMapper.increasePoint(userUuid, this.getNewEnergy(sourceCode).getNewPoint());
-		activityMapper.increasePower(userUuid, this.getNewEnergy(sourceCode).getNewPower());	
+	public void updateEnergyWallet(String userUuid, Integer sourceCode, Integer type) {
+		activityMapper.increasePoint(userUuid, this.getNewEnergy(sourceCode, type).getNewPoint());
+		activityMapper.increasePower(userUuid, this.getNewEnergy(sourceCode, type).getNewPower());	
 	}
 	
 	/**

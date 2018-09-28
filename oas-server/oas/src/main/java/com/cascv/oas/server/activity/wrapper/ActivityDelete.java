@@ -5,11 +5,9 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ActivityGetReward implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
+public class ActivityDelete implements Serializable {
+private static final long serialVersionUID = 1L;
 	
 	@Getter @Setter private Integer sourceCode;
-	@Getter @Setter private Integer type;
 
 }
