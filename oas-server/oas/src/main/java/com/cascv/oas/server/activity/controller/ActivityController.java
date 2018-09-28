@@ -247,8 +247,10 @@ public class ActivityController {
 		Integer sourceCode = rewardSourceCode.getSourceCode();
 		List<ActivityRewardConfig> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
 		Integer len = activityRewardConfigList.size();
+		log.info("len={}",len);
 		for(int i=0; i<len; i++) {
 			Integer rewardCode = activityRewardConfigList.get(i).getRewardCode();
+			log.info("rewardCode={}",rewardCode);
 			activityService.addEnergyPointBall(userUuid, sourceCode, rewardCode);
 			activityService.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
 			activityService.addPointTradeRecord(userUuid, sourceCode, rewardCode);

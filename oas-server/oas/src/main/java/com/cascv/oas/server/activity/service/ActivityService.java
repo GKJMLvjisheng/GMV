@@ -13,7 +13,8 @@ import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.EnergyPowerBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.activity.model.PowerTradeRecord;
-import com.cascv.oas.server.activity.wrapper.EnergyResult;
+import com.cascv.oas.server.activity.wrapper.EnergyResultPoint;
+import com.cascv.oas.server.activity.wrapper.EnergyResultPower;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyBall;
@@ -55,19 +56,35 @@ public class ActivityService {
 	
 	
 	/**
-     * 得到增加的point和power
+     * 得到增加的point
      * @param sourceCode
 	 * @param rewardCode 
      * @return
      */
-	public EnergyResult getNewEnergy(Integer sourceCode, Integer rewardCode) {
-		BigDecimal point = activityMapper.selectMaxValueBySourceCodeAndrewardCode(sourceCode, rewardCode).getMaxValue();
-		BigDecimal power = activityMapper.selectMaxValueBySourceCodeAndrewardCode(sourceCode, rewardCode).getMaxValue();
-		EnergyResult energyResult = new EnergyResult();
-		energyResult.setNewPoint(point);
-		energyResult.setNewPower(power);
-		return energyResult;
-		
+	public EnergyResultPoint getNewPoint(Integer sourceCode, Integer rewardCode) {
+		if(rewardCode == 1) {
+			BigDecimal point = activityMapper.selectMaxValueBySourceCodeAndrewardCode(sourceCode, rewardCode).getMaxValue();
+			EnergyResultPoint energyResultPoint = new EnergyResultPoint();
+			energyResultPoint.setNewPoint(point);
+			return energyResultPoint;
+		}else 
+			return null;		
+	}
+	
+	/**
+     * 得到增加的power
+     * @param sourceCode
+	 * @param rewardCode 
+     * @return
+     */
+	public EnergyResultPower getNewPower(Integer sourceCode, Integer rewardCode) {
+		if (rewardCode == 2) {
+			BigDecimal power = activityMapper.selectMaxValueBySourceCodeAndrewardCode(sourceCode, rewardCode).getMaxValue();
+			EnergyResultPower energyResultPower = new EnergyResultPower();
+			energyResultPower.setNewPower(power);
+			return energyResultPower;
+		}else
+			return null;				
 	}
 	
 	/**
@@ -85,7 +102,7 @@ public class ActivityService {
 		addEnergyPointBall.setCreated(now);
 		addEnergyPointBall.setUpdated(now);
 		
-		EnergyResult energyResult = this.getNewEnergy(sourceCode, rewardCode);
+		EnergyResultPoint energyResult = this.getNewPoint(sourceCode, rewardCode);
 		if(energyResult != null) {
 			addEnergyPointBall.setPoint(energyResult.getNewPoint());
 			return addEnergyPointBall;
@@ -108,9 +125,9 @@ public class ActivityService {
 		addEnergyPowerBall.setCreated(now);
 		addEnergyPowerBall.setUpdated(now);
 		
-		EnergyResult energyResult = this.getNewEnergy(sourceCode, rewardCode);
+		EnergyResultPower energyResult = this.getNewPower(sourceCode, rewardCode);
 		if(energyResult != null) {
-			addEnergyPowerBall.setPower(energyResult.getNewPoint());
+			addEnergyPowerBall.setPower(energyResult.getNewPower());
 			return addEnergyPowerBall;
 		}
 		else
@@ -129,11 +146,15 @@ public class ActivityService {
 		addPointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addPointTradeRecord.setUserUuid(userUuid);
 		addPointTradeRecord.setInOrOut(ENEGY_IN);
-		addPointTradeRecord.setPointChange(this.getNewEnergy(sourceCode, rewardCode).getNewPoint());
 		addPointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);	
 		
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addPointTradeRecord.setCreated(now);
+		
+		if(this.getNewPoint(sourceCode, rewardCode) == null)
+			addPointTradeRecord.setPointChange(BigDecimal.ZERO);
+		else
+			addPointTradeRecord.setPointChange(this.getNewPoint(sourceCode, rewardCode).getNewPoint());
 		
 		EnergyPointBall energyPointBall = this.getEnergyPointBall(userUuid, sourceCode, rewardCode);
 		if (energyPointBall != null) {
@@ -156,11 +177,15 @@ public class ActivityService {
 		addPowerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addPowerTradeRecord.setUserUuid(userUuid);
 		addPowerTradeRecord.setInOrOut(ENEGY_IN);
-		addPowerTradeRecord.setPowerChange(this.getNewEnergy(sourceCode, rewardCode).getNewPower());
 		addPowerTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
 		
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addPowerTradeRecord.setCreated(now);
+
+		if(this.getNewPower(sourceCode, rewardCode) == null)
+			addPowerTradeRecord.setPowerChange(BigDecimal.ZERO);
+		else
+			addPowerTradeRecord.setPowerChange(this.getNewPower(sourceCode, rewardCode).getNewPower());
 		
 		EnergyPowerBall energyPowerBall = this.getEnergyPowerBall(userUuid, sourceCode, rewardCode);
 		if (energyPowerBall != null) {
@@ -225,9 +250,9 @@ public class ActivityService {
      * @return
      */
 	public Integer addPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		if (this.getPointTradeRecord(userUuid, sourceCode, rewardCode) != null)
+		if (this.getPointTradeRecord(userUuid, sourceCode, rewardCode) != null) 
 			return activityMapper.insertPointTradeRecord(addPointTradeRecord);
-		else
+		else 
 			return null;
 	}
 	
@@ -239,7 +264,7 @@ public class ActivityService {
      * @return
      */
 	public Integer addPowerTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		if (this.getPowerTradeRecord(userUuid, sourceCode, rewardCode) != null)		
+		if (this.getPowerTradeRecord(userUuid, sourceCode, rewardCode) != null)	
 			return activityMapper.insertPowerTradeRecord(addPowerTradeRecord);
 		else
 			return null;
@@ -253,8 +278,31 @@ public class ActivityService {
      * @return
      */
 	public void updateEnergyWallet(String userUuid, Integer sourceCode, Integer rewardCode) {
-		activityMapper.increasePoint(userUuid, this.getNewEnergy(sourceCode, rewardCode).getNewPoint());
-		activityMapper.increasePower(userUuid, this.getNewEnergy(sourceCode, rewardCode).getNewPower());	
+		BigDecimal valuePoint;
+		BigDecimal valuePower;
+		if(this.getNewPoint(sourceCode, rewardCode) != null && this.getNewPower(sourceCode, rewardCode) != null) {
+			valuePoint = this.getNewPoint(sourceCode, rewardCode).getNewPoint();
+			valuePower = this.getNewPower(sourceCode, rewardCode).getNewPower();
+			activityMapper.increasePoint(userUuid, valuePoint);
+			activityMapper.increasePower(userUuid, valuePower);	
+		}else if (this.getNewPoint(sourceCode, rewardCode) != null && this.getNewPower(sourceCode, rewardCode) == null){
+			valuePoint = this.getNewPoint(sourceCode, rewardCode).getNewPoint();
+			valuePower = BigDecimal.ZERO;
+			activityMapper.increasePoint(userUuid, valuePoint);
+			activityMapper.increasePower(userUuid, valuePower);
+		}else if(this.getNewPoint(sourceCode, rewardCode) == null && this.getNewPower(sourceCode, rewardCode) != null) {
+			valuePoint = BigDecimal.ZERO;
+			valuePower = this.getNewPower(sourceCode, rewardCode).getNewPower();
+			activityMapper.increasePoint(userUuid, valuePoint);
+			activityMapper.increasePower(userUuid, valuePower);
+		}else if(this.getNewPoint(sourceCode, rewardCode) == null && this.getNewPower(sourceCode, rewardCode) == null){
+			valuePoint = BigDecimal.ZERO;
+			valuePower = BigDecimal.ZERO;
+			activityMapper.increasePoint(userUuid, valuePoint);
+			activityMapper.increasePower(userUuid, valuePower);
+		}
+			
+		
 	}
 	
 	/**
