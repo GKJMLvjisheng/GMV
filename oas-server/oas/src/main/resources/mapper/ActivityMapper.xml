@@ -133,7 +133,7 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
         #{uuid,jdbcType=VARCHAR},
         #{sourceCode}, 
-        #{type,jdbcType=VARCHAR},
+        #{type},
         
         <if test="baseValue != null">
 	       #{baseValue, jdbcType=DECIMAL},
