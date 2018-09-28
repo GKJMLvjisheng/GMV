@@ -263,7 +263,7 @@
 
     <!-- 插入算力记录 -->
     <insert id="insertPowerTradeRecord" parameterType="com.cascv.oas.server.activity.model.PowerTradeRecord">
-        insert into point_trade_record (
+        insert into power_trade_record (
         uuid, user_uuid, energy_ball_uuid, in_or_out, power_change, status, created)
         values (
         #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{powerChange},

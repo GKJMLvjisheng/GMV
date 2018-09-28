@@ -83,6 +83,7 @@ public class ActivityService {
 		addEnergyPointBall.setSourceCode(sourceCode);			
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addEnergyPointBall.setCreated(now);
+		addEnergyPointBall.setUpdated(now);
 		
 		EnergyResult energyResult = this.getNewEnergy(sourceCode, rewardCode);
 		if(energyResult != null) {
@@ -105,6 +106,7 @@ public class ActivityService {
 		addEnergyPowerBall.setSourceCode(sourceCode);			
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addEnergyPowerBall.setCreated(now);
+		addEnergyPowerBall.setUpdated(now);
 		
 		EnergyResult energyResult = this.getNewEnergy(sourceCode, rewardCode);
 		if(energyResult != null) {
@@ -135,7 +137,7 @@ public class ActivityService {
 		
 		EnergyPointBall energyPointBall = this.getEnergyPointBall(userUuid, sourceCode, rewardCode);
 		if (energyPointBall != null) {
-			addPointTradeRecord.setEnergyBalluuid(energyPointBall.getUuid());
+			addPointTradeRecord.setEnergyBallUuid(energyPointBall.getUuid());
 			return addPointTradeRecord;
 		}else {
 			return null;			
@@ -162,7 +164,7 @@ public class ActivityService {
 		
 		EnergyPowerBall energyPowerBall = this.getEnergyPowerBall(userUuid, sourceCode, rewardCode);
 		if (energyPowerBall != null) {
-			addPowerTradeRecord.setEnergyBalluuid(energyPowerBall.getUuid());
+			addPowerTradeRecord.setEnergyBallUuid(energyPowerBall.getUuid());
 			return addPowerTradeRecord;
 		}else
 			return null;		

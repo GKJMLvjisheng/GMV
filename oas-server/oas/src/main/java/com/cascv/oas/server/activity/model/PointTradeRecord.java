@@ -8,7 +8,7 @@ import lombok.Setter;
 public class PointTradeRecord {
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
-	@Getter @Setter private String energyBalluuid;
+	@Getter @Setter private String energyBallUuid;
 	@Getter @Setter private Integer inOrOut;
 	@Getter @Setter private BigDecimal pointChange;
 	@Getter @Setter private Integer status;
