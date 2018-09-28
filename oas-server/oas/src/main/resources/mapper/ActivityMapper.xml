@@ -61,17 +61,17 @@
 	    <selectKey keyProperty="rewardCode" order="AFTER" resultType="java.lang.Integer">
 	      SELECT LAST_INSERT_ID()
 	    </selectKey>
-	    insert into activity
+	    insert into reward_source
 	    <trim prefix="(" suffix=")" suffixOverrides=",">
 	        reward_name,
-	        <if test="type != null">
+	        <if test="rewardDescription != null">
 	          reward_description,
 	        </if>
 	        created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{rewardName,jdbcType=VARCHAR}, 
-	        <if test="type != null">
+	        <if test="rewardDescription != null">
 	           #{rewardDescription,jdbcType=VARCHAR},
 	        </if>
 	        #{created,jdbcType=VARCHAR}
@@ -84,6 +84,12 @@
         from reward_source
     </select>
     
+    <select id="selectRewardByRewardCode" resultMap="rewardMap">
+        select
+         <include refid="reward_List" />
+        from reward_source where reward_code = #{rewardCode}
+    </select>
+    
     <delete id="deleteReward" parameterType="com.cascv.oas.server.activity.model.RewardModel">
         delete from reward_source where reward_code = #{rewardCode}
     </delete>
@@ -93,7 +99,7 @@
   <resultMap id="activityRewardConfigMap" type="com.cascv.oas.server.activity.model.ActivityRewardConfig">
 	<id column="uuid" property="uuid" />
 	<result column="source_code" property="sourceCode"/>
-	<result column="type" property="type"/>
+	<result column="reward_code" property="rewardCode"/>
 	<result column="base_value" property="baseValue"/>
   	<result column="increase_speed" property="increaseSpeed"/>
   	<result column="increase_speed_unit" property="increaseSpeedUnit"/>
@@ -104,7 +110,7 @@
   </resultMap>
  
   <sql id="activity_Reward_Connfig_List">
-  		uuid, source_code, type, base_value, increase_speed, increase_speed_unit,
+  		uuid, source_code, reward_code, base_value, increase_speed, increase_speed_unit,
     	max_value, period, created, updated
   </sql>
   
@@ -112,7 +118,7 @@
   <insert id="insertActivityRewardConfig" parameterType="com.cascv.oas.server.activity.model.ActivityRewardConfig">    
     insert into activity_reward_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      uuid, source_code, type,     
+      uuid, source_code, reward_code,     
       <if test="baseValue != null">
         base_value,
       </if>
@@ -133,7 +139,7 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
         #{uuid,jdbcType=VARCHAR},
         #{sourceCode}, 
-        #{type},
+        #{rewardCode},
         
         <if test="baseValue != null">
 	       #{baseValue, jdbcType=DECIMAL},
@@ -144,9 +150,9 @@
         <if test="increaseSpeedUnit != null">
            #{increaseSpeedUnit,jdbcType=VARCHAR},
         </if>
-	    <if test="maxValue != null">
+	    
 	       #{maxValue,jdbcType=DECIMAL},
-	    </if>
+	   
 	    <if test="period != null">
 	       #{period,jdbcType=DECIMAL},
 	    </if>
@@ -164,14 +170,14 @@
   </select> 
   
   <!-- select activity max_value -->
-  <select id="selectMaxValueBySourceCodeAndType" resultMap="activityRewardConfigMap">
+  <select id="selectMaxValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
       select 
       <include refid="activity_Reward_Connfig_List" />
-      from activity_reward_config where source_code = #{sourceCode} and type = #{type};
+      from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode};
   </select> 
   
   <delete id="deleteActivityReward" parameterType="com.cascv.oas.server.activity.model.ActivityRewardConfig">
-      delete from activity_reward_config where source_code = #{sourceCode} and type = #{type};
+      delete from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode};
   </delete>
   
   <!-- update activity reward-->
@@ -184,7 +190,7 @@
           max_value = #{maxValue},
           period = #{period},
           updated = #{updated}
-       where source_code = #{sourceCode} and type = #{type}
+       where source_code = #{sourceCode} and reward_code = #{rewardCode}
           
   </update>
   
