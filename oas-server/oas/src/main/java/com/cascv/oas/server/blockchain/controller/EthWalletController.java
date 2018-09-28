@@ -5,6 +5,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -19,6 +20,7 @@ import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
+import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -26,10 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -286,7 +290,10 @@ public class EthWalletController {
   @PostMapping(value="/inqureEthWalletInTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestParam("startTime") String startTime,@RequestParam("endTime") String endTime){
+
+  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  String startTime=timeLimitInfo.getStartTime();
+	  String endTime=timeLimitInfo.getEndTime();
 	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletInTotalTradeRecords)
@@ -300,7 +307,10 @@ public class EthWalletController {
   @PostMapping(value="/inqureEthWalletOutTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestParam("startTime") String startTime,@RequestParam("endTime") String endTime){
+
+  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  String startTime=timeLimitInfo.getStartTime();
+	  String endTime=timeLimitInfo.getEndTime();
 	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
 		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletOutTotalTradeRecords)
