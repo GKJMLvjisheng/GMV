@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 
 import com.cascv.oas.server.activity.model.ActivityModel;
 import com.cascv.oas.server.activity.model.ActivityRewardConfig;
+import com.cascv.oas.server.activity.model.EnergyPointBall;
+import com.cascv.oas.server.activity.model.EnergyPowerBall;
+import com.cascv.oas.server.activity.model.PointTradeRecord;
+import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.activity.model.RewardModel;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
@@ -23,18 +27,19 @@ public interface ActivityMapper {
 	
 	Integer insertRewardType(RewardModel rewardModel);
 	List<RewardModel> selectAllReward();
+	RewardModel selectRewardByRewardCode(@Param("rewardCode") Integer rewardCode);
 	Integer deleteReward(@Param("rewardCode") Integer rewardCode);
 	
-	ActivityRewardConfig selectMaxValueBySourceCodeAndType(@Param("sourceCode") Integer sourceCode, @Param("type") Integer type);
+	ActivityRewardConfig selectMaxValueBySourceCodeAndrewardCode(@Param("sourceCode") Integer sourceCode, @Param("rewardCode") Integer rewardCode);
 	Integer insertActivityRewardConfig(ActivityRewardConfig activityRewardConfig);
 	Integer updateActivityReward(ActivityRewardConfig activityRewardConfig);
 	List<ActivityRewardConfig> selectActivityRewardBySourceCode(@Param("sourceCode") Integer sourceCode);
-	Integer deleteActivityReward(@Param("sourceCode") Integer sourceCode, @Param("type") Integer type);
+	Integer deleteActivityReward(@Param("sourceCode") Integer sourceCode, @Param("rewardCode") Integer rewardCode);
 	
-	Integer insertEnergyPointBall(EnergyBall energyBall);
-	Integer insertEnergyPowerBall(EnergyBall energyBall);
-	Integer insertPointTradeRecord(EnergyTradeRecord energyTradeRecord);
-	Integer insertPowerTradeRecord(EnergyTradeRecord energyTradeRecord);
+	Integer insertEnergyPointBall(EnergyPointBall energyPointBall);
+	Integer insertEnergyPowerBall(EnergyPowerBall energyPowerBall);
+	Integer insertPointTradeRecord(PointTradeRecord pointTradeRecord);
+	Integer insertPowerTradeRecord(PowerTradeRecord powerTradeRecord);
 	
 	Integer insertActivityCompletionStatus(ActivityCompletionStatus activityCompletionStatus);
 	

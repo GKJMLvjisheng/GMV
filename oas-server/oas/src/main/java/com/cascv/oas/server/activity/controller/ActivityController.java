@@ -25,6 +25,7 @@ import com.cascv.oas.server.activity.wrapper.ActivityGetReward;
 import com.cascv.oas.server.activity.wrapper.ActivityRequest;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardAdd;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
+import com.cascv.oas.server.activity.wrapper.RewardCode;
 import com.cascv.oas.server.activity.wrapper.RewardDelete;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -132,6 +133,17 @@ public class ActivityController {
 		
 	}
 	
+	@PostMapping(value = "/selectRewardByRewardCode")
+    @ResponseBody
+    public ResponseEntity<?> selectRewardByRewardCode(@RequestBody RewardCode rewardCode){
+		RewardModel rewardModel = activityMapper.selectRewardByRewardCode(rewardCode.getRewardCode());
+		return new ResponseEntity.Builder<RewardModel>()
+				.setData(rewardModel)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+		
+	}
+	
 	
 	
 	@PostMapping(value = "/activityRewardConfig")
@@ -141,7 +153,7 @@ public class ActivityController {
 		ActivityRewardConfig activityRewardConfig = new ActivityRewardConfig();
 		activityRewardConfig.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_REWARD_CONFIG));
 		activityRewardConfig.setSourceCode(activityRewardAdd.getSourceCode());
-		activityRewardConfig.setType(activityRewardAdd.getType());
+		activityRewardConfig.setRewardCode(activityRewardAdd.getRewardCode());
 		activityRewardConfig.setBaseValue(activityRewardAdd.getBaseValue());
 		activityRewardConfig.setIncreaseSpeed(activityRewardAdd.getIncreaseSpeed());
 		activityRewardConfig.setIncreaseSpeedUnit(activityRewardAdd.getIncreaseSpeedUnit());
@@ -182,7 +194,7 @@ public class ActivityController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		ActivityRewardConfig activityRewardConfig = new ActivityRewardConfig();
 		activityRewardConfig.setSourceCode(activityRewardList.getSourceCode());
-		activityRewardConfig.setType(activityRewardList.getType());
+		activityRewardConfig.setRewardCode(activityRewardList.getRewardCode());
 		activityRewardConfig.setBaseValue(activityRewardList.getBaseValue());
 		activityRewardConfig.setIncreaseSpeed(activityRewardList.getIncreaseSpeed());
 		activityRewardConfig.setIncreaseSpeedUnit(activityRewardList.getIncreaseSpeedUnit());
@@ -202,10 +214,10 @@ public class ActivityController {
     @ResponseBody
     public ResponseEntity<?> deleteActivityReward(@RequestBody ActivityGetReward activityGetReward){
 		Integer sourceCode = activityGetReward.getSourceCode();
-		Integer type = activityGetReward.getType();
+		Integer rewardCode = activityGetReward.getRewardCode();
 		log.info("sourceCode={}",sourceCode);
-		log.info("type={}", type);
-		activityMapper.deleteActivityReward(sourceCode, type);
+		log.info("type={}", rewardCode);
+		activityMapper.deleteActivityReward(sourceCode, rewardCode);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -214,20 +226,23 @@ public class ActivityController {
 	}
 	
 	
-//	@PostMapping(value = "/getReward")
-//    @ResponseBody
-//    public ResponseEntity<?> getReward(@RequestBody ActivityGetReward activityGetReward ){
-//		String userUuid = ShiroUtils.getUserUuid();
-//		Integer sourceCode = activityGetReward.getSourceCode();
-//		activityService.addEnergyBall(userUuid, sourceCode);
-//		activityService.addEnergyTradeRecord(userUuid, sourceCode);
-//		activityService.updateEnergyWallet(userUuid, sourceCode);
-//		activityService.addActivityCompletionStatus(userUuid, sourceCode);
-//		return new ResponseEntity.Builder<>()
-//				.setData(0)
-//				.setErrorCode(ErrorCode.SUCCESS)
-//				.build();
-//		
-//	}
+	@PostMapping(value = "/getReward")
+    @ResponseBody
+    public ResponseEntity<?> getReward(@RequestBody ActivityGetReward activityGetReward ){
+		String userUuid = ShiroUtils.getUserUuid();
+		Integer sourceCode = activityGetReward.getSourceCode();
+		Integer rewardCode = activityGetReward.getRewardCode();
+		activityService.addEnergyPointBall(userUuid, sourceCode, rewardCode);
+		activityService.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
+		activityService.addPointTradeRecord(userUuid, sourceCode, rewardCode);
+		activityService.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
+		activityService.updateEnergyWallet(userUuid, sourceCode, rewardCode);
+		activityService.addActivityCompletionStatus(userUuid, sourceCode);
+		return new ResponseEntity.Builder<>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+		
+	}
 
 }
