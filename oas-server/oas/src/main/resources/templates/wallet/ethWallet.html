@@ -11,7 +11,8 @@
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
     <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/wallet/ethWallet.js}"></script>
-	<script type="text/javascript" th:src="@{/js/wallet/ethWalletTable.js}"></script>		
+	<script type="text/javascript" th:src="@{/js/wallet/ethWalletTable.js}"></script>
+	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>		
    
    
    <style>
@@ -30,19 +31,48 @@
 	label{ 
     vertical-align:middle;
 	}
-	
+	.content-tabs {
+    border-bottom: solid 1px #d8dbde;
+	}		
     </style>
 </head>
 
 <body>
 
-	<section class="content table-content">
-		
-		<div class = "container">
-			<table id="ethWalletGrid"></table>
-		</div>
+	<div class="row content-tabs">
+		<nav class="page-tabs menuTabs"> 
 
-	</section>
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">交易记录</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">资金大户</a>
+			</div>
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">资金流入</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display4()"id="btn4">资金流出</a>
+			</div>			
+				
+		</nav>	
+	</div> 
+
+	<div class = "container" id="page1">
+			<table id="ethWalletGrid"></table>
+	</div> 
+	
+	<div class = "container" style="display:none" id="page2">
+			<table id="fundBigGrid"></table>
+	</div>
+
+	<div class = "container" style="display:none" id="page3">
+			<table id="fundInGrid"></table>
+	</div>
+	<div class = "container" style="display:none" id="page4">
+			<table id="fundOutGrid"></table>
+	</div>
+
 
 	<!-- 查看用户信息的模态框 -->
     <div class="modal fade" id="queryEthModal" tabindex="-1" role="dialog">

@@ -30,15 +30,16 @@ function initQuestionGrid(data) {
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
-		columns : [{
-
-			title : "序号",
-			field : "topicId",
-			align: 'center',
-			valign: 'middle',
-			width:  '60px',
-
-		},
+		columns : [{  
+		title: '序号',  
+		field: '',
+		align: 'center',
+		valign: 'middle', 
+		width:  '60px', 
+		formatter: function (value, row, index) {  
+			return index+1;  
+			}  
+		}  ,
 			{
 
 			title : "问题",

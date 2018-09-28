@@ -24,7 +24,15 @@ function initUserWalletGrid(data) {
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
-		columns : [{
+		columns : [{  
+		title: '序号',  
+		field: '',
+		align: 'center',
+		valign: 'middle',  
+		formatter: function (value, row, index) {  
+			return index+1;  
+			}  
+		}  ,{
 
 			title : "用户名",
 			field : "name",

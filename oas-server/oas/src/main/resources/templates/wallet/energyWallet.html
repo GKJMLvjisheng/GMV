@@ -30,22 +30,52 @@
 	}
 	label{ 
     vertical-align:middle;
+	}
+	.content-tabs {
+    border-bottom: solid 1px #d8dbde;
 	}	
     </style>
 </head>
 
 <body>
 
-	
+	<div class="row content-tabs">
+		<nav class="page-tabs menuTabs"> 
 
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">交易记录</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">资金大户</a>
+			</div>
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">资金流入</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display4()"id="btn4">资金流出</a>
+			</div>			
+				
+		</nav>	
+	</div> 
 
 	<div class = "container" id="page1">
 			<table id="energyWalletGrid"></table>
 	</div> 
 	
 	<div class = "container" style="display:none" id="page2">
+			<table id="fundBigGrid"></table>
+			哈哈哈哈哈哈
+	</div>
+
+	<div class = "container" style="display:none" id="page3">
+			<table id="fundInGrid"></table>
 			123456
 	</div>
+	<div class = "container" style="display:none" id="page4">
+			<table id="fundOutGrid"></table>
+			QWERTY
+	</div>
+
 
 
 	<!-- 查看用户信息的模态框 -->
