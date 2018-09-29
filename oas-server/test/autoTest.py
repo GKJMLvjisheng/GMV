@@ -377,11 +377,15 @@ def inquireNews(token):
 
 #testRegisterDestroy()
 
-token=login("caikov","cai120501")
+token=login("admin","123")
 if token is None:
   raise Exception("[Fail] login")
 
-inquire=inquireNews(token)
+coin=ethWalletListCoin(token)
+if coin is not None:
+  print (coin)
+else:
+  raise Exception("eWallet coin failure")
 
 #testEnergyPoint()
 #testUserWallet()
