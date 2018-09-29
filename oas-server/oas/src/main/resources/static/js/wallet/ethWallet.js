@@ -12,6 +12,7 @@ $(function () {
      $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
 	}).on('dp.change', function (ev) {
 		var startTime2 = $("#startTime2").val();
 		  //alert(startTime);
@@ -22,14 +23,14 @@ $(function () {
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
 	}).on('dp.change', function (ev) {
-		  var endTime2 = $("#endTime2").val();
-		  //alert(endTime);
-		$('#userEd').datetimepicker('maxDate',endTime2);
+		var startTime2 = $("#startTime2").val();
+		$('#userEd1').datetimepicker('minDate',startTime2);
  	});
 	
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
 	}).on('dp.change', function (ev) {
 		var startTime3 = $("#startTime3").val();
 		  //alert(startTime);
@@ -40,11 +41,18 @@ $(function () {
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
 	}).on('dp.change', function (ev) {
-		  var endTime3 = $("#endTime3").val();
-		  //alert(endTime);
-		$('#userEd2').datetimepicker('maxDate',endTime3);
+		var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime3);
  	});
 });
+
+function todayDate(){
+	var day = new Date();
+ 	day.setTime(day.getTime());
+  	var s = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+  	return s;
+}
 
 function EthWalletReady(){
     $('#eneryWalletGrid').bootstrapTable('destroy');
