@@ -2,6 +2,7 @@ package com.cascv.oas.server.blockchain.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,4 +17,5 @@ public class UserCoin implements Serializable{
   @Setter @Getter private String symbol;
   @Setter @Getter private BigDecimal balance;
   @Setter @Getter private BigDecimal value;
+  @Setter @Getter private BigInteger ethBalance;
 }

@@ -28,6 +28,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthCall;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.ChainId;
@@ -50,6 +51,18 @@ public class CoinClient {
 	  return providerMap.keySet();
   }
   
+  public BigInteger ethBalance(String net, String fromAddress) {
+    BigInteger balance = null;
+    try {
+      Web3j web3j = providerMap.get(net);
+      EthGetBalance ethGetBalance = web3j.ethGetBalance(fromAddress, DefaultBlockParameterName.LATEST).send();
+      balance = ethGetBalance.getBalance();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return balance;
+  }
+  
   // balance
   public BigDecimal balanceOf(String net, String fromAddress, String contract, BigDecimal weiFactor) {
 	String methodName = "balanceOf";
@@ -69,7 +82,9 @@ public class CoinClient {
     BigInteger balanceInt = BigInteger.ZERO;
         
     try {
+      
       Web3j web3j = providerMap.get(net);
+      log.info("net {} webj3 {}", net, web3j);
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       balanceInt = (BigInteger) results.get(0).getValue();
