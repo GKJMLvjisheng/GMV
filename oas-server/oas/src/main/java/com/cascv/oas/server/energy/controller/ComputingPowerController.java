@@ -276,7 +276,7 @@ public class ComputingPowerController {
 		if(powerService.isBackupsWallet(userUuid) == 0) {
 			//do backupsWallet
 			
-			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
+			return new ResponseEntity.Builder<Integer>().setData(0).setErrorCode(errorCode).build();
 			
 		}else {
 			errorCode = ErrorCode.IS_BACKUPS_WALLET;
