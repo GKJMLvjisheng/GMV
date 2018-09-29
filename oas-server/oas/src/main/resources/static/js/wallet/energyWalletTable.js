@@ -131,14 +131,21 @@ function initFundBigGrid(data) {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
-			width:  '300px',
+			width:  '200px',
 		},
 			{
-			title : "资金流入总额",
-			field : "value",
+			title : "积分",
+			field : "point",
 			align: 'center',
 			valign: 'middle',
-			width:  '300px',
+			width:  '200px',
+		},
+		{
+			title : "算力",
+			field : "power",
+			align: 'center',
+			valign: 'middle',
+			width:  '200px',
 		},
 		{
 			title : "操作",
@@ -197,8 +204,8 @@ function initFundInGrid(data) {
 
 		},
 			{
-			title : "资金流入总额",
-			field : "value",
+			title : "积分流入总额",
+			field : "point",
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
@@ -262,8 +269,8 @@ function initFundOutGrid(data) {
 			width:  '300px',
 		},
 			{
-			title : "资金流出总额",
-			field : "value",
+			title : "积分流出总额",
+			field : "point",
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
