@@ -187,7 +187,7 @@
 					
 				 <form id="allotRewardForm" action="/user/allotRewardForm" method="post" class="form-horizontal"> 
 				
-				<input   type="text" style="display:none" name="activityRewardId" id="activityRewardId">
+				<input   type="text" style="display:none" name="activitySoureId" id="activitySoureId">
         
 				<div class="form-group">
 
@@ -196,7 +196,7 @@
 				<div class="col-sm-7">
 								
                 <select id="rewardName" class="form-control" name="rewardName"  required="required" >
-                  
+                  <option>请选择</option>
                 </select>
             </div>
         </div>	
@@ -206,7 +206,8 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="baseValue" class=" form-control" id="baseValue" required="required" onblur="checkUserName(this)" placeholder="请输入奖励基础值"/>
+               <input type="text" name="baseValue" class=" form-control" id="baseValue" required="required" onblur="checkBaseValue(this)" placeholder="请输入奖励基础值"/>
+             <span id='msg_baseValue'></span>
             </div>
         </div>	
         	<div class="form-group">
@@ -215,7 +216,8 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="increaseSpeed" class=" form-control" id="increaseSpeed" required="required" onblur="checkUserName(this)" placeholder="请输入奖励增长速度"/>
+               <input type="text" name="increaseSpeed" class=" form-control" id="increaseSpeed" required="required" onblur="checkIncreaseSpeed(this)" placeholder="请输入奖励增长速度"/>
+             <span id='msg_increaseSpeed'></span>
             </div>
         </div>	
         <div class="form-group">
@@ -224,7 +226,8 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="increaseSpeedUnit" class=" form-control" id="increaseSpeedUnit" required="required" onblur="checkUserName(this)" placeholder="请输入奖励增长速度单位"/>
+               <input type="text" name="increaseSpeedUnit" class=" form-control" id="increaseSpeedUnit" required="required"  placeholder="请输入奖励增长速度单位"/>
+             <span id='msg_increaseSpeedUnit'></span>
             </div>
         </div>	
         <div class="form-group">
@@ -233,29 +236,32 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="maxValue" class=" form-control" id="maxValue" required="required" onblur="checkUserName(this)" placeholder="请输入奖励满值"/>
+               <input type="text" name="maxValue" class=" form-control" id="maxValue" required="required" onblur="checkMaxValue(this)" placeholder="请输入奖励满值"/>
+            <span id='msg_maxValue'></span>
             </div>
         </div>	
          <div class="form-group">
 
-				<label for="period" class="col-sm-4 control-label">奖励满值：</label>
+				<label for="period" class="col-sm-4 control-label">可用周期：</label>
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="period" class=" form-control" id="period" required="required" onblur="checkUserName(this)" placeholder="请输入奖励满值"/>
+               <input type="text" name="period" class=" form-control" id="period" required="required"  placeholder="请输入可用周期"/>
+             <span id='msg_period'></span>
+<!--             onblur="checkPeriod(this)" -->
             </div>
         </div>	
 			</form>
 				</div>
 				<div class="modal-footer">
 
-				<button type="button" id="allot" class="btn btn-default" data-dismiss="modal" onclick="addAllotReward()">奖励配置</button>
+				<button type="button" id="allot" class="btn btn-default"  onclick="addAllotReward()">奖励配置</button>
 				<button type="button"  class="btn btn-default"   data-dismiss="modal" onclick="resetAddModal()">取消</button>
 				</div>
 			</div>
 		</div>
 	</div>			
-	<!-- 编辑活动的模态框 -->
+	<!-- 编辑活动奖励的模态框 -->
     <div class="modal fade" id="updateActivityRewardModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
@@ -264,18 +270,19 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">活动修改</h3>			
+					<h3 class="modal-title" id="myModalLabel">活动奖励配置修改</h3>			
 				</div>
 
 				<div class="modal-body">
 				
 					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EActivitySoureId" id="EActivitySoureId">
 						<input  style="display:none" type="hidden" name="EActivityRewardId" id="EActivityRewardId">
 						
 						<div class="form-group">
 							<label for="ErewardName" class="col-sm-4 control-label">奖励名称：</label>
 							<div class="col-sm-7">
-								<input name="ErewardName" class="form-control" id="ErewardName" readonly="readonly" required="required"  placeholder="版本号长度最多为40个字符" /></input>
+								<input name="ErewardName" class="form-control" id="ErewardName" readonly="readonly" required="required"   /></input>
 								
 
 							</div>						
@@ -287,7 +294,7 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="EbaseValue" class=" form-control" id="baseValue" required="required" onblur="checkUserName(this)" placeholder="请输入奖励基础值"/>
+               <input type="text" name="EbaseValue" class=" form-control" id="EbaseValue" required="required"  placeholder="请输入奖励基础值"/>
             </div>
         </div>	
         	<div class="form-group">
@@ -296,34 +303,34 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="EincreaseSpeed" class=" form-control" id="EincreaseSpeed" required="required" onblur="checkUserName(this)" placeholder="请输入奖励增长速度"/>
+               <input type="text" name="EincreaseSpeed" class=" form-control" id="EincreaseSpeed" required="required"  placeholder="请输入奖励增长速度"/>
             </div>
         </div>	
         <div class="form-group">
 
-				<label for="increaseSpeedUnit" class="col-sm-4 control-label">奖励增长速度单位：</label>
+				<label for="EincreaseSpeedUnit" class="col-sm-4 control-label">奖励增长速度单位：</label>
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="increaseSpeedUnit" class=" form-control" id="increaseSpeedUnit" required="required" onblur="checkUserName(this)" placeholder="请输入奖励增长速度单位"/>
+               <input type="text" name="EincreaseSpeedUnit" class=" form-control" id="EincreaseSpeedUnit" required="required"  placeholder="请输入奖励增长速度单位"/>
             </div>
         </div>	
         <div class="form-group">
 
-				<label for="maxValue" class="col-sm-4 control-label">奖励满值：</label>
+				<label for="EmaxValue" class="col-sm-4 control-label">奖励满值：</label>
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="maxValue" class=" form-control" id="maxValue" required="required" onblur="checkUserName(this)" placeholder="请输入奖励满值"/>
+               <input type="text" name="EmaxValue" class=" form-control" id="EmaxValue" required="required"  placeholder="请输入奖励满值"/>
             </div>
         </div>	
          <div class="form-group">
 
-				<label for="period" class="col-sm-4 control-label">奖励满值：</label>
+				<label for="Eperiod" class="col-sm-4 control-label">可用周期：</label>
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="period" class=" form-control" id="period" required="required" onblur="checkUserName(this)" placeholder="请输入奖励满值"/>
+               <input type="text" name="Eperiod" class=" form-control" id="Eperiod" required="required"  placeholder="请输入可用周期"/>
             </div>
         </div>	
 						
@@ -333,8 +340,8 @@
 
 				<div class="modal-footer">
 <!-- 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button> -->
-					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="updateVersion()">确定</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resteUpdate()">取消</button>
+					<button type="button" class="btn btn-default"  onclick="updateActivityReward()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
 				</div>
 						
 			</div>

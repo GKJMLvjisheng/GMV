@@ -8,8 +8,8 @@ $(function() {
 	//初始加载	
 	EnergyWalletReady();
 	FundBigReady();
-	// FundInReady();
-	// FundOutReady();
+	FundInReady();
+	FundOutReady();
 });
 
 //时间控件
@@ -111,7 +111,7 @@ function FundBigReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/energyPoint/inqureEnergyWalletBalanceRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -142,7 +142,7 @@ function FundInReady(){
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -173,7 +173,7 @@ function FundOutReady(){
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/energyPoint/inqureEnergyWalletOutTotalPointTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
