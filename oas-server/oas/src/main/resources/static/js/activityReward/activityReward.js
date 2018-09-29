@@ -387,6 +387,7 @@ function deleteActivityRewardById(id){
 function editActivityRewardById(id){
 	 var rows=$("#activityRewardGrid").bootstrapTable('getRowByUniqueId', id);
 	 alert(JSON.stringify(rows));
+	 alert($('#activitySoureId').val());
 		$("#EActivitySoureId").val($('#activitySoureId').val());  
 	    $("#EActivityRewardId").val(rows.rewardCode);
 	    $("#ErewardName").val(rows.rewardName);  
@@ -400,7 +401,7 @@ function editActivityRewardById(id){
 }
 function updateActivityReward(){
 	var sourceCode=$("#EActivitySoureId").val();  
-	
+	alert(sourceCode);
     var rewardCode=$("#EActivityRewardId").val();
 	
 	var baseValue=$("#EbaseValue").val();
@@ -451,7 +452,7 @@ function allotReward(){
 	//初始加载
 	
 	var sourceCode=$('#activityId').val();
-
+alert(sourceCode);
 	$('#activitySoureId').val(sourceCode);
 	
 $.ajax({
@@ -687,7 +688,7 @@ function activityRewardReady(id)
 {
 	$('#activityRewardGrid').bootstrapTable('destroy');
 	var data={"sourceCode":id};
-	alert(data);
+	alert(JSON.stringify(data));
 	var data1;
 	$.ajax({
 		
@@ -699,7 +700,7 @@ function activityRewardReady(id)
 		type: 'post',
 		async : false,
 		success: function(res) {
-		alert(JSON.stringify("111"+res));
+		alert("111"+JSON.stringify(res));
 		if(res.code==0)
 			{data1=res.data;}
 		
