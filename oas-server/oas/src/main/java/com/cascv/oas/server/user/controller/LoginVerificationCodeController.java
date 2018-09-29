@@ -136,7 +136,7 @@ public class LoginVerificationCodeController {
 			log.info("--------对比验证码-------2222-");	
 		int flag;
 		String randCheckCode=session.getAttribute("randCheckCode").toString();
-		if (identifyCode.equals(randCheckCode)) {
+		if (identifyCode.equalsIgnoreCase(randCheckCode)) {
 			flag = 0;
 		} else {
 			flag = 1;
