@@ -173,7 +173,7 @@ export default {
     this.getEnergyAnalysis()
     this.getArticleList()
     this.getUserInfo()
-
+    window.skipRefresh= this.skipRefresh
   },
   filters: {
   },
@@ -246,6 +246,7 @@ export default {
         {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
+       
       })
     },
     // 签到弹窗确认按钮
@@ -271,7 +272,7 @@ export default {
       
       this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
-        //console.log(data.energyBallList)
+        console.log(data.energyBallList)
         //let i=0
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
@@ -352,6 +353,7 @@ export default {
       }
       let ele = event.currentTarget
       this.$axios.post('/energyPoint/takeEnergyBall',{ballId: data.uuid}).then(({data}) => {
+        console.log(JSON.stringify(data))
         if (data.code != 0) {
           this.Toast(data.message)
           return
@@ -387,18 +389,19 @@ export default {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
      
       //this.removeclass() 
-     this.energyBallList=0
+      this.energyBallList=[]
       this.getEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
       this.getUserInfo()
-     
+    
      //location.reload()
      //this.reload()
       setTimeout(() => {
         done()
       },1000)
+      
     /*var aaa =  this.$el.childNodes[0].childNodes[0].childNodes[3].childNodes[0].childNodes
     for(var i = 0;i<aaa.length;i++){
        aaa[i].classList.remove("fadeOutUp")
@@ -407,7 +410,19 @@ export default {
       // aaa[i].classList.add("animated") 
     }*/
     },
-    
+    skipRefresh () {
+      this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+     
+      //this.removeclass() 
+      this.energyBallList=[]
+      this.getEnergyBall()
+      this.getCurrentEnergy()
+      this.getCurrentPower()
+      this.getEnergyAnalysis()
+      this.getUserInfo()
+     console.log("111")
+  
+    },
 
 
 

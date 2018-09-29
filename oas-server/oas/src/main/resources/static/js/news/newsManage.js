@@ -7,11 +7,7 @@ document.write("<script language=javascript src='js/news/newsManageTable.js'></s
 $(function() {
 
 	//初始加载	
-	newsReady();
-	newsTitle.setAttribute("maxlength",40);
-	EnewsTitle.setAttribute("maxlength",40);
-	newsAbstract.setAttribute("maxlength",100);
-	EnewsAbstract.setAttribute("maxlength",100);
+	newsReady()
 });
 
 function newsReady(){

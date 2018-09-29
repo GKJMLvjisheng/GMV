@@ -9,40 +9,50 @@ $(function() {
 
 //时间控件
 $(function () {
-    $('#userEd').datetimepicker({
+     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
-	})
-	// .on('changeDate',function(ev){
-    //      var starttime=$("#userEd").val();
-    //      $("#userEd1").datetimepicker('setStartDate',starttime);
-    //      $("#userEd").datetimepicker('hide');
-	// })
-	;
-
- 	
-	$('#userEd1').datetimepicker({
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		  //alert(startTime);
+		$('#userEd1').datetimepicker('minDate',startTime2);
+	 });
+	 
+	 $('#userEd1').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
-	})
-// 	.on('changeDate',function(ev){
-//        var starttime=$("#userEd").val();
-//        var endtime=$("#userEd1").val();
-//        $("#userEd").datetimepicker('setEndDate',endtime);
-//        $("#userEd1").datetimepicker('hide'); 
-//   })
-  ;
-
-
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		$('#userEd1').datetimepicker('minDate',startTime2);
+ 	});
+	
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime3);
+	 });
+
 	$('#userEd3').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime3);
+ 	});
 });
+
+function todayDate(){
+	var day = new Date();
+ 	day.setTime(day.getTime());
+  	var s = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+  	return s;
+}
 
 function EthWalletReady(){
     $('#eneryWalletGrid').bootstrapTable('destroy');

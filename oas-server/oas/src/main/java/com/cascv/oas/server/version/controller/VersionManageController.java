@@ -26,7 +26,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.version.model.VersionModel;
-import com.cascv.oas.server.news.config.MediaServer;
+import com.cascv.oas.server.version.service.VersionService;
 import com.cascv.oas.server.version.mapper.VersionModelMapper;
 import com.cascv.oas.server.version.vo.DownloadVersionInfo;
 import com.cascv.oas.server.version.vo.VersionInfo;
@@ -43,8 +43,8 @@ public class VersionManageController {
 @Autowired
 private VersionModelMapper versionModelMapper;
 @Autowired
-private MediaServer mediaServer;
-	
+private VersionService versionService;
+
 private static String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
 private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" 
 +File.separator+File.separator+"Apps"+File.separator;
@@ -73,7 +73,7 @@ public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam(name="
         
 		VersionModel versionModel=new VersionModel();
 		
-		String str=mediaServer.getImageHost()+"/image/Apps/";
+		String str="/image/Apps/";
 		String appUrl=str+fileName;
 		log.info("appUrl={}",appUrl);
 		log.info("status={}",versionInfo.getVersionStatus());
@@ -113,7 +113,7 @@ public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam(name="
 @ResponseBody
 public ResponseEntity<?> selectAllApps(){
 	
-	List<VersionModel> versionModels=versionModelMapper.selectAllApps();
+	List<VersionModel> versionModels=versionService.selectAllApps();
 	
 	return new ResponseEntity.Builder<List<VersionModel>>()
 			.setData(versionModels)
@@ -159,7 +159,7 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
         Path path = Paths.get(UPLOADED_FOLDER + fileName);
         Files.write(path, bytes);
 		
-		String str=mediaServer.getImageHost()+"/image/Apps/";
+		String str="/image/Apps/";
 		String appUrl=str+fileName;
 		versionModel.setAppUrl(appUrl);
 	    
@@ -182,7 +182,6 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
   	}else {
   		
   		log.info("versionInfo.getAppUrl()={}",versionInfo.getAppUrl());
-  		versionModel.setAppUrl(versionInfo.getAppUrl());
   		
   		versionModelMapper.updateApp(versionModel);
   		
@@ -196,14 +195,14 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 @PostMapping(value="/downloadApp")
 @ResponseBody
 public ResponseEntity<?> downloadApp(){
-	if(versionModelMapper.selectAllAppsByStableVersion().size()!=0) {
+	if(versionService.selectAppByStableVersion().size()!=0) {
 		
-	List<VersionModel> stableVersionModels=versionModelMapper.selectAllAppsByStableVersion();
+	List<VersionModel> stableVersionModel=versionService.selectAppByStableVersion();
 	DownloadVersionInfo downloadVersionInfo=new DownloadVersionInfo();
 
-	Integer versionCode=stableVersionModels.get(0).getVersionCode();
+	Integer versionCode=stableVersionModel.get(0).getVersionCode();
 	downloadVersionInfo.setVersionCode(versionCode);
-	String appUrl=stableVersionModels.get(0).getAppUrl();
+	String appUrl=stableVersionModel.get(0).getAppUrl();
 	downloadVersionInfo.setAppUrl(appUrl);
 	
 	return new ResponseEntity.Builder<DownloadVersionInfo>()

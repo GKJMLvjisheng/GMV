@@ -7,38 +7,77 @@ document.write("<script language=javascript src='/js/wallet/userWalletTable.js'>
 $(function() {
 	//初始加载	
 	UserWalletReady();
-	// FundBigReady();
-	// FundInReady();
-	// FundOutReady();
+	FundBigReady();
+	FundInReady();
+	FundOutReady();
 });
 
 //时间控件
 $(function () {
     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});	
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime1 = $("#startTime1").val();
+		  //alert(startTime);
+		$('#userEd1').datetimepicker('minDate',startTime1);
+	 });
+
 	$('#userEd1').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		  var startTime1 = $("#startTime1").val();
+		  //alert(startTime);
+		$('#userEd1').datetimepicker('minDate',startTime1);
+	 });
+	 
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime2);
+	 });
+
 	$('#userEd3').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		  var startTime2 = $("#startTime2").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime2);
+	 });
+	 
 	$('#userEd4').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd5').datetimepicker('minDate',startTime3);
+	 });
+
 	$('#userEd5').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-    });
+    }).on('dp.change', function (ev) {
+		  var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd5').datetimepicker('minDate',startTime3);
+ 	});
 });
+
+function todayDate(){
+	var day = new Date();
+ 	day.setTime(day.getTime());
+  	var s = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+  	return s;
+}
 
 function UserWalletReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
@@ -71,7 +110,7 @@ function FundBigReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletBalanceRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -101,7 +140,7 @@ function FundInReady(){
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletInTotalTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -131,7 +170,7 @@ function FundOutReady(){
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletOutTotalTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,

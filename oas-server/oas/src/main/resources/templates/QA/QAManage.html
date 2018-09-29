@@ -9,7 +9,8 @@
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
-    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/QA/QAManage.js}"></script>
 	<script type="text/javascript" th:src="@{/js/QA/QAManageTable.js}"></script>	
    
@@ -73,7 +74,7 @@
 						<div class="form-group">
 							<label for="question" class="col-sm-3 control-label">问题内容</label>
 							<div class="col-sm-8">
-								<textarea name="question" class="form-control" id="question" required="required"  placeholder="问题长度最多为40个字符" /></textarea>
+								<textarea name="question" class="form-control" id="question" required="required"  maxlength="40" placeholder="问题长度为1~40个字符" /></textarea>
 								<span id="msg_question"></span>
 							</div>						
 						</div>
@@ -81,22 +82,21 @@
 						
 						<div class="form-group">
 							<label for="choiceA" class="col-sm-3 control-label">选项A 
-								<input type="radio" name="radio" id="A"  value="A">
+								<input type="radio" name="radio" id="A" value="A">
 							</label>
 
 							<div class="col-sm-8">
- 								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" placeholder="选项A长度最多为20个字符"/></textarea>
+ 								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" maxlength="20" placeholder="选项A长度为1~20个字符"/></textarea>
  								<span id="msg_choiceA"></span> 				
 							</div>
-						</div>
-						
+						</div>						
 						
 						<div class="form-group">
 							<label for="choiceB" class="col-sm-3 control-label">选项B 
 								<input type="radio" name="radio" id="B"  value="B">
 							</label>
 							<div class="col-sm-8">
-								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" placeholder="选项B长度最多为20个字符"/></textarea>
+								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" maxlength="20" placeholder="选项B长度为1~20个字符"/></textarea>
 								<span id="msg_choiceB"></span>
 							</div>
 						</div>
@@ -106,7 +106,7 @@
 								<input type="radio" name="radio" id="C"  value="C">
 							</label>
 							<div class="col-sm-8">
-								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" placeholder="选项C长度最多为20个字符"/></textarea>
+								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" maxlength="20" placeholder="选项C长度为1~20个字符"/></textarea>
 								<span id="msg_choiceC"></span>
 							</div>
 						</div>	
@@ -168,7 +168,7 @@
 						<div class="form-group">
 							<label for="question" class="col-sm-3 control-label">问题内容：</label>
 							<div class="col-sm-8">
-								<textarea name="Equestion" class="form-control" id="Equestion" required="required"  onblur="EcheckQuestion()" /></textarea>
+								<textarea name="Equestion" class="form-control" id="Equestion" required="required"  maxlength="40" onblur="EcheckQuestion()" /></textarea>
 								<span id="msg_Equestion"></span> 
 							</div>						
 						</div>
@@ -178,7 +178,7 @@
 								<input type="radio" name="radio1" id="A1"  value="A">
 							</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" onblur="EcheckChoiceA()"/></textarea>
+								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" maxlength="20" onblur="EcheckChoiceA()"/></textarea>
 								<span id="msg_EchoiceA"></span> 
 							</div>						
 						</div>
@@ -188,7 +188,7 @@
 								<input type="radio" name="radio1" id="B1"  value="B">
 							</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required" onblur="EcheckChoiceB()"/></textarea>
+								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required" maxlength="20" onblur="EcheckChoiceB()"/></textarea>
 								<span id="msg_EchoiceB"></span> 
 							</div>						
 						</div>
@@ -198,7 +198,7 @@
 								<input type="radio" name="radio1" id="C1"  value="C">
 							</label>
 							<div class="col-sm-8">
-								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required" onblur="EcheckChoiceC()"/></textarea>
+								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required" maxlength="20" onblur="EcheckChoiceC()"/></textarea>
 								<span id="msg_EchoiceC"></span>  
 							</div>						
 						</div>						

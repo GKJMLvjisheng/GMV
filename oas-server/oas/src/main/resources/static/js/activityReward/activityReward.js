@@ -2,8 +2,8 @@
  * 
  */
 //新闻管理界面创建bootstrapTable
-document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
-//document.write("<script language=javascript src='js/qrcode.js'></script>");
+document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
+
 var check1=1;
 var check2=1;
 var check3=1;
@@ -646,8 +646,8 @@ function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"viewActivityById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-zoom-in'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editVersionById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteVersionById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editActivityById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteActivityById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
 }
@@ -688,7 +688,7 @@ $.ajax({
 	type: 'post',
 	async : false,
 	success: function(res) {
-	//alert(JSON.stringify(res));
+	alert(JSON.stringify(res));
 	if(res.code==0)
 		{data1=res.data;}
 	
@@ -701,11 +701,11 @@ $.ajax({
 	}); 
 initActivityRewardGrid(data1);
 }
-function editVersionById(id){
+function editActivityById(id){
     
     //获取选中行的数据
-    var rows=$("#versionGrid").bootstrapTable('getRowByUniqueId', id);
-	$('#EversionId').val(rows.uuid);  
+    var rows=$("#activityGrid").bootstrapTable('getRowByUniqueId', id);
+	$('#EactivityId').val(rows.uuid);  
     $('#EversionCode').val(rows.versionCode);
     if(rows.versionStatus=="体验版")
     	{$("#EversionStatus1").prop("checked",true)}
@@ -725,18 +725,18 @@ function editVersionById(id){
   }
 
 
-function deleteVersionById(id)
+function deleteActivityById(id)
 { 
 	 Ewin.confirm({ message: "确认要删除选择的数据吗？" }).on(function (e) {
 		if (!e) {
 		  return;
 		 }
 
-	data={"uuid":id};
+	data={"sourceCode":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 
-		url:"/api/v1/userCenter/deleteApp",
+		url:"/api/v1/activityConfig/deleteActivity",
 		data: JSON.stringify(data),
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
@@ -746,11 +746,13 @@ function deleteVersionById(id)
 		success:function(res){
 			
 			if(res.code==0){
-				$("#versionGrid").bootstrapTable('removeByUniqueId', id);
-				alert("删除成功！");
+				$("#activityGrid").bootstrapTable('removeByUniqueId', id);
+				document.getElementById("tipContent").innerText="删除成功";
+				$("#Tip").modal('show');
 			}
 			else{
-				alert("删除失败");
+				document.getElementById("tipContent").innerText="删除失败";
+				$("#Tip").modal('show');
 				}
 			},
 	
