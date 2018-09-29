@@ -8,15 +8,16 @@ $(function() {
 	//初始加载	
 	EnergyWalletReady();
 	FundBigReady();
-	FundInReady();
-	FundOutReady();
+	// FundInReady();
+	// FundOutReady();
 });
 
 //时间控件
 $(function () {
     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
 	}).on('dp.change', function (ev) {
 		var startTime1 = $("#startTime1").val();
 		  //alert(startTime);
@@ -27,14 +28,15 @@ $(function () {
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
 	}).on('dp.change', function (ev) {
-		  var endTime1 = $("#endTime1").val();
-		  //alert(endTime);
-		$('#userEd').datetimepicker('maxDate',endTime1);
+		  var startTime1 = $("#startTime1").val();
+		  //alert(startTime);
+		$('#userEd1').datetimepicker('minDate',startTime1);
 	 });
 
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
 	}).on('dp.change', function (ev) {
 		var startTime2 = $("#startTime2").val();
 		  //alert(startTime);
@@ -45,14 +47,15 @@ $(function () {
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
 	}).on('dp.change', function (ev) {
-		  var endTime2 = $("#endTime2").val();
-		  //alert(endTime);
-		$('#userEd2').datetimepicker('maxDate',endTime2);
+		  var startTime2 = $("#startTime2").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime2);
 	 });
 
 	$('#userEd4').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
 	}).on('dp.change', function (ev) {
 		var startTime3 = $("#startTime3").val();
 		  //alert(startTime);
@@ -63,11 +66,18 @@ $(function () {
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
     }).on('dp.change', function (ev) {
-		  var endTime3 = $("#endTime3").val();
-		  //alert(endTime);
-		$('#userEd4').datetimepicker('maxDate',endTime3);
+		  var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd5').datetimepicker('minDate',startTime3);
  	});
 });
+
+function todayDate(){
+	var day = new Date();
+ 	day.setTime(day.getTime());
+  	var s = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+  	return s;
+}
 
 function EnergyWalletReady(){
     $('#energyWalletGrid').bootstrapTable('destroy');
@@ -101,7 +111,7 @@ function FundBigReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -132,7 +142,7 @@ function FundInReady(){
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -163,7 +173,7 @@ function FundOutReady(){
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
