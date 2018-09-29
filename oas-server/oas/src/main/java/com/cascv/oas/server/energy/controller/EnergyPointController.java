@@ -432,12 +432,12 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   	  c.add(Calendar.MONTH, 0);
   	  c.set(Calendar.DAY_OF_MONTH,1);
   	  String nowMonthOfFirstDay =format.format(c.getTime());
-        log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
         
-        //获取当前年月日
-        Date d = new Date();
-        String nowDate = format.format(d);
-        log.info("nowDate={}",nowDate);
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate={}",nowDate);
         
   	  String startTime=timeLimitInfo.getStartTime();
   	  String endTime=timeLimitInfo.getEndTime();
