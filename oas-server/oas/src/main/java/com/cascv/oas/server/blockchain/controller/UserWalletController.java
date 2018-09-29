@@ -295,4 +295,46 @@ public class UserWalletController {
 		        .build();
   }
   
+  /**
+   * @author Ming Yang
+   * @return 在线钱包余额统计
+   */
+  @PostMapping(value="/inqureUserWalletBalanceRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureUserWalletBalanceRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  
+	  //获取当月第一天
+	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	  Calendar c = Calendar.getInstance();
+	  c.add(Calendar.MONTH, 0);
+	  c.set(Calendar.DAY_OF_MONTH,1);
+	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate={}",nowDate);
+      
+	  String startTime=timeLimitInfo.getStartTime();
+	  String endTime=timeLimitInfo.getEndTime();
+	  
+	  if(startTime=="") {
+		  startTime=nowMonthOfFirstDay;
+	  }else {
+		  startTime=timeLimitInfo.getStartTime();
+	  }
+	  if(endTime=="") {
+		  endTime=nowDate;
+	  }else {
+		  endTime=timeLimitInfo.getEndTime();
+	  }
+	  
+	  List<WalletTotalTradeRecordInfo> userWalletBalanceRecords=userWalletTradeRecordMapper.selectAllUserBalanceRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
+		        .setData(userWalletBalanceRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
 }
