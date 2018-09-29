@@ -22,7 +22,7 @@ import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
-import com.cascv.oas.server.blockchain.wrapper.UserWalletTotalTradeRecordInfo;
+import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
@@ -246,8 +246,8 @@ public class UserWalletController {
 		  endTime=timeLimitInfo.getEndTime();
 	  }
 	  
-	  List<UserWalletTotalTradeRecordInfo> userWalletInTotalTradeRecords=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<UserWalletTotalTradeRecordInfo>>()
+	  List<WalletTotalTradeRecordInfo> userWalletInTotalTradeRecords=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
 		        .setData(userWalletInTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
@@ -288,8 +288,8 @@ public class UserWalletController {
 		  endTime=timeLimitInfo.getEndTime();
 	  }
 	  
-	  List<UserWalletTotalTradeRecordInfo> userWalletOutTotalTradeRecords=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<UserWalletTotalTradeRecordInfo>>()
+	  List<WalletTotalTradeRecordInfo> userWalletOutTotalTradeRecords=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
 		        .setData(userWalletOutTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();

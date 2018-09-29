@@ -21,12 +21,12 @@ order by ed.created desc;
 </select>
 
 
-<resultMap id="ethWalletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.EthWalletTotalTradeRecordInfo">
+<resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
     <result column="name" property="name"/>
 	<result column="value" property="value"/>
 </resultMap>
 
-   <select id="selectAllInTotalTradeRecord" resultMap="ethWalletTotalTradeRecordMap">
+   <select id="selectAllInTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
    select 
 		u.name,SUM(ed.value) as value
 from 
@@ -37,7 +37,7 @@ group by u.name
 order by value desc;
    </select>
    
-      <select id="selectAllOutTotalTradeRecord" resultMap="ethWalletTotalTradeRecordMap">
+      <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
    select 
 		u.name,SUM(ed.value) as value
 from 
