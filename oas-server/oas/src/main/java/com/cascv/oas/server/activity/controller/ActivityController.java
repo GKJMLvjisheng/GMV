@@ -26,6 +26,7 @@ import com.cascv.oas.server.activity.wrapper.ActivityRequest;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardAdd;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
+import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
 import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
@@ -189,7 +190,7 @@ public class ActivityController {
     public ResponseEntity<?> selectAllActivityReward(@RequestBody ActivityDelete activityDelete){
 		Integer sourceCode = activityDelete.getSourceCode();
 		Map<String,Object> info=new HashMap<>();
-		List<ActivityRewardConfig> activityRewardList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
+		List<RewardConfigResult> activityRewardList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
 		if(activityRewardList.size() > 0)
 			info.put("activityList", activityRewardList);
 		else
@@ -245,7 +246,7 @@ public class ActivityController {
     public ResponseEntity<?> getReward(@RequestBody RewardSourceCode rewardSourceCode ){
 		String userUuid = ShiroUtils.getUserUuid();
 		Integer sourceCode = rewardSourceCode.getSourceCode();
-		List<ActivityRewardConfig> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
+		List<RewardConfigResult> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
 		Integer len = activityRewardConfigList.size();
 		log.info("len={}",len);
 		for(int i=0; i<len; i++) {
