@@ -9,39 +9,41 @@ $(function() {
 
 //时间控件
 $(function () {
-    $('#userEd').datetimepicker({
+     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
-	})
-	// .on('changeDate',function(ev){
-    //      var starttime=$("#userEd").val();
-    //      $("#userEd1").datetimepicker('setStartDate',starttime);
-    //      $("#userEd").datetimepicker('hide');
-	// })
-	;
-
- 	
-	$('#userEd1').datetimepicker({
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		  //alert(startTime);
+		$('#userEd1').datetimepicker('minDate',startTime2);
+	 });
+	 
+	 $('#userEd1').datetimepicker({
         format: 'YYYY-MM-DD',
 		locale: moment.locale('zh-cn'),
-	})
-// 	.on('changeDate',function(ev){
-//        var starttime=$("#userEd").val();
-//        var endtime=$("#userEd1").val();
-//        $("#userEd").datetimepicker('setEndDate',endtime);
-//        $("#userEd1").datetimepicker('hide'); 
-//   })
-  ;
-
-
+	}).on('dp.change', function (ev) {
+		  var endTime2 = $("#endTime2").val();
+		  //alert(endTime);
+		$('#userEd').datetimepicker('maxDate',endTime2);
+ 	});
+	
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime3);
+	 });
+
 	$('#userEd3').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		  var endTime3 = $("#endTime3").val();
+		  //alert(endTime);
+		$('#userEd2').datetimepicker('maxDate',endTime3);
+ 	});
 });
 
 function EthWalletReady(){

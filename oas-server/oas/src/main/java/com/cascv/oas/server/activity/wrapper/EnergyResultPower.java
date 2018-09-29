@@ -8,7 +8,7 @@ import lombok.Setter;
 
 public class EnergyResultPower implements Serializable {
 	
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	
 	@Getter @Setter private BigDecimal newPower;
 

@@ -201,6 +201,22 @@ public class EthWalletService {
     return balance;
   }
   
+  public BigInteger getEthBalance(String userUuid) {
+    BigInteger balance = null;
+    try {
+      EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
+      String net = ethWallet.getPreferNetwork();
+      if (net == null)
+        net = coinClient.getDefaultNet();
+      balance = coinClient.ethBalance(net, ethWallet.getAddress());
+      log.info("getEthBalance of {}", balance);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return balance;
+  }
+  
+  
   public BigDecimal getValue(BigDecimal balance) {
     
     String time = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
@@ -230,7 +246,9 @@ public class EthWalletService {
     List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
     for (UserCoin coin:userCoinList) {
       BigDecimal balance =this.getBalance(userUuid, coin.getContract(),coin.getWeiFactor()); 
+      BigInteger ethBalance = this.getEthBalance(userUuid);
       coin.setBalance(balance);
+      coin.setEthBalance(ethBalance);
       coin.setValue(this.getValue(balance));
     }
     return userCoinList;
