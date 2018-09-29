@@ -7,9 +7,9 @@ document.write("<script language=javascript src='/js/wallet/energyWalletTable.js
 $(function() {
 	//初始加载	
 	EnergyWalletReady();
-	// FundBigReady();
-	// FundInReady();
-	// FundOutReady();
+	FundBigReady();
+	FundInReady();
+	FundOutReady();
 });
 
 //时间控件
@@ -17,27 +17,56 @@ $(function () {
     $('#userEd').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});	
+	}).on('dp.change', function (ev) {
+		var startTime1 = $("#startTime1").val();
+		  //alert(startTime);
+		$('#userEd1').datetimepicker('minDate',startTime1);
+	 });
+
 	$('#userEd1').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		  var endTime1 = $("#endTime1").val();
+		  //alert(endTime);
+		$('#userEd').datetimepicker('maxDate',endTime1);
+	 });
+
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		  //alert(startTime);
+		$('#userEd3').datetimepicker('minDate',startTime2);
+	 });
+
 	$('#userEd3').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		  var endTime2 = $("#endTime2").val();
+		  //alert(endTime);
+		$('#userEd2').datetimepicker('maxDate',endTime2);
+	 });
+
 	$('#userEd4').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		  //alert(startTime);
+		$('#userEd5').datetimepicker('minDate',startTime3);
+	 });
+
 	$('#userEd5').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-    });
+    }).on('dp.change', function (ev) {
+		  var endTime3 = $("#endTime3").val();
+		  //alert(endTime);
+		$('#userEd4').datetimepicker('maxDate',endTime3);
+ 	});
 });
 
 function EnergyWalletReady(){
@@ -65,8 +94,8 @@ function EnergyWalletReady(){
 function FundBigReady(){
 	var startTime1=$("#startTime1").val();
 	var endTime1=$("#endTime1").val();
-	alert(JSON.stringify(startTime1));
-	alert(JSON.stringify(endTime1));
+	// alert(JSON.stringify(startTime1));
+	// alert(JSON.stringify(endTime1));
 	data={"startTime":startTime1,"endTime":endTime1};
 
     $('#fundBigGrid').bootstrapTable('destroy');
@@ -96,8 +125,8 @@ function FundBigReady(){
 function FundInReady(){
 	var startTime2=$("#startTime2").val();
 	var endTime2=$("#endTime2").val();
-	alert(JSON.stringify(startTime2));
-	alert(JSON.stringify(endTime2));
+	// alert(JSON.stringify(startTime2));
+	// alert(JSON.stringify(endTime2));
 	data={"startTime":startTime2,"endTime":endTime2};
 
     $('#fundInGrid').bootstrapTable('destroy');
@@ -127,8 +156,8 @@ function FundInReady(){
 function FundOutReady(){
 	var startTime3=$("#startTime3").val();
 	var endTime3=$("#endTime3").val();
-	alert(JSON.stringify(startTime3));
-	alert(JSON.stringify(endTime3));
+	// alert(JSON.stringify(startTime3));
+	// alert(JSON.stringify(endTime3));
 	data={"startTime":startTime3,"endTime":endTime3};
 
     $('#fundOutGrid').bootstrapTable('destroy');
