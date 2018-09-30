@@ -61,7 +61,7 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
-					<input type="button" value="版本新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addVersionModal"></input>
+					<input type="button" value="版本新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn"  onclick="showVersionModal()"></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
 		</form>
@@ -96,7 +96,7 @@
 						<div class="form-group">
 							<label for="versionCode" class="col-sm-3 control-label">版本号：</label>
 							<div class="col-sm-8">
-								<textarea name="versionCode" class="form-control" id="versionCode" required="required" oninput="checkVersionCode()" placeholder="版本号长度最多为40个字符" /></textarea>
+								<input name="versionCode" class="form-control" id="versionCode" required="required" oninput="checkVersionCode()" maxlength="30" placeholder="版本号长度最多为30个字符" /></input>
 								<span id='msg_versionCode'></span>
 
 							</div>						
@@ -106,16 +106,17 @@
 							<div class="form-group">
 					        	<label for="versionStatus" class="col-sm-3 control-label">版本状态：</label>
 					       		 <div class="col-sm-8">
+			
 								 <label class="radio-inline control-label">
-						        	<input type="radio"  name="versionStatus" id="versionStatus1" value="体验版"> 体验版
+						        	<input type="radio"  name="versionStatus" id="versionStatus1" readonly="readonly" value="开发版"> 开发版
 						        </label>
-							    <label class="radio-inline control-label">
-							        <input type="radio"   name="versionStatus" id="versionStatus2" value="开发版" > 开发版
-							    </label>
-							    <label class="radio-inline control-label">
-							        <input type="radio"   name="versionStatus" id="versionStatus3" value="稳定版" /> 稳定版
+<!-- 							    <label class="radio-inline control-label"> -->
+<!-- 							        <input type="radio"   name="versionStatus" id="versionStatus2" value="体验版" > 开发版 -->
+<!-- 							    </label> -->
+<!-- 							    <label class="radio-inline control-label"> -->
+<!-- 							        <input type="radio"   name="versionStatus" id="versionStatus3" value="稳定版" /> 稳定版 -->
 							   
-							    </label>
+<!-- 							    </label> -->
 							    
 						       </div>	
 						      			
@@ -188,22 +189,32 @@
 						<div class="form-group">
 							<label for="EversionCode" class="col-sm-3 control-label">版本号：</label>
 							<div class="col-sm-8">
-								<textarea name="EversionCode" class="form-control" id="EversionCode" readonly="readonly" required="required"  placeholder="版本号长度最多为40个字符" /></textarea>
+								<input name="EversionCode" class="form-control" id="EversionCode" readonly="readonly" required="required"  placeholder="版本号长度最多为30个字符" /></input>
 								
 
 							</div>						
 						</div>
-					
+					<div class="form-group">
+					        	<label for="EnowVersionStatus" class="col-sm-3 control-label">当前版本状态：</label>
+					       		 <div class="col-sm-8">
+								 
+						        	<input name="EnowVersionStatus" class="form-control" id="EnowVersionStatus" readonly="readonly" required="required"  placeholder="版本号长度最多为30个字符" /></input>
+						        
+
+							    
+						       </div>	
+						      			
+						   </div>	
 								
 							<div class="form-group">
-					        	<label for="EversionStatus" class="col-sm-3 control-label">版本状态：</label>
+					        	<label for="EversionStatus" class="col-sm-3 control-label">升级版本状态：</label>
 					       		 <div class="col-sm-8">
 								 <label class="radio-inline control-label">
-						        	<input type="radio"  name="EversionStatus" id="EversionStatus1" value="体验版"> 体验版
+						        	<input type="radio"  name="EversionStatus" id="EversionStatus2" value="体验版"> 体验版
 						        </label>
-							    <label class="radio-inline control-label">
-							        <input type="radio"   name="EversionStatus" id="EversionStatus2" value="开发版" > 开发版
-							    </label>
+<!-- 							    <label class="radio-inline control-label"> -->
+<!-- 							        <input type="radio"   name="EversionStatus" id="EversionStatus2" value="开发版" > 开发版 -->
+<!-- 							    </label> -->
 							    <label class="radio-inline control-label">
 							        <input type="radio"   name="EversionStatus" id="EversionStatus3" value="稳定版" /> 稳定版
 							   
@@ -220,13 +231,13 @@
 							</div>
 						</div>	
 						
-						<div class="form-group">
-							<label for="EversionFile" class="col-sm-3 control-label">版本修改：</label>
-							<div class="col-sm-8">
-								<input type="file" name="EversionFile" id="EversionFile" onblur="checkEversionFile()" /><span id='msg_EversionFile'></span>
-							</div>
-<!-- 							onblur='checkVersionFile()' -->
-						</div>
+<!-- 						<div class="form-group"> -->
+<!-- 							<label for="EversionFile" class="col-sm-3 control-label">版本修改：</label> -->
+<!-- 							<div class="col-sm-8"> -->
+<!-- 								<input type="file" name="EversionFile" id="EversionFile" onblur="checkEversionFile()" /><span id='msg_EversionFile'></span> -->
+<!-- 							</div> -->
+
+<!-- 						</div> -->
 						
 						
 						
@@ -236,7 +247,7 @@
 
 				<div class="modal-footer">
 <!-- 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button> -->
-					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="updateVersion()">确定</button>
+					<button type="button" class="btn btn-default"  onclick="updateVersion()">确定</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resteUpdate()">取消</button>
 				</div>
 						

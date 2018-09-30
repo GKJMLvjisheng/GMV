@@ -12,11 +12,17 @@ $(function() {
 
 	//初始加载	
 	versionReady();
-	versionCode.setAttribute("maxlength",40);
+	//versionCode.setAttribute("maxlength",40);
 	
 	
 });
+function showVersionModal(){
+	
+	$("#addBtn").attr("onclick","showVersionModal()");
+		$("#versionStatus1").prop("checked",true);
+		$("#addVersionModal").modal('show');
 
+}
 function versionReady(){
 	
 	
@@ -117,11 +123,11 @@ $('#versionFile').change(function(e) {
 });
 
 
-
+//正数
 function validateNumber(num)
 {
  
-  var reg = /^\d+(?=\.{0,1}\d+$|$)/;
+  var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
 	
   if(reg.test(num)) return true;
   return false ;  
@@ -140,8 +146,8 @@ function checkVersionCode() {
         $("#msg_versionCode").css("color", "red");
 		
 		return;}
-	if (len==40) {
-		$("#msg_versionCode").html("输入版本号长度为40个字符，已达上限");
+	if (len>30) {
+		$("#msg_versionCode").html("输入版本号长度为30个字符，已达上限");
         $("#msg_versionCode").css("color", "red");
 	}
 	else {
@@ -155,7 +161,7 @@ function checkVersionStatus() {
 	var abstract = $("#versionStatus").val(); 
 	var len=abstract.length;
 	//alert(len);
-	if (len==40) {
+	if (len>40) {
 		$("#msg_versionStatus").html("输入版本状态长度为40个字符，已达上限");
         $("#msg_versionStatus").css("color", "red");
 	}
@@ -178,22 +184,24 @@ function addVersion(){
 	if(check1===0)
 		{alert("请输入正确的版本号");
 		return;}
-	 var versionStatus = document.getElementsByName("versionStatus");
-	 
-	 var status=null;
-	 for(var i = 0; i < versionStatus.length; i++)
-	    {
-
-	        if(versionStatus[i].checked)
-
-	        {
-	        status=versionStatus[i].value;}
-
-	    }
-	 console.log("status"+status);
-	 if(status==null)
-		 {alert("请选择版本状态");
-		 return;}
+//	 var versionStatus = document.getElementsByName("versionStatus");
+//	 
+//	 var status=null;
+//	 for(var i = 0; i < versionStatus.length; i++)
+//	    {
+//
+//	        if(versionStatus[i].checked)
+//
+//	        {
+//	        status=versionStatus[i].value;}
+//
+//	    }
+//	 console.log("status"+status);
+//	 if(status==null)
+//		 {alert("请选择版本状态");
+//		 return;}
+	var versionStatus=$("#versionStatus1").val();
+	
 	 var animateimg = $("#versionFile").val(); //获取上传的图片名 0\1\2
 	    //alert("PicPath="+animateimg);
 		if (animateimg=="") {
@@ -210,7 +218,7 @@ function addVersion(){
 		 
 		formData.append("file",fileobj);//添加fileobj到formData的键file中
 		formData.append("versionCode", $("#versionCode").val());
-		formData.append("versionStatus", status);
+		formData.append("versionStatus", versionStatus);
 	//alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/userCenter/upLoadApp",
@@ -253,12 +261,13 @@ function addVersion(){
 
 //点击取消后清空表单中已写信息
 function resetAddModal(){
-	//document.getElementById("addVersionForm").reset();
-	 $("#addVersionForm").find('textarea,input[type=file],select').each(function() {
+	document.getElementById("addVersionForm").reset();
+	 $("#addVersionForm").find('input[type=text],textarea,input[type=file],select,span').each(function() {
 		          $(this).val('');
+		          $(this).html('');
 		      });
-	 $("input[type=radio]").prop("checked",false);
-	 $("span").html("");
+	 //$("input[type=radio]").prop("checked",false);
+	 //$("span").html("");
 //	 $("#updateVersionForm").find('input[type=text],select,input[type=file],span').each(function() {
 //         $(this).val('');
 //     });
@@ -266,7 +275,7 @@ function resetAddModal(){
 	//location.reload();
 }
 function resteUpdate(){
-	$("#updateVersionForm").find('textarea,input[type=file],select').each(function() {
+	$("#updateVersionForm").find('input[type=text],textarea,input[type=file],select').each(function() {
         $(this).val('');
     });
 	$("input[type=radio]").prop("checked",false);
@@ -275,19 +284,8 @@ function resteUpdate(){
 
 function updateVersion(){
 
-	if(check3===0)
-		{return;}
-	var formData = new FormData();
-	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
-	//alert(img_file);
-	var fileobj = version_file.files[0];//使用files获取文件
-	//alert(fileobj);
-	//alert($("#EnewsId").val());
-	formData.append("file",fileobj);//添加fileobj到formData的键file中
-	formData.append("uuid", $("#EversionId").val());
-	formData.append("versionCode", $("#EversionCode").val());
-	
-	formData.append("appUrl", $("#EversionPath").val());
+//	if(check3===0)
+//		{return;}
 	 var versionStatus = document.getElementsByName("EversionStatus");
 	 var status=null;
 	 for(var i = 0; i < versionStatus.length; i++)
@@ -300,6 +298,34 @@ function updateVersion(){
 
 	    }
 	 console.log("status"+status);
+	 if(status==""){
+		 alert("请选择要升级的版本状态");
+		 return;
+	 }
+	 var nowstatus=$("#EnowVersionStatus").val();
+	 if(nowstatus=="开发版"){
+		 if(status!="体验版"){
+			 alert("开发版只能升级到体验版");
+			 return;
+		 }
+	 }else if(nowstatus=="体验版"){
+		 if(status!="稳定版"){
+			 alert("开发版只能升级到稳定版");
+			 return;
+		 }
+	 }
+	var formData = new FormData();
+	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
+	//alert(img_file);
+	var fileobj = version_file.files[0];//使用files获取文件
+	//alert(fileobj);
+	//alert($("#EnewsId").val());
+	//formData.append("file",fileobj);//添加fileobj到formData的键file中
+	formData.append("uuid", $("#EversionId").val());
+	formData.append("versionCode", $("#EversionCode").val());
+	
+	formData.append("appUrl", $("#EversionPath").val());
+	
 	 formData.append("versionStatus", status);
 	
 	$.ajax({
@@ -334,7 +360,7 @@ function updateVersion(){
 		},
 	});
 	resteUpdate();
-	
+	versionReady();
 	}
 
 function initVersionGrid(data) {	
@@ -484,20 +510,19 @@ function editVersionById(id){
     var rows=$("#versionGrid").bootstrapTable('getRowByUniqueId', id);
 	$('#EversionId').val(rows.uuid);  
     $('#EversionCode').val(rows.versionCode);
-    if(rows.versionStatus=="体验版")
-    	{$("#EversionStatus1").prop("checked",true)}
-    if(rows.versionStatus=="开发版")
-    	{$("#EversionStatus2").prop("checked",true)}
-    if(rows.versionStatus=="稳定版")
-		{$("#EversionStatus3").prop("checked",true)}
+    if(rows.versionStatus=="稳定版"){
+    	alert("稳定版不可修改");
+    	return;
+    }
+    $('#EnowVersionStatus').val(rows.versionStatus);
+//    if(rows.versionStatus=="体验版")
+//    	{$("#EversionStatus1").prop("checked",true)}
+//    if(rows.versionStatus=="开发版")
+//    	{$("#EversionStatus2").prop("checked",true)}
+//    if(rows.versionStatus=="稳定版")
+//		{$("#EversionStatus3").prop("checked",true)}
     $('#EversionPath').val(rows.appUrl);
-	//$('#EnewsUrl').val(rows.newsUrl);
 	
-	//$('#versionFile').val(rows.versionFile); 
-//	file_input_obj=document.getElementById("EversionFile");
-//	file_input_obj.outerHTML=file_input_obj.outerHTML.replace(/(value=111\").+\"/i,"$1\"11");
-//	
-//	versionCode.setAttribute("readonly", "readonly" );
     $("#updateVersionModal").modal("show");           
   }
 

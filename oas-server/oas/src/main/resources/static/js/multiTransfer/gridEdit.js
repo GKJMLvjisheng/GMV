@@ -693,7 +693,7 @@ $(function ()
     function validateValue(num)
     {
      
-      var reg = /^\d+(?=\.{0,1}\d+$|$)/;
+      var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
     	
       if(reg.test(num)) return true;
       return false ;  
@@ -705,6 +705,7 @@ $(function ()
       if(reg.test(num)) return true;
       return false ;  
     } 
+    //判断正整数
     function validateGas(num)
     {
     
