@@ -154,7 +154,7 @@
 	       #{maxValue,jdbcType=DECIMAL},
 	   
 	    <if test="period != null">
-	       #{period,jdbcType=DECIMAL},
+	       #{period},
 	    </if>
         
         #{created,jdbcType=VARCHAR},
