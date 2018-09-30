@@ -13,11 +13,8 @@ import com.cascv.oas.server.activity.model.EnergyPowerBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.activity.model.RewardModel;
-import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
-import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 
 @Component
 public interface ActivityMapper {
@@ -41,6 +38,13 @@ public interface ActivityMapper {
 	Integer insertEnergyPowerBall(EnergyPowerBall energyPowerBall);
 	Integer insertPointTradeRecord(PointTradeRecord pointTradeRecord);
 	Integer insertPowerTradeRecord(PowerTradeRecord powerTradeRecord);
+	
+	Integer updatePointStatusByUuid(@Param("uuid") String uuid,
+            @Param("status") Integer status,
+            @Param("updated") String updated);
+	Integer updatePowerStatusByUuid(@Param("uuid") String uuid,
+            @Param("status") Integer status,
+            @Param("updated") String updated);
 	
 	Integer insertActivityCompletionStatus(ActivityCompletionStatus activityCompletionStatus);
 	

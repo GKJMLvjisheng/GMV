@@ -13,7 +13,7 @@ public class ActivityRewardConfig {
 	@Getter @Setter private BigDecimal increaseSpeed;
 	@Getter @Setter private String increaseSpeedUnit;
 	@Getter @Setter private BigDecimal maxValue;
-	@Getter @Setter private String period;
+	@Getter @Setter private Integer period;
 	@Getter @Setter private String created;
 	@Getter @Setter private String updated;
 

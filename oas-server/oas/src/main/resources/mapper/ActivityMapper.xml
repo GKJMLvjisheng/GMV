@@ -154,7 +154,7 @@
 	       #{maxValue,jdbcType=DECIMAL},
 	   
 	    <if test="period != null">
-	       #{period,jdbcType=DECIMAL},
+	       #{period},
 	    </if>
         
         #{created,jdbcType=VARCHAR},
@@ -229,6 +229,12 @@
         #{status}, #{created}, #{updated})
     </insert>
     
+    <!-- 变更积分能量球的状态 -->
+    <update id="updatePointStatusByUuid" parameterType="com.cascv.oas.server.activity.model.EnergyPointBall">
+        update energy_point_ball
+        set `status` = #{status}, updated = #{updated} WHERE uuid = #{uuid}
+    </update>
+    
     <resultMap id="EnergyPowerBall" type="com.cascv.oas.server.activity.model.EnergyPowerBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
@@ -247,6 +253,12 @@
         #{uuid}, #{userUuid}, #{sourceCode}, #{power},
         #{status}, #{created}, #{updated})
     </insert>
+    
+    <!-- 变更算力能量球的状态 -->
+    <update id="updatePowerStatusByUuid" parameterType="com.cascv.oas.server.activity.model.EnergyPowerBall">
+        update energy_power_ball
+        set `status` = #{status}, updated = #{updated} WHERE uuid = #{uuid}
+    </update>
     
     <resultMap id="PointTradeRecord" type="com.cascv.oas.server.activity.model.PointTradeRecord">
         <id column="uuid" jdbcType="VARCHAR" property="uuid" />
@@ -326,7 +338,5 @@
       (uuid, user_uuid, source_code, status, created, updated)
       values (#{uuid}, #{userUuid}, #{sourceCode}, #{status}, #{created}, #{updated})
   </insert>
-  
-  
     
 </mapper>
