@@ -6,6 +6,8 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.activity.service.ActivityService;
+import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -45,6 +47,8 @@ public class EnergyPointController {
     private NewsService newsService;
     @Autowired
     private EnergyWalletTradeRecordMapper energyWalletTradeRecordMapper;
+    @Autowired
+    private ActivityService activityService;
 
     @PostMapping(value = "/checkin")
     @ResponseBody
@@ -52,31 +56,36 @@ public class EnergyPointController {
     public ResponseEntity<?> checkin() {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
-        EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
-        ErrorCode errorCode = ErrorCode.SUCCESS;
+        Integer sourceCode = 1;
         if (!energyService.isCheckin(userUuid)) {
-            // today sign in not yet
-            // generate a new Checkin EnergyBall
-            energyService.saveCheckinEnergyBall(userUuid);
-            // insert the Checkin record of this time
-            energyService.saveCheckinEnergyRecord(userUuid);
-            // the result of Checkin
-            energyCheckinResult = energyService.getCheckinEnergy();
-            // add the Checkin point&power in EnergyWallet
-            energyService.updateCheckinEnergyWallet(userUuid);
-            // change the Checkin EnergyBall to Die
-            energyService.updateEnergyBallStatusByUuid(userUuid);
+//            // today sign in not yet
+//            // generate a new Checkin EnergyBall
+//            energyService.saveCheckinEnergyBall(userUuid);
+//            // insert the Checkin record of this time
+//            energyService.saveCheckinEnergyRecord(userUuid);
+//            // the result of Checkin
+//            energyCheckinResult = energyService.getCheckinEnergy();
+//            // add the Checkin point&power in EnergyWallet
+//            energyService.updateCheckinEnergyWallet(userUuid);
+//            // change the Checkin EnergyBall to Die
+//            energyService.updateEnergyBallStatusByUuid(userUuid);
+        	activityService.getReward(sourceCode, userUuid);
+        	return new ResponseEntity
+                    .Builder<Integer>()
+                    .setData(0)
+                    .setErrorCode(ErrorCode.SUCCESS)
+                    .build();
         } else {
-            // today sign in yet
-            energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
-            energyCheckinResult.setNewPower(BigDecimal.ZERO);
-            errorCode = ErrorCode.ALREADY_CHECKIN_TODAY;
+//            // today sign in yet
+//            energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
+//            energyCheckinResult.setNewPower(BigDecimal.ZERO);
+            return new ResponseEntity
+                    .Builder<Integer>()
+                    .setData(1)
+                    .setErrorCode(ErrorCode.ALREADY_CHECKIN_TODAY)
+                    .build();
         }
-        return new ResponseEntity
-                .Builder<EnergyCheckinResult>()
-                .setData(energyCheckinResult)
-                .setErrorCode(errorCode)
-                .build();
+        
     }
 
     @PostMapping(value = "/inquireEnergyBall")
