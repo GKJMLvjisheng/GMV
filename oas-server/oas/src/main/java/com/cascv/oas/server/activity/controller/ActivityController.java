@@ -28,9 +28,7 @@ import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
-import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 

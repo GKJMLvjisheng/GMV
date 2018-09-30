@@ -7,7 +7,6 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.activity.service.ActivityService;
-import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;

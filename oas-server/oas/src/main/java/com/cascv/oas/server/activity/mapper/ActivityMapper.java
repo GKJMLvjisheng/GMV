@@ -13,11 +13,8 @@ import com.cascv.oas.server.activity.model.EnergyPowerBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.activity.model.RewardModel;
-import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
-import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 
 @Component
 public interface ActivityMapper {

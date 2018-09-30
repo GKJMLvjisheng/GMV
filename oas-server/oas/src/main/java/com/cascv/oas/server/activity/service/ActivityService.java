@@ -5,10 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import com.cascv.oas.core.common.ErrorCode;
-import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
@@ -20,12 +16,8 @@ import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.activity.wrapper.EnergyResultPoint;
 import com.cascv.oas.server.activity.wrapper.EnergyResultPower;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
-import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
-import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.model.EnergyTradeRecord;
-import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
