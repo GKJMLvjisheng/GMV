@@ -39,6 +39,13 @@ public interface ActivityMapper {
 	Integer insertPointTradeRecord(PointTradeRecord pointTradeRecord);
 	Integer insertPowerTradeRecord(PowerTradeRecord powerTradeRecord);
 	
+	Integer updatePointStatusByUuid(@Param("uuid") String uuid,
+            @Param("status") Integer status,
+            @Param("updated") String updated);
+	Integer updatePowerStatusByUuid(@Param("uuid") String uuid,
+            @Param("status") Integer status,
+            @Param("updated") String updated);
+	
 	Integer insertActivityCompletionStatus(ActivityCompletionStatus activityCompletionStatus);
 	
 	Integer increasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);

@@ -29,7 +29,7 @@ public class ActivityService {
 	private ActivityMapper activityMapper;
 	
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
-//    private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
+    private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
     private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
 //    private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，不可被获取
@@ -93,7 +93,8 @@ public class ActivityService {
      * @return
      */
 	public EnergyPointBall getEnergyPointBall(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addEnergyPointBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+		addEnergyPointBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT_BALL));
+		log.info("uuid={}",addEnergyPointBall.getUuid());
 		addEnergyPointBall.setUserUuid(userUuid);
 		addEnergyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		addEnergyPointBall.setSourceCode(sourceCode);			
@@ -116,7 +117,8 @@ public class ActivityService {
      * @return
      */
 	public EnergyPowerBall getEnergyPowerBall(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+		addEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POWER_BALL));
+		log.info("uuid={}",addEnergyPowerBall.getUuid());
 		addEnergyPowerBall.setUserUuid(userUuid);
 		addEnergyPowerBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		addEnergyPowerBall.setSourceCode(sourceCode);			
@@ -142,7 +144,7 @@ public class ActivityService {
      * @return
      */
 	public PointTradeRecord getPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addPointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+		addPointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT_RECORD));
 		addPointTradeRecord.setUserUuid(userUuid);
 		addPointTradeRecord.setInOrOut(ENEGY_IN);
 		addPointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);	
@@ -155,7 +157,7 @@ public class ActivityService {
 		else
 			addPointTradeRecord.setPointChange(this.getNewPoint(sourceCode, rewardCode).getNewPoint());
 		
-		EnergyPointBall energyPointBall = this.getEnergyPointBall(userUuid, sourceCode, rewardCode);
+		EnergyPointBall energyPointBall = addEnergyPointBall;
 		if (energyPointBall != null) {
 			addPointTradeRecord.setEnergyBallUuid(energyPointBall.getUuid());
 			return addPointTradeRecord;
@@ -173,7 +175,7 @@ public class ActivityService {
    * @return
    */
 	public PowerTradeRecord getPowerTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addPowerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+		addPowerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POWER_RECORD));
 		addPowerTradeRecord.setUserUuid(userUuid);
 		addPowerTradeRecord.setInOrOut(ENEGY_IN);
 		addPowerTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
@@ -186,7 +188,7 @@ public class ActivityService {
 		else
 			addPowerTradeRecord.setPowerChange(this.getNewPower(sourceCode, rewardCode).getNewPower());
 		
-		EnergyPowerBall energyPowerBall = this.getEnergyPowerBall(userUuid, sourceCode, rewardCode);
+		EnergyPowerBall energyPowerBall = addEnergyPowerBall;
 		if (energyPowerBall != null) {
 			addPowerTradeRecord.setEnergyBallUuid(energyPowerBall.getUuid());
 			return addPowerTradeRecord;
@@ -249,6 +251,7 @@ public class ActivityService {
      * @return
      */
 	public Integer addPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
+		log.info("addPointTradeRecord={}",addPointTradeRecord.getEnergyBallUuid());
 		if (this.getPointTradeRecord(userUuid, sourceCode, rewardCode) != null) 
 			return activityMapper.insertPointTradeRecord(addPointTradeRecord);
 		else 
@@ -315,6 +318,13 @@ public class ActivityService {
 		return activityMapper.insertActivityCompletionStatus(addActivityCompletionStatus);
 	}
 	
+	/**
+     * 获得奖励
+	 * @param sourceCode 
+     * @param userUuid
+     * @return
+     */
+	
 	 public void getReward(Integer sourceCode, String userUuid){
 			List<RewardConfigResult> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
 			Integer len = activityRewardConfigList.size();
@@ -331,5 +341,25 @@ public class ActivityService {
 			}
 			
 		}
+	 
+	   /**
+	     * 更新积分能量球状态
+	     * @return
+	     */
+	    public int updateEnergyPointBallStatusByUuid(String userUuid) {
+	        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+	        String uuid = addEnergyPointBall.getUuid();
+	        return activityMapper.updatePointStatusByUuid(uuid, STATUS_OF_DIE_ENERGYBALL, now);
+	    }
+	    
+	    /**
+	     * 更新算力能量球状态
+	     * @return
+	     */
+	    public int updateEnergyPowerBallStatusByUuid(String userUuid) {
+	        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+	        String uuid = addEnergyPowerBall.getUuid();
+	        return activityMapper.updatePowerStatusByUuid(uuid, STATUS_OF_DIE_ENERGYBALL, now);
+	    }
 
 }
