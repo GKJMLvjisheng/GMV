@@ -118,7 +118,6 @@ public class ActivityService {
      */
 	public EnergyPowerBall getEnergyPowerBall(String userUuid, Integer sourceCode, Integer rewardCode) {
 		addEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POWER_BALL));
-		log.info("uuid={}",addEnergyPowerBall.getUuid());
 		addEnergyPowerBall.setUserUuid(userUuid);
 		addEnergyPowerBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		addEnergyPowerBall.setSourceCode(sourceCode);			
