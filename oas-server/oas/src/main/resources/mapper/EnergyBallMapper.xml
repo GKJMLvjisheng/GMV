@@ -4,39 +4,39 @@
     <resultMap id="BaseResultMap" type="com.cascv.oas.server.energy.model.EnergyBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
-        <result column="point_source" jdbcType="INTEGER" property="pointSource" />
+        <result column="source_code" jdbcType="INTEGER" property="sourceCode" />
         <result column="point" jdbcType="DECIMAL" property="point"/>
-        <result column="power_source" jdbcType="INTEGER" property="powerSource"/>
-        <result column="power" jdbcType="DECIMAL" property="power"/>
+<!--         <result column="power_source" jdbcType="INTEGER" property="powerSource"/> -->
+<!--         <result column="power" jdbcType="DECIMAL" property="power"/> -->
         <result column="status" jdbcType="INTEGER" property="status"/>
-        <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
-        <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
+        <result column="created" jdbcType="VARCHAR" property="created"/>
+        <result column="updated" jdbcType="VARCHAR" property="updated"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        uuid, user_uuid, point_source, point, power_source, power, status, time_created, time_updated
+        uuid, user_uuid, source_code, point, status, created, updated
     </sql>
     <!-- 根据能量球id查询 -->
     <select id="selectByUuid" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from energy_ball where uuid = #{uuid}
+        from energy_point_ball where uuid = #{uuid}
     </select>
 
     <!-- 某用户的某个积分来源、根据提供的时间模糊查询 -->
     <select id="selectByTimeFuzzyQuery" resultMap="BaseResultMap">
           select
         <include refid="Base_Column_List" />
-          from energy_ball
+          from energy_point_ball
         <where>
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="pointSource != null">
-                and point_source = #{pointSource}
+            <if test="sourceCode != null">
+                and source_code = #{sourceCode}
             </if>
-            <if test="timeCreated != null">
-                and time_created like #{timeCreated}"%"
+            <if test="created != null">
+                and created like #{created}"%"
             </if>
         </where>
     </select>
@@ -45,13 +45,13 @@
     <select id="selectByPointSourceCode" resultMap="BaseResultMap">
           select
         <include refid="Base_Column_List" />
-          from energy_ball
+          from energy_point_ball
         <where>
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="pointSource != null">
-                and point_source = #{pointSource}
+            <if test="sourceCode != null">
+                and source_code = #{sourceCode}
             </if>
             <if test="status != null">
                 and status = #{status}
@@ -63,19 +63,19 @@
     <select id="selectLatestOneByPointSourceCode" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from energy_ball
+        from energy_point_ball
         <where>
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="pointSource != null">
-                and point_source = #{pointSource}
+            <if test="sourceCode != null">
+                and source_code = #{sourceCode}
             </if>
             <if test="status != null">
                 and status = #{status}
             </if>
         </where>
-        order by time_created desc limit 1
+        order by created desc limit 1
     </select>
 
     <!-- 查询某用户某种积分的所有能量球 部分信息 -->
@@ -93,25 +93,25 @@
             select
                 uuid,
                 user_uuid,
-                point_source,
+                source_code,
                 point,
                 status,
-                DATE_FORMAT( STR_TO_DATE( time_created, '%Y-%m-%d %H:%i:%S' ), '%Y-%m-%d %H:%i:%S') as start_date
+                DATE_FORMAT( STR_TO_DATE( created, '%Y-%m-%d %H:%i:%S' ), '%Y-%m-%d %H:%i:%S') as start_date
             from
-                energy_ball
+                energy_point_ball
             ) b
-            inner join energy_source_point p
+            inner join activity p
         where
-            b.point_source = p.source_code
-            and b.point_source = #{pointSource}
+            b.source_code = p.source_code
+            and b.source_code = #{sourceCode}
             and b.status = #{status}
             and b.user_uuid = #{userUuid}
     </select>
     
     <!-- 查询某用户通过某种方式累计算力提升 -->
     <select id="countByUserUuidAndPowerSource" resultType="java.lang.Integer">
-    select SUM(power) from energy_ball 
-    where power_source=#{powerSource} and user_uuid=#{userUuid}
+    select SUM(power) from energy_power_ball 
+    where source_code=#{sourceCode} and user_uuid=#{userUuid}
     </select>
     
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">
@@ -125,37 +125,37 @@
 
     <!-- 变更能量球的状态 -->
     <update id="updateStatusByUuid">
-        update energy_ball
-        set `status` = #{status}, time_updated = #{timeUpdated} WHERE uuid = #{uuid}
+        update energy_point_ball
+        set `status` = #{status}, updated = #{updated} WHERE uuid = #{uuid}
     </update>
 
     <!-- 变更能量球积分 -->
     <update id="updatePointByUuid">
-        update energy_ball
-        set point = #{point}, time_updated = #{timeUpdated} where uuid = #{uuid}
+        update energy_point_ball
+        set point = #{point}, updated = #{updated} where uuid = #{uuid}
     </update>
     <!-- 插入能量球 -->
     <insert id="insertEnergyBall" parameterType="com.cascv.oas.server.energy.model.EnergyBall">
-        insert into energy_ball (
+        insert into energy_point_ball (
         uuid,
         user_uuid,
-        point_source,
+        source_code,
         point,
-        power_source,
-        power,
+<!--         power_source, -->
+<!--         power, -->
         status,
-        time_created,
-        time_updated)
+        created,
+        updated)
         values (
         #{uuid},
         #{userUuid},
-        #{pointSource},
+        #{sourceCode},
         #{point},
-        #{powerSource},
-        #{power},
+<!--         #{powerSource}, -->
+<!--         #{power}, -->
         #{status},
-        #{timeCreated},
-        #{timeUpdated})
+        #{created},
+        #{updated})
     </insert>
 
 </mapper>

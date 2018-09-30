@@ -13,7 +13,6 @@ import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -22,6 +21,7 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,14 +66,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value="/api/v1/userCenter")
 
 public class UserController {
-	
+  @Value("${mail.rootMail}")
+  private String rootMail;
+  @Value("${mail.password}")
+  private String mailPassword;
+  @Value("${mail.name}")
+  private String mailName;
+  @Value("${mail.subject}")
+  private String subject;
   @Autowired
   private UserService userService;
   @Autowired
   private MediaServer mediaServer;
+//  @Autowired
+//  private MailBean mailBean;
   @Autowired
   private PowerService powerService;
-  @Autowired
 	private EthWalletService ethWalletService;
 	
 	@Autowired
@@ -526,7 +534,8 @@ public class UserController {
 
 		//String mobilecode = authCode.getMobileCode();
 		String oldCode =request.getReader().readLine();
-		int length=6+2;	    String mobilecode = oldCode.substring(oldCode.indexOf(":")+2,oldCode.indexOf(":")+length);
+		int length=6+2;	    
+		String mobilecode = oldCode.substring(oldCode.indexOf(":")+2,oldCode.indexOf(":")+length);
 	    log.info(mobilecode);
 		//Session session=ShiroUtils.getSession();
 	    //HttpSession session=request.getSession();
@@ -599,24 +608,28 @@ public class UserController {
          { String userEmail=email;
 			try {	
 				MailInfo mailInfo = new MailInfo();
+                /**
+                   * 通过yml来配置
+                 */
 
 				mailInfo.settoAddress(userEmail);
-				mailInfo.setfromAddress("3602745100@qq.com");
-				mailInfo.setmailPassword("hgmwayjbwmomcjdd");
-				mailInfo.setmailUsername("3602745100@qq.com");
-				mailInfo.setmailSubject("密码重置");
+				//mailInfo.setfromAddress("3602745100@qq.com");
+				mailInfo.setfromAddress(rootMail);
+				mailInfo.setmailPassword(mailPassword);
+				mailInfo.setmailUsername(mailName);
+				mailInfo.setmailSubject(subject);
 	
-				String vcode = SendMailUtils.createRandomVcode();
-				log.info("vcode"+vcode);
+				String mailcode = SendMailUtils.createRandomVcode();
+				log.info("mailcode"+mailcode);
 				
-				//Session session = ShiroUtils.getSession();
+				Session session = ShiroUtils.getSession();
 				//HttpSession session=request.getSession(true);
 				// 把当前生成的验证码存在session中，当用户输入后进行对比
-				//session.setAttribute("mailCheckCode", vcode);
+				session.setAttribute("mailCheckCode", mailcode);
 	
 				StringBuffer demo = new StringBuffer();
 				demo.append("亲爱的：您好！<br><br>");
-				demo.append("验证码：" + vcode);
+				demo.append("验证码：" + mailcode);
 	
 				mailInfo.setmailContent(demo.toString());
 	
@@ -661,7 +674,7 @@ public class UserController {
 		log.info("--------mailCheckCode start--------");
 
 		String mailcode = authCode.getMailCode();
-
+        log.info("code={}",mailcode);
 		Map<String, Boolean> info = new HashMap<>();
         
 		Session session=ShiroUtils.getSession();

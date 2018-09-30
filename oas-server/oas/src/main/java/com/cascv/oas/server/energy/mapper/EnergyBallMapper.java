@@ -13,31 +13,31 @@ public interface EnergyBallMapper {
     EnergyBall selectByUuid(@Param("uuid") String uuid);
 
     List<EnergyBall> selectByTimeFuzzyQuery(@Param("userUuid") String userUuid,
-                                            @Param("pointSource") Integer pointSource,
-                                            @Param("timeCreated") String timeCreated);
+                                            @Param("sourceCode") Integer sourceCode,
+                                            @Param("created") String created);
 
     List<EnergyBall> selectByPointSourceCode(@Param("userUuid") String userUuid,
-                                             @Param("pointSource") Integer pointSource,
+                                             @Param("sourceCode") Integer sourceCode,
                                              @Param("status") Integer status);
 
     EnergyBall selectLatestOneByPointSourceCode(@Param("userUuid") String userUuid,
-                                                @Param("pointSource") Integer pointSource,
+                                                @Param("sourceCode") Integer sourceCode,
                                                 @Param("status") Integer status);
 
     List<EnergyBallWrapper> selectPartByPointSourceCode(@Param("userUuid") String userUuid,
-                                                        @Param("pointSource") Integer pointSource,
+                                                        @Param("sourceCode") Integer sourceCode,
                                                         @Param("status") Integer status,
                                                         @Param("timeGap") Integer timeGap);
 
     int updateStatusByUuid(@Param("uuid") String uuid,
                            @Param("status") Integer status,
-                           @Param("timeUpdated") String timeUpdated);
+                           @Param("updated") String updated);
 
     int updatePointByUuid(@Param("uuid") String uuid,
                           @Param("point") BigDecimal point,
-                          @Param("timeUpdated") String timeUpdated);
+                          @Param("updated") String updated);
 
     int insertEnergyBall(EnergyBall energyBall);
     
-    Integer countByUserUuidAndPowerSource(@Param("userUuid") String userUuid,@Param("powerSource") Integer powerSource);
+    Integer countByUserUuidAndPowerSource(@Param("userUuid") String userUuid,@Param("sourceCode") Integer sourceCode);
 }

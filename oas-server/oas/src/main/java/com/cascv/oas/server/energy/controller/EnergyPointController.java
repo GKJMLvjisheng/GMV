@@ -46,40 +46,49 @@ public class EnergyPointController {
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
+    /**
+     * 签到/返回签到成功即可（奖励用统一接口）
+     * @return
+     */
     public ResponseEntity<?> checkin() {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
-        ErrorCode errorCode = ErrorCode.SUCCESS;
-        if (!energyService.isCheckin(userUuid)) {
-            // today sign in not yet
-            // generate a new Checkin EnergyBall
-            energyService.saveCheckinEnergyBall(userUuid);
-            // insert the Checkin record of this time
-            energyService.saveCheckinEnergyRecord(userUuid);
-            // the result of Checkin
-            energyCheckinResult = energyService.getCheckinEnergy();
-            // add the Checkin point&power in EnergyWallet
-            energyService.updateCheckinEnergyWallet(userUuid);
-            // change the Checkin EnergyBall to Die
-            energyService.updateEnergyBallStatusByUuid(userUuid);
+        //ErrorCode errorCode = ErrorCode.SUCCESS;
+        if (!energyService.isCheckin(userUuid)){
+//            // today sign in not yet
+//            // generate a new Checkin EnergyBall
+//            energyService.saveCheckinEnergyBall(userUuid);
+//            // insert the Checkin record of this time
+//            energyService.saveCheckinEnergyRecord(userUuid);
+//            // the result of Checkin
+//            energyCheckinResult = energyService.getCheckinEnergy();
+//            // add the Checkin point&power in EnergyWallet
+//            energyService.updateCheckinEnergyWallet(userUuid);
+//            // change the Checkin EnergyBall to Die
+//            energyService.updateEnergyBallStatusByUuid(userUuid);
+            return new ResponseEntity
+                    .Builder<Integer>()
+                    .setData(0)
+                    .setErrorCode(ErrorCode.SUCCESS)
+                    .build();
         } else {
             // today sign in yet
-            energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
-            energyCheckinResult.setNewPower(BigDecimal.ZERO);
-            errorCode = ErrorCode.ALREADY_CHECKIN_TODAY;
+//            energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
+//            energyCheckinResult.setNewPower(BigDecimal.ZERO);
+//            errorCode = ErrorCode.ALREADY_CHECKIN_TODAY;
+            return new ResponseEntity
+                    .Builder<Integer>()
+                    .setData(1)
+                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+                    .build();
         }
-        return new ResponseEntity
-                .Builder<EnergyCheckinResult>()
-                .setData(energyCheckinResult)
-                .setErrorCode(errorCode)
-                .build();
     }
 
-    @PostMapping(value = "/inquireEnergyBall")
+    @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
     public ResponseEntity<?> inquireEnergyBall() {
-//        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+//      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
         return new ResponseEntity
@@ -89,7 +98,7 @@ public class EnergyPointController {
                 .build();
     }
 
-    @PostMapping(value = "/takeEnergyBall")
+    @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
@@ -276,7 +285,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
      }
     }
     
-    @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")
+    @PostMapping(value = "/inquireCurrentPeriodEnergyPoint")  //要改
     @ResponseBody
     public ResponseEntity<?> inquireCurrentPeriodEnergyPoint() {
         //produce and cosume during current peroid
@@ -299,7 +308,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
                 .build();
     }
 
-    @PostMapping(value = "/inquireEnergyPointDetail")
+    @PostMapping(value = "/inquireEnergyPointDetail")//要改
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointDetail(@RequestBody PageIODomain<Integer> pageInfo) {
         Integer pageNum = pageInfo.getPageNum();
@@ -403,7 +412,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
      * @author Ming Yang
      * @return 在线钱包交易明细接口
      */
-    @PostMapping(value="/inqureEnergyWalletTradeRecord")
+	@PostMapping(value="/inqureEnergyWalletTradeRecord")
     @ResponseBody
     @Transactional
     public ResponseEntity<?> inqureEnergyWalletTradeRecord(){
@@ -412,6 +421,5 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   		        .setData(energyWalletTradeRecords)
   		        .setErrorCode(ErrorCode.SUCCESS)
   		        .build();
-    }
-   
+    }   
 }

@@ -224,7 +224,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/mobileCheckCode", "anon");		
 		filterChainDefinitionMap.put("/api/v1/userCenter/resetPassword", "anon");
-		
+
 		filterChainDefinitionMap.put("/api/v1/userCenter/login", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/register", "anon");
 		filterChainDefinitionMap.put("/api/v1/userCenter/registerConfirm", "anon");

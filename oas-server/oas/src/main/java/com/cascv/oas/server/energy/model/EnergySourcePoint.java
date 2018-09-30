@@ -11,8 +11,9 @@ public class EnergySourcePoint {
     @Getter @Setter private Integer sourceCode;
     @Getter @Setter String sourceName;
     @Getter @Setter private String type;
-    @Getter @Setter private BigDecimal pointSingle;
-    @Getter @Setter BigDecimal pointIncreaseSpeed;
-    @Getter @Setter String pointIncreaseSpeedUnit;
-    @Getter @Setter BigDecimal pointCapacityEachBall;
+    @Getter @Setter private BigDecimal baseValue;
+    @Getter @Setter BigDecimal increaseSpeed;
+    @Getter @Setter String increaseSpeedUnit;  
+    @Getter @Setter BigDecimal maxValue;
+    @Getter @Setter String period;
 }

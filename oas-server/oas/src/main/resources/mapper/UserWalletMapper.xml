@@ -13,8 +13,7 @@
   <sql id="Base_Column_List">
     uuid, user_uuid, balance,created,updated
   </sql>
-  
-  
+   
   <!-- insert user -->
   <insert id="insertSelective" parameterType="com.cascv.oas.server.blockchain.model.UserWallet">
     insert into user_wallet(

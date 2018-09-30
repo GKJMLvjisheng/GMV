@@ -6,29 +6,30 @@
         <result column="source_code" property="sourceCode"/>
         <result column="source_name" property="sourceName"/>
         <result column="type" property="type"/>
-        <result column="point_single"  property="pointSingle"/>
-        <result column="point_increase_speed"  property="pointIncreaseSpeed"/>
-        <result column="point_increase_speed_unit"  property="pointIncreaseSpeedUnit"/>
-        <result column="point_capacity_each_ball"  property="pointCapacityEachBall"/>
+        <result column="base_value"  property="baseValue"/>
+        <result column="increase_speed"  property="increaseSpeed"/>
+        <result column="increase_speed_unit"  property="increaseSpeedUnit"/>
+        <result column="max_value"  property="maxValue"/>
+        <result column="period"  property="period"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        uuid, source_code, source_name, type, point_single, point_increase_speed, point_increase_speed_unit,  point_capacity_each_ball
+        uuid, source_code, source_name, type, base_value, increase_speed, increase_speed_unit, max_value
     </sql>
 
     <select id="queryBySourceCode" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from energy_source_point
+		select C.uuid,C.source_code, C.base_value, C.increase_speed, C.increase_speed_unit, C.max_value,A.source_name,A.type 
+		from activity_reward_config C 
+		join activity A on C.source_code=A.source_code 
         <where>
             <if test="sourceCode != null">
-                source_code = #{sourceCode}
+                C.source_code = #{sourceCode}
             </if>
         </where>
     </select>
 
     <!-- 查询对应来源的一次性积分属性 -->
   <select id="queryPointSingle" resultType="java.math.BigDecimal">
-    select point_single from energy_source_point where source_code = #{sourceCode}
+    select base_value from activity_reward_config where source_code = #{sourceCode}
   </select>
 </mapper>

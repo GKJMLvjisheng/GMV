@@ -11,8 +11,8 @@ public class EnergySourcePower {
     @Getter @Setter Integer sourceCode;
     @Getter @Setter String sourceName;
     @Getter @Setter String type;
-    @Getter @Setter BigDecimal powerSingle;
-    @Getter @Setter BigDecimal powerIncreaseSpeed;
-    @Getter @Setter String powerIncreaseSpeedUnit;
-    @Getter @Setter BigDecimal powerCapacityEachBall;
+    @Getter @Setter BigDecimal baseValue;
+    @Getter @Setter BigDecimal increaseSpeed;
+    @Getter @Setter String increaseSpeedUnit;
+    @Getter @Setter BigDecimal maxValue;
 }

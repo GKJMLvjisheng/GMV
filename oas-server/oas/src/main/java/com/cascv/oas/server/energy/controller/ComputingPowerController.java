@@ -109,18 +109,43 @@ public class ComputingPowerController {
                     .build();
         }
     }
-
+	/**
+	 * 暂时先用这块的代码
+	 * @param code
+	 * @return
+	 */
 //	@PostMapping(value = "/promotePowerByWechatAccount")
 //    @ResponseBody
-//    public ResponseEntity<?> promotePowerByOfficialAccount(){
+//    public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
 //	 		   
 //		    String name=ShiroUtils.getUser().getName();	   
+//		    String idenCode=code.getIdenCode();
 //		   	String userUuid=ShiroUtils.getUserUuid();
-//		   	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);   			   			   
+//		   	try{
+//		   		if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
+//	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
+//	        	log.info("activityCompletionStatus is not null");
+//	          }else {
+//	        	  activityCompletionStatus=null;
+//	        	  log.info("next");
+//	                }
+//		   		}catch(Exception e) {
+//		   			log.info(e.getMessage());
+//		   			e.getStackTrace();
+//		   		}	   	
+//		   	
+//		   	UserModel userModel=new UserModel();
+//		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
+//		   	log.info(idenCode);
+//		   if(code!=null&&activityCompletionStatus!=null){
+//			   if(userModel.getIdentifyCode().toString().equals(idenCode)){
 //				   if(activityCompletionStatus.getStatus()!=1){
 //				   log.info("验证成功,提升算力！");
+//			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
 //			        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-//			            powerService.saveOAEnergyRecord(userUuid,now);		      
+//			            //powerService.saveOAEnergyBall(userUuid,now);
+//			            powerService.saveOAEnergyRecord(userUuid,now);
+//			            energyOAResult = powerService.getOAEnergy();			      
 //			            powerService.updateOAEnergyWallet(userUuid);
 //			            activityCompletionStatus.setStatus(1);
 //			            activityCompletionStatus.setUserUuid(userUuid);
@@ -131,85 +156,30 @@ public class ComputingPowerController {
 //			                    .setData(0)
 //			                    .setErrorCode(ErrorCode.SUCCESS)
 //				                .build();
-//			     }else{
+//			   }else {
 //				   log.info("每个用户只能使用一次验证码来提升算力!");
+//				   return new ResponseEntity.Builder<Integer>()
+//		                    .setData(2)
+//		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+//		                    .build();
+//			        }
+//			   }
+//			   else {
+//				   log.info("验证码输入错误!");
 //				   return new ResponseEntity.Builder<Integer>()
 //		                    .setData(1)
 //		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
 //		                    .build();
-//			        }			
-//		 }
-	/**
-	 * 暂时先用这块的代码
-	 * @param code
-	 * @return
-	 */
-	@PostMapping(value = "/promotePowerByWechatAccount")
-    @ResponseBody
-    public ResponseEntity<?> promotePowerByOfficialAccount(@RequestBody IdenCodeDomain code){
-	 		   
-		    String name=ShiroUtils.getUser().getName();	   
-		    String idenCode=code.getIdenCode();
-		   	String userUuid=ShiroUtils.getUserUuid();
-		   	try{
-		   		if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {
-	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);
-	        	log.info("activityCompletionStatus is not null");
-	          }else {
-	        	  activityCompletionStatus=null;
-	        	  log.info("next");
-	                }
-		   		}catch(Exception e) {
-		   			log.info(e.getMessage());
-		   			e.getStackTrace();
-		   		}	   	
-		   	
-		   	UserModel userModel=new UserModel();
-		   	userModel=userService.findUserByName(ShiroUtils.getUser().getName());
-		   	log.info(idenCode);
-		   if(code!=null&&activityCompletionStatus!=null){
-			   if(userModel.getIdentifyCode().toString().equals(idenCode)){
-				   if(activityCompletionStatus.getStatus()!=1){
-				   log.info("验证成功,提升算力！");
-			        EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
-			        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-			            //powerService.saveOAEnergyBall(userUuid,now);
-			            powerService.saveOAEnergyRecord(userUuid,now);
-			            energyOAResult = powerService.getOAEnergy();			      
-			            powerService.updateOAEnergyWallet(userUuid);
-			            activityCompletionStatus.setStatus(1);
-			            activityCompletionStatus.setUserUuid(userUuid);
-			            energySourcePowerMapper.updateStatus(activityCompletionStatus);
-			            //一个验证码只能使用一次
-			            log.info(name);
-			            return new ResponseEntity.Builder<Integer>()
-			                    .setData(0)
-			                    .setErrorCode(ErrorCode.SUCCESS)
-				                .build();
-			   }else {
-				   log.info("每个用户只能使用一次验证码来提升算力!");
-				   return new ResponseEntity.Builder<Integer>()
-		                    .setData(2)
-		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-		                    .build();
-			        }
-			   }
-			   else {
-				   log.info("验证码输入错误!");
-				   return new ResponseEntity.Builder<Integer>()
-		                    .setData(1)
-		                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-		                    .build();
-			        }
-			     }
-		   else {
-			   log.info("用户名不存在！");
-			   return new ResponseEntity.Builder<Integer>()
-	                    .setData(1)
-	                    .setErrorCode(ErrorCode.GENERAL_ERROR)
-	                    .build(); 
-		   }
-		 }		
+//			        }
+//			     }
+//		   else {
+//			   log.info("用户名不存在！");
+//			   return new ResponseEntity.Builder<Integer>()
+//	                    .setData(1)
+//	                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+//	                    .build(); 
+//		   }
+//		 }		
 	
 	
   @PostMapping(value = "/checkIdentifyCode")
@@ -434,17 +404,34 @@ public class ComputingPowerController {
 	@PostMapping(value = "/inquireUserMobile")
     @ResponseBody
 	public ResponseEntity<?> inquireUserMobile(){
+		Map<String,String> info=new HashMap<>();
 		UserModel userModel=new UserModel();
 		String name=ShiroUtils.getUser().getName();
         userModel=userService.findUserByName(name);
+        log.info("mobile={}",userModel.getMobile());
         if(userModel.getMobile()!=null){
-        	 return new ResponseEntity.Builder<Integer>()
-   	              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-        }else{
-        	return new ResponseEntity.Builder<Integer>()
-     	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
-        }	   
+        	log.info("**用户手机号不为空**");
+        	info.put("mobile",userModel.getMobile());
+        	 return new ResponseEntity.Builder<Map<String,String>>()
+   	              .setData(info).setErrorCode(ErrorCode.mobile_ALREADY_EXISTS).build();
+        }
+        else {
+        	log.info("**用户手机号为空**");
+        	info.put("mobile","empty");
+        	return new ResponseEntity.Builder<Map<String,String>>()
+     	          .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+        }	
      }
+//  if(userModel.getMobile()==null||userModel.getMobile().isEmpty()){
+//	log.info("**success**");
+//	 return new ResponseEntity.Builder<Integer>()
+//             .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+//}
+//else {
+//	log.info("**failure**");
+//	 return new ResponseEntity.Builder<Integer>()
+//            .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+//}
 	
 	/**
 	 * 查询用户的邮箱是否为空，为空返回0，不为空返回1
@@ -454,15 +441,18 @@ public class ComputingPowerController {
 	@PostMapping(value = "/inquireUserEmail")
     @ResponseBody
 	public ResponseEntity<?> inquireUserEmail(){
+		Map<String,String> info=new HashMap<>();
 		UserModel userModel=new UserModel();
 		String name=ShiroUtils.getUser().getName();
         userModel=userService.findUserByName(name);
         if(userModel.getEmail()!=null){
-        	 return new ResponseEntity.Builder<Integer>()
-   	              .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+        	info.put("email",userModel.getEmail());
+        	 return new ResponseEntity.Builder<Map<String,String>>()
+   	              .setData(info).setErrorCode(ErrorCode.email_ALREADY_EXISTS).build();
         }else{
-        	return new ResponseEntity.Builder<Integer>()
-     	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+        	info.put("email","empty");
+        	return new ResponseEntity.Builder<Map<String,String>>()
+     	          .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
         }	   
      }
 }

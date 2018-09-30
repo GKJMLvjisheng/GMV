@@ -15,6 +15,6 @@ public class EnergyTradeRecord {
     @Getter @Setter private BigDecimal pointChange;
     @Getter @Setter private BigDecimal powerChange;
     @Getter @Setter private Integer status;
-    @Getter @Setter private String timeCreated;
-    @Getter @Setter private String timeUpdated;
+    @Getter @Setter private String created;
+    @Getter @Setter private String updated;
 }

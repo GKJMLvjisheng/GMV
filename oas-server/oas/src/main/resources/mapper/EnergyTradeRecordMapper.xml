@@ -9,85 +9,83 @@
         <result column="point_change" jdbcType="DECIMAL" property="pointChange"/>
         <result column="power_change" jdbcType="DECIMAL" property="powerChange"/>
         <result column="status" javaType="INTEGER" property="status" />
-        <result column="time_created" jdbcType="VARCHAR" property="timeCreated"/>
-        <result column="time_updated" jdbcType="VARCHAR" property="timeUpdated"/>
+        <result column="created" jdbcType="VARCHAR" property="created"/>
+        <result column="updated" jdbcType="VARCHAR" property="updated"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, power_change, status, time_created, time_updated
+        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created,updated
     </sql>
 
     <!-- 插入记录 -->
     <insert id="insertEnergyTradeRecord" parameterType="com.cascv.oas.server.energy.model.EnergyTradeRecord">
-        insert into energy_trade_record (
+        insert into point_trade_record (
         uuid,
         user_uuid,
         energy_ball_uuid,
         in_or_out,
         point_change,
-        power_change,
         status,
-        time_created,
-        time_updated )
+        created,
+        updated )
         values (
         #{uuid},
         #{userUuid},
         #{energyBallUuid},
         #{inOrOut},
-        #{pointChange},
-        #{powerChange},
+        #{pointChange},,
         #{status},
-        #{timeCreated},
-        #{timeUpdated})
+        #{created},
+        #{updated})
     </insert>
     
    <select id="sumPoint" resultType="java.math.BigDecimal">
   	select 
   	  sum(point_change) 
-  	from energy_trade_record 
+  	from point_trade_record 
     	where user_uuid=#{userUuid}
     	and in_or_out=1 
     	and status = 1
-    	and time_created between #{beginTime} and #{endTime}
+    	and created between #{beginTime} and #{endTime}
   </select>
 
    <select id="sumInPoint" resultType="java.math.BigDecimal">
   	select 
   	  sum(point_change) 
-	from energy_trade_record 
+	from point_trade_record 
     	where user_uuid=#{userUuid}
     	and in_or_out=1 
-      	and time_created between #{beginTime} and #{endTime}
+      	and created between #{beginTime} and #{endTime}
   </select>
 
 	<select id="sumOutPoint" resultType="java.math.BigDecimal">
   	select 
   	  sum(point_change) 
-	from energy_trade_record 
+	from point_trade_record 
     	where user_uuid=#{userUuid}
     	and in_or_out=0 
-      	and time_created between #{beginTime} and #{endTime}
+      	and created between #{beginTime} and #{endTime}
   </select>
   
   <select id="selectTrade" resultMap="BaseResultMap">
 	select 
   	  <include refid="Base_Column_List"/>
-  	from energy_trade_record 
+  	from point_trade_record
     where user_uuid=#{userUuid}
     and in_or_out=1 
     and status = 1
-    and time_created between #{beginTime} and #{endTime}
+    and created between #{beginTime} and #{endTime}
   </select>
   
   <select id="countByUserUuid" resultType="java.lang.Integer">
-  	select count(*) from energy_trade_record where user_uuid = #{userUuid};
+  	select count(*) from point_trade_record where user_uuid = #{userUuid};
   </select>
   
   
   <resultMap id="detailResultMap" type="com.cascv.oas.server.energy.vo.EnergyChangeDetail">
     <id column="uuid" property="uuid"/>
     <result column="user_uuid" property="userUuid"/>
-    <result column="time_created" property="created"/>
+    <result column="created" property="created"/>
     <result column="type" property="category"/>
     <result column="source_name" property="activity"/>
     <result column="point" property="decPoint"/>
@@ -97,47 +95,47 @@
   <select id="selectByPage" resultMap="detailResultMap">
     select 
 		U.uuid as uuid,
-		U.user_uuid as userUuid, 
+		U.user_uuid as user_uuid, 
     	U.point_change as point, 
-    	U.time_created as time_created, 
+    	U.created as created, 
     	U.in_or_out as in_or_out,
     	T.source_name as source_name, 
-    	T.type as type from energy_trade_record U 
-    	left outer join energy_ball A on U.in_or_out = 1 and U.energy_ball_uuid = A.uuid 
-    	left outer join energy_source_point T on A.point_source = T.source_code
+    	T.type as type from point_trade_record U 
+    	left outer join energy_point_ball A on U.in_or_out = 1 and U.energy_ball_uuid = A.uuid 
+    	left outer join activity T on A.source_code = T.source_code
     	where U.user_uuid = #{userUuid} 
-    	order by U.time_created desc 
+    	order by U.created desc 
     	limit #{offset}, #{limit}
   </select>
   
   <select id="selectByOutPage" resultMap="detailResultMap">
 <!-- as用作与上面的map对应 -->
   	select 
-  	  uuid,user_uuid as userUuid,point_change as point,time_created,in_or_out
-	  from energy_trade_record 
+  	  uuid,user_uuid,point_change as point,created,in_or_out
+	  from point_trade_record
     	where user_uuid=#{userUuid} and in_or_out=0
-        order by time_created desc 
+        order by created desc 
     	limit #{offset}, #{limit}
   </select>
   
   <select id="selectByAllPage" resultMap="detailResultMap">
     select 
 		U.uuid as uuid,
-		U.user_uuid as userUuid, 
+		U.user_uuid as user_uuid, 
     	U.point_change as point, 
-    	U.time_created as time_created, 
+    	U.created as created, 
     	U.in_or_out as in_or_out,
     	T.source_name as source_name, 
-    	T.type as type from energy_trade_record U 
-    	left outer join energy_ball A on U.energy_ball_uuid = A.uuid 
-    	left outer join energy_source_point T on A.point_source = T.source_code
+    	T.type as type from point_trade_record U 
+    	left outer join energy_point_ball A on U.energy_ball_uuid = A.uuid 
+    	left outer join activity T on A.source_code = T.source_code
     	where U.user_uuid = #{userUuid} 
-    	order by U.time_created desc 
+    	order by U.created desc 
     	limit #{offset}, #{limit}
   </select>
 
   <update id="updateStatus">
-  	update energy_trade_record set
+  	update point_trade_record set
   	  status = #{newStatus}
     where uuid = #{uuid}
   </update>
@@ -145,7 +143,7 @@
   <resultMap id="detailPowerResultMap" type="com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail">
     <id column="uuid" property="uuid"/>
     <result column="user_uuid" property="userUuid"/>
-    <result column="time_created" property="created"/>
+    <result column="created" property="created"/>
     <result column="type" property="category"/>
     <result column="source_name" property="activity"/>
     <result column="power_change" property="powerChange"/>
@@ -154,15 +152,15 @@
   <select id="selectPowerByPage" resultMap="detailPowerResultMap">
     select 
 		U.uuid as uuid,
-		U.user_uuid as userUuid, 
+		U.user_uuid as user_uuid, 
     	U.power_change as power_change, 
-    	U.time_created as time_created, 
+    	U.created as created, 
     	T.source_name as source_name, 
-    	T.type as type from energy_trade_record U 
-    	left outer join energy_ball A on U.energy_ball_uuid = A.uuid 
-    	left outer join energy_source_power T on A.power_source = T.source_code
+    	T.type as type from power_trade_record U 
+    	left outer join energy_power_ball A on U.energy_ball_uuid = A.uuid 
+    	left outer join activity T on A.source_code = T.source_code
     	where U.user_uuid = #{userUuid} 
-    	order by U.time_created desc 
+    	order by U.created desc 
     	limit #{offset}, #{limit}
   </select>
   

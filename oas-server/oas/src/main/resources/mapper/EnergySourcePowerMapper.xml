@@ -6,14 +6,14 @@
         <result column="source_code" property="sourceCode"/>
         <result column="source_name" property="sourceName"/>
         <result column="type" property="type"/>
-        <result column="power_single" property="powerSingle"/>
-        <result column="power_increase_speed" property="powerIncreaseSpeed"/>
-        <result column="power_increase_speed_unit" property="powerIncreaseSpeedUnitName"/>
-        <result column="power_capacity_each_ball" property="powerCapacityEachBall"/>
+        <result column="base_value" property="baseValue"/>
+        <result column="increase_speed" property="increaseSpeed"/>
+        <result column="increase_speed_unit" property="increaseSpeedUnitName"/>
+        <result column="max_value" property="maxValue"/>
     </resultMap>
 
   <select id="queryPowerSingle" resultType="java.math.BigDecimal">
-    select power_single from energy_source_power where source_code = #{sourceCode}
+    select base_value from activity_reward_config where source_code = #{sourceCode}
   </select>
   
   <resultMap id="ActivityResultMap" type="com.cascv.oas.server.energy.vo.ActivityResult">
@@ -34,9 +34,9 @@
   </insert>
   
   <select id="selectByUserUuid" resultMap="ActivityResultMap">
-      select * from activity_completion_status A left join energy_source_power B 
+      select * from activity_completion_status A left join activity B           
              on A.source_code = B.source_code 
-             where A.user_uuid = #{userUuid}
+             where A.user_uuid = #{userUuid}            
   </select>
   
     <select id="selectACSByUserUuid" resultMap="ActivityCompletionStatus">
@@ -45,7 +45,7 @@
   </select>
   
   <select id="selectStatusByUserUuid" resultMap="ActivityResultMap">
-      select * from activity_completion_status A left join energy_source_power B 
+      select * from activity_completion_status A left join activity B 
              on A.source_code = B.source_code 
              where A.user_uuid = #{userUuid}
   </select>

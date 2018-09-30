@@ -92,10 +92,10 @@ public class PowerService {
         oaEnergyBall.setPoint(this.getOAEnergy().getNewEnergyPoint());
         oaEnergyBall.setPower(this.getOAEnergy().getNewPower());
         log.info(this.getOAEnergy().getNewPower().toString());
-        oaEnergyBall.setPointSource(POINT_SOURCE_CODE_OF_OFFICIALACCOUNT);
+        oaEnergyBall.setSourceCode(POINT_SOURCE_CODE_OF_OFFICIALACCOUNT);
         oaEnergyBall.setPowerSource(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
-        oaEnergyBall.setTimeCreated(now);
-        oaEnergyBall.setTimeUpdated(now);
+        oaEnergyBall.setCreated(now);
+        oaEnergyBall.setUpdated(now);
         return energyBallMapper.insertEnergyBall(oaEnergyBall);
     }
     
@@ -114,10 +114,10 @@ public class PowerService {
     	fsEnergyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
     	fsEnergyBall.setPoint(this.getFsEnergy().getNewEnergyPoint());
     	fsEnergyBall.setPower(this.getFsEnergy().getNewPower());
-        fsEnergyBall.setPointSource(POINT_SOURCE_CODE_OF_FRIENDSSHARED);
+        fsEnergyBall.setSourceCode(POINT_SOURCE_CODE_OF_FRIENDSSHARED);
         fsEnergyBall.setPowerSource(POWER_SOURCE_CODE_OF_FRIENDSSHARED);
-        fsEnergyBall.setTimeCreated(now);
-        fsEnergyBall.setTimeUpdated(now);
+        fsEnergyBall.setCreated(now);
+        fsEnergyBall.setUpdated(now);
         return energyBallMapper.insertEnergyBall(fsEnergyBall);
     }
     /**
@@ -133,8 +133,8 @@ public class PowerService {
         energyTradeRecord.setUserUuid(userUuid);
         energyTradeRecord.setEnergyBallUuid(fsEnergyBall.getUuid());
         energyTradeRecord.setInOrOut(ENEGY_IN);
-        energyTradeRecord.setTimeCreated(now);
-        energyTradeRecord.setTimeUpdated(now);
+        energyTradeRecord.setCreated(now);
+        energyTradeRecord.setUpdated(now);
         energyTradeRecord.setStatus(STATUS_OF_DIE_ENERGYRECORD);
         energyTradeRecord.setPointChange(this.getFsEnergy().getNewEnergyPoint());
         energyTradeRecord.setPowerChange(this.getFsEnergy().getNewPower());
@@ -153,8 +153,8 @@ public class PowerService {
         energyTradeRecord.setUserUuid(userUuid);
         energyTradeRecord.setEnergyBallUuid(oaEnergyBall.getUuid());
         energyTradeRecord.setInOrOut(ENEGY_IN);
-        energyTradeRecord.setTimeCreated(now);
-        energyTradeRecord.setTimeUpdated(now);
+        energyTradeRecord.setCreated(now);
+        energyTradeRecord.setUpdated(now);
         energyTradeRecord.setStatus(STATUS_OF_DIE_ENERGYRECORD);
         energyTradeRecord.setPointChange(this.getOAEnergy().getNewEnergyPoint());
         energyTradeRecord.setPowerChange(this.getOAEnergy().getNewPower());

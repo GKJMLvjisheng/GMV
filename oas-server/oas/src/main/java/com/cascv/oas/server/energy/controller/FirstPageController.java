@@ -64,8 +64,8 @@ public class FirstPageController {
         System.out.println(energySourcePoint);
         BigDecimal ongoingEnergySummary = energyService.miningGenerator(userUuid, energySourcePoint);
         System.out.println(ongoingEnergySummary);
-        BigDecimal pointIncreaseSpeed = energySourcePoint.getPointIncreaseSpeed();            // 挖矿球增长速度
-        BigDecimal pointCapacityEachBall = energySourcePoint.getPointCapacityEachBall();      // 挖矿球最大容量
+        BigDecimal pointIncreaseSpeed = energySourcePoint.getIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = energySourcePoint.getMaxValue();      // 挖矿球最大容量
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
