@@ -19,26 +19,22 @@
    
    
    <style>
-	.input-group .datetimepicker{
-	z-index:100000;
-	}
-	.form-group span.required {
-	color: red;
-	font-size: 150%;
-	} 
-	
 	table{ 
     word-wrap:break-word;
     word-break:break-all;
 	}
-	label{ 
-    vertical-align:middle;
-	margin-top:7px;
-	text-align: right;
-	}
 	.content-tabs {
     border-bottom: solid 1px #d8dbde;
-	}		
+	}	
+	.col-sm-2 {
+    width: 9.33333333%;
+	padding-left: 5px;
+	margin-top:20px;
+   }
+   .input-group	{ 
+    vertical-align:middle;
+	margin-top:11px;
+	}
     </style>
 </head>
 
@@ -71,7 +67,7 @@
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd">
 			
-					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control">
+					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control" onblur="FundInReady()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -93,7 +89,7 @@
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd2">
 			
-					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control">
+					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control" onblur="FundOutReady()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -184,11 +180,6 @@
 </body>
 <script type="text/javascript">
 
-	// function mGetDate(year, month){
-	// 	var d = new Date(year, month, 0);
-	// 	return d.getDate();
-	// }
-
 	function getNowFormatDate() {
         var date = new Date();
         var seperator1 = "-";
@@ -223,6 +214,4 @@
 		document.getElementById("endTime3").value=mydate2;                  
 	});
 </script>
-
 </html>
-

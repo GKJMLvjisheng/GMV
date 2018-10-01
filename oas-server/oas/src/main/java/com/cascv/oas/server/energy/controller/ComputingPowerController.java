@@ -15,6 +15,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
@@ -48,6 +49,8 @@ public class ComputingPowerController {
 	@Autowired
     private EnergyService energyService;
 	@Autowired
+    private ActivityService activityService;
+	@Autowired
 	EnergyBallMapper energyBallMapper;
 	@Autowired
     private PowerService powerService;
@@ -56,6 +59,7 @@ public class ComputingPowerController {
 	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
+	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 3;
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   
 	
 	@PostMapping(value = "/inquirePowerActivityStatus")
@@ -180,19 +184,36 @@ public class ComputingPowerController {
 //	                    .build(); 
 //		   }
 //		 }		
-	
-	
+  /**
+   * 输入验证码，提升算力
+   * @param code
+   * @author lvjisheng
+   * @return
+   */
   @PostMapping(value = "/checkIdentifyCode")
   @ResponseBody
   public ResponseEntity<?> checkIdentifyCode(@RequestBody IdenCodeDomain code){
-	    String name=ShiroUtils.getUser().getName();	   
+	    String name=ShiroUtils.getUser().getName();	
+	    String userUuid=ShiroUtils.getUser().getUuid();
 	    String idenCode=code.getIdenCode();
 	    if(userService.findUserByName(name).getIdentifyCode().toString().equals(idenCode)){
-	    	   return new ResponseEntity.Builder<Integer>()
-	    			      .setData(0)
-	    			      .setErrorCode(ErrorCode.SUCCESS)
-	    			      .build(); 
+	    	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid,POWER_SOURCE_CODE_OF_WECHAT);	    	
+	    	   if(activityCompletionStatus==null||activityCompletionStatus.getStatus()!=1){
+	    		   log.info("验证码正确，算力提升!");
+	    		   activityService.getReward(POWER_SOURCE_CODE_OF_WECHAT, userUuid);
+		    	   return new ResponseEntity.Builder<Integer>()
+		    			      .setData(0)
+		    			      .setErrorCode(ErrorCode.SUCCESS)
+		    			      .build(); 
+	    	   }else {
+	    		   log.info("不要重复输入验证码!");
+	    		   return new ResponseEntity.Builder<Integer>()
+		    			      .setData(2)
+		    			      .setErrorCode(ErrorCode.GENERAL_ERROR)
+		    			      .build(); 
+	    	   }	    	  	    	  
 	    }else {
+	    	      log.info("验证码不正确!");
 	    	   return new ResponseEntity.Builder<Integer>()
 	    			      .setData(1)
 	    			      .setErrorCode(ErrorCode.GENERAL_ERROR)
@@ -246,7 +267,7 @@ public class ComputingPowerController {
 		if(powerService.isBackupsWallet(userUuid) == 0) {
 			//do backupsWallet
 			
-			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
+			return new ResponseEntity.Builder<Integer>().setData(0).setErrorCode(errorCode).build();
 			
 		}else {
 			errorCode = ErrorCode.IS_BACKUPS_WALLET;

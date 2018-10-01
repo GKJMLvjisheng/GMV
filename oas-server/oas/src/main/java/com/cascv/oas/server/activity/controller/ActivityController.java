@@ -26,10 +26,9 @@ import com.cascv.oas.server.activity.wrapper.ActivityRequest;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardAdd;
 import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
+import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
-import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -189,7 +188,7 @@ public class ActivityController {
     public ResponseEntity<?> selectAllActivityReward(@RequestBody ActivityDelete activityDelete){
 		Integer sourceCode = activityDelete.getSourceCode();
 		Map<String,Object> info=new HashMap<>();
-		List<ActivityRewardConfig> activityRewardList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
+		List<RewardConfigResult> activityRewardList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
 		if(activityRewardList.size() > 0)
 			info.put("activityList", activityRewardList);
 		else
@@ -233,33 +232,6 @@ public class ActivityController {
 		log.info("type={}", rewardCode);
 		activityMapper.deleteActivityReward(sourceCode, rewardCode);
 		return new ResponseEntity.Builder<Integer>()
-				.setData(0)
-				.setErrorCode(ErrorCode.SUCCESS)
-				.build();
-		
-	}
-	
-	
-	@PostMapping(value = "/getReward")
-    @ResponseBody
-    public ResponseEntity<?> getReward(@RequestBody RewardSourceCode rewardSourceCode ){
-		String userUuid = ShiroUtils.getUserUuid();
-		Integer sourceCode = rewardSourceCode.getSourceCode();
-		List<ActivityRewardConfig> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
-		Integer len = activityRewardConfigList.size();
-		log.info("len={}",len);
-		for(int i=0; i<len; i++) {
-			Integer rewardCode = activityRewardConfigList.get(i).getRewardCode();
-			log.info("rewardCode={}",rewardCode);
-			activityService.addEnergyPointBall(userUuid, sourceCode, rewardCode);
-			activityService.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
-			activityService.addPointTradeRecord(userUuid, sourceCode, rewardCode);
-			activityService.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
-			activityService.updateEnergyWallet(userUuid, sourceCode, rewardCode);
-			activityService.addActivityCompletionStatus(userUuid, sourceCode);
-		}
-		
-		return new ResponseEntity.Builder<>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();

@@ -18,26 +18,22 @@
 	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">				   
    
    <style>
-	.input-group .datetimepicker{
-	z-index:100000;
-	}
-	.form-group span.required {
-	color: red;
-	font-size: 150%;
-	} 
-	
 	table{ 
     word-wrap:break-word;
     word-break:break-all;
 	}
-	label{ 
-    vertical-align:middle;
-	margin-top:7px;
-	text-align: right;
-	}
 	.content-tabs {
     border-bottom: solid 1px #d8dbde;
 	}	
+	.col-sm-2 {
+    width: 9.33333333%;
+	padding-left: 5px;
+	margin-top:20px;
+   }
+   .input-group	{ 
+    vertical-align:middle;
+	margin-top:11px;
+	}
     </style>
 </head>
 
@@ -67,23 +63,6 @@
 	</div> 
 	
 	<div class = "container" style="display:none" id="page2">
-		</br>
-		<label for="datetimepicker1" class="col-sm-2">开始时间：</label>
-			<div class="col-sm-3">
-				<div class="input-group  date" id="userEd">
-			
-					<input type="text" name="startTime1" id="startTime1" value="" class=" form-control">
-					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-				</div>	
-			</div>
-
-		<label for="datetimepicker1" class="col-sm-2">结束时间：</label>
-			<div class="col-sm-3">
-				<div class="input-group  date" id="userEd1">				
-					<input type="text"  name="endTime1" id="endTime1" value="" class=" form-control " onblur="FundBigReady()"/>
-					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-				</div>	
-			</div>
 		<table id="fundBigGrid"></table>
 	</div>
 
@@ -93,7 +72,7 @@
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd2">
 			
-					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control">
+					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control" onblur="FundInReady()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -114,7 +93,7 @@
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd4">
 			
-					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control">
+					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control" onblur="FundOutReady()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -227,14 +206,9 @@
 		var year=date.getFullYear(); 
 		var month=date.getMonth()+1;
 		month =(month<10 ? "0"+month:month);
-		
-		//var totalDay = mGetDate(year,month);
 		var todayTime = getNowFormatDate();
-		//alert(todayTime);
 		var mydate1 = (year.toString()+"-"+ month.toString()+"-01");
 		var mydate2 = todayTime;
-		document.getElementById("startTime1").value=mydate1;
-		document.getElementById("endTime1").value=mydate2;
 		document.getElementById("startTime2").value=mydate1;
 		document.getElementById("endTime2").value=mydate2; 
 		document.getElementById("startTime3").value=mydate1;

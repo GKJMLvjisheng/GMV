@@ -16,5 +16,5 @@ public interface EnergySourcePowerMapper {
     
     Integer insertActivity(ActivityCompletionStatus activityCompletionStatus);
     Integer updateStatus(ActivityCompletionStatus activityCompletionStatus);
-    ActivityCompletionStatus selectACSByUserUuid(@Param("userUuid")String userUuid);
+    ActivityCompletionStatus selectACSByUserUuid(@Param("userUuid")String userUuid,@Param("sourceCode")Integer sourceCode);
 }

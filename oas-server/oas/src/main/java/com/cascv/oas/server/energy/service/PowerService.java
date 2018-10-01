@@ -212,7 +212,7 @@ public class PowerService {
     /**
      * 查询算力详情
      * @return
-     */
+     */    
     public List<EnergyPowerChangeDetail> searchEnergyPowerChange(String userUuid, Integer offset, Integer limit){
     	
     	List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyTradeRecordMapper.selectPowerByPage(userUuid, offset, limit);

@@ -14,12 +14,12 @@ import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletTotalTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
+import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -321,8 +321,8 @@ public class EthWalletController {
 		  endTime=timeLimitInfo.getEndTime();
 	  }
 	  
-	  List<EthWalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
+	  List<WalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletInTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
@@ -364,8 +364,8 @@ public class EthWalletController {
 		  endTime=timeLimitInfo.getEndTime();
 	  }
 	  
-	  List<EthWalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<EthWalletTotalTradeRecordInfo>>()
+	  List<WalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
 		        .setData(ethWalletOutTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();

@@ -154,7 +154,7 @@
 	       #{maxValue,jdbcType=DECIMAL},
 	   
 	    <if test="period != null">
-	       #{period,jdbcType=DECIMAL},
+	       #{period},
 	    </if>
         
         #{created,jdbcType=VARCHAR},
@@ -162,12 +162,6 @@
     </trim>
    </insert>
    
-  <!-- select all activityReward -->
-  <select id="selectActivityRewardBySourceCode" resultMap="activityRewardConfigMap">
-      select 
-      <include refid="activity_Reward_Connfig_List" />
-      from activity_reward_config where source_code = #{sourceCode};
-  </select> 
   
   <!-- select activity max_value -->
   <select id="selectMaxValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
@@ -193,6 +187,28 @@
        where source_code = #{sourceCode} and reward_code = #{rewardCode}
           
   </update>
+  
+  
+  <resultMap id="rewardConfigResult" type="com.cascv.oas.server.activity.wrapper.RewardConfigResult">
+	<id column="uuid" property="uuid" />
+	<result column="source_code" property="sourceCode"/>
+	<result column="reward_code" property="rewardCode"/>
+	<result column="reward_name" property="rewardName"/>
+	<result column="base_value" property="baseValue"/>
+  	<result column="increase_speed" property="increaseSpeed"/>
+  	<result column="increase_speed_unit" property="increaseSpeedUnit"/>
+  	<result column="max_value" property="maxValue"/>
+  	<result column="period" property="period"/>
+  	<result column="created" property="created"/>
+  	<result column="updated" property="updated"/>
+  </resultMap>
+  
+  <!-- select all activityReward -->
+  <select id="selectActivityRewardBySourceCode" resultMap="rewardConfigResult">
+      select * from activity_reward_config A 
+      left join reward_source B on A.reward_code = B.reward_code 
+      where A.source_code = #{sourceCode};
+  </select> 
   
   <resultMap id="EnergyPointBall" type="com.cascv.oas.server.activity.model.EnergyPointBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>

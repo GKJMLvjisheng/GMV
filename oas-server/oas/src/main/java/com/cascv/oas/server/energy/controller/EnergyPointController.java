@@ -6,6 +6,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
@@ -23,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +46,8 @@ public class EnergyPointController {
     private NewsService newsService;
     @Autowired
     private EnergyWalletTradeRecordMapper energyWalletTradeRecordMapper;
+    @Autowired
+    private ActivityService activityService;
 
     @PostMapping(value = "/checkin")
     @ResponseBody
@@ -53,9 +59,8 @@ public class EnergyPointController {
     public ResponseEntity<?> checkin() {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
-        EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
-        //ErrorCode errorCode = ErrorCode.SUCCESS;
-        if (!energyService.isCheckin(userUuid)){
+        Integer sourceCode = 1;
+        if (!energyService.isCheckin(userUuid)) {
 //            // today sign in not yet
 //            // generate a new Checkin EnergyBall
 //            energyService.saveCheckinEnergyBall(userUuid);
@@ -67,20 +72,20 @@ public class EnergyPointController {
 //            energyService.updateCheckinEnergyWallet(userUuid);
 //            // change the Checkin EnergyBall to Die
 //            energyService.updateEnergyBallStatusByUuid(userUuid);
-            return new ResponseEntity
+        	activityService.getReward(sourceCode, userUuid);
+        	return new ResponseEntity
                     .Builder<Integer>()
                     .setData(0)
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
-            // today sign in yet
+//            // today sign in yet
 //            energyCheckinResult.setNewEnergyPoint(BigDecimal.ZERO);
 //            energyCheckinResult.setNewPower(BigDecimal.ZERO);
-//            errorCode = ErrorCode.ALREADY_CHECKIN_TODAY;
             return new ResponseEntity
                     .Builder<Integer>()
                     .setData(1)
-                    .setErrorCode(ErrorCode.GENERAL_ERROR)
+                    .setErrorCode(ErrorCode.ALREADY_CHECKIN_TODAY)
                     .build();
         }
     }
@@ -410,7 +415,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     
     /**
      * @author Ming Yang
-     * @return 在线钱包交易明细接口
+     * @return 能量钱包交易明细接口
      */
 	@PostMapping(value="/inqureEnergyWalletTradeRecord")
     @ResponseBody
@@ -421,5 +426,133 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   		        .setData(energyWalletTradeRecords)
   		        .setErrorCode(ErrorCode.SUCCESS)
   		        .build();
-    }   
+    }
+    
+    /**
+     * @author Ming Yang
+     * @return 能量钱包积分排行接口
+     */
+    @PostMapping(value="/inqureEnergyWalletBalanceRecord")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<?> inqureEnergyWalletBalanceRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+  	  
+  	  //获取当月第一天
+  	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+  	  Calendar c = Calendar.getInstance();
+  	  c.add(Calendar.MONTH, 0);
+  	  c.set(Calendar.DAY_OF_MONTH,1);
+  	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+        
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate={}",nowDate);
+        
+  	  String startTime=timeLimitInfo.getStartTime();
+  	  String endTime=timeLimitInfo.getEndTime();
+  	  
+  	  if(startTime=="") {
+  		  startTime=nowMonthOfFirstDay;
+  	  }else {
+  		  startTime=timeLimitInfo.getStartTime();
+  	  }
+  	  if(endTime=="") {
+  		  endTime=nowDate;
+  	  }else {
+  		  endTime=timeLimitInfo.getEndTime();
+  	  }
+  	  
+  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecords=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(startTime, endTime);
+  		return new ResponseEntity.Builder<List<EnergyWalletBalanceRecordInfo>>()
+  		        .setData(energyWalletBalanceRecords)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
+    }
+    /**
+     * @author Ming Yang
+     * @return 能量钱包积分转入排行接口
+     */
+    @PostMapping(value="/inqureEnergyWalletInTotalPointTradeRecord")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<?> inqureEnergyWalletInTotalPointTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+  	  
+  	  //获取当月第一天
+  	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+  	  Calendar c = Calendar.getInstance();
+  	  c.add(Calendar.MONTH, 0);
+  	  c.set(Calendar.DAY_OF_MONTH,1);
+  	  String nowMonthOfFirstDay =format.format(c.getTime());
+        log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+        
+        //获取当前年月日
+        Date d = new Date();
+        String nowDate = format.format(d);
+        log.info("nowDate:{}",nowDate);
+        
+  	  String startTime=timeLimitInfo.getStartTime();
+  	  String endTime=timeLimitInfo.getEndTime();
+  	  
+  	  if(startTime=="") {
+  		  startTime=nowMonthOfFirstDay;
+  	  }else {
+  		  startTime=timeLimitInfo.getStartTime();
+  	  }
+  	  if(endTime=="") {
+  		  endTime=nowDate;
+  	  }else {
+  		  endTime=timeLimitInfo.getEndTime();
+  	  }
+  	  
+  	  List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecords=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecord(startTime, endTime);
+  		return new ResponseEntity.Builder<List<EnergyWalletPointRecordInfo>>()
+  		        .setData(energyWalletInTotalPointTradeRecords)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
+    }
+    /**
+     * @author Ming Yang
+     * @return 能量钱包积分转出排行接口
+     */
+    
+    @PostMapping(value="/inqureEnergyWalletOutTotalPointTradeRecord")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<?> inqureEnergyWalletOutTotalPointTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+  	  
+  	  //获取当月第一天
+  	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+  	  Calendar c = Calendar.getInstance();
+  	  c.add(Calendar.MONTH, 0);
+  	  c.set(Calendar.DAY_OF_MONTH,1);
+  	  String nowMonthOfFirstDay =format.format(c.getTime());
+        log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+        
+        //获取当前年月日
+        Date d = new Date();
+        String nowDate = format.format(d);
+        log.info("nowDate:{}",nowDate);
+        
+  	  String startTime=timeLimitInfo.getStartTime();
+  	  String endTime=timeLimitInfo.getEndTime();
+  	  
+  	  if(startTime=="") {
+  		  startTime=nowMonthOfFirstDay;
+  	  }else {
+  		  startTime=timeLimitInfo.getStartTime();
+  	  }
+  	  if(endTime=="") {
+  		  endTime=nowDate;
+  	  }else {
+  		  endTime=timeLimitInfo.getEndTime();
+  	  }
+  	  
+  	  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecords=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecord(startTime, endTime);
+  		return new ResponseEntity.Builder<List<EnergyWalletPointRecordInfo>>()
+  		        .setData(energyWalletOutTotalPointTradeRecords)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
+    }
 }

@@ -32,7 +32,7 @@ public class WechatServiceBackup{
     //private Map<String,Object> userInfo=new HashMap<String,Object>();
     //判断是否输入"获取验证码"
     Boolean isChecked=false;
-    private static final Integer POWER_SOURCE_CODE_OF_OFFICIALACCOUNT = 3; 
+    private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 3; 
     @SuppressWarnings("null")
 	public String processRequest(HttpServletRequest request){
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
@@ -62,9 +62,9 @@ public class WechatServiceBackup{
         if(WechatMessageUtil.MESSAGE_TEXT.equals(msgType)){
         	if(userService.findUserByName(map.get("Content"))!=null){
         	userUuid=userService.findUserByName(map.get("Content")).getUuid();
-        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid)!=null) {        	        
+        	        if(energySourcePowerMapper.selectACSByUserUuid(userUuid,POWER_SOURCE_CODE_OF_WECHAT)!=null) {        	        
         	        	log.info("activityCompletionStatus is not null");
-        	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid);        	        	
+        	        	activityCompletionStatus=energySourcePowerMapper.selectACSByUserUuid(userUuid,POWER_SOURCE_CODE_OF_WECHAT);        	        	
         	        }else{
         	        	  activityCompletionStatus=null;
         	        	  log.info("next");
@@ -90,7 +90,7 @@ public class WechatServiceBackup{
 			            responseContent="用户"+map.get("Content")+"的验证码是:"+result+"\n";               
 			            log.info(userUuid);
 			            activityCompletionStatus.setUserUuid(userUuid);
-			            activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
+			            activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_WECHAT);
 			            //未使用表示1
 			            activityCompletionStatus.setStatus(0);
 			            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT);

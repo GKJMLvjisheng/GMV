@@ -14,6 +14,6 @@ public class ActivityRewardUpdate implements Serializable {
 	@Getter @Setter private BigDecimal increaseSpeed;
 	@Getter @Setter private String increaseSpeedUnit;
 	@Getter @Setter private BigDecimal maxValue;
-	@Getter @Setter private String period;
+	@Getter @Setter private Integer period;
 
 }

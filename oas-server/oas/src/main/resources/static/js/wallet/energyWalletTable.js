@@ -2,28 +2,20 @@
 function initEnergyWalletGrid(data) {	
 
 	$("#energyWalletGrid").bootstrapTable({
-
-		//极为重要，缺失无法执行queryParams，传递page参数
-
 		contentType : "application/x-www-form-urlencoded",
-
 		dataType:"json",
-
 		pagination:true,//显示分页条：页码，条数等
-
 		striped:true,//隔行变色
-
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
-
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,
-		
+		data:data,	
+			
 		columns : [{  
 		title: '序号',  
 		field: '',
@@ -33,13 +25,11 @@ function initEnergyWalletGrid(data) {
 			return index+1;  
 			}  
 		}  ,{
-
 			title : "用户名",
 			field : "name",
 			align: 'center',
 			valign: 'middle',
 			width:  '100px',
-
 		},
 		{
 			title : "交易类型",
@@ -47,7 +37,7 @@ function initEnergyWalletGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',
-
+			formatter: actionFormatter1
 		},
 		{
 			title : "交易积分",
@@ -55,7 +45,6 @@ function initEnergyWalletGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',
-
 		},
 		{
 			title : "获得算力",
@@ -63,7 +52,6 @@ function initEnergyWalletGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',
-
 		},
 		{
 			title : "兑换状态",
@@ -71,7 +59,7 @@ function initEnergyWalletGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',
-
+			formatter: actionFormatter2
 		},
 			{
 			title : "交易时间",
@@ -79,42 +67,51 @@ function initEnergyWalletGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
-
 		},{
-
 			title : "操作",
-
 			field : "name",
 			align: 'center',
 			valign: 'middle',
 			width:  '60px',
 			formatter: actionFormatter
-		}],
-		
+		}],		
 		search : true,//搜索
         searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
 
+	function actionFormatter1(value, row, index) {
+		var result = "";
+		if(value==1){
+		result += "<span>获得</span>";      
+        return result;
+		}else if(value==0){
+		result += "<span>支出</span>";      
+        return result;
+		}        
+	}
+
+	function actionFormatter2(value, row, index) {
+        var result = "";
+        if(value==1){
+		result += "<span>未兑换</span>";      
+        return result;
+		}else if(value==0){
+		result += "<span>已兑换</span>";      
+        return result;
+		}    
+	}
 
 function initFundBigGrid(data) {	
 
 	$("#fundBigGrid").bootstrapTable({
-
-		//极为重要，缺失无法执行queryParams，传递page参数
-
 		contentType : "application/x-www-form-urlencoded",
-
 		dataType:"json",
-
 		pagination:true,//显示分页条：页码，条数等
-
 		striped:true,//隔行变色
-
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
-
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		toolbar:"#toolbar",//工具栏
@@ -123,63 +120,42 @@ function initFundBigGrid(data) {
 	    sortOrder: 'asc', // 排序规则
 		data:data,
 		
-		columns : [{
-
+		columns : [{  
+		title: '序号',  
+		field: '',
+		align: 'center', 
+		valign: 'middle', 
+		formatter: function (value, row, index) {  
+			return index+1;  
+			}  
+		}  ,{
 			title : "用户名",
 			field : "name",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
-
+			width:  '200px',
 		},
 			{
-			title : "交易金额",
-			field : "value",
-			align: 'center',
-			valign: 'middle',
-			width:  '100px',
-
-		},
-		{
-			title : "交易类型",
-			field : "title",
+			title : "积分",
+			field : "point",
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
 		},
 		{
-			title : "接收人",
-			field : "changeUserName",
+			title : "算力",
+			field : "power",
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
-
 		},
-			{
-			title : "交易时间",
-			field : "created",
-			align: 'center',
-			valign: 'middle',
-			width:  '115px',
-
-		}, {
-
-			title : "交易备注",
-			field : "remark",
-			align: 'center',
-			valign: 'middle',
-			width:  '120px',
-
-		},{
-
+		{
 			title : "操作",
-
 			field : "name",
 			align: 'center',
 			valign: 'middle',
 			formatter: actionFormatter
-		}],
-		
+		}],		
 		search : true,//搜索
         searchOnEnterKey : true,
 		clickToSelect: false,         
@@ -189,20 +165,12 @@ function initFundBigGrid(data) {
 function initFundInGrid(data) {	
 
 	$("#fundInGrid").bootstrapTable({
-
-		//极为重要，缺失无法执行queryParams，传递page参数
-
 		contentType : "application/x-www-form-urlencoded",
-
 		dataType:"json",
-
 		pagination:true,//显示分页条：页码，条数等
-
 		striped:true,//隔行变色
-
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
-
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		toolbar:"#toolbar",//工具栏
@@ -226,20 +194,16 @@ function initFundInGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
-
 		},
 			{
-			title : "资金流入总额",
-			field : "value",
+			title : "积分流入总额",
+			field : "point",
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
-
 		},
 		{
-
 			title : "操作",
-
 			field : "name",
 			align: 'center',
 			valign: 'middle',
@@ -252,32 +216,22 @@ function initFundInGrid(data) {
 	});
 }
 
-
 function initFundOutGrid(data) {	
-
 	$("#fundOutGrid").bootstrapTable({
-
-		//极为重要，缺失无法执行queryParams，传递page参数
-
 		contentType : "application/x-www-form-urlencoded",
-
 		dataType:"json",
-
 		pagination:true,//显示分页条：页码，条数等
-
 		striped:true,//隔行变色
-
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
-
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,
-		
+		data:data,	
+
 		columns : [{  
 		title: '序号',  
 		field: '',
@@ -287,26 +241,21 @@ function initFundOutGrid(data) {
 			return index+1;  
 			}  
 		}  ,{
-
 			title : "用户名",
 			field : "name",
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
-
 		},
 			{
-			title : "资金流出总额",
-			field : "value",
+			title : "积分流出总额",
+			field : "point",
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
-
 		},
 		{
-
 			title : "操作",
-
 			field : "name",
 			align: 'center',
 			valign: 'middle',
@@ -322,12 +271,9 @@ function initFundOutGrid(data) {
 	function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-
-        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
-        
+        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
         return result;
 	}
-
 
 	function ViewViewById(id){	
 		var formData = new FormData();

@@ -7,14 +7,7 @@ document.write("<script language=javascript src='/js/QA/QAManageTable.js'></scri
 $(function() {
 	//初始加载	
 	questionReady();
-	question.setAttribute("maxlength",40);
-	choiceA.setAttribute("maxlength",20);
-	choiceB.setAttribute("maxlength",20);
-	choiceC.setAttribute("maxlength",20);
-	Equestion.setAttribute("maxlength",40);
-	EchoiceA.setAttribute("maxlength",20);
-	EchoiceB.setAttribute("maxlength",20);
-	EchoiceC.setAttribute("maxlength",20);
+	// question.setAttribute("maxlength",40);
 });
 
 //修改环保题目-检查标题
@@ -101,29 +94,35 @@ function questionReady(){
 //新增问题
 function addQuestion(){	
 	var formData = new FormData();
-	formData.append("question", $("#question").val());
-	formData.append("choiceA", $("#choiceA").val());
-	formData.append("choiceB", $("#choiceB").val());
-	formData.append("choiceC", $("#choiceC").val());	
-	formData.append("choiceRight", $("#choiceRight").val());
-	$.ajax({
+	var question=$("#question").val();
+	var choiceA=$("#choiceA").val();
+	var choiceB=$("#choiceB").val();
+	var choiceC=$("#choiceC").val();
+	var choiceRight=$("#choiceRight").val();
+	if(question==""||choiceA==""||choiceB==""||choiceC==""||choiceRight==""){
+		alert("请输入必填项");
+	}else{
+		formData.append("question", question);
+		formData.append("choiceA", choiceA);
+		formData.append("choiceB", choiceA);
+		formData.append("choiceC", choiceC);	
+		formData.append("choiceRight", choiceRight);
+		$.ajax({
 		url:"/api/v1/computingPower/addTopic",
 		data:formData,
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		type: 'post',
-		cache: false,
-		
+		cache: false,		
 		processData : false,
 		contentType : false,
 		async : false,
 
-		success:function(res){	
-				
-				$("#Tip").modal('show');
-				$("#addQuestionModal").modal('hide');
-				 questionReady();
-				$("#questionGrid").bootstrapTable('refresh');							
+		success:function(res){					
+			$("#Tip").modal('show');
+			$("#addQuestionModal").modal('hide');
+			questionReady();
+			$("#questionGrid").bootstrapTable('refresh');							
 		},
 		error:function(){
 			document.getElementById("tipContent").innerText="新增失败";
@@ -132,6 +131,8 @@ function addQuestion(){
 
 		},
 	});	   
+
+	}
 }
 
 //点击取消后清空表单中已写信息

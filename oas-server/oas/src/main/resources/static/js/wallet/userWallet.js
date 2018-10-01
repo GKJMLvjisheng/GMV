@@ -1,44 +1,58 @@
-/**
- * 答题管理js文件
- */
+
 document.write("<script language=javascript src='/js/wallet/userWalletTable.js'></script>");
 
 //主界面用户表格回显
 $(function() {
 	//初始加载	
 	UserWalletReady();
-	// FundBigReady();
-	// FundInReady();
-	// FundOutReady();
+	FundBigReady();
+	FundInReady();
+	FundOutReady();
 });
 
 //时间控件
-$(function () {
-    $('#userEd').datetimepicker({
-        format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});	
-	$('#userEd1').datetimepicker({
-        format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});
+$(function () {	 
 	$('#userEd2').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		$('#userEd3').datetimepicker('minDate',startTime2);
+	 });
+
 	$('#userEd3').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-	});
+	}).on('dp.change', function (ev) {
+		var startTime2 = $("#startTime2").val();
+		$('#userEd3').datetimepicker('minDate',startTime2);
+	 });
+	 
 	$('#userEd4').datetimepicker({
         format: 'YYYY-MM-DD',
-        locale: moment.locale('zh-cn'),
-	});
+		locale: moment.locale('zh-cn'),
+		maxDate:todayDate()
+	}).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		$('#userEd5').datetimepicker('minDate',startTime3);
+	 });
+
 	$('#userEd5').datetimepicker({
         format: 'YYYY-MM-DD',
         locale: moment.locale('zh-cn'),
-    });
+    }).on('dp.change', function (ev) {
+		var startTime3 = $("#startTime3").val();
+		$('#userEd5').datetimepicker('minDate',startTime3);
+ 	});
 });
+
+function todayDate(){
+	var day = new Date();
+ 	day.setTime(day.getTime());
+  	var s = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+  	return s;
+}
 
 function UserWalletReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
@@ -50,9 +64,7 @@ function UserWalletReady(){
 		cache: false,
 		type: 'post',
 		success: function(res) {
-			//alert(JSON.stringify(res));
 			data2=res.data;
-			//alert(JSON.stringify(data2));
 			initUserWalletGrid(data2);
 		}, 
 		error: function(){
@@ -62,16 +74,10 @@ function UserWalletReady(){
 }
 
 function FundBigReady(){
-	var startTime1=$("#startTime1").val();
-	var endTime1=$("#endTime1").val();
-	// alert(JSON.stringify(startTime1));
-	// alert(JSON.stringify(endTime1));
-	data={"startTime":startTime1,"endTime":endTime1};
-
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletBalanceRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -81,9 +87,8 @@ function FundBigReady(){
 		async : false,
 
 		success: function(res) {
-			//alert(JSON.stringify(res));
+			alert(JSON.stringify(res));
 			data2=res.data;
-			//alert(JSON.stringify(data2));
 			initFundBigGrid(data2);
 		}, 
 		error: function(){
@@ -94,14 +99,11 @@ function FundBigReady(){
 function FundInReady(){
 	var startTime2=$("#startTime2").val();
 	var endTime2=$("#endTime2").val();
-	// alert(JSON.stringify(startTime2));
-	// alert(JSON.stringify(endTime2));
 	data={"startTime":startTime2,"endTime":endTime2};
-
     $('#fundInGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletInTotalTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -111,9 +113,7 @@ function FundInReady(){
 		async : false,
 
 		success: function(res) {
-			//alert(JSON.stringify(res));
 			data2=res.data;
-			//alert(JSON.stringify(data2));
 			initFundInGrid(data2);
 		}, 
 		error: function(){
@@ -124,14 +124,11 @@ function FundInReady(){
 function FundOutReady(){
 	var startTime3=$("#startTime3").val();
 	var endTime3=$("#endTime3").val();
-	// alert(JSON.stringify(startTime3));
-	// alert(JSON.stringify(endTime3));
 	data={"startTime":startTime3,"endTime":endTime3};
-
     $('#fundOutGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		//url: "/api/v1/userWallet/inqureUserWalletTradeRecord",
+		url: "/api/v1/userWallet/inqureUserWalletOutTotalTradeRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -141,9 +138,7 @@ function FundOutReady(){
 		async : false,
 
 		success: function(res) {
-			//alert(JSON.stringify(res));
 			data2=res.data;
-			//alert(JSON.stringify(data2));
 			initFundOutGrid(data2);
 		}, 
 		error: function(){

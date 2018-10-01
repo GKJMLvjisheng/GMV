@@ -12,12 +12,55 @@
   </resultMap>
   <select id="selectAllTradeRecord" resultMap="EnergyWalletTradeRecordMap">
 select 
-	  u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.`status`,etr.time_created 
+	  u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created 
 from 
 	  energy_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid
 order by etr.time_created desc;
+</select>
+
+<resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">
+    <result column="name" property="name"/>
+	<result column="point" property="point"/>
+	<result column="power" property="power"/>
+</resultMap>
+  
+<select id="selectAllEnergyWalletBalanceRecord" resultMap="energyWalletBalanceRecordMap">
+select 
+	u.name,ew.point,ew.power
+from 	
+	energy_wallet ew,user_info u
+where
+	ew.user_uuid=u.uuid and DATE_FORMAT(ew.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+order by ew.point desc
+</select> 
+
+<resultMap id="energyWalletPointRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletPointRecordInfo">
+    <result column="name" property="name"/>
+	<result column="point" property="point"/>
+</resultMap>
+
+<select id="selectAllInTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
+select 
+	u.name,SUM(etr.point_change) as point
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+group by u.name
+order by point desc
+</select>   
+   
+<select id="selectAllOutTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
+select 
+	u.name,SUM(etr.point_change) as point
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+group by u.name
+order by point desc
 </select>
    
 </mapper>

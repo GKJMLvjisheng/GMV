@@ -128,16 +128,16 @@ public class LoginVerificationCodeController {
 	public ResponseEntity<?> contrastCode(@RequestBody IdentifyCodeInfo identifyCodeInfo, HttpSession session) throws Exception {
 		Map<String,Object> info=new HashMap<>();
 		String identifyCode=identifyCodeInfo.getIdentifyCode();
-		log.info("--------对比验证码--------");
+		log.info("--------对比验证码--------start:");
 		log.info("前端输入：{}",identifyCode);
 		log.info("contrastCode");
 		log.info("后端session保存：{}",session.getAttribute("randCheckCode"));
-		if(identifyCode!="") {
-			log.info("--------对比验证码-------2222-");	
+		if(identifyCode!="") {	
 		int flag;
 		String randCheckCode=session.getAttribute("randCheckCode").toString();
-		if (identifyCode.equals(randCheckCode)) {
+		if (identifyCode.equalsIgnoreCase(randCheckCode)) {
 			flag = 0;
+			log.info("--------验证码正确--------");
 		} else {
 			flag = 1;
 		}
@@ -148,7 +148,7 @@ public class LoginVerificationCodeController {
 	              .build();
 		}else
 		{
-			log.info("--------对比验证码-------333-");
+			log.info("--------验证码失败--------");
 			String msg="null";
 			info.put("msg", msg);
 			return new ResponseEntity.Builder<Map<String, Object>>()

@@ -22,7 +22,7 @@ import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
-import com.cascv.oas.server.blockchain.wrapper.UserWalletTotalTradeRecordInfo;
+import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
@@ -246,8 +246,8 @@ public class UserWalletController {
 		  endTime=timeLimitInfo.getEndTime();
 	  }
 	  
-	  List<UserWalletTotalTradeRecordInfo> userWalletInTotalTradeRecords=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<UserWalletTotalTradeRecordInfo>>()
+	  List<WalletTotalTradeRecordInfo> userWalletInTotalTradeRecords=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
 		        .setData(userWalletInTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
@@ -288,11 +288,53 @@ public class UserWalletController {
 		  endTime=timeLimitInfo.getEndTime();
 	  }
 	  
-	  List<UserWalletTotalTradeRecordInfo> userWalletOutTotalTradeRecords=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<UserWalletTotalTradeRecordInfo>>()
+	  List<WalletTotalTradeRecordInfo> userWalletOutTotalTradeRecords=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
 		        .setData(userWalletOutTotalTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
   
+  /**
+   * @author Ming Yang
+   * @return 在线钱包余额统计
+   */
+  @PostMapping(value="/inqureUserWalletBalanceRecord")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> inqureUserWalletBalanceRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+	  
+	  //获取当月第一天
+	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+	  Calendar c = Calendar.getInstance();
+	  c.add(Calendar.MONTH, 0);
+	  c.set(Calendar.DAY_OF_MONTH,1);
+	  String nowMonthOfFirstDay =format.format(c.getTime());
+      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
+      
+      //获取当前年月日
+      Date d = new Date();
+      String nowDate = format.format(d);
+      log.info("nowDate={}",nowDate);
+      
+	  String startTime=timeLimitInfo.getStartTime();
+	  String endTime=timeLimitInfo.getEndTime();
+	  
+	  if(startTime=="") {
+		  startTime=nowMonthOfFirstDay;
+	  }else {
+		  startTime=timeLimitInfo.getStartTime();
+	  }
+	  if(endTime=="") {
+		  endTime=nowDate;
+	  }else {
+		  endTime=timeLimitInfo.getEndTime();
+	  }
+	  
+	  List<WalletTotalTradeRecordInfo> userWalletBalanceRecords=userWalletTradeRecordMapper.selectAllUserBalanceRecord(startTime, endTime);
+		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
+		        .setData(userWalletBalanceRecords)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+  }
 }

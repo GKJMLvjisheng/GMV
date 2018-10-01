@@ -101,9 +101,9 @@
     	U.in_or_out as in_or_out,
     	T.source_name as source_name, 
     	T.type as type from point_trade_record U 
-    	left outer join energy_point_ball A on U.in_or_out = 1 and U.energy_ball_uuid = A.uuid 
+    	left outer join energy_point_ball A on U.energy_ball_uuid = A.uuid 
     	left outer join activity T on A.source_code = T.source_code
-    	where U.user_uuid = #{userUuid} 
+    	where U.user_uuid = #{userUuid} and U.in_or_out = 1
     	order by U.created desc 
     	limit #{offset}, #{limit}
   </select>
