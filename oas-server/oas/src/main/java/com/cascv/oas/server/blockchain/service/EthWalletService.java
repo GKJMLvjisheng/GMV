@@ -201,7 +201,7 @@ public class EthWalletService {
     return balance;
   }
   
-  public BigInteger getEthBalance(String userUuid) {
+  public Double getEthBalance(String userUuid,BigDecimal weiFactor) {
     BigInteger balance = null;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
@@ -209,11 +209,14 @@ public class EthWalletService {
       if (net == null)
         net = coinClient.getDefaultNet();
       balance = coinClient.ethBalance(net, ethWallet.getAddress());
-      log.info("getEthBalance of {}", balance);
+      BigDecimal balanceDec = new BigDecimal(balance);
+      balanceDec = balanceDec.divide(weiFactor);
+      log.info("getEthBalance of {}", balanceDec);
+      return balanceDec.doubleValue();
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return balance;
+    return 0.0;
   }
   
   
@@ -246,7 +249,7 @@ public class EthWalletService {
     List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
     for (UserCoin coin:userCoinList) {
       BigDecimal balance =this.getBalance(userUuid, coin.getContract(),coin.getWeiFactor()); 
-      BigInteger ethBalance = this.getEthBalance(userUuid);
+      Double ethBalance = this.getEthBalance(userUuid,coin.getWeiFactor());
       coin.setBalance(balance);
       coin.setEthBalance(ethBalance);
       coin.setValue(this.getValue(balance));

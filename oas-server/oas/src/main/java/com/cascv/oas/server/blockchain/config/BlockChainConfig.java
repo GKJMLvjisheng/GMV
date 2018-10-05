@@ -44,15 +44,15 @@ public class BlockChainConfig {
     CoinClient coinClient = new CoinClient();
     
     Map<String, Web3j> providerMap = new HashMap<>();
-	for (String p : providers.keySet()) {
-		log.info("net {} provided by {}", p, providers.get(p));
-		Web3j web3j =  Web3j.build(new HttpService(providers.get(p)));
-		providerMap.put(p, web3j);
-	}
-	coinClient.setProviderMap(providerMap);
-	if (providerMap.get(defaultNet) != null)
-		coinClient.setDefaultNet(defaultNet);
-    coinClient.setToken(token);
+    for (String p : providers.keySet()) {
+      log.info("net {} provided by {}", p, providers.get(p));
+      Web3j web3j =  Web3j.build(new HttpService(providers.get(p)));
+      providerMap.put(p, web3j);
+    }
+    coinClient.setProviderMap(providerMap);
+    if (providerMap.get(defaultNet) != null)
+      coinClient.setDefaultNet(defaultNet);
+      coinClient.setToken(token);
     
     for (CoinContract s : contracts) {
       log.info("suport coin '{}'", s.getAddress());
