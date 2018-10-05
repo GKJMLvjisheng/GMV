@@ -42,8 +42,17 @@ import lombok.extern.slf4j.Slf4j;
 public class CoinClient {
   public static final String EmptyAddress = "0x0000000000000000000000000000000000000000";
   @Getter @Setter private Map<String, Web3j> providerMap;
-  @Getter @Setter private String defaultNet;
+  @Getter @Setter private Web3j web3j;
+  @Getter @Setter private String netName;
   @Getter @Setter private String token;
+  
+  public void setDefaultNet(String net) {
+    Web3j lookup = providerMap.get(net);
+    if (lookup != null) {
+      netName = net;
+      web3j = lookup;
+    }
+  }
   
   public Set<String> listNetwork(){
 	  if (providerMap == null)
@@ -51,10 +60,9 @@ public class CoinClient {
 	  return providerMap.keySet();
   }
   
-  public BigInteger ethBalance(String net, String fromAddress) {
+  public BigInteger ethBalance(String fromAddress) {
     BigInteger balance = null;
     try {
-      Web3j web3j = providerMap.get(net);
       EthGetBalance ethGetBalance = web3j.ethGetBalance(fromAddress, DefaultBlockParameterName.LATEST).send();
       balance = ethGetBalance.getBalance();
     } catch (IOException e) {
@@ -64,7 +72,7 @@ public class CoinClient {
   }
   
   // balance
-  public BigDecimal balanceOf(String net, String fromAddress, String contract, BigDecimal weiFactor) {
+  public BigDecimal balanceOf(String fromAddress, String contract, BigDecimal weiFactor) {
 	String methodName = "balanceOf";
     List<Type> inputParameters = new ArrayList<>();
     List<TypeReference<?>> outputParameters = new ArrayList<>();
@@ -83,8 +91,6 @@ public class CoinClient {
         
     try {
       
-      Web3j web3j = providerMap.get(net);
-      log.info("net {} webj3 {}", net, web3j);
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       balanceInt = (BigInteger) results.get(0).getValue();
@@ -98,7 +104,7 @@ public class CoinClient {
 
   
   // name
-  public String nameOf(String net, String contract) {
+  public String nameOf(String contract) {
     String methodName = "name";
     String name = null;
     String fromAddr = EmptyAddress;
@@ -116,7 +122,6 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
-      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       name = results.get(0).getValue().toString();
@@ -128,7 +133,7 @@ public class CoinClient {
 
   
   // symbol
-  public String symbolOf(String net, String contract) {
+  public String symbolOf(String contract) {
     String methodName = "symbol";
     String symbol = null;
     List<Type> inputParameters = new ArrayList<>();
@@ -145,7 +150,6 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
-      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       symbol = results.get(0).getValue().toString();
@@ -156,7 +160,7 @@ public class CoinClient {
   }
 
   // Decimal
-  public BigDecimal weiFactorOf(String net, String contract) {
+  public BigDecimal weiFactorOf(String contract) {
     String methodName = "decimals";
     Integer decimal = 0;
     List<Type> inputParameters = new ArrayList<>();
@@ -173,7 +177,6 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
-      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       decimal = Integer.parseInt(results.get(0).getValue().toString());
@@ -185,7 +188,7 @@ public class CoinClient {
 
   
   // total supply
-  public BigDecimal supplyOf(String net, String contract, BigDecimal weiFactor) {
+  public BigDecimal supplyOf(String contract, BigDecimal weiFactor) {
     String methodName = "totalSupply";
     String fromAddr = EmptyAddress;
     BigInteger totalSupply = BigInteger.ZERO;
@@ -203,7 +206,6 @@ public class CoinClient {
 
     EthCall ethCall;
     try {
-      Web3j web3j = providerMap.get(net); 
       ethCall = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).sendAsync().get();
       List<Type> results = FunctionReturnDecoder.decode(ethCall.getValue(), function.getOutputParameters());
       totalSupply = (BigInteger) results.get(0).getValue();
@@ -215,11 +217,10 @@ public class CoinClient {
   }
   
   // transfer todo
-  public String transfer(String net, String fromAddress, String privateKey, String toAddress, 
+  public String transfer(String fromAddress, String privateKey, String toAddress, 
 		  String contract, BigInteger amount, BigInteger gasPrice, BigInteger gasLimit) {
 	  BigInteger nonce;
 	  EthGetTransactionCount ethGetTransactionCount = null;
-	  Web3j web3j = providerMap.get(net);
 	  try {
 		  ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
 	  } catch (IOException e) {
@@ -258,11 +259,10 @@ public class CoinClient {
     return txHash;
   }
   
-  public String multiTransfer(String net, String fromAddress, String privateKey, List<String> toAddress, 
+  public String multiTransfer(String fromAddress, String privateKey, List<String> toAddress, 
 		  String contract, List<BigInteger> amount,BigInteger gasPrice, BigInteger gasLimit) {
 	  BigInteger nonce;
 	  EthGetTransactionCount ethGetTransactionCount = null;
-	  Web3j web3j = providerMap.get(net);
 	  try {
 	    ethGetTransactionCount = web3j.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.PENDING).send();
     } catch (IOException e) {

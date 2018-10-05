@@ -33,6 +33,7 @@ import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
+import com.cascv.oas.server.blockchain.model.EthConfigModel;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
@@ -190,10 +191,7 @@ public class EthWalletService {
     BigDecimal balance = BigDecimal.ZERO;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
-      String net = ethWallet.getPreferNetwork();
-      if (net == null)
-    	  net = coinClient.getDefaultNet();
-      balance = coinClient.balanceOf(net, ethWallet.getAddress(), contract, weiFactor);
+      balance = coinClient.balanceOf(ethWallet.getAddress(), contract, weiFactor);
       log.info("getBalance of {}", balance);
     } catch (Exception e) {
     	e.printStackTrace();
@@ -205,10 +203,7 @@ public class EthWalletService {
     BigInteger balance = null;
     try {
       EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
-      String net = ethWallet.getPreferNetwork();
-      if (net == null)
-        net = coinClient.getDefaultNet();
-      balance = coinClient.ethBalance(net, ethWallet.getAddress());
+      balance = coinClient.ethBalance(ethWallet.getAddress());
       BigDecimal balanceDec = new BigDecimal(balance);
       balanceDec = balanceDec.divide(weiFactor);
       log.info("getEthBalance of {}", balanceDec);
@@ -290,10 +285,7 @@ public class EthWalletService {
       return returnValue;
     }
     BigDecimal amountDec = amount.multiply(userCoin.getWeiFactor());
-    String net = ethWallet.getPreferNetwork();
-    if (net == null)
-  	  net = coinClient.getDefaultNet();
-    String txHash=coinClient.transfer(net, ethWallet.getAddress(), ethWallet.getPrivateKey(), toUserAddress, contract, 
+    String txHash=coinClient.transfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), toUserAddress, contract, 
     		amountDec.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
@@ -337,11 +329,8 @@ public class EthWalletService {
     		return returnValue;
     	}
     }
-    String net = ethWallet.getPreferNetwork();
-    if (net == null)
-  	  net = coinClient.getDefaultNet();
     String txHash=coinClient.multiTransfer(
-    			net, ethWallet.getAddress(), ethWallet.getPrivateKey(), 
+    			ethWallet.getAddress(), ethWallet.getPrivateKey(), 
     			addressList, contract, amountIntList, gasPrice,gasLimit);
     log.info("txhash {}", txHash);
     if (txHash!=null) {
@@ -365,15 +354,20 @@ public class EthWalletService {
 	  return coinClient.listNetwork();
   }
   
-  public ErrorCode setPreferNetwork(String userUuid, String preferNetwork) {
+  public ErrorCode setPreferNetwork(String preferNetwork) {
 	  Set<String> networkSet = this.listNetwork();
 	  if (networkSet == null || preferNetwork == null || !networkSet.contains(preferNetwork))
 		  return ErrorCode.INVALID_BLOCKCHAIN_NETWORK;
-	  EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
-	  if (ethWallet == null)
-		  return ErrorCode.NO_ETH_WALLET;
-	  ethWallet.setPreferNetwork(preferNetwork);
-	  ethWalletMapper.update(ethWallet);
+	  EthConfigModel ethConfigModel = digitalCoinService.getEthConfig(); 
+	  if (ethConfigModel == null) {
+	    ethConfigModel = new EthConfigModel();
+	    ethConfigModel.setActiveNetwork(preferNetwork);
+	    digitalCoinService.addEthConfig(ethConfigModel);
+	  } else {
+	    ethConfigModel.setActiveNetwork(preferNetwork);
+	    digitalCoinService.updateEthConfig(ethConfigModel);
+	  }
+	  coinClient.setDefaultNet(preferNetwork);
 	  return ErrorCode.SUCCESS;
   }
 }
