@@ -233,6 +233,7 @@ export default {
 
     // 签到按钮点击事件
     handleAttendance () {
+     
       this.$axios.post('/energyPoint/checkin').then(({data}) => {
         console.log(data)
         if (data.code == 0) {
@@ -246,7 +247,7 @@ export default {
         {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
-       
+        
       })
     },
     // 签到弹窗确认按钮
@@ -410,7 +411,8 @@ export default {
       // aaa[i].classList.add("animated") 
     }*/
     },
-    skipRefresh () {
+   
+ skipRefresh() {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
      
       //this.removeclass() 
@@ -423,7 +425,6 @@ export default {
      console.log("111")
   
     },
-
 
 
     removeclass(){
@@ -444,6 +445,22 @@ export default {
   }
    
 };
+
+  /*window.addEventListener('pagehide', function(e) {
+    var $body = $(document.body);	
+     if (e.persisted) {
+    $body.children().remove();    // 要等到回调函数完成，用户按返回才执行script标签的代码   
+    setTimeout(function() {	   
+    $body.append("<script type='text/javascript'>window.location.reload();<//script>");   
+     });
+     }
+     });*/
+   
+  window.addEventListener('pageshow', function( e ){
+  if (e.persisted) {
+  window.location.reload()
+  }
+  })
 
 </script>
 
