@@ -5,6 +5,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.CryptoUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -156,6 +157,12 @@ public class EthWalletController {
     String userUuid = ShiroUtils.getUserUuid();
     List<UserCoin> userCoinList = ethWalletService.listCoin(userUuid);
     
+    try {
+      CryptoUtils.test_decrypto();
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     return new ResponseEntity.Builder<List<UserCoin>>()
             .setData(userCoinList)
             .setErrorCode(ErrorCode.SUCCESS)
