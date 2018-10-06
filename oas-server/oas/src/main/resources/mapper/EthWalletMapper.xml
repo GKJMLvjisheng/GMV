@@ -11,12 +11,13 @@
 	<result column="mnemonic_path" property="mnemonicPath"/>
 	<result column="address" property="address"/>
 	<result column="prefer_network" property="preferNetwork"/>
+	<result column="crypto" property="crypto"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, prefer_network, created,updated
+    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, prefer_network, crypto, created,updated
   </sql>
   
   
@@ -30,6 +31,7 @@
     	mnemonic,
     	mnemonic_path,
     	address,
+    	crypto,
     	created,
     	updated
 	)  values (
@@ -40,6 +42,7 @@
 		#{mnemonicList,jdbcType=VARCHAR},
 		#{mnemonicPath,jdbcType=VARCHAR},
 		#{address,jdbcType=VARCHAR},
+		#{crypto,jdbcType=INTEGER},
 		#{created,jdbcType=VARCHAR},
 		#{updated,jdbcType=VARCHAR}
 	)
@@ -56,6 +59,9 @@
     		</if>
 			<if test="address != null">
     			address = #{address},
+    		</if>
+    		<if test="crypto != null">
+    			crypto = #{crypto}
     		</if>
 			<if test="updated != null">
     			updated = #{updated},

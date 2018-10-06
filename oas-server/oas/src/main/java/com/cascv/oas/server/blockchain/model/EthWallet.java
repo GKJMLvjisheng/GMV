@@ -18,28 +18,7 @@ public class EthWallet implements Serializable {
   @Getter @Setter private String mnemonicPath;
   @Getter @Setter private String address;
   @Getter @Setter private String preferNetwork;
+  @Getter @Setter private Integer crypto;
   @Getter @Setter private String created;
   @Getter @Setter private String updated;
-  
-  
-  public static String toMnemonicList(List<String> mnemonic) {
-    JSONArray jsonArray = new JSONArray();
-    for (String s : mnemonic) {
-      jsonArray.add(s);
-    }
-    return jsonArray.toJSONString();
-  }
-  
-  public static List<String> fromMnemonicList(String mnemonic){
-    if (mnemonic == null) {
-      return null;
-    }
-    JSONArray jsonArray = JSONArray.parseArray(mnemonic);
-    List<String> x = new ArrayList<>();
-    for (Integer i = 0; i< jsonArray.size(); i++) {
-      x.add(jsonArray.getString(i));
-    }
-    return x;
-  }
-
 }

@@ -23,8 +23,10 @@ import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.CryptoUtils;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.server.blockchain.config.TransferQuota;
@@ -51,6 +53,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EthWalletService {
   public static final String ETH_TYPE = "m/44'/60'/0'/0/0"; 
+  private static final String KEY_SALT = "anbInmSS76Mn9";
   
   private static SecureRandom secureRandom = new SecureRandom();
   
@@ -74,6 +77,27 @@ public class EthWalletService {
   
   @Autowired
   private KeyStoreService keyStoreService;
+  
+  public static String toMnemonicList(List<String> mnemonic) {
+    JSONArray jsonArray = new JSONArray();
+    for (String s : mnemonic) {
+      jsonArray.add(s);
+    }
+    return jsonArray.toJSONString();
+  }
+  
+  public static List<String> fromEncryptedMnemonicList(String encryptedMnemonic){
+    if (encryptedMnemonic == null) {
+      return null;
+    }
+    String mnemonic = CryptoUtils.decrypt(encryptedMnemonic, KEY_SALT);
+    JSONArray jsonArray = JSONArray.parseArray(mnemonic);
+    List<String> x = new ArrayList<>();
+    for (Integer i = 0; i< jsonArray.size(); i++) {
+      x.add(jsonArray.getString(i));
+    }
+    return x;
+  }
   
   public boolean checkMnemonic(String password, List <String> mnemonic) {
     
@@ -140,17 +164,34 @@ public class EthWalletService {
       EthWallet ethWallet =  new EthWallet();
       ethWallet.setUuid(UuidUtils.getPrefixUUID("EW"));
       ethWallet.setUserUuid(userUuid);
-      ethWallet.setMnemonicList(EthWallet.toMnemonicList(ds.getMnemonicCode()));
-      ethWallet.setPublicKey(keyPair.getPublicKey().toString(16));
-      ethWallet.setPrivateKey(keyPair.getPrivateKey().toString(16));
+      
+      String mnemonicJson = toMnemonicList(ds.getMnemonicCode());
+      String encryptedMnemonic = CryptoUtils.encrypt(mnemonicJson, KEY_SALT);
+      log.info("encrypted mnemonic:{}", encryptedMnemonic);
+      ethWallet.setMnemonicList(encryptedMnemonic);
+      
+      String publicKey = CryptoUtils.encrypt(keyPair.getPublicKey().toString(16), KEY_SALT);
+      
+      log.info("publickey : {}", publicKey);
+      ethWallet.setPublicKey(publicKey);
+      
+      String privateKey = CryptoUtils.encrypt(keyPair.getPrivateKey().toString(16), KEY_SALT);
+      log.info("privateKey : {}", privateKey);
+
+      ethWallet.setPrivateKey(privateKey);
+      
       ethWallet.setMnemonicPath(dkKey.getPathAsString());
       ethWallet.setAddress("0x" + walletFile.getAddress());
-      keyStoreService.saveKey(userUuid, jsonStr);
+      
+      String encryptedWallet = CryptoUtils.encrypt(jsonStr, KEY_SALT);
+      keyStoreService.saveKey(userUuid, encryptedWallet);
       String datetime = DateUtils.dateTimeNow();
+      ethWallet.setCrypto(1);
       ethWallet.setCreated(datetime);
       ethWallet.setUpdated(datetime);
       ethWalletMapper.deleteByUserUuid(userUuid);
       ethWalletMapper.insertSelective(ethWallet);
+      
       import_token(userUuid, ethWallet.getAddress(),coinClient.getToken());
       return ethWallet;
     } catch (CipherException | JsonProcessingException e) {
@@ -174,7 +215,7 @@ public class EthWalletService {
     
     BigDecimal weiFactor = digitalCoin.getWeiFactor();
     userCoin.setWeiFactor(weiFactor);
-    BigDecimal balance = this.getBalance(address, contract, weiFactor);
+    BigDecimal balance = this.getBalance(userUuid, contract, weiFactor);
     userCoin.setBalance(balance);
     userCoinMapper.insertSelective(userCoin);
   }
@@ -190,7 +231,8 @@ public class EthWalletService {
   public BigDecimal getBalance(String userUuid, String contract, BigDecimal weiFactor) {
     BigDecimal balance = BigDecimal.ZERO;
     try {
-      EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
+      EthWallet ethWallet = getEthWalletByUserUuid(userUuid);
+      log.info("userUuid {} ethWallet {}", userUuid, ethWallet);
       balance = coinClient.balanceOf(ethWallet.getAddress(), contract, weiFactor);
       log.info("getBalance of {}", balance);
     } catch (Exception e) {
@@ -202,7 +244,7 @@ public class EthWalletService {
   public Double getEthBalance(String userUuid,BigDecimal weiFactor) {
     BigInteger balance = null;
     try {
-      EthWallet ethWallet = ethWalletMapper.selectByUserUuid(userUuid);
+      EthWallet ethWallet = getEthWalletByUserUuid(userUuid);
       balance = coinClient.ethBalance(ethWallet.getAddress());
       BigDecimal balanceDec = new BigDecimal(balance);
       balanceDec = balanceDec.divide(weiFactor);
@@ -285,7 +327,11 @@ public class EthWalletService {
       return returnValue;
     }
     BigDecimal amountDec = amount.multiply(userCoin.getWeiFactor());
-    String txHash=coinClient.transfer(ethWallet.getAddress(), ethWallet.getPrivateKey(), toUserAddress, contract, 
+    String key = ethWallet.getPrivateKey();
+    if (ethWallet.getCrypto() != 0) {
+      key = CryptoUtils.decrypt(key, KEY_SALT);
+    }
+    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress, contract, 
     		amountDec.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
@@ -329,8 +375,12 @@ public class EthWalletService {
     		return returnValue;
     	}
     }
+    String key = ethWallet.getPrivateKey();
+    if (ethWallet.getCrypto() != 0) {
+      key = CryptoUtils.decrypt(key, KEY_SALT);
+    }
     String txHash=coinClient.multiTransfer(
-    			ethWallet.getAddress(), ethWallet.getPrivateKey(), 
+    			ethWallet.getAddress(), key, 
     			addressList, contract, amountIntList, gasPrice,gasLimit);
     log.info("txhash {}", txHash);
     if (txHash!=null) {

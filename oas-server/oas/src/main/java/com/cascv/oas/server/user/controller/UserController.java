@@ -130,7 +130,7 @@ public class UserController {
 	@WriteLog(value="Register")
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
 
-	    String password = userModel.getPassword();
+	  String password = userModel.getPassword();
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
@@ -139,7 +139,7 @@ public class UserController {
 		ErrorCode ret = userService.addUser(uuid, userModel);
 //		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
-  	  registerResult.setMnemonicList(EthWallet.fromMnemonicList(ethHdWallet.getMnemonicList()));
+  	  registerResult.setMnemonicList(EthWalletService.fromEncryptedMnemonicList(ethHdWallet.getMnemonicList()));
   	  registerResult.setUuid(userModel.getUuid());
   	  ret = ErrorCode.SUCCESS;
   	}
