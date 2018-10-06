@@ -25,7 +25,26 @@ $(function ()
 //	})
 	//token=$("#userToken",parent.document).val();
 	//data={"name":userName}
+	initsymbol();
 	
+	var tabProduct = document.getElementById("tabProduct");    
+	
+    editTables(tabProduct);  
+	});
+
+//	$("#contractSymbol").change(function(){
+//	alert($(this).children('option:selected').val()); 
+//	})
+function initsymbol(){
+	 var objContractAddress=document.getElementById("contractAddress");
+	 var objMoney=document.getElementById("money");
+	 var objPrecision=document.getElementById("precision");
+	 objContractAddress.innerHTML="";
+     objMoney.innerHTML="";
+     objPrecision.innerHTML="";
+     var selections = document.getElementById("contractSymbol");
+ 	
+	 selections.options.length=1;
 	$.ajax({
 		   type: 'post',
 		   url: '/api/v1/ethWallet/listCoin',
@@ -47,7 +66,7 @@ $(function ()
 		    	 var len=optionData.length;
 		    	 
 		    	 
-		    	 var selections = document.getElementById("contractSymbol");
+		    	
 		    	 //var string=res.data[];
 		    	 for(var i =0;i<len;i++){
                      //设置下拉列表中的值的属性
@@ -69,19 +88,13 @@ $(function ()
 		   },
 		  
 		  });
-	var tabProduct = document.getElementById("tabProduct");    
-	
-    editTables(tabProduct);  
-	});
-
-//	$("#contractSymbol").change(function(){
-//	alert($(this).children('option:selected').val()); 
-//	})
+	}
 	$('#contractSymbol').on('change',function(){
                 //获取对应值--后期作为类选择器
 		 var objContractAddress=document.getElementById("contractAddress");
 		 var objMoney=document.getElementById("money");
 		 var objPrecision=document.getElementById("precision");
+		 
                 var thisVal = $(this).val();
                 if(thisVal!="请选择")
                 { $.ajax({
@@ -139,79 +152,8 @@ $(function ()
         	  }
                
             })
-     $(function(){
-    	 $.ajax({
-         		   type: 'post',
-         		   url: '/api/v1/ethWallet/listNetwork',
-         		   //data: JSON.stringify(data),
-         		   contentType : 'application/json;charset=utf8',
-         		   dataType: 'json',
-         		   cache: false,
-         		   success: function (res) {
-         			 
-         		     if (res.code == 0) {
-         		    	  
-         		    	 var optionData=res.data;
-         		    	 
-         		    	 var len=optionData.length;
-         		    	 var objNetwork=document.getElementById("network");
-         		    	
-                   // 将option增加到下拉列表中。
-         		    	 for(var i =0;i<len;i++){
-         		    		  //设置下拉列表中的值的属性
-                            var option = document.createElement("option");
-                                option.value = optionData[i];
-                               
-                                option.text= optionData[i];
-                            //将option增加到下拉列表中。
-                                objNetwork.options.add(option); 
-                            	  }
-         		    	$("#network option[value='ropsten']").prop("selected","selected");//根据值让option选中
-                          }
-         		     else {
-         		    	 alert(res.message);
-         		     }
-         		   },
-         		   error: function (res) {
-         			  alert("option错误"+JSON.stringify(res));
-         		   },
-         		  
-         		  });
-     })
-     $('#network').on('change',function(){
-                //获取对应值--后期作为类选择器
-		
-                var thisVal = $(this).val();
-                
-//                if(thisVal=="kovan"||thisVal=="rinkeby")
-//                {
-//                	$("#network").removeAttr("selected");//根据值去除选中状态
-//                	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
-//                	thisVal = $(this).val();
-//                }
-                var data={"preferNetwork":thisVal};
-               $.ajax({
-         		   type: 'post',
-         		   url: '/api/v1/ethWallet/setPreferNetwork',
-         		   data: JSON.stringify(data),
-         		   contentType : 'application/json;charset=utf8',
-         		   dataType: 'json',
-         		   cache: false,
-         		   success: function (res) {
-         			 
-         		     if (res.code == 0) {
-         		    	 
-         		     } else {
-         		    	 alert(res.message);
-         		     }
-         		   },
-         		   error: function (res) {
-         			  alert("option错误"+JSON.stringify(res));
-         		   },
-         		  
-         		  });
-        	 
-            })
+    
+    
 //子窗口会跳转到大页面外window.parent.location.href=url ;
     //设置多个表格可编辑  
 
@@ -792,6 +734,11 @@ $(function ()
        if(flag2)
    	{	alert("地址由42位的字母数字组成");
    		return;}
+      
+       if($("#money").text()<sunmary){
+    	   alert("账户余额小于转账金额！");
+    	   return;
+       }
         var userAddress=$("#userAddress").val();
         var userName=$("#userNickname",parent.document).text();
         var symbol=$('#contractSymbol option:selected') .text();
@@ -821,15 +768,25 @@ $(function ()
 			
 			if(res.code==0)
          {  
-				var strMain="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				var strMain="https://etherscan.io/tx/"+res.data.txHash;
 				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
-				var network=$("#network").val();
-				if(strTest.indexOf(network)!=-1)
-					{str=strTest;}
-				else{str=strMain;}
-				$("#Tip").modal('show');
+				//var network=$("#network").val();
+				var network=$("#net",parent.document).val();
 				
-				document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
+				console.log(network);
+				if(network==""){
+					var str=strMain;
+				}else if(strTest.indexOf(network)!=-1)
+						{console.log(11);
+						str=strTest;}
+					else{console.log(22);
+						str=strMain;}
+					
+					$("#Tip").modal('show');
+					
+					document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
+					 //setTimeout(setMoney, 50000);
+				
          }
          else{
         	 alert("转账失败");
@@ -843,7 +800,81 @@ $(function ()
 	}); 
     });
     }
+    function setMoney(){
+    	console.log(111);
+    	var objMoney=document.getElementById("money");
+		 var symbol=$("#contractSymbol").val();
+		  $.ajax({
+    		   type: 'post',
+    		   url: '/api/v1/ethWallet/listCoin',
+    		   //data: JSON.stringify(data),
+    		   contentType : 'application/json;charset=utf8',
+    		   dataType: 'json',
+    		   cache: false,
+    		   success: function (res) {
+    			  
+    		     if (res.code == 0) {
+    		    	  
+    		    	 var optionData=res.data;
+    		    	 
+    		    	 var len=optionData.length;
 
+    		    	 for(var i =0;i<len;i++){
+    		    		 
+                         if(symbol==optionData[i].contract)
+                       	 {
+                       	 
+             		    	objMoney.innerHTML=optionData[i].balance;
+                       	 
+                       	  }
+                     }
+    			     
+    		     } else {
+    		    	 alert(res.message);
+    		     }
+    		   },
+    		   error: function (res) {
+    			  alert("option错误"+JSON.stringify(res));
+    		   },
+    		  
+    		  });
+    }
+    var objMoney=document.getElementById("money");
+	 var symbol=$("#contractSymbol").val();
+	  $.ajax({
+		   type: 'post',
+		   url: '/api/v1/ethWallet/listCoin',
+		   //data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   success: function (res) {
+			  
+		     if (res.code == 0) {
+		    	  
+		    	 var optionData=res.data;
+		    	 
+		    	 var len=optionData.length;
+
+		    	 for(var i =0;i<len;i++){
+		    		 
+                     if(symbol==optionData[i].contract)
+                   	 {
+                   	 
+         		    	objMoney.innerHTML=optionData[i].balance;
+                   	 
+                   	  }
+                 }
+			     
+		     } else {
+		    	 alert(res.message);
+		     }
+		   },
+		   error: function (res) {
+			  alert("option错误"+JSON.stringify(res));
+		   },
+		  
+		  });
     //提取指定行的数据，JSON格式  
 
     function getRowData(row){  

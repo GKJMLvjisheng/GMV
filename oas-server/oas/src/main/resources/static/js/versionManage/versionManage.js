@@ -254,6 +254,7 @@ function addVersion(){
 
 		},
 	});
+	
 	resetAddModal();
 	versionReady();
 }
@@ -315,9 +316,10 @@ function updateVersion(){
 		 }
 	 }
 	var formData = new FormData();
-	var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
+	//var version_file = document.getElementById("EversionFile");//获取类型为文件的输入元素
 	//alert(img_file);
-	var fileobj = version_file.files[0];//使用files获取文件
+	//var fileobj = version_file.files[0];//使用files获取文件
+	
 	//alert(fileobj);
 	//alert($("#EnewsId").val());
 	//formData.append("file",fileobj);//添加fileobj到formData的键file中
@@ -344,13 +346,14 @@ function updateVersion(){
 			//alert(JSON.stringify(res));
 			
 			if(res.code==0){
-				alert("修改成功");
-				
-				versionReady();
-			    //newsReady();
+				document.getElementById("tipContent").innerText="修改成功";
+				$("#Tip").modal('show');
+				$("#updateVersionModal").modal('hide');
 			}
 			else{
-				alert("修改失败");
+				document.getElementById("tipContent").innerText="修改失败";
+				$("#Tip").modal('show');
+				$("#updateVersionModal").modal('hide');
 				}			
 			
 		},
