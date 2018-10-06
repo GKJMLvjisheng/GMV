@@ -41,7 +41,10 @@ public enum ErrorCode {
   REWARD_ALREADY_EXIST(10026,"该奖励配置已存在"),
   IS_BACKUPS_WALLET(10025,"已备份过钱包"),
   mobile_ALREADY_EXISTS(10026, "手机号已存在"),
-  email_ALREADY_EXISTS(10027, "邮箱已存在");
+  email_ALREADY_EXISTS(10027, "邮箱已存在"),
+  wechat_ALREADY_EXISTS(10028, "不要重复输入验证码!"),
+  identifCode_ERROR(10029, "验证码错误！");
+
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

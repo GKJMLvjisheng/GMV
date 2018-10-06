@@ -209,14 +209,14 @@ public class ComputingPowerController {
 	    		   log.info("不要重复输入验证码!");
 	    		   return new ResponseEntity.Builder<Integer>()
 		    			      .setData(2)
-		    			      .setErrorCode(ErrorCode.GENERAL_ERROR)
+		    			      .setErrorCode(ErrorCode.wechat_ALREADY_EXISTS)
 		    			      .build(); 
 	    	   }	    	  	    	  
 	    }else {
 	    	      log.info("验证码不正确!");
 	    	   return new ResponseEntity.Builder<Integer>()
 	    			      .setData(1)
-	    			      .setErrorCode(ErrorCode.GENERAL_ERROR)
+	    			      .setErrorCode(ErrorCode.identifCode_ERROR)
 	    			      .build(); 
 	    }	    	   			
   }
