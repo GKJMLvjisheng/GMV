@@ -11,5 +11,9 @@ public class MultiTransferController {
 	public String multiTransfer() {
 		return "multiTransfer";
 	}
+	@RequestMapping(value="/netConfiguration/netConfig")
+	public String netConfig() {
+		return "netConfiguration/netConfig";
+	}
 
 }
