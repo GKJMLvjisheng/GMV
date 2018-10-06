@@ -156,13 +156,7 @@ public class EthWalletController {
   public ResponseEntity<?> listCoin(){
     String userUuid = ShiroUtils.getUserUuid();
     List<UserCoin> userCoinList = ethWalletService.listCoin(userUuid);
-    
-    try {
-      CryptoUtils.test_decrypto();
-    } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+
     return new ResponseEntity.Builder<List<UserCoin>>()
             .setData(userCoinList)
             .setErrorCode(ErrorCode.SUCCESS)
