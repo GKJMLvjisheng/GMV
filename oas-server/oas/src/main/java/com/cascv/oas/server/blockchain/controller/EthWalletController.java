@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -259,8 +260,9 @@ public class EthWalletController {
   @PostMapping(value="/setPreferNetwork")
   @ResponseBody
   @Transactional
+  @RequiresRoles("admin")
   public ResponseEntity<?> setPreferNetwork(@RequestBody PreferNetworkReq req){
-    ErrorCode errorCode=ethWalletService.setPreferNetwork(ShiroUtils.getUserUuid(), req.getPreferNetwork());
+    ErrorCode errorCode=ethWalletService.setPreferNetwork(req.getPreferNetwork());
     return new ResponseEntity.Builder<Integer>()
         .setData(1)
         .setErrorCode(errorCode)

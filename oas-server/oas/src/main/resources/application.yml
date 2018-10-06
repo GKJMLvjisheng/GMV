@@ -70,7 +70,7 @@ server:
 media:
   server:
     imageHost : http://oas.cascv.com:8080
-
+    
 wallet:
   providers:
     ropsten: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"

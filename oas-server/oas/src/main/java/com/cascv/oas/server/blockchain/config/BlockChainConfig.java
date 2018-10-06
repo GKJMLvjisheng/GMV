@@ -5,59 +5,66 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
+import com.cascv.oas.server.blockchain.model.EthConfigModel;
+import com.cascv.oas.server.blockchain.model.EthContractModel;
+import com.cascv.oas.server.blockchain.model.EthNetworkModel;
 import com.cascv.oas.server.blockchain.service.DigitalCoinService;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-class CoinContract {
-  @Setter @Getter private String address;
-};
 
 @Configuration
 @Slf4j
-@ConfigurationProperties(prefix = "wallet")
 public class BlockChainConfig {
   
   @Autowired 
   private DigitalCoinService digitalCoinService;
   
   @Setter @Getter private Map<String,String> providers;
-  @Setter @Getter private String defaultNet;
-  @Setter @Getter private String token;
-  @Setter @Getter private List<CoinContract> contracts;
 
   @Bean
   @Lazy
   public CoinClient getCoinClient() {
     
 
-    log.info("blockchain token is {}", token);
     CoinClient coinClient = new CoinClient();
+        
+    EthConfigModel ethConfigModel = digitalCoinService.getEthConfig();
+    log.info("config {} - {}", ethConfigModel.getActiveNetwork(), ethConfigModel.getActiveToken());
     
     Map<String, Web3j> providerMap = new HashMap<>();
-	for (String p : providers.keySet()) {
-		log.info("net {} provided by {}", p, providers.get(p));
-		Web3j web3j =  Web3j.build(new HttpService(providers.get(p)));
-		providerMap.put(p, web3j);
-	}
-	coinClient.setProviderMap(providerMap);
-	if (providerMap.get(defaultNet) != null)
-		coinClient.setDefaultNet(defaultNet);
-    coinClient.setToken(token);
-    
-    for (CoinContract s : contracts) {
-      log.info("suport coin '{}'", s.getAddress());
-      digitalCoinService.create(coinClient, s.getAddress());
+    List<EthNetworkModel> ethNetworkModelList = digitalCoinService.listEthNetwork();
+    for (EthNetworkModel ethNetworkModel : ethNetworkModelList) {
+      log.info("network {} - {}", ethNetworkModel.getName(), ethNetworkModel.getProvider());
+      Web3j web3j =  Web3j.build(new HttpService(ethNetworkModel.getProvider()));
+      providerMap.put(ethNetworkModel.getName(), web3j);
     }
+    coinClient.setProviderMap(providerMap);
+    
+    String activeNetwork = ethConfigModel.getActiveNetwork();
+    if (providerMap.get(activeNetwork) != null) {
+      log.info("default network {}", activeNetwork);
+      coinClient.setDefaultNet(activeNetwork);
+    }
+    
+    List<EthContractModel> ethContractModelList = digitalCoinService.listEthContract();
+    for (EthContractModel ethContractModel:ethContractModelList) {
+      log.info("contract {} - {}", ethContractModel.getName(), ethContractModel.getAddress());
+      digitalCoinService.create(coinClient, ethContractModel.getAddress());
+    }
+    EthContractModel ethContractModel= digitalCoinService.findEthContractByName(ethConfigModel.getActiveToken());
+    
+    log.info("token {} - {}", ethContractModel.getName(), ethContractModel.getAddress());
+    coinClient.setToken(ethContractModel.getAddress());
+    
     return coinClient;
   }
 }
