@@ -11,5 +11,9 @@ public class RootActivityController {
 		
 	    return "activityReward/activityReward";
 	}
-
+	@GetMapping(value="/activityReward/rewardManage")
+	public String rewardManage(){
+		
+	    return "activityReward/rewardManage";
+	}
 }

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VersionManage</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	 <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/activityReward/rewardManage.js}"></script>
+
+
+    
+   
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
+ 
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+
+		<form class="form-inline" >
+			<!-- 工具栏 -->
+			<div id="toolbar">
+
+					<input type="button" value="奖励新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn"  data-toggle="modal" data-target="#addRewardModal"></input>
+<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			</div>
+		</form>
+		
+		<div class = "container">
+			<table id="rewardGrid"></table>
+		</div>
+
+	</section>
+
+
+	<div class="modal fade" id="addRewardModal" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">奖励新增</h3>
+				</div>
+
+				<div class="modal-body">
+				
+
+					<form id="addRewardForm" action="/reward" method="post" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="rewardName" class="col-sm-3 control-label">奖励名称：</label>
+							<div class="col-sm-8">
+								<input name="rewardName" class="form-control" id="rewardName" required="required" oninput="checkRewardName()" maxlength="10" placeholder="奖励名称长度最多为10个字符" /></input>
+								<span id='msg_rewardName'></span>
+
+							</div>						
+						</div>
+					
+								
+							<div class="form-group">
+					        	<label for="rewardDescription" class="col-sm-3 control-label">奖励描述：</label>
+					       		 <div class="col-sm-8">
+			
+								 
+						        	<textarea  class="form-control" name="rewardDescription" id="rewardDescription" oninput="checkRewardDescription()"maxlength="50"placeholder="奖励描述长度最多为50个字符"></textarea>
+						       <span id='msg_rewardDescription'></span>
+							    
+						       </div>	
+						      			
+						   </div>		
+						
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="conf" class="btn btn-default" onclick="addReward()">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog modal-sm"  role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+			
+		
+	<!-- 编辑奖励的模态框 -->
+    <div class="modal fade" id="updateRewardModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">奖励修改</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateRewardForm" action="/updatedReward" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="ErewardId" id="ErewardId">
+						
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-3 control-label">奖励名称：</label>
+							<div class="col-sm-8">
+								<input name="ErewardName" class="form-control" id="ErewardName" readonly="readonly" required="required"  placeholder="版本号长度最多为10个字符" /></input>
+								
+
+							</div>						
+						</div>
+					<div class="form-group">
+					        	<label for="ErewardDescription" class="col-sm-3 control-label">奖励描述：</label>
+					       		 <div class="col-sm-8">
+			
+								 
+						        	<textarea  class="form-control" name="ErewardDescription" id="ErewardDescription" oninput="checkErewardDescription()"maxlength="50"placeholder="奖励描述长度最多为50个字符"></textarea>
+						       <span id='msg_ErewardDescription'></span>
+							    
+						       </div>	
+						      			
+						   </div>		
+						
+						
+																			
+					</form>
+				</div>
+
+				<div class="modal-footer">
+<!-- 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button> -->
+					<button type="button" class="btn btn-default"  onclick="updateReward()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resteUpdate()">取消</button>
+				</div>
+						
+			</div>
+					
+		</div>
+	</div>
+			
+</body>
+
+</html>
+

@@ -72,7 +72,11 @@ public class EnergyPointController {
 //            energyService.updateCheckinEnergyWallet(userUuid);
 //            // change the Checkin EnergyBall to Die
 //            energyService.updateEnergyBallStatusByUuid(userUuid);
+        	//get reward and record
         	activityService.getReward(sourceCode, userUuid);
+        	// change the Checkin EnergyBall to Die
+            activityService.updateEnergyPointBallStatusByUuid(userUuid);
+            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
         	return new ResponseEntity
                     .Builder<Integer>()
                     .setData(0)
