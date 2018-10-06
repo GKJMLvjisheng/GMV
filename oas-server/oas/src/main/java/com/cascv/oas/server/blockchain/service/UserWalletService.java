@@ -44,6 +44,9 @@ public class UserWalletService {
 	  userWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
 	  userWalletDetail.setUserUuid(userWallet.getUserUuid());
 	  userWalletDetail.setTitle(userWalletDetailScope.getTitle());
+	  /**
+	   * 接口优化统一
+	   */
 	  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
 	  userWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
 	  userWalletDetail.setValue(value);
@@ -102,6 +105,10 @@ public class UserWalletService {
 	        time, CurrencyCode.POINT);
 	  BigDecimal token = returnValue.getData();
 	  userWalletMapper.increaseBalance(userWallet.getUuid(), token);
+	  /**
+	   * 接口优化
+	   */
+	  //this.addDetail(userWallet, changeUserName, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "");
 	  this.addDetail(userWallet, changeUserName, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "");
   } 
 }
