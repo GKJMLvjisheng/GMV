@@ -19,6 +19,8 @@ import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Service
 public class UserWalletService {
   
@@ -47,13 +49,33 @@ public class UserWalletService {
 	  /**
 	   * 接口优化统一
 	   */
-	  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
+	  Integer scope =userWalletDetailScope.getScope();
+	  switch(scope){
+	  case 1:
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+	      break;
+	  case 2:
+		  log.info("提币");		  
+	      break;
+	  case 3:
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+changeUserName);
+	      break;
+	  case 4:
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+changeUserName);
+	      break;
+	  case 5:
+		  log.info("充币");
+	      break;
+	  default:
+		  log.info("swicth-case-end");
+	      break;
+	  }
 	  userWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
 	  userWalletDetail.setValue(value);
 	  userWalletDetail.setCreated(DateUtils.getTime());
-	  userWalletDetail.setComment(comment);
+	  //userWalletDetail.setComment(comment);
 	  userWalletDetail.setRemark(remark);
-	  userWalletDetail.setChangeUserName(changeUserName);
+	  //userWalletDetail.setChangeUserName(changeUserName);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
   

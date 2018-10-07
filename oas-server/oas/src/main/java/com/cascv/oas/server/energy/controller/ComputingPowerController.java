@@ -434,13 +434,13 @@ public class ComputingPowerController {
         	log.info("**用户手机号不为空**");
         	info.put("mobile",userModel.getMobile());
         	 return new ResponseEntity.Builder<Map<String,String>>()
-   	              .setData(info).setErrorCode(ErrorCode.mobile_ALREADY_EXISTS).build();
+   	              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
         }
         else {
         	log.info("**用户手机号为空**");
         	info.put("mobile","empty");
         	return new ResponseEntity.Builder<Map<String,String>>()
-     	          .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+     	          .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
         }	
      }
 //  if(userModel.getMobile()==null||userModel.getMobile().isEmpty()){
