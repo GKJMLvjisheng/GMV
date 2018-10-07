@@ -54,12 +54,11 @@ order by value desc
    
 <select id="selectAllUserBalanceRecord" resultMap="walletTotalTradeRecordMap">
 select 
-	 u.name,SUM(uw.balance) as value
+	 u.name,uw.balance as value
 from 
 	 user_wallet uw,user_info u
 where
-	uw.user_uuid=u.uuid and DATE_FORMAT(uw.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-group by u.name
+	uw.user_uuid=u.uuid
 order by value desc
    </select>
 </mapper>

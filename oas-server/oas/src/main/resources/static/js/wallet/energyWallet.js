@@ -83,11 +83,6 @@ function FundBigReady(){
 		dataType: 'json',
 		cache: false,
 		type: 'post',
-		type: 'post',
-		data:JSON.stringify(data),
-		processData : false,
-		async : false,
-
 		success: function(res) {
 			alert(JSON.stringify(res));
 			data2=res.data;
