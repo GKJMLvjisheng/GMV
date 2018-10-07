@@ -11,5 +11,5 @@ public interface UserWalletTradeRecordMapper {
 	List<UserWalletTradeRecordInfo> selectAllTradeRecord();
 	List<WalletTotalTradeRecordInfo> selectAllOutTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
 	List<WalletTotalTradeRecordInfo> selectAllInTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
-	List<WalletTotalTradeRecordInfo> selectAllUserBalanceRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
+	List<WalletTotalTradeRecordInfo> selectAllUserBalanceRecord();
 }
