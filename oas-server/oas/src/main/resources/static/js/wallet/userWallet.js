@@ -83,7 +83,6 @@ function FundBigReady(){
 		cache: false,
 		type: 'post',
 		success: function(res) {
-			alert(JSON.stringify(res));
 			data2=res.data;
 			initFundBigGrid(data2);
 		}, 
