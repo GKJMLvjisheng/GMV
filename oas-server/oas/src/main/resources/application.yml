@@ -75,7 +75,7 @@ wallet:
   providers:
     ropsten: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
     mainnet: "https://mainnet.infura.io/16897256b61d42689d088039a362a61b"
-  defaultNet: ropsten
+  defaultNet: mainnet
   
   token: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
   contracts[0]: 
