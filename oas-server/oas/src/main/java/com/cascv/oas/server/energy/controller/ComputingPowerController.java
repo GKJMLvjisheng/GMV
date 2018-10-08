@@ -477,7 +477,7 @@ public class ComputingPowerController {
         }	   
      }
 	/**
-	 * 提升算力
+	 * 提升算力(手机，邮箱）
 	 *@author lvjisheng
 	 */
 	@PostMapping(value = "/doGetReward")
