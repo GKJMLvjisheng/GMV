@@ -14,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created,updated
+        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created
     </sql>
 
     <!-- 插入记录 -->
