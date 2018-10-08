@@ -490,12 +490,16 @@ console.log("111"+$("#SERVER_TIME").val());
                     console.log("222"+LOCAL_VER)
                    //说明html是从server端重新生成的，更新LOCAL_VER      
                      sessionStorage.PAGEVERSION = REMOTE_VER;    }}
-
-
-
-
     
 })
+$(function(){
+ if(window.name != "bencalie"){
+    location.reload();
+    window.name = "bencalie";
+}else{
+    window.name = "";
+}
+});
 function CurentTime()
     { 
         var now = new Date();
