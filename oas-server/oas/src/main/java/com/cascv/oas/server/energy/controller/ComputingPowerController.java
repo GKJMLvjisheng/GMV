@@ -15,6 +15,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
@@ -51,6 +52,8 @@ public class ComputingPowerController {
 	@Autowired
     private ActivityService activityService;
 	@Autowired
+	private ActivityMapper activityMapper;
+	@Autowired
 	EnergyBallMapper energyBallMapper;
 	@Autowired
     private PowerService powerService;
@@ -60,8 +63,7 @@ public class ComputingPowerController {
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
 	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 3;
-    ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   
-	
+    ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   	
 	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
     public ResponseEntity<?> inquirePowerActivityStatus(){
@@ -473,23 +475,30 @@ public class ComputingPowerController {
         }else{
         	info.put("email","empty");
         	return new ResponseEntity.Builder<Map<String,String>>()
-     	          .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+     	          .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
         }	   
      }
 	/**
-	 * 提升算力
+	 * 提升算力(手机，邮箱）
 	 *@author lvjisheng
 	 */
 	@PostMapping(value = "/doGetReward")
     @ResponseBody
     public ResponseEntity<?> doGetReward(@RequestBody ActivityResult activityResult){
 	Integer sourceCode=activityResult.getSourceCode();
-	String userUuid=ShiroUtils.getUser().getUuid();
-	activityService.getReward(sourceCode, userUuid);
-	// change the Checkin EnergyBall to Die
-    activityService.updateEnergyPointBallStatusByUuid(userUuid);
-    activityService.updateEnergyPowerBallStatusByUuid(userUuid);
-	return new ResponseEntity.Builder<Integer>()
-	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+    String userUuid=ShiroUtils.getUser().getUuid();
+    if(activityMapper.inquireACSByUserUuidAndSouceCode(sourceCode, userUuid)==null){  	
+    	activityService.getReward(sourceCode, userUuid);
+    	// change the Checkin EnergyBall to Die
+        activityService.updateEnergyPointBallStatusByUuid(userUuid);
+        activityService.updateEnergyPowerBallStatusByUuid(userUuid);
+        log.info("提升算力成功");
+    	return new ResponseEntity.Builder<Integer>()
+  	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+    }else {
+    	log.info("只能提升一次算力");
+    	return new ResponseEntity.Builder<Integer>()
+    	          .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+    }
 	}
 }

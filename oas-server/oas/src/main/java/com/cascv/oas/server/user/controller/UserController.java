@@ -82,13 +82,15 @@ public class UserController {
 //  private MailBean mailBean;
   @Autowired
   private PowerService powerService;
-	private EthWalletService ethWalletService;
+  
+  @Autowired
+  private EthWalletService ethWalletService;
 	
-	@Autowired
-	private UserWalletService userWalletService;
-	
-	@Autowired
-	private EnergyWalletService energyPointService;
+  @Autowired
+  private UserWalletService userWalletService;
+
+  @Autowired
+  private EnergyWalletService energyPointService;
     
 	String vcode="";
 	

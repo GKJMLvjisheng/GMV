@@ -9,7 +9,7 @@ import java.util.List;
 
 @Component
 public interface EnergySourcePowerMapper {
-    BigDecimal queryPowerSingle(@Param("sourceCode")Integer sourceCode);
+    BigDecimal queryPowerSingle(@Param("sourceCode")Integer sourceCode, @Param("rewardCode")Integer rewardCode);
     List<ActivityResult> selectByUserUuid(@Param("userUuid")String userUuid);
     ActivityResult selectStatusByUserUuid(@Param("userUuid")String userUuid);
     
