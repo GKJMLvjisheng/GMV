@@ -6,7 +6,7 @@
 	<result column="name" property="name"/>
 	<result column="value" property="value"/>
 	<result column="title" property="title"/>
-<!-- 	<result column="change_user_name" property="changeUserName"/> -->
+	<result column="sub_title" property="subTitle"/>
 	<result column="created" property="created"/>
 	<result column="remark" property="remark"/>
   </resultMap>
@@ -14,7 +14,7 @@
   <select id="selectAllTradeRecord" resultMap="UserWalletTradeRecordMap">
 select 
 	  u.name,ud.value,ud.title,ud.created,ud.remark 
-<!-- 	  ,ud.change_user_name -->
+	  ,ud.sub_title
 from 
 	  user_wallet_detail ud,user_info u
 where
