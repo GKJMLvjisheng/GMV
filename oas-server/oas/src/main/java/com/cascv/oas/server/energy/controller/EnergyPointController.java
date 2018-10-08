@@ -97,7 +97,7 @@ public class EnergyPointController {
         }
     }
 
-    @PostMapping(value = "/inquireEnergyPiontBall")  //不用power
+    @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPiontBall() {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
@@ -110,7 +110,7 @@ public class EnergyPointController {
                 .build();
     }
 
-    @PostMapping(value = "/takeEnergyPiontBall")//不用power
+    @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyPiontBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
