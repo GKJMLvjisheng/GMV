@@ -494,7 +494,9 @@ console.log("111"+$("#SERVER_TIME").val());
 })
 $(function(){
  if(window.name != "bencalie"){
-    location.reload();
+    window.skipRefresh();
+     //location.reload();
+    console.log("123")
     window.name = "bencalie";
 }else{
     window.name = "";
