@@ -46,8 +46,8 @@ function initUserWalletGrid(data) {
 			width:  '200px',
 		},
 		{
-			title : "交易对方",
-			field : "changeUserName",
+			title : "交易细节",
+			field : "subTitle",
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',

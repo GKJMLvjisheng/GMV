@@ -307,7 +307,11 @@ public class EnergyService {
         // 改变账户余额
         EnergyBall energyBall = energyBallMapper.selectByUuid(energyBallUuid);
         BigDecimal increasePoint = energyBall.getPoint();
+        if (increasePoint == null)
+        	increasePoint = BigDecimal.ZERO;
         BigDecimal increasePower = energyBall.getPower();
+        if (increasePower == null)
+        	increasePower = BigDecimal.ZERO;
         String uuid = new String();
         if (energyWalletMapper.selectByUserUuid(userUuid) == null) {
             EnergyWallet energyWallet = this.getEnergyWallet(userUuid, now);
@@ -389,8 +393,13 @@ public class EnergyService {
     public EnergyCheckinResult getCheckinEnergy() {
         BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN, 1);
         BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN, 2);
+        if (point.equals(null))
+        	point = BigDecimal.ZERO;
+        if (power.equals(null))
+        	power = BigDecimal.ZERO;
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
+        System.out.println("");
         energyCheckinResult.setNewPower(power);
         return energyCheckinResult;
     }

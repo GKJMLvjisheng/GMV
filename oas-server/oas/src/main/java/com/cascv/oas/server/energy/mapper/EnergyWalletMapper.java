@@ -12,7 +12,7 @@ public interface EnergyWalletMapper {
   Integer insertSelective(EnergyWallet energyPoint);
 
   EnergyWallet selectByUuid(String uuid);
-  EnergyWallet selectByUserUuid(String userUuid);
+  EnergyWallet selectByUserUuid(@Param("userUuid")String userUuid);
   EnergyWalletBalance selectLatest(@Param("userUuid")String useruuid);
 
   Integer increasePoint(@Param("uuid")  String uuid, @Param("value") BigDecimal value);
