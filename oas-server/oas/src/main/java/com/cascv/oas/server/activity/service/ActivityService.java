@@ -333,11 +333,15 @@ public class ActivityService {
 				log.info("rewardCode={}",rewardCode);
 				this.addEnergyPointBall(userUuid, sourceCode, rewardCode);
 				this.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
-				this.addPointTradeRecord(userUuid, sourceCode, rewardCode);
-				this.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
+				if(this.getNewPoint(sourceCode, rewardCode) != null) {
+					this.addPointTradeRecord(userUuid, sourceCode, rewardCode);
+				}
+				if(this.getNewPower(sourceCode, rewardCode) != null) {
+					this.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
+				}
 				this.updateEnergyWallet(userUuid, sourceCode, rewardCode);
-				this.addActivityCompletionStatus(userUuid, sourceCode);
 			}
+			this.addActivityCompletionStatus(userUuid, sourceCode);
 			
 		}
 	 
