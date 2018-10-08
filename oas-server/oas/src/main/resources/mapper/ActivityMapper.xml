@@ -191,6 +191,7 @@
   
   <resultMap id="rewardConfigResult" type="com.cascv.oas.server.activity.wrapper.RewardConfigResult">
 	<id column="uuid" property="uuid" />
+	<id column="user_uuid" property="userUuid" />
 	<result column="source_code" property="sourceCode"/>
 	<result column="reward_code" property="rewardCode"/>
 	<result column="reward_name" property="rewardName"/>
@@ -209,6 +210,13 @@
       left join reward_source B on A.reward_code = B.reward_code 
       where A.source_code = #{sourceCode};
   </select> 
+  
+  
+  <select id="inquireACSByUserUuidAndSouceCode" resultMap="rewardConfigResult">
+      select * from activity_completion_status  
+      where source_code = #{sourceCode} and user_uuid=#{userUuid};
+  </select> 
+  
   
   <resultMap id="EnergyPointBall" type="com.cascv.oas.server.activity.model.EnergyPointBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
