@@ -498,7 +498,7 @@ public class ComputingPowerController {
     }else {
     	log.info("只能提升一次算力");
     	return new ResponseEntity.Builder<Integer>()
-    	          .setData(1).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+    	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
     }
 	}
 }
