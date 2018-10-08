@@ -96,9 +96,9 @@ public class EnergyPointController {
         }
     }
 
-    @PostMapping(value = "/inquireEnergyPiontBall")  //不用power
+    @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPiontBall() {
+    public ResponseEntity<?> inquireEnergyPointBall() {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
@@ -109,10 +109,10 @@ public class EnergyPointController {
                 .build();
     }
 
-    @PostMapping(value = "/takeEnergyPiontBall")//不用power
+    @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> takeEnergyPiontBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
+    public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
