@@ -77,8 +77,8 @@ public class EnergyPointController {
         	energyCheckinResult.setNewEnergyPoint(activityService.getNewPoint(sourceCode, 1).getNewPoint());
         	energyCheckinResult.setNewPower(activityService.getNewPower(sourceCode, 2).getNewPower());
         	// change the Checkin EnergyBall to Die
-            activityService.updateEnergyPointBallStatusByUuid(userUuid);
-            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
+//            activityService.updateEnergyPointBallStatusByUuid(userUuid);
+//            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
         	return new ResponseEntity
                     .Builder<EnergyCheckinResult>()
                     .setData(energyCheckinResult)

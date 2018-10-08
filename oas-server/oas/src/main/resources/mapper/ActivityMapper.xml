@@ -308,20 +308,21 @@
     </resultMap>
     
     <update id="increasePoint" >
-      update energy_wallet set point=point + #{value} where user_uuid = #{userUuid}
+      update energy_wallet set point=point + #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
 
     <update id="decreasePoint">
-      update energy_wallet set point=point - #{value} where user_uuid = #{userUuid}
+      update energy_wallet set point=point - #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
 
     <update id="increasePower">
-      update energy_wallet set power=power + #{value} where user_uuid = #{userUuid}
+      update energy_wallet set power=power + #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
 
     <update id="decreasePower">
-      update energy_wallet set power=power - #{value} where user_uuid = #{userUuid}
+      update energy_wallet set power=power - #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
+    
   
     
     <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
