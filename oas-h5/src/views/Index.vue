@@ -174,7 +174,7 @@ export default {
     this.getArticleList()
     this.getUserInfo()
     window.skipRefresh= this.skipRefresh
-    
+     this.location()
   },
   filters: {
   },
@@ -356,7 +356,7 @@ export default {
         return
       }
       let ele = event.currentTarget
-      this.$axios.post('/energyPoint/takeEnergyBall',{ballId: data.uuid}).then(({data}) => {
+      this.$axios.post('/energyPoint/takeEnergyPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
           this.Toast(data.message)
@@ -444,13 +444,7 @@ export default {
         this.isShowToast = false
       },delay || 1500)
     },
-    
-  }
-   
-};
-$(function(){
-
-
+    location(){
   window.addEventListener('pagehide', function(e) {
     var $body = $(document.body);	
      if (e.persisted) {
@@ -460,7 +454,11 @@ $(function(){
      });
      }
      });
-});
+},
+  }
+   
+};
+
   
 
 </script>
