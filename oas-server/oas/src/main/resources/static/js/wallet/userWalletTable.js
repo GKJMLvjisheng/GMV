@@ -47,7 +47,7 @@ function initUserWalletGrid(data) {
 		},
 		{
 			title : "交易对方",
-			field : "changeUserName",
+			field : "subTitle",
 			align: 'center',
 			valign: 'middle',
 			width:  '150px',

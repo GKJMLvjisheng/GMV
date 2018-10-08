@@ -47,7 +47,7 @@ function initEthWalletGrid(data) {
 		},
 		{
 			title : "交易对方",
-			field : "changeAddress",
+			field : "subTitle",
 			align: 'center',
 			valign: 'middle',
 			width:  '190px',
