@@ -295,19 +295,20 @@ public class EthWalletService {
   }
 
   
-  private void addDetail(String address, EthWalletDetailScope userWalletDetailScope, 
-		  BigDecimal value, String txHash, String remark, String changeAddress) {
+  private void addDetail(String address, EthWalletDetailScope ethWalletDetailScope, 
+    BigDecimal value, String txHash, String remark, String changeAddress) {
     EthWalletDetail ethWalletDetail = new EthWalletDetail();
     ethWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
     ethWalletDetail.setAddress(address);
-    ethWalletDetail.setTitle(userWalletDetailScope.getTitle());
-    ethWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
-    ethWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
+    ethWalletDetail.setTitle(ethWalletDetailScope.getTitle());   
+    ethWalletDetail.setSubTitle(ethWalletDetailScope.getSubTitle()+changeAddress);
+    log.info("changeAddress{}",changeAddress);
+    ethWalletDetail.setInOrOut(ethWalletDetailScope.getInOrOut());
     ethWalletDetail.setValue(value);
     ethWalletDetail.setCreated(DateUtils.getTime());
     ethWalletDetail.setRemark(remark);
     ethWalletDetail.setTxHash(txHash);
-    ethWalletDetail.setChangeAddress(changeAddress);
+    //ethWalletDetail.setChangeAddress(changeAddress);
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
   
