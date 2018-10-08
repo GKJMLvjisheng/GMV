@@ -17,7 +17,8 @@
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, title, sub_title,in_or_out, comment, remark, change_user_name, created
+    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created
+<!--     ,comment, change_user_name -->
   </sql>
   
   

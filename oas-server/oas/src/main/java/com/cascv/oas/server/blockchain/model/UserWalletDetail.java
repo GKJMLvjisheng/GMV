@@ -12,7 +12,7 @@ public class UserWalletDetail {
   @Getter @Setter private String title;
   @Getter @Setter private String subTitle;
   @Getter @Setter private Integer inOrOut;
-  //@Getter @Setter private String comment;
+//  @Getter @Setter private String comment;
   @Getter @Setter private String created;
   @Getter @Setter private String remark;
   //@Getter @Setter private String changeUserName;

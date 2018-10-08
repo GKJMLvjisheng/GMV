@@ -296,7 +296,7 @@ public class EthWalletService {
 
   
   private void addDetail(String address, EthWalletDetailScope userWalletDetailScope, 
-		  BigDecimal value, String txHash, String comment, String changeAddress) {
+		  BigDecimal value, String txHash, String remark, String changeAddress) {
     EthWalletDetail ethWalletDetail = new EthWalletDetail();
     ethWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
     ethWalletDetail.setAddress(address);
@@ -305,7 +305,7 @@ public class EthWalletService {
     ethWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
     ethWalletDetail.setValue(value);
     ethWalletDetail.setCreated(DateUtils.getTime());
-    ethWalletDetail.setComment(comment);
+    ethWalletDetail.setRemark(remark);
     ethWalletDetail.setTxHash(txHash);
     ethWalletDetail.setChangeAddress(changeAddress);
     ethWalletDetailMapper.insertSelective(ethWalletDetail);

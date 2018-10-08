@@ -344,7 +344,7 @@ public class ActivityService {
 				this.updateEnergyWallet(userUuid, sourceCode, rewardCode);
 			}
 			this.addActivityCompletionStatus(userUuid, sourceCode);
-			
+
 		}
 	 
 	   /**

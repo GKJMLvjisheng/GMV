@@ -174,10 +174,12 @@ export default {
     this.getArticleList()
     this.getUserInfo()
     window.skipRefresh= this.skipRefresh
+     this.location()
   },
   filters: {
   },
   methods: {
+   
 
     //预先加载3条新闻
     getArticleList () {
@@ -271,7 +273,7 @@ export default {
     // 获取悬浮能量球数据
     getEnergyBall () {
       
-      this.$axios.post('/energyPoint/inquireEnergyBall').then(({data:{data}}) => {
+      this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
         console.log(data.energyBallList)
         //let i=0
@@ -295,6 +297,7 @@ export default {
     // 获取当前能量
     getCurrentEnergy () {
       this.$axios.post('/energyPoint/inquireEnergyPoint').then(({data:{data}}) => {
+        console.log(data)
         this.currentEnergy = data
       })
     },
@@ -353,7 +356,7 @@ export default {
         return
       }
       let ele = event.currentTarget
-      this.$axios.post('/energyPoint/takeEnergyBall',{ballId: data.uuid}).then(({data}) => {
+      this.$axios.post('/energyPoint/takeEnergyPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
           this.Toast(data.message)
@@ -441,12 +444,8 @@ export default {
         this.isShowToast = false
       },delay || 1500)
     },
-    
-  }
-   
-};
-
-  /*window.addEventListener('pagehide', function(e) {
+    location(){
+  window.addEventListener('pagehide', function(e) {
     var $body = $(document.body);	
      if (e.persisted) {
     $body.children().remove();    // 要等到回调函数完成，用户按返回才执行script标签的代码   
@@ -454,13 +453,13 @@ export default {
     $body.append("<script type='text/javascript'>window.location.reload();<//script>");   
      });
      }
-     });*/
-   
-  window.addEventListener('pageshow', function( e ){
-  if (e.persisted) {
-  window.location.reload()
+     });
+},
   }
-  })
+   
+};
+
+  
 
 </script>
 

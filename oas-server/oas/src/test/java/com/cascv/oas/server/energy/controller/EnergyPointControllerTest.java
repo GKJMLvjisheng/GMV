@@ -24,7 +24,7 @@ public class EnergyPointControllerTest {
 
     @Test
     public void inquireEnergyBall() {
-        ResponseEntity<?> energyBallResult = energyPointController.inquireEnergyBall();
+        ResponseEntity<?> energyBallResult = energyPointController.inquireEnergyPiontBall();
         System.out.println("data: " + energyBallResult.getData());
         System.out.println("code: " + energyBallResult.getCode());
         System.out.println("message: " + energyBallResult.getMessage());
@@ -34,7 +34,7 @@ public class EnergyPointControllerTest {
     public void takeEnergyBall() {
         EnergyBallTokenRequest energyBallTokenRequest = new EnergyBallTokenRequest();
         energyBallTokenRequest.setBallId("EP-e7606aa2b95e11e898b93052cb119add");
-        ResponseEntity<?> responseEntity = energyPointController.takeEnergyBall(energyBallTokenRequest);
+        ResponseEntity<?> responseEntity = energyPointController.takeEnergyPiontBall(energyBallTokenRequest);
         System.out.println("data: " + responseEntity.getData());
         System.out.println("code: " + responseEntity.getCode());
         System.out.println("message: " + responseEntity.getMessage());

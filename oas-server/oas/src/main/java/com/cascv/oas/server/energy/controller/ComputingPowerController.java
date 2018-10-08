@@ -469,11 +469,27 @@ public class ComputingPowerController {
         if(userModel.getEmail()!=null){
         	info.put("email",userModel.getEmail());
         	 return new ResponseEntity.Builder<Map<String,String>>()
-   	              .setData(info).setErrorCode(ErrorCode.email_ALREADY_EXISTS).build();
+   	              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
         }else{
         	info.put("email","empty");
         	return new ResponseEntity.Builder<Map<String,String>>()
-     	          .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+     	          .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
         }	   
      }
+	/**
+	 * 提升算力
+	 *@author lvjisheng
+	 */
+	@PostMapping(value = "/doGetReward")
+    @ResponseBody
+    public ResponseEntity<?> doGetReward(@RequestBody ActivityResult activityResult){
+	Integer sourceCode=activityResult.getSourceCode();
+	String userUuid=ShiroUtils.getUser().getUuid();
+	activityService.getReward(sourceCode, userUuid);
+	// change the Checkin EnergyBall to Die
+    activityService.updateEnergyPointBallStatusByUuid(userUuid);
+    activityService.updateEnergyPowerBallStatusByUuid(userUuid);
+	return new ResponseEntity.Builder<Integer>()
+	          .setData(0).setErrorCode(ErrorCode.SUCCESS).build();
+	}
 }
