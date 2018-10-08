@@ -300,7 +300,7 @@ public class EnergyService {
         // 改变被取走能量的球的状态
         energyBallMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
         // 增加记录
-        EnergyTradeRecord energyTradeRecord = getEnergyRecord(userUuid, energyBallUuid, now);
+        EnergyTradeRecord energyTradeRecord = this.getEnergyRecord(userUuid, energyBallUuid, now);
         energyTradeRecord.setPointChange(energyBallMapper.selectByUuid(energyBallUuid).getPoint());
         energyTradeRecord.setPowerChange(energyBallMapper.selectByUuid(energyBallUuid).getPower());
         energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
@@ -387,8 +387,8 @@ public class EnergyService {
      * @return
      */
     public EnergyCheckinResult getCheckinEnergy() {
-        BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN);
-        BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN);
+        BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN, 1);
+        BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN, 2);
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
         energyCheckinResult.setNewPower(power);
