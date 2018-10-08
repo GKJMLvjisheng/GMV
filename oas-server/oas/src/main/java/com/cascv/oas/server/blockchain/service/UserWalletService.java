@@ -73,7 +73,7 @@ public class UserWalletService {
 	  userWalletDetail.setInOrOut(userWalletDetailScope.getInOrOut());
 	  userWalletDetail.setValue(value);
 	  userWalletDetail.setCreated(DateUtils.getTime());
-	  //userWalletDetail.setComment(comment);
+//	  userWalletDetail.setComment(comment);
 	  userWalletDetail.setRemark(remark);
 	  //userWalletDetail.setChangeUserName(changeUserName);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);

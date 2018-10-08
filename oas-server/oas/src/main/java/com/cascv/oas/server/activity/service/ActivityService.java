@@ -337,8 +337,7 @@ public class ActivityService {
 				this.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
 				this.updateEnergyWallet(userUuid, sourceCode, rewardCode);
 				this.addActivityCompletionStatus(userUuid, sourceCode);
-			}
-			
+			}			
 		}
 	 
 	   /**
