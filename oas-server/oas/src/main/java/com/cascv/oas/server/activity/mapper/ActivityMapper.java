@@ -48,9 +48,10 @@ public interface ActivityMapper {
 	
 	Integer insertActivityCompletionStatus(ActivityCompletionStatus activityCompletionStatus);
 	
-	Integer increasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-	Integer decreasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-	Integer increasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-	Integer decreasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
+	Integer increasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer decreasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer increasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer decreasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer updateEnergyWalletUpdated(@Param("userUuid") String userUuid);
 
 }

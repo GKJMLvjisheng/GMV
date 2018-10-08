@@ -279,30 +279,30 @@ public class ActivityService {
      * @return
      */
 	public void updateEnergyWallet(String userUuid, Integer sourceCode, Integer rewardCode) {
+		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		BigDecimal valuePoint;
 		BigDecimal valuePower;
 		if(this.getNewPoint(sourceCode, rewardCode) != null && this.getNewPower(sourceCode, rewardCode) != null) {
 			valuePoint = this.getNewPoint(sourceCode, rewardCode).getNewPoint();
 			valuePower = this.getNewPower(sourceCode, rewardCode).getNewPower();
-			activityMapper.increasePoint(userUuid, valuePoint);
-			activityMapper.increasePower(userUuid, valuePower);	
+			activityMapper.increasePoint(userUuid, valuePoint, updated);
+			activityMapper.increasePower(userUuid, valuePower, updated);	
 		}else if (this.getNewPoint(sourceCode, rewardCode) != null && this.getNewPower(sourceCode, rewardCode) == null){
 			valuePoint = this.getNewPoint(sourceCode, rewardCode).getNewPoint();
 			valuePower = BigDecimal.ZERO;
-			activityMapper.increasePoint(userUuid, valuePoint);
-			activityMapper.increasePower(userUuid, valuePower);
+			activityMapper.increasePoint(userUuid, valuePoint, updated);
+			activityMapper.increasePower(userUuid, valuePower, updated);
 		}else if(this.getNewPoint(sourceCode, rewardCode) == null && this.getNewPower(sourceCode, rewardCode) != null) {
 			valuePoint = BigDecimal.ZERO;
 			valuePower = this.getNewPower(sourceCode, rewardCode).getNewPower();
-			activityMapper.increasePoint(userUuid, valuePoint);
-			activityMapper.increasePower(userUuid, valuePower);
+			activityMapper.increasePoint(userUuid, valuePoint, updated);
+			activityMapper.increasePower(userUuid, valuePower, updated);
 		}else if(this.getNewPoint(sourceCode, rewardCode) == null && this.getNewPower(sourceCode, rewardCode) == null){
 			valuePoint = BigDecimal.ZERO;
 			valuePower = BigDecimal.ZERO;
-			activityMapper.increasePoint(userUuid, valuePoint);
-			activityMapper.increasePower(userUuid, valuePower);
+			activityMapper.increasePoint(userUuid, valuePoint, updated);
+			activityMapper.increasePower(userUuid, valuePower, updated);
 		}
-			
 		
 	}
 	
@@ -335,9 +335,11 @@ public class ActivityService {
 				this.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
 				if(this.getNewPoint(sourceCode, rewardCode) != null) {
 					this.addPointTradeRecord(userUuid, sourceCode, rewardCode);
+					this.updateEnergyPointBallStatusByUuid(userUuid);
 				}
 				if(this.getNewPower(sourceCode, rewardCode) != null) {
 					this.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
+					this.updateEnergyPowerBallStatusByUuid(userUuid);
 				}
 				this.updateEnergyWallet(userUuid, sourceCode, rewardCode);
 			}
