@@ -26,17 +26,15 @@
         in_or_out,
         point_change,
         status,
-        created,
-        updated )
+        created)
         values (
         #{uuid},
         #{userUuid},
         #{energyBallUuid},
         #{inOrOut},
-        #{pointChange},,
+        #{pointChange},
         #{status},
-        #{created},
-        #{updated})
+        #{created})
     </insert>
     
    <select id="sumPoint" resultType="java.math.BigDecimal">
