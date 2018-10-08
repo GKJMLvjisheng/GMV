@@ -107,7 +107,7 @@ public class EthWalletController {
 	        ethWalletTransfer.getContract(),
 	        ethWalletTransfer.getToUserAddress(),
 	        ethWalletTransfer.getAmount(),gasPrice,gasLimit, 
-	        ethWalletTransfer.getComment());	  
+	        ethWalletTransfer.getRemark());	  
       EthWalletTransferResp resp = new EthWalletTransferResp();
       resp.setTxHash(returnValue.getData());
 	    return new ResponseEntity.Builder<EthWalletTransferResp>()

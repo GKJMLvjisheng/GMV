@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,7 +98,7 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPiontBall() {
+    public ResponseEntity<?> inquireEnergyPointBall() {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
@@ -113,7 +112,7 @@ public class EnergyPointController {
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> takeEnergyPiontBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
+    public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询

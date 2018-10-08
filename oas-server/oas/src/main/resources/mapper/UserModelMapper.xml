@@ -130,7 +130,7 @@
   <select id="selectByName" parameterType="java.lang.String" resultMap="userModelMap">
   	select 
   	<include refid="Base_Column_List" />
-  	from user_info where name=#{name}
+  	from user_info where name=#{name}     
   </select>
 
   <select id="selectByUuid" parameterType="java.lang.String" resultMap="userModelMap">
