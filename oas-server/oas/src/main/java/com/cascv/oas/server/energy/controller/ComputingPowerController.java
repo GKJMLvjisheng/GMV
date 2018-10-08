@@ -473,7 +473,7 @@ public class ComputingPowerController {
         }else{
         	info.put("email","empty");
         	return new ResponseEntity.Builder<Map<String,String>>()
-     	          .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+     	          .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
         }	   
      }
 	/**
