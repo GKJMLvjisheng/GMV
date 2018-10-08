@@ -479,13 +479,15 @@ console.log("111"+$("#SERVER_TIME").val());
     console.log(REMOTE_VER)
     if(REMOTE_VER){   
        var LOCAL_VER = sessionStorage && sessionStorage.PAGEVERSION;  
-         if(LOCAL_VER && parseInt(LOCAL_VER) >= parseInt(REMOTE_VER)){ 
+         //if(LOCAL_VER && parseInt(LOCAL_VER) >= parseInt(REMOTE_VER)){
+           if(LOCAL_VER && LOCAL_VER >= REMOTE_VER){ 
            console.log(LOCAL_VER) 
             console.log( parseInt(LOCAL_VER))
              console.log( parseInt(REMOTE_VER))
                 //说明html是从本地缓存中读取的       
-                 //location.reload(true);    
+                 location.reload(true);    
                  }else{        
+                    console.log("222"+LOCAL_VER)
                    //说明html是从server端重新生成的，更新LOCAL_VER      
                      sessionStorage.PAGEVERSION = REMOTE_VER;    }}
 
