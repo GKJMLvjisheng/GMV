@@ -46,7 +46,7 @@ function initEthWalletGrid(data) {
 			width:  '150px',
 		},
 		{
-			title : "交易对方",
+			title : "交易细节",
 			field : "subTitle",
 			align: 'center',
 			valign: 'middle',
@@ -60,7 +60,7 @@ function initEthWalletGrid(data) {
 			width:  '190px',
 		}, {
 			title : "交易备注",
-			field : "comment",
+			field : "remark",
 			align: 'center',
 			valign: 'middle',
 			width:  '100px',
