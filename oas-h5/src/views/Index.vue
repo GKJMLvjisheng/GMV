@@ -445,21 +445,24 @@ export default {
       },delay || 1500)
     },
     location(){
-  window.addEventListener('pagehide', function(e) {
-    var $body = $(document.body);	
-     if (e.persisted) {
-    $body.children().remove();    // 要等到回调函数完成，用户按返回才执行script标签的代码   
-    setTimeout(function() {	   
-    $body.append("<script type='text/javascript'>window.location.reload();<//script>");   
-     });
-     }
-     });
+    window.addEventListener('pageshow', function( e ){
+    if (e.persisted) {
+    window.location.reload()
+    }
+    })
+    
 },
   }
    
 };
+$(function(){
+ window.addEventListener('pageshow', function( e ){
+    if (e.persisted) {
+    window.location.reload()
+    }
+    })
+})
 
-  
 
 </script>
 
