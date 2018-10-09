@@ -238,7 +238,7 @@ public class EnergyService {
      * @return
      */
     public BigDecimal calculatePreviousPoints(List<EnergyBall> energyBalls) {
-        Iterator iterator = energyBalls.iterator();
+        Iterator<EnergyBall> iterator = energyBalls.iterator();
         BigDecimal pointPrevious = new BigDecimal("0");
         while (iterator.hasNext()) {
             EnergyBall energyBall = (EnergyBall) iterator.next();
@@ -393,13 +393,12 @@ public class EnergyService {
     public EnergyCheckinResult getCheckinEnergy() {
         BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN, 1);
         BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN, 2);
-        if (point.equals(null))
+        if (point == null)
         	point = BigDecimal.ZERO;
-        if (power.equals(null))
+        if (power == null)
         	power = BigDecimal.ZERO;
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
-        System.out.println("");
         energyCheckinResult.setNewPower(power);
         return energyCheckinResult;
     }

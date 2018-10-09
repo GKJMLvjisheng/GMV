@@ -28,7 +28,7 @@ public interface ActivityMapper {
 	RewardModel selectRewardByRewardCode(@Param("rewardCode") Integer rewardCode);
 	Integer deleteReward(@Param("rewardCode") Integer rewardCode);
 	
-	ActivityRewardConfig selectMaxValueBySourceCodeAndrewardCode(@Param("sourceCode") Integer sourceCode, @Param("rewardCode") Integer rewardCode);
+	ActivityRewardConfig selectBaseValueBySourceCodeAndrewardCode(@Param("sourceCode") Integer sourceCode, @Param("rewardCode") Integer rewardCode);
 	Integer insertActivityRewardConfig(ActivityRewardConfig activityRewardConfig);
 	Integer updateActivityReward(ActivityRewardConfig activityRewardConfig);
 	List<RewardConfigResult> selectActivityRewardBySourceCode(@Param("sourceCode") Integer sourceCode);
