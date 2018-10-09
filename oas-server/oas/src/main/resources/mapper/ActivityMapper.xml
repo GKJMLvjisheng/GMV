@@ -164,7 +164,7 @@
    
   
   <!-- select activity max_value -->
-  <select id="selectMaxValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
+  <select id="selectBaseValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
       select 
       <include refid="activity_Reward_Connfig_List" />
       from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode};
