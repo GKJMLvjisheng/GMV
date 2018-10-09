@@ -18,6 +18,7 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
+import com.cascv.oas.server.blockchain.service.UserWalletDetailService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
@@ -58,7 +59,8 @@ public class UserWalletController {
   
   @Autowired
   private ExchangeRateService exchangeRateService;
-
+  @Autowired
+  private UserWalletDetailService userWalletDetailService;
   @PostMapping(value="/inquireAddress")
   @ResponseBody()
   public ResponseEntity<?> inquireAddress(){
@@ -130,7 +132,7 @@ public class UserWalletController {
     log.info("inOrOut{}",pageInfo.getInOrOut());
     if(pageInfo.getInOrOut()!=null) {
     inOrOut=pageInfo.getInOrOut();
-    List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByInOrOut(ShiroUtils.getUserUuid(),offset,limit, inOrOut);
+    List<UserWalletDetail> userWalletDetailList = userWalletDetailService.selectByInOrOut(ShiroUtils.getUserUuid(),offset,limit, inOrOut);
     Integer count =userWalletDetailList.size();
 	PageDomain<UserWalletDetail> pageUserWalletDetail= new PageDomain<>();
 	pageUserWalletDetail.setTotal(count);
