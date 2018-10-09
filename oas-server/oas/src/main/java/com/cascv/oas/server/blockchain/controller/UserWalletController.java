@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,9 +113,6 @@ public class UserWalletController {
   @PostMapping(value="/transactionDetail")
   @ResponseBody()
   public ResponseEntity<?> transactionDetail(@RequestBody PageIODomain<Integer> pageInfo){
-    Calendar calendar = new GregorianCalendar();
-    Date now = new Date();
-    calendar.setTime(now);
     Integer pageNum = pageInfo.getPageNum();
     Integer pageSize;
     pageSize=pageInfo.getPageSize();
