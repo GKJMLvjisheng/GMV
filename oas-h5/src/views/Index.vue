@@ -96,7 +96,9 @@
       </div>
     </div>
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
-    <!-- OASES咨询 End -->
+    <div >
+      <input  id="SERVER_TIME" type="hidden" v-model="input1" /></div>
+    <!-- OASES咨询 End type="hidden"-->
     <!-- 底部 Start -->
     <div class="bottom">
       <img :src="bottom" alt="">
@@ -153,6 +155,7 @@ export default {
       analysis:'',
       analysisCount:0,
       tempArr:[],
+      input1:'',
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -163,6 +166,7 @@ export default {
         avatar:'',
         nickname: ''
       }
+      
     }
   },
   created() {
@@ -175,6 +179,7 @@ export default {
     this.getUserInfo()
     window.skipRefresh= this.skipRefresh
      this.location()
+     this.getCurrenttime()
   },
   filters: {
   },
@@ -445,24 +450,92 @@ export default {
       },delay || 1500)
     },
     location(){
-    window.addEventListener('pageshow', function( e ){
-    if (e.persisted) {
-    window.location.reload()
-    }
-    })
-    
+    window.addEventListener('pageshow', function(evt){
+    setTimeout(function(){
+        if(evt.persisted){
+            location.reload(true);
+        }
+    });
+});    
+},
+getCurrenttime(){
+    //var SERVER_TIME = document.getElementById("SERVER_TIME");
+var time=CurentTime()
+//this.$refs.input1.value=time
+this.input1=time
+//console.log("year"+this.$refs.input1.value);
 },
   }
    
 };
 $(function(){
- window.addEventListener('pageshow', function( e ){
-    if (e.persisted) {
-    window.location.reload()
-    }
-    })
+    var SERVER_TIME = document.getElementById("SERVER_TIME");
+    //var mytime= CurentTime();
+    
+     // $("#SERVER_TIME").val(mytime)    
+    
+console.log("111"+$("#SERVER_TIME").val());
+    var REMOTE_VER = SERVER_TIME && SERVER_TIME.value;
+    console.log(REMOTE_VER)
+    if(REMOTE_VER){   
+       var LOCAL_VER = sessionStorage && sessionStorage.PAGEVERSION;  
+         //if(LOCAL_VER && parseInt(LOCAL_VER) >= parseInt(REMOTE_VER)){
+           if(LOCAL_VER && LOCAL_VER >= REMOTE_VER){ 
+           console.log(LOCAL_VER) 
+            console.log( parseInt(LOCAL_VER))
+             console.log( parseInt(REMOTE_VER))
+                //说明html是从本地缓存中读取的       
+                 location.reload(true);    
+                 }else{        
+                    console.log("222"+LOCAL_VER)
+                   //说明html是从server端重新生成的，更新LOCAL_VER      
+                     sessionStorage.PAGEVERSION = REMOTE_VER;    }}
+    
 })
-
+$(function(){
+ if(window.name != "bencalie"){
+    window.skipRefresh();
+     //location.reload();
+    console.log("123")
+    window.name = "bencalie";
+}else{
+    window.name = "";
+}
+});
+function CurentTime()
+    { 
+        var now = new Date();
+       
+        var year = now.getFullYear();       //年
+        var month = now.getMonth() + 1;     //月
+        var day = now.getDate();            //日
+       
+        var hh = now.getHours();            //时
+        var mm = now.getMinutes();          //分
+        var ss=now.getSeconds();
+       
+        var clock = year + "-";
+       
+        if(month < 10)
+            clock += "0";
+       
+        clock += month + "-";
+       
+        if(day < 10)
+            clock += "0";
+           
+        clock += day + " ";
+       
+        if(hh < 10)
+            clock += "0";
+           
+        clock += hh + ":";
+        if (mm < 10) clock += '0'; 
+        clock += mm+":"; 
+         if (ss < 10) clock += '0'; 
+        clock += ss; 
+        return(clock); 
+    } 
 
 </script>
 
