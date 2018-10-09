@@ -56,7 +56,7 @@ public class BlockChainConfig {
     }
     
     EthConfigModel ethConfigModel = digitalCoinService.getEthConfig();
-    log.info("config {} - {}", ethConfigModel.getActiveNetwork(), ethConfigModel.getActiveToken());
+    log.info("config network {}", ethConfigModel.getActiveNetwork());
     coinClient.setDefaultNet(ethConfigModel.getActiveNetwork());
     return coinClient;
   }

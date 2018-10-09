@@ -5,11 +5,10 @@
   <resultMap id="ethConfigMap" type="com.cascv.oas.server.blockchain.model.EthConfigModel">
 	<id column="id" property="id" />
 	<result column="active_network" property="activeNetwork"/>
-	<result column="active_token" property="activeToken"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, active_network, active_token
+    id, active_network
   </sql>
 
   
@@ -25,18 +24,11 @@
           <if test="activeNetwork != null">
             active_network,
           </if>
-          <if test="activeToken != null">
-            active_token,
-          </if>
       </trim>
       <trim prefix="values (" suffix=")" suffixOverrides=",">
        	<if test="activeNetwork != null">
        		#{activeNetwork,jdbcType=VARCHAR},
        	</if>  	
-	   	<if test="activeToken != null">
-	   		#{activeToken,jdbcType=VARCHAR},
-	   	</if>
-        
       </trim>
   </insert>
  
@@ -49,9 +41,6 @@
   <update id="update" parameterType="com.cascv.oas.server.blockchain.model.EthConfigModel">
 	update eth_config 
 	<trim prefix=" set " suffix="" suffixOverrides=",">
-		<if test="activeToken != null">
-			active_token = #{activeToken},
-		</if>	
 		<if test = "activeNetwork != null">
 			active_network = #{activeNetwork},
 		</if>

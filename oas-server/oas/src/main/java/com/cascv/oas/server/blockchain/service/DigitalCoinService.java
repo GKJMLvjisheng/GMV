@@ -112,12 +112,12 @@ public class DigitalCoinService {
     // eth config
     
     public Integer addEthConfig(EthConfigModel ethConfigModel) {
-      log.info("addEthConfig net {} token {}", ethConfigModel.getActiveNetwork(), ethConfigModel.getActiveToken());
+      log.info("addEthConfig net {}", ethConfigModel.getActiveNetwork());
       return ethConfigMapper.insertSelective(ethConfigModel);
     }
     
     public Integer updateEthConfig(EthConfigModel ethConfigModel) {
-      log.info("updateEthConfig net {} token {}", ethConfigModel.getActiveNetwork(), ethConfigModel.getActiveToken());
+      log.info("updateEthConfig net {}", ethConfigModel.getActiveNetwork());
       return ethConfigMapper.update(ethConfigModel);
     }
     
