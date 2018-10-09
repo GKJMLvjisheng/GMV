@@ -453,7 +453,8 @@ export default {
     window.addEventListener('pageshow', function(evt){
     setTimeout(function(){
         if(evt.persisted){
-            location.reload(true);
+           // location.reload(true);
+           this.skipRefresh()
         }
     });
 });    
@@ -468,7 +469,7 @@ this.input1=time
   }
    
 };
-$(function(){
+/*$(function(){
     var SERVER_TIME = document.getElementById("SERVER_TIME");
     //var mytime= CurentTime();
     
@@ -485,23 +486,24 @@ console.log("111"+$("#SERVER_TIME").val());
             console.log( parseInt(LOCAL_VER))
              console.log( parseInt(REMOTE_VER))
                 //说明html是从本地缓存中读取的       
-                 location.reload(true);    
+                 //location.reload(true);
+                 window.skipRefresh()    
                  }else{        
                     console.log("222"+LOCAL_VER)
                    //说明html是从server端重新生成的，更新LOCAL_VER      
                      sessionStorage.PAGEVERSION = REMOTE_VER;    }}
     
-})
-$(function(){
+});*/
+/*$(function(){
  if(window.name != "bencalie"){
     window.skipRefresh();
-     //location.reload();
+     // location.reload();
     console.log("123")
     window.name = "bencalie";
 }else{
     window.name = "";
 }
-});
+});*/
 function CurentTime()
     { 
         var now = new Date();
