@@ -26,7 +26,17 @@
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
-         <!--<h4>{{index}}</h4>-->
+          <div>
+         <h4 v-if="item.generate">{{item.name}}中</h4>
+          <h4 v-else>{{item.name}}</h4></div>
+        </div>
+        <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
+          <!-- flash infinite animated永久性-->
+          <img :src="energyBall" alt="">
+          <p>{{item.value}}</p>
+         <div>
+         <h4 v-if="item.generate">{{item.name}}中</h4>
+          <h4 v-else>{{item.name}}</h4></div>
         </div>
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
@@ -44,6 +54,15 @@
         <li>
           <i></i>
           <span class="equipment">手机</span>
+          <div class="bar">
+            <div></div>
+            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysisCount * 100 + '%'}"></div>
+          </div>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span>
+        </li>
+         <li>
+          <i></i>
+          <span class="equipment">计步</span>
           <div class="bar">
             <div></div>
             <div v-if="analysis[0]" :style="{width: analysis[0].value / analysisCount * 100 + '%'}"></div>
@@ -147,6 +166,7 @@ export default {
       isShowToast: false,
       isShowNewsTip: false,
       energyBallList:[],
+      walkEnergyBallList:[],
       currentEnergy:0,
       currentPower:0,
       page:1,
@@ -155,6 +175,7 @@ export default {
       analysis:'',
       analysisCount:0,
       tempArr:[],
+     // tempArrWalk:[],
       input1:'',
       toastMsg:'提示信息',
       attendanceMsg:{
@@ -171,7 +192,8 @@ export default {
   },
   created() {
    
-    this.getEnergyBall()  
+    this.getEnergyBall() 
+    this.getWalkEnergyBall() 
     this.getCurrentEnergy()
     this.getCurrentPower()
     this.getEnergyAnalysis()
@@ -281,14 +303,42 @@ export default {
       this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
         console.log(data.energyBallList)
-        //let i=0
+        let i=0
+        
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
           let p = this.randomPoint()
           // pArr.splice(randomIdx,1)
           el.x = p.x / 75 + 'rem'
           el.y = p.y / 75 + 'rem'
-          
+          if(el.value<50)
+         { el.generate=true}
+         else{el.generate=false}
+          console.log("{"+i+"}"+JSON.stringify(el))
+          //i++
+          return el
+        }) 
+      }) 
+        
+       
+                 
+    },
+     getWalkEnergyBall () {
+      
+      this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
+        // let pArr = createPositionArr()
+        console.log(data.energyBallList)
+        //let i=0
+        
+        this.walkEnergyBallList = data.energyBallList.map(el => {
+          // let randomIdx = randomNum(0,pArr.length - 1)
+          let p = this.randomPoint()
+          // pArr.splice(randomIdx,1)
+          el.x = p.x / 75 + 'rem'
+          el.y = p.y / 75 + 'rem'
+           if(el.value<50)
+         { el.generate=true}
+         else{el.generate=false}
           //console.log("{"+i+"}"+JSON.stringify(el))
           //i++
           return el
@@ -315,8 +365,11 @@ export default {
     // 获取能量分析
     getEnergyAnalysis () {
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
+        console.log(data)
         this.analysis = data
         data.forEach(el => {
+        //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
+        //不能终止循环，除非抛出异常，map必须返回，返回一个数组
           this.analysisCount += el.value
         })
       })
@@ -376,7 +429,27 @@ export default {
       })
       
     },
-    
+    handleClickWalkEnergy(event, data){
+      let value = data.value
+      if (value <50) {
+        this.Toast('能量暂不可收取')
+        return
+      }
+      let ele = event.currentTarget
+      this.$axios.post('/energyPoint/takeEnergyPointBall',{ballId: data.uuid}).then(({data}) => {
+        console.log(JSON.stringify(data))
+        if (data.code != 0) {
+          this.Toast(data.message)
+          return
+        }
+      ele.classList.add('fadeOutUp')
+      ele.classList.remove('flash')
+      ele.classList.remove('infinite')
+      this.getCurrentEnergy()
+      this.getCurrentPower()
+       
+      })
+    },
     // 随机生成不重复坐标点方法
     randomPoint() {
       let p = {x:randomNum(20,650),y: randomNum(50, 550)}
@@ -385,6 +458,7 @@ export default {
         return p
       }
       let len = this.tempArr.length
+     
       for (let i = 0; i < len; i++){
         if(Math.abs(p.x - this.tempArr[i].x) < 75 && Math.abs(p.y - this.tempArr[i].y) < 75) {
           return this.randomPoint()
@@ -653,6 +727,7 @@ header {
 }
 .progress {
   li {
+    display: -webkit-flex;
     display: flex;
     height: 48px;
     align-items: center;
@@ -671,6 +746,10 @@ header {
       background-size: 48px 48px;
     }
     &:nth-child(3) i {
+      background-image: url("../assets/images/watch@2x.png");
+      background-size: 48px 48px;
+    }
+    &:nth-child(4) i {
       background-image: url("../assets/images/other@2x.png");
       background-size: 48px 48px;
     }
@@ -681,17 +760,19 @@ header {
   }
   .bar {
     position: relative;
-    width: 400px;
-    height: 12px;
+    width: 400px;//400px;
+    height:12px; //12px;
     div {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0px;
+      left: 0px;
       width: 400px;
       height: 12px;
+      //第一个div全长灰色
       &:first-child {
         background-color: #d8d8d8;
       }
+      //第二个divvalue的值
       &:last-child {
         background: linear-gradient(
           -90deg,

@@ -216,15 +216,15 @@ $(function() {
                            
                         	$(this).show().siblings('.RuoYi_iframe').hide();//.siblings（）是筛选出同级元素
                              
-                            if(dataUrl=="multiTransfer"){
-                            	//document.getElementById("multiTransfer").contentWindow.initsymbol();
-                            	
-                            	 a="iframe"+dataIndex;
-                            
-                            	//a.window.initsymbol();
-                            	document.getElementById(a).contentWindow.initsymbol();
-                            	//$("#'+a+'")[0].contentWindow.initsymbol();
-                            }
+//                            if(dataUrl=="multiTransfer"){
+//                            	//document.getElementById("multiTransfer").contentWindow.initsymbol();
+//                            	
+//                            	 a="iframeMultiTransfer";
+//                            
+//                            	//a.window.initsymbol();
+//                            	document.getElementById(a).contentWindow.initsymbol();
+//                            	//$("#'+a+'")[0].contentWindow.initsymbol();
+//                            }
                             return false;
                         }
                     });
@@ -241,8 +241,14 @@ $(function() {
             $('.menuTab').removeClass('active');
             $('.menuTabs .page-tabs-content').append(str);
             // 添加选项卡对应的iframe
-            //alert("1");
-            var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" id="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+            var id;
+            if(dataUrl=="multiTransfer"){
+            	id="iframeMultiTransfer";
+            }else{
+            	id="iframe"+dataIndex;
+            }
+           
+            var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" id="' + id + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
             $('.mainContent').find('iframe.RuoYi_iframe').hide().parents('.mainContent').append(str1);
             //var tabProduct = document.getElementById("content-main");
             //tabProduct.find('iframe').hide();
