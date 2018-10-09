@@ -4,6 +4,7 @@
 
   <resultMap id="digitalCoinMap" type="com.cascv.oas.server.blockchain.model.DigitalCoin">
 	<id column="contract" property="contract" />
+	<result column="network" property="network"/>
 	<result column="name" property="name"/>
 	<result column="symbol" property="symbol"/>
 	<result column="wei_factor" property="weiFactor" jdbcType="DECIMAL" />
@@ -11,7 +12,7 @@
   </resultMap>
   
   <sql id="Base_Column_List">
-    contract, name, symbol, wei_factor, supply
+    contract, network, name, symbol, wei_factor, supply
   </sql>
 
   <!-- insert user -->
@@ -19,6 +20,9 @@
     insert into digital_coin
       <trim prefix="(" suffix=")" suffixOverrides=",">
         contract,
+        <if test="network != null">
+        	network,
+        </if>
         <if test="name != null">
           name,
         </if>
@@ -36,6 +40,9 @@
       </trim>
       <trim prefix="values (" suffix=")" suffixOverrides=",">
         #{contract,jdbcType=VARCHAR},
+        <if test="network != null">
+		      #{network,jdbcType=VARCHAR},
+        </if>
         <if test="name != null">
 		      #{name,jdbcType=VARCHAR},
         </if>

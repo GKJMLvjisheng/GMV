@@ -43,7 +43,7 @@
   <select id="selectOne" parameterType="java.lang.String" resultMap="ethConfigMap">
   	select 
       <include refid="Base_Column_List" />
-    from eth_config order by id limit 1, 1
+    from eth_config order by id limit 0, 1
   </select>
 
   <update id="update" parameterType="com.cascv.oas.server.blockchain.model.EthConfigModel">

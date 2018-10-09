@@ -33,7 +33,6 @@ import com.cascv.oas.server.blockchain.config.TransferQuota;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
-import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthConfigModel;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -47,6 +46,8 @@ import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -65,9 +66,6 @@ public class EthWalletService {
 
   @Autowired
   private DigitalCoinService digitalCoinService;
-  
-  @Autowired
-  private UserCoinMapper userCoinMapper;
   
   @Autowired
   private ExchangeRateService exchangeRateService;
@@ -123,7 +121,6 @@ public class EthWalletService {
   }
   
   public Integer destroy(String userUuid){
-    userCoinMapper.deleteAll(userUuid);
     ethWalletMapper.deleteByUserUuid(userUuid);
     keyStoreService.destroyKey(userUuid);
     return 0;
@@ -191,8 +188,6 @@ public class EthWalletService {
       ethWallet.setUpdated(datetime);
       ethWalletMapper.deleteByUserUuid(userUuid);
       ethWalletMapper.insertSelective(ethWallet);
-      
-      import_token(userUuid, ethWallet.getAddress(),coinClient.getToken());
       return ethWallet;
     } catch (CipherException | JsonProcessingException e) {
       e.printStackTrace();
@@ -202,22 +197,6 @@ public class EthWalletService {
   
   public List<ContractSymbol> selectContractSymbol(String name) {
 	  return digitalCoinService.selectContractSymbol(name);
-  }
-
-  public void import_token(String userUuid, String address, String contract){
-    DigitalCoin digitalCoin = digitalCoinService.find(contract);
-    UserCoin userCoin = new UserCoin();
-    userCoin.setAddress(address);
-    userCoin.setContract(contract);
-    userCoin.setUserUuid(userUuid);
-    userCoin.setName(digitalCoin.getName());
-    userCoin.setSymbol(digitalCoin.getSymbol());
-    
-    BigDecimal weiFactor = digitalCoin.getWeiFactor();
-    userCoin.setWeiFactor(weiFactor);
-    BigDecimal balance = this.getBalance(userUuid, contract, weiFactor);
-    userCoin.setBalance(balance);
-    userCoinMapper.insertSelective(userCoin);
   }
   
   public List<DigitalCoin> listDigitalCoins(){
@@ -233,7 +212,7 @@ public class EthWalletService {
     try {
       EthWallet ethWallet = getEthWalletByUserUuid(userUuid);
       log.info("userUuid {} ethWallet {}", userUuid, ethWallet);
-      balance = coinClient.balanceOf(ethWallet.getAddress(), contract, weiFactor);
+      balance = coinClient.balanceOf(ethWallet.getAddress(), weiFactor);
       log.info("getBalance of {}", balance);
     } catch (Exception e) {
     	e.printStackTrace();
@@ -267,30 +246,36 @@ public class EthWalletService {
     return returnValue.getData();
   }
   
-  public UserCoin getUserCoin(String userUuid, String contract){
-    UserCoin userCoin = userCoinMapper.selectOne(userUuid, contract);
-    if (userCoin == null)
+  public UserCoin getUserCoin(String userUuid){
+    EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
+    if (ethWallet == null)
       return null;
+    DigitalCoin digitalCoin = digitalCoinService.find(coinClient.getToken());
+    if (digitalCoin == null)
+      return null;
+    UserCoin userCoin = new UserCoin();
+    userCoin.setUserUuid(userUuid);
+    
+
+    userCoin.setContract(digitalCoin.getContract());
+    userCoin.setWeiFactor(digitalCoin.getWeiFactor());
+    userCoin.setAddress(ethWallet.getAddress());
+    userCoin.setName(digitalCoin.getName());
+    userCoin.setSymbol(digitalCoin.getSymbol());
+    
+    Double ethBalance = this.getEthBalance(userUuid, digitalCoin.getWeiFactor());
     BigDecimal balance=this.getBalance(userUuid, userCoin.getContract(),userCoin.getWeiFactor());
+    userCoin.setEthBalance(ethBalance);
     userCoin.setBalance(balance);
     userCoin.setValue(this.getValue(balance));
     return userCoin;
   }
-  
-  public UserCoin getTokenCoin(String userUuid){
-    return this.getUserCoin(userUuid, coinClient.getToken());
-  }
-
 
   public List<UserCoin> listCoin(String userUuid){
-    List<UserCoin> userCoinList = userCoinMapper.selectAll(userUuid);
-    for (UserCoin coin:userCoinList) {
-      BigDecimal balance =this.getBalance(userUuid, coin.getContract(),coin.getWeiFactor()); 
-      Double ethBalance = this.getEthBalance(userUuid,coin.getWeiFactor());
-      coin.setBalance(balance);
-      coin.setEthBalance(ethBalance);
-      coin.setValue(this.getValue(balance));
-    }
+    List<UserCoin> userCoinList = new ArrayList<>();
+    UserCoin userCoin = getUserCoin(userUuid);
+    if (userCoin != null)
+      userCoinList.add(userCoin);
     return userCoinList;
   }
 
@@ -312,7 +297,7 @@ public class EthWalletService {
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
   
-  public ReturnValue<String> transfer(String userUuid, String contract, String toUserAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
+  public ReturnValue<String> transfer(String userUuid, String toUserAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
 
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     ReturnValue<String> returnValue = new ReturnValue<>();
@@ -320,9 +305,7 @@ public class EthWalletService {
       returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
       return returnValue;
     }
-    if (contract == null)
-      contract = coinClient.getToken();
-    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
+    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid());
     if (userCoin.getBalance().compareTo(amount) < 0) {
       returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
       return returnValue;
@@ -332,7 +315,7 @@ public class EthWalletService {
     if (ethWallet.getCrypto() != 0) {
       key = CryptoUtils.decrypt(key, KEY_SALT);
     }
-    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress, contract, 
+    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress,  
     		amountDec.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
@@ -344,7 +327,7 @@ public class EthWalletService {
     return returnValue;
   }
   
-  public ReturnValue<String> multiTransfer(String userUuid, String contract, List<TransferQuota> quota,
+  public ReturnValue<String> multiTransfer(String userUuid, List<TransferQuota> quota,
 		  BigInteger gasPrice, BigInteger gasLimit, String remark) {
     EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
     ReturnValue<String> returnValue = new ReturnValue<>();
@@ -352,9 +335,7 @@ public class EthWalletService {
       returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
       return returnValue;
     }
-    if (contract == null)
-      contract = coinClient.getToken();
-    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);
+    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid());
     List<BigInteger> amountIntList= new ArrayList<>();
     List<String> addressList = new ArrayList<>();
     BigDecimal total = BigDecimal.ZERO;
@@ -382,7 +363,7 @@ public class EthWalletService {
     }
     String txHash=coinClient.multiTransfer(
     			ethWallet.getAddress(), key, 
-    			addressList, contract, amountIntList, gasPrice,gasLimit);
+    			addressList, amountIntList, gasPrice,gasLimit);
     log.info("txhash {}", txHash);
     if (txHash!=null) {
     	for (TransferQuota q: quota) {
