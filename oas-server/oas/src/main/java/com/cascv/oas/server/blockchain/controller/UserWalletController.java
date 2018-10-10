@@ -8,6 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
@@ -16,15 +27,17 @@ import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
+import com.cascv.oas.server.blockchain.model.OasDetail;
+import com.cascv.oas.server.blockchain.model.OasDetailResp;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletDetailService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
-import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.user.model.UserModel;
@@ -32,14 +45,6 @@ import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping(value="/api/v1/userWallet")
@@ -192,6 +197,89 @@ public class UserWalletController {
         .setData(1)
         .setErrorCode(errorCode)
         .build();
+  }
+  
+  /**
+   * 提币请求申请
+   * @param oasDetail
+   * @return
+   */
+  @PostMapping(value="/withdraw")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> withdraw(@RequestBody OasDetail oasDetail){
+	  UserModel user = ShiroUtils.getUser();
+	  if(user == null) {
+		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.USER_NOT_EXISTS).build();
+	  }
+	  if(oasDetail.getValue()== null || oasDetail.getValue().compareTo(BigDecimal.ZERO) ==0) {
+		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.VALUE_CAN_NOT_BE_NULL).build();
+	  }
+	  oasDetail.setUserUuid(user.getUuid());
+	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(userWalletService.withdraw(oasDetail)).build();
+  }
+  
+  /**
+   * 获取提币记录
+   * @return
+   */
+  @PostMapping(value="/getWithdrawList")
+  @ResponseBody
+  @RequiresRoles("admin")
+  public ResponseEntity<?> getWithdrawList(){  
+	  return new ResponseEntity.Builder<List<OasDetailResp>>()
+		        .setData(userWalletService.getWithdrawList())
+		        .setErrorCode(ErrorCode.SUCCESS).build();
+  }
+  /**
+   * 管理员操作提币请求
+   * @param uuid
+   * @param result，1：同意，2：拒绝
+   * @return
+   */
+  @PostMapping(value="/setWithdrawResult")
+  @ResponseBody
+  @RequiresRoles("admin")
+  @Transactional
+  public ResponseEntity<?> setWithdrawResult(String id,Integer result){ 
+	  if(id == null || result == null || (result != 1 && result != 2)) {
+		  return new ResponseEntity.Builder<Integer>()
+			        .setData(1)
+			        .setErrorCode(ErrorCode.INPUT_ILLEGAL).build();
+	  }
+	  return new ResponseEntity.Builder<Integer>()
+		        .setData(1)
+		        .setErrorCode(userWalletService.setWithdrawResult(id,result)).build();
+  }
+
+  /**
+   * 获取提币手续费
+   * @return
+   */
+  @GetMapping(value="/getOasExtra")
+  @ResponseBody
+  @RequiresRoles("admin")
+  public ResponseEntity<?> getOasExtra() {
+	  return new ResponseEntity.Builder<String>()
+		        .setData(userWalletService.getOasExtra())
+		        .setErrorCode(ErrorCode.SUCCESS).build();
+  }
+  /**
+   * 设置提币手续费
+   * @param value
+   * @return
+   */
+  @PostMapping(value="/updateOasExtra")
+  @ResponseBody
+  public ResponseEntity<?> updateOasExtra(String value){
+	  if(value == null || !NumberUtils.isDigits(value)) {
+		  return new ResponseEntity.Builder<Integer>()
+			        .setData(1)
+			        .setErrorCode(ErrorCode.INPUT_ILLEGAL).build();
+	  }
+	  return new ResponseEntity.Builder<Integer>()
+		        .setData(1)
+		        .setErrorCode(userWalletService.updateOasExtra(value)).build();
   }
   
   /**

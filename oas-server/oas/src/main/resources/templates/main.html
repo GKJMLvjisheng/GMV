@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
        xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
@@ -280,4 +281,272 @@
         window.location.replace(encodeURI(encodeURI("multiTransfer?stringT="+stringT+"&用户名字="+stringName)));
         }
 </script>
+=======
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+       xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>web登陆系统 - 首页</title>
+    <meta name="keywords" content="web登陆系统">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>  
+     <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>        
+    <!-- 全局js -->
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <style type="text/css">
+        .nav > li:hover .dropdown-menu {display: block;}
+        
+        /* body.background{
+        height:auto;
+        background:url(../img/3.jpg) no-repeat center fixed;
+        -webkit-background-size:cover;
+        -moz-background-size:cover;
+        -o-background-size:cover;
+        background-size:cover;
+        color:rgba(255,255,255,.95)
+    } */
+    </style>
+</head>
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
+    <div id="wrapper">
+
+        <!--左侧导航开始-->
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="nav-close">
+                <i class="fa fa-times-circle"></i>
+            </div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element"> 
+                        <span> 
+                            <img id="pic" alt="image" class="img-circle" height="60" width="60"  /></span>
+                            <a > <span class="clear"><span class="block m-t-xs"><strong id="userNickname"class="font-bold"></strong></span></span></a>
+                            <br/>
+                            <a th:href="@{logout}"><i class="glyphicon glyphicon-new-window"></i>退出</a>
+   
+                        </div>
+                    </li>
+
+                    <li class="active">
+                        <a href="main"><i class="glyphicon glyphicon-home"></i> <span class="nav-label">主页</span></a>
+                        <ul class="nav nav-second-level">
+                            <li class="active"><a class="menuItem" th:href="@{/newInformation}">了解我们</a></li>
+                            <li class="active"><a class="menuItem" th:href="@{/userInfo/userInfo}">个人中心</a></li> 
+                        </ul>
+                    </li>
+                    
+                    <shiro:hasRole name="admin">
+                         <li class="">
+                            <a href="main"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >钱包管理</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="active"><a class="menuItem" th:href="@{/wallet/energyWallet}">能量钱包</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/wallet/ethWallet}">交易钱包</a></li> 
+                                <li class="active"><a class="menuItem" th:href="@{/wallet/userWallet}">用户钱包</a></li>
+                            </ul>
+                        </li>                
+                        <li class="">
+                            <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">用户管理</span> </a>                   
+                        </li>
+                        <li class="">
+                            <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">角色管理</span> </a>                    
+                        </li>
+                        <li class="">
+                            <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">模块管理</span> </a>                    
+                        </li>
+                        <li class="">
+                            <a class="menuItem" href="newsManage"><i class="glyphicon glyphicon-film"></i> <span class="nav-label">新闻管理</span> </a>        
+                        </li>
+                        <li class="">
+                            <a class="menuItem" href="QA/QAManage"><i class="glyphicon glyphicon-pencil"></i> <span class="nav-label">环保答题</span> </a>        
+                        </li>
+                         <li class="">
+                        <a href="#"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label" data-toggle="tooltip" title="请优先配置网络"data-placement="right">转账配置</span></a>
+                        <ul class="nav nav-second-level">
+                            <li class="active"><a class="menuItem" th:href="@{netConfiguration/netConfig}">配置</a></li>
+                            <li class="active"><a class="menuItem"href="multiTransfer">一对多转账</a></li> 
+                        </ul>
+                                                    
+                        </li>
+                        <li class="">
+                            <a class="menuItem"href="versionManage"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">版本管理</span>  </a>                         
+                        </li>
+                         <li class="">
+                        <a href="#"><i class="glyphicon glyphicon-gift"></i> <span class="nav-label" >活动奖励管理</span></a>
+                        <ul class="nav nav-second-level">
+                            <li class="active"><a class="menuItem" th:href="@{activityReward/activityReward}">活动管理</a></li>
+                            <li class="active"><a class="menuItem" th:href="@{activityReward/rewardManage}">奖励管理</a></li> 
+                        </ul>
+                    </li>
+                    </shiro:hasRole>
+                </ul>
+            </div>
+        </nav>
+        <!--     右侧导航栏开始 -->
+        <input   type="text" style="display:none" name="net" id="net">
+            <div id="page-wrapper" class="gray-bg dashbard-1">
+                <div class="row border-bottom" style="background:url(../img/3.jpg);background-size:100%;">
+
+                    <ul class="nav navbar-top-links navbar-right">
+                         
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message" style="font-weight:bold;color:black;">
+                                                                                    欢迎来到OAS DAPP管理后台</span>
+                        </li>
+
+                        <li>
+                            <img alt="[ 区块链 ]" src="../img/ball.571c6cc8.png">
+                        </li>
+
+                        <!-- <li><a id="fullScreen"><i class="glyphicon glyphicon-fullscreen"></i>全屏</a></li> -->
+                        <!-- <li><a th:href="@{logout}"><i class="glyphicon glyphicon-new-window"></i>退出</a></li> -->
+                    </ul>
+
+                </div> 
+
+                <div class="row content-tabs">
+        
+                    <nav class="page-tabs menuTabs">
+                        <div class="page-tabs-content">
+                            <a href="javascript:;" class="active menuTab" data-id="/newInformation">首页</a>
+                        </div>
+                    </nav>        
+<!--        <div class="roll-nav roll-right tabRight"> -->
+<!--                         <select  name="network" id="network"> -->
+<!--                         <option>请选择</option></select> -->
+<!--                     </div> -->
+                    <div class="btn-group roll-nav roll-right">
+                        <button class="dropdown J_tabClose" data-toggle="dropdown">
+                                                                            页签操作<span class="caret"></span>
+                        </button>
+                        <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                            <li><a class="tabCloseCurrent" href="javascript:void();">关闭当前</a></li>
+                            <li><a class="tabCloseAll" href="javascript:void();">全部关闭</a></li>
+                        </ul>
+                    </div>
+
+                    <a href="#" class="roll-nav roll-right tabReload"><i class="glyphicon glyphicon-refresh"></i> 刷新</a>
+                </div>
+
+                <div class="row mainContent" id="content-main">
+                    <iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" data-id="/newInformation" 
+                        th:src="@{/newInformation}" frameborder="0" seamless></iframe> 
+                </div>
+
+                <div class="footer">
+                    <div class="pull-right" id="time">©国科云景 Copyright </div>
+                </div>
+            </div>
+    </div>
+
+    <script th:src="@{js/main/jquery.metisMenu.js}"></script>
+    <script th:src="@{js/main/jquery.slimscroll.min.js}"></script>
+    <script th:src="@{js/main/index.js}"></script>
+   
+</body>
+
+<script type="text/javascript">
+    var stringT;
+    var stringName;
+    $(function(){
+        $("[data-toggle='tooltip']").tooltip(); 
+        //String name=Request.QueryString("name");
+        //document.getElementById("").innerHTML=window.location.split('')[];
+    // 	var url = window.location.href;
+    // 	var strInfo=getInfoAndAnalysis(url);    
+        //console.log(JSON.stringify(strInfo));
+    // 	var len=strInfo.length;       
+    // 	if(len>0)
+    // 	{
+    // 		stringT=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值       
+    // 		//string="您好，"+string1;           
+    // 		stringName=decodeURI(decodeURI(strInfo[1]));//获取第一个参数的值
+    // 		var obj = document.getElementById("userNickname");
+    // 	 	obj.innerHTML=(stringName);           
+    // 	 	$("#userNickname").val(stringName);
+    // 	 	$("#userToken").val(stringT);
+    // 		}       
+    // 		var name=$("#userNickname").val();
+    // 		var string=$("#userToken").val();
+    // 	   // alert("userNickname-->"+name);
+    // 	   // alert("token-->"+string);
+    // 	    var data={
+    // 	 	       "userNickname":name
+    // 	 	   };       
+            var objTime = document.getElementById("time");           
+            //获取完整的日期
+            var date=new Date;
+    // 	    var year=date.getFullYear(); 
+    // 	    var month=date.getMonth()+1;
+    // 	    month =(month<10 ? "0"+month:month); 
+            var mytime=date.toLocaleDateString()
+        // var mytime=date.toLocaleTimeString(); //获取当前时间
+            //var mydate = (year.toString()+month.toString()+mytime.toString());      
+            //alert("year"+mytime);
+            objTime.innerHTML=("©"+mytime+"国科云景 Copyright");
+            func();       
+    });
+    function func(){
+        $.ajax({
+        url : "/api/v1/userCenter/inquireUserInfo",
+        contentType : 'application/json;charset=utf8',
+            dataType: 'json',
+            cache: false,
+            type: 'post',
+            async : false,
+            success : function(res) {
+            var userproPath=res.data.profile;
+            var sex=res.data.gender;
+            var name=res.data.name;            
+            var obj = document.getElementById("userNickname");
+            $("#pic").attr("src", userproPath);           
+            obj.innerHTML=(name);          
+            $("#userNickname").val(name);
+            },
+            error : function() {
+            alert('检查用户是否存在发生错误');
+            }              
+    });
+    }
+    function setValue(net){
+   $("#net").val(net);	
+    }
+    //解析url
+    function getInfoAndAnalysis(url){
+        var result=new Array();
+        var parm=""; 
+        if(url.indexOf("?")!=-1){
+            for(var i=0;i<url.length;i++){
+                if(url[i]=="?"){
+                    parm=url.substring(i+1, url.length);
+                }
+            }                
+        }
+        function DivideTwoElement(parm){
+            strs=parm.split("&");
+            $.each(strs,function(i,n){
+                var a=(urid(n)==""?null:urid(n));
+                result.push(a);
+            });
+            return result;
+        }
+        var urid=function(parm){
+            var p="";
+            for(var i=0;i<parm.length;i++){
+                if(parm[i]=="="){
+                    p=parm.substring(i+1, parm.length);
+                }
+            }
+            return p;
+        }        
+        return DivideTwoElement(parm);
+    }
+    function multiTransfer()
+    {
+        window.location.replace(encodeURI(encodeURI("multiTransfer?stringT="+stringT+"&用户名字="+stringName)));
+        }
+</script>
+>>>>>>> 7473bee0ee71833fcc1190e9a4ce561223adf59a
 </html>
