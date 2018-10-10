@@ -29,6 +29,7 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
+import com.cascv.oas.server.blockchain.model.OasReq;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletDetailService;
@@ -271,7 +272,8 @@ public class UserWalletController {
    */
   @PostMapping(value="/updateOasExtra")
   @ResponseBody
-  public ResponseEntity<?> updateOasExtra(String value){
+  public ResponseEntity<?> updateOasExtra(@RequestBody OasReq oasDetail){
+	  String value = oasDetail.getValue().toString();
 	  if(value == null || !NumberUtils.isDigits(value)) {
 		  return new ResponseEntity.Builder<Integer>()
 			        .setData(1)
