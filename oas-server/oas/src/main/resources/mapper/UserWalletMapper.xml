@@ -8,10 +8,11 @@
 	<result column="balance" property="balance"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
+	<result column="unconfirmed_balance" property="unconfirmedBalance"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, balance,created,updated
+    uuid, user_uuid, balance,created,updated,unconfirmed_balance
   </sql>
    
   <!-- insert user -->
@@ -57,5 +58,21 @@
   </update>
   <update id="decreaseBalance">
   	update user_wallet set balance=balance - #{value} where uuid = #{uuid}
+  </update>
+  
+  <update id="changeBalanceAndUnconfimed">
+  	update user_wallet
+  	 <set>
+      <if test="value != null" >
+        balance = #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="unValue != null">
+        unconfirmed_balance = #{unValue,jdbcType=DECIMAL},
+      </if>
+      <if test="updated != null" >
+        updated = #{updated,jdbcType=VARCHAR},
+      </if>
+     </set>
+    where user_uuid = #{userUUid,jdbcType=VARCHAR}
   </update>
 </mapper>
