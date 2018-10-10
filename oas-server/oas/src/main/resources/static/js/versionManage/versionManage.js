@@ -234,8 +234,10 @@ function addVersion(){
 
 		success:function(res){	
 			//alert(JSON.stringify(res));
+			 document.getElementById("load").style.display="none";
 				if(res.code==0)
-				{document.getElementById("tipContent").innerText="上传成功";
+				{
+					document.getElementById("tipContent").innerText="上传成功";
 				$("#Tip").modal('show');
 				$("#addVersionModal").modal('hide');}
 				else{
@@ -257,7 +259,7 @@ function addVersion(){
 		},
 	});
 	
-	Toast();
+	document.getElementById("load").style.display="block";
 }
 
 function Toast (delay) {
