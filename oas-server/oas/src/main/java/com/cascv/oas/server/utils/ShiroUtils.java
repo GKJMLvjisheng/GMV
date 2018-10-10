@@ -73,7 +73,13 @@ public class ShiroUtils {
       UserModel userModel = getUser();
       return userModel != null ? userModel.getName() : null;
     }
-
+    
+    public static String getAddress()
+    {
+      UserModel userModel = getUser();
+      return userModel != null ? userModel.getAddress() : null;
+    }
+    
     public static String getIp()
     {
       Session session = getSession();
