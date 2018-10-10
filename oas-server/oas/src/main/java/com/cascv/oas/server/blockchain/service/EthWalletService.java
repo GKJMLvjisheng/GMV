@@ -337,7 +337,7 @@ public class EthWalletService {
    * @param comment
    * @return
    */
-  public ReturnValue<String> systemTransfer(String userUuid, String toUserAddress,String onlineWalletName, String contract,UserCoin userCoin,BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
+  public ReturnValue<String> systemTransfer(String userUuid, String toUserAddress,String onlineWalletName, UserCoin userCoin,BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
 	    //system的交易钱包
 	    EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
 	    ReturnValue<String> returnValue = new ReturnValue<>();
@@ -361,7 +361,7 @@ public class EthWalletService {
 	    log.info("txhash {}", txHash);
 	    if (txHash != null) {
 	      //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH,amount, txHash, comment, toUserAddress);
-	      addDetail(toUserAddress, EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, onlineWalletName);
+	      addDetail(onlineWalletName, EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, toUserAddress);
 	    }
 	    returnValue.setErrorCode(ErrorCode.SUCCESS);
 	    returnValue.setData(txHash);
