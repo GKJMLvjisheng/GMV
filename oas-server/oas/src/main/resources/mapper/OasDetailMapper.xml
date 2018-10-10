@@ -97,6 +97,7 @@
   	left join user_info b 
   	on a.user_uuid = b.uuid
   	where a.type = '1'
+  	order by a.updated desc
   </select>
   
   <select id="getOasExtra" resultType="java.lang.String">
@@ -105,7 +106,8 @@
   
   <update id="updateOasExtra">
   	update oas_extra_cost
-  	set value = #{value,jdbcType=VARCHAR}
+  	set value = #{value,jdbcType=VARCHAR},
+  	updated = #{updated,jdbcType=VARCHAR}
   	where code='oas_extra'
   </update>
   
@@ -117,7 +119,7 @@
   
   <update id="setWithdrawResultByUuid">
    update oas_detail
-   set value = #{result,jdbcType=INTEGER},
+   set status = #{result,jdbcType=INTEGER},
    	   updated = #{updated,jdbcType=VARCHAR}
    where uuid = #{uuid,jdbcType=VARCHAR}
   </update>

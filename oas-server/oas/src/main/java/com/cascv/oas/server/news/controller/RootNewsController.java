@@ -34,8 +34,4 @@ public String auditing() {
 public String KYC() {
 	    return "KYC/KYC";  
 	    }
-@GetMapping("/KYC/limitConfig")
-public String limitConfig() {
-	    return "KYC/limitConfig";  
-	    }
 }

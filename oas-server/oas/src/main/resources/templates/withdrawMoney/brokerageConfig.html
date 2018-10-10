@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+  	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/withdrawMoney/withdrawMoney.js}"></script>   
+    <style type="text/css">
+     table{     
+         border-collapse :collapse ;
+		 margin-top: 40px;
+		 margin-left: 150px;
+     }
+     th,td
+     {
+         width:200px;
+         height:40px;
+         border :1px solid black;
+         font-size:12px;
+         text-align :center;
+     }
+     
+    </style>
+</head>
+
+<body>
+
+  <table>
+    <tr>
+      <th>手续费</th>
+      <th>操作</th>
+    </tr>
+	<tr>
+      <td id="brokerage"></td>
+      <td><a onclick="edit()" title='修改'><span class='glyphicon glyphicon-pencil'></span></a></td>
+	</tr> 
+  </table>
+
+  <!-- 提币配置的模态框 -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">手续费配置</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-3 control-label">手续费：</label>
+							<div class="col-sm-6">
+								<input name="Ebrokerage" class="form-control" id="Ebrokerage" required="required" /></input>								
+							</div>						
+						</div>																								
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateBrokerage()"><span aria-hidden="true">保存</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>
+	
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	
+</body>
+</html>
