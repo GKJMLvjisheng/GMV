@@ -1,4 +1,4 @@
-package com.cascv.oas.server.wechat.Utils;
+package com.cascv.oas.server.wechat.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
