@@ -170,7 +170,7 @@ function updateQuestion(){
 				location.reload();
 			}
 			else{
-				lert("修改失败");
+				alert("修改失败");
 				}						
 		},
 		error:function(){
