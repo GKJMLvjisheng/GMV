@@ -49,8 +49,9 @@ public class DigitalCoinService {
 		return digitalCoinMapper.selectContractSymbol(name);
     }
 
-    public Integer create(CoinClient coinClient, String contract){
+    public Integer create(CoinClient coinClient, EthContractModel ethContractModel){
       Integer ret = 0;
+      String contract = ethContractModel.getAddress();
       try {
         DigitalCoin digitalCoin = this.find(contract);
         if (digitalCoin != null) {
@@ -59,11 +60,12 @@ public class DigitalCoinService {
         }
         digitalCoin = new DigitalCoin();
         digitalCoin.setContract(contract);
-        BigDecimal weiFactor = coinClient.weiFactorOf(contract);
+        digitalCoin.setNetwork(ethContractModel.getNetwork());
+        BigDecimal weiFactor = coinClient.weiFactorOf();
         digitalCoin.setWeiFactor(weiFactor);
-        digitalCoin.setName(coinClient.nameOf(contract));
-        digitalCoin.setSymbol(coinClient.symbolOf(contract));
-        BigDecimal supply = coinClient.supplyOf(contract, weiFactor);
+        digitalCoin.setName(coinClient.nameOf());
+        digitalCoin.setSymbol(coinClient.symbolOf());
+        BigDecimal supply = coinClient.supplyOf(weiFactor);
         digitalCoin.setSupply(supply);
         ret=digitalCoinMapper.insertSelective(digitalCoin);
         log.info("new coin name {} symbol {} weiFactor {} contract {} supply {} loaded",
@@ -110,10 +112,12 @@ public class DigitalCoinService {
     // eth config
     
     public Integer addEthConfig(EthConfigModel ethConfigModel) {
+      log.info("addEthConfig net {}", ethConfigModel.getActiveNetwork());
       return ethConfigMapper.insertSelective(ethConfigModel);
     }
     
     public Integer updateEthConfig(EthConfigModel ethConfigModel) {
+      log.info("updateEthConfig net {}", ethConfigModel.getActiveNetwork());
       return ethConfigMapper.update(ethConfigModel);
     }
     
@@ -123,12 +127,10 @@ public class DigitalCoinService {
     
     public EthConfigModel getEthConfig() {
       EthConfigModel ethConfigModel = ethConfigMapper.selectOne();
-      if (ethConfigModel == null)
-        ethConfigModel = new EthConfigModel();
-      if (ethConfigModel.getActiveNetwork() == null) 
-        ethConfigModel.setActiveNetwork("ropsten");
-      if (ethConfigModel.getActiveToken() == null)
-        ethConfigModel.setActiveToken("oases");
+      if (ethConfigModel != null) {
+        if (ethConfigModel.getActiveNetwork() == null) 
+          ethConfigModel.setActiveNetwork("ropsten");
+      }
       return ethConfigModel;
     }
 

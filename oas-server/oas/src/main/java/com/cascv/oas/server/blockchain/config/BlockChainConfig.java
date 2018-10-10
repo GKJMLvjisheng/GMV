@@ -37,34 +37,27 @@ public class BlockChainConfig {
 
     CoinClient coinClient = new CoinClient();
         
-    EthConfigModel ethConfigModel = digitalCoinService.getEthConfig();
-    log.info("config {} - {}", ethConfigModel.getActiveNetwork(), ethConfigModel.getActiveToken());
-    
-    Map<String, Web3j> providerMap = new HashMap<>();
+    Map<String, Web3j> network = new HashMap<>();
     List<EthNetworkModel> ethNetworkModelList = digitalCoinService.listEthNetwork();
     for (EthNetworkModel ethNetworkModel : ethNetworkModelList) {
       log.info("network {} - {}", ethNetworkModel.getName(), ethNetworkModel.getProvider());
       Web3j web3j =  Web3j.build(new HttpService(ethNetworkModel.getProvider()));
-      providerMap.put(ethNetworkModel.getName(), web3j);
+      network.put(ethNetworkModel.getName(), web3j);
     }
-    coinClient.setProviderMap(providerMap);
-    
-    String activeNetwork = ethConfigModel.getActiveNetwork();
-    if (providerMap.get(activeNetwork) != null) {
-      log.info("default network {}", activeNetwork);
-      coinClient.setDefaultNet(activeNetwork);
-    }
+    coinClient.setNetwork(network);
     
     List<EthContractModel> ethContractModelList = digitalCoinService.listEthContract();
+    coinClient.setEthContract(ethContractModelList);
+    
     for (EthContractModel ethContractModel:ethContractModelList) {
       log.info("contract {} - {}", ethContractModel.getName(), ethContractModel.getAddress());
-      digitalCoinService.create(coinClient, ethContractModel.getAddress());
+      coinClient.setDefaultNet(ethContractModel.getNetwork());
+      digitalCoinService.create(coinClient, ethContractModel);
     }
-    EthContractModel ethContractModel= digitalCoinService.findEthContractByName(ethConfigModel.getActiveToken());
     
-    log.info("token {} - {}", ethContractModel.getName(), ethContractModel.getAddress());
-    coinClient.setToken(ethContractModel.getAddress());
-    
+    EthConfigModel ethConfigModel = digitalCoinService.getEthConfig();
+    log.info("config network {}", ethConfigModel.getActiveNetwork());
+    coinClient.setDefaultNet(ethConfigModel.getActiveNetwork());
     return coinClient;
   }
 }

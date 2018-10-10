@@ -9,5 +9,6 @@ public class EthContractModel implements Serializable {
   private static final long serialVersionUID = 1L;
   @Getter @Setter private String name;
   @Getter @Setter private String address;
+  @Getter @Setter private String network;
   @Getter @Setter private String description;
 }

@@ -60,6 +60,7 @@
          		   contentType : 'application/json;charset=utf8',
          		   dataType: 'json',
          		   cache: false,
+         		   async : false,
          		   success: function (res) {
          			 
          		     if (res.code == 0) {
@@ -73,6 +74,9 @@
          		   },
          		  
          		  });
+               if(parent.$("#iframeMultiTransfer")[0])
+               {
+            	   parent.$("#iframeMultiTransfer")[0].contentWindow.initsymbol(); }
         	 
             });
   function getValue(){
