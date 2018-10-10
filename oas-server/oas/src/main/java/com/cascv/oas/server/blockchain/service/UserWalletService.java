@@ -149,6 +149,7 @@ public class UserWalletService {
   }
 
   public ErrorCode withdraw(OasDetail oasDetail){
+	  oasDetail.setExtra(new BigDecimal(oasDetailMapper.getOasExtra()));
 	//用户的在线钱包代币变化
 	  UserWallet userWallet = userWalletMapper.selectByUserUuid(oasDetail.getUserUuid());
 	  BigDecimal value = new BigDecimal(0);
@@ -164,7 +165,6 @@ public class UserWalletService {
 	  }
 	  oasDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.OAS_DETAIL));
 	  String now = DateUtils.dateTimeNow();
-	  oasDetail.setExtra(new BigDecimal(oasDetailMapper.getOasExtra()));
 	  oasDetail.setCreated(now);
 	  oasDetail.setUpdated(now);
 	  oasDetail.setStatus(OasEventEnum.FORSURE.getCode());
@@ -227,7 +227,7 @@ public class UserWalletService {
 				  return ErrorCode.UPDATE_FAILED;
 			  }
 			  
-			  UserCoin tokenCoin = ethWalletService.getTokenCoin(detail.getUserUuid());
+			  UserCoin tokenCoin = ethWalletService.getUserCoin(detail.getUserUuid());
 			  this.addDetail(userWallet, tokenCoin.getAddress(), UserWalletDetailScope.COIN_TO_ETH, value, detail.getRemark(), detail.getRemark());
 			  //操作交易钱包
 			  

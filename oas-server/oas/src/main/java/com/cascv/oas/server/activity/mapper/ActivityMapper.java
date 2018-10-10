@@ -28,7 +28,7 @@ public interface ActivityMapper {
 	RewardModel selectRewardByRewardCode(@Param("rewardCode") Integer rewardCode);
 	Integer deleteReward(@Param("rewardCode") Integer rewardCode);
 	
-	ActivityRewardConfig selectMaxValueBySourceCodeAndrewardCode(@Param("sourceCode") Integer sourceCode, @Param("rewardCode") Integer rewardCode);
+	ActivityRewardConfig selectBaseValueBySourceCodeAndrewardCode(@Param("sourceCode") Integer sourceCode, @Param("rewardCode") Integer rewardCode);
 	Integer insertActivityRewardConfig(ActivityRewardConfig activityRewardConfig);
 	Integer updateActivityReward(ActivityRewardConfig activityRewardConfig);
 	List<RewardConfigResult> selectActivityRewardBySourceCode(@Param("sourceCode") Integer sourceCode);
@@ -48,9 +48,11 @@ public interface ActivityMapper {
 	
 	Integer insertActivityCompletionStatus(ActivityCompletionStatus activityCompletionStatus);
 	
-	Integer increasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-	Integer decreasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-	Integer increasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-	Integer decreasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value);
-
+	Integer increasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer decreasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer increasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer decreasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
+	Integer updateEnergyWalletUpdated(@Param("userUuid") String userUuid);
+    
+	RewardConfigResult inquireACSByUserUuidAndSouceCode(@Param("sourceCode") Integer sourceCode,@Param("userUuid") String userUuid);
 }

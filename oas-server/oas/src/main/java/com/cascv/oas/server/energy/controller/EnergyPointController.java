@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,12 +73,15 @@ public class EnergyPointController {
 //            energyService.updateEnergyBallStatusByUuid(userUuid);
         	//get reward and record
         	activityService.getReward(sourceCode, userUuid);
+        	EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
+        	energyCheckinResult.setNewEnergyPoint(activityService.getNewPoint(sourceCode, 1).getNewPoint());
+        	energyCheckinResult.setNewPower(activityService.getNewPower(sourceCode, 2).getNewPower());
         	// change the Checkin EnergyBall to Die
-            activityService.updateEnergyPointBallStatusByUuid(userUuid);
-            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
+//            activityService.updateEnergyPointBallStatusByUuid(userUuid);
+//            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
         	return new ResponseEntity
-                    .Builder<Integer>()
-                    .setData(0)
+                    .Builder<EnergyCheckinResult>()
+                    .setData(energyCheckinResult)
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
@@ -96,7 +98,7 @@ public class EnergyPointController {
 
     @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyBall() {
+    public ResponseEntity<?> inquireEnergyPointBall() {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
@@ -110,7 +112,7 @@ public class EnergyPointController {
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> takeEnergyBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
+    public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
@@ -439,36 +441,9 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     @PostMapping(value="/inqureEnergyWalletBalanceRecord")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> inqureEnergyWalletBalanceRecord(@RequestBody TimeLimitInfo timeLimitInfo){
-  	  
-  	  //获取当月第一天
-  	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-  	  Calendar c = Calendar.getInstance();
-  	  c.add(Calendar.MONTH, 0);
-  	  c.set(Calendar.DAY_OF_MONTH,1);
-  	  String nowMonthOfFirstDay =format.format(c.getTime());
-      log.info("monthOfFirstDay:{}",nowMonthOfFirstDay);
-        
-      //获取当前年月日
-      Date d = new Date();
-      String nowDate = format.format(d);
-      log.info("nowDate={}",nowDate);
-        
-  	  String startTime=timeLimitInfo.getStartTime();
-  	  String endTime=timeLimitInfo.getEndTime();
-  	  
-  	  if(startTime=="") {
-  		  startTime=nowMonthOfFirstDay;
-  	  }else {
-  		  startTime=timeLimitInfo.getStartTime();
-  	  }
-  	  if(endTime=="") {
-  		  endTime=nowDate;
-  	  }else {
-  		  endTime=timeLimitInfo.getEndTime();
-  	  }
-  	  
-  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecords=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(startTime, endTime);
+    public ResponseEntity<?> inqureEnergyWalletBalanceRecord(){
+ 
+  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecords=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord();
   		return new ResponseEntity.Builder<List<EnergyWalletBalanceRecordInfo>>()
   		        .setData(energyWalletBalanceRecords)
   		        .setErrorCode(ErrorCode.SUCCESS)

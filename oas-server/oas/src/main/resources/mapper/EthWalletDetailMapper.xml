@@ -10,14 +10,15 @@
 	<result column="sub_title" property="subTitle"/>
 	<result column="in_or_out" property="inOrOut" jdbcType="INTEGER"/>
 	<result column="tx_hash" property="txHash"/>
-	<result column="comment" property="comment"/>
-	<result column="change_address" property="changeAddress"/>
+	<result column="remark" property="remark"/>
+<!-- 	<result column="change_address" property="changeAddress"/> -->
 	<result column="created" property="created"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, address, value, title, sub_title,in_or_out, tx_hash, comment, change_address, created
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, remark, created
+<!--     , change_address -->
   </sql>
   
   
@@ -40,12 +41,12 @@
 		<if test="txHash != null">
     		tx_hash,
     	</if>
-    	<if test="comment != null">
-    		comment,
+    	<if test="remark != null">
+    		remark,
     	</if>
-    	<if test="changeAddress != null">
-    		change_address,
-    	</if>
+<!--     	<if test="changeAddress != null"> -->
+<!--     		change_address, -->
+<!--     	</if> -->
     	created
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -64,12 +65,12 @@
     	<if test="txHash != null">
     		#{txHash,jdbcType=VARCHAR},
     	</if>
-    	<if test="comment != null">
-    		#{comment,jdbcType=VARCHAR},
+    	<if test="remark != null">
+    		#{remark,jdbcType=VARCHAR},
     	</if>
-    	<if test="changeAddress != null">
-    		#{changeAddress,jdbcType=VARCHAR},
-    	</if>
+<!--     	<if test="changeAddress != null"> -->
+<!--     		#{changeAddress,jdbcType=VARCHAR}, -->
+<!--     	</if> -->
     		#{created,jdbcType=VARCHAR}
     </trim>
   </insert>

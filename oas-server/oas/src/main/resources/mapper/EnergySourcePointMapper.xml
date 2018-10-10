@@ -30,6 +30,6 @@
 
     <!-- 查询对应来源的一次性积分属性 -->
   <select id="queryPointSingle" resultType="java.math.BigDecimal">
-    select base_value from activity_reward_config where source_code = #{sourceCode}
+    select base_value from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode}
   </select>
 </mapper>

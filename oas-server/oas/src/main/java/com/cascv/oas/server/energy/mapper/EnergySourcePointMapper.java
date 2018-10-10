@@ -11,5 +11,5 @@ public interface EnergySourcePointMapper {
 
     EnergySourcePoint queryBySourceCode(@Param("sourceCode") Integer sourceCode);
 
-    BigDecimal queryPointSingle(@Param("sourceCode")Integer sourceCode);
+    BigDecimal queryPointSingle(@Param("sourceCode")Integer sourceCode, @Param("rewardCode")Integer rewardCode);
 }

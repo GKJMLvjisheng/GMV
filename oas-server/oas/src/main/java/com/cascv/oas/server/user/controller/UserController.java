@@ -66,13 +66,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value="/api/v1/userCenter")
 
 public class UserController {
-  @Value("${mail.rootMail}")
+  @Value("${mail.mailBean.rootMail}")
   private String rootMail;
-  @Value("${mail.password}")
+  @Value("${mail.mailBean.password}")
   private String mailPassword;
-  @Value("${mail.name}")
+  @Value("${mail.mailBean.name}")
   private String mailName;
-  @Value("${mail.subject}")
+  @Value("${mail.mailBean.subject}")
   private String subject;
   @Autowired
   private UserService userService;
@@ -82,13 +82,15 @@ public class UserController {
 //  private MailBean mailBean;
   @Autowired
   private PowerService powerService;
-	private EthWalletService ethWalletService;
+  
+  @Autowired
+  private EthWalletService ethWalletService;
 	
-	@Autowired
-	private UserWalletService userWalletService;
-	
-	@Autowired
-	private EnergyWalletService energyPointService;
+  @Autowired
+  private UserWalletService userWalletService;
+
+  @Autowired
+  private EnergyWalletService energyPointService;
     
 	String vcode="";
 	

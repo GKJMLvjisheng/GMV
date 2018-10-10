@@ -33,7 +33,6 @@ import com.cascv.oas.server.blockchain.config.TransferQuota;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
-import com.cascv.oas.server.blockchain.mapper.UserCoinMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthConfigModel;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -65,9 +64,6 @@ public class EthWalletService {
 
   @Autowired
   private DigitalCoinService digitalCoinService;
-  
-  @Autowired
-  private UserCoinMapper userCoinMapper;
   
   @Autowired
   private ExchangeRateService exchangeRateService;
@@ -361,7 +357,7 @@ public class EthWalletService {
 	    if (ethWallet.getCrypto() != 0) {
 	      key = CryptoUtils.decrypt(key, KEY_SALT);
 	    }
-	    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress, contract,amountDec.toBigInteger(), gasPrice, gasLimit);
+	    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress,amountDec.toBigInteger(), gasPrice, gasLimit);
 	    log.info("txhash {}", txHash);
 	    if (txHash != null) {
 	      //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH,amount, txHash, comment, toUserAddress);
@@ -371,7 +367,6 @@ public class EthWalletService {
 	    returnValue.setData(txHash);
 	    return returnValue;
 	  }
-  
   
   public ReturnValue<String> multiTransfer(String userUuid, List<TransferQuota> quota,
 		  BigInteger gasPrice, BigInteger gasLimit, String remark) {

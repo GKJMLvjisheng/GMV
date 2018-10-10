@@ -66,7 +66,6 @@ public class UserWalletController {
   private ExchangeRateService exchangeRateService;
   @Autowired
   private UserWalletDetailService userWalletDetailService;
-  
   @PostMapping(value="/inquireAddress")
   @ResponseBody()
   public ResponseEntity<?> inquireAddress(){

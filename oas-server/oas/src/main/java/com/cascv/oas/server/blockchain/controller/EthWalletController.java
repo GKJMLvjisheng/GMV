@@ -5,7 +5,6 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
-import com.cascv.oas.core.utils.CryptoUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -103,11 +102,10 @@ public class EthWalletController {
 	    	  gasLimit = BigInteger.valueOf(60000);
 	      
 	      ReturnValue<String> returnValue=ethWalletService.transfer(
-	        ShiroUtils.getUserUuid(), 
-	        ethWalletTransfer.getContract(),
+	        ShiroUtils.getUserUuid(),
 	        ethWalletTransfer.getToUserAddress(),
 	        ethWalletTransfer.getAmount(),gasPrice,gasLimit, 
-	        ethWalletTransfer.getComment());	  
+	        ethWalletTransfer.getRemark());	  
       EthWalletTransferResp resp = new EthWalletTransferResp();
       resp.setTxHash(returnValue.getData());
 	    return new ResponseEntity.Builder<EthWalletTransferResp>()
@@ -139,8 +137,7 @@ public class EthWalletController {
 			  gasLimit = BigInteger.valueOf(600000);
 		  
 		  ReturnValue<String> returnValue=ethWalletService.multiTransfer(
-	        ShiroUtils.getUserUuid(), 
-	        ethWalletMultiTransfer.getContract(),
+	        ShiroUtils.getUserUuid(),
           ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit, "");
       EthWalletMultiTransferResp resp = new EthWalletMultiTransferResp();
       resp.setTxHash(returnValue.getData());
@@ -223,7 +220,7 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> summary(){
     ErrorCode errorCode=ErrorCode.SUCCESS;
-    UserCoin tokenCoin = ethWalletService.getTokenCoin(ShiroUtils.getUserUuid());
+    UserCoin tokenCoin = ethWalletService.getUserCoin(ShiroUtils.getUserUuid());
     
     EthWalletSummary ethWalletSummary = new EthWalletSummary();
     ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);

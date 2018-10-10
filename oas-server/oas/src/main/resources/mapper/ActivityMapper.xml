@@ -164,7 +164,7 @@
    
   
   <!-- select activity max_value -->
-  <select id="selectMaxValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
+  <select id="selectBaseValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
       select 
       <include refid="activity_Reward_Connfig_List" />
       from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode};
@@ -191,6 +191,7 @@
   
   <resultMap id="rewardConfigResult" type="com.cascv.oas.server.activity.wrapper.RewardConfigResult">
 	<id column="uuid" property="uuid" />
+	<id column="user_uuid" property="userUuid" />
 	<result column="source_code" property="sourceCode"/>
 	<result column="reward_code" property="rewardCode"/>
 	<result column="reward_name" property="rewardName"/>
@@ -209,6 +210,13 @@
       left join reward_source B on A.reward_code = B.reward_code 
       where A.source_code = #{sourceCode};
   </select> 
+  
+  
+  <select id="inquireACSByUserUuidAndSouceCode" resultMap="rewardConfigResult">
+      select * from activity_completion_status  
+      where source_code = #{sourceCode} and user_uuid=#{userUuid};
+  </select> 
+  
   
   <resultMap id="EnergyPointBall" type="com.cascv.oas.server.activity.model.EnergyPointBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
@@ -308,20 +316,21 @@
     </resultMap>
     
     <update id="increasePoint" >
-      update energy_wallet set point=point + #{value} where user_uuid = #{userUuid}
+      update energy_wallet set point=point + #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
 
     <update id="decreasePoint">
-      update energy_wallet set point=point - #{value} where user_uuid = #{userUuid}
+      update energy_wallet set point=point - #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
 
     <update id="increasePower">
-      update energy_wallet set power=power + #{value} where user_uuid = #{userUuid}
+      update energy_wallet set power=power + #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
 
     <update id="decreasePower">
-      update energy_wallet set power=power - #{value} where user_uuid = #{userUuid}
+      update energy_wallet set power=power - #{value}, updated = #{updated} where user_uuid = #{userUuid}
     </update>
+    
   
     
     <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">

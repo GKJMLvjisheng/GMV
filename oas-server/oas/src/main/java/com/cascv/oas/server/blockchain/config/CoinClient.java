@@ -34,6 +34,8 @@ import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.ChainId;
 import org.web3j.utils.Numeric;
 
+import com.cascv.oas.server.blockchain.model.EthContractModel;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,23 +43,35 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CoinClient {
   public static final String EmptyAddress = "0x0000000000000000000000000000000000000000";
-  @Getter @Setter private Map<String, Web3j> providerMap;
+  @Getter @Setter private Map<String, Web3j> network;
+  @Getter @Setter private List<EthContractModel> ethContract;
   @Getter @Setter private Web3j web3j;
   @Getter @Setter private String netName;
   @Getter @Setter private String token;
   
+  private EthContractModel findContractByNetwork(String net) {
+    for (EthContractModel ec : ethContract) {
+      if (ec.getNetwork().equals(net)) {
+        return ec;
+      }
+    }
+    return null;
+  }
+  
   public void setDefaultNet(String net) {
-    Web3j lookup = providerMap.get(net);
-    if (lookup != null) {
+    Web3j lookup = network.get(net);
+    EthContractModel ec =  findContractByNetwork(net);
+    if (lookup != null && ec != null ) {
       netName = net;
       web3j = lookup;
+      token = ec.getAddress();
     }
   }
   
   public Set<String> listNetwork(){
-	  if (providerMap == null)
+	  if (network == null)
 		  return null;
-	  return providerMap.keySet();
+	  return network.keySet();
   }
   
   public BigInteger ethBalance(String fromAddress) {
@@ -72,19 +86,19 @@ public class CoinClient {
   }
   
   // balance
-  public BigDecimal balanceOf(String fromAddress, String contract, BigDecimal weiFactor) {
-	String methodName = "balanceOf";
+  public BigDecimal balanceOf(String fromAddress, BigDecimal weiFactor) {
+    String methodName = "balanceOf";
     List<Type> inputParameters = new ArrayList<>();
     List<TypeReference<?>> outputParameters = new ArrayList<>();
     Address address = new Address(fromAddress);
     inputParameters.add(address);
-
+    log.info("balanceOf {} in contract {}", fromAddress, token);
     TypeReference<Uint256> typeReference = new TypeReference<Uint256>() {
     };
     outputParameters.add(typeReference);
     Function function = new Function(methodName, inputParameters, outputParameters);
     String data = FunctionEncoder.encode(function);
-    Transaction transaction = Transaction.createEthCallTransaction(fromAddress, contract, data);
+    Transaction transaction = Transaction.createEthCallTransaction(fromAddress, token, data);
     
     EthCall ethCall;
     BigInteger balanceInt = BigInteger.ZERO;
@@ -104,7 +118,7 @@ public class CoinClient {
 
   
   // name
-  public String nameOf(String contract) {
+  public String nameOf() {
     String methodName = "name";
     String name = null;
     String fromAddr = EmptyAddress;
@@ -118,7 +132,7 @@ public class CoinClient {
     Function function = new Function(methodName, inputParameters, outputParameters);
 
     String data = FunctionEncoder.encode(function);
-    Transaction transaction = Transaction.createEthCallTransaction(fromAddr, contract, data);
+    Transaction transaction = Transaction.createEthCallTransaction(fromAddr, token, data);
 
     EthCall ethCall;
     try {
@@ -133,7 +147,7 @@ public class CoinClient {
 
   
   // symbol
-  public String symbolOf(String contract) {
+  public String symbolOf() {
     String methodName = "symbol";
     String symbol = null;
     List<Type> inputParameters = new ArrayList<>();
@@ -146,7 +160,7 @@ public class CoinClient {
     Function function = new Function(methodName, inputParameters, outputParameters);
 
     String data = FunctionEncoder.encode(function);
-    Transaction transaction = Transaction.createEthCallTransaction(EmptyAddress, contract, data);
+    Transaction transaction = Transaction.createEthCallTransaction(EmptyAddress, token, data);
 
     EthCall ethCall;
     try {
@@ -160,7 +174,7 @@ public class CoinClient {
   }
 
   // Decimal
-  public BigDecimal weiFactorOf(String contract) {
+  public BigDecimal weiFactorOf() {
     String methodName = "decimals";
     Integer decimal = 0;
     List<Type> inputParameters = new ArrayList<>();
@@ -173,7 +187,7 @@ public class CoinClient {
     Function function = new Function(methodName, inputParameters, outputParameters);
 
     String data = FunctionEncoder.encode(function);
-    Transaction transaction = Transaction.createEthCallTransaction(EmptyAddress, contract, data);
+    Transaction transaction = Transaction.createEthCallTransaction(EmptyAddress, token, data);
 
     EthCall ethCall;
     try {
@@ -188,7 +202,7 @@ public class CoinClient {
 
   
   // total supply
-  public BigDecimal supplyOf(String contract, BigDecimal weiFactor) {
+  public BigDecimal supplyOf(BigDecimal weiFactor) {
     String methodName = "totalSupply";
     String fromAddr = EmptyAddress;
     BigInteger totalSupply = BigInteger.ZERO;
@@ -202,7 +216,7 @@ public class CoinClient {
     Function function = new Function(methodName, inputParameters, outputParameters);
 
     String data = FunctionEncoder.encode(function);
-    Transaction transaction = Transaction.createEthCallTransaction(fromAddr, contract, data);
+    Transaction transaction = Transaction.createEthCallTransaction(fromAddr, token, data);
 
     EthCall ethCall;
     try {
@@ -218,7 +232,7 @@ public class CoinClient {
   
   // transfer todo
   public String transfer(String fromAddress, String privateKey, String toAddress, 
-		  String contract, BigInteger amount, BigInteger gasPrice, BigInteger gasLimit) {
+		  BigInteger amount, BigInteger gasPrice, BigInteger gasLimit) {
 	  BigInteger nonce;
 	  EthGetTransactionCount ethGetTransactionCount = null;
 	  try {
@@ -248,7 +262,7 @@ public class CoinClient {
     String txHash = null;
     try {
     	log.info("[transfer] data {}", data);
-		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
+		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, token, value, data, chainId, privateKey);
 		  if (signedData != null) {
 		    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
 		    txHash=ethSendTransaction.getTransactionHash();
@@ -260,7 +274,7 @@ public class CoinClient {
   }
   
   public String multiTransfer(String fromAddress, String privateKey, List<String> toAddress, 
-		  String contract, List<BigInteger> amount,BigInteger gasPrice, BigInteger gasLimit) {
+		  List<BigInteger> amount,BigInteger gasPrice, BigInteger gasLimit) {
 	  BigInteger nonce;
 	  EthGetTransactionCount ethGetTransactionCount = null;
 	  try {
@@ -302,7 +316,7 @@ public class CoinClient {
     String txHash = null;
     try {
     	log.info("[multiTransfer] data {}", data);
-		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, contract, value, data, chainId, privateKey);
+		  signedData = this.signTransaction(nonce, gasPrice, gasLimit, token, value, data, chainId, privateKey);
 		  if (signedData != null) {
 		    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(signedData).send();
         txHash = ethSendTransaction.getTransactionHash();

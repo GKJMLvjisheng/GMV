@@ -32,7 +32,7 @@ select
 from 	
 	energy_wallet ew,user_info u
 where
-	ew.user_uuid=u.uuid and DATE_FORMAT(ew.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	ew.user_uuid=u.uuid
 order by ew.point desc
 </select> 
 

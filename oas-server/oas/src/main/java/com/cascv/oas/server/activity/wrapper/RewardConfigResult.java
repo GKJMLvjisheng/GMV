@@ -10,6 +10,7 @@ public class RewardConfigResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Getter @Setter private String uuid;
+	@Getter @Setter private String userUuid;
 	@Getter @Setter private Integer sourceCode;
 	@Getter @Setter private Integer rewardCode;
 	@Getter @Setter private String rewardName;

@@ -12,6 +12,7 @@ public class DigitalCoin implements Serializable {
   @Getter @Setter String contract;
   @Getter @Setter String name;
   @Getter @Setter String symbol;
+  @Getter @Setter String network;
   @Getter @Setter BigDecimal weiFactor;
   @Getter @Setter BigDecimal supply;
 }

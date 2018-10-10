@@ -238,7 +238,7 @@ public class EnergyService {
      * @return
      */
     public BigDecimal calculatePreviousPoints(List<EnergyBall> energyBalls) {
-        Iterator iterator = energyBalls.iterator();
+        Iterator<EnergyBall> iterator = energyBalls.iterator();
         BigDecimal pointPrevious = new BigDecimal("0");
         while (iterator.hasNext()) {
             EnergyBall energyBall = (EnergyBall) iterator.next();
@@ -300,14 +300,18 @@ public class EnergyService {
         // 改变被取走能量的球的状态
         energyBallMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
         // 增加记录
-        EnergyTradeRecord energyTradeRecord = getEnergyRecord(userUuid, energyBallUuid, now);
+        EnergyTradeRecord energyTradeRecord = this.getEnergyRecord(userUuid, energyBallUuid, now);
         energyTradeRecord.setPointChange(energyBallMapper.selectByUuid(energyBallUuid).getPoint());
         energyTradeRecord.setPowerChange(energyBallMapper.selectByUuid(energyBallUuid).getPower());
         energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
         // 改变账户余额
         EnergyBall energyBall = energyBallMapper.selectByUuid(energyBallUuid);
         BigDecimal increasePoint = energyBall.getPoint();
+        if (increasePoint == null)
+        	increasePoint = BigDecimal.ZERO;
         BigDecimal increasePower = energyBall.getPower();
+        if (increasePower == null)
+        	increasePower = BigDecimal.ZERO;
         String uuid = new String();
         if (energyWalletMapper.selectByUserUuid(userUuid) == null) {
             EnergyWallet energyWallet = this.getEnergyWallet(userUuid, now);
@@ -387,8 +391,12 @@ public class EnergyService {
      * @return
      */
     public EnergyCheckinResult getCheckinEnergy() {
-        BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN);
-        BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN);
+        BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN, 1);
+        BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN, 2);
+        if (point == null)
+        	point = BigDecimal.ZERO;
+        if (power == null)
+        	power = BigDecimal.ZERO;
         EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         energyCheckinResult.setNewEnergyPoint(point);
         energyCheckinResult.setNewPower(power);

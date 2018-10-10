@@ -191,7 +191,7 @@ public class PowerService {
      */
     public EnergyOfficialAccountResult getOAEnergy() {
         BigDecimal point = BigDecimal.ZERO;
-        BigDecimal power = energySourcePowerMapper.queryPowerSingle(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
+        BigDecimal power = energySourcePowerMapper.queryPowerSingle(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT, 2);
         EnergyOfficialAccountResult energyOAResult = new EnergyOfficialAccountResult();
         energyOAResult.setNewEnergyPoint(point);
         energyOAResult.setNewPower(power);
@@ -203,7 +203,7 @@ public class PowerService {
  */
     public EnergyFriendsSharedResult getFsEnergy() {
         BigDecimal point = BigDecimal.ZERO;
-        BigDecimal power = energySourcePowerMapper.queryPowerSingle(POWER_SOURCE_CODE_OF_FRIENDSSHARED);
+        BigDecimal power = energySourcePowerMapper.queryPowerSingle(POWER_SOURCE_CODE_OF_FRIENDSSHARED, 2);
         EnergyFriendsSharedResult energyFsResult = new EnergyFriendsSharedResult();
         energyFsResult.setNewEnergyPoint(point);
         energyFsResult.setNewPower(power);

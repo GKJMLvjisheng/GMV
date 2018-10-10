@@ -78,8 +78,13 @@
                         <li class="">
                             <a class="menuItem" href="QA/QAManage"><i class="glyphicon glyphicon-pencil"></i> <span class="nav-label">环保答题</span> </a>        
                         </li>
-                        <li class="">
-                            <a class="menuItem"href="multiTransfer"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label">一对多转账</span>  </a>                         
+                         <li class="">
+                        <a href="#"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label" data-toggle="tooltip" title="请优先配置网络"data-placement="right">转账配置</span></a>
+                        <ul class="nav nav-second-level">
+                            <li class="active"><a class="menuItem" th:href="@{netConfiguration/netConfig}">配置</a></li>
+                            <li class="active"><a class="menuItem"href="multiTransfer">一对多转账</a></li> 
+                        </ul>
+                                                    
                         </li>
                         <li class="">
                             <a class="menuItem"href="versionManage"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">版本管理</span>  </a>                         
@@ -96,7 +101,7 @@
             </div>
         </nav>
         <!--     右侧导航栏开始 -->
-        <!-- <input   type="text" style="display:none" name="userToken" id="userToken"> -->
+        <input   type="text" style="display:none" name="net" id="net">
             <div id="page-wrapper" class="gray-bg dashbard-1">
                 <div class="row border-bottom" style="background:url(../img/3.jpg);background-size:100%;">
 
@@ -124,7 +129,10 @@
                             <a href="javascript:;" class="active menuTab" data-id="/newInformation">首页</a>
                         </div>
                     </nav>        
-      
+<!--        <div class="roll-nav roll-right tabRight"> -->
+<!--                         <select  name="network" id="network"> -->
+<!--                         <option>请选择</option></select> -->
+<!--                     </div> -->
                     <div class="btn-group roll-nav roll-right">
                         <button class="dropdown J_tabClose" data-toggle="dropdown">
                                                                             页签操作<span class="caret"></span>
@@ -152,6 +160,7 @@
     <script th:src="@{js/main/jquery.metisMenu.js}"></script>
     <script th:src="@{js/main/jquery.slimscroll.min.js}"></script>
     <script th:src="@{js/main/index.js}"></script>
+   
 </body>
 
 <script type="text/javascript">
@@ -216,6 +225,9 @@
             alert('检查用户是否存在发生错误');
             }              
     });
+    }
+    function setValue(net){
+   $("#net").val(net);	
     }
     //解析url
     function getInfoAndAnalysis(url){

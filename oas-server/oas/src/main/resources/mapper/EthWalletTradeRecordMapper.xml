@@ -6,13 +6,14 @@
 	<result column="name" property="name"/>
 	<result column="value" property="value"/>
 	<result column="title" property="title"/>
-	<result column="change_address" property="changeAddress"/>
+	<result column="sub_title" property="subTitle"/>
 	<result column="created" property="created"/>
-	<result column="comment" property="comment"/>
+	<result column="remark" property="remark"/>
   </resultMap>
   <select id="selectAllTradeRecord" resultMap="ethWalletTradeRecordMap">
   select 
-	u.name,ed.value,ed.title,ed.change_address,ed.created,ed.comment 
+	u.name,ed.value,ed.title,ed.created,ed.remark
+	,ed.sub_title
 from 	
 	eth_wallet_detail ed,user_info u,eth_wallet e
 where
