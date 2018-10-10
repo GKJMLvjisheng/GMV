@@ -42,6 +42,7 @@ public class UserWalletDetailService {
 		String name="上海";
 		String srcFormater = null,dstFormater = null;
 		String dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(name).getTimeZone();
+		log.info("dstTimeZoneId={}",dstTimeZoneId);
 		for(UserWalletDetail userWalletDetail : userWalletDetailList)
 		{
 //			String srcFormater = null,dstFormater = null;
