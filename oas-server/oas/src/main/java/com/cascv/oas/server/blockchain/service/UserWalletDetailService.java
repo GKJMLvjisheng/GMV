@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

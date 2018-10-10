@@ -22,4 +22,20 @@ public String newsManage() {
 public String QAManage() {
 	    return "QA/QAManage";  
 	    }
+@GetMapping("/withdrawMoney/brokerageConfig")
+public String brokerageConfig() {
+	    return "withdrawMoney/brokerageConfig";  
+	    }
+@GetMapping("/withdrawMoney/requestAudit")
+public String auditing() {
+	    return "withdrawMoney/requestAudit";  
+	    }
+@GetMapping("/KYC/KYC")
+public String KYC() {
+	    return "KYC/KYC";  
+	    }
+@GetMapping("/KYC/limitConfig")
+public String limitConfig() {
+	    return "KYC/limitConfig";  
+	    }
 }
