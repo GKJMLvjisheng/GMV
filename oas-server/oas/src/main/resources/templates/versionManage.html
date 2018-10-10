@@ -50,6 +50,23 @@
      z-index: 9999; 
      display: none; 
  } 	 
+ .toast {
+    position: fixed;
+    left:50%;
+    top: 50%;
+    transform:translate(-50%,-50%) scale(1);
+    word-wrap:break-word;
+    line-height: 50px;
+    padding:10px 20px;
+    text-align: center;
+    z-index:9999;
+    max-width:80%;
+    color: #fff;
+    border-radius: 5px;
+    background: rgba(0,0,0,0.7);
+    overflow: hidden;
+
+}
     </style>
 </head>
 
@@ -142,7 +159,8 @@
 			</div>
 		</div>
 	</div>
-		
+		<div class=" toast" style="display:none" id="load">正在上传...</div>
+ 
 	<!-- 提示信息 -->
 	<div class="modal fade" id="Tip" role="dialog">
 

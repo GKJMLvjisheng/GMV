@@ -230,7 +230,7 @@ function addVersion(){
 		
 		processData : false,
 		contentType : false,
-		async:false,
+		async:true,
 
 		success:function(res){	
 			//alert(JSON.stringify(res));
@@ -245,7 +245,9 @@ function addVersion(){
 				
 				 
 				//$("#newsGrid").bootstrapTable('refresh');	
-				 }						
+				 }
+				resetAddModal();
+				versionReady();
 		},
 		error:function(){
 			document.getElementById("tipContent").innerText="上传失败";
@@ -255,11 +257,16 @@ function addVersion(){
 		},
 	});
 	
-	resetAddModal();
-	versionReady();
+	Toast();
 }
 
-
+function Toast (delay) {
+	
+	document.getElementById("load").style.display="block";
+    setTimeout(() => {
+    document.getElementById("load").style.display="none";
+    },delay || 1500)
+  }
 //点击取消后清空表单中已写信息
 function resetAddModal(){
 	document.getElementById("addVersionForm").reset();
