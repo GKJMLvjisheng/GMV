@@ -25,11 +25,12 @@ public class UserWalletDetailService {
 		List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByInOrOut(userUuid,offset,limit, inOrOut);
 		String name="上海";
 		String srcFormater = null,dstFormater = null;
-//		String dstTimeZoneId="Asia/Shanghai";
 		String dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(name).getTimeZone();
 		log.info("dstTimeZoneId={}",dstTimeZoneId);
 		for(UserWalletDetail userWalletDetail : userWalletDetailList)
 		{
+//			String srcFormater = null,dstFormater = null;
+//			String dstTimeZoneId="Asia/Shanghai";
 			String created=DateUtils.string2Timezone(srcFormater, userWalletDetail.getCreated(), dstFormater, dstTimeZoneId);
 			userWalletDetail.setCreated(created);
 			log.info("newCreated={}",created);
@@ -40,11 +41,11 @@ public class UserWalletDetailService {
 		List<UserWalletDetail> userWalletDetailList = userWalletDetailMapper.selectByPage(userUuid, offset,limit);
 		String name="上海";
 		String srcFormater = null,dstFormater = null;
-//		String dstTimeZoneId="Asia/Shanghai";
 		String dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(name).getTimeZone();
-		log.info("dstTimeZoneId={}",dstTimeZoneId);
 		for(UserWalletDetail userWalletDetail : userWalletDetailList)
 		{
+//			String srcFormater = null,dstFormater = null;
+//			String dstTimeZoneId="Asia/Shanghai";
 			String created=DateUtils.string2Timezone(srcFormater, userWalletDetail.getCreated(), dstFormater, dstTimeZoneId);
 			userWalletDetail.setCreated(created);
 			log.info("newCreated={}",created);
