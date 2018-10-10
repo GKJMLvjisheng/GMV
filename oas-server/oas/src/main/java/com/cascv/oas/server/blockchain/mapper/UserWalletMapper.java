@@ -15,4 +15,7 @@ public interface UserWalletMapper {
   
   Integer deleteByUuid(String uuid);
   Integer deleteByUserUuid(String userUuid);
+  
+  //提币操作更新用户拥有的代币和待确认的交易
+  Integer changeBalanceAndUnconfimed(@Param("userUUid")String userId,@Param("value")BigDecimal value,@Param("unValue")BigDecimal unValue,@Param("updated")String updated);
 }

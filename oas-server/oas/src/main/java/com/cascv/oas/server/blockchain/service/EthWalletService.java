@@ -324,6 +324,49 @@ public class EthWalletService {
     returnValue.setData(txHash);
     return returnValue;
   }
+  /**
+   * system向用户的交易钱包转账
+   * @param userUuid 用户system的id
+   * @param toUserAddress 用户交易钱包的地址
+   * @param onlineWalletName 用户在线钱包地址
+   * @param contract 
+   * @param userCoin 
+   * @param amount 
+   * @param gasPrice 
+   * @param gasLimit
+   * @param comment
+   * @return
+   */
+  public ReturnValue<String> systemTransfer(String userUuid, String toUserAddress,String onlineWalletName, String contract,UserCoin userCoin,BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
+	    //system的交易钱包
+	    EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
+	    ReturnValue<String> returnValue = new ReturnValue<>();
+	    if (ethWallet == null) {
+	      returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
+	      return returnValue;
+	    }
+	    
+	   /* String contract = coinClient.getToken();
+	    UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid(), contract);*/
+	    if (userCoin.getBalance().compareTo(amount) < 0) {
+	      returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
+	      return returnValue;
+	    }
+	    BigDecimal amountDec = amount.multiply(userCoin.getWeiFactor());
+	    String key = ethWallet.getPrivateKey();
+	    if (ethWallet.getCrypto() != 0) {
+	      key = CryptoUtils.decrypt(key, KEY_SALT);
+	    }
+	    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress,amountDec.toBigInteger(), gasPrice, gasLimit);
+	    log.info("txhash {}", txHash);
+	    if (txHash != null) {
+	      //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH,amount, txHash, comment, toUserAddress);
+	      addDetail(toUserAddress, EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, onlineWalletName);
+	    }
+	    returnValue.setErrorCode(ErrorCode.SUCCESS);
+	    returnValue.setData(txHash);
+	    return returnValue;
+	  }
   
   public ReturnValue<String> multiTransfer(String userUuid, List<TransferQuota> quota,
 		  BigInteger gasPrice, BigInteger gasLimit, String remark) {
