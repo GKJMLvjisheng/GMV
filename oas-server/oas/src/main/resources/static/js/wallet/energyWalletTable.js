@@ -1,6 +1,6 @@
 
 function initEnergyWalletGrid(data) {	
-
+	
 	$("#energyWalletGrid").bootstrapTable({
 		contentType : "application/x-www-form-urlencoded",
 		dataType:"json",
@@ -68,6 +68,7 @@ function initEnergyWalletGrid(data) {
 			valign: 'middle',
 			width:  '200px',
 		},{
+
 			title : "操作",
 			field : "name",
 			align: 'center',
@@ -161,7 +162,7 @@ function initFundBigGrid(data) {
 		clickToSelect: false,         
 	});
 }
-	
+
 function initFundInGrid(data) {	
 
 	$("#fundInGrid").bootstrapTable({
@@ -178,7 +179,7 @@ function initFundInGrid(data) {
 		//sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 		data:data,
-		
+
 		columns : [{  
 		title: '序号',  
 		field: '',
@@ -188,7 +189,6 @@ function initFundInGrid(data) {
 			return index+1;  
 			}  
 		}  ,{
-
 			title : "用户名",
 			field : "name",
 			align: 'center',
@@ -209,7 +209,6 @@ function initFundInGrid(data) {
 			valign: 'middle',
 			formatter: actionFormatter
 		}],
-		
 		search : true,//搜索
         searchOnEnterKey : true,
 		clickToSelect: false,         
@@ -240,6 +239,7 @@ function initFundOutGrid(data) {
 		formatter: function (value, row, index) {  
 			return index+1;  
 			}  
+
 		}  ,{
 			title : "用户名",
 			field : "name",
@@ -247,21 +247,25 @@ function initFundOutGrid(data) {
 			valign: 'middle',
 			width:  '300px',
 		},
+
 			{
+
 			title : "积分流出总额",
 			field : "point",
 			align: 'center',
 			valign: 'middle',
 			width:  '300px',
 		},
+
 		{
+
 			title : "操作",
 			field : "name",
 			align: 'center',
 			valign: 'middle',
 			formatter: actionFormatter
 		}],
-		
+
 		search : true,//搜索
         searchOnEnterKey : true,
 		clickToSelect: false,         
@@ -277,8 +281,7 @@ function initFundOutGrid(data) {
 
 	function ViewViewById(id){	
 		var formData = new FormData();
-		$('#Qname').val(id);	
-		formData.append("name", $("#Qname").val());
+		formData.append("name", id);
 		$.ajax({
 		url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
 		data:formData,
@@ -293,7 +296,7 @@ function initFundOutGrid(data) {
 		success:function(res){				
 			if(res.code==0){
 			//alert(JSON.stringify(res));			
-			rows = res.data;			
+			var rows = res.data;			
 			$('#Qname').val(rows.name);
 			$('#Qnickname').val(rows.nickname);
 			$('#Qgender').val(rows.gender);
@@ -304,10 +307,12 @@ function initFundOutGrid(data) {
 			$('#QinviteCode').val(rows.inviteCode);
 			$("#queryEnergyModal").modal("show");
 			}
+
 			else{
 				alert("查询失败1");
 				}						
 		},
+
 		error:function(){
 			alert("查询失败2");
 		},

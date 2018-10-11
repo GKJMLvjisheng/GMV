@@ -2,7 +2,7 @@
 
 function initKYCGrid(data) {	
 
-	$("#requestAuditGrid").bootstrapTable({
+	$("#KYCGrid").bootstrapTable({
 
 		//极为重要，缺失无法执行queryParams，传递page参数
 
@@ -26,66 +26,77 @@ function initKYCGrid(data) {
 
 		data:data,
 		columns : [{  
-		title: 'id',  
-		field: '',
-		align: 'center',
-		valign: 'middle', 
-		//hidden:true, 
-		},
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '60px',
+			hidden:true, 
+			formatter: function (value, row, index) {  
+				return index+1;  
+				}  
+			},
 		{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle', 
-		width:  '60px',
-		hidden:true, 
-		formatter: function (value, row, index) {  
-			return index+1;  
-			}  
-		},
-		{
-			title : "身份证正面",
-			field : "created",
+			title: '用户名',  
+			field: 'userName',
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '100px',
+			},
+		{
+			title : "身份证正面",
+			field : "frontOfPhone",
+			align: 'center',
+			valign: 'middle',
 			formatter: picturePath
 		},
 			{
 			title : "身份证反面",
-			field : "newsTitle",
+			field : "backOfPhone",
 			align: 'center',
 			valign: 'middle',
-			width:  '120px',
 			formatter: picturePath
 		}, {
 			title : "手持身份证和账号",
-			field : "newsAbstract",
+			field : "holdInHand",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
 			formatter: picturePath
+		},{
+			title : "姓名",
+			field : "userIdentityName",
+			align: 'center',
+			valign: 'middle',
+			width:  '100px',
+		}, {
+			title : "身份证号",
+			field : "userIdentityNumber",
+			align: 'center',
+			valign: 'middle',
+			width:  '150px',
 		},
 		{
 			title : "申请时间",
-			field : "newsPicturePath",
+			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '140px',
-		}, 
+			width:  '85px',
+		},
 		{
-			title : "审核状态",
-			field : "newsUrl",
-			align: 'center',
-			valign: 'middle',
-			formatter: actionFormatter		
-		},{
 			title : "操作",
-			field : "id",
+			field : "userName",
 			align: 'center',
 			valign: 'middle',
 			width:  '60px',
 			formatter: actionFormatter1
+		},
+		{
+			title : "审核状态",
+			field : "verifyStatus",
+			align: 'center',
+			valign: 'middle',
+			width:  '100px',
+			formatter: actionFormatter		
 		}],		
 		search : true,//搜索
         searchOnEnterKey : true,
@@ -100,18 +111,19 @@ function picturePath(value, row, index) {
     			//"<span>"+picturePath+"</span>";      
     return result;
 }
+
 function actionFormatter(value, row, index) {
 	var status = value;
+	var id = row.userName;
 	var result = "";
-	if(status==0){
-		// result += "<input type='radio' onclick='agree()' name='radio1' id='agree' value='批准'>批准";
-		// result += "<input type='radio' onclick='reject()' name='radio2' id='reject' value='拒绝'>拒绝";
-		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditQuestionById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>"; 
-		return result;
-	}else if(status==1){
-		result += "<span>已通过</span>";      
+	if(status==1){
+		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"agree('" + id + "')\"><span>批准</span></a>";
+		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"reject('" + id + "')\"><span>拒绝</span></a>";
 		return result;
 	}else if(status==2){
+		result += "<span>已通过</span>";      
+		return result;
+	}else if(status==3){
 		result += "<span>未通过</span>";      
 	return result;
 	}       
@@ -120,75 +132,56 @@ function actionFormatter(value, row, index) {
 function actionFormatter1(value, row, index) {
 	var id = value;
 	var result = "";
-	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"viewUser('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
 	return result;
 }
 
-$(":radio").click(function(){
-	var choice=$(this).val();
-	//$('#choice').val(choice);
-	alert(choice);
-	data={
-		"choice":choice,
+function agree(id){
+	$('#agId').val(id);
+	$("#addNCModal").modal("show");
+}
+
+function reject(id){
+	$('#reId').val(id);	    
+	$("#postilModal").modal("show");
+}
+
+function viewUser(id){	
+	var formData = new FormData();
+	formData.append("name", id);
+	$.ajax({
+	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	data:formData,
+	//contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	type: 'post',
+	cache: false,		
+	processData : false,
+	contentType : false,
+	async:false,
+
+	success:function(res){				
+		if(res.code==0){
+		//alert(JSON.stringify(res));			
+		var rows = res.data;			
+		$('#Qname').val(rows.name);
+		$('#Qnickname').val(rows.nickname);
+		$('#Qgender').val(rows.gender);
+		$('#Qbirthday').val(rows.birthday);
+		$('#Qmobile').val(rows.mobile);
+		$('#Qemail').val(rows.email);
+		$('#Qaddress').val(rows.address);
+		$('#QinviteCode').val(rows.inviteCode);
+		$("#queryUserModal").modal("show");
 		}
 
-	 $.ajax({		
-		url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
-	    contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data:JSON.stringify(data),
-		processData : false,
-		async : false,
+		else{
+			alert("查询失败1");
+			}						
+	},
 
-		success: function(res) {
-			document.getElementById("tipContent").innerText="审核过程完成";
-			requestAuditReady();
-			$("#KYCGrid").bootstrapTable('refresh');	
-		}, 
-		error: function(){
-			document.getElementById("tipContent").innerText="审核过程发生错误";
-			$("#Tip").modal('show');
-		}
-		}); 
-});
-
-function ViewViewById(id){	
-		var formData = new FormData();
-		$('#Qname').val(id);	
-		formData.append("name", $("#Qname").val());
-		$.ajax({
-		url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
-		data:formData,
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		type: 'post',
-		cache: false,		
-		processData : false,
-		contentType : false,
-		async:false,
-
-		success:function(res){				
-			if(res.code==0){
-			//alert(JSON.stringify(res));			
-			rows = res.data;			
-			$('#Qname').val(rows.name);
-			$('#Qnickname').val(rows.nickname);
-			$('#Qgender').val(rows.gender);
-			$('#Qbirthday').val(rows.birthday);
-			$('#Qmobile').val(rows.mobile);
-			$('#Qemail').val(rows.email);
-			$('#Qaddress').val(rows.address);
-			$('#QinviteCode').val(rows.inviteCode);
-			$("#queryUserModal").modal("show");
-			}
-			else{
-				alert("查询失败1");
-				}						
-		},
-		error:function(){
-			alert("查询失败2");
-		},
-		});					
-	}
+	error:function(){
+		alert("查询失败2");
+	},
+	});					
+}

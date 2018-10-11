@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -45,7 +46,9 @@ import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
+import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
+import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.MessageService;
 import com.cascv.oas.server.user.service.UserService;
@@ -55,7 +58,6 @@ import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
-import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
@@ -96,8 +98,12 @@ public class UserController {
   private EnergyWalletService energyPointService;
   @Autowired
   private MessageService messageService;
-    
-	String vcode="";
+  @Autowired
+  private UserIdentityCardModelMapper userIdentityCardModelMapper;
+  String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
+  String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
+  String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
+  String vcode="";
 	
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
@@ -351,8 +357,6 @@ public class UserController {
 	@WriteLog(value="UpLoadImg")
 	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file)
 	{   
-		 String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
-		 String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
 		log.info("doUpLoadImg-->start");
 		File dir=new File(UPLOADED_FOLDER);
 	  	 if(!dir.exists()){
@@ -754,5 +758,145 @@ public class UserController {
 			return new ResponseEntity.Builder<Map<String, Boolean>>()
 			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		}		
+	}
+	
+	@PostMapping(value="/inqureAllUserIdentityInfo")
+	@ResponseBody
+	public ResponseEntity<?> selectAllUserIdentityInfo(){
+		
+		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard();
+		return new ResponseEntity.Builder<List<UserIdentityCardModel>>()
+		  	      .setData(userIdentityCardModelList)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+			}
+	
+	@PostMapping(value="/inqureUserIdentityInfo")
+	@ResponseBody
+	public ResponseEntity<?> inqureUserIdentityInfo(){
+		String userName=ShiroUtils.getLoginName();
+		UserIdentityCardModel userIdentityCardModel=userService.selectUserIdentityByUserName(userName);
+		if(userIdentityCardModel.getUpdated()==null)
+		{
+			String updated=userIdentityCardModel.getCreated();
+			userIdentityCardModel.setUpdated(updated);
+		}
+		if(userIdentityCardModel.getRemark()==null)
+		{
+				String remark="empty";
+				userIdentityCardModel.setRemark(remark);
+		}
+		if(userIdentityCardModel.getUserIdentityName()==null) 
+		{
+			String userIdentityName="empty";
+			userIdentityCardModel.setUserIdentityName(userIdentityName);
+		}
+		if(userIdentityCardModel.getUserIdentityNumber()==null)
+		{
+			String userIdentityNumber="empty";
+			userIdentityCardModel.setUserIdentityNumber(userIdentityNumber);
+		}
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModel)
+			  	      .setErrorCode(ErrorCode.SUCCESS)
+			  	      .build();
+			}
+	@PostMapping(value="/upLoadUserIdentityInfo")
+	@ResponseBody
+	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam("file") MultipartFile file){
+		String userName=ShiroUtils.getLoginName();
+		UserIdentityCardModel userIdentityCardModel=userService.selectUserIdentityByUserName(userName);
+		File dir=new File(IDENTITY_UPLOADED);
+	  	 if(!dir.exists()){
+	  	   dir.mkdirs();
+	  	  }
+	  	String str="/image/identityCard/";
+
+	  	//日期时间生成唯一标识文件名
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+			String uniqueFileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
+			String fileName=file.getOriginalFilename();
+			fileName=fileName.substring(0, 4);
+			log.info("fileName={}",fileName);
+			try {
+				byte[] bytes = file.getBytes();
+	            Path path = Paths.get(IDENTITY_UPLOADED + uniqueFileName);
+	            Files.write(path, bytes);	  
+			}catch (Exception e)
+			{
+	    		log.info("身份证上传失败"+e);
+			}
+			if(fileName.equals("face"))
+			{
+				String frontOfPhoto=str+uniqueFileName;
+				String srcFormater = null,dstFormater = null;
+				String dstTimeZoneId="Asia/Shanghai";
+				String created=DateUtils.dateTimeNow();
+				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
+				String updated=created;
+				Integer verifyStatus=1;
+				log.info("created={}",created);
+				log.info("updated={}",updated);
+				userIdentityCardModel.setCreated(created);
+				userIdentityCardModel.setUpdated(updated);
+				userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
+				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
+				
+			}else if(fileName.equals("back")) 
+			{
+				String backOfPhoto=str+uniqueFileName;
+				String srcFormater = null,dstFormater = null;
+				String dstTimeZoneId="Asia/Shanghai";
+				String created=DateUtils.dateTimeNow();
+				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
+				String updated=created;
+				log.info("created={}",created);
+				log.info("updated={}",updated);
+				Integer verifyStatus=1;
+				userIdentityCardModel.setCreated(created);
+				userIdentityCardModel.setUpdated(updated);
+				userIdentityCardModel.setBackOfPhoto(backOfPhoto);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
+				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
+				
+			}else if(fileName.equals("hand")) 
+			{
+				String holdInHand=str+uniqueFileName;
+				String srcFormater = null,dstFormater = null;
+				String dstTimeZoneId="Asia/Shanghai";
+				String created=DateUtils.dateTimeNow();
+				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
+				String updated=created;
+				Integer verifyStatus=1;
+				log.info("created={}",created);
+				log.info("updated={}",updated);
+				userIdentityCardModel.setCreated(created);
+				userIdentityCardModel.setUpdated(updated);
+				userIdentityCardModel.setHoldInHand(holdInHand);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
+				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
+				
+			}else
+			{
+				return new ResponseEntity.Builder<Integer>()
+				  	      .setData(1)
+				  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
+				  	      .build();
+			}
+			
+			try {
+				byte[] bytes = file.getBytes();
+	            Path path = Paths.get(IDENTITY_UPLOADED + uniqueFileName);
+	            Files.write(path, bytes);	  
+			}catch (Exception e)
+    		{
+        		log.info("身份证上传失败"+e);
+    		}
+			
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModel)
+			  	      .setErrorCode(ErrorCode.SUCCESS)
+			  	      .build();
 	}
 }
