@@ -38,7 +38,7 @@ public class MiniProgramController{
         
         boolean check = StringUtils.checkSignature(signature, timestamp, nonce);
         if(check){
-        out.print(echostr);;
+        out.print(echostr);
         log.info("***success***");
         }
         out.close();
