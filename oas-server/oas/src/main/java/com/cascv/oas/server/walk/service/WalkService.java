@@ -66,7 +66,7 @@ public class WalkService {
      * @return
      */
 	public void addWalkPointBall(String userUuid, BigDecimal stepNum) {
-		 String now = DateUtils.YYYY_MM_DD_HH_MM_SS;
+		 String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		 walkBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		 log.info("uuid={}", walkBall.getUuid());
 		 walkBall.setUserUuid(userUuid);
@@ -114,7 +114,7 @@ public class WalkService {
 		pointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		pointTradeRecord.setPointChange(this.getPoint(stepNum));
 		
-		String now = DateUtils.YYYY_MM_DD_HH_MM_SS;
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		pointTradeRecord.setCreated(now);
 		
 	}
@@ -157,7 +157,7 @@ public class WalkService {
             log.info("该能量球已经被获取！");
             return null;
         }
-        String now = DateUtils.YYYY_MM_DD_HH_MM_SS;
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
         Date bt = sdf.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
         Date et = sdf.parse(now);

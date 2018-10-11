@@ -22,7 +22,7 @@
       (#{uuid}, #{userUuid}, #{stepNum,jdbcType=DECIMAL}, #{status}, #{created}, #{updated})
    </insert>
    
-   <select id="selectWalkBall">
+   <select id="selectWalkBall" resultMap="walkBallMap">
        select 
        <include refid="walkBall_List" />
        from walk_ball where user_uuid = #{userUuid} and status = #{status}
@@ -61,6 +61,7 @@
              energy_point_ball
        ) b
        inner join activity p
+       where
        b.source_code = p.source_code
             and b.source_code = #{sourceCode}
             and b.status = #{status}
