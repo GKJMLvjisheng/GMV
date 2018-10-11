@@ -799,7 +799,7 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam("file") MultipartFile file){
 		String userName=ShiroUtils.getLoginName();
-		UserIdentityCardModel userIdentityCardModel=userService.selectUserIdentityByUserName(userName);
+		UserIdentityCardModel userIdentityCardModel=new UserIdentityCardModel();
 		File dir=new File(IDENTITY_UPLOADED);
 	  	 if(!dir.exists()){
 	  	   dir.mkdirs();
@@ -823,6 +823,8 @@ public class UserController {
 			if(fileName.equals("face"))
 			{
 				String frontOfPhoto=str+uniqueFileName;
+				String backOfPhoto=userIdentityCardModel.getBackOfPhoto();
+				String holdInHand=userIdentityCardModel.getHoldInHand();
 				String srcFormater = null,dstFormater = null;
 				String dstTimeZoneId="Asia/Shanghai";
 				String created=DateUtils.dateTimeNow();
@@ -833,7 +835,10 @@ public class UserController {
 				log.info("updated={}",updated);
 				userIdentityCardModel.setCreated(created);
 				userIdentityCardModel.setUpdated(updated);
+				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+				userIdentityCardModel.setBackOfPhoto(backOfPhoto);
+				userIdentityCardModel.setHoldInHand(holdInHand);
 				userIdentityCardModel.setVerifyStatus(verifyStatus);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
@@ -843,6 +848,7 @@ public class UserController {
 				String srcFormater = null,dstFormater = null;
 				String dstTimeZoneId="Asia/Shanghai";
 				String created=DateUtils.dateTimeNow();
+				log.info("created={}",created);
 				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
 				String updated=created;
 				log.info("created={}",created);
@@ -850,6 +856,7 @@ public class UserController {
 				Integer verifyStatus=1;
 				userIdentityCardModel.setCreated(created);
 				userIdentityCardModel.setUpdated(updated);
+				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setBackOfPhoto(backOfPhoto);
 				userIdentityCardModel.setVerifyStatus(verifyStatus);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
@@ -864,9 +871,9 @@ public class UserController {
 				String updated=created;
 				Integer verifyStatus=1;
 				log.info("created={}",created);
-				log.info("updated={}",updated);
 				userIdentityCardModel.setCreated(created);
 				userIdentityCardModel.setUpdated(updated);
+				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setHoldInHand(holdInHand);
 				userIdentityCardModel.setVerifyStatus(verifyStatus);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);

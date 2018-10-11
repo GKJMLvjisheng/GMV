@@ -400,4 +400,23 @@ public class UserWalletController {
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
+  /**
+   * @author Ming Yang
+   * @return 个人单日转账总额
+   */
+	@PostMapping(value="/inqureDailyTotalAmount")
+	@ResponseBody
+	public ResponseEntity<?> inqureDailyTotalAmount(){
+		String created=DateUtils.getTime();
+		log.info("created={}",created);
+		String userUuid=ShiroUtils.getUserUuid();
+		BigDecimal dailyTotalAmount=userWalletDetailMapper.selectUserDailyTotalAmount(userUuid, created);
+		if(dailyTotalAmount==null)
+			dailyTotalAmount=new BigDecimal(0);
+		log.info("当日转账总金额：{}",dailyTotalAmount);
+		return new ResponseEntity.Builder<BigDecimal>()
+		        .setData(dailyTotalAmount)
+		        .setErrorCode(ErrorCode.SUCCESS)
+		        .build();
+	}
 }

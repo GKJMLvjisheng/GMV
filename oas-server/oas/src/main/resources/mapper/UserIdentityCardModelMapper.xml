@@ -39,17 +39,17 @@
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
-      <if test="userIdentityName != null">
+       <if test="userIdentityName != null">
        user_identity_name= #{userIdentityName},
       </if>
       <if test="userIdentityNumber != null">
        user_identity_number = #{userIdentityNumber},
       </if>
-      <if test="verifyStatus != null">
-       verify_status = #{verifyStatus},
-      </if>
-       <if test="remark != null">
+      <if test="remark != null">
        remark = #{remark}
+       </if>
+       <if test="verifyStatus != null">
+       verify_status = #{verifyStatus},
        </if>
        </trim>
        where user_name = #{userName}
@@ -57,20 +57,52 @@
     
 <update id="updateUserIdentityCardByFrontOfPhoto" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
-      <trim prefix="SET" suffixOverrides=",">
-      <if test="frontOfPhoto != null">
-       front_of_photo = #{frontOfPhoto}
+<trim prefix="SET" suffixOverrides=",">
+       front_of_photo = #{frontOfPhoto},
+       verify_status = #{verifyStatus},
+       created = #{created},
+       updated = #{updated},
+        <if test="userIdentityName != null">
+       user_identity_name= #{userIdentityName},
       </if>
-      </trim>
+      <if test="userIdentityNumber != null">
+       user_identity_number = #{userIdentityNumber},
+      </if>
+       <if test="backOfPhoto != null">
+       back_of_photo = #{backOfPhoto}
+       </if>
+       <if test="holdInHand != null">
+       hold_in_hand = #{holdInHand}
+       </if>
+      <if test="remark != null">
+       remark = #{remark}
+       </if>
+       </trim>
        where user_name = #{userName}
       </update>
     
 <update id="updateUserIdentityCardByBackOfPhoto" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
-      <trim prefix="SET" suffixOverrides=",">
-      <if test="backOfPhoto != null">
-       back_of_photo = #{backOfPhoto}
+<trim prefix="SET" suffixOverrides=",">
+       back_of_photo = #{backOfPhoto},
+       verify_status = #{verifyStatus},
+       created = #{created},
+       updated = #{updated},
+       <if test="userIdentityName != null">
+       user_identity_name= #{userIdentityName},
       </if>
+      <if test="userIdentityNumber != null">
+       user_identity_number = #{userIdentityNumber},
+      </if>
+       <if test="frontOfPhoto != null">
+       front_of_photo = #{frontOfPhoto}
+       </if>
+       <if test="holdInHand != null">
+       hold_in_hand = #{holdInHand}
+       </if>
+      <if test="remark != null">
+       remark = #{remark}
+       </if>
       </trim>
       where user_name = #{userName}
       </update>
@@ -78,9 +110,25 @@
 <update id="updateUserIdentityCardByHoldInHand" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
-      <if test="holdInHand != null">
-       hold_in_hand = #{holdInHand}
+       hold_in_hand = #{holdInHand},
+       verify_status = #{verifyStatus},
+       created = #{created},
+       updated = #{updated},
+       <if test="userIdentityName != null">
+       user_identity_name= #{userIdentityName},
       </if>
+      <if test="userIdentityNumber != null">
+       user_identity_number = #{userIdentityNumber},
+      </if>
+       <if test="frontOfPhoto != null">
+       front_of_photo = #{frontOfPhoto}
+       </if>
+       <if test="backOfPhoto != null">
+       back_of_photo = #{backOfPhoto}
+       </if>
+      <if test="remark != null">
+       remark = #{remark}
+       </if>
       </trim>
       where user_name = #{userName}
       </update>
