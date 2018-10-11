@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.energy.vo.EnergyBallWrapper;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.service.WalkService;
 import com.cascv.oas.server.walk.wrapper.StepNumWrapper;
@@ -35,7 +34,7 @@ public class WalkPointBallController {
 	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){		 
 		 String userUuid = ShiroUtils.getUserUuid();
 		 log.info("userUuid={}",userUuid);
-		 WalkBallReturn walkBallReturn = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getStepNum());
+		 WalkBallReturn walkBallReturn = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());
 		 
 		return new ResponseEntity.Builder<WalkBallReturn>()
 				.setData(walkBallReturn)
@@ -51,8 +50,8 @@ public class WalkPointBallController {
 		 String userUuid = ShiroUtils.getUserUuid();
 		 ErrorCode errorCode = ErrorCode.SUCCESS;
 		 //行走能量球查询
-		 walkService.inquireWalkPointBall(userUuid, walkBallTokenRequest.getStepNum());
-		 EnergyBallTakenResult energyBallTakenResult = walkService.takeWalkPointBall(userUuid, walkBallTokenRequest.getBallId(), walkBallTokenRequest.getStepNum());
+		 walkService.inquireWalkPointBall(userUuid, walkBallTokenRequest.getQuota());
+		 EnergyBallTakenResult energyBallTakenResult = walkService.takeWalkPointBall(userUuid, walkBallTokenRequest.getBallId(), walkBallTokenRequest.getQuota());
 		 if(energyBallTakenResult == null)
 			 errorCode = ErrorCode.GENERAL_ERROR;
 		return new ResponseEntity.Builder<EnergyBallTakenResult>()

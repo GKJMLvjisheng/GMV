@@ -3,7 +3,9 @@ package com.cascv.oas.server.walk.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
+import com.cascv.oas.server.walk.wrapper.StepNumQuota;
+import com.cascv.oas.server.walk.wrapper.StepPointQuota;
 import com.cascv.oas.server.walk.wrapper.WalkBallReturn;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,20 +48,28 @@ public class WalkService {
 	private WalkBall walkBall = new WalkBall();
 	
 	/**
-     * 得到增加的point
+     * 得到日期对应的增加的point
 	 * @param stepNum 
      * @return
      */
-	public BigDecimal getPoint(BigDecimal stepNum) {
+	public List<StepPointQuota> getPoint(List<StepNumQuota> quota) {
 		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALKING, REWARD_CODE_OF_WALKING_POINT);
-		BigDecimal point = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
-		BigDecimal maxValue = activityRewardConfig.getMaxValue();
-		BigDecimal newPoint;
-		if(point.compareTo(maxValue) == -1)
-			newPoint = point;
-		else
-			newPoint = maxValue;
-		return newPoint;		
+		List<StepPointQuota> stepPointQuotaList = new ArrayList<>();
+		for(int i=0; i<quota.size(); i++){
+			StepPointQuota stepPointQuota = new StepPointQuota();
+			BigDecimal stepNum = quota.get(i).getStepNum();
+			BigDecimal point = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
+			BigDecimal maxValue = activityRewardConfig.getMaxValue();
+			BigDecimal newPoint;
+			if(point.compareTo(maxValue) == -1)
+				newPoint = point;
+			else
+				newPoint = maxValue;
+			stepPointQuota.setPoint(newPoint);
+			stepPointQuota.setDate(quota.get(i).getDate());
+			stepPointQuotaList.add(stepPointQuota);
+		}
+		return stepPointQuotaList;	
 	}
 	
 	/**
@@ -65,17 +77,18 @@ public class WalkService {
      * @param stepNum
      * @return
      */
-	public void addWalkPointBall(String userUuid, BigDecimal stepNum) {
-		 String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-		 walkBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-		 log.info("uuid={}", walkBall.getUuid());
-		 walkBall.setUserUuid(userUuid);
-		 walkBall.setStepNum(stepNum);
-		 walkBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-		 walkBall.setCreated(now);
-		 walkBall.setUpdated(now);
-		 walkMapper.insertWalkBall(walkBall);
-		
+	public void addWalkPointBall(String userUuid, List<StepNumQuota> quota) {
+		for(int i=0; i<quota.size(); i++){
+			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+			 walkBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+			 log.info("uuid={}", walkBall.getUuid());
+			 walkBall.setUserUuid(userUuid);
+			 walkBall.setStepNum(quota.get(i).getStepNum());
+			 walkBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+			 walkBall.setCreated(quota.get(i).getDate());
+			 walkBall.setUpdated(now);
+			 walkMapper.insertWalkBall(walkBall);
+		}		
 	}
 	
 	/**
@@ -83,19 +96,22 @@ public class WalkService {
      * @param stepNum userUuid
      * @return
      */
-	public void addEnergyPointBall(String userUuid, BigDecimal stepNum) {		
-		energyPointBall.setUuid(walkBall.getUuid());
-		log.info("uuid={}", energyPointBall.getUuid());
-		energyPointBall.setUserUuid(userUuid);
-		energyPointBall.setSourceCode(SOURCE_CODE_OF_WALKING);
-		energyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+	public void addEnergyPointBall(String userUuid, List<StepNumQuota> quota) {	
+		for(int i=0; i<quota.size(); i++) {
+			energyPointBall.setUuid(walkBall.getUuid());
+			log.info("uuid={}", energyPointBall.getUuid());
+			energyPointBall.setUserUuid(userUuid);
+			energyPointBall.setSourceCode(SOURCE_CODE_OF_WALKING);
+			energyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+			
+			energyPointBall.setPoint(this.getPoint(quota).get(i).getPoint());
+			
+			energyPointBall.setCreated(walkBall.getCreated());
+			energyPointBall.setUpdated(walkBall.getUpdated());
+			
+			activityMapper.insertEnergyPointBall(energyPointBall);
+		}
 		
-		energyPointBall.setPoint(this.getPoint(stepNum));
-		
-		energyPointBall.setCreated(walkBall.getCreated());
-		energyPointBall.setUpdated(walkBall.getUpdated());
-		
-		activityMapper.insertEnergyPointBall(energyPointBall);
 		
 	}
 	
@@ -105,17 +121,19 @@ public class WalkService {
 	 * @param stepNum 
      * @return
      */
-	public void addPointTradeRecord(String userUuid, BigDecimal stepNum) {
+	public void addPointTradeRecord(String userUuid, List<StepNumQuota> quota) {
+		for(int i=0; i<quota.size(); i++) {
+			pointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+			pointTradeRecord.setUserUuid(userUuid);
+			pointTradeRecord.setInOrOut(ENERGY_IN);
+			pointTradeRecord.setEnergyBallUuid(energyPointBall.getUuid());
+			pointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+			pointTradeRecord.setPointChange(this.getPoint(quota).get(i).getPoint());
+			
+			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+			pointTradeRecord.setCreated(now);
+		}		
 		
-		pointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
-		pointTradeRecord.setUserUuid(userUuid);
-		pointTradeRecord.setInOrOut(ENERGY_IN);
-		pointTradeRecord.setEnergyBallUuid(energyPointBall.getUuid());
-		pointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-		pointTradeRecord.setPointChange(this.getPoint(stepNum));
-		
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-		pointTradeRecord.setCreated(now);
 		
 	}
 	
@@ -124,7 +142,7 @@ public class WalkService {
      * @param userUuid
      * @return
      */
-	public WalkBallReturn inquireWalkPointBall(String userUuid, BigDecimal stepNum) {
+	public WalkBallReturn inquireWalkPointBall(String userUuid, List<StepNumQuota> quota) {
 		if (StringUtils.isEmpty(userUuid)) {
             return null;
         }
@@ -132,8 +150,8 @@ public class WalkService {
 				.selectWalkBall(userUuid, STATUS_OF_ACTIVE_ENERGYBALL);
 		//如果没有球，则产生球
 		if(walkBall == null) {
-			this.addWalkPointBall(userUuid, stepNum);
-			this.addEnergyPointBall(userUuid, stepNum);
+			this.addWalkPointBall(userUuid, quota);
+			this.addEnergyPointBall(userUuid, quota);
 		}
 		WalkBallReturn walkBallReturn = walkMapper.selectEnergyBallList(userUuid, SOURCE_CODE_OF_WALKING, STATUS_OF_ACTIVE_ENERGYBALL);
 		return walkBallReturn;
@@ -148,7 +166,7 @@ public class WalkService {
      * @return
 	 * @throws ParseException 
      */
-	public EnergyBallTakenResult takeWalkPointBall(String userUuid, String energyBallUuid, BigDecimal stepNum) throws ParseException {
+	public EnergyBallTakenResult takeWalkPointBall(String userUuid, String energyBallUuid, List<StepNumQuota> quota) throws ParseException {
 		if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
             log.info("userUuid or energyBallUuid is null");
             return null;
@@ -170,12 +188,12 @@ public class WalkService {
         //改变被取走的计步球的状态
         walkMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
         //在交易记录表中增加取走的球
-        this.addPointTradeRecord(userUuid, stepNum);
+        this.addPointTradeRecord(userUuid, quota);
         //更新用户能量钱包
-        activityMapper.increasePoint(userUuid, this.getPoint(stepNum), now);
+        activityMapper.increasePoint(userUuid, this.getPoint(quota).get(0).getPoint(), now);
         
         EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
-        energyBallTakenResult.setNewEnergyPonit(this.getPoint(stepNum));
+        energyBallTakenResult.setNewEnergyPonit(this.getPoint(quota).get(0).getPoint());
         energyBallTakenResult.setNewPower(BigDecimal.ZERO);
 		return energyBallTakenResult;
 		

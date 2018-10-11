@@ -66,6 +66,7 @@
             and b.source_code = #{sourceCode}
             and b.status = #{status}
             and b.user_uuid = #{userUuid}
+       order by b.created desc limit 7
    </select>
     
 </mapper>
