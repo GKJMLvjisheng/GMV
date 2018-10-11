@@ -43,7 +43,7 @@ public class App extends SpringBootServletInitializer{
   
   @PostConstruct
   void setDefaultTimezone() {
-     TimeZone.setDefault(TimeZone.getTimeZone("GMT+0"));
+     TimeZone.setDefault(TimeZone.getTimeZone("Etc/GMT"));
   }
 
 

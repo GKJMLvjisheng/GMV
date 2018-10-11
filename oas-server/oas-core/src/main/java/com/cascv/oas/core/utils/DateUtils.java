@@ -129,8 +129,9 @@ public class DateUtils {
     	SimpleDateFormat sdf = new SimpleDateFormat(srcFormater);
     	try {
     		int diffTime = getDiffTimeZoneRawOffset(dstTimeZoneId);
-    		System.out.println("****");
+    		System.out.println("****与目标时区时间差****单位毫秒");
     		System.out.println(diffTime);
+    		System.out.println("****与目标时区时间差****单位毫秒");
     		Date d = sdf.parse(srcDateTime);
     		long nowTime = d.getTime();
     		long newNowTime = nowTime - diffTime;
