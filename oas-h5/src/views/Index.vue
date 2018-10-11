@@ -27,17 +27,22 @@
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
           <div>
-         <h4 v-if="item.generate">{{item.name}}中</h4>
-          <h4 v-else>{{item.name}}</h4></div>
+          <i></i> 
+          <span v-if="item.generate">{{item.name}}中</span>
+          <span v-else>{{item.name}}</span>
+         </div>
         </div>
         <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
-         <div>
-         <h4 v-if="item.generate">{{item.name}}中</h4>
-          <h4 v-else>{{item.name}}</h4></div>
-        </div>
+        <div>
+          <i class='blackIamge'></i> 
+          <span v-if="item.generate">{{item.name}}中</span>
+          <span v-else>{{item.name}}</span>
+         </div>
+          </div>
+      
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
       <img @click="handlePromote" :src="promote" class="promote" />
@@ -323,7 +328,7 @@ export default {
        
                  
     },
-     getWalkEnergyBall () {
+     getWalkEnergyBall() {
       
       this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
@@ -367,6 +372,7 @@ export default {
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
         console.log(data)
         this.analysis = data
+        this.analysisCount=0
         data.forEach(el => {
         //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
         //不能终止循环，除非抛出异常，map必须返回，返回一个数组
@@ -473,7 +479,9 @@ export default {
      
       //this.removeclass() 
       this.energyBallList=[]
+      this.walkEnergyBallList=[]
       this.getEnergyBall()
+      this.getWalkEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
@@ -695,8 +703,37 @@ header {
         transform: translate(-50%,-50%);
         color: #000;
       }
+      div {
+        
+      float: right;
+      display: flex;
+      align-items: center;
+      i{
+      position: absolute;
+      display: inline-block;
+      right: 50%;
+      width: 32px;
+      height: 32px;
+      background-image: url("../assets/images/energy@2x.png");
+      background-size: 32px 32px;
     }
+     .blackIamge{
+      position: absolute;
+      display: inline-block;
+      right: 50%;
+      width: 32px;
+      height: 32px;
+      background-image: url("../assets/images/watch@2x.png");
+      background-size: 32px 32px;
+    }
+    
+      }
+
+    }
+  
   }
+  
+  
   .attendance,
   .promote{
     width: 112px;
