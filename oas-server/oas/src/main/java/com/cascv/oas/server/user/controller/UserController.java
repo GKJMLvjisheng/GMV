@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -46,6 +44,7 @@ import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.user.model.MailInfo;
+import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.MessageService;
 import com.cascv.oas.server.user.service.UserService;
@@ -749,4 +748,17 @@ public class UserController {
 			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		}		
 	}
+	
+	@PostMapping(value="/selectAllUserIdentityInfo")
+	@ResponseBody
+	public ResponseEntity<?> selectAllUserIdentityInfo(){
+		
+		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard();
+		return new ResponseEntity.Builder<List<UserIdentityCardModel>>()
+		  	      .setData(userIdentityCardModelList)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+		
+	}
+	
 }
