@@ -1,7 +1,6 @@
 package com.cascv.oas.server.energy.mapper;
 
 import com.cascv.oas.server.activity.model.ActivityRewardConfig;
-import com.cascv.oas.server.energy.model.EnergySourcePoint;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 

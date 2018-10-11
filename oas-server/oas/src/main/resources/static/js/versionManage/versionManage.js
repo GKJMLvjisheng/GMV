@@ -230,12 +230,14 @@ function addVersion(){
 		
 		processData : false,
 		contentType : false,
-		async:false,
+		async:true,
 
 		success:function(res){	
 			//alert(JSON.stringify(res));
+			 document.getElementById("load").style.display="none";
 				if(res.code==0)
-				{document.getElementById("tipContent").innerText="上传成功";
+				{
+					document.getElementById("tipContent").innerText="上传成功";
 				$("#Tip").modal('show');
 				$("#addVersionModal").modal('hide');}
 				else{
@@ -245,7 +247,9 @@ function addVersion(){
 				
 				 
 				//$("#newsGrid").bootstrapTable('refresh');	
-				 }						
+				 }
+				resetAddModal();
+				versionReady();
 		},
 		error:function(){
 			document.getElementById("tipContent").innerText="上传失败";
@@ -255,11 +259,16 @@ function addVersion(){
 		},
 	});
 	
-	resetAddModal();
-	versionReady();
+	document.getElementById("load").style.display="block";
 }
 
-
+function Toast (delay) {
+	
+	document.getElementById("load").style.display="block";
+    setTimeout(() => {
+    document.getElementById("load").style.display="none";
+    },delay || 1500)
+  }
 //点击取消后清空表单中已写信息
 function resetAddModal(){
 	document.getElementById("addVersionForm").reset();
@@ -616,5 +625,3 @@ $(function(){
 	})
  
 })
-
-

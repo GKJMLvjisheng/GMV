@@ -43,7 +43,14 @@ public enum ErrorCode {
   mobile_ALREADY_EXISTS(10026, "手机号已存在"),
   email_ALREADY_EXISTS(10027, "邮箱已存在"),
   wechat_ALREADY_EXISTS(10028, "不要重复输入验证码!"),
-  identifCode_ERROR(10029, "验证码错误！");
+  identifCode_ERROR(10029, "验证码错误！"),
+  UPDATE_FAILED(10030,"更新失败"),
+  INPUT_ILLEGAL(10031,"请求的参数不符合要求"),
+  SELECT_EMPTY(10032,"查询不到该记录"),
+  OAS_EVENT_HAVE_HANDLED(10033,"该提币记录管理员已处理"),
+  SYSTEM_NOT_EXIST(10034,"SYSTEM用户不存在"),
+  WALLET_ONLINE_NOT_EXIST(10035,"用户在线钱包账户不存在"),
+  OAS_EXTRA_MONEY_NOT_ENOUGH(10036,"余额不足，手续费无法扣除");
 
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;

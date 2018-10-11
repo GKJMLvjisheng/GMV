@@ -5,11 +5,12 @@
   <resultMap id="ethContractMap" type="com.cascv.oas.server.blockchain.model.EthContractModel">
 	<id column="name" property="name" />
 	<result column="address" property="address"/>
+	<result column="network" property="network"/>
 	<result column="description" property="description"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    name, address, description
+    name, address, network, description
   </sql>
 
   
@@ -19,7 +20,9 @@
       <trim prefix="(" suffix=")" suffixOverrides=",">
           name,
           address,
-        
+        <if test="network != null">
+          network,
+        </if>
         <if test="description != null">
           description,
         </if>
@@ -27,8 +30,11 @@
       <trim prefix="values (" suffix=")" suffixOverrides=",">
         #{name,jdbcType=VARCHAR},
         #{address,jdbcType=VARCHAR},
+        <if test="network != null">
+          #{network,jdbcType=VARCHAR},
+        </if>
         <if test="description != null">
-  		    #{description,jdbcType=VARCHAR},
+  		  #{description,jdbcType=VARCHAR},
         </if>
       </trim>
   </insert>

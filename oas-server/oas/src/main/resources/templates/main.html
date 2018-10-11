@@ -83,9 +83,29 @@
                         <ul class="nav nav-second-level">
                             <li class="active"><a class="menuItem" th:href="@{netConfiguration/netConfig}">配置</a></li>
                             <li class="active"><a class="menuItem"href="multiTransfer">一对多转账</a></li> 
-                        </ul>
-                                                    
+                        </ul>                                   
                         </li>
+
+                        <li class="">
+                            <a href="main"><i class="glyphicon glyphicon-usd"></i> <span class="nav-label" >提币管理</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/brokerageConfig}">手续费配置</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/requestAudit}">提币审核</a></li> 
+                            </ul>
+                        </li>  
+                        
+                         <!-- <li class="">
+                            <a href="main"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >KYC审核</span></a>
+                             <ul class="nav nav-second-level">
+                                <li class="active"><a class="menuItem" th:href="@{/KYC/KYC}">审核申请</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/KYC/limitConfig}">限额配置</a></li> 
+                            </ul> 
+                        </li> -->
+                        
+                        <li class="">
+                            <a class="menuItem" href="KYC/KYC"><i class="glyphicon glyphicon-leaf"></i> <span class="nav-label">KYC审核</span> </a>        
+                        </li>
+
                         <li class="">
                             <a class="menuItem"href="versionManage"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">版本管理</span>  </a>                         
                         </li>
@@ -264,4 +284,5 @@
         window.location.replace(encodeURI(encodeURI("multiTransfer?stringT="+stringT+"&用户名字="+stringName)));
         }
 </script>
+
 </html>

@@ -5,12 +5,12 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
-import com.cascv.oas.core.utils.CryptoUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
+import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
@@ -50,7 +50,8 @@ public class EthWalletController {
   
   @Autowired
   private EthWalletService ethWalletService;
-  
+  @Autowired
+  private EthWalletDetailService ethWalletDetailService;
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
   
@@ -103,8 +104,7 @@ public class EthWalletController {
 	    	  gasLimit = BigInteger.valueOf(60000);
 	      
 	      ReturnValue<String> returnValue=ethWalletService.transfer(
-	        ShiroUtils.getUserUuid(), 
-	        ethWalletTransfer.getContract(),
+	        ShiroUtils.getUserUuid(),
 	        ethWalletTransfer.getToUserAddress(),
 	        ethWalletTransfer.getAmount(),gasPrice,gasLimit, 
 	        ethWalletTransfer.getRemark());	  
@@ -139,8 +139,7 @@ public class EthWalletController {
 			  gasLimit = BigInteger.valueOf(600000);
 		  
 		  ReturnValue<String> returnValue=ethWalletService.multiTransfer(
-	        ShiroUtils.getUserUuid(), 
-	        ethWalletMultiTransfer.getContract(),
+	        ShiroUtils.getUserUuid(),
           ethWalletMultiTransfer.getQuota(), gasPrice, gasLimit, "");
       EthWalletMultiTransferResp resp = new EthWalletMultiTransferResp();
       resp.setTxHash(returnValue.getData());
@@ -182,7 +181,7 @@ public class EthWalletController {
     log.info("inOrOut{}",pageInfo.getInOrOut());
     if(pageInfo.getInOrOut()!=null) {
     inOrOut=pageInfo.getInOrOut();
-    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByInOrOut(
+    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailService.selectByInOrOut(
             ethWallet.getAddress(), offset,limit,inOrOut);
     Integer count = ethWalletDetailList.size();
     PageDomain<EthWalletDetail> pageEthWalletDetail= new PageDomain<>();
@@ -199,7 +198,7 @@ public class EthWalletController {
     	    .build();
     }else
     {
-    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByPage(
+    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailService.selectByPage(
         ethWallet.getAddress(), offset,limit);
     Integer count = ethWalletDetailMapper.selectCount(ethWallet.getAddress());
     PageDomain<EthWalletDetail> pageEthWalletDetail= new PageDomain<>();
@@ -223,7 +222,7 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> summary(){
     ErrorCode errorCode=ErrorCode.SUCCESS;
-    UserCoin tokenCoin = ethWalletService.getTokenCoin(ShiroUtils.getUserUuid());
+    UserCoin tokenCoin = ethWalletService.getUserCoin(ShiroUtils.getUserUuid());
     
     EthWalletSummary ethWalletSummary = new EthWalletSummary();
     ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);

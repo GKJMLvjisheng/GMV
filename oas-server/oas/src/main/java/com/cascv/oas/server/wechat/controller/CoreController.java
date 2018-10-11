@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.cascv.oas.server.wechat.Service.WechatService;
 import com.cascv.oas.server.wechat.Utils.StringUtils;
+
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
@@ -57,7 +59,5 @@ public class CoreController{
 			out.print(responseMessage);
 			out.flush();
 		}
-        
-
 }
 

@@ -13,5 +13,5 @@ public interface UuidPrefix {
   public static final String ACTIVITY_COMPLETION_STATUS = "ACS";
   public static final String WECHAT_STATUS = "WS";
   public static final String ACTIVITY_REWARD_CONFIG = "ARC";
-  public static final String WALK_BALL = "WB";
+  public static final String OAS_DETAIL = "ODE";
 }

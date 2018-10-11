@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
+   
+   <style>	
+   .form-group span.required {
+	 color: red;
+	 font-size: 150%;
+	} 
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }	
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">		
+<!-- 		<div class = "container"> -->
+			<table id="KYCGrid"></table>
+<!-- 		</div> -->
+	</section>
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>	
+	 <!-- 拒绝申请添加批注的模态框 -->
+    <div class="modal fade" id="postilModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">添加批注</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
+						<input  style="display:none" type="hidden" name="reId" id="reId">
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-3 control-label">批注：</label><span class="required">*</span>
+							<div class="col-sm-6">
+								<input name="postil" class="form-control" id="postil" placeholder="必填项" required="required" /></input>	
+								<span id="msg_postil"></span>							
+							</div>						
+						</div>																								
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="addPostil()"><span aria-hidden="true">保存</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	
+
+	 <!-- 同意申请添加姓名和身份证信息的模态框 -->
+    <div class="modal fade" id="addNCModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">添加信息</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
+						<input  style="display:none" type="hidden" name="agId" id="agId">
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-3 control-label">姓名：</label><span class="required">*</span>
+							<div class="col-sm-6">
+								<input name="name" class="form-control" id="name" placeholder="必填项" required="required" /></input>
+								<span id="msg_name"></span>								
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-3 control-label">身份证号：</label><span class="required">*</span>
+							<div class="col-sm-6">
+								<input name="card" class="form-control" id="card" onblur="checkCard()" placeholder="必填项" required="required" /></input>
+								<span id="msg_card"></span>								
+							</div>						
+						</div>
+
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="addNC()"><span aria-hidden="true">保存</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	
+	
+	<!-- 查看用户信息的模态框 -->
+    <div class="modal fade" id="queryUserModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">用户信息</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">用户名：</label>
+							<div class="col-sm-7">
+								<input name="Qname" class="form-control" id="Qname" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">昵称：</label>
+							<div class="col-sm-7">
+								<input name="Qnickname" class="form-control" id="Qnickname" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">性别：</label>
+							<div class="col-sm-7">
+								<input name="Qgender" class="form-control" id="Qgender" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">生日：</label>
+							<div class="col-sm-7">
+								<input name="Qbirthday" class="form-control" id="Qbirthday" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">手机：</label>
+							<div class="col-sm-7">
+								<input name="Qmobile" class="form-control" id="Qmobile" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邮箱：</label>
+							<div class="col-sm-7">
+								<input name="Qemail" class="form-control" id="Qemail" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">地址：</label>
+							<div class="col-sm-7">
+								<input name="Qaddress" class="form-control" id="Qaddress" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邀请码：</label>
+							<div class="col-sm-7">
+								<input name="QinviteCode" class="form-control" id="QinviteCode" readonly="readonly" required="required"/>
+							</div>						
+						</div>		
+																									
+					</form>
+				</div>					
+			</div>					
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/js/KYC/KYCManage.js}"></script>
+	<script type="text/javascript" th:src="@{/js/KYC/KYCManageTable.js}"></script>
+</body>
+
+</html>
+

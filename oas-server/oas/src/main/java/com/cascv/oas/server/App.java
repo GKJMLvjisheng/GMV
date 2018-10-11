@@ -1,5 +1,9 @@
 package com.cascv.oas.server;
 
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,5 +35,18 @@ public class App extends SpringBootServletInitializer{
     	System.out.println(e);
     }
   }
+  
+  /**
+   * @author Ming Yang
+   * @see 设置默认启动时区
+   */
+  
+  @PostConstruct
+  void setDefaultTimezone() {
+     TimeZone.setDefault(TimeZone.getTimeZone("Etc/GMT"));
+     System.out.println("****默认时区 UTC****");
+  }
+
+
 }
 
