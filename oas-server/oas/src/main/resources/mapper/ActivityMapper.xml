@@ -164,7 +164,7 @@
    
   
   <!-- select activity max_value -->
-  <select id="selectBaseValueBySourceCodeAndrewardCode" resultMap="activityRewardConfigMap">
+  <select id="selectBaseValueBySourceCodeAndRewardCode" resultMap="activityRewardConfigMap">
       select 
       <include refid="activity_Reward_Connfig_List" />
       from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode};
@@ -227,6 +227,16 @@
         <result column="created" jdbcType="VARCHAR" property="created"/>
         <result column="updated" jdbcType="VARCHAR" property="updated"/>
     </resultMap>
+    
+  <sql id="Energy_Point_Ball_List">
+        uuid, user_uuid, source_code, point, status, created, updated
+    </sql>
+    <!-- 根据能量球id查询 -->
+    <select id="selectByUuid" resultMap="EnergyPointBall">
+        select
+        <include refid="Energy_Point_Ball_List" />
+        from energy_point_ball where uuid = #{uuid}
+    </select>
     
   <!-- 插入积分球 -->
     <insert id="insertEnergyPointBall" parameterType="com.cascv.oas.server.activity.model.EnergyPointBall">
