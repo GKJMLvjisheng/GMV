@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
   	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/withdrawMoney/withdrawMoney.js}"></script>   
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script> 
     <style type="text/css">
      table{     
          border-collapse :collapse ;
@@ -33,7 +32,7 @@
     </tr>
 	<tr>
       <td id="brokerage"></td>
-      <td><a onclick="edit()" title='修改'><span class='glyphicon glyphicon-pencil'></span></a></td>
+      <td><a onclick="edit()" title="修改"><span class="glyphicon glyphicon-pencil"></span></a></td>
 	</tr> 
   </table>
 
@@ -93,5 +92,6 @@
 
 	</div>
 	
+	<script type="text/javascript" th:src="@{/js/withdrawMoney/brokerageConfig.js}"></script>  
 </body>
 </html>
