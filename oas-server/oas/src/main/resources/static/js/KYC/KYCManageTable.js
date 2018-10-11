@@ -73,14 +73,14 @@ function initKYCGrid(data) {
 			field : "userIdentityNumber",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '140px',
 		},
 		{
 			title : "申请时间",
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '85px',
+			width:  '91px',
 		},
 		{
 			title : "操作",
@@ -117,8 +117,8 @@ function actionFormatter(value, row, index) {
 	var id = row.userName;
 	var result = "";
 	if(status==1){
-		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"agree('" + id + "')\"><span>批准</span></a>";
-		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"reject('" + id + "')\"><span>拒绝</span></a>";
+		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"agree('" + id + "')\"><span style='font-size:14px;'>批准</span></a>";
+		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"reject('" + id + "')\"><span style='font-size:14px;'>拒绝</span></a>";
 		return result;
 	}else if(status==2){
 		result += "<span>已通过</span>";      

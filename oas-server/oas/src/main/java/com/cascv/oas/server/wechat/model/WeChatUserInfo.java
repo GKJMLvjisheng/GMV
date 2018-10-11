@@ -1,4 +1,4 @@
-package com.cascv.oas.server.wechat.Model;
+package com.cascv.oas.server.wechat.model;
 
 	/**
 	 * 微信用户信息类

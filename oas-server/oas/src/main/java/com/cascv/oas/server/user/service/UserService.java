@@ -209,6 +209,10 @@ public class UserService {
 		 userIdentityCardModel.setHoldInHand(holdInHand);
 		return userIdentityCardModel;
 	}
+	
+	public List<String> selectIdentityNumber(String mobile){
+		return userModelMapper.selectUserMobile(mobile);
+	}
 }
 
 

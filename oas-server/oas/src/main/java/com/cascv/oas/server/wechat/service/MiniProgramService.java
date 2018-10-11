@@ -1,4 +1,4 @@
-package com.cascv.oas.server.wechat.Service;
+package com.cascv.oas.server.wechat.service;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -8,13 +8,12 @@ import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWechatMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyWechatModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
-import com.cascv.oas.server.wechat.Utils.GetOpenIdUtil;
+import com.cascv.oas.server.wechat.utils.GetOpenIdUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;

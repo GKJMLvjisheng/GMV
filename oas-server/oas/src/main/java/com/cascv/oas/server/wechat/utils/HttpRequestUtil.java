@@ -1,4 +1,4 @@
-package com.cascv.oas.server.wechat.Utils;
+package com.cascv.oas.server.wechat.utils;
 
 
 import org.apache.http.client.config.RequestConfig;

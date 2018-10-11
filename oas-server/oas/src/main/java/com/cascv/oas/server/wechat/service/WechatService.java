@@ -1,4 +1,4 @@
-package com.cascv.oas.server.wechat.Service;
+package com.cascv.oas.server.wechat.service;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyWechatModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
-import com.cascv.oas.server.wechat.Utils.WechatMessageUtil;
+import com.cascv.oas.server.wechat.utils.WechatMessageUtil;
 import com.cascv.oas.server.wechat.vo.TextMessage;
 
 import lombok.extern.slf4j.Slf4j;

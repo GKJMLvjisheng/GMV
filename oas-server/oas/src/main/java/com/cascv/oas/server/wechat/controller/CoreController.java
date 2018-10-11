@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cascv.oas.server.wechat.Service.WechatService;
-import com.cascv.oas.server.wechat.Utils.StringUtils;
+import com.cascv.oas.server.wechat.service.WechatService;
+import com.cascv.oas.server.wechat.utils.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
