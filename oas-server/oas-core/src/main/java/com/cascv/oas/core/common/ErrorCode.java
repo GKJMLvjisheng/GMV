@@ -49,7 +49,8 @@ public enum ErrorCode {
   SELECT_EMPTY(10032,"查询不到该记录"),
   OAS_EVENT_HAVE_HANDLED(10033,"该提币记录管理员已处理"),
   SYSTEM_NOT_EXIST(10034,"SYSTEM用户不存在"),
-  WALLET_ONLINE_NOT_EXIST(10035,"用户在线钱包账户不存在");
+  WALLET_ONLINE_NOT_EXIST(10035,"用户在线钱包账户不存在"),
+  OAS_EXTRA_MONEY_NOT_ENOUGH(10036,"余额不足，手续费无法扣除");
 
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;

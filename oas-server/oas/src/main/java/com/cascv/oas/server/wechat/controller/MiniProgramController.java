@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cascv.oas.server.wechat.Service.MiniProgramService;
-import com.cascv.oas.server.wechat.Service.WechatService;
-import com.cascv.oas.server.wechat.Utils.StringUtils;
+import com.cascv.oas.server.wechat.service.MiniProgramService;
+import com.cascv.oas.server.wechat.utils.StringUtils;
+
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController

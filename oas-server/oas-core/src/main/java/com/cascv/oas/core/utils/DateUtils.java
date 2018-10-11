@@ -82,7 +82,7 @@ public class DateUtils {
     
     /**
      * @author Ming Yang
-     * 获取系统当前默认时区与指定时区的时间差.(单位:毫秒)
+      * 获取系统当前默认时区与指定时区的时间差.(单位:毫秒)
      * @param timeZoneId
      * 				时区Id
      * @return 系统当前默认时区与指定时区的时间差.(单位:毫秒)
@@ -129,6 +129,9 @@ public class DateUtils {
     	SimpleDateFormat sdf = new SimpleDateFormat(srcFormater);
     	try {
     		int diffTime = getDiffTimeZoneRawOffset(dstTimeZoneId);
+    		System.out.println("****与目标时区时间差****单位毫秒");
+    		System.out.println(diffTime);
+    		System.out.println("****与目标时区时间差****单位毫秒");
     		Date d = sdf.parse(srcDateTime);
     		long nowTime = d.getTime();
     		long newNowTime = nowTime - diffTime;

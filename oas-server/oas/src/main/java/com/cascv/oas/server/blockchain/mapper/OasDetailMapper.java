@@ -30,7 +30,7 @@ public interface OasDetailMapper {
    * @param value
    * @return
    */
-  Integer updateOasExtra(@Param("value") String value);
+  Integer updateOasExtra(@Param("value") String value,@Param("updated") String updated);
   /**
    * 根据uuid查询提币充币记录
    * @param uuid

@@ -242,7 +242,9 @@ public class UserWalletController {
   @ResponseBody
   @RequiresRoles("admin")
   @Transactional
-  public ResponseEntity<?> setWithdrawResult(String id,Integer result){ 
+  public ResponseEntity<?> setWithdrawResult(@RequestBody OasDetailResp req){ 
+	  String id = req.getUuid();
+	  Integer result = req.getStatus();
 	  if(id == null || result == null || (result != 1 && result != 2)) {
 		  return new ResponseEntity.Builder<Integer>()
 			        .setData(1)
