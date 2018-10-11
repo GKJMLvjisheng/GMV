@@ -24,7 +24,16 @@
  
   	  <include refid="Base_Column_List" />
   	  
- from identity_card_info order by updated desc;
+ from identity_card_info where verify_status!=0 order by created desc;
+  </select>
+  
+ <select id="selectUserIdentityByUserName" resultMap="userIdentityCardModelMap">
+ select 
+ 		<include refid="Base_Column_List" /> 	  
+ from 
+ 		identity_card_info 
+ where
+ 		user_name = #{userName};
   </select>
   
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 

@@ -53,7 +53,6 @@ import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
-import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
@@ -749,7 +748,7 @@ public class UserController {
 		}		
 	}
 	
-	@PostMapping(value="/selectAllUserIdentityInfo")
+	@PostMapping(value="/inqureAllUserIdentityInfo")
 	@ResponseBody
 	public ResponseEntity<?> selectAllUserIdentityInfo(){
 		
@@ -758,7 +757,27 @@ public class UserController {
 		  	      .setData(userIdentityCardModelList)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
-		
-	}
+			}
+	
+	@PostMapping(value="/inqureUserIdentityInfo")
+	@ResponseBody
+	public ResponseEntity<?> inqureUserIdentityInfo(){
+		String userName=ShiroUtils.getLoginName();
+		UserIdentityCardModel userIdentityCardModel=userService.selectUserIdentityByUserName(userName);
+		Integer verifyStatus=userIdentityCardModel.getVerifyStatus();
+		if(verifyStatus != 0 && verifyStatus != 3) {
+		return new ResponseEntity.Builder<UserIdentityCardModel>()
+		  	      .setData(userIdentityCardModel)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+		}else {
+			log.info("***用户未认证***");
+			
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModel)
+			  	      .setErrorCode(ErrorCode.SUCCESS)
+			  	      .build();
+			  }
+			}
 	
 }

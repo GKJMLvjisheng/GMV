@@ -1,6 +1,7 @@
 package com.cascv.oas.server.user.mapper;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 /**
  * @author Ming Yang
  */
@@ -19,5 +20,7 @@ public interface UserIdentityCardModelMapper {
 	Integer updateUserIdentityCardByHoldInHand(UserIdentityCardModel userIdentityCardModel);
 	
 	List<UserIdentityCardModel> selectAllUserIdentityCard();
+	
+	UserIdentityCardModel selectUserIdentityByUserName(@Param("userName") String userName);
 	
 }
