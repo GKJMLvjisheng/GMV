@@ -1,0 +1,72 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.walk.mapper.WalkMapper">
+    
+    <resultMap id="walkBallMap" type="com.cascv.oas.server.walk.model.WalkBall">
+		<id column="uuid" property="uuid" />
+		<result column="user_uuid" property="userUuid"/>
+		<result column="step_num" property="stepNum"/>
+		<result column="status" property="status"/>
+	  	<result column="created" property="created"/>
+	  	<result column="updated" property="updated"/>
+    </resultMap>
+    
+    <sql id="walkBall_List">
+  		uuid, user_uuid, step_num, status, created, updated
+    </sql>
+    
+    <!-- insert walkBall -->
+  <insert id="insertWalkBall" parameterType="com.cascv.oas.server.walk.model.WalkBall">    
+    insert into walk_ball
+      (uuid, user_uuid, step_num, status, created, updated)
+    values
+      (#{uuid}, #{userUuid}, #{stepNum,jdbcType=DECIMAL}, #{status}, #{created}, #{updated})
+   </insert>
+   
+   <select id="selectWalkBall" resultMap="walkBallMap">
+       select 
+       <include refid="walkBall_List" />
+       from walk_ball where user_uuid = #{userUuid} and status = #{status}
+   </select>
+   
+   <update id="updateStatusByUuid" parameterType="com.cascv.oas.server.walk.model.WalkBall">
+       update walk_ball
+        set `status` = #{status}, updated = #{updated} WHERE uuid = #{uuid}
+   </update>
+   
+   <resultMap id="WalkBallReturn" type="com.cascv.oas.server.walk.wrapper.WalkBallReturn">
+        <id column="uuid" property="uuid"/>
+        <result column="value" property="value"/>
+        <result column="start_date" property="startDate"/>
+        <result column="type" property="type" />
+        <result column="name" property="name" />
+    </resultMap>
+    
+   <select id="selectEnergyBallList" resultMap="WalkBallReturn">
+       select 
+          b.uuid,
+          b.user_uuid,
+          b.point as value,
+          b.created as start_date,
+          p.source_code as type,
+          p.source_name as name
+       from(
+          select
+             uuid,
+             user_uuid,
+             source_code,
+             point,
+             status,
+             created
+          from
+             energy_point_ball
+       ) b
+       inner join activity p
+       where
+       b.source_code = p.source_code
+            and b.source_code = #{sourceCode}
+            and b.status = #{status}
+            and b.user_uuid = #{userUuid}
+       order by b.created desc limit 7
+   </select>
+    
+</mapper>

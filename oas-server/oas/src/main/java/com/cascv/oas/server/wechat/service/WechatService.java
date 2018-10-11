@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWechatMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyWechatModel;
@@ -20,11 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class WechatService {
 	@Autowired
-	private EnergySourcePowerMapper energySourcePowerMapper;
-	@Autowired
 	private EnergyWechatMapper energyWechatMapper;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ActivityMapper activityMapper;
     //private Map<String,Object> userInfo=new HashMap<String,Object>();
     //判断是否输入"获取验证码"
     Boolean isChecked=false;
@@ -81,7 +81,7 @@ public class WechatService {
 						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS);
 						            activityCompletionStatus.setUuid(uuid);
 						            activityCompletionStatus.setCreated(now);;
-						            energySourcePowerMapper.insertActivity(activityCompletionStatus);
+						            activityMapper.insertActivityCompletionStatus(activityCompletionStatus);
 						            userModel.setName(map.get("Content"));
 						            userModel.setIdentifyCode(Integer.valueOf(result));
 						            userService.updateIdentifyCode(userModel);

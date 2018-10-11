@@ -13,15 +13,12 @@ import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyWechatModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
-import com.cascv.oas.server.wechat.utils.GetOpenIdUtil;
 
 import lombok.extern.slf4j.Slf4j;
-import net.sf.json.JSONObject;
 @Slf4j
 @Service
-public class MiniProgramService{
-//	@Autowired
-//	private EnergySourcePowerMapper energySourcePowerMapper;
+public class Html5Service{
+//	EventMessage em = EventMessage.LoadFromXml(RequestXml); 
 	@Autowired
 	private ActivityMapper activityMapper;	
 	@Autowired
@@ -34,11 +31,6 @@ public class MiniProgramService{
 	public Map<String,String> processRequest(HttpServletRequest request){
 		Map<String,String> info=new HashMap<>();
     	String name=request.getParameter("name"); 
-    	//appId和secret两个参数可以通过配置来改进
-    	String appId="wx1e78dc71182a3d3c";
-    	String secret="f976a90e54b323a56dc4defdb6bb9cbc";
-    	String code=request.getParameter("code");
-    	log.info("code={}",code);
         String result="";
         String userUuid="";
         String uuid="";
@@ -46,15 +38,17 @@ public class MiniProgramService{
         /**
          * 获取用户的OpenId
          */
-       GetOpenIdUtil getopenId=new GetOpenIdUtil();
+        String openId="";
+        
+//       GetOpenIdUtil getopenId=new GetOpenIdUtil();
        //调用访问微信服务器工具方法，传入三个参数获取带有openid、session_key的json字符串
-       String jsonId=getopenId.getOpenId(appId,code,secret);
-       log.info("jsonId={}",jsonId);
-       JSONObject jsonObject = JSONObject.fromObject(jsonId); 
+//       String jsonId=getopenId.getOpenId(appId,code,secret);
+//       log.info("jsonId={}",jsonId);
+//       JSONObject jsonObject = JSONObject.fromObject(jsonId); 
        //从json字符串获取openid和session_key
        //注意函数内部写的是openid，因此这里也需要和其相对应
-       String openId=jsonObject.getString("openid");
-       log.info("openId={}",openId);
+//       String openId=jsonObject.getString("openid");
+//       log.info("openId={}",openId);
        //String session_key=jsonObject.getString("session_key");
        
         //生成随机数

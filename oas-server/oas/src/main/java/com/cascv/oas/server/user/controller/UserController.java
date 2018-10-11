@@ -55,6 +55,7 @@ import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.wrapper.AuthCode;
 import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
+import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.utils.SendMailUtils;
@@ -709,15 +710,20 @@ public class UserController {
      }
 	
 	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
-    public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel){
+    public ResponseEntity<?> sendMobile(@RequestBody MobileModel mobileModel){
 		Map<String,Boolean> info=new HashMap<>();
 		log.info("****start****");
 		//后续"+86"可以在前端进行修改
-		String mobile = "+86"+userModel.getMobile();
+		String mobile = "+86"+mobileModel.getMobile();
 		String SignName="国科云景";
+		String content="";
         //获取验证码
 		vcode=MessageService.createRandomVcode();
-		String content = "【"+SignName+"】"+"验证码为"+vcode+",您正在尝试变更重要信息，请妥善保管账户信息。";
+		if(mobileModel.getContent()!=null){
+			content = mobileModel.getContent();
+		}else {
+		content = "【"+SignName+"】"+"验证码为"+vcode+",您正在尝试变更重要信息，请妥善保管账户信息。";
+		}
         PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
         log.info(publishResult.toString());
 		info.put("state",true);
@@ -900,4 +906,28 @@ public class UserController {
 			  	      .setErrorCode(ErrorCode.SUCCESS)
 			  	      .build();
 	}
+	
+	@PostMapping(value="/checkIdentityNumber")
+    @ResponseBody
+    @WriteLog(value="checkIdentityNumber")
+    public ResponseEntity<?> checkIdentityNumber(@RequestBody UserIdentityCardModel userIdentityCardModel) {
+       log.info("*********checkIdentityNumber start**********");
+       String userIdentityNumber=userIdentityCardModel.getUserIdentityNumber();
+       userIdentityCardModel=userIdentityCardModelMapper.selectUserByIdentityNumber(userIdentityNumber);
+       if(userIdentityCardModel!=null)
+       {
+    	   log.info("***该身份证号码存在***");
+    	   return new ResponseEntity.Builder<Integer>()
+			  	      .setData(0)
+			  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
+			  	      .build();
+       }else
+       {
+    	   log.info("***该身份证号码不存在***");
+    	   return new ResponseEntity.Builder<Integer>()
+			  	      .setData(1)
+			  	      .setErrorCode(ErrorCode.SUCCESS)
+			  	      .build();
+       }
+    }
 }

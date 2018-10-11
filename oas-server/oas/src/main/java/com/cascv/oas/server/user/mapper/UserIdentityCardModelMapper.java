@@ -23,4 +23,6 @@ public interface UserIdentityCardModelMapper {
 	
 	UserIdentityCardModel selectUserIdentityByUserName(@Param("userName") String userName);
 	
+	UserIdentityCardModel selectUserByIdentityNumber(@Param("userIdentityNumber") String userIdentityNumber);
+	
 }

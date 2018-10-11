@@ -132,4 +132,15 @@
       </trim>
       where user_name = #{userName}
       </update>
+
+ <!-- select identityNumber-->
+<select id="selectUserByIdentityNumber" resultMap="userIdentityCardModelMap">
+    select 
+         <include refid="Base_Column_List" />
+    from 
+    	identity_card_info 
+    where 
+  		user_identity_number = #{userIdentityNumber} 
+</select>
+
 </mapper>
