@@ -38,7 +38,7 @@ function checkCard() {
         "userIdentityNumber" : card
       };
       $.ajax({
-        url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
+        url: "/api/v1/userCenter/checkIdentityNumber",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -48,13 +48,13 @@ function checkCard() {
 		async : false,
 
         success : function(res) {
-          //根据判断提示用户
-          if (res.state == true) {
+          //alert(JSON.stringify(res));
+          if (res.data == 1) {
             $("#msg_card").html("身份证号可以使用");
             $("#msg_card").css("color", "green");
             check1 = 1;
             return check1;
-          } else {
+          } else if(res.data == 0) {
             $("#msg_card").html("该身份证号已存在");
             $("#msg_card").css("color", "red");
             check1 = 0;
@@ -65,16 +65,20 @@ function checkCard() {
           alert('检查身份证号是否存在发生错误');
         }
       });
+    }else{
+//    	 $("#msg_card").html("请填写身份证号！");
+//         $("#msg_card").css("color", "red");
     }
 }
 
 function addPostil(){
-	var reId = $("#reId").val();
-	var postil=$("#postil").val();
+	var userName = $("#reId").val();
+	//alert(userName);
+	var postil=$("#postil").val();	
 	if(postil!=""){
 		data={
 				"status":3,
-				"userName":reId,
+				"userName":userName,
 				"remark":postil,
 				}
 
@@ -109,48 +113,42 @@ function addPostil(){
 }
 
 function addNC(){
-	if(check1==1){
-		var agId = $("#agId").val();
-		var name=$("#name").val();
-		var card=$("#card").val();
-		
-		if(name!=""){
-			var data={
-					"status":2,
-					"userName":agId,
-					"userIdentityName":name,
-					"userIdentityNumber":card,
-					}
+	
+	var agId = $("#agId").val();
+	//alert(agId);
+	var name=$("#name").val();
+	var card=$("#card").val();
+	
+	if(check1==1 && name!=""){		
+		var data={
+			"status":2,
+			"userName":agId,
+			"userIdentityName":name,
+			"userIdentityNumber":card,
+			}
 
-				$.ajax({		
-					url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
-					contentType : 'application/json;charset=utf8',
-					dataType: 'json',
-					cache: false,
-					type: 'post',
-					data:JSON.stringify(data),
-					processData : false,
-					async : false,
+		$.ajax({		
+			url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(data),
+			processData : false,
+			async : false,
 
-					success: function(res) {
-						document.getElementById("tipContent").innerText="信息添加成功";
-						$("#Tip").modal('show');
-						$("#addNCModal").modal('hide');
-						KYCReady();
-						//$("#KYCGrid").bootstrapTable('refresh');
-					}, 
-					error: function(){
-						document.getElementById("tipContent").innerText="信息添加失败";
-						$("#Tip").modal('show');
-						$("#addNCModal").modal('hide');
-					}
-					}); 
-		}else{
-			alert("请确认输入信息！");
-			$("#Tip").modal('show');
-			location.reload();
-		}		
-		
+			success: function(res) {
+				document.getElementById("tipContent").innerText="信息添加成功";
+				$("#Tip").modal('show');
+				$("#addNCModal").modal('hide');
+				KYCReady();
+			}, 
+			error: function(){
+				document.getElementById("tipContent").innerText="信息添加失败";
+				$("#Tip").modal('show');
+				$("#addNCModal").modal('hide');
+			}
+			}); 			
 	}else{
 		alert("请确认输入信息！");
 		$("#Tip").modal('show');

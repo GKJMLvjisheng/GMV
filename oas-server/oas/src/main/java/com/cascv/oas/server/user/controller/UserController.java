@@ -899,4 +899,28 @@ public class UserController {
 			  	      .setErrorCode(ErrorCode.SUCCESS)
 			  	      .build();
 	}
+	
+	@PostMapping(value="/checkIdentityNumber")
+    @ResponseBody
+    @WriteLog(value="checkIdentityNumber")
+    public ResponseEntity<?> checkIdentityNumber(@RequestBody UserIdentityCardModel userIdentityCardModel) {
+       log.info("*********checkIdentityNumber start**********");
+       String userIdentityNumber=userIdentityCardModel.getUserIdentityNumber();
+       userIdentityCardModel=userIdentityCardModelMapper.selectUserByIdentityNumber(userIdentityNumber);
+       if(userIdentityCardModel!=null)
+       {
+    	   log.info("***该身份证号码存在***");
+    	   return new ResponseEntity.Builder<Integer>()
+			  	      .setData(0)
+			  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
+			  	      .build();
+       }else
+       {
+    	   log.info("***该身份证号码不存在***");
+    	   return new ResponseEntity.Builder<Integer>()
+			  	      .setData(1)
+			  	      .setErrorCode(ErrorCode.SUCCESS)
+			  	      .build();
+       }
+    }
 }
