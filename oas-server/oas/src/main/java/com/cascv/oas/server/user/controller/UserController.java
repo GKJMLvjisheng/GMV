@@ -797,7 +797,7 @@ public class UserController {
 			}
 	@PostMapping(value="/upLoadUserIdentityInfo")
 	@ResponseBody
-	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam(name="file",value="file",required=false) MultipartFile file){
+	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam("file") MultipartFile file){
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userIdentityCardModel=userService.selectUserIdentityByUserName(userName);
 		File dir=new File(IDENTITY_UPLOADED);
@@ -805,21 +805,22 @@ public class UserController {
 	  	   dir.mkdirs();
 	  	  }
 	  	String str="/image/identityCard/";
+
 	  	//日期时间生成唯一标识文件名
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
 			String uniqueFileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
+			String fileName=file.getOriginalFilename();
+			fileName=fileName.substring(0, 4);
+			log.info("fileName={}",fileName);
 			try {
 				byte[] bytes = file.getBytes();
 	            Path path = Paths.get(IDENTITY_UPLOADED + uniqueFileName);
 	            Files.write(path, bytes);	  
 			}catch (Exception e)
-    		{
-        		log.info("身份证上传失败"+e);
-    		}
-			String fileName=file.getOriginalFilename();
-			fileName=fileName.substring(0, 4);
-			log.info("fileName={}",fileName);
-			if(fileName=="face")
+			{
+	    		log.info("身份证上传失败"+e);
+			}
+			if(fileName.equals("face"))
 			{
 				String frontOfPhoto=str+uniqueFileName;
 				String srcFormater = null,dstFormater = null;
@@ -832,7 +833,7 @@ public class UserController {
 				userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
-			}else if(fileName=="back") 
+			}else if(fileName.equals("back")) 
 			{
 				String backOfPhoto=str+uniqueFileName;
 				String srcFormater = null,dstFormater = null;
@@ -845,7 +846,7 @@ public class UserController {
 				userIdentityCardModel.setFrontOfPhoto(backOfPhoto);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
-			}else if(fileName=="hand") 
+			}else if(fileName.equals("hand")) 
 			{
 				String holdInHand=str+uniqueFileName;
 				String srcFormater = null,dstFormater = null;
@@ -865,6 +866,16 @@ public class UserController {
 				  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
 				  	      .build();
 			}
+			
+			try {
+				byte[] bytes = file.getBytes();
+	            Path path = Paths.get(IDENTITY_UPLOADED + uniqueFileName);
+	            Files.write(path, bytes);	  
+			}catch (Exception e)
+    		{
+        		log.info("身份证上传失败"+e);
+    		}
+			
 			return new ResponseEntity.Builder<UserIdentityCardModel>()
 			  	      .setData(userIdentityCardModel)
 			  	      .setErrorCode(ErrorCode.SUCCESS)

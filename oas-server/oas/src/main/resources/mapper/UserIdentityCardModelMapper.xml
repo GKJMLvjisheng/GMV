@@ -39,17 +39,17 @@
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
-      <if test="user_identity_name != null">
+      <if test="userIdentityName != null">
        user_identity_name= #{userIdentityName},
       </if>
-      <if test="user_identity_number != null">
+      <if test="userIdentityNumber != null">
        user_identity_number = #{userIdentityNumber},
       </if>
-      <if test="verify_status != null">
-       verify_status = #{verifyStatus}
+      <if test="verifyStatus != null">
+       verify_status = #{verifyStatus},
       </if>
        <if test="remark != null">
-       remark = #{remark},
+       remark = #{remark}
        </if>
        </trim>
        where user_name = #{userName}
@@ -58,8 +58,8 @@
 <update id="updateUserIdentityCardByFrontOfPhoto" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
-      <if test="front_of_photo != null">
-       front_of_photo = #{frontOfPhoto},
+      <if test="frontOfPhoto != null">
+       front_of_photo = #{frontOfPhoto}
       </if>
       </trim>
        where user_name = #{userName}
@@ -68,8 +68,8 @@
 <update id="updateUserIdentityCardByBackOfPhoto" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
-      <if test="back_of_photo != null">
-       back_of_photo = #{backOfPhoto},
+      <if test="backOfPhoto != null">
+       back_of_photo = #{backOfPhoto}
       </if>
       </trim>
       where user_name = #{userName}
@@ -78,8 +78,8 @@
 <update id="updateUserIdentityCardByHoldInHand" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
-      <if test="hold_in_hand != null">
-       hold_in_hand = #{holdInHand},
+      <if test="holdInHand != null">
+       hold_in_hand = #{holdInHand}
       </if>
       </trim>
       where user_name = #{userName}

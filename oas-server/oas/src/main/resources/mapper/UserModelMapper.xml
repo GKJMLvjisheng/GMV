@@ -102,7 +102,7 @@
         #{mobile,jdbcType=VARCHAR},
       </if>
       <if test="mobileChecked != null">
-        #{mobile_checked,jdbcType=INTEGER},
+        #{mobileChecked,jdbcType=INTEGER},
       </if>
 
       <if test="email != null">
@@ -110,7 +110,7 @@
       </if>
       
       <if test="emailChecked != null">
-        #{email_checked,jdbcType=INTEGER},
+        #{emailChecked,jdbcType=INTEGER},
       </if>
 
       <if test="updated != null">
