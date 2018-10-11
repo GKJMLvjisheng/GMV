@@ -3,11 +3,7 @@ package com.cascv.oas.server.user.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.stereotype.Service;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -16,11 +12,8 @@ import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.MessageAttributeValue;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
-import com.cascv.oas.core.common.ErrorCode;
-import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.server.user.model.UserModel;
- 
-public class ShortMessage {
+@Service 
+public class MessageService {
     private Map<String, MessageAttributeValue> smsAttributes;
 
 
@@ -49,12 +42,12 @@ public class ShortMessage {
         AWSCredentials awsCredentials = new AWSCredentials() {
             @Override
             public String getAWSAccessKeyId(){
-                return "xxxxxxxx"; // 带有发短信权限的 IAM 的 ACCESS_KEY
+                return "AKIAJOW26VQBDT6ZP23Q"; // 带有发短信权限的 IAM的 ACCESS_KEY
             }
 
             @Override
             public String getAWSSecretKey(){
-                return "xxxxxxxx"; // ru 的 SECRET_KEY
+                return "ca/G/RtXQR9Sto7AEoKebsiiAb2rTIgl/Hakl0aY"; //带有发短信权限的IAM的 SECRET_KEY
             }
         };
         
@@ -82,20 +75,12 @@ public class ShortMessage {
         );
     }
     
-    
-	@RequestMapping(value = "/sendSNSToMobile", method = RequestMethod.POST)
-    public ResponseEntity<?> sendSNSToMobile(@RequestBody UserModel userModel){
-        //AmazonSNSClient client = new AmazonSNSClient(credentialsProvider);
-        //AWSCredentialsProviderChain chain = new AWSCredentialsProviderChain(credentialsProvider);
-        //chain.setReuseLastProvider(true);
-        //credentialsProvider.getCredentials();
-		
-		String mobile = userModel.getMobile();
-		String content = "您好!";
-        ShortMessage shortMessage = new ShortMessage();
-        PublishResult publishResult = shortMessage.sendSMSMessage(mobile,content);
-        System.out.println(publishResult);
-        return new ResponseEntity.Builder<Integer>()
-		  	      .setData(0).setErrorCode(ErrorCode.SUCCESS).build();		
+	public static String createRandomVcode(){
+        String vcode = "";
+        for (int i = 0; i < 6; i++) {
+        	vcode = vcode + (int)(Math.random() * 9);
+        }
+        return vcode;
     }
+   
 }

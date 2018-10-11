@@ -52,7 +52,6 @@ public class MiniProgramController{
 		*/
 		@PostMapping(value="/messageHandle")
 		public Map<String,String> messageHandle(HttpServletRequest request,HttpServletResponse response) throws Exception{
-			//Map<String,String> info=new HashMap<>(); 
 			log.info("***接受微信服务端发来的请求***");
 			request.setCharacterEncoding("UTF-8");
 			response.setCharacterEncoding("UTF-8");
