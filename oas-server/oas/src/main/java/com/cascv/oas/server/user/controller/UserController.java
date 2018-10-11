@@ -828,9 +828,13 @@ public class UserController {
 				String created=DateUtils.dateTimeNow();
 				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
 				String updated=created;
+				Integer verifyStatus=1;
+				log.info("created={}",created);
+				log.info("updated={}",updated);
 				userIdentityCardModel.setCreated(created);
 				userIdentityCardModel.setUpdated(updated);
 				userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
 			}else if(fileName.equals("back")) 
@@ -841,9 +845,13 @@ public class UserController {
 				String created=DateUtils.dateTimeNow();
 				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
 				String updated=created;
+				log.info("created={}",created);
+				log.info("updated={}",updated);
+				Integer verifyStatus=1;
 				userIdentityCardModel.setCreated(created);
 				userIdentityCardModel.setUpdated(updated);
-				userIdentityCardModel.setFrontOfPhoto(backOfPhoto);
+				userIdentityCardModel.setBackOfPhoto(backOfPhoto);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
 			}else if(fileName.equals("hand")) 
@@ -854,9 +862,13 @@ public class UserController {
 				String created=DateUtils.dateTimeNow();
 				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
 				String updated=created;
+				Integer verifyStatus=1;
+				log.info("created={}",created);
+				log.info("updated={}",updated);
 				userIdentityCardModel.setCreated(created);
 				userIdentityCardModel.setUpdated(updated);
-				userIdentityCardModel.setFrontOfPhoto(holdInHand);
+				userIdentityCardModel.setHoldInHand(holdInHand);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
 			}else
