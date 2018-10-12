@@ -475,17 +475,21 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
-     
-      //this.removeclass() 
-      this.energyBallList=[]
-      this.walkEnergyBallList=[]
-      this.getEnergyBall()
-      this.getWalkEnergyBall()
+     //let todayStep=window.Android.getTodaySteps()
+     var time=currentTime(true)
+     console.log("time"+time)
+      //  this.$axios.post('/energyPoint/takeEnergyPointBall',{stepNum: todayStep,}).then(({data}) => {
+      // })
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
       this.getUserInfo()
+      this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+      this.energyBallList=[]
+      this.walkEnergyBallList=[]
+      this.getEnergyBall()
+      this.getWalkEnergyBall()
+      
     
      //location.reload()
      //this.reload()
@@ -543,7 +547,7 @@ export default {
 },
 getCurrenttime(){
     //var SERVER_TIME = document.getElementById("SERVER_TIME");
-var time=CurentTime()
+var time=currentTime()
 //this.$refs.input1.value=time
 this.input1=time
 //console.log("year"+this.$refs.input1.value);
@@ -586,7 +590,7 @@ console.log("111"+$("#SERVER_TIME").val());
     window.name = "";
 }
 });*/
-function CurentTime()
+function currentTime(flag)
     { 
         var now = new Date();
        
@@ -597,8 +601,21 @@ function CurentTime()
         var hh = now.getHours();            //时
         var mm = now.getMinutes();          //分
         var ss=now.getSeconds();
-       
-        var clock = year + "-";
+       if(flag){
+         var clock = JSON.stringify(year);
+         
+         
+          if(month < 10)
+            clock += "0";
+             clock+=month;
+            
+             if(day < 10)
+              clock += "0";
+               clock += day;
+                return (clock)
+                }
+        else{
+         clock = year + "-";
        
         if(month < 10)
             clock += "0";
@@ -619,6 +636,7 @@ function CurentTime()
          if (ss < 10) clock += '0'; 
         clock += ss; 
         return(clock); 
+        }
     } 
 
 </script>
