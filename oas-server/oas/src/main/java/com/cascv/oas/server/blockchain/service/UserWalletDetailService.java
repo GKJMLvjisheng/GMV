@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Date:2018-10-09
  */
 import org.springframework.stereotype.Service;
-
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
 import com.cascv.oas.server.timezone.model.CountryPromaryModel;
 import com.cascv.oas.server.utils.ShiroUtils;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

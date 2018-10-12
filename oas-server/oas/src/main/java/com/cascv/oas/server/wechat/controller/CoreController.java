@@ -59,7 +59,5 @@ public class CoreController{
 			out.print(responseMessage);
 			out.flush();
 		}
-        
-
 }
 

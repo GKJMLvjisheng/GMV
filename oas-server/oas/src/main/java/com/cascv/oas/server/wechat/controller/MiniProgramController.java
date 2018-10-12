@@ -2,7 +2,6 @@ package com.cascv.oas.server.wechat.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +37,7 @@ public class MiniProgramController{
         
         boolean check = StringUtils.checkSignature(signature, timestamp, nonce);
         if(check){
-        out.print(echostr);;
+        out.print(echostr);
         log.info("***success***");
         }
         out.close();
@@ -52,7 +51,6 @@ public class MiniProgramController{
 		*/
 		@PostMapping(value="/messageHandle")
 		public Map<String,String> messageHandle(HttpServletRequest request,HttpServletResponse response) throws Exception{
-			//Map<String,String> info=new HashMap<>(); 
 			log.info("***接受微信服务端发来的请求***");
 			request.setCharacterEncoding("UTF-8");
 			response.setCharacterEncoding("UTF-8");
