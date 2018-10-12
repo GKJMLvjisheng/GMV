@@ -579,7 +579,7 @@ public class EthWalletService {
   //在交易钱包的交易记录中点击记录
   public ErrorCode getExchangeResult(EthWalletDetail detail) {
 	  //非进行中的事件不用重新查看结果
-	  if(detail.getStatus()!=0) {
+	  if(detail.getTxResult()!=0) {
 		  return ErrorCode.SUCCESS;
 	  }
 	  String hash = detail.getTxHash();
@@ -599,7 +599,7 @@ public class EthWalletService {
 		  if(detail.getTitle().indexOf("转出")!=-1 || detail.getTitle().indexOf("转入")!=-1) {
 			  EthWalletDetail updateDetail = new EthWalletDetail();
 			  updateDetail.setUuid(detail.getUuid());
-			  updateDetail.setStatus(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
+			  updateDetail.setTxResult(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
 			  Integer upResult = ethWalletDetailMapper.updateByPrimaryKeySelective(updateDetail);
 			  if(upResult == 0) {
 				return ErrorCode.UPDATE_FAILED;
@@ -688,7 +688,7 @@ public class EthWalletService {
 	  	 }
 	  	EthWalletDetail updateDetail = new EthWalletDetail();
 		updateDetail.setUuid(detail.getUuid());
-		updateDetail.setStatus(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
+		updateDetail.setTxResult(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
 		Integer upResult = ethWalletDetailMapper.updateByPrimaryKeySelective(updateDetail);
 		if(upResult == 0) {
 			return ErrorCode.UPDATE_FAILED;
