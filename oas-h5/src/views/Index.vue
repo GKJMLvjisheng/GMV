@@ -331,35 +331,36 @@ export default {
                  
     },
      getWalkEnergyBall() {
-     //var todayStep=window.Android.getTodaySteps() 
-    var todayStep=60
+     var todayStep=window.Android.getTodaySteps() 
+   //var todayStep="80"
     this.input1=todayStep
-    //var time=currentTime(true)
+    var time=currentTime(true)
      console.log("time"+time)
-     var time="2018-10-13"
      var data={}
-     data['data']=time
+     data['date']=time
      data['stepNum']=todayStep
      var params = new Array();
-    params.push(data)
-    var data1={"quota":params}
-        this.$axios.post('/walkPoint/inquireWalkPointBall',JSON.stringify(data1)).then(({data:{data}}) => {
-       this.input2=data.startDate
+     params.push(data)
+
+      this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
+      this.input2=data.startDate
         console.log("data"+JSON.stringify(data))
-        // this.walkEnergyBallList = data.map(el => {
-        //   // let randomIdx = randomNum(0,pArr.length - 1)
-        //   let p = this.randomPoint()
-        //   // pArr.splice(randomIdx,1)
-        //   el.x = p.x / 75 + 'rem'
-        //   el.y = p.y / 75 + 'rem'
-        //    if(el.value<50)
-        //  { el.generate=true}
-        //  else{el.generate=false}
-        //   //console.log("{"+i+"}"+JSON.stringify(el))
-        //   //i++
-        //   return el
-        // }) 
-      }) 
+        this.walkEnergyBallList = data.map(el => {
+          // let randomIdx = randomNum(0,pArr.length - 1)
+          let p = this.randomPoint()
+          // pArr.splice(randomIdx,1)
+          el.x = p.x / 75 + 'rem'
+          el.y = p.y / 75 + 'rem'
+           if(el.value<50)
+         { el.generate=true}
+         else{el.generate=false}
+          //console.log("{"+i+"}"+JSON.stringify(el))
+          //i++
+          return el
+        }) 
+      }) .catch(function (err) {
+        console.log(err);
+      })
         
        
                  
