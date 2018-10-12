@@ -24,12 +24,12 @@
       <div class="energy-block">
         <div @click="handleClickEnergy($event,item)"  v-for="(item,index) in energyBallList" :key="index" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
-          <img :src="energyBall" alt="">
+          <img :src="energyBall" alt="" >
           <p>{{item.value}}</p>
           <div>
           <i></i> 
-          <span v-if="item.generate">{{item.name}}中</span>
-          <span v-else>{{item.name}}</span>
+          <span v-if="item.generate" class="ballcolor">{{item.name}}</span>
+          <span v-else >{{item.name}}</span>
          </div>
         </div>
         <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
@@ -38,7 +38,7 @@
           <p>{{item.value}}</p>
         <div>
           <i class='blackIamge'></i> 
-          <span v-if="item.generate">{{item.name}}中</span>
+          <span v-if="item.generate" class="ballcolor">{{item.name}}</span>
           <span v-else>{{item.name}}</span>
          </div>
           </div>
@@ -122,7 +122,8 @@
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <div >
       <input  id="SERVER_TIME"  v-model="input1" />
-       <input  id="SERVER_TIME"  v-model="input2" /></div>
+       <!-- <input  id="SERVER_TIME"  v-model="input2" /> -->
+       </div>
     <!-- OASES咨询 End type="hidden"-->
     <!-- 底部 Start -->
     <div class="bottom">
@@ -184,6 +185,7 @@ export default {
      // tempArrWalk:[],
       input1:'',
       input2:'',
+      todayStep:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -198,7 +200,7 @@ export default {
     }
   },
   created() {
-    
+    this.getStep()
     this.getEnergyBall() 
     this.getWalkEnergyBall() 
     this.getCurrentEnergy()
@@ -213,8 +215,9 @@ export default {
   filters: {
   },
   methods: {
-   
-
+   getStep(){
+  this.todayStep=window.Android.getTodaySteps()
+   },
     //预先加载3条新闻
     getArticleList () {
       var page=this.page; 
@@ -306,11 +309,11 @@ export default {
     },
     // 获取悬浮能量球数据
     getEnergyBall () {
-      
+     
       this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
         console.log(data)
-        let i=0
+       // let i=0
         
         this.energyBallList = data.energyBallList.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
@@ -321,7 +324,7 @@ export default {
           if(el.value<50)
          { el.generate=true}
          else{el.generate=false}
-          console.log("{"+i+"}"+JSON.stringify(el))
+         // console.log("{"+i+"}"+JSON.stringify(el))
           //i++
           return el
         }) 
@@ -331,19 +334,21 @@ export default {
                  
     },
      getWalkEnergyBall() {
-     var todayStep=window.Android.getTodaySteps() 
-   //var todayStep="80"
-    this.input1=todayStep
-    var time=currentTime(true)
-     console.log("time"+time)
+     
+      
+    //var todayStep="50"
+    this.input1=this.todayStep
+    let time=currentTime(true)
+    //let time="2018-10-11"
+     //console.log("time"+time)
      var data={}
      data['date']=time
-     data['stepNum']=todayStep
-     var params = new Array();
+     data['stepNum']=this.todayStep
+     let params = new Array();
      params.push(data)
 
       this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
-      this.input2=data.startDate
+      //this.input2=data.startDate
         console.log("data"+JSON.stringify(data))
         this.walkEnergyBallList = data.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
@@ -351,18 +356,15 @@ export default {
           // pArr.splice(randomIdx,1)
           el.x = p.x / 75 + 'rem'
           el.y = p.y / 75 + 'rem'
-           if(el.value<50)
-         { el.generate=true}
+           if(el.startDate>=time)
+         { 
+           el.generate=true}
          else{el.generate=false}
-          //console.log("{"+i+"}"+JSON.stringify(el))
-          //i++
+          
           return el
         }) 
-      }) .catch(function (err) {
-        console.log(err);
       })
         
-       
                  
     },
    
@@ -455,7 +457,7 @@ export default {
         return
       }
       let ele = event.currentTarget
-      this.$axios.post('/energyPoint/takeEnergyPointBall',{ballId: data.uuid}).then(({data}) => {
+      this.$axios.post('/walkPoint/takeWalkPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
           this.Toast(data.message)
@@ -488,17 +490,17 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.getCurrentEnergy()
-      this.getCurrentPower()
-      this.getEnergyAnalysis()
-      this.getUserInfo()
+      this.getStep()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
       this.getEnergyBall()
       this.getWalkEnergyBall()
-      
-    
+      this.getCurrentEnergy()
+      this.getCurrentPower()
+      this.getEnergyAnalysis()
+      this.getUserInfo()
+     
      //location.reload()
      //this.reload()
       setTimeout(() => {
@@ -516,15 +518,14 @@ export default {
    
  skipRefresh() {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
-     
-      //this.removeclass() 
       this.energyBallList=[]
+      this.walkEnergyBallList=[]
       this.getEnergyBall()
+      this.getWalkEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
       this.getUserInfo()
-     console.log("111")
   
     },
 
@@ -621,7 +622,7 @@ function currentTime(flag)
               if(day < 10)
                 clock += "0";
               
-            clock += day + " ";
+            clock += day;
                   return (clock)
                 }
         else{
@@ -739,16 +740,20 @@ header {
       i{
       position: absolute;
       display: inline-block;
-      right: 50%;
+      right: 70%;
       width: 32px;
       height: 32px;
-      background-image: url("../assets/images/energy@2x.png");
+      background-image: url("../assets/images/phone@2x.png");
       background-size: 32px 32px;
     }
+    .ballcolor{
+      color:#006600;
+    }
+   
      .blackIamge{
       position: absolute;
       display: inline-block;
-      right: 50%;
+      right: 70%;
       width: 32px;
       height: 32px;
       background-image: url("../assets/images/watch@2x.png");
