@@ -82,7 +82,7 @@
        user_identity_number = #{userIdentityNumber},
       </if>
       <if test="remark != null">
-       remark = #{remark}
+       remark = #{remark},
        </if>
        <if test="verifyStatus != null">
        verify_status = #{verifyStatus},
@@ -101,13 +101,13 @@
        front_of_photo = #{frontOfPhoto},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
        </trim>
        where user_name = #{userName}
@@ -123,13 +123,13 @@
        back_of_photo = #{backOfPhoto},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
       </trim>
       where user_name = #{userName}
@@ -145,13 +145,13 @@
        hold_in_hand = #{holdInHand},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
        </trim>
        where user_name = #{userName}

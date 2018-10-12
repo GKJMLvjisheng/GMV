@@ -13,6 +13,10 @@ import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.*;
+import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
+import com.cascv.oas.server.timezone.model.CountryPromaryModel;
+import com.cascv.oas.server.utils.ShiroUtils;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +42,8 @@ public class EnergyService {
     
     @Autowired
     private ActivityMapper activityMapper;
-    
+    @Autowired
+    private CountryPromaryModelMapper countryPromaryModelMapper;
     private static String checkinEnergyBallUuid;
     private EnergyBall checkinEnergyBall = new EnergyBall();
 
@@ -566,7 +571,28 @@ public class EnergyService {
     }
        
     public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit,Integer inOrOut) {
-    	
+    	String srcFormater = null,dstFormater = null;
+		String dstTimeZoneId=null;
+		String name=ShiroUtils.getAddress();
+		log.info("name={}",name);
+		if(name!=null) 
+		{
+			String [] arr = name.split("\\s+");
+			String newName=arr[0];
+			log.info("newName={}",newName);
+			CountryPromaryModel countryPromaryModel=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName);
+			if(countryPromaryModel!=null) {
+				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName).getTimeZone();
+				log.info("dstTimeZoneId={}",dstTimeZoneId);
+			}else {
+				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByCountryName(newName).getTimeZone();
+				log.info("dstTimeZoneId={}",dstTimeZoneId);
+			}
+		}else
+		{
+			dstTimeZoneId="Asia/Shanghai";
+			log.info("dstTimeZoneId={}",dstTimeZoneId);
+		}
     if(inOrOut!=null){
     	if(inOrOut==1)
     	{ 	
@@ -578,6 +604,8 @@ public class EnergyService {
     		   if(energyChangeDetail.getValue() != 0) {
     			   energyList.add(energyChangeDetail);
        		}
+    		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+			   energyChangeDetail.setCreated(created);
     	   }
     	    return energyList;
     	}
@@ -592,6 +620,8 @@ public class EnergyService {
      		   if(energyChangeDetail.getValue() != 0) {
     			   energyList.add(energyChangeDetail);
        		   }
+     		  String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+			  energyChangeDetail.setCreated(created);
         	}
         	return energyList;
     	}
@@ -610,6 +640,8 @@ public class EnergyService {
 	  			   energyList.add(energyChangeDetail);
 	     		}
     	     //}
+	   		String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+			energyChangeDetail.setCreated(created);
     	   }
     	    return energyList;
     	}

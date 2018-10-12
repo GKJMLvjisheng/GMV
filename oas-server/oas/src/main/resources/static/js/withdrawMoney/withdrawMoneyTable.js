@@ -83,11 +83,12 @@ function initRequestAuditGrid(data) {
 }
 
 function actionFormatter(value, row, index) {
+	var id = row.uuid;
 	var status = value;
 	var result = "";
 	if(status==0){
-		result += "<input type='radio' name='radio' id='agree' value='1'>批准 ";
-		result += "<input type='radio' name='radio' id='reject' value='2'>拒绝";
+		result += "<input type='radio' onclick=\"agree('" + id + "')\"' name='radio' id='agree' value='1'>批准 ";
+		result += "<input type='radio' onclick=\"reject('" + id + "')\" name='radio' id='reject' value='2'>拒绝";
 		return result;
 	}else if(status==1){
 		result += "<span>已通过</span>";      
@@ -96,4 +97,20 @@ function actionFormatter(value, row, index) {
 		result += "<span>未通过</span>";      
 	return result;
 	}       
+}
+
+function agree(id){
+	var status = 1;
+	$('#status').val(status);
+	$('#uuid').val(id);
+	document.getElementById("withdrawMoney").innerText="确认批准提币请求吗？";
+	$("#agreeModal").modal("show");
+}
+
+function reject(id){
+	var status = 2;
+	$('#status').val(status);
+	$('#uuid').val(id);
+	document.getElementById("withdrawMoney").innerText="确认拒绝提币请求吗？";
+	$("#agreeModal").modal("show");
 }

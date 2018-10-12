@@ -832,8 +832,8 @@ public class UserController {
 				String newfrontOfPhoto=str+uniqueFileName;
 				String srcFormater = null,dstFormater = null;
 				String dstTimeZoneId="Asia/Shanghai";
-				String created=DateUtils.dateTimeNow();
-				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
+				String created=DateUtils.getTime();
+				created=DateUtils.string2Timezone(srcFormater,created,dstFormater, dstTimeZoneId);
 				String updated=created;
 				Integer verifyStatus=1;
 				log.info("created={}",created);
@@ -857,9 +857,9 @@ public class UserController {
 				String newbackOfPhoto=str+uniqueFileName;
 				String srcFormater = null,dstFormater = null;
 				String dstTimeZoneId="Asia/Shanghai";
-				String created=DateUtils.dateTimeNow();
+				String created=DateUtils.getTime();
 				log.info("created={}",created);
-				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
+				created=DateUtils.string2Timezone(srcFormater,created,dstFormater, dstTimeZoneId);
 				String updated=created;
 				log.info("created={}",created);
 				Integer verifyStatus=1;
@@ -882,8 +882,8 @@ public class UserController {
 				String newholdInHand=str+uniqueFileName;
 				String srcFormater = null,dstFormater = null;
 				String dstTimeZoneId="Asia/Shanghai";
-				String created=DateUtils.dateTimeNow();
-				created=DateUtils.string2Timezone(srcFormater,userIdentityCardModel.getCreated(),dstFormater, dstTimeZoneId);
+				String created=DateUtils.getTime();
+				created=DateUtils.string2Timezone(srcFormater,created,dstFormater, dstTimeZoneId);
 				String updated=created;
 				Integer verifyStatus=1;
 				log.info("created={}",created);
