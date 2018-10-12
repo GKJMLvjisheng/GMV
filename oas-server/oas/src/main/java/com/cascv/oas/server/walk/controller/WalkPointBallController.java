@@ -1,6 +1,7 @@
 package com.cascv.oas.server.walk.controller;
 
 import java.text.ParseException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.service.WalkService;
 import com.cascv.oas.server.walk.wrapper.StepNumWrapper;
 import com.cascv.oas.server.walk.wrapper.WalkBallReturn;
-import com.cascv.oas.server.walk.wrapper.WalkBallTokenRequest;
-
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -34,10 +34,10 @@ public class WalkPointBallController {
 	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){		 
 		 String userUuid = ShiroUtils.getUserUuid();
 		 log.info("userUuid={}",userUuid);
-		 WalkBallReturn walkBallReturn = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());
+		 List<WalkBallReturn> walkBallReturnList = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());
 		 
-		return new ResponseEntity.Builder<WalkBallReturn>()
-				.setData(walkBallReturn)
+		return new ResponseEntity.Builder<List<WalkBallReturn>>()
+				.setData(walkBallReturnList)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		 
@@ -46,12 +46,10 @@ public class WalkPointBallController {
 	 
 	 @PostMapping(value = "/takeWalkPointBall")  
 	 @ResponseBody
-	 public ResponseEntity<?> takeWalkPointBall(@RequestBody WalkBallTokenRequest walkBallTokenRequest) throws ParseException{
+	 public ResponseEntity<?> takeWalkPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException{
 		 String userUuid = ShiroUtils.getUserUuid();
 		 ErrorCode errorCode = ErrorCode.SUCCESS;
-		 //行走能量球查询
-		 walkService.inquireWalkPointBall(userUuid, walkBallTokenRequest.getQuota());
-		 EnergyBallTakenResult energyBallTakenResult = walkService.takeWalkPointBall(userUuid, walkBallTokenRequest.getBallId(), walkBallTokenRequest.getQuota());
+		 EnergyBallTakenResult energyBallTakenResult = walkService.takeWalkPointBall(userUuid, energyBallTokenRequest.getBallId());
 		 if(energyBallTakenResult == null)
 			 errorCode = ErrorCode.GENERAL_ERROR;
 		return new ResponseEntity.Builder<EnergyBallTakenResult>()
