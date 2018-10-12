@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
+import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
@@ -73,7 +75,27 @@ public class WalkService {
 	}
 	
 	/**
-     * 记录行走步数
+     * 记录一个行走步数
+     * @param stepNum
+     * @return
+     */
+	public String returnWalkBallUuid(String userUuid, StepNumQuota stepNumQuota) {
+		WalkBall oneWalkBall = new WalkBall();
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+		 oneWalkBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+		 log.info("uuid={}", oneWalkBall.getUuid());
+		 oneWalkBall.setUserUuid(userUuid);
+		 oneWalkBall.setStepNum(stepNumQuota.getStepNum());
+		 oneWalkBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+		 oneWalkBall.setCreated(stepNumQuota.getDate());
+		 oneWalkBall.setUpdated(now);
+		 walkMapper.insertWalkBall(oneWalkBall);
+		 return oneWalkBall.getUuid();
+	}
+	
+	
+	/**
+     * 记录列表行走步数
      * @param stepNum
      * @return
      */
@@ -92,7 +114,31 @@ public class WalkService {
 	}
 	
 	/**
-     * 记录行走能量球
+     * 记录一个行走能量球
+     * @param stepNum userUuid
+     * @return
+     */
+	
+	public void addOneEnergyPointBall(String uuid, String userUuid, StepNumQuota stepNumQuota) {
+		EnergyPointBall newEnergyPointBall = new EnergyPointBall();
+		newEnergyPointBall.setUuid(uuid);
+		log.info("uuid={}", newEnergyPointBall.getUuid());
+		newEnergyPointBall.setUserUuid(userUuid);
+		newEnergyPointBall.setSourceCode(SOURCE_CODE_OF_WALKING);
+		newEnergyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
+		
+		List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
+		stepNumQuotaList.add(stepNumQuota);
+		newEnergyPointBall.setPoint(this.getPoint(stepNumQuotaList).get(0).getPoint());
+		
+		newEnergyPointBall.setCreated(this.getPoint(stepNumQuotaList).get(0).getDate());
+		newEnergyPointBall.setUpdated(this.getPoint(stepNumQuotaList).get(0).getDate());
+		
+		activityMapper.insertEnergyPointBall(newEnergyPointBall);
+	}
+	
+	/**
+     * 记录多个行走能量球
      * @param stepNum userUuid
      * @return
      */
@@ -118,23 +164,22 @@ public class WalkService {
 	/**
      * 插入行走能量球记录
 	 * @param userUuid 
-	 * @param stepNum 
+	 * @param point 
+	 * @param energyBallUuid 
      * @return
      */
-	public void addPointTradeRecord(String userUuid, List<StepNumQuota> quota) {
-		for(int i=0; i<quota.size(); i++) {
+	public void addPointTradeRecord(String userUuid, String energyBallUuid, BigDecimal point) {
 			pointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 			pointTradeRecord.setUserUuid(userUuid);
 			pointTradeRecord.setInOrOut(ENERGY_IN);
-			pointTradeRecord.setEnergyBallUuid(energyPointBall.getUuid());
+			pointTradeRecord.setEnergyBallUuid(energyBallUuid);
 			pointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-			pointTradeRecord.setPointChange(this.getPoint(quota).get(i).getPoint());
+			pointTradeRecord.setPointChange(point);
 			
 			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			pointTradeRecord.setCreated(now);
-		}		
-		
-		
+			
+			activityMapper.insertPointTradeRecord(pointTradeRecord);
 	}
 	
 	/**
@@ -142,19 +187,42 @@ public class WalkService {
      * @param userUuid
      * @return
      */
-	public WalkBallReturn inquireWalkPointBall(String userUuid, List<StepNumQuota> quota) {
+	public List<WalkBallReturn> inquireWalkPointBall(String userUuid, List<StepNumQuota> quota) {
 		if (StringUtils.isEmpty(userUuid)) {
             return null;
         }
-		WalkBall walkBall = walkMapper
+		List<WalkBall> walkBallList = walkMapper
 				.selectWalkBall(userUuid, STATUS_OF_ACTIVE_ENERGYBALL);
 		//如果没有球，则产生球
-		if(walkBall == null) {
+		if(walkBallList.size() == 0) {
 			this.addWalkPointBall(userUuid, quota);
 			this.addEnergyPointBall(userUuid, quota);
+		}else{
+			HashMap<String, WalkBall> walkBallMap= new HashMap<>(); 
+			for(int i=0; i<walkBallList.size(); i++) {
+				walkBallMap.put(walkBallList.get(i).getCreated(), walkBallList.get(i));
+			}
+			for(int i=0; i<quota.size(); i++) {
+				if(!walkBallMap.containsKey(quota.get(i).getDate())) {
+					String uuid = this.returnWalkBallUuid(userUuid, quota.get(i));
+					this.addOneEnergyPointBall(uuid, userUuid, quota.get(i));
+					WalkBall newWalkBall = walkMapper.selectWalkBallbyUuid(uuid);
+					walkBallMap.put(quota.get(i).getDate(), newWalkBall);
+				}else{
+					String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+					if(quota.get(i).getDate().equals(now)) {
+							walkMapper.updateStepNumByCreated(userUuid, quota.get(i).getStepNum(), quota.get(i).getDate());
+							List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
+							stepNumQuotaList.add(quota.get(i));
+							walkMapper.updatePointByuuid(walkBallMap.get(now).getUuid(), this.getPoint(stepNumQuotaList).get(0).getPoint());
+							walkBallMap.get(now).setStepNum(quota.get(i).getStepNum());
+							walkBallMap.put(now, walkBallMap.get(now));
+					}
+				}
+			}
 		}
-		WalkBallReturn walkBallReturn = walkMapper.selectEnergyBallList(userUuid, SOURCE_CODE_OF_WALKING, STATUS_OF_ACTIVE_ENERGYBALL);
-		return walkBallReturn;
+		List<WalkBallReturn> walkBallReturnList = walkMapper.selectEnergyBallList(userUuid, SOURCE_CODE_OF_WALKING, STATUS_OF_ACTIVE_ENERGYBALL);
+		return walkBallReturnList;
 		
 	}
 	
@@ -166,7 +234,7 @@ public class WalkService {
      * @return
 	 * @throws ParseException 
      */
-	public EnergyBallTakenResult takeWalkPointBall(String userUuid, String energyBallUuid, List<StepNumQuota> quota) throws ParseException {
+	public EnergyBallTakenResult takeWalkPointBall(String userUuid, String energyBallUuid) throws ParseException {
 		if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
             log.info("userUuid or energyBallUuid is null");
             return null;
@@ -175,10 +243,11 @@ public class WalkService {
             log.info("该能量球已经被获取！");
             return null;
         }
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        Date bt = sdf.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
-        Date et = sdf.parse(now);
+        SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+        Date bt = formatter.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
+        Date et = formatter.parse(now);
+        System.out.println(et);
         if(!bt.before(et)) {
         	log.info("该能量球不能被采集");
         	return null;
@@ -188,12 +257,12 @@ public class WalkService {
         //改变被取走的计步球的状态
         walkMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
         //在交易记录表中增加取走的球
-        this.addPointTradeRecord(userUuid, quota);
+        this.addPointTradeRecord(userUuid, energyBallUuid, activityMapper.selectByUuid(energyBallUuid).getPoint());
         //更新用户能量钱包
-        activityMapper.increasePoint(userUuid, this.getPoint(quota).get(0).getPoint(), now);
+        activityMapper.increasePoint(userUuid, activityMapper.selectByUuid(energyBallUuid).getPoint(), now);
         
         EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
-        energyBallTakenResult.setNewEnergyPonit(this.getPoint(quota).get(0).getPoint());
+        energyBallTakenResult.setNewEnergyPonit(activityMapper.selectByUuid(energyBallUuid).getPoint());
         energyBallTakenResult.setNewPower(BigDecimal.ZERO);
 		return energyBallTakenResult;
 		
