@@ -13,7 +13,7 @@ function initKYCGrid(data) {
 		pagination:true,//显示分页条：页码，条数等
 
 		striped:true,//隔行变色
-
+		uniqueId:"userName",//Indicate an unique identifier for each row
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
 
@@ -30,7 +30,7 @@ function initKYCGrid(data) {
 			field: '',
 			align: 'center',
 			valign: 'middle', 
-			width:  '60px',
+			width:  '50px',
 			hidden:true, 
 			formatter: function (value, row, index) {  
 				return index+1;  
@@ -41,18 +41,18 @@ function initKYCGrid(data) {
 			field: 'userName',
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 			},
 		{
 			title : "身份证正面",
-			field : "frontOfPhone",
+			field : "frontOfPhoto",
 			align: 'center',
 			valign: 'middle',
 			formatter: picturePath
 		},
 			{
 			title : "身份证反面",
-			field : "backOfPhone",
+			field : "backOfPhoto",
 			align: 'center',
 			valign: 'middle',
 			formatter: picturePath
@@ -67,13 +67,19 @@ function initKYCGrid(data) {
 			field : "userIdentityName",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 		}, {
 			title : "身份证号",
 			field : "userIdentityNumber",
 			align: 'center',
 			valign: 'middle',
-			width:  '140px',
+			width:  '100px',
+		},{
+			title : "批注",
+			field : "remark",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
 		},
 		{
 			title : "申请时间",
@@ -87,7 +93,7 @@ function initKYCGrid(data) {
 			field : "userName",
 			align: 'center',
 			valign: 'middle',
-			width:  '60px',
+			width:  '40px',
 			formatter: actionFormatter1
 		},
 		{
@@ -95,7 +101,7 @@ function initKYCGrid(data) {
 			field : "verifyStatus",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			//width:  '80px',
 			formatter: actionFormatter		
 		}],		
 		search : true,//搜索
@@ -106,7 +112,7 @@ function initKYCGrid(data) {
 
 function picturePath(value, row, index) {
 	var result = "";
-	var picturePath = value;      
+	var picturePath = value;
     result += "<a href="+picturePath+"><img src="+picturePath+" width='120px' height='80'></a>";
     			//"<span>"+picturePath+"</span>";      
     return result;
@@ -136,13 +142,13 @@ function actionFormatter1(value, row, index) {
 	return result;
 }
 
-function agree(id){
+function agree(id){	
 	$('#agId').val(id);
 	$("#addNCModal").modal("show");
 }
 
 function reject(id){
-	$('#reId').val(id);	    
+	$('#reId').val(id);
 	$("#postilModal").modal("show");
 }
 
@@ -161,8 +167,7 @@ function viewUser(id){
 	async:false,
 
 	success:function(res){				
-		if(res.code==0){
-		//alert(JSON.stringify(res));			
+		if(res.code==0){	
 		var rows = res.data;			
 		$('#Qname').val(rows.name);
 		$('#Qnickname').val(rows.nickname);

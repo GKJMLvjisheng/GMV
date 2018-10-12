@@ -46,7 +46,7 @@
        user_identity_number = #{userIdentityNumber},
       </if>
       <if test="remark != null">
-       remark = #{remark}
+       remark = #{remark},
        </if>
        <if test="verifyStatus != null">
        verify_status = #{verifyStatus},
