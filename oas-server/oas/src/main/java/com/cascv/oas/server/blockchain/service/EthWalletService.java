@@ -102,6 +102,7 @@ public class EthWalletService {
   @Autowired
   private UserWalletMapper userWalletMapper;
   
+  @Autowired
   private SchedulerService schedulerService;
 
   public void updateJob() {
