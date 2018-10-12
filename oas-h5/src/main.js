@@ -15,6 +15,7 @@ if(window.Android) {
 Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 Axios.interceptors.request.use(config => {
   config.headers['Content-type'] = 'application/json;charset=UTF-8'
+  //config.headers['dataType']= 'json'
   config.headers['token'] = token || '99e04e02-fb5c-4f65-a6cf-a93006c351b6'
    /*config.headers = {
     

@@ -36,6 +36,42 @@
  		user_name = #{userName};
   </select>
   
+<!-- insert user -->
+  <insert id="insertUserIdentityCard" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel">
+    <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into identity_card_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userName != null">
+        user_name,
+        </if>
+        <if test="verifyStatus != null">
+        verify_status,
+      </if>
+       <if test="created != null">
+        created,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyStatus != null">
+        #{verifyStatus,jdbcType=INTEGER},
+      </if>
+       <if test="created != null">
+       #{created,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=VARCHAR},
+      </if>
+      </trim>
+</insert>
+  
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
@@ -46,7 +82,7 @@
        user_identity_number = #{userIdentityNumber},
       </if>
       <if test="remark != null">
-       remark = #{remark}
+       remark = #{remark},
        </if>
        <if test="verifyStatus != null">
        verify_status = #{verifyStatus},
@@ -65,13 +101,13 @@
        front_of_photo = #{frontOfPhoto},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
        </trim>
        where user_name = #{userName}
@@ -87,13 +123,13 @@
        back_of_photo = #{backOfPhoto},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
       </trim>
       where user_name = #{userName}
@@ -109,13 +145,13 @@
        hold_in_hand = #{holdInHand},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
        </trim>
        where user_name = #{userName}

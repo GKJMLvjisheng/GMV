@@ -10,17 +10,14 @@ function KYCReady(){
 	
     $('#KYCGrid').bootstrapTable('destroy');
 	var data1;
-	$.ajax({
-		
+	$.ajax({		
 		url: "/api/v1/userCenter/inqureAllUserIdentityInfo",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
 		success: function(res) {
-			//alert(JSON.stringify(res));
 			data1=res.data;
-			//alert(JSON.stringify(data1));
 			initKYCGrid(data1);
 		}, 
 		error: function(){
@@ -32,7 +29,6 @@ function KYCReady(){
 //发ajax请求到后台判断身份证号是否重复
 function checkCard() {
   var card = $("#card").val();
-  //alert(card);
   if (card != "") {
 	  var data = {
         "userIdentityNumber" : card
@@ -48,7 +44,6 @@ function checkCard() {
 		async : false,
 
         success : function(res) {
-          //alert(JSON.stringify(res));
           if (res.data == 1) {
             $("#msg_card").html("身份证号可以使用");
             $("#msg_card").css("color", "green");
@@ -72,18 +67,18 @@ function checkCard() {
 }
 
 function addPostil(){
-	var userName = $("#reId").val();
-	//alert(userName);
+	var reId = $("#reId").val();
 	var postil=$("#postil").val();	
+	
 	if(postil!=""){
 		data={
-				"status":3,
-				"userName":userName,
+				"verifyStatus":3,
+				"userName":reId,
 				"remark":postil,
 				}
 
 			 $.ajax({		
-				url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
+				url: "/api/v1/userCenter/checkUserIdentity",
 			    contentType : 'application/json;charset=utf8',
 				dataType: 'json',
 				cache: false,
@@ -93,11 +88,8 @@ function addPostil(){
 				async : false,
 
 				success: function(res) {
-					document.getElementById("tipContent").innerText="批注添加成功";
-					$("#Tip").modal('show');
-					$("#postilModal").modal('hide');
-					KYCReady();
-					//$("#KYCGrid").bootstrapTable('refresh');
+					alert("批注添加成功");
+					location.reload();
 				}, 
 				error: function(){
 					document.getElementById("tipContent").innerText="批注添加失败";
@@ -107,28 +99,24 @@ function addPostil(){
 				}); 
 	}else{
 		alert("批注不能为空！");
-	}
-	
-	
+	}	
 }
 
 function addNC(){
 	
 	var agId = $("#agId").val();
-	//alert(agId);
 	var name=$("#name").val();
-	var card=$("#card").val();
-	
+	var card=$("#card").val();		
 	if(check1==1 && name!=""){		
 		var data={
-			"status":2,
+			"verifyStatus":2,
 			"userName":agId,
 			"userIdentityName":name,
 			"userIdentityNumber":card,
 			}
 
 		$.ajax({		
-			url: "/api/v1/energyPoint/inqureEnergyWalletInTotalPointTradeRecord",
+			url: "/api/v1/userCenter/checkUserIdentity",
 			contentType : 'application/json;charset=utf8',
 			dataType: 'json',
 			cache: false,
@@ -138,10 +126,12 @@ function addNC(){
 			async : false,
 
 			success: function(res) {
-				document.getElementById("tipContent").innerText="信息添加成功";
-				$("#Tip").modal('show');
-				$("#addNCModal").modal('hide');
-				KYCReady();
+//				document.getElementById("tipContent").innerText="信息添加成功";
+//				$("#Tip").modal('show');
+//				$("#addNCModal").modal('hide');
+//				KYCReady();
+				alert("信息添加成功");
+				location.reload();
 			}, 
 			error: function(){
 				document.getElementById("tipContent").innerText="信息添加失败";

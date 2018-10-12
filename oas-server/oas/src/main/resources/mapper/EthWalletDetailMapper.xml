@@ -10,6 +10,8 @@
 	<result column="sub_title" property="subTitle"/>
 	<result column="in_or_out" property="inOrOut" jdbcType="INTEGER"/>
 	<result column="tx_hash" property="txHash"/>
+	<result column="tx_result" property="txResult"/>
+	<result column="tx_network" property="txNetwork"/>
 	<result column="remark" property="remark"/>
 <!-- 	<result column="change_address" property="changeAddress"/> -->
 	<result column="created" property="created"/>
@@ -17,7 +19,7 @@
   
   
   <sql id="Base_Column_List">
-    uuid, address, value, title, sub_title,in_or_out, tx_hash, remark, created
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, created
 <!--     , change_address -->
   </sql>
   
@@ -40,6 +42,12 @@
     	</if>
 		<if test="txHash != null">
     		tx_hash,
+    	</if>
+    	<if test="txResult != null">
+    		tx_result,
+    	</if>
+    	<if test="txNetwork != null">
+    		tx_network,
     	</if>
     	<if test="remark != null">
     		remark,
@@ -65,15 +73,28 @@
     	<if test="txHash != null">
     		#{txHash,jdbcType=VARCHAR},
     	</if>
+    	<if test="txResult != null">
+    		#{txResult,jdbcType=Integer},
+    	</if>
+    	<if test="txNetwork != null">
+    		#{txNetwork,jdbcType=VARCHAR},
+    	</if>
     	<if test="remark != null">
     		#{remark,jdbcType=VARCHAR},
     	</if>
-<!--     	<if test="changeAddress != null"> -->
-<!--     		#{changeAddress,jdbcType=VARCHAR}, -->
-<!--     	</if> -->
     		#{created,jdbcType=VARCHAR}
     </trim>
   </insert>
+
+  <update id="update" parameterType="com.cascv.oas.server.blockchain.model.EthWalletDetail">
+  	update eth_wallet_detail 
+	<trim prefix=" set " suffix="" suffixOverrides=",">
+		<if test = "txResult != 0">
+			tx_result = #{txResult},
+		</if>
+	</trim>
+	where uuid = #{uuid} 
+  </update>
 
   <!-- delete by id -->
   <delete id="deleteByUuid" parameterType="java.lang.String">
@@ -87,6 +108,14 @@
   
   <select id="selectCount" resultType="java.lang.Integer">
   	select count(*) from eth_wallet_detail where address = #{address};
+  </select>
+  
+  
+  
+  <select id="selectEthTransactionJob" resultMap="ethWalletDetailMap">
+  	select 
+      <include refid="Base_Column_List" />
+    from eth_wallet_detail where tx_hash &lt;&gt; '' and tx_result = 0 and tx_network = #{network} order by created desc limit 0,#{limit};
   </select>
   
   <select id="selectByPage" resultMap="ethWalletDetailMap">
@@ -105,6 +134,43 @@
       <include refid="Base_Column_List" />
     from eth_wallet_detail where address = #{address} and in_or_out = #{inOrOut} order by created desc limit #{offset},#{limit};
   </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cascv.oas.server.blockchain.model.EthWalletDetail">
+   update eth_wallet_detail
+    <set >
+    	<if test="address != null">
+    		address = #{address,jdbcType=VARCHAR},
+    	</if>
+    	<if test="value != null">
+    		value = #{value,jdbcType=DECIMAL},
+    	</if>
+     	<if test="title != null">
+    		title = #{title,jdbcType=VARCHAR},
+    	</if>
+    	<if test="subTitle != null">
+    		sub_title = #{subTitle,jdbcType=VARCHAR},
+    	</if>
+    	<if test="inOrOut != null">
+    		in_or_out = #{inOrOut,jdbcType=INTEGER},
+    	</if>
+    	<if test="txHash != null">
+    		tx_hash = #{txHash,jdbcType=VARCHAR},
+    	</if>
+    	<if test="remark != null">
+    		remark = #{remark,jdbcType=VARCHAR},
+    	</if>
+    	<if test="created != null">
+    		created = #{created,jdbcType=VARCHAR},
+    	</if>
+    	<if test="txHash != null">
+    		#{txHash,jdbcType=VARCHAR},
+    	</if>
+    	<if test="txResult != null">
+    		#{txResult,jdbcType=Integer},
+    	</if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
 </mapper>
 
 

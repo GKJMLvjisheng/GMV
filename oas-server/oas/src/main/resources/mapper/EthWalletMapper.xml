@@ -14,10 +14,11 @@
 	<result column="crypto" property="crypto"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
+	<result column="unconfirmed_balance" property="unconfirmedBalance"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, prefer_network, crypto, created,updated
+    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, prefer_network, crypto, created,updated,unconfirmed_balance
   </sql>
   
   
@@ -69,6 +70,9 @@
 			<if test="preferNetwork != null">
     			prefer_network = #{preferNetwork},
     		</if>
+    		<if test="unconfirmedBalance != null">
+    			unconfirmed_balance = #{unconfirmedBalance},
+    		</if>
     	</trim>
     	where user_uuid = #{userUuid}
   </update>
@@ -94,7 +98,5 @@
       <include refid="Base_Column_List" />
     from eth_wallet where user_uuid = #{userUuid}
   </select>
-  
-  
   
 </mapper>
