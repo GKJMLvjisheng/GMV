@@ -11,6 +11,7 @@ public class DateUtils {
     public static String YYYY = "yyyy";
     public static String YYYY_MM = "yyyy-MM";
     public static String YYYY_MM_DD = "yyyy-MM-dd";
+    public static String YYYYMMDD = "yyyyMMdd";
     public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
     public static String YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
     public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
@@ -82,7 +83,7 @@ public class DateUtils {
     
     /**
      * @author Ming Yang
-     * 获取系统当前默认时区与指定时区的时间差.(单位:毫秒)
+      * 获取系统当前默认时区与指定时区的时间差.(单位:毫秒)
      * @param timeZoneId
      * 				时区Id
      * @return 系统当前默认时区与指定时区的时间差.(单位:毫秒)
@@ -129,6 +130,9 @@ public class DateUtils {
     	SimpleDateFormat sdf = new SimpleDateFormat(srcFormater);
     	try {
     		int diffTime = getDiffTimeZoneRawOffset(dstTimeZoneId);
+    		System.out.println("****与目标时区时间差****单位毫秒");
+    		System.out.println(diffTime);
+    		System.out.println("****与目标时区时间差****单位毫秒");
     		Date d = sdf.parse(srcDateTime);
     		long nowTime = d.getTime();
     		long newNowTime = nowTime - diffTime;

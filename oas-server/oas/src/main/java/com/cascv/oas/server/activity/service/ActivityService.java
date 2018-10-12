@@ -48,7 +48,7 @@ public class ActivityService {
      * @return
      */
 	public ActivityRewardConfig inquireRewardByRewardCode(Integer sourceCode, Integer rewardCode) {
-		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndrewardCode(sourceCode, rewardCode);
+		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode);
 		return activityRewardConfig;
 		
 	}
@@ -61,13 +61,10 @@ public class ActivityService {
      * @return
      */
 	public EnergyResultPoint getNewPoint(Integer sourceCode, Integer rewardCode) {
-		if(rewardCode == 1) {
-			BigDecimal point = activityMapper.selectBaseValueBySourceCodeAndrewardCode(sourceCode, rewardCode).getBaseValue();
+			BigDecimal point = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode).getBaseValue();
 			EnergyResultPoint energyResultPoint = new EnergyResultPoint();
 			energyResultPoint.setNewPoint(point);
 			return energyResultPoint;
-		}else 
-			return null;		
 	}
 	
 	/**
@@ -77,13 +74,10 @@ public class ActivityService {
      * @return
      */
 	public EnergyResultPower getNewPower(Integer sourceCode, Integer rewardCode) {
-		if (rewardCode == 2) {
-			BigDecimal power = activityMapper.selectBaseValueBySourceCodeAndrewardCode(sourceCode, rewardCode).getBaseValue();
+			BigDecimal power = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode).getBaseValue();
 			EnergyResultPower energyResultPower = new EnergyResultPower();
 			energyResultPower.setNewPower(power);
-			return energyResultPower;
-		}else
-			return null;				
+			return energyResultPower;			
 	}
 	
 	/**
@@ -93,7 +87,7 @@ public class ActivityService {
      * @return
      */
 	public EnergyPointBall getEnergyPointBall(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addEnergyPointBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT_BALL));
+		addEnergyPointBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		log.info("uuid={}",addEnergyPointBall.getUuid());
 		addEnergyPointBall.setUserUuid(userUuid);
 		addEnergyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
@@ -117,7 +111,7 @@ public class ActivityService {
      * @return
      */
 	public EnergyPowerBall getEnergyPowerBall(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POWER_BALL));
+		addEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		addEnergyPowerBall.setUserUuid(userUuid);
 		addEnergyPowerBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		addEnergyPowerBall.setSourceCode(sourceCode);			
@@ -143,7 +137,7 @@ public class ActivityService {
      * @return
      */
 	public PointTradeRecord getPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addPointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT_RECORD));
+		addPointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addPointTradeRecord.setUserUuid(userUuid);
 		addPointTradeRecord.setInOrOut(ENEGY_IN);
 		addPointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);	
@@ -174,7 +168,7 @@ public class ActivityService {
    * @return
    */
 	public PowerTradeRecord getPowerTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		addPowerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POWER_RECORD));
+		addPowerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addPowerTradeRecord.setUserUuid(userUuid);
 		addPowerTradeRecord.setInOrOut(ENEGY_IN);
 		addPowerTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);

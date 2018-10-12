@@ -3,13 +3,17 @@ package com.cascv.oas.server.user.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.news.config.MediaServer;
+import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +23,12 @@ public class UserService {
 	
   @Autowired
   private UserModelMapper userModelMapper;
+  
+  @Autowired
+  private UserIdentityCardModelMapper userIdentityCardModelMapper;
+  
+  @Autowired
+  private MediaServer mediaServer;
 	
   public UserModel findUserByName(String name){
     UserModel userModel = userModelMapper.selectByName(name);
@@ -82,12 +92,26 @@ public class UserService {
 //    String inviteCode = InviteCodeUtils.getFromUuid(uuid);
 //    log.info("inviteCode {}", inviteCode);
 //    userModel.setInviteCode(inviteCode);
-    String now = DateUtils.dateTimeNow();
+    String now = DateUtils.getTime();
     
     userModel.setCreated(now);
     userModel.setUpdated(now);
     
     userModelMapper.insertUser(userModel);
+    /**
+     * @author Ming Yang
+     * Date:20181012 
+     * 注册用户添加用户的认证初始状态
+     */
+    log.info("*****start insert user identify card info*****");
+    UserIdentityCardModel userIdentityCardModel=new UserIdentityCardModel();
+    Integer verifyStatus=0;
+    userIdentityCardModel.setUserName(s);
+    userIdentityCardModel.setVerifyStatus(verifyStatus);
+    userIdentityCardModel.setCreated(now);
+    userIdentityCardModel.setUpdated(now);
+    userIdentityCardModelMapper.insertUserIdentityCard(userIdentityCardModel);
+    log.info("*****end user identify card info*****"); 
     log.info("inviteCode {}", userModel.getInviteCode());
     log.info("inviteFrom {}", userModel.getInviteFrom());
     return ErrorCode.SUCCESS;
@@ -165,6 +189,43 @@ public class UserService {
 	
 	public Integer updateUserPassworde(UserModel userModel) {
 		return userModelMapper.updateUserPassworde(userModel);
+	}
+	
+	/**
+	 * @author Ming Yang
+	 * Date:20181011
+	 * 选出用户所有身份认证信息
+	 */
+	public List<UserIdentityCardModel> selectAllUserIdentityCard(){
+		List<UserIdentityCardModel> userIdentityCardModelList=userIdentityCardModelMapper.selectAllUserIdentityCard();
+		  for (UserIdentityCardModel userIdentityCardModel : userIdentityCardModelList) {
+			    String frontOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getFrontOfPhoto();
+			    String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getBackOfPhoto();
+			    String holdInHand = mediaServer.getImageHost() + userIdentityCardModel.getHoldInHand();
+			    userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+			    userIdentityCardModel.setBackOfPhoto(backOfPhoto);
+			    userIdentityCardModel.setHoldInHand(holdInHand);
+			  }
+		return userIdentityCardModelList;
+	}
+	
+	/**
+	 * @author Ming Yang
+	 * 根据账户名选出用户的身份认证信息
+	 */
+	public UserIdentityCardModel selectUserIdentityByUserName(String userName) {
+		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserName(userName);
+		 String frontOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getFrontOfPhoto();
+		 String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getBackOfPhoto();
+		 String holdInHand = mediaServer.getImageHost() + userIdentityCardModel.getHoldInHand();
+		 userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+		 userIdentityCardModel.setBackOfPhoto(backOfPhoto);
+		 userIdentityCardModel.setHoldInHand(holdInHand);
+		return userIdentityCardModel;
+	}
+	
+	public List<String> selectIdentityNumber(String mobile){
+		return userModelMapper.selectUserMobile(mobile);
 	}
 }
 

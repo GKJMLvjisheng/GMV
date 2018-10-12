@@ -30,7 +30,6 @@ import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.ActivityResult;
 import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.ChoiceResult;
-import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
 import com.cascv.oas.server.user.model.UserModel;
@@ -352,7 +351,7 @@ public class ComputingPowerController {
     @ResponseBody
 	public ResponseEntity<?> judgeChoice(@RequestBody ChoiceResult choiceResult){
 		//前端传回 topicId,topicChoiced
-		Map<String,Object> info=new HashMap<>();
+//		Map<String,Object> info=new HashMap<>();
 		EnergyUserTopicModel energyUserTopicModel =new EnergyUserTopicModel();
 		Integer topicId=choiceResult.getTopicId();
 		EnergyTopicModel energyTopicModel=energyTopicMapper.findTopicByTopicId(topicId);
@@ -383,7 +382,7 @@ public class ComputingPowerController {
 	@PostMapping(value = "/judgeTopicIsDone")
     @ResponseBody
 	public ResponseEntity<?> judgeTopicIsDone(@RequestBody ChoiceResult choiceResult){
-		Map<String,Object> info=new HashMap<>();
+//		Map<String,Object> info=new HashMap<>();
 		Integer topicId=choiceResult.getTopicId();
 		UserModel userModel=ShiroUtils.getUser();
 		EnergyUserTopicModel energyUserTopicModel=new EnergyUserTopicModel();

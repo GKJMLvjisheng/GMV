@@ -27,17 +27,22 @@
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
           <div>
-         <h4 v-if="item.generate">{{item.name}}中</h4>
-          <h4 v-else>{{item.name}}</h4></div>
+          <i></i> 
+          <span v-if="item.generate">{{item.name}}中</span>
+          <span v-else>{{item.name}}</span>
+         </div>
         </div>
         <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
-         <div>
-         <h4 v-if="item.generate">{{item.name}}中</h4>
-          <h4 v-else>{{item.name}}</h4></div>
-        </div>
+        <div>
+          <i class='blackIamge'></i> 
+          <span v-if="item.generate">{{item.name}}中</span>
+          <span v-else>{{item.name}}</span>
+         </div>
+          </div>
+      
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
       <img @click="handlePromote" :src="promote" class="promote" />
@@ -116,7 +121,8 @@
     </div>
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <div >
-      <input  id="SERVER_TIME" type="hidden" v-model="input1" /></div>
+      <input  id="SERVER_TIME"  v-model="input1" />
+       <input  id="SERVER_TIME"  v-model="input2" /></div>
     <!-- OASES咨询 End type="hidden"-->
     <!-- 底部 Start -->
     <div class="bottom">
@@ -177,6 +183,7 @@ export default {
       tempArr:[],
      // tempArrWalk:[],
       input1:'',
+      input2:'',
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -191,7 +198,7 @@ export default {
     }
   },
   created() {
-   
+    
     this.getEnergyBall() 
     this.getWalkEnergyBall() 
     this.getCurrentEnergy()
@@ -201,7 +208,7 @@ export default {
     this.getUserInfo()
     window.skipRefresh= this.skipRefresh
      this.location()
-     this.getCurrenttime()
+    // this.getCurrenttime()
   },
   filters: {
   },
@@ -302,7 +309,7 @@ export default {
       
       this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
-        console.log(data.energyBallList)
+        console.log(data)
         let i=0
         
         this.energyBallList = data.energyBallList.map(el => {
@@ -323,14 +330,22 @@ export default {
        
                  
     },
-     getWalkEnergyBall () {
-      
-      this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
-        // let pArr = createPositionArr()
-        console.log(data.energyBallList)
-        //let i=0
-        
-        this.walkEnergyBallList = data.energyBallList.map(el => {
+     getWalkEnergyBall() {
+     var todayStep=window.Android.getTodaySteps() 
+   //var todayStep="80"
+    this.input1=todayStep
+    var time=currentTime(true)
+     console.log("time"+time)
+     var data={}
+     data['date']=time
+     data['stepNum']=todayStep
+     var params = new Array();
+     params.push(data)
+
+      this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
+      this.input2=data.startDate
+        console.log("data"+JSON.stringify(data))
+        this.walkEnergyBallList = data.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
           let p = this.randomPoint()
           // pArr.splice(randomIdx,1)
@@ -343,7 +358,9 @@ export default {
           //i++
           return el
         }) 
-      }) 
+      }) .catch(function (err) {
+        console.log(err);
+      })
         
        
                  
@@ -367,6 +384,7 @@ export default {
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
         console.log(data)
         this.analysis = data
+        this.analysisCount=0
         data.forEach(el => {
         //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
         //不能终止循环，除非抛出异常，map必须返回，返回一个数组
@@ -430,8 +448,9 @@ export default {
       
     },
     handleClickWalkEnergy(event, data){
-      let value = data.value
-      if (value <50) {
+      let datatime = data.startDate
+      let time=currentTime(true)
+      if (datatime>=time) {
         this.Toast('能量暂不可收取')
         return
       }
@@ -469,15 +488,16 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
-     
-      //this.removeclass() 
-      this.energyBallList=[]
-      this.getEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
       this.getUserInfo()
+      this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+      this.energyBallList=[]
+      this.walkEnergyBallList=[]
+      this.getEnergyBall()
+      this.getWalkEnergyBall()
+      
     
      //location.reload()
      //this.reload()
@@ -535,7 +555,7 @@ export default {
 },
 getCurrenttime(){
     //var SERVER_TIME = document.getElementById("SERVER_TIME");
-var time=CurentTime()
+var time=currentTime()
 //this.$refs.input1.value=time
 this.input1=time
 //console.log("year"+this.$refs.input1.value);
@@ -578,7 +598,7 @@ console.log("111"+$("#SERVER_TIME").val());
     window.name = "";
 }
 });*/
-function CurentTime()
+function currentTime(flag)
     { 
         var now = new Date();
        
@@ -589,8 +609,23 @@ function CurentTime()
         var hh = now.getHours();            //时
         var mm = now.getMinutes();          //分
         var ss=now.getSeconds();
-       
+        if(flag){
+         //var clock = JSON.stringify(year);
         var clock = year + "-";
+          
+              if(month < 10)
+                clock += "0";
+          
+            clock += month + "-";
+          
+              if(day < 10)
+                clock += "0";
+              
+            clock += day + " ";
+                  return (clock)
+                }
+        else{
+          clock = year + "-";
        
         if(month < 10)
             clock += "0";
@@ -611,6 +646,7 @@ function CurentTime()
          if (ss < 10) clock += '0'; 
         clock += ss; 
         return(clock); 
+        }
     } 
 
 </script>
@@ -695,8 +731,37 @@ header {
         transform: translate(-50%,-50%);
         color: #000;
       }
+      div {
+        
+      float: right;
+      display: flex;
+      align-items: center;
+      i{
+      position: absolute;
+      display: inline-block;
+      right: 50%;
+      width: 32px;
+      height: 32px;
+      background-image: url("../assets/images/energy@2x.png");
+      background-size: 32px 32px;
     }
+     .blackIamge{
+      position: absolute;
+      display: inline-block;
+      right: 50%;
+      width: 32px;
+      height: 32px;
+      background-image: url("../assets/images/watch@2x.png");
+      background-size: 32px 32px;
+    }
+    
+      }
+
+    }
+  
   }
+  
+  
   .attendance,
   .promote{
     width: 112px;

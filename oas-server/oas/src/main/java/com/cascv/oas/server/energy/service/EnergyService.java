@@ -4,11 +4,12 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
+import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.*;
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.model.EnergySourcePoint;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.*;
@@ -30,14 +31,13 @@ public class EnergyService {
     @Autowired
     private EnergyTradeRecordMapper energyTradeRecordMapper;
     @Autowired
-    private EnergySourcePointMapper energySourcePointMapper;
-    @Autowired
-    private EnergySourcePowerMapper energySourcePowerMapper;
-    @Autowired
     private EnergyWalletMapper energyWalletMapper;
     
     @Autowired
     private UserWalletService userWalletService;
+    
+    @Autowired
+    private ActivityMapper activityMapper;
     
     private static String checkinEnergyBallUuid;
     private EnergyBall checkinEnergyBall = new EnergyBall();
@@ -48,7 +48,10 @@ public class EnergyService {
     private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，不可被获取
     private static final Integer SOURCE_CODE_OF_NONE = 0;               // 能量球来源，无
     private static final Integer SOURCE_CODE_OF_CHECKIN = 1;            // 能量球来源：签到为1
+    private static final Integer REWARD_CODE_OF_CHECKIN_POINT = 1;            //能量球奖励来源：积分为1
+    private static final Integer REWARD_CODE_OF_CHECKIN_POWER = 2;            //能量球奖励来源：算力为1
     private static final Integer SOURCE_CODE_OF_MINING = 2;             // 能量球来源：挖矿为2
+    private static final Integer REWARD_CODE_OF_MINING_POINT = 1;             //能量球奖励来源：积分为1
     private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 16;
     private static final Integer TRANSFER_OF_SECOND_TO_MILLISECOND = 1000; // 秒与毫秒的转换倍率
     private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
@@ -124,12 +127,14 @@ public class EnergyService {
         if (StringUtils.isEmpty(userUuid)) {
             return null;
         }
-        EnergySourcePoint energySourcePoint = energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING);
-        BigDecimal pointIncreaseSpeed = energySourcePoint.getIncreaseSpeed();            // 挖矿球增长速度
-        BigDecimal pointCapacityEachBall = energySourcePoint.getMaxValue();      // 挖矿球最大容量
+        //EnergySourcePoint energySourcePoint = energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING);
+        ActivityRewardConfig activityRewardConfig = 
+        		activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT);
+        BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();      // 挖矿球最大容量
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
-        BigDecimal ongoingEnergySummary = this.miningGenerator(userUuid, energySourcePoint);
+        BigDecimal ongoingEnergySummary = this.miningGenerator(userUuid, activityRewardConfig);
         List<EnergyBallWrapper> energyBallWrappers = energyBallMapper
                 .selectPartByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL,
                         timeGap.intValue());
@@ -139,7 +144,7 @@ public class EnergyService {
         return energyBallResult;
     }
 
-    public BigDecimal miningGenerator(String userUuid, EnergySourcePoint energySourcePoint) {
+    public BigDecimal miningGenerator(String userUuid, ActivityRewardConfig activityRewardConfig) {
         BigDecimal ongoingEnergySummary = new BigDecimal(0);
         List<EnergyBall> energyBalls = energyBallMapper
                 .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
@@ -147,8 +152,8 @@ public class EnergyService {
         EnergyBall latestEnergyBall = energyBallMapper
                 .selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
 
-        BigDecimal pointIncreaseSpeed = energySourcePoint.getIncreaseSpeed();            // 挖矿球增长速度
-        BigDecimal pointCapacityEachBall = energySourcePoint.getMaxValue();      // 挖矿球最大容量
+        BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();      // 挖矿球最大容量
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);          // 当前时间
@@ -251,8 +256,11 @@ public class EnergyService {
      * @return
      */
     public BigDecimal calculateFullEnergyBallPoints() {
-        BigDecimal pointCapacityEachBall = energySourcePointMapper
-                .queryBySourceCode(SOURCE_CODE_OF_MINING).getMaxValue();
+//        BigDecimal pointCapacityEachBall = energySourcePointMapper
+//                .queryBySourceCode(SOURCE_CODE_OF_MINING).getMaxValue();
+        BigDecimal pointCapacityEachBall = activityMapper
+        		.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT)
+        		.getMaxValue();
         BigDecimal fullPoints = pointCapacityEachBall
                 .multiply(BigDecimal.valueOf(MAX_COUNT_OF_MINING_ENERGYBALL));
         return fullPoints;
@@ -288,7 +296,7 @@ public class EnergyService {
             return null;
         }
         if (!energyBallMapper.selectByUuid(energyBallUuid).getPoint()
-                .equals(energySourcePointMapper.queryBySourceCode(SOURCE_CODE_OF_MINING)
+                .equals(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT)
                         .getMaxValue())) {
             log.info("该能量球尚未满！");
             return null;
@@ -391,8 +399,12 @@ public class EnergyService {
      * @return
      */
     public EnergyCheckinResult getCheckinEnergy() {
-        BigDecimal point = energySourcePointMapper.queryPointSingle(SOURCE_CODE_OF_CHECKIN, 1);
-        BigDecimal power = energySourcePowerMapper.queryPowerSingle(SOURCE_CODE_OF_CHECKIN, 2);
+        BigDecimal point = activityMapper
+        		.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_CHECKIN, REWARD_CODE_OF_CHECKIN_POINT)
+        		.getBaseValue();
+        BigDecimal power = activityMapper
+        		.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_CHECKIN, REWARD_CODE_OF_CHECKIN_POWER)
+        		.getBaseValue();
         if (point == null)
         	point = BigDecimal.ZERO;
         if (power == null)
@@ -608,4 +620,5 @@ public class EnergyService {
         BigDecimal decimal = new BigDecimal(12.12345).setScale(2, BigDecimal.ROUND_HALF_UP);
         System.out.println(decimal);
     }
+
 }
