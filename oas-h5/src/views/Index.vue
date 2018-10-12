@@ -121,7 +121,8 @@
     </div>
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <div >
-      <input  id="SERVER_TIME"  v-model="input1" /></div>
+      <input  id="SERVER_TIME"  v-model="input1" />
+       <input  id="SERVER_TIME"  v-model="input2" /></div>
     <!-- OASES咨询 End type="hidden"-->
     <!-- 底部 Start -->
     <div class="bottom">
@@ -182,6 +183,7 @@ export default {
       tempArr:[],
      // tempArrWalk:[],
       input1:'',
+      input2:'',
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -206,7 +208,7 @@ export default {
     this.getUserInfo()
     window.skipRefresh= this.skipRefresh
      this.location()
-     this.getCurrenttime()
+    // this.getCurrenttime()
   },
   filters: {
   },
@@ -329,12 +331,13 @@ export default {
                  
     },
      getWalkEnergyBall() {
-     var todayStep=window.Android.getTodaySteps() 
-    //var todayStep=23
+     //var todayStep=window.Android.getTodaySteps() 
+    var todayStep=23
+    this.input1=todayStep
     var time=currentTime(true)
      console.log("time"+time)
         this.$axios.post('/walkPoint/inquireWalkPointBall',{data:time,stepNum: todayStep}).then(({data:{data}}) => {
-       this.input1=data.startDate
+       this.input2=data.startDate
         console.log("data"+JSON.stringify(data))
         // this.walkEnergyBallList = data.map(el => {
         //   // let randomIdx = randomNum(0,pArr.length - 1)
