@@ -134,6 +134,43 @@
       <include refid="Base_Column_List" />
     from eth_wallet_detail where address = #{address} and in_or_out = #{inOrOut} order by created desc limit #{offset},#{limit};
   </select>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.cascv.oas.server.blockchain.model.EthWalletDetail">
+   update eth_wallet_detail
+    <set >
+    	<if test="address != null">
+    		address = #{address,jdbcType=VARCHAR},
+    	</if>
+    	<if test="value != null">
+    		value = #{value,jdbcType=DECIMAL},
+    	</if>
+     	<if test="title != null">
+    		title = #{title,jdbcType=VARCHAR},
+    	</if>
+    	<if test="subTitle != null">
+    		sub_title = #{subTitle,jdbcType=VARCHAR},
+    	</if>
+    	<if test="inOrOut != null">
+    		in_or_out = #{inOrOut,jdbcType=INTEGER},
+    	</if>
+    	<if test="txHash != null">
+    		tx_hash = #{txHash,jdbcType=VARCHAR},
+    	</if>
+    	<if test="remark != null">
+    		remark = #{remark,jdbcType=VARCHAR},
+    	</if>
+    	<if test="created != null">
+    		created = #{created,jdbcType=VARCHAR},
+    	</if>
+    	<if test="txHash != null">
+    		#{txHash,jdbcType=VARCHAR},
+    	</if>
+    	<if test="txResult != null">
+    		#{txResult,jdbcType=Integer},
+    	</if>
+    </set>
+    where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
 </mapper>
 
 

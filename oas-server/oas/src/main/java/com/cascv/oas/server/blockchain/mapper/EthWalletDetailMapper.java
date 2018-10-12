@@ -14,5 +14,9 @@ public interface EthWalletDetailMapper {
   Integer deleteByAddress(String address);
   Integer deleteByUuid(String uuid);
   List<EthWalletDetail> selectByInOrOut(@Param("address") String address, @Param("offset") Integer offset, @Param("limit") Integer limit,@Param("inOrOut") Integer inOrOut);
+
+  Integer updateByPrimaryKeySelective(EthWalletDetail ethWalletDetail);
+
   List<EthWalletDetail> selectEthTransactionJob(@Param("network") String network, @Param("limit") Integer limit); 
+
 }

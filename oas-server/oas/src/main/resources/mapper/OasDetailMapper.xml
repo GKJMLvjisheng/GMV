@@ -97,7 +97,7 @@
   	left join user_info b 
   	on a.user_uuid = b.uuid
   	where a.type = '1'
-  	order by a.updated desc
+  	order by a.created desc
   </select>
   
   <select id="getOasExtra" resultType="java.lang.String">
@@ -119,13 +119,60 @@
   
   <update id="setWithdrawResultByUuid">
    update oas_detail
-   set status = #{result,jdbcType=INTEGER},
-   	   updated = #{updated,jdbcType=VARCHAR}
+   <set> 
+   	  <if test="result != null" >
+        status = #{result,jdbcType=INTEGER},
+      </if>
+      <if test="updated != null" >
+        updated = #{updated,jdbcType=VARCHAR},
+      </if>
+   	  <if test="txHash != null" >
+        tx_hash = #{txHash,jdbcType=VARCHAR},
+      </if>
+   </set>
    where uuid = #{uuid,jdbcType=VARCHAR}
   </update>
   
   <select id="getSystemUserInfo" resultType="com.cascv.oas.server.user.model.UserModel">
    select * from user_info
    where name = 'SYSTEM'
+  </select>
+  
+
+   <update id="updateRecordByHash" parameterType="com.cascv.oas.server.blockchain.model.OasDetail" >
+    update oas_detail
+    <set >
+      <if test="userUuid != null" >
+        user_uuid = #{userUuid,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="extra != null" >
+        extra = #{extra,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null" >
+        created = #{created,jdbcType=VARCHAR},
+      </if>
+      <if test="updated != null" >
+        updated = #{updated,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tx_hash = #{txHash,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectRecordByHash" resultMap="BaseResultMap">
+  	select  <include refid="Base_Column_List" />
+  	from  oas_detail
+  	where tx_hash = #{txHash,jdbcType=VARCHAR}
   </select>
 </mapper>
