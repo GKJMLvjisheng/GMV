@@ -411,7 +411,6 @@ public class UserWalletController {
 		log.info("created={}",created);
 		String [] arr = created.split("\\s+");
 		created=arr[0];
-		log.info("created={}",created);
 		String userUuid=ShiroUtils.getUserUuid();
 		BigDecimal dailyTotalAmount=userWalletDetailMapper.selectUserDailyTotalAmount(userUuid, created);
 		if(dailyTotalAmount==null)

@@ -1,9 +1,6 @@
 package com.cascv.oas.server.blockchain.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import com.alibaba.fastjson.JSONArray;
 import lombok.Getter;
 import lombok.Setter;
 
