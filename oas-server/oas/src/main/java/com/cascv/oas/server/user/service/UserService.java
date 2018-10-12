@@ -92,7 +92,7 @@ public class UserService {
 //    String inviteCode = InviteCodeUtils.getFromUuid(uuid);
 //    log.info("inviteCode {}", inviteCode);
 //    userModel.setInviteCode(inviteCode);
-    String now = DateUtils.dateTimeNow();
+    String now = DateUtils.getTime();
     
     userModel.setCreated(now);
     userModel.setUpdated(now);
