@@ -1,4 +1,5 @@
 package com.cascv.oas.server.blockchain.mapper;
+
 import com.cascv.oas.server.blockchain.model.EthWallet;
 
 public interface EthWalletMapper {

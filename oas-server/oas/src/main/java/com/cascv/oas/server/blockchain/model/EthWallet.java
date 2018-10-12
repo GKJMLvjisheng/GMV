@@ -1,9 +1,7 @@
 package com.cascv.oas.server.blockchain.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import com.alibaba.fastjson.JSONArray;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +19,5 @@ public class EthWallet implements Serializable {
   @Getter @Setter private Integer crypto;
   @Getter @Setter private String created;
   @Getter @Setter private String updated;
+  @Getter @Setter private BigDecimal unconfirmedBalance;//待确认交易
 }

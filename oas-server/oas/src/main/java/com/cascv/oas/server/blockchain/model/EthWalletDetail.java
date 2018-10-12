@@ -19,4 +19,5 @@ public class EthWalletDetail implements Serializable {
   @Getter @Setter private String remark;
   @Getter @Setter private String created;
 //  @Getter @Setter private String changeAddress;
+  @Getter @Setter private Integer status;
 }

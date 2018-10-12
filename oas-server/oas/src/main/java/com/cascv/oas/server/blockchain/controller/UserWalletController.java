@@ -113,6 +113,7 @@ public class UserWalletController {
     BigDecimal value=returnType.getData();
     userWalletBalanceSummary.setAvailableBalance(balance.doubleValue());
     userWalletBalanceSummary.setAvailableBalanceValue(value.doubleValue());
+    userWalletBalanceSummary.setOngoingBalance(userWallet.getUnconfirmedBalance().doubleValue());
     return new ResponseEntity.Builder<UserWalletBalanceSummary>()
       		.setData(userWalletBalanceSummary)
           .setErrorCode(ErrorCode.SUCCESS).build();
@@ -199,7 +200,7 @@ public class UserWalletController {
         .setErrorCode(errorCode)
         .build();
   }
-  
+
   /**
    * 提币请求申请
    * @param oasDetail
@@ -261,7 +262,6 @@ public class UserWalletController {
    */
   @GetMapping(value="/getOasExtra")
   @ResponseBody
-  @RequiresRoles("admin")
   public ResponseEntity<?> getOasExtra() {
 	  return new ResponseEntity.Builder<String>()
 		        .setData(userWalletService.getOasExtra())
@@ -274,9 +274,10 @@ public class UserWalletController {
    */
   @PostMapping(value="/updateOasExtra")
   @ResponseBody
+  @RequiresRoles("admin")
   public ResponseEntity<?> updateOasExtra(@RequestBody OasReq oasDetail){
 	  String value = oasDetail.getValue().toString();
-	  if(value == null || !NumberUtils.isDigits(value)) {
+	  if(value == null || !NumberUtils.isNumber(value)) {
 		  return new ResponseEntity.Builder<Integer>()
 			        .setData(1)
 			        .setErrorCode(ErrorCode.INPUT_ILLEGAL).build();
