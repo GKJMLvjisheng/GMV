@@ -121,7 +121,7 @@
     </div>
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <div >
-      <input  id="SERVER_TIME" type="hidden" v-model="input1" /></div>
+      <input  id="SERVER_TIME"  v-model="input1" /></div>
     <!-- OASES咨询 End type="hidden"-->
     <!-- 底部 Start -->
     <div class="bottom">
@@ -196,7 +196,7 @@ export default {
     }
   },
   created() {
-   
+    
     this.getEnergyBall() 
     this.getWalkEnergyBall() 
     this.getCurrentEnergy()
@@ -307,7 +307,7 @@ export default {
       
       this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
         // let pArr = createPositionArr()
-        console.log(data.energyBallList)
+        console.log(data)
         let i=0
         
         this.energyBallList = data.energyBallList.map(el => {
@@ -329,25 +329,26 @@ export default {
                  
     },
      getWalkEnergyBall() {
-      
-      this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
-        // let pArr = createPositionArr()
-        console.log(data.energyBallList)
-        //let i=0
-        
-        this.walkEnergyBallList = data.energyBallList.map(el => {
-          // let randomIdx = randomNum(0,pArr.length - 1)
-          let p = this.randomPoint()
-          // pArr.splice(randomIdx,1)
-          el.x = p.x / 75 + 'rem'
-          el.y = p.y / 75 + 'rem'
-           if(el.value<50)
-         { el.generate=true}
-         else{el.generate=false}
-          //console.log("{"+i+"}"+JSON.stringify(el))
-          //i++
-          return el
-        }) 
+     var todayStep=window.Android.getTodaySteps() 
+    //var todayStep=23
+    var time=currentTime(true)
+     console.log("time"+time)
+        this.$axios.post('/walkPoint/inquireWalkPointBall',{data:time,stepNum: todayStep}).then(({data:{data}}) => {
+       this.input1=data.startDate
+        console.log("data"+JSON.stringify(data))
+        // this.walkEnergyBallList = data.map(el => {
+        //   // let randomIdx = randomNum(0,pArr.length - 1)
+        //   let p = this.randomPoint()
+        //   // pArr.splice(randomIdx,1)
+        //   el.x = p.x / 75 + 'rem'
+        //   el.y = p.y / 75 + 'rem'
+        //    if(el.value<50)
+        //  { el.generate=true}
+        //  else{el.generate=false}
+        //   //console.log("{"+i+"}"+JSON.stringify(el))
+        //   //i++
+        //   return el
+        // }) 
       }) 
         
        
@@ -436,8 +437,9 @@ export default {
       
     },
     handleClickWalkEnergy(event, data){
-      let value = data.value
-      if (value <50) {
+      let datatime = data.startDate
+      let time=currentTime(true)
+      if (datatime>=time) {
         this.Toast('能量暂不可收取')
         return
       }
@@ -475,11 +477,6 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-     //let todayStep=window.Android.getTodaySteps()
-     var time=currentTime(true)
-     console.log("time"+time)
-      //  this.$axios.post('/energyPoint/takeEnergyPointBall',{stepNum: todayStep,}).then(({data}) => {
-      // })
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
@@ -601,21 +598,23 @@ function currentTime(flag)
         var hh = now.getHours();            //时
         var mm = now.getMinutes();          //分
         var ss=now.getSeconds();
-       if(flag){
-         var clock = JSON.stringify(year);
-         
-         
-          if(month < 10)
-            clock += "0";
-             clock+=month;
-            
-             if(day < 10)
-              clock += "0";
-               clock += day;
-                return (clock)
+        if(flag){
+         //var clock = JSON.stringify(year);
+        var clock = year + "-";
+          
+              if(month < 10)
+                clock += "0";
+          
+            clock += month + "-";
+          
+              if(day < 10)
+                clock += "0";
+              
+            clock += day + " ";
+                  return (clock)
                 }
         else{
-         clock = year + "-";
+          clock = year + "-";
        
         if(month < 10)
             clock += "0";
