@@ -50,11 +50,11 @@
         <if test="verifyStatus != null">
         verify_status,
       </if>
+       <if test="created != null">
+        created,
+      </if>
       <if test="updated != null">
         updated,
-      </if>
-      <if test="created != null">
-        created,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
