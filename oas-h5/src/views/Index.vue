@@ -332,11 +332,18 @@ export default {
     },
      getWalkEnergyBall() {
      //var todayStep=window.Android.getTodaySteps() 
-    var todayStep=23
+    var todayStep=60
     this.input1=todayStep
-    var time=currentTime(true)
+    //var time=currentTime(true)
      console.log("time"+time)
-        this.$axios.post('/walkPoint/inquireWalkPointBall',{data:time,stepNum: todayStep}).then(({data:{data}}) => {
+     var time="2018-10-13"
+     var data={}
+     data['data']=time
+     data['stepNum']=todayStep
+     var params = new Array();
+    params.push(data)
+    var data1={"quota":params}
+        this.$axios.post('/walkPoint/inquireWalkPointBall',JSON.stringify(data1)).then(({data:{data}}) => {
        this.input2=data.startDate
         console.log("data"+JSON.stringify(data))
         // this.walkEnergyBallList = data.map(el => {
