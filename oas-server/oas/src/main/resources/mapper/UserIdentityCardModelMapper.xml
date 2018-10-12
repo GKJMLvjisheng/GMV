@@ -43,7 +43,6 @@
     </selectKey>
     insert into identity_card_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      uuid,
       <if test="userName != null">
         user_name,
         </if>
@@ -58,7 +57,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      #{uuid,jdbcType=INTEGER},
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
       </if>
