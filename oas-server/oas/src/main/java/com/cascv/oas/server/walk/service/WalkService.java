@@ -18,7 +18,6 @@ import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
-import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
