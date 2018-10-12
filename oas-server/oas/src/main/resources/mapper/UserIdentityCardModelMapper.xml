@@ -64,7 +64,7 @@
         #{verifyStatus,jdbcType=INTEGER},
       </if>
        <if test="created != null">
-       #{created,jdbcType=VARCHAR}
+       #{created,jdbcType=VARCHAR},
       </if>
       <if test="updated != null">
         #{updated,jdbcType=VARCHAR},
