@@ -86,3 +86,14 @@ mail:
     password: "hgmwayjbwmomcjdd"
     name: "3602745100@qq.com"
     subject: "密码重置"
+
+quartz:
+  properties:
+    org.quartz.scheduler.instanceName: "EtherScheduler"
+    org.quartz.scheduler.instanceId: "AUTO"
+    # thread pool
+    org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
+    org.quartz.threadPool.threadCount: 20
+    org.quartz.threadPool.threadPriority: 5
+    # JobStore
+    org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
