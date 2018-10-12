@@ -107,13 +107,13 @@
     from user_wallet_detail where user_uuid = #{userUuid} and in_or_out = #{inOrOut} order by created desc limit #{offset},#{limit};
   </select>
   
-  <select id="selectUserDailyTotalAmount" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultMap="userWalletDetailMap">
+  <select id="selectUserDailyTotalAmount" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultType="java.math.BigDecimal">
   	select 
       		sum(value) as value 
     from 
     		user_wallet_detail 
     where 
-    		user_uuid = #{userUuid} and in_or_out = 0 and created like #{created} 
+    		user_uuid = #{userUuid} and in_or_out = 0 and created like concat(#{created},'%')
     group by user_uuid;
   </select>
   

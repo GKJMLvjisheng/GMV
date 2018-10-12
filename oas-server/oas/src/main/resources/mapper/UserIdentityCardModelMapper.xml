@@ -36,6 +36,44 @@
  		user_name = #{userName};
   </select>
   
+<!-- insert user -->
+  <insert id="insertUserIdentityCard" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel">
+    <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into identity_card_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      uuid,
+      <if test="userName != null">
+        user_name,
+        </if>
+        <if test="verifyStatus != null">
+        verify_status,
+      </if>
+      <if test="updated != null">
+        updated,
+      </if>
+      <if test="created != null">
+        created,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{uuid,jdbcType=INTEGER},
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="verifyStatus != null">
+        #{verifyStatus,jdbcType=INTEGER},
+      </if>
+       <if test="created != null">
+       #{created,jdbcType=VARCHAR}
+      </if>
+      <if test="updated != null">
+        #{updated,jdbcType=VARCHAR},
+      </if>
+      </trim>
+</insert>
+  
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
