@@ -141,7 +141,6 @@ function addNC(){
 			}); 			
 	}else{
 		alert("请确认输入信息！");
-		$("#Tip").modal('show');
 		location.reload();
 	}
 }

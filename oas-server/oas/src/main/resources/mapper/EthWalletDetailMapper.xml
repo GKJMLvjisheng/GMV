@@ -74,7 +74,7 @@
     		#{txHash,jdbcType=VARCHAR},
     	</if>
     	<if test="txResult != null">
-    		#{txResult,jdbcType=Integer},
+    		#{txResult,jdbcType=INTEGER},
     	</if>
     	<if test="txNetwork != null">
     		#{txNetwork,jdbcType=VARCHAR},
