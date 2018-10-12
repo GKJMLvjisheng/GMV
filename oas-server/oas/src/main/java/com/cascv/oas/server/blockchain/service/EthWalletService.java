@@ -8,12 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.MnemonicCode;
 import org.bitcoinj.crypto.MnemonicException;
 import org.bitcoinj.wallet.DeterministicSeed;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.CipherException;
@@ -30,6 +37,7 @@ import com.cascv.oas.core.utils.CryptoUtils;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.server.blockchain.config.TransferQuota;
+import com.cascv.oas.server.blockchain.job.EtherRedeemJob;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
@@ -43,6 +51,7 @@ import com.cascv.oas.server.common.EthWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,6 +82,37 @@ public class EthWalletService {
   
   @Autowired
   private KeyStoreService keyStoreService;
+  
+  @Autowired
+  private SchedulerService schedulerService;
+
+  public void updateJob() {
+    log.info("update job ...");
+    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectEthTransactionJob(coinClient.getNetName(), 60); 
+    if (ethWalletDetailList != null && ethWalletDetailList.size() > 0) {
+      for (EthWalletDetail ethWalletDetail:ethWalletDetailList) {
+        Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
+        log.info("txHash: {}, txResult: {},status: {}", 
+            ethWalletDetail.getTxHash(), ethWalletDetail.getTxResult(), status);
+        if (status != 0) {
+          ethWalletDetail.setTxResult(status);
+          ethWalletDetailMapper.update(ethWalletDetail);
+        }
+      }
+    }
+  }
+  
+  @PostConstruct
+  public void startJob() {
+    JobDetail jobDetail = JobBuilder.newJob(EtherRedeemJob.class)
+        .withIdentity("JobDetailA", "groupA").build();
+    jobDetail.getJobDataMap().put("self", schedulerService);
+    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerA", "groupA")
+        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).repeatForever()).startNow().build();
+    jobDetail.getJobDataMap().put("service", this);
+    schedulerService.addJob(jobDetail, trigger);
+    log.info("add ethRedeem job ...");
+  }
   
   public static String toMnemonicList(List<String> mnemonic) {
     JSONArray jsonArray = new JSONArray();
@@ -290,7 +330,9 @@ public class EthWalletService {
     ethWalletDetail.setValue(value);
     ethWalletDetail.setCreated(DateUtils.getTime());
     ethWalletDetail.setRemark(remark);
+    ethWalletDetail.setTxResult(0);
     ethWalletDetail.setTxHash(txHash);
+    ethWalletDetail.setTxNetwork(coinClient.getNetName());
     //ethWalletDetail.setChangeAddress(changeAddress);
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }

@@ -30,7 +30,9 @@ import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.ChainId;
 import org.web3j.utils.Numeric;
 
@@ -56,6 +58,21 @@ public class CoinClient {
       }
     }
     return null;
+  }
+  
+  public Integer  getTransactionStatus(String txHash) {
+    try {
+      EthGetTransactionReceipt ethGetTransactionReceipt = web3j.ethGetTransactionReceipt(txHash).send();
+      TransactionReceipt transactionReceipt=ethGetTransactionReceipt.getResult();
+      String status = transactionReceipt.getStatus();
+      if (status.startsWith("0x") || status.startsWith("0X"))
+        return Integer.parseInt(status.substring(2), 16) ;
+      else 
+        return Integer.parseInt(status);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return 0;  
+    }
   }
   
   public void setDefaultNet(String net) {
