@@ -10,7 +10,9 @@ import com.cascv.oas.server.user.model.UserIdentityCardModel;
 
 @Component
 public interface UserIdentityCardModelMapper {
-
+	
+	Integer insertUserIdentityCard(UserIdentityCardModel userIdentityCardModel);
+	
 	Integer updateUserIdentityCardByNameNumberRemarkVerifyStatus(UserIdentityCardModel userIdentityCardModel);
 	
 	Integer updateUserIdentityCardByFrontOfPhoto(UserIdentityCardModel userIdentityCardModel);

@@ -98,6 +98,20 @@ public class UserService {
     userModel.setUpdated(now);
     
     userModelMapper.insertUser(userModel);
+    /**
+     * @author Ming Yang
+     * Date:20181012 
+     * 注册用户添加用户的认证初始状态
+     */
+    log.info("*****start insert user identify card info*****");
+    UserIdentityCardModel userIdentityCardModel=new UserIdentityCardModel();
+    Integer verifyStatus=0;
+    userIdentityCardModel.setUserName(s);
+    userIdentityCardModel.setVerifyStatus(verifyStatus);
+    userIdentityCardModel.setCreated(now);
+    userIdentityCardModel.setUpdated(now);
+    userIdentityCardModelMapper.insertUserIdentityCard(userIdentityCardModel);
+    log.info("*****end user identify card info*****"); 
     log.info("inviteCode {}", userModel.getInviteCode());
     log.info("inviteFrom {}", userModel.getInviteFrom());
     return ErrorCode.SUCCESS;

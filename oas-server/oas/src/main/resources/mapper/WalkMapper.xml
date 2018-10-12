@@ -28,9 +28,24 @@
        from walk_ball where user_uuid = #{userUuid} and status = #{status}
    </select>
    
+   <select id="selectWalkBallbyUuid" resultMap="walkBallMap">
+       select <include refid="walkBall_List" />
+         from walk_ball where uuid = #{uuid}
+   </select>
+   
    <update id="updateStatusByUuid" parameterType="com.cascv.oas.server.walk.model.WalkBall">
        update walk_ball
         set `status` = #{status}, updated = #{updated} WHERE uuid = #{uuid}
+   </update>
+   
+   <update id="updatePointByuuid">
+       update energy_point_ball
+         set point=#{point} where uuid = #{uuid}
+   </update>
+   
+   <update id="updateStepNumByCreated">
+       update walk_ball
+         set step_num = #{stepNum} where user_uuid = #{userUuid} and created = #{created}
    </update>
    
    <resultMap id="WalkBallReturn" type="com.cascv.oas.server.walk.wrapper.WalkBallReturn">
@@ -66,7 +81,7 @@
             and b.source_code = #{sourceCode}
             and b.status = #{status}
             and b.user_uuid = #{userUuid}
-       order by b.created desc limit 7
+       order by start_date desc limit 7
    </select>
     
 </mapper>
