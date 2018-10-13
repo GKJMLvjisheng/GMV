@@ -721,7 +721,7 @@ public class UserController {
 		log.info("****start****");
 		//后续"+86"可以在前端进行修改
 		String mobile = "+86"+mobileModel.getMobile();
-		String SignName="国科云景";
+		String SignName="OASESCHAIN";
 		String content="";
         //获取验证码
 		vcode=MessageService.createRandomVcode();
