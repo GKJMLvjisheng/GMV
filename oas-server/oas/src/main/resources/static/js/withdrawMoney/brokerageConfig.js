@@ -51,9 +51,15 @@ function updateBrokerage(){
 		async : false,
 
 		success: function(res) {
-			document.getElementById("tipContent").innerText="手续费修改成功";
-			$("#Tip").modal('show');
-			document.getElementById("brokerage").innerHTML=Ebrokerage;
+			if(res.code==0){
+				document.getElementById("tipContent").innerText="手续费修改成功";
+				$("#Tip").modal('show');
+				document.getElementById("brokerage").innerHTML=Ebrokerage;
+			}else{
+				document.getElementById("tipContent").innerText=res.message;
+				$("#Tip").modal('show');
+			}
+			
 		}, 
 		error: function(){
 			document.getElementById("tipContent").innerText="手续费修改失败";
