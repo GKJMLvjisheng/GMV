@@ -29,6 +29,7 @@ import com.cascv.oas.server.activity.wrapper.RewardCode;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +42,8 @@ public class ActivityController {
 	private ActivityService activityService;
 	@Autowired
 	private ActivityMapper activityMapper;
-	
+	@Autowired 
+	private TimeZoneService timeZoneService;
 	@PostMapping(value = "/addActivity")
     @ResponseBody
     public ResponseEntity<?> addActivity(@RequestBody ActivityRequest activityRequest){
@@ -108,6 +110,15 @@ public class ActivityController {
     public ResponseEntity<?> selectAllReward(){
 		Map<String,Object> info=new HashMap<>();
 		List<RewardModel> rewardList = activityMapper.selectAllReward();
+		for(RewardModel rewardModel : rewardList)
+		{
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+			String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, rewardModel.getCreated(), dstFormater, dstTimeZoneId);
+			rewardModel.setCreated(created);
+			log.info("newCreated={}",created);
+		}
 		if(rewardList.size() > 0)
 			info.put("rewardList", rewardList);
 		else

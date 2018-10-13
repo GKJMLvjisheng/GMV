@@ -27,7 +27,6 @@ public class EthWalletDetailService {
 	public List<EthWalletDetail> selectByInOrOut(String userUuid,Integer offset,Integer limit,Integer inOrOut){
 		List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByInOrOut(userUuid,offset,limit, inOrOut);
 		    
-
 			for(EthWalletDetail ethWalletDetail : ethWalletDetailList)
 			{
 				String srcFormater="yyyy-MM-dd HH:mm:ss";
