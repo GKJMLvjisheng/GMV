@@ -108,9 +108,9 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
             
             newsService.addNews(newsModel);
    			log.info("新闻未上传图片");
-   			return new ResponseEntity.Builder<Integer>()
-   					.setData(1)
-   					.setErrorCode(ErrorCode.GENERAL_ERROR)
+   			return new ResponseEntity.Builder<NewsModel>()
+   					.setData(newsModel)
+   					.setErrorCode(ErrorCode.SUCCESS)
    					.build();
    			}
    	

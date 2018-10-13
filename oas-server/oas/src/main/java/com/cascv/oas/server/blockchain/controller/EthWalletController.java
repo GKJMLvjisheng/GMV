@@ -23,6 +23,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -39,8 +40,10 @@ import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -56,7 +59,8 @@ public class EthWalletController {
   private EthWalletDetailService ethWalletDetailService;
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
-  
+  @Autowired 
+  private TimeZoneService timeZoneService;
   @Autowired
   private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
   
@@ -282,6 +286,14 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> inqureEthWalletTradeRecord(){
 	  List<EthWalletTradeRecordInfo> ethWalletTradeRecords=ethWalletTradeRecordMapper.selectAllTradeRecord();
+	  for (EthWalletTradeRecordInfo ethWalletTradeRecordInfo : ethWalletTradeRecords) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+			String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, ethWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+			ethWalletTradeRecordInfo.setCreated(created);
+			log.info("newCreated={}",created);
+		  }
 		return new ResponseEntity.Builder<List<EthWalletTradeRecordInfo>>()
 		        .setData(ethWalletTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)

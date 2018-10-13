@@ -17,6 +17,7 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,8 @@ public class EnergyPointController {
     private EnergyWalletTradeRecordMapper energyWalletTradeRecordMapper;
     @Autowired
     private ActivityService activityService;
-
+	@Autowired 
+	private TimeZoneService timeZoneService;
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
@@ -428,6 +430,14 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     @Transactional
     public ResponseEntity<?> inqureEnergyWalletTradeRecord(){
   	  List<EnergyWalletTradeRecordInfo> energyWalletTradeRecords=energyWalletTradeRecordMapper.selectAllTradeRecord();
+  	for (EnergyWalletTradeRecordInfo energyWalletTradeRecordInfo : energyWalletTradeRecords) {
+		String srcFormater="yyyy-MM-dd HH:mm:ss";
+		String dstFormater="yyyy-MM-dd HH:mm:ss";
+		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getTimeCreated(), dstFormater, dstTimeZoneId);
+		energyWalletTradeRecordInfo.setTimeCreated(created);
+		log.info("newCreated={}",created);
+	  }
   		return new ResponseEntity.Builder<List<EnergyWalletTradeRecordInfo>>()
   		        .setData(energyWalletTradeRecords)
   		        .setErrorCode(ErrorCode.SUCCESS)
