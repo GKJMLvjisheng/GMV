@@ -8,6 +8,7 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.wrapper.*;
+import com.cascv.oas.server.common.BaseController;
 import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
@@ -35,7 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
 @Slf4j
-public class EnergyPointController {
+public class EnergyPointController extends BaseController{
 
   @Autowired
   private ExchangeRateService exchangeRateService;

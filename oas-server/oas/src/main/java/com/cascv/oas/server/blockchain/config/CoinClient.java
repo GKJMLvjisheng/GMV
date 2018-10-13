@@ -50,6 +50,7 @@ public class CoinClient {
   @Getter @Setter private Web3j web3j;
   @Getter @Setter private String netName;
   @Getter @Setter private String token;
+  @Getter @Setter private Integer txInterval;
   
   private EthContractModel findContractByNetwork(String net) {
     for (EthContractModel ec : ethContract) {

@@ -62,7 +62,6 @@ import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
-import com.cascv.oas.server.utils.ShiroUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -111,7 +110,7 @@ public class EthWalletService {
     List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectEthTransactionJob(coinClient.getNetName(), 60); 
     if (ethWalletDetailList != null && ethWalletDetailList.size() > 0) {
       for (EthWalletDetail ethWalletDetail:ethWalletDetailList) {
-		Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
+        Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
         log.info("txHash: {}, txResult: {},status: {}", 
             ethWalletDetail.getTxHash(), ethWalletDetail.getTxResult(), status);
         if (status != 0) {
@@ -130,7 +129,9 @@ public class EthWalletService {
         .withIdentity("JobDetailA", "groupA").build();
     jobDetail.getJobDataMap().put("self", schedulerService);
     Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerA", "groupA")
-        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).repeatForever()).startNow().build();
+        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+            .withIntervalInSeconds(coinClient.getTxInterval()
+        ).repeatForever()).startNow().build();
     jobDetail.getJobDataMap().put("service", this);
     schedulerService.addJob(jobDetail, trigger);
     log.info("add ethRedeem job ...");

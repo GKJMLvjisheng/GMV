@@ -373,6 +373,8 @@ def inquireNews(token):
   if res.get('code') == 0:
     return res.get('data')
 
+inquireNews(None)
+    
 #testUserWalletTransfer()
 
 #testRegisterDestroy()
@@ -387,7 +389,7 @@ def inquireNews(token):
 #else:
 #  raise Exception("eWallet coin failure")
 
-register("cai000016", "123");
+#register("cai000016", "123");
 
 #testEnergyPoint()
 #testUserWallet()

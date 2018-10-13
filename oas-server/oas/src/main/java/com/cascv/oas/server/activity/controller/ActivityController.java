@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(value = "/api/v1/activityConfig")
 @Slf4j
+
 public class ActivityController {
 	
 	@Autowired
