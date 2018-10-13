@@ -88,11 +88,8 @@ function addPostil(){
 				async : false,
 
 				success: function(res) {
-					document.getElementById("tipContent").innerText="批注添加成功";
-					$("#Tip").modal('show');
-					$("#postilModal").modal('hide');
-					KYCReady();
-					//$("#KYCGrid").bootstrapTable('refresh');
+					alert("批注添加成功");
+					location.reload();
 				}, 
 				error: function(){
 					document.getElementById("tipContent").innerText="批注添加失败";
@@ -129,10 +126,12 @@ function addNC(){
 			async : false,
 
 			success: function(res) {
-				document.getElementById("tipContent").innerText="信息添加成功";
-				$("#Tip").modal('show');
-				$("#addNCModal").modal('hide');
-				KYCReady();
+//				document.getElementById("tipContent").innerText="信息添加成功";
+//				$("#Tip").modal('show');
+//				$("#addNCModal").modal('hide');
+//				KYCReady();
+				alert("信息添加成功");
+				location.reload();
 			}, 
 			error: function(){
 				document.getElementById("tipContent").innerText="信息添加失败";
@@ -142,7 +141,6 @@ function addNC(){
 			}); 			
 	}else{
 		alert("请确认输入信息！");
-		$("#Tip").modal('show');
 		location.reload();
 	}
 }
