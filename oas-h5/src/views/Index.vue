@@ -200,7 +200,7 @@ export default {
     }
   },
   created() {
-    this.getStep()
+    //this.getStep()
     this.getWalkEnergyBall() 
     this.getEnergyBall() 
     this.getCurrentEnergy()
@@ -336,35 +336,46 @@ export default {
      getWalkEnergyBall() {
      
       
-    //var todayStep="50"
-    this.input1=this.todayStep
+    var todayStep="0"
+    //this.input1=this.todayStep
     let time=currentTime(true)
     //let time="2018-10-11"
      //console.log("time"+time)
      var data={}
      data['date']=time
-     data['stepNum']=this.todayStep
+     data['stepNum']=todayStep
      let params = new Array();
      params.push(data)
-
+      
       this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
       //this.input2=data.startDate
         console.log("data"+JSON.stringify(data))
-        this.walkEnergyBallList = data.map(el => {
+       let walkEnergyBallList=new Array();
+        walkEnergyBallList= data.map(el => {
           // let randomIdx = randomNum(0,pArr.length - 1)
           let p = this.randomPoint()
           // pArr.splice(randomIdx,1)
           el.x = p.x / 75 + 'rem'
           el.y = p.y / 75 + 'rem'
+         
            if(el.startDate>=time)
          { 
            el.generate=true}
          else{el.generate=false}
-          
           return el
         }) 
+         for(let i=0;i<walkEnergyBallList.length;i++)  
+      { console.log(222)
+        if(walkEnergyBallList[i].value==0)
+        { console.log(111)
+          walkEnergyBallList.splice(i, 1)
+          i--}
+        }
+        this.walkEnergyBallList=walkEnergyBallList
       })
-        
+     
+     
+
                  
     },
    
