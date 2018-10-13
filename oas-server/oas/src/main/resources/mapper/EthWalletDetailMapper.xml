@@ -178,7 +178,7 @@
   </select>
   
   <select id="selectUserByAddress" resultType="com.cascv.oas.server.user.model.UserModel">
-  select b.* from user_coin a
+  select b.* from eth_wallet a
   left join user_info b on a.user_uuid = b.uuid
   where a.address = #{address,jdbcType=VARCHAR}
   </select>
