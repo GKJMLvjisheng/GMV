@@ -43,10 +43,33 @@ public interface OasDetailMapper {
    * @param result
    * @return
    */
-  Integer setWithdrawResultByUuid(@Param("uuid")String uuid,@Param("result") Integer result,@Param("updated")String updated);
+  Integer setWithdrawResultByUuid(@Param("uuid")String uuid,@Param("result") Integer result,@Param("updated")String updated,@Param("txHash") String hash);
   /**
    * 查询出system用户信息
    * @return
    */
   UserModel getSystemUserInfo();
+  /**
+   * 查询出admin用户信息
+   * @return
+   */
+  UserModel getAdminUserInfo();
+  /**
+   * 根据hash值更新记录
+   * @param hash
+   * @return
+   */
+  Integer updateRecordByHash(OasDetail detail);
+  /**
+   * 根据hash值查找记录
+   * @param txHash
+   * @return
+   */
+  OasDetail selectRecordByHash(String txHash);
+  /**
+   * 根据uuid更新状态
+   * @param uuid
+   * @return
+   */
+  Integer updateStatusByUuid(@Param("uuid")String uuid,@Param("status")Integer status);
 }

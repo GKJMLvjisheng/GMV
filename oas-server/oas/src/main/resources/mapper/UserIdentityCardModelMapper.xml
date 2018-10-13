@@ -43,7 +43,6 @@
     </selectKey>
     insert into identity_card_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      uuid,
       <if test="userName != null">
         user_name,
         </if>
@@ -58,7 +57,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      #{uuid,jdbcType=INTEGER},
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
       </if>
@@ -66,7 +64,7 @@
         #{verifyStatus,jdbcType=INTEGER},
       </if>
        <if test="created != null">
-       #{created,jdbcType=VARCHAR}
+       #{created,jdbcType=VARCHAR},
       </if>
       <if test="updated != null">
         #{updated,jdbcType=VARCHAR},
@@ -84,7 +82,7 @@
        user_identity_number = #{userIdentityNumber},
       </if>
       <if test="remark != null">
-       remark = #{remark}
+       remark = #{remark},
        </if>
        <if test="verifyStatus != null">
        verify_status = #{verifyStatus},
@@ -103,13 +101,13 @@
        front_of_photo = #{frontOfPhoto},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
        </trim>
        where user_name = #{userName}
@@ -125,13 +123,13 @@
        back_of_photo = #{backOfPhoto},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
       </trim>
       where user_name = #{userName}
@@ -147,13 +145,13 @@
        hold_in_hand = #{holdInHand},
       </if>
        <if test="verifyStatus != null">
-       verify_status = #{verifyStatus}
+       verify_status = #{verifyStatus},
        </if>
        <if test="created != null">
-       created = #{created}
+       created = #{created},
        </if>
       <if test="updated != null">
-       updated = #{updated}
+       updated = #{updated},
        </if>
        </trim>
        where user_name = #{userName}

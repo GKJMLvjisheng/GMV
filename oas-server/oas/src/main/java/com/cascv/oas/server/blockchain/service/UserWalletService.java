@@ -8,14 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.utils.Convert;
 
+import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.server.blockchain.constant.OasEventEnum;
+import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.OasDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
+import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
 import com.cascv.oas.server.blockchain.model.UserCoin;
@@ -27,6 +31,8 @@ import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.service.MessageService;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -51,12 +57,20 @@ public class UserWalletService {
   @Autowired
   private EthWalletService ethWalletService;
   
+  @Autowired
+  private EthWalletMapper ethWalletMapper;
+  
+  @Autowired
+  private MessageService messageService;
+ 
+  @Autowired
+  private CoinClient coinClient;
+  
   public UserWallet find(String userUuid){
     return userWalletMapper.selectByUserUuid(userUuid);
   }
   
-  
-  private void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+  public static UserWalletDetail setDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark,String txHash,String txNetwork) {
 	  UserWalletDetail userWalletDetail = new UserWalletDetail();
 	  userWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
 	  userWalletDetail.setUserUuid(userWallet.getUserUuid());
@@ -71,7 +85,9 @@ public class UserWalletService {
 	      break;
 	  case 2:
 		  log.info("提币");
-		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());		  
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
+		  userWalletDetail.setTxHash(txHash);
+		  userWalletDetail.setTxNetwork(txNetwork);
 	      break;
 	  case 3:
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+changeUserName);
@@ -81,6 +97,10 @@ public class UserWalletService {
 	      break;
 	  case 5:
 		  log.info("充币");
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
+		  userWalletDetail.setTxHash(txHash);
+		  userWalletDetail.setTxNetwork(txNetwork);
+		  userWalletDetail.setTxResult(1);
 	      break;
 	  default:
 		  log.info("swicth-case-end");
@@ -92,6 +112,11 @@ public class UserWalletService {
 //	  userWalletDetail.setComment(comment);
 	  userWalletDetail.setRemark(remark);
 	  //userWalletDetail.setChangeUserName(changeUserName);
+	  return userWalletDetail;
+  }
+  
+  private void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null,null);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
   
@@ -182,8 +207,26 @@ public class UserWalletService {
 		  if(sResult == 0) {
 			  return ErrorCode.UPDATE_FAILED;
 		  }
+	  }else {
+		  return ErrorCode.SYSTEM_NOT_EXIST;
 	  }
-	  return userWalletMapper.changeBalanceAndUnconfimed(oasDetail.getUserUuid(),value,userWallet.getUnconfirmedBalance().add(oasDetail.getValue()),now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
+	  Integer userResut =  userWalletMapper.changeBalanceAndUnconfimed(oasDetail.getUserUuid(),value,userWallet.getUnconfirmedBalance().add(oasDetail.getValue()),now);
+	  if(userResut == 0) {
+		  return ErrorCode.UPDATE_FAILED;
+	  }
+	  UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
+	  if(adminInfo!=null && adminInfo.getMobile()!=null) {
+		  String mobile = "+86".concat(adminInfo.getMobile());
+		  String SIGNNAME = "国科云景";
+		  String content = "【"+SIGNNAME+"】"+"报告管理员：有一条新的提币记录！";
+	      PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
+	      log.info(publishResult.toString());
+	      if(publishResult.getMessageId() == null) {
+	    	  return ErrorCode.SEND_SMS_ERROR;
+		  }
+	  }
+	 
+	  return ErrorCode.SUCCESS;
   }
   
   public List<OasDetailResp> getWithdrawList(){
@@ -204,19 +247,20 @@ public class UserWalletService {
 	  //查询system账号
 	  UserModel systemInfo = oasDetailMapper.getSystemUserInfo();
 	  if(systemInfo!=null) {
+		  String hash = null;
 		  String now = DateUtils.dateTimeNow();
 		  //system的在线钱包
 		  UserWallet systemWallet = userWalletMapper.selectByUserUuid(systemInfo.getUuid());
 		  //用户的钱包
 		  UserWallet userWallet = userWalletMapper.selectByUserUuid(detail.getUserUuid());
 		  if(systemWallet == null || userWallet == null) {
-			  return ErrorCode.WALLET_ONLINE_NOT_EXIST;
+			  return ErrorCode.NO_ONLINE_ACCOUNT;
 		  }
 		  //管理员拒绝该提币请求
 		  if(result == 2) {
 			  //待交易记录减去value，代币加value
 			  if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
-				  return ErrorCode.BALANCE_NOT_ENOUGH;
+				  return ErrorCode.UNCONFIRMED_BALANCE;
 			  }
 			 
 			  Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance().add(value),userWallet.getUnconfirmedBalance().subtract(value),now);
@@ -224,31 +268,42 @@ public class UserWalletService {
 			  if(tResult == 0 ) {
 				  return ErrorCode.UPDATE_FAILED;
 			  }
-		  }else {
-			  //最初已减掉钱包balance，和手续费，无需再减
-			 /* if(userWallet.getBalance().compareTo(extra) == -1) {
-				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
-			  }*/
-			  if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
-				  return ErrorCode.BALANCE_NOT_ENOUGH;
-			  }
-			  Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance(),userWallet.getUnconfirmedBalance().subtract(value),now);
-			  Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
-			  if(tResult == 0 || sResult == 0) {
-				  return ErrorCode.UPDATE_FAILED;
-			  }
-			  //增加在线钱包记录
-			  UserCoin tokenCoin = ethWalletService.getUserCoin(detail.getUserUuid());
-			  this.addDetail(userWallet, tokenCoin.getAddress(), UserWalletDetailScope.COIN_TO_ETH, value, detail.getRemark(), detail.getRemark());
+		  }else {		
+			  
+			  //UserCoin tokenCoin = ethWalletService.getUserCoin(detail.getUserUuid());
+			  UserCoin tokenCoin = ethWalletService.getUserCoin(systemInfo.getUuid()); //system的usercoin
 			  
 			  //操作交易钱包
 			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
 			  BigInteger gasLimit = BigInteger.valueOf(60000);
+			  //获取当前用户的eth wallet
+			  EthWallet ethWallet = ethWalletMapper.selectByUserUuid(detail.getUserUuid());
+			 if(ethWallet == null) {return ErrorCode.NO_ETH_WALLET;}
 			  
-			  ethWalletService.systemTransfer(systemInfo.getUuid(),tokenCoin.getAddress(), userModelMapper.selectByUuid(detail.getUserUuid()).getName(),tokenCoin,value,gasPrice,gasLimit,detail.getRemark());
-			  
+			 ReturnValue<String> ethInfo = ethWalletService.systemTransfer(true,systemInfo.getUuid(),ethWallet.getAddress(), userModelMapper.selectByUuid(detail.getUserUuid()).getName(),tokenCoin,value,gasPrice,gasLimit,detail.getRemark());
+			 if(ethInfo == null || ethInfo.getData()==null) {
+				 oasDetailMapper.updateStatusByUuid(detail.getUuid(),OasEventEnum.FAILED.getCode());
+				 return ErrorCode.ETH_RETURN_HASH;
+			 }
+			 hash = ethInfo.getData();
+			 
+			  //最初已减掉钱包balance，和手续费，无需再减
+			 /* if(userWallet.getBalance().compareTo(extra) == -1) {
+				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
+			  }*/
+			 if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
+				  return ErrorCode.UNCONFIRMED_BALANCE;
+			  }
+			 
+			 Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance(),userWallet.getUnconfirmedBalance(),now);//.subtract(value)
+			 Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
+			 if(tResult == 0 || sResult == 0) {
+				 return ErrorCode.UPDATE_FAILED;
+			 }
+			//增加在线钱包记录
+			 userWalletDetailMapper.insertSelective(setDetail(userWallet, tokenCoin.getAddress(), UserWalletDetailScope.COIN_TO_ETH, value, detail.getRemark(), detail.getRemark(),hash,coinClient.getNetName()));
 		  }
-		  return oasDetailMapper.setWithdrawResultByUuid(uuid,result,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
+		  return oasDetailMapper.setWithdrawResultByUuid(uuid,result,now,hash)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
 	  }else {
 		  return ErrorCode.SYSTEM_NOT_EXIST;
 	  }
@@ -261,5 +316,6 @@ public class UserWalletService {
 	  String now = DateUtils.dateTimeNow();
 	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
   }
+  
   
 }

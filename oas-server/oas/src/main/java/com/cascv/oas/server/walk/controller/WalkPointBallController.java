@@ -31,7 +31,9 @@ public class WalkPointBallController {
 	
 	 @PostMapping(value = "/inquireWalkPointBall")  
 	 @ResponseBody
-	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){		 
+	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){
+		 log.info("时间"+stepNumWrapper.getQuota().get(0).getDate());
+		 log.info("步数"+stepNumWrapper.getQuota().get(0).getStepNum().toString());
 		 String userUuid = ShiroUtils.getUserUuid();
 		 log.info("userUuid={}",userUuid);
 		 List<WalkBallReturn> walkBallReturnList = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());

@@ -17,4 +17,5 @@ public class UserCoin implements Serializable{
   @Setter @Getter private BigDecimal balance;
   @Setter @Getter private BigDecimal value;
   @Setter @Getter private Double ethBalance;
+  @Setter @Getter private BigDecimal unconfirmedBalance;
 }

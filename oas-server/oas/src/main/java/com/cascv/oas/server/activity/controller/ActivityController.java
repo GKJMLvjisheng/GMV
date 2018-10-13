@@ -109,10 +109,10 @@ public class ActivityController {
 		Map<String,Object> info=new HashMap<>();
 		List<RewardModel> rewardList = activityMapper.selectAllReward();
 		if(rewardList.size() > 0)
-			info.put("activityList", rewardList);
+			info.put("rewardList", rewardList);
 		else
 			log.info("no message");
-		return new ResponseEntity.Builder<>()
+		return new ResponseEntity.Builder<List<RewardModel>>()
 				.setData(rewardList)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();

@@ -1,31 +1,5 @@
 package com.cascv.oas.server.blockchain.controller;
 
-import com.cascv.oas.core.common.ErrorCode;
-import com.cascv.oas.core.common.PageDomain;
-import com.cascv.oas.core.common.PageIODomain;
-import com.cascv.oas.core.common.ResponseEntity;
-import com.cascv.oas.core.common.ReturnValue;
-import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
-import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
-import com.cascv.oas.server.blockchain.model.EthWallet;
-import com.cascv.oas.server.blockchain.model.EthWalletDetail;
-import com.cascv.oas.server.blockchain.model.UserCoin;
-import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
-import com.cascv.oas.server.blockchain.service.EthWalletService;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
-import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
-import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
-import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
-import com.cascv.oas.server.log.annotation.WriteLog;
-import com.cascv.oas.server.utils.ShiroUtils;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -43,6 +17,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.web3j.utils.Convert;
+
+import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
+import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
+import com.cascv.oas.server.blockchain.model.EthWallet;
+import com.cascv.oas.server.blockchain.model.EthWalletDetail;
+import com.cascv.oas.server.blockchain.model.UserCoin;
+import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
+import com.cascv.oas.server.blockchain.service.EthWalletService;
+import com.cascv.oas.server.blockchain.service.UserWalletService;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
+import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
+import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
+import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
+import com.cascv.oas.server.log.annotation.WriteLog;
+import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.utils.ShiroUtils;
+
+import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value="/api/v1/ethWallet")
@@ -372,5 +374,55 @@ public class EthWalletController {
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
+  /**
+   * 充币请求申请
+   * @param info
+   * @return
+   */
+  @PostMapping(value="/reverseWithdraw")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> reverseWithdraw(@RequestBody EthWalletTransfer info){
+	  UserModel user = ShiroUtils.getUser();
+	  if(user == null) {
+		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.USER_NOT_EXISTS).build();
+	  }
+	  if(info.getAmount()== null || info.getAmount().compareTo(BigDecimal.ZERO) ==0) {
+		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.VALUE_CAN_NOT_BE_NULL).build();
+	  }
+	  info.setToUserAddress(user.getName());
+	  BigInteger gasPrice = info.getGasPrice();
+	  if (gasPrice == null) {
+		  gasPrice=Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
+	  }else {
+		//前端传的值单位从wei改为Gwei，差额为10的9次方
+		  BigInteger k = new BigInteger("10");
+		  int m = new Integer("9");
+		  BigInteger price = k.pow(m);
+		  gasPrice = gasPrice.multiply(price);
+	  }
+	  info.setGasPrice(gasPrice);
+	  BigInteger gasLimit =  info.getGasLimit();
+      if (gasLimit == null)
+    	  gasLimit = BigInteger.valueOf(60000);
+      info.setGasLimit(gasLimit);
+	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.reverseWithdraw(info,user)).build();
+  }
   
+  /**
+      *  点击交易钱包记录查看区块链上转账记录，并标记状态
+   * @param detail
+   * @return
+   */
+ /* @PostMapping(value="/getExchangeResult")
+  @ResponseBody
+  @Transactional
+  public ResponseEntity<?> getExchangeResult(@RequestBody EthWalletDetail detail){
+	  if(detail.getUuid() == null) {
+		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.SELECT_EMPTY).build();
+	  }
+	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.getExchangeResult(detail)).build();
+	  
+  }
+  */
 }
