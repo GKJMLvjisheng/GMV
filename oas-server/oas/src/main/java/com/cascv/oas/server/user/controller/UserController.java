@@ -46,6 +46,7 @@ import com.cascv.oas.server.energy.service.PowerService;
 import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
+import com.cascv.oas.server.user.config.MailBean;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
@@ -533,6 +534,11 @@ public class UserController {
 				mailInfo.setmailPassword(mailPassword);
 				mailInfo.setmailUsername(mailName);
 				mailInfo.setmailSubject(subject);
+				
+//				mailInfo.setfromAddress(mailBean.getRootMail());
+//				mailInfo.setmailPassword(mailBean.getPassword());
+//				mailInfo.setmailUsername(mailBean.getName());
+//				mailInfo.setmailSubject(mailBean.getSubject());
 	
 				String mailcode = SendMailUtils.createRandomVcode();
 				log.info("mailcode"+mailcode);
