@@ -50,6 +50,11 @@ public interface OasDetailMapper {
    */
   UserModel getSystemUserInfo();
   /**
+   * 查询出admin用户信息
+   * @return
+   */
+  UserModel getAdminUserInfo();
+  /**
    * 根据hash值更新记录
    * @param hash
    * @return

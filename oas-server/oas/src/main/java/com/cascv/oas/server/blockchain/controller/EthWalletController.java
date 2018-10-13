@@ -414,15 +414,15 @@ public class EthWalletController {
    * @param detail
    * @return
    */
-  @PostMapping(value="/getExchangeResult")
+ /* @PostMapping(value="/getExchangeResult")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> getExchangeResult(@RequestBody EthWalletDetail detail){
-	  if(detail.getUuid() == null || detail.getTxHash() == null || detail.getTitle()== null ) {
+	  if(detail.getUuid() == null) {
 		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.SELECT_EMPTY).build();
 	  }
 	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.getExchangeResult(detail)).build();
 	  
   }
-  
+  */
 }

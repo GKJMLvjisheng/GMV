@@ -74,7 +74,7 @@
     		#{txHash,jdbcType=VARCHAR},
     	</if>
     	<if test="txResult != null">
-    		#{txResult,jdbcType=Integer},
+    		#{txResult,jdbcType=INTEGER},
     	</if>
     	<if test="txNetwork != null">
     		#{txNetwork,jdbcType=VARCHAR},
@@ -162,15 +162,26 @@
     	<if test="created != null">
     		created = #{created,jdbcType=VARCHAR},
     	</if>
-    	<if test="txHash != null">
-    		#{txHash,jdbcType=VARCHAR},
+    	<if test="txNetwork != null">
+    		tx_network = #{txNetwork,jdbcType=VARCHAR},
     	</if>
     	<if test="txResult != null">
-    		#{txResult,jdbcType=Integer},
+    		tx_result = #{txResult,jdbcType=INTEGER},
     	</if>
     </set>
     where uuid = #{uuid,jdbcType=VARCHAR}
   </update>
+  <select id="selectByUUid" resultMap="ethWalletDetailMap">
+  	select  <include refid="Base_Column_List" />
+  	from eth_wallet_detail
+  	where uuid = #{uuid,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectUserByAddress" resultType="com.cascv.oas.server.user.model.UserModel">
+  select b.* from user_coin a
+  left join user_info b on a.user_uuid = b.uuid
+  where a.address = #{address,jdbcType=VARCHAR}
+  </select>
 </mapper>
 
 

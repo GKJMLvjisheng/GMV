@@ -13,11 +13,14 @@
 	<result column="remark" property="remark"/>
 <!-- 	<result column="change_user_name" property="changeUserName"/> -->
 	<result column="created" property="created"/>
+	<result column="tx_hash" property="txHash"/>
+	<result column="tx_result" property="txResult"/>
+	<result column="tx_network" property="txNetwork"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created
+    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created, tx_hash, tx_result,tx_network 
 <!--     ,comment, change_user_name -->
   </sql>
   
@@ -44,6 +47,15 @@
     	<if test="remark != null">
     		remark,
     	</if>
+    	<if test="txHash != null">
+    		tx_hash,
+    	</if>
+    	<if test="txResult != null">
+    		tx_result,
+    	</if>
+    	<if test="txNetwork != null">
+    		tx_network,
+    	</if>
 <!--     	<if test="changeUserName != null"> -->
 <!--     		change_user_name, -->
 <!--     	</if> -->
@@ -67,6 +79,15 @@
 <!--     	</if> -->
     	<if test="remark != null">
     		#{remark,jdbcType=VARCHAR},
+    	</if>
+    	<if test="txHash != null">
+    		#{txHash,jdbcType=VARCHAR},
+    	</if>
+    	<if test="txResult != null">
+    		#{txResult,jdbcType=INTEGER},
+    	</if>
+    	<if test="txNetwork != null">
+    		#{txNetwork,jdbcType=VARCHAR},
     	</if>
 <!--     	<if test="changeUserName != null"> -->
 <!--     		#{changeUserName,jdbcType=VARCHAR}, -->
@@ -116,6 +137,16 @@
     		user_uuid = #{userUuid} and in_or_out = 0 and created like concat(#{created},'%')
     group by user_uuid;
   </select>
+  
+  <update id="updateByHash" parameterType="java.lang.String">
+  update user_wallet_detail 
+	<trim prefix=" set " suffix="" suffixOverrides=",">
+		<if test = "txResult != 0">
+			tx_result = #{txResult},
+		</if>
+	</trim>
+	where tx_hash = #{txHash} 
+  </update>
   
 </mapper>
 

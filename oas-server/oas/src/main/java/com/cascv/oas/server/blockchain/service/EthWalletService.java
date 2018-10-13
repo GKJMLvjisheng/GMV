@@ -44,6 +44,7 @@ import com.cascv.oas.server.blockchain.job.EtherRedeemJob;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.OasDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.DigitalCoin;
 import com.cascv.oas.server.blockchain.model.EthConfigModel;
@@ -59,12 +60,9 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
-
+import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
-
-import com.cascv.oas.server.scheduler.service.SchedulerService;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -104,18 +102,23 @@ public class EthWalletService {
   
   @Autowired
   private SchedulerService schedulerService;
+ 
+  @Autowired
+  private UserWalletDetailMapper userWalletDetailMapper;
 
-  public void updateJob() {
+  public synchronized void updateJob() {
     log.info("update job ...");
     List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectEthTransactionJob(coinClient.getNetName(), 60); 
     if (ethWalletDetailList != null && ethWalletDetailList.size() > 0) {
       for (EthWalletDetail ethWalletDetail:ethWalletDetailList) {
-        Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
+		Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
         log.info("txHash: {}, txResult: {},status: {}", 
             ethWalletDetail.getTxHash(), ethWalletDetail.getTxResult(), status);
         if (status != 0) {
           ethWalletDetail.setTxResult(status);
           ethWalletDetailMapper.update(ethWalletDetail);
+          userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
+          getExchangeResult(ethWalletDetail);
         }
       }
     }
@@ -368,7 +371,7 @@ public class EthWalletService {
     }
     //转账当前金额加进待确认交易里面
     EthWallet emptyEthWallet = new EthWallet();
-    emptyEthWallet.setUuid(ethWallet.getUuid());
+    emptyEthWallet.setUserUuid(ethWallet.getUserUuid());
     emptyEthWallet.setUnconfirmedBalance(amount.add(ethWallet.getUnconfirmedBalance()));
     Integer eResult = ethWalletMapper.update(emptyEthWallet);
     if(eResult == 0) {
@@ -552,6 +555,7 @@ public class EthWalletService {
 		  UserCoin tokenCoin = this.getUserCoin(user.getUuid());
 		  ReturnValue<String> ethInfo = systemTransfer(false,user.getUuid(),systemEthWallet.getAddress(),user.getName(), tokenCoin,info.getAmount(), info.getGasPrice(), info.getGasLimit(),info.getRemark());
 		  if(ethInfo == null || ethInfo.getData() == null) {
+			  log.info("hash null reason:",ethInfo.getErrorCode());
 			  return ErrorCode.ETH_RETURN_HASH;
 		  }
 		  //update oasdetail hash值
@@ -577,15 +581,22 @@ public class EthWalletService {
 	  }
 	  return ErrorCode.SUCCESS;
   }
+
   //在交易钱包的交易记录中点击记录
   public ErrorCode getExchangeResult(EthWalletDetail detail) {
+	  //EthWalletDetail detail = ethWalletDetailMapper.selectByUUid(ethDetail.getUuid());//zhushidiao
+	  if(detail.getTxHash() == null || detail.getTitle()== null ) {
+		  return ErrorCode.SELECT_EMPTY;
+	  } 
 	  //非进行中的事件不用重新查看结果
-	  if(detail.getTxResult()!=0) {
+	 /* if(detail.getStatus()!=0) {
 		  return ErrorCode.SUCCESS;
-	  }
+	  }*/
+	 
 	  String hash = detail.getTxHash();
 	  BigDecimal value = detail.getValue();
-	  UserModel user = ShiroUtils.getUser();	
+	  UserModel user = ethWalletDetailMapper.selectUserByAddress(detail.getAddress());
+	  //UserModel user = ShiroUtils.getUser();	
 	  if(user == null || user.getUuid() == null) {
 		  return ErrorCode.UNLOGIN_FAILED;
 	  }
@@ -595,7 +606,14 @@ public class EthWalletService {
         return ErrorCode.NO_ETH_WALLET;
 	  }
 	  //交易是否成功
-	  String flag = EthWalletService.getTransferResult("ropsten",hash);//"0xed8df5635ba8999bc547970b843a3ee87d8282032616637e983127f9f083fa5c"
+	  Integer flagInt = detail.getTxResult();
+	  String flag = "";
+	  switch(flagInt){
+	   case 0:  flag = "pending";break;
+	   case 1:  flag = "success";break;
+	   default: flag = "fail"; break;
+	  }
+	  //String flag = EthWalletService.getTransferResult("ropsten",hash);//"0xed8df5635ba8999bc547970b843a3ee87d8282032616637e983127f9f083fa5c"
 	  if(flag.equals("success") || flag.equals("fail")) {
 		  if(detail.getTitle().indexOf("转出")!=-1 || detail.getTitle().indexOf("转入")!=-1) {
 			  EthWalletDetail updateDetail = new EthWalletDetail();
@@ -611,7 +629,7 @@ public class EthWalletService {
 				   return ErrorCode.UNCONFIRMED_BALANCE;
 			   }
 			   EthWallet emptyEthWallet = new EthWallet();
-			   emptyEthWallet.setUuid(userEthWallet.getUuid());
+			   emptyEthWallet.setUserUuid(userEthWallet.getUserUuid());
 			   emptyEthWallet.setUnconfirmedBalance(userEthWallet.getUnconfirmedBalance().subtract(detail.getValue()));
 			   Integer eResult = ethWalletMapper.update(emptyEthWallet);
 			   if(eResult == 0) {
@@ -672,8 +690,8 @@ public class EthWalletService {
 		  			 return ErrorCode.UPDATE_FAILED;
 		  		 }
 		  		 //在线钱包中显示记录
-		  		 UserWalletService.setDetail(myWallet, "", UserWalletDetailScope.ETH_TO_COIN, value, detail.getRemark(), detail.getRemark());
-		  	}
+		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(myWallet, "", UserWalletDetailScope.ETH_TO_COIN, value, detail.getRemark(), detail.getRemark(),detail.getTxHash(),coinClient.getNetName()));
+		  	  }
 		  	 	//修改待确认交易
 				EthWallet emptyEth = new EthWallet();
 				if(userEthWallet.getUnconfirmedBalance().compareTo(value) == -1) {
@@ -687,13 +705,13 @@ public class EthWalletService {
 				}
 				
 	  	 }
-	  	EthWalletDetail updateDetail = new EthWalletDetail();
+	  /*	EthWalletDetail updateDetail = new EthWalletDetail();
 		updateDetail.setUuid(detail.getUuid());
-		updateDetail.setTxResult(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
+		updateDetail.setStatus(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
 		Integer upResult = ethWalletDetailMapper.updateByPrimaryKeySelective(updateDetail);
 		if(upResult == 0) {
 			return ErrorCode.UPDATE_FAILED;
-		}
+		}*/
 	  
 	  }
   	  return ErrorCode.SUCCESS;
@@ -711,6 +729,7 @@ public class EthWalletService {
   	  }
   	  return flag;
   }
+  
 }
 
 
