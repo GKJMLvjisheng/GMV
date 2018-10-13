@@ -282,7 +282,7 @@ public class UserWalletService {
 			  
 			 ReturnValue<String> ethInfo = ethWalletService.systemTransfer(true,systemInfo.getUuid(),ethWallet.getAddress(), userModelMapper.selectByUuid(detail.getUserUuid()).getName(),tokenCoin,value,gasPrice,gasLimit,detail.getRemark());
 			 if(ethInfo == null || ethInfo.getData()==null) {
-				 
+				 oasDetailMapper.updateStatusByUuid(detail.getUuid(),OasEventEnum.FAILED.getCode());
 				 return ErrorCode.ETH_RETURN_HASH;
 			 }
 			 hash = ethInfo.getData();

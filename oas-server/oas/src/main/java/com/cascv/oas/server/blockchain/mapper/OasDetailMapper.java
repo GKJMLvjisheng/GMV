@@ -66,4 +66,10 @@ public interface OasDetailMapper {
    * @return
    */
   OasDetail selectRecordByHash(String txHash);
+  /**
+   * 根据uuid更新状态
+   * @param uuid
+   * @return
+   */
+  Integer updateStatusByUuid(@Param("uuid")String uuid,@Param("status")Integer status);
 }

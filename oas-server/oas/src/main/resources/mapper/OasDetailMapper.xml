@@ -178,4 +178,10 @@
   	from  oas_detail
   	where tx_hash = #{txHash,jdbcType=VARCHAR}
   </select>
+  
+  <update id="updateStatusByUuid">
+  	update oas_detail 
+  	set status = #{status,jdbcType=INTEGER}
+  	where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
 </mapper>
