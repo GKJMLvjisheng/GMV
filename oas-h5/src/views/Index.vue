@@ -201,8 +201,8 @@ export default {
   },
   created() {
     this.getStep()
-    this.getEnergyBall() 
     this.getWalkEnergyBall() 
+    this.getEnergyBall() 
     this.getCurrentEnergy()
     this.getCurrentPower()
     this.getEnergyAnalysis()
@@ -494,8 +494,9 @@ export default {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
-      this.getEnergyBall()
       this.getWalkEnergyBall()
+      this.getEnergyBall()
+     
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
