@@ -50,6 +50,11 @@ public interface OasDetailMapper {
    */
   UserModel getSystemUserInfo();
   /**
+   * 查询出admin用户信息
+   * @return
+   */
+  UserModel getAdminUserInfo();
+  /**
    * 根据hash值更新记录
    * @param hash
    * @return
@@ -61,4 +66,10 @@ public interface OasDetailMapper {
    * @return
    */
   OasDetail selectRecordByHash(String txHash);
+  /**
+   * 根据uuid更新状态
+   * @param uuid
+   * @return
+   */
+  Integer updateStatusByUuid(@Param("uuid")String uuid,@Param("status")Integer status);
 }

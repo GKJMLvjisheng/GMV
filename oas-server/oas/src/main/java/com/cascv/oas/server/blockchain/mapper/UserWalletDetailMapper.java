@@ -22,4 +22,10 @@ public interface UserWalletDetailMapper {
 	  * Date:20181011
 	  */
   BigDecimal selectUserDailyTotalAmount(@Param("userUuid") String userUuid,@Param("created") String created);
+  /**
+   * 根据hash值更新记录
+   * @param txHash
+   * @return
+   */
+  Integer updateByHash(@Param("txHash")String txHash,@Param("txResult")Integer txResult);
 }
