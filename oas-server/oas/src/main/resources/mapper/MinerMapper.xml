@@ -14,7 +14,7 @@
     </resultMap>
         
     <sql id="miner_List">
-  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_efficiency, miner_period, created, updated
+  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_power, miner_period, created, updated
     </sql>
     
     <insert id="insertMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
