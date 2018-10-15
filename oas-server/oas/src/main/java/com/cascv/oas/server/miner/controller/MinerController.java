@@ -81,7 +81,8 @@ public class MinerController {
 		minerModel.setMinerDescription(minerRequest.getMinerDescription());
 		minerModel.setMinerPeriod(minerRequest.getMinerPeriod());
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
-		minerModel.setMinerEfficiency(minerRequest.getMinerEfficiency());
+		minerModel.setMinerGrade(minerRequest.getMinerGrade());
+		minerModel.setMinerPower(minerRequest.getMinerPower());
 		minerModel.setCreated(now);
 		minerModel.setUpdated(now);
 		minerMapper.insertMiner(minerModel);
@@ -113,8 +114,9 @@ public class MinerController {
 		minerModel.setMinerCode(minerUpdate.getMinerCode());
 		minerModel.setMinerName(minerUpdate.getMinerName());
 		minerModel.setMinerDescription(minerUpdate.getMinerDescription());
-		minerModel.setMinerEfficiency(minerUpdate.getMinerEfficiency());
+		minerModel.setMinerPower(minerUpdate.getMinerPower());
 		minerModel.setMinerPrice(minerUpdate.getMinerPrice());
+		minerModel.setMinerGrade(minerUpdate.getMinerGrade());
 		minerModel.setMinerPeriod(minerUpdate.getMinerPeriod());
 		minerModel.setUpdated(now);
 		log.info("updated={}", minerModel.getUpdated());
