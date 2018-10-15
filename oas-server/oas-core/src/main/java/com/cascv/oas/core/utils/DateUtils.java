@@ -121,8 +121,6 @@ public class DateUtils {
      * @return 转化后的日期时间.
      */
     public static String string2Timezone(String srcFormater,String srcDateTime, String dstFormater, String dstTimeZoneId) {
-    	srcFormater=YYYY_MM_DD_HH_MM_SS;
-    	dstFormater=YYYY_MM_DD_HH_MM_SS;
     	if (srcDateTime == null || "".equals(srcDateTime))
     		return null;
     	if (dstTimeZoneId == null || "".equals(dstTimeZoneId))

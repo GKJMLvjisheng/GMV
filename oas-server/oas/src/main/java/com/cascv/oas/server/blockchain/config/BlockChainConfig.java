@@ -58,6 +58,12 @@ public class BlockChainConfig {
     EthConfigModel ethConfigModel = digitalCoinService.getEthConfig();
     log.info("config network {}", ethConfigModel.getActiveNetwork());
     coinClient.setDefaultNet(ethConfigModel.getActiveNetwork());
+    
+    Integer txInterval = ethConfigModel.getTxInterval();
+    if (txInterval == null) {
+      txInterval = 60;
+    }
+    coinClient.setTxInterval(txInterval);
     return coinClient;
   }
 }

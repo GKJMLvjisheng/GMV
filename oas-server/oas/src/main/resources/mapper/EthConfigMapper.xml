@@ -5,10 +5,11 @@
   <resultMap id="ethConfigMap" type="com.cascv.oas.server.blockchain.model.EthConfigModel">
 	<id column="id" property="id" />
 	<result column="active_network" property="activeNetwork"/>
+	<result column="tx_interval" property="txInterval"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    id, active_network
+    id, active_network, tx_interval
   </sql>
 
   
@@ -24,11 +25,17 @@
           <if test="activeNetwork != null">
             active_network,
           </if>
+          <if test="txInterval != null">
+            tx_interval,
+          </if>
       </trim>
       <trim prefix="values (" suffix=")" suffixOverrides=",">
        	<if test="activeNetwork != null">
        		#{activeNetwork,jdbcType=VARCHAR},
        	</if>  	
+       	<if test="txInterval != null">
+       		#{tx_interval,jdbcType=INTEGER},
+       	</if> 
       </trim>
   </insert>
  
@@ -43,6 +50,9 @@
 	<trim prefix=" set " suffix="" suffixOverrides=",">
 		<if test = "activeNetwork != null">
 			active_network = #{activeNetwork},
+		</if>
+		<if test = "txInterval != null">
+			tx_interval = #{txInterval},
 		</if>
 	</trim>
 	where id = #{id}
