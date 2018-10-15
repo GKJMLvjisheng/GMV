@@ -1124,13 +1124,15 @@ public class UserController extends BaseShiroController{
     @WriteLog(value="checkUserIdentity")
     public ResponseEntity<?> checkUserIdentity(@RequestBody UserIdentityCardModel userIdentityCardModelInfo) {
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
-		userIdentityCardModel.setUserName(userIdentityCardModelInfo.getUserName());
+		
+		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
-		
 		userIdentityCardModel.setVerifyStatus(userIdentityCardModelInfo.getVerifyStatus());
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
+		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
+		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)

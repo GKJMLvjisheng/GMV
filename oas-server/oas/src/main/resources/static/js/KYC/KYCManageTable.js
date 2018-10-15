@@ -90,7 +90,7 @@ function initKYCGrid(data) {
 		},
 		{
 			title : "操作",
-			field : "uuid",
+			field : "userName",
 			align: 'center',
 			valign: 'middle',
 			width:  '40px',

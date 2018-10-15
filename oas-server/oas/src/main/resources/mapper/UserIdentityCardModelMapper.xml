@@ -118,6 +118,9 @@
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
+       <if test="uuid != null">
+       uuid= #{uuid},
+       </if>
        <if test="userIdentityName != null">
        user_identity_name= #{userIdentityName},
       </if>
@@ -137,7 +140,8 @@
         updated = #{updated},
        </if>
        </trim>
-       where user_name = #{userName} and verify_status=1;
+<!--        where user_name = #{userName} and verify_status=1; -->
+		where uuid = #{uuid};
        </update>
        
  <update id="updateUserIdentityCardByVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 

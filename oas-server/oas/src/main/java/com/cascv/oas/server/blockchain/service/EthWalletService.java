@@ -145,6 +145,9 @@ public class EthWalletService {
     return jsonArray.toJSONString();
   }
   
+  public String getActiveNet() {
+    return coinClient.getNetName();
+  }
   public static List<String> fromEncryptedMnemonicList(String encryptedMnemonic){
     if (encryptedMnemonic == null) {
       return null;
