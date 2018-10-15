@@ -13,14 +13,15 @@
 	<result column="remark" property="remark"/>
 <!-- 	<result column="change_user_name" property="changeUserName"/> -->
 	<result column="created" property="created"/>
-	<result column="tx_hash" property="txHash"/>
+	<!-- <result column="tx_hash" property="txHash"/> -->
 	<result column="tx_result" property="txResult"/>
-	<result column="tx_network" property="txNetwork"/>
+	<!-- <result column="tx_network" property="txNetwork"/> -->
+	<result column="oas_detail_uuid" property="oasDetailUuid"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created, tx_hash, tx_result,tx_network 
+    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created, tx_result, oas_detail_uuid
 <!--     ,comment, change_user_name -->
   </sql>
   
@@ -47,15 +48,18 @@
     	<if test="remark != null">
     		remark,
     	</if>
-    	<if test="txHash != null">
+    	<!-- <if test="txHash != null">
     		tx_hash,
-    	</if>
+    	</if> -->
     	<if test="txResult != null">
     		tx_result,
     	</if>
-    	<if test="txNetwork != null">
-    		tx_network,
+    	<if test="oasDetailUuid != null">
+    		oas_detail_uuid,
     	</if>
+    	<!-- <if test="txNetwork != null">
+    		tx_network,
+    	</if> -->
 <!--     	<if test="changeUserName != null"> -->
 <!--     		change_user_name, -->
 <!--     	</if> -->
@@ -80,15 +84,18 @@
     	<if test="remark != null">
     		#{remark,jdbcType=VARCHAR},
     	</if>
-    	<if test="txHash != null">
+    	<!-- <if test="txHash != null">
     		#{txHash,jdbcType=VARCHAR},
-    	</if>
+    	</if> -->
     	<if test="txResult != null">
     		#{txResult,jdbcType=INTEGER},
     	</if>
-    	<if test="txNetwork != null">
-    		#{txNetwork,jdbcType=VARCHAR},
+    	<if test="oasDetailUuid != null">
+    		#{oasDetailUuid,jdbcType=VARCHAR},
     	</if>
+    	<!-- <if test="txNetwork != null">
+    		#{txNetwork,jdbcType=VARCHAR},
+    	</if> -->
 <!--     	<if test="changeUserName != null"> -->
 <!--     		#{changeUserName,jdbcType=VARCHAR}, -->
 <!--     	</if> -->
@@ -138,7 +145,7 @@
     group by user_uuid;
   </select>
   
-  <update id="updateByHash" parameterType="java.lang.String">
+  <!-- <update id="updateByHash" parameterType="java.lang.String">
   update user_wallet_detail 
 	<trim prefix=" set " suffix="" suffixOverrides=",">
 		<if test = "txResult != 0">
@@ -146,6 +153,15 @@
 		</if>
 	</trim>
 	where tx_hash = #{txHash} 
+  </update> -->
+  <update id="updateByOasDetailUuid">
+  update user_wallet_detail 
+  <set>
+  	<if	test="txResult != 0 ">
+  		tx_result = #{txResult,jdbcType=INTEGER},
+  	</if>
+  </set>
+  where oas_detail_uuid = #{oasDetailUuid,jdbcType=VARCHAR} 
   </update>
   
 </mapper>

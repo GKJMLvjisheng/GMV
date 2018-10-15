@@ -11,8 +11,10 @@ public class MinerModel {
 	@Getter @Setter private String minerName;
 	@Getter @Setter private String minerDescription;
 	@Getter @Setter private BigDecimal minerPrice;
-	@Getter @Setter private BigDecimal minerEfficiency;
+	@Getter @Setter private Integer minerGrade;
+	@Getter @Setter private BigDecimal minerPower;
 	@Getter @Setter private Integer minerPeriod;
+	@Getter @Setter private Integer minerNum;
 	@Getter @Setter private String created;
 	@Getter @Setter private String updated;
 	

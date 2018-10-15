@@ -9,6 +9,6 @@ import lombok.Setter;
 public class EfficiencyWrapper implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Getter @Setter private BigDecimal minerEfficiency;
+	@Getter @Setter private BigDecimal minerPower;
 
 }

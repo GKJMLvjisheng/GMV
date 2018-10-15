@@ -27,5 +27,12 @@ public interface UserWalletDetailMapper {
    * @param txHash
    * @return
    */
-  Integer updateByHash(@Param("txHash")String txHash,@Param("txResult")Integer txResult);
+  //Integer updateByHash(@Param("txHash")String txHash,@Param("txResult")Integer txResult);
+  /**
+   * 根据充提币记录表id更新状态
+   * @param txResult
+   * @param oasDetailUuid
+   * @return
+   */
+  Integer updateByOasDetailUuid(@Param("txResult")Integer txResult,@Param("oasDetailUuid") String oasDetailUuid);
 }

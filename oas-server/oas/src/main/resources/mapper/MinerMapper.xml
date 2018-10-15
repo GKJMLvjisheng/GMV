@@ -6,40 +6,28 @@
 		<result column="miner_name" property="minerName"/>
 	  	<result column="miner_description" property="minerDescription"/>
 	  	<result column="miner_price" property="minerPrice"/>
-	  	<result column="miner_efficiency" property="minerEfficiency"/>
+	  	<result column="miner_grade" property="minerGrade"/>
+	  	<result column="miner_power" property="minerPower"/>
 	  	<result column="miner_period" property="minerPeriod"/>
 	  	<result column="created" property="created"/>
 	  	<result column="updated" property="updated"/>
     </resultMap>
-    
-    <resultMap id="userMinerMap" type="com.cascv.oas.server.miner.wrapper.UserMinerWrapper">
-        <result column="uuid" property="uuid"/>
-		<result column="user_uuid" property="userUuid"/>
-		<result column="miner_code" property="minerCode"/>
-		<result column="miner_name" property="minerName"/>
-	  	<result column="miner_description" property="minerDescription"/>
-	  	<result column="miner_price" property="minerPrice"/>
-	  	<result column="miner_efficiency" property="minerEfficiency"/>
-	  	<result column="miner_period" property="minerPeriod"/>
-	  	<result column="created" property="created"/>
-	  	<result column="updated" property="updated"/>
-    </resultMap>
-    
+        
     <sql id="miner_List">
-  		miner_code, miner_name, miner_description, miner_price, miner_efficiency, miner_period, created, updated
+  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_efficiency, miner_period, created, updated
     </sql>
     
     <insert id="insertMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
         insert into miner_source
         <trim prefix="(" suffix=")" suffixOverrides=",">
-	        miner_code, miner_name,
+	        miner_code, miner_name, miner_grade,
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
 	         miner_price, miner_efficiency, miner_period, created, updated
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
-	        #{minerCode}, #{minerName},
+	        #{minerCode}, #{minerName}, #{minerGrade},
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
@@ -55,16 +43,10 @@
     </select>
     
     <select id="inquireByMinerName" resultMap="MinerMap">
-        select 
-        <include refid="miner_List" />
-         from miner_source
-         where miner_name = #{minerName}
-    </select>
-    
-    <select id="selectByuserUuid" resultMap="userMinerMap">
-        select * from miner_source A 
-        left join purchase_record B on A.miner_code=B.miner_code 
-        where B.user_uuid=#{userUuid}
+        select b.* from 
+          (select * from miner_source
+            where miner_name not in (select miner_name from miner_source where miner_name=#{minerName}))b
+        where b.miner_name = #{minerName}
     </select>
     
     <update id="updateMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
@@ -72,8 +54,9 @@
         set
           miner_name = #{minerName},
           miner_description = #{minerDescription},
-          miner_efficiency = #{minerEfficiency},
+          miner_power = #{minerPower},
           miner_price = #{minerPrice},
+          miner_grade = #{minerGrade},
           miner_period = #{minerPeriod},
           updated = #{updated}
         where
@@ -82,6 +65,25 @@
     
     <delete id="deleteMiner">
         delete from miner_source where miner_code=#{minerCode}
-    </delete>
+    </delete>    
+    
+    <resultMap id="userMinerMap" type="com.cascv.oas.server.miner.wrapper.UserMinerWrapper">
+        <result column="uuid" property="uuid"/>
+		<result column="user_uuid" property="userUuid"/>
+		<result column="miner_code" property="minerCode"/>
+		<result column="miner_name" property="minerName"/>
+	  	<result column="miner_description" property="minerDescription"/>
+	  	<result column="miner_price" property="minerPrice"/>
+	  	<result column="miner_grade" property="minerGrade"/>
+	  	<result column="miner_num" property="minerNum"/>
+	  	<result column="miner_power" property="minerPower"/>
+	  	<result column="miner_period" property="minerPeriod"/>
+	  	<result column="created" property="created"/>
+    </resultMap>
+    
+    <select id="selectByuserUuid" resultMap="userMinerMap">
+        select * from purchase_record 
+        where user_uuid=#{userUuid}
+    </select>
     
 </mapper>

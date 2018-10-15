@@ -145,7 +145,7 @@ function agree(id){
 	
 	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
 	var uuid = id;
-	alert(JSON.stringify(uuid))
+	//alert(JSON.stringify(uuid));
 	$('#name').val(rows.userIdentityName);
 	$('#card').val(rows.userIdentityNumber);
 	var name=rows.userIdentityName;
