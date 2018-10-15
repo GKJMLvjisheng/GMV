@@ -15,7 +15,9 @@ public interface MinerMapper {
 	Integer deleteMiner(@Param("minerCode") String minerCode);
 	Integer updateMiner(MinerModel minerModel);
 	List<MinerModel> selectAllMiner();
+	MinerModel inquireByUuid(@Param("minerCode") String minerCode);
 	MinerModel inquireByMinerName(@Param("minerName") String minerName);
+	MinerModel inquireUpdateMinerName(@Param("minerName") String minerName, @Param("updateMinerName") String updateMinerName);
 	
 	List<UserMinerWrapper> selectByuserUuid(@Param("userUuid") String userUuid);
 

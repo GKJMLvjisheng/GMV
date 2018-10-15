@@ -43,10 +43,18 @@
     </select>
     
     <select id="inquireByMinerName" resultMap="MinerMap">
+        select * from miner_source where miner_name = #{minerName}
+    </select>
+    
+    <select id="inquireByUuid" resultMap="MinerMap">
+        select * from miner_source where miner_code = #{minerCode}
+    </select>
+    
+    <select id="inquireUpdateMinerName" resultMap="MinerMap">
         select b.* from 
           (select * from miner_source
             where miner_name not in (select miner_name from miner_source where miner_name=#{minerName}))b
-        where b.miner_name = #{minerName}
+        where b.miner_name = #{updateMinerName}
     </select>
     
     <update id="updateMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
