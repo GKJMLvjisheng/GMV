@@ -98,10 +98,19 @@ public ResponseEntity<?> addNews(NewsModel newsInfo,@RequestParam(name="file",va
    			}
    		}else
    			{
+            NewsModel newsModel=new NewsModel();
+          	
+            newsModel.setNewsTitle(newsInfo.getNewsTitle());
+            newsModel.setNewsAbstract(newsInfo.getNewsAbstract());
+            newsModel.setNewsUrl(newsInfo.getNewsUrl());
+            newsModel.setNewsPicturePath(newsInfo.getNewsPicturePath());
+            newsModel.setCreated(DateUtils.getTime());
+            
+            newsService.addNews(newsModel);
    			log.info("新闻未上传图片");
-   			return new ResponseEntity.Builder<Integer>()
-   					.setData(1)
-   					.setErrorCode(ErrorCode.GENERAL_ERROR)
+   			return new ResponseEntity.Builder<NewsModel>()
+   					.setData(newsModel)
+   					.setErrorCode(ErrorCode.SUCCESS)
    					.build();
    			}
    	
@@ -183,7 +192,9 @@ public ResponseEntity<?> selectAllNews(){
     log.info("no news in mysql");
   }
     return new ResponseEntity.Builder<Map<String, Object>>()
-              .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+              .setData(info).
+              setErrorCode(ErrorCode.SUCCESS)
+              .build();
   }
 
 @PostMapping(value="/deleteNews")

@@ -137,7 +137,10 @@
    select * from user_info
    where name = 'SYSTEM'
   </select>
-  
+  <select id="getAdminUserInfo" resultType="com.cascv.oas.server.user.model.UserModel">
+   select * from user_info
+   where name = 'admin'
+  </select>
 
    <update id="updateRecordByHash" parameterType="com.cascv.oas.server.blockchain.model.OasDetail" >
     update oas_detail
@@ -175,4 +178,10 @@
   	from  oas_detail
   	where tx_hash = #{txHash,jdbcType=VARCHAR}
   </select>
+  
+  <update id="updateStatusByUuid">
+  	update oas_detail 
+  	set status = #{status,jdbcType=INTEGER}
+  	where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
 </mapper>

@@ -7,27 +7,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
-import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTradeRecordMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
-import com.cascv.oas.server.energy.model.EnergyTopicModel;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.vo.ActivityResult;
 import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
-import com.cascv.oas.server.news.config.MediaServer;
-import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
-import com.cascv.oas.server.timezone.model.CountryPromaryModel;
-import com.cascv.oas.server.utils.ShiroUtils;
-
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -41,11 +34,8 @@ public class PowerService {
     private EnergyWalletMapper energyWalletMapper;
     @Autowired
     private EnergySourcePowerMapper energySourcePowerMapper;
-    @Autowired
-    private EnergyTopicMapper energyTopicMapper;
 	@Autowired 
-	private CountryPromaryModelMapper countryPromaryModelMapper;
-    
+	private TimeZoneService timeZoneService;
     private EnergyBall oaEnergyBall = new EnergyBall();//微信关注能量球
     private EnergyBall fsEnergyBall = new EnergyBall();//好友分享能量球
     private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
@@ -223,35 +213,15 @@ public class PowerService {
     	List<EnergyPowerChangeDetail> energyPowerChangeDetailList = energyTradeRecordMapper.selectPowerByPage(userUuid, offset, limit);
     	List<EnergyPowerChangeDetail> powerList = new ArrayList<>();
     	
-    	String srcFormater = null,dstFormater = null;
-		String dstTimeZoneId=null;
-		String name=ShiroUtils.getAddress();
-		log.info("name={}",name);
-		if(name!=null) 
-		{
-			String [] arr = name.split("\\s+");
-			String newName=arr[0];
-			log.info("newName={}",newName);
-			CountryPromaryModel countryPromaryModel=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName);
-			if(countryPromaryModel!=null) {
-				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName).getTimeZone();
-				log.info("dstTimeZoneId={}",dstTimeZoneId);
-			}else {
-				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByCountryName(newName).getTimeZone();
-				log.info("dstTimeZoneId={}",dstTimeZoneId);
-			}
-		}else
-		{
-			dstTimeZoneId="Asia/Shanghai";
-			log.info("dstTimeZoneId={}",dstTimeZoneId);
-		}
-		
     	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
     		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange().intValue());
     		
     		if(energyPowerChangeDetail.getValue() != 0) {
     			powerList.add(energyPowerChangeDetail);
     		}
+    		String srcFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
     		String created=DateUtils.string2Timezone(srcFormater, energyPowerChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
     		energyPowerChangeDetail.setCreated(created);
 			log.info("newCreated={}",created);

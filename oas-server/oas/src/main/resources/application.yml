@@ -80,6 +80,7 @@ wallet:
   token: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
   contracts[0]: 
     address: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
+    
 mail:
   mailBean:
     rootMail: "3602745100@qq.com"

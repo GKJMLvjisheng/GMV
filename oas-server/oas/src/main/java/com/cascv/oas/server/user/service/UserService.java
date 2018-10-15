@@ -3,7 +3,6 @@ package com.cascv.oas.server.user.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

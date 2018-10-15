@@ -13,6 +13,7 @@ import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.*;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,16 @@ public class EnergyService {
     @Autowired
     private EnergyTradeRecordMapper energyTradeRecordMapper;
     @Autowired
-    private EnergyWalletMapper energyWalletMapper;
-    
+    private EnergyWalletMapper energyWalletMapper;  
     @Autowired
     private UserWalletService userWalletService;
-    
     @Autowired
     private ActivityMapper activityMapper;
-    
-    private static String checkinEnergyBallUuid;
-    private EnergyBall checkinEnergyBall = new EnergyBall();
+	@Autowired 
+	private TimeZoneService timeZoneService;
 
+    private EnergyBall checkinEnergyBall = new EnergyBall();
+    private static String checkinEnergyBallUuid;
     private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
@@ -566,7 +566,9 @@ public class EnergyService {
     }
        
     public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit,Integer inOrOut) {
-    	
+    	String srcFormater="yyyy-MM-dd HH:mm:ss";
+	    String dstFormater="yyyy-MM-dd HH:mm:ss";
+		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
     if(inOrOut!=null){
     	if(inOrOut==1)
     	{ 	
@@ -578,6 +580,8 @@ public class EnergyService {
     		   if(energyChangeDetail.getValue() != 0) {
     			   energyList.add(energyChangeDetail);
        		}
+    		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+			   energyChangeDetail.setCreated(created);
     	   }
     	    return energyList;
     	}
@@ -592,6 +596,8 @@ public class EnergyService {
      		   if(energyChangeDetail.getValue() != 0) {
     			   energyList.add(energyChangeDetail);
        		   }
+     		  String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+			  energyChangeDetail.setCreated(created);
         	}
         	return energyList;
     	}
@@ -610,6 +616,8 @@ public class EnergyService {
 	  			   energyList.add(energyChangeDetail);
 	     		}
     	     //}
+	   		String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+			energyChangeDetail.setCreated(created);
     	   }
     	    return energyList;
     	}

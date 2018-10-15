@@ -23,6 +23,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -30,7 +31,6 @@ import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
-import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
@@ -41,6 +41,7 @@ import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -56,7 +57,8 @@ public class EthWalletController {
   private EthWalletDetailService ethWalletDetailService;
   @Autowired
   private EthWalletDetailMapper ethWalletDetailMapper;
-  
+  @Autowired 
+  private TimeZoneService timeZoneService;
   @Autowired
   private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
   
@@ -282,6 +284,14 @@ public class EthWalletController {
   @Transactional
   public ResponseEntity<?> inqureEthWalletTradeRecord(){
 	  List<EthWalletTradeRecordInfo> ethWalletTradeRecords=ethWalletTradeRecordMapper.selectAllTradeRecord();
+	  for (EthWalletTradeRecordInfo ethWalletTradeRecordInfo : ethWalletTradeRecords) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+			String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, ethWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+			ethWalletTradeRecordInfo.setCreated(created);
+			log.info("newCreated={}",created);
+		  }
 		return new ResponseEntity.Builder<List<EthWalletTradeRecordInfo>>()
 		        .setData(ethWalletTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)
@@ -414,15 +424,15 @@ public class EthWalletController {
    * @param detail
    * @return
    */
-  @PostMapping(value="/getExchangeResult")
+ /* @PostMapping(value="/getExchangeResult")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> getExchangeResult(@RequestBody EthWalletDetail detail){
-	  if(detail.getUuid() == null || detail.getTxHash() == null || detail.getTitle()== null ) {
+	  if(detail.getUuid() == null) {
 		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.SELECT_EMPTY).build();
 	  }
 	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.getExchangeResult(detail)).build();
 	  
   }
-  
+  */
 }

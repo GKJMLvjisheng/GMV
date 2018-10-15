@@ -52,7 +52,10 @@ public enum ErrorCode {
   UNCONFIRMED_BALANCE(10035,"待确认交易余额不足，无法扣除"),
   OAS_EXTRA_MONEY_NOT_ENOUGH(10036,"余额不足，手续费无法扣除"),
   ETH_RETURN_HASH(10037,"交易钱包返回hash值为空"),
-  UNLOGIN_FAILED(10038,"该用户未登录");
+  UNLOGIN_FAILED(10038,"该用户未登录"),
+  SEND_SMS_ERROR(10039,"给管理员发送信息失败"),
+  UNAUTHENTICATED_ACCESS(10040,"未认证的访问"),
+  UNAUTHORIZATED_ACCESS(10041,"未授权的访问");
 
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;

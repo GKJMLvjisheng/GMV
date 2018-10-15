@@ -9,5 +9,6 @@ public class EthConfigModel implements Serializable {
   private static final long serialVersionUID = 1L;
   @Getter @Setter private Integer id;
   @Getter @Setter private String activeNetwork;
+  @Getter @Setter private Integer txInterval;
 }
 
