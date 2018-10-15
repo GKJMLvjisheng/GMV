@@ -13,6 +13,20 @@
 	  	<result column="updated" property="updated"/>
     </resultMap>
     
+    <resultMap id="userMinerMap" type="com.cascv.oas.server.miner.wrapper.UserMinerWrapper">
+        <result column="uuid" property="uuid"/>
+		<result column="user_uuid" property="userUuid"/>
+		<result column="miner_code" property="minerCode"/>
+		<result column="miner_name" property="minerName"/>
+		<result column="miner_grade" property="minerGrade"/>
+	  	<result column="miner_description" property="minerDescription"/>
+	  	<result column="miner_price" property="minerPrice"/>
+	  	<result column="miner_efficiency" property="minerEfficiency"/>
+	  	<result column="miner_period" property="minerPeriod"/>
+	  	<result column="created" property="created"/>
+	  	<result column="updated" property="updated"/>
+    </resultMap>
+    
     <sql id="miner_List">
   		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_efficiency, miner_period, created, updated
     </sql>
@@ -39,6 +53,12 @@
         select
          <include refid="miner_List" />
          from miner_source
+    </select>
+    
+    <select id="selectByuserUuid" resultMap="userMinerMap">
+        select * from miner_source A 
+        left join purchase_record B on A.miner_code=B.miner_code 
+        where B.user_uuid=#{userUuid}
     </select>
     
     <update id="updateMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
