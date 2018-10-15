@@ -14,7 +14,7 @@
     </resultMap>
         
     <sql id="miner_List">
-  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_efficiency, miner_period, created, updated
+  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_power, miner_period, created, updated
     </sql>
     
     <insert id="insertMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
@@ -24,14 +24,14 @@
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
-	         miner_price, miner_efficiency, miner_period, created, updated
+	         miner_price, miner_power, miner_period, created, updated
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{minerCode}, #{minerName}, #{minerGrade},
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
-	        #{minerPrice}, #{minerEfficiency}, #{minerPeriod}, #{created}, #{updated}
+	        #{minerPrice}, #{minerPower}, #{minerPeriod}, #{created}, #{updated}
 	    </trim>            
     </insert>
     
