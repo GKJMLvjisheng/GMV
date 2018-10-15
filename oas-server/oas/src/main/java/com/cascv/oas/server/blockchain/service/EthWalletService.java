@@ -62,7 +62,6 @@ import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
-import com.cascv.oas.server.utils.ShiroUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -115,10 +114,10 @@ public class EthWalletService {
         log.info("txHash: {}, txResult: {},status: {}", 
             ethWalletDetail.getTxHash(), ethWalletDetail.getTxResult(), status);
         if (status != 0) {
-          ethWalletDetail.setTxResult(status);
-          ethWalletDetailMapper.update(ethWalletDetail);
-          userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
-          getExchangeResult(ethWalletDetail);
+            ethWalletDetail.setTxResult(status);
+            ethWalletDetailMapper.update(ethWalletDetail);
+            //userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
+            getExchangeResult(ethWalletDetail);
         }
       }
     }
@@ -369,15 +368,6 @@ public class EthWalletService {
       returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
       return returnValue;
     }
-    //转账当前金额加进待确认交易里面
-    EthWallet emptyEthWallet = new EthWallet();
-    emptyEthWallet.setUserUuid(ethWallet.getUserUuid());
-    emptyEthWallet.setUnconfirmedBalance(amount.add(ethWallet.getUnconfirmedBalance()));
-    Integer eResult = ethWalletMapper.update(emptyEthWallet);
-    if(eResult == 0) {
-    	returnValue.setErrorCode(ErrorCode.UPDATE_FAILED);
-        return returnValue;
-    }
     
     UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid());
     if (userCoin.getBalance().compareTo(amount) < 0) {
@@ -393,6 +383,15 @@ public class EthWalletService {
     		amountDec.toBigInteger(), gasPrice, gasLimit);
     log.info("txhash {}", txHash);
     if (txHash != null) {
+	  //当前金额加进待确认交易里面
+	  EthWallet emptyEthWallet = new EthWallet();
+	  emptyEthWallet.setUserUuid(ethWallet.getUserUuid()); 
+	  emptyEthWallet.setUnconfirmedBalance(amount.add(ethWallet.getUnconfirmedBalance()));
+	  Integer eResult = ethWalletMapper.update(emptyEthWallet);
+	  if(eResult == 0) {
+	   	returnValue.setErrorCode(ErrorCode.UPDATE_FAILED);
+        return returnValue;
+	  }
       addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, comment, toUserAddress);
       addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress());
     }
@@ -439,10 +438,10 @@ public class EthWalletService {
 	      //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH,amount, txHash, comment, toUserAddress);
 	    	if(flag) {
 	    		 addDetail(toUserAddress, EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, "");
-	    		 //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, toUserAddress);//system的记录
+	    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, amount, txHash, comment, toUserAddress);//system的记录
 	    	}else {
 	    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.ETH_TO_COIN, amount, txHash, comment, "");//onlineWalletName
-	    		 //addDetail(toUserAddress, EthWalletDetailScope.ETH_TO_COIN, amount, txHash, comment, ethWallet.getAddress());//system的记录
+	    		 addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress());//system的记录
 	    	}
 	     
 	    }
@@ -575,7 +574,8 @@ public class EthWalletService {
 		  Integer eResult = ethWalletMapper.update(emptyEth);
 		  if(eResult == 0) {
 			  return ErrorCode.UPDATE_FAILED;
-		  }  
+		  }
+		  
 	  }else {
 		  return ErrorCode.SYSTEM_NOT_EXIST;
 	  }
@@ -584,7 +584,7 @@ public class EthWalletService {
 
   //在交易钱包的交易记录中点击记录
   public ErrorCode getExchangeResult(EthWalletDetail detail) {
-	  //EthWalletDetail detail = ethWalletDetailMapper.selectByUUid(ethDetail.getUuid());//zhushidiao
+	  //EthWalletDetail detail = ethWalletDetailMapper.selectByUUid(ethDetail.getUuid());//
 	  if(detail.getTxHash() == null || detail.getTitle()== null ) {
 		  return ErrorCode.SELECT_EMPTY;
 	  } 
@@ -681,6 +681,12 @@ public class EthWalletService {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
 	  		 }
+	  		//更新在线钱包记录中的状态
+	  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid());
+	  		if(uwdResult == null) {
+ 		  		 return ErrorCode.UPDATE_FAILED;
+ 		  	}
+
 	  	 }else {
 	  		 //充币
 		  	 if(flag.equals("success")) {
@@ -690,8 +696,10 @@ public class EthWalletService {
 		  			 return ErrorCode.UPDATE_FAILED;
 		  		 }
 		  		 //在线钱包中显示记录
-		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(myWallet, "", UserWalletDetailScope.ETH_TO_COIN, value, detail.getRemark(), detail.getRemark(),detail.getTxHash(),coinClient.getNetName()));
-		  	  }
+		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(myWallet, "", UserWalletDetailScope.ETH_TO_COIN, value, detail.getRemark(), detail.getRemark(),oasD.getUuid()));//detail.getTxHash(),coinClient.getNetName()
+		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_OUT, value, detail.getRemark(), detail.getRemark(),null));//system转出
+				 
+		  	 }
 		  	 	//修改待确认交易
 				EthWallet emptyEth = new EthWallet();
 				if(userEthWallet.getUnconfirmedBalance().compareTo(value) == -1) {
@@ -717,15 +725,15 @@ public class EthWalletService {
   	  return ErrorCode.SUCCESS;
   }
   
-  public static String getTransferResult(String net,String hash) {
-	  String flag = "pending";
+  public static Integer getTransferResult(String net,String hash) {
+	  Integer flag = 0;//"pending";
 	  String result = HttpUtils.sendPost("https://"+net+".etherscan.io/tx/"+hash,null);
   	  result = result.replaceAll("//&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "");//去掉网页中带有html语言的标签
   	  if(result.indexOf("TxReceipt Status:Success")!=-1){
-  		flag = "success";
+  		flag = 1;//"success";
   	  }
   	  if(result.indexOf("TxReceipt Status:Fail")!=-1) {
-  		flag = "fail";
+  		flag = 2;//"fail";
   	  }
   	  return flag;
   }
