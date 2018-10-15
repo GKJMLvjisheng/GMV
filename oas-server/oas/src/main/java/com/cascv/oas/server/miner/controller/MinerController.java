@@ -1,8 +1,6 @@
 package com.cascv.oas.server.miner.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +19,7 @@ import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +30,10 @@ public class MinerController {
 	
 	@Autowired
 	private MinerMapper minerMapper;
+	
+	@Autowired
+	private TimeZoneService timeZoneService;
+
 	
 	@PostMapping(value = "/inquireMinerName")  
 	@ResponseBody
@@ -51,16 +54,15 @@ public class MinerController {
 	@PostMapping(value = "/inquireMiner")  
 	@ResponseBody
 	public ResponseEntity<?> inquireMiner(){
-		Map<String,Object> info=new HashMap<>();
 		List<MinerModel> minerModelList = minerMapper.selectAllMiner();
-		for(int i=0; i<minerModelList.size(); i++) {
-			log.info("updated={}", minerModelList.get(i).getUpdated());
+		for(MinerModel minerModel : minerModelList) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+		    String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
+		    minerModel.setUpdated(updated);
+			log.info("updated={}", minerModel.getUpdated());
 		}
-		
-		if(minerModelList.size() > 0)
-			info.put("minerModelList", minerModelList);
-		else
-			log.info("no message");
 		return new ResponseEntity.Builder<List<MinerModel>>()
 				.setData(minerModelList)
 				.setErrorCode(ErrorCode.SUCCESS)
