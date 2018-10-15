@@ -28,7 +28,7 @@
                             //将option增加到下拉列表中。
                                 objNetwork.options.add(option); 
                             	  }
-         		    	$("#network option[value='mainnet']").prop("selected","selected");//根据值让option选中
+         		    	//$("#network option[value='mainnet']").prop("selected","selected");//根据值让option选中
                           }
          		     else {
          		    	 alert(res.message);

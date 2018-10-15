@@ -112,8 +112,9 @@ function initKYCGrid(data) {
 
 function picturePath(value, row, index) {
 	var result = "";
+	var id = row.userName;
 	var picturePath = value;
-    result += "<a href="+picturePath+"><img src="+picturePath+" width='120px' height='80'></a>";
+    result += "<a href='javascript:;' onclick=\"addMessage('" + id + "','" + picturePath + "')\" ><img src="+picturePath+" width='120px' height='80'></a>";
     			//"<span>"+picturePath+"</span>";      
     return result;
 }
@@ -142,8 +143,13 @@ function actionFormatter1(value, row, index) {
 	return result;
 }
 
-function agree(id){	
+function addMessage(id,picturePath){		
 	$('#agId').val(id);
+	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
+	$('#name').val(rows.userIdentityName);
+	$('#card').val(rows.userIdentityNumber);
+	$('#agStatus').val(rows.verifyStatus);
+	document.getElementById('image').src = picturePath;	
 	$("#addNCModal").modal("show");
 }
 
