@@ -26,20 +26,22 @@
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="" >
           <p>{{item.value}}</p>
-          <div>
-          <i></i> 
-          <span v-if="item.generate" class="ballcolor">{{item.name}}</span>
-          <span v-else >{{item.name}}</span>
-         </div>
+         
+          <!-- <span v-if="item.generate" :style="{color:'#006600',size:'12px'}">{{item.name}}</span> -->
+         <span v-if="item.generate" :style="{color:'#006600'}"><font size="1px" v-if="item.generate">{{item.name}}</font></span>
+         
+          <span v-else ><font size="1px" >{{item.name}}</font></span>
+        
         </div>
         <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="">
           <p>{{item.value}}</p>
         <div>
-          <i class='blackIamge'></i> 
-          <span v-if="item.generate" class="ballcolor">{{item.name}}</span>
-          <span v-else>{{item.name}}</span>
+          <i></i> 
+          <!-- class="ballcolor" -->
+          <span v-if="item.generate" :style="{color:'#006600'}"><font size="1px" v-if="item.generate">{{item.name}}</font></span>
+          <span v-else ><font size="1px" >{{item.name}}</font></span>
          </div>
           </div>
       
@@ -200,7 +202,7 @@ export default {
     }
   },
   created() {
-    //this.getStep()
+    this.getStep()
     this.getWalkEnergyBall() 
     this.getEnergyBall() 
     this.getCurrentEnergy()
@@ -336,17 +338,17 @@ export default {
      getWalkEnergyBall() {
      
       
-    var todayStep="0"
-    //this.input1=this.todayStep
+    //var todayStep="0"
+    this.input1=this.todayStep
     let time=currentTime(true)
-    //let time="2018-10-11"
-     //console.log("time"+time)
+     //let time="2018-10-13"
+    //  //console.log("time"+time)
      var data={}
      data['date']=time
-     data['stepNum']=todayStep
+     data['stepNum']=this.todayStep
      let params = new Array();
      params.push(data)
-      
+    //   
       this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
       //this.input2=data.startDate
         console.log("data"+JSON.stringify(data))
@@ -529,6 +531,7 @@ export default {
     },
    
  skipRefresh() {
+      this.getStep()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
@@ -720,7 +723,8 @@ header {
   .energy-block {
     position: relative;
     width: 100%;
-    height: 624px;
+    height: 642px;
+    //624px;
     background-image: url("../assets/images/background@2x.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -749,15 +753,17 @@ header {
       float: right;
       display: flex;
       align-items: center;
+      
       i{
       position: absolute;
       display: inline-block;
       right: 70%;
       width: 32px;
       height: 32px;
-      background-image: url("../assets/images/phone@2x.png");
+      background-image: url("../assets/images/watch@2x.png");
       background-size: 32px 32px;
     }
+    
     .ballcolor{
       color:#006600;
     }
@@ -784,7 +790,7 @@ header {
     width: 112px;
     height: 112px;
     position: absolute;
-    bottom: 36px;
+    bottom: 18px;
     left: 36px;
     &:last-child {
       left: 180px;
