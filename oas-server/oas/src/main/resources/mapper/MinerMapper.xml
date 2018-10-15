@@ -54,6 +54,13 @@
          order by updated desc
     </select>
     
+    <select id="inquireByMinerName" resultMap="MinerMap">
+        select 
+        <include refid="miner_List" />
+         from miner_source
+         where miner_name = #{minerName}
+    </select>
+    
     <select id="selectByuserUuid" resultMap="userMinerMap">
         select * from miner_source A 
         left join purchase_record B on A.miner_code=B.miner_code 
