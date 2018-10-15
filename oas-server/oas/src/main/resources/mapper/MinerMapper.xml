@@ -46,6 +46,10 @@
         select * from miner_source where miner_name = #{minerName}
     </select>
     
+    <select id="inquireByUuid">
+        select * from miner_source where miner_code = #{minerCode}
+    </select>
+    
     <select id="inquireUpdateMinerName" resultMap="MinerMap">
         select b.* from 
           (select * from miner_source
