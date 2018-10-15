@@ -99,7 +99,6 @@ public class ActivityService {
 		EnergyResultPoint energyResult = this.getNewPoint(sourceCode, rewardCode);
 		if(energyResult != null) {
 			addEnergyPointBall.setPoint(energyResult.getNewPoint());
-			System.out.println(addEnergyPointBall.getPoint());
 			return addEnergyPointBall;
 		}else
 			return null;
@@ -123,7 +122,6 @@ public class ActivityService {
 		EnergyResultPower energyResult = this.getNewPower(sourceCode, rewardCode);
 		if(energyResult != null) {
 			addEnergyPowerBall.setPower(energyResult.getNewPower());
-			System.out.println(addEnergyPowerBall.getPower());
 			return addEnergyPowerBall;
 		}
 		else
