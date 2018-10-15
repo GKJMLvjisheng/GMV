@@ -69,7 +69,7 @@ server:
 
 media:
   server:
-    imageHost : http://oas.cascv.com:8080
+    imageHost : http://10.0.0.4:8080
     
 wallet:
   providers:

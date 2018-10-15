@@ -781,7 +781,9 @@ public class UserController {
 	@ResponseBody
 	public ResponseEntity<?> inqureUserIdentityInfo(){
 		String userName=ShiroUtils.getLoginName();
-		UserIdentityCardModel userIdentityCardModel=userService.selectUserIdentityByUserName(userName);
+		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectUserIdentityByUserName(userName);
+		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelList.get(0);
+		log.info("userIdentityCardModel={}",userIdentityCardModel.getCreated());
 		if(userIdentityCardModel.getUpdated()==null)
 		{
 			String updated=userIdentityCardModel.getCreated();
@@ -802,6 +804,21 @@ public class UserController {
 			String userIdentityNumber="empty";
 			userIdentityCardModel.setUserIdentityNumber(userIdentityNumber);
 		}
+		if(userIdentityCardModel.getFrontOfPhoto()==null)
+		{
+			String frontOfPhoto="empty";
+			userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+		}
+		if(userIdentityCardModel.getBackOfPhoto()==null)
+		{
+			String backOfPhoto="empty";
+			userIdentityCardModel.setBackOfPhoto(backOfPhoto);
+		}
+		if(userIdentityCardModel.getHoldInHand()==null)
+		{
+			String holdInHand="empty";
+			userIdentityCardModel.setHoldInHand(holdInHand);
+		}
 			return new ResponseEntity.Builder<UserIdentityCardModel>()
 			  	      .setData(userIdentityCardModel)
 			  	      .setErrorCode(ErrorCode.SUCCESS)
@@ -810,9 +827,10 @@ public class UserController {
 	@PostMapping(value="/upLoadUserIdentityInfo")
 	@ResponseBody
 	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam("file") MultipartFile file){
+		
 		String userName=ShiroUtils.getLoginName();
-		UserIdentityCardModel userIdentityCardModel=new UserIdentityCardModel();
-		userIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
+		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
+		
 		Map<String,String> info = new HashMap<>();
 		File dir=new File(IDENTITY_UPLOADED);
 	  	 if(!dir.exists()){
@@ -836,9 +854,17 @@ public class UserController {
 			}
 			if(fileName.equals("face") && userIdentityCardModel != null )
 			{
-				String newfrontOfPhoto=str+uniqueFileName;		
+				Integer verifyStatus=0;
+				String newfrontOfPhoto=str+uniqueFileName;
+				String created=DateUtils.getTime();
+				String updated=created;
+				
 				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setFrontOfPhoto(newfrontOfPhoto);
+				userIdentityCardModel.setVerifyStatus(verifyStatus);
+				userIdentityCardModel.setCreated(created);
+				userIdentityCardModel.setUpdated(updated);
+				
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
 				UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
@@ -851,12 +877,19 @@ public class UserController {
 				  	      .build();
 			}else if(fileName.equals("face") && userIdentityCardModel == null )
 			{
+				UserIdentityCardModel newUserIdentityCardModel=new UserIdentityCardModel();
 				Integer verifyStatus=0;
+				String created=DateUtils.getTime();
+				String updated=created;
 				String newfrontOfPhoto=str+uniqueFileName;
-				userIdentityCardModel.setUserName(userName);
-				userIdentityCardModel.setFrontOfPhoto(newfrontOfPhoto);
-				userIdentityCardModel.setVerifyStatus(verifyStatus);
-				userIdentityCardModelMapper.insertUserIdentityCard(userIdentityCardModel);
+				
+				newUserIdentityCardModel.setUserName(userName);
+				newUserIdentityCardModel.setFrontOfPhoto(newfrontOfPhoto);
+				newUserIdentityCardModel.setVerifyStatus(verifyStatus);
+				newUserIdentityCardModel.setCreated(created);
+				newUserIdentityCardModel.setUpdated(updated);
+				
+				userIdentityCardModelMapper.insertUserIdentityCard(newUserIdentityCardModel);
 				
 				UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
 				String newFrontOfPhoto=userNewIdentityCardModel.getFrontOfPhoto();
@@ -868,27 +901,42 @@ public class UserController {
 				  	      .build();
 			   }else if(fileName.equals("back") && userIdentityCardModel != null) 
 				{
-				String newbackOfPhoto=str+uniqueFileName;
-				userIdentityCardModel.setUserName(userName);
-				userIdentityCardModel.setBackOfPhoto(newbackOfPhoto);
-				userIdentityCardModelMapper.updateUserIdentityCardByBackOfPhoto(userIdentityCardModel);
-				
-				UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
-				String newBacktOfPhoto=userNewIdentityCardModel.getBackOfPhoto();
-				String backOfPhoto = mediaServer.getImageHost() + newBacktOfPhoto;
-				info.put("backOfPhoto", backOfPhoto);
-				return new ResponseEntity.Builder<Map<String,String>>()
-				  	      .setData(info)
-				  	      .setErrorCode(ErrorCode.SUCCESS)
-				  	      .build();
-				}else if(fileName.equals("back") && userIdentityCardModel == null)
-				{
-					Integer verifyStatus=0;
+				    Integer verifyStatus=0;
+					String created=DateUtils.getTime();
+					String updated=created;
 					String newbackOfPhoto=str+uniqueFileName;
+					
 					userIdentityCardModel.setUserName(userName);
 					userIdentityCardModel.setBackOfPhoto(newbackOfPhoto);
 					userIdentityCardModel.setVerifyStatus(verifyStatus);
-					userIdentityCardModelMapper.insertUserIdentityCard(userIdentityCardModel);
+					userIdentityCardModel.setCreated(created);
+					userIdentityCardModel.setUpdated(updated);
+					
+					userIdentityCardModelMapper.updateUserIdentityCardByBackOfPhoto(userIdentityCardModel);
+				
+					UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
+					String newBacktOfPhoto=userNewIdentityCardModel.getBackOfPhoto();
+					String backOfPhoto = mediaServer.getImageHost() + newBacktOfPhoto;
+					info.put("backOfPhoto", backOfPhoto);
+					return new ResponseEntity.Builder<Map<String,String>>()
+					  	      .setData(info)
+					  	      .setErrorCode(ErrorCode.SUCCESS)
+					  	      .build();
+				}else if(fileName.equals("back") && userIdentityCardModel == null)
+				{
+					UserIdentityCardModel newUserIdentityCardModel=new UserIdentityCardModel();
+					Integer verifyStatus=0;
+					String created=DateUtils.getTime();
+					String updated=created;
+					String newbackOfPhoto=str+uniqueFileName;
+					
+					newUserIdentityCardModel.setUserName(userName);
+					newUserIdentityCardModel.setBackOfPhoto(newbackOfPhoto);
+					newUserIdentityCardModel.setVerifyStatus(verifyStatus);
+					newUserIdentityCardModel.setCreated(created);
+					newUserIdentityCardModel.setUpdated(updated);
+					
+					userIdentityCardModelMapper.insertUserIdentityCard(newUserIdentityCardModel);
 					
 					UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
 					String newBacktOfPhoto=userNewIdentityCardModel.getBackOfPhoto();
@@ -900,28 +948,42 @@ public class UserController {
 					  	      .build();
 				}else if(fileName.equals("hand") && userIdentityCardModel != null) 
 				{
-				String newholdInHand=str+uniqueFileName;
-
-				userIdentityCardModel.setUserName(userName);
-				userIdentityCardModel.setHoldInHand(newholdInHand);
-				userIdentityCardModelMapper.updateUserIdentityCardByHoldInHand(userIdentityCardModel);
-				
-				UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
-				String newHoldInHand=userNewIdentityCardModel.getHoldInHand();
-				String holdInHand = mediaServer.getImageHost() + newHoldInHand;
-				info.put("holdInHand", holdInHand);
-				return new ResponseEntity.Builder<Map<String,String>>()
-				  	      .setData(info)
-				  	      .setErrorCode(ErrorCode.SUCCESS)
-				  	      .build();
-			  }else if(fileName.equals("hand") && userIdentityCardModel == null)
-			  {
-				  Integer verifyStatus=0;
+					Integer verifyStatus=0;
 					String newholdInHand=str+uniqueFileName;
+					String created=DateUtils.getTime();
+					String updated=created;
+	
 					userIdentityCardModel.setUserName(userName);
 					userIdentityCardModel.setHoldInHand(newholdInHand);
 					userIdentityCardModel.setVerifyStatus(verifyStatus);
-					userIdentityCardModelMapper.insertUserIdentityCard(userIdentityCardModel);
+					userIdentityCardModel.setCreated(created);
+					userIdentityCardModel.setUpdated(updated);
+					
+					userIdentityCardModelMapper.updateUserIdentityCardByHoldInHand(userIdentityCardModel);
+					
+					UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
+					String newHoldInHand=userNewIdentityCardModel.getHoldInHand();
+					String holdInHand = mediaServer.getImageHost() + newHoldInHand;
+					info.put("holdInHand", holdInHand);
+					return new ResponseEntity.Builder<Map<String,String>>()
+					  	      .setData(info)
+					  	      .setErrorCode(ErrorCode.SUCCESS)
+					  	      .build();
+			  }else if(fileName.equals("hand") && userIdentityCardModel == null)
+			  {
+				    UserIdentityCardModel newUserIdentityCardModel=new UserIdentityCardModel();
+				    Integer verifyStatus=0;
+					String created=DateUtils.getTime();
+					String updated=created;
+					String newholdInHand=str+uniqueFileName;
+					
+					newUserIdentityCardModel.setUserName(userName);
+					newUserIdentityCardModel.setHoldInHand(newholdInHand);
+					newUserIdentityCardModel.setVerifyStatus(verifyStatus);
+					newUserIdentityCardModel.setCreated(created);
+					newUserIdentityCardModel.setUpdated(updated);
+					
+					userIdentityCardModelMapper.insertUserIdentityCard(newUserIdentityCardModel);
 					
 					UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
 					String newHoldInHand=userNewIdentityCardModel.getHoldInHand();
@@ -950,30 +1012,33 @@ public class UserController {
     public ResponseEntity<?> confirmSubmitUserIdentifyInfo(){
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
+		
 		String frontOfPhoto=userNewIdentityCardModel.getFrontOfPhoto();
 		String backOfPhoto=userNewIdentityCardModel.getBackOfPhoto();
 		String holdInHand=userNewIdentityCardModel.getHoldInHand();
+		
 		if(frontOfPhoto !=null && backOfPhoto !=null && holdInHand !=null) {
+			Integer verifyStatus=1;
+			String created=DateUtils.getTime();
+			String updated=created;
+			userNewIdentityCardModel.setVerifyStatus(verifyStatus);
+			userNewIdentityCardModel.setCreated(created);
+			userNewIdentityCardModel.setUpdated(updated);
+			
+			
+			userIdentityCardModelMapper.updateUserIdentityCardByVerifyStatus(userNewIdentityCardModel);
+			
+			return new ResponseEntity.Builder<Integer>()
+			  	      .setData(0)
+			  	      .setErrorCode(ErrorCode.SUCCESS)
+			  	      .build();
+			}else {
+			
 			log.info("不是三张照片");
 			return new ResponseEntity.Builder<Integer>()
 			  	      .setData(1)
 			  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
 			  	      .build();
-			
-		}else {
-			
-		Integer verifyStatus=1;
-		String created=DateUtils.getTime();
-		String updated=created;
-		userNewIdentityCardModel.setVerifyStatus(verifyStatus);
-		userNewIdentityCardModel.setCreated(created);
-		userNewIdentityCardModel.setUpdated(updated);
-		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userNewIdentityCardModel);
-		
-		return new ResponseEntity.Builder<Integer>()
-		  	      .setData(0)
-		  	      .setErrorCode(ErrorCode.SUCCESS)
-		  	      .build();
 		}
 	}
 	
