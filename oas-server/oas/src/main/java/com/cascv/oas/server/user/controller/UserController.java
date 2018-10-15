@@ -769,7 +769,6 @@ public class UserController {
 	@PostMapping(value="/inqureAllUserIdentityInfo")
 	@ResponseBody
 	public ResponseEntity<?> selectAllUserIdentityInfo(){
-		
 		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard();
 		return new ResponseEntity.Builder<List<UserIdentityCardModel>>()
 		  	      .setData(userIdentityCardModelList)
