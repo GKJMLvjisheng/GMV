@@ -16,5 +16,6 @@ public class UserRole implements Serializable {
 	@Setter @Getter private Integer userRoleId;
 	@Setter @Getter private Integer rolePriority;
 	@Setter @Getter private String roleName;
+	@Setter @Getter private String created;
 	
 }

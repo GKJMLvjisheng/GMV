@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.user.mapper.MenuModelMapper">
+
+<!-- insert children_menu -->
+<insert id="insertChildrenMenu" parameterType="com.cascv.oas.server.user.model.MenuModel">
+  	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="menuId">
+          SELECT LAST_INSERT_ID()
+    </selectKey>
+     insert into menu_info(
+     menu_name,
+     menu_parent_name,
+     menu_level,
+     menu_parent_id,
+     menu_order_id)
+     values 
+     (#{menuName,jdbcType=VARCHAR},
+     #{menuParentName,jdbcType=VARCHAR},
+     '2',
+     #{menuParentId,jdbcType=INTEGER},
+     #{menuOrderId,jdbcType=INTEGER})
+</insert>
+	
+<!-- insert parent_menu -->
+<insert id="insertParentMenu" parameterType="com.cascv.oas.server.user.model.MenuModel">
+  	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="menuId">
+          SELECT LAST_INSERT_ID()
+    </selectKey>
+     insert into menu_info(
+     menu_name,
+     menu_level,
+     menu_parent_id,
+     menu_parent_name
+     )
+     values 
+     (
+     #{menuName,jdbcType=VARCHAR},
+     '1',
+     '0',
+     #{menuName,jdbcType=VARCHAR})
+</insert>
+
+<!-- delete menu -->
+<delete id="deleteMenu">
+	delete from menu_info where menu_id = #{menuId}
+</delete>
+	
+<resultMap id="menuResultMap" type="com.cascv.oas.server.user.model.MenuModel">
+    	<id column="menu_id" property="menuId"/>  
+    	<result column="menu_name" property="menuName"/>
+    	<result column="menu_parent_name" property="menuParentName" />
+    	<result column="menu_order_id" property="menuOrderId"/>
+    	<result column="menu_level" property="menuLevel"/>
+    	<result column="menu_parent_id" property="menuParentId"/> 
+</resultMap>
+  	
+<sql id="Base_Column_List">
+     menu_id,menu_name,menu_parent_name,menu_order_id,menu_level,menu_parent_id
+</sql>
+  
+<select id="selectAllMenu" resultMap="menuResultMap">
+select 
+    <include refid="Base_Column_List" />
+from menu_info order by menu_order_id
+</select>
+
+<select id="selectChildrenById" resultMap="menuResultMap">
+select menu_id from menu_info where menu_parent_id =#{menuId}
+</select>
+
+<!-- update menu -->
+<!-- <update id="updateMenu" parameterType="com.cascv.rpms.model.MenuModel"> -->
+<!--  update menu_info set  -->
+<!--       	menu_order_id=#{menuOrderId} -->
+<!--   where menu_id = #{menuId}   -->
+<!-- </update> -->
+
+</mapper>
+
