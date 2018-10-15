@@ -24,7 +24,7 @@ public interface UserIdentityCardModelMapper {
 	List<UserIdentityCardModel> selectAllUserIdentityCard();
 	
 	UserIdentityCardModel selectUserIdentityByUserName(@Param("userName") String userName);
-	
+	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatus(@Param("userName") String userName);
 	UserIdentityCardModel selectUserByIdentityNumber(@Param("userIdentityNumber") String userIdentityNumber);
 	
 }
