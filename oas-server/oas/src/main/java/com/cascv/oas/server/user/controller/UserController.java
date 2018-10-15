@@ -1071,6 +1071,7 @@ public class UserController {
     @WriteLog(value="checkUserIdentity")
     public ResponseEntity<?> checkUserIdentity(@RequestBody UserIdentityCardModel userIdentityCardModelInfo) {
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
+		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
 		userIdentityCardModel.setUserName(userIdentityCardModelInfo.getUserName());
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
