@@ -12,6 +12,7 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.news.config.MediaServer;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,8 @@ public class UserService {
   
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
-  
+  @Autowired 
+  private TimeZoneService timeZoneService;
   @Autowired
   private MediaServer mediaServer;
 	
@@ -201,9 +203,15 @@ public class UserService {
 			    String frontOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getFrontOfPhoto();
 			    String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getBackOfPhoto();
 			    String holdInHand = mediaServer.getImageHost() + userIdentityCardModel.getHoldInHand();
+			    String srcFormater="yyyy-MM-dd HH:mm:ss";
+				String dstFormater="yyyy-MM-dd HH:mm:ss";
+				String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+				String created=DateUtils.string2Timezone(srcFormater, userIdentityCardModel.getCreated(), dstFormater, dstTimeZoneId);
+				log.info("newCreated={}",created);
 			    userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
 			    userIdentityCardModel.setBackOfPhoto(backOfPhoto);
 			    userIdentityCardModel.setHoldInHand(holdInHand);
+			    userIdentityCardModel.setCreated(created);
 			  }
 		return userIdentityCardModelList;
 	}
