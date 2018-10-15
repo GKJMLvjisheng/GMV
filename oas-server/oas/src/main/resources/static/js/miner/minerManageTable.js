@@ -25,9 +25,9 @@ function initMinerGrid(data) {
 		uniqueId:"minerCode",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
-		//sortable: true,//是否启用排序
-		sortName: 'minerCode', // 要排序的字段
-	    sortOrder: 'asc', // 排序规则
+		sortable: true,//是否启用排序
+		sortName: 'updated', // 要排序的字段
+	    sortOrder: 'desc', // 排序规则
 		data:data,
 		
 		columns : [{  
@@ -134,7 +134,7 @@ function EditMinerById(id){
     $('#EminerName').val(rows.minerName);
 	$('#EminerPrice').val(rows.minerPrice);
 	$('#EminerGrade').val(rows.minerGrade);
-	$('#minerPower').val(rows.minerPower);
+	$('#EminerPower').val(rows.minerPower);
 	$('#EminerPeriod').val(rows.minerPeriod);
 	$('#EminerDescription').val(rows.minerDescription);			
 	$("#updateMinerModal").modal("show");           

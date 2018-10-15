@@ -95,7 +95,7 @@
 						<div class="form-group">
 							<label for="question" class="col-sm-3 control-label">算力奖励：</label><span class="required">*</span>
 							<div class="col-sm-7">
-								<input name="minerEfficiency" class="form-control" id="minerEfficiency" required="required"  placeholder="请输入算力奖励" />
+								<input name="minerPower" class="form-control" id="minerPower" required="required"  placeholder="请输入算力奖励" />
 							</div>						
 						</div>
 						
@@ -165,11 +165,11 @@
 				<div class="modal-body">
 					<form id="updateMinerForm" action="/miner/updatedMiner" method="post" class="form-horizontal">
 						<input  style="display:none" type="hidden" name="EminerCode" id="EminerCode">
-						
+
 						<div class="form-group">
 							<label for="question" class="col-sm-3 control-label">矿机名：</label><span class="required">*</span>
 							<div class="col-sm-7">
-								<input name="EminerName" class="form-control" id="EminerName" required="required"/>
+								<input name="EminerName" class="form-control" id="EminerName" required="required" onblur="checkEName()"/>
 								<span id="msg_EminerName"></span>
 							</div>						
 						</div>												
@@ -196,7 +196,7 @@
 						<div class="form-group">
 							<label for="question" class="col-sm-3 control-label">算力奖励：</label><span class="required">*</span>
 							<div class="col-sm-7">
-								<input name="EminerEfficiency" class="form-control" id="EminerEfficiency" required="required"/>
+								<input name="EminerPower" class="form-control" id="EminerPower" required="required"/>
 							</div>						
 						</div>
 						
