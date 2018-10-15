@@ -837,7 +837,7 @@ public class UserController {
 			if(fileName.equals("face") && userIdentityCardModel != null )
 			{
 				String newfrontOfPhoto=str+uniqueFileName;		
-//				userIdentityCardModel.setUserName(userName);
+				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setFrontOfPhoto(newfrontOfPhoto);
 				userIdentityCardModelMapper.updateUserIdentityCardByFrontOfPhoto(userIdentityCardModel);
 				
@@ -869,7 +869,7 @@ public class UserController {
 			   }else if(fileName.equals("back") && userIdentityCardModel != null) 
 				{
 				String newbackOfPhoto=str+uniqueFileName;
-//				userIdentityCardModel.setUserName(userName);
+				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setBackOfPhoto(newbackOfPhoto);
 				userIdentityCardModelMapper.updateUserIdentityCardByBackOfPhoto(userIdentityCardModel);
 				
@@ -902,7 +902,7 @@ public class UserController {
 				{
 				String newholdInHand=str+uniqueFileName;
 
-//				userIdentityCardModel.setUserName(userName);
+				userIdentityCardModel.setUserName(userName);
 				userIdentityCardModel.setHoldInHand(newholdInHand);
 				userIdentityCardModelMapper.updateUserIdentityCardByHoldInHand(userIdentityCardModel);
 				
@@ -949,8 +949,32 @@ public class UserController {
     @WriteLog(value="confirmSubmitUserIdentifyInfo")
     public ResponseEntity<?> confirmSubmitUserIdentifyInfo(){
 		String userName=ShiroUtils.getLoginName();
+		UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
+		String frontOfPhoto=userNewIdentityCardModel.getFrontOfPhoto();
+		String backOfPhoto=userNewIdentityCardModel.getBackOfPhoto();
+		String holdInHand=userNewIdentityCardModel.getHoldInHand();
+		if(frontOfPhoto !=null && backOfPhoto !=null && holdInHand !=null) {
+			log.info("不是三张照片");
+			return new ResponseEntity.Builder<Integer>()
+			  	      .setData(1)
+			  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
+			  	      .build();
+			
+		}else {
+			
+		Integer verifyStatus=1;
+		String created=DateUtils.getTime();
+		String updated=created;
+		userNewIdentityCardModel.setVerifyStatus(verifyStatus);
+		userNewIdentityCardModel.setCreated(created);
+		userNewIdentityCardModel.setUpdated(updated);
+		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userNewIdentityCardModel);
 		
-		return null;
+		return new ResponseEntity.Builder<Integer>()
+		  	      .setData(0)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+		}
 	}
 	
 	@PostMapping(value="/checkIdentityNumber")
