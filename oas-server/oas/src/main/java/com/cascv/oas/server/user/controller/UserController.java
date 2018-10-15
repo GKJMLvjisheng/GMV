@@ -1061,18 +1061,21 @@ public class UserController extends BaseShiroController{
 	@PostMapping(value="/confirmSubmitUserIdentifyInfo")
     @ResponseBody
     @WriteLog(value="confirmSubmitUserIdentifyInfo")
-    public ResponseEntity<?> confirmSubmitUserIdentifyInfo(){
+    public ResponseEntity<?> confirmSubmitUserIdentifyInfo(@RequestBody UserIdentityCardModel userIdentityCardModelInfo){
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userNewIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
 		
-		String frontOfPhoto=userNewIdentityCardModel.getFrontOfPhoto();
-		String backOfPhoto=userNewIdentityCardModel.getBackOfPhoto();
-		String holdInHand=userNewIdentityCardModel.getHoldInHand();
+		String frontOfPhoto=userIdentityCardModelInfo.getFrontOfPhoto();
+		String backOfPhoto=userIdentityCardModelInfo.getBackOfPhoto();
+		String holdInHand=userIdentityCardModelInfo.getHoldInHand();
 		
 		if(frontOfPhoto !=null && backOfPhoto !=null && holdInHand !=null) {
 			Integer verifyStatus=1;
 			String created=DateUtils.getTime();
 			String updated=created;
+			userNewIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
+			userNewIdentityCardModel.setBackOfPhoto(backOfPhoto);
+			userNewIdentityCardModel.setHoldInHand(holdInHand);
 			userNewIdentityCardModel.setVerifyStatus(verifyStatus);
 			userNewIdentityCardModel.setCreated(created);
 			userNewIdentityCardModel.setUpdated(updated);

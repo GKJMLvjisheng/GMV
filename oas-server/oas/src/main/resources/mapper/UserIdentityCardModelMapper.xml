@@ -146,6 +146,15 @@
  <update id="updateUserIdentityCardByVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
+       <if test="frontOfPhoto != null">
+       front_of_photo = #{frontOfPhoto},
+      </if>
+       <if test="backOfPhoto != null">
+       back_of_photo = #{backOfPhoto},
+       </if>
+       <if test="holdInHand != null">
+       hold_in_hand = #{holdInHand},
+       </if>
        <if test="verifyStatus != null">
        verify_status = #{verifyStatus},
        </if>

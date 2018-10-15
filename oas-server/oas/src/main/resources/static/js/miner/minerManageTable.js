@@ -134,7 +134,7 @@ function EditMinerById(id){
     $('#EminerName').val(rows.minerName);
 	$('#EminerPrice').val(rows.minerPrice);
 	$('#EminerGrade').val(rows.minerGrade);
-	$('#minerPower').val(rows.minerPower);
+	$('#EminerPower').val(rows.minerPower);
 	$('#EminerPeriod').val(rows.minerPeriod);
 	$('#EminerDescription').val(rows.minerDescription);			
 	$("#updateMinerModal").modal("show");           

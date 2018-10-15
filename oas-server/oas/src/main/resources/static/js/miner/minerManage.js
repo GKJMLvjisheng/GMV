@@ -88,13 +88,13 @@ function checkEName(minerName) {
 
         success : function(res) {
           if (res.code == 0) {
-//            $("#msg_EminerName").html("矿机名可以使用");
-//            $("#msg_EminerName").css("color", "green");
+            $("#msg_EminerName").html("矿机名可以使用");
+            $("#msg_EminerName").css("color", "green");
             check2 = 1;
             return check1;
           } else{
-//            $("#msg_EminerName").html("矿机名已存在");
-//            $("#msg_EminerName").css("color", "red");
+            $("#msg_EminerName").html("矿机名已存在");
+            $("#msg_EminerName").css("color", "red");
             check2 = 0;
             return check1;
           }
@@ -104,8 +104,8 @@ function checkEName(minerName) {
         }
       });
     }else{
-//    	 $("#msg_EminerName").html("请填写矿机名！");
-//         $("#msg_EminerName").css("color", "red");
+    	 $("#msg_EminerName").html("请填写矿机名！");
+         $("#msg_EminerName").css("color", "red");
          check2 = 2;
          return check1;
     }
@@ -117,18 +117,20 @@ function addMiner(){
 	var minerName=$("#minerName").val();
 	var minerPrice=$("#minerPrice").val();
 	var minerGrade=$("#minerGrade").val();
-	//alert(JSON.stringify(minerGrade));
+	alert(JSON.stringify(minerGrade));
 	var minerPower=$("#minerPower").val();
 	var minerPeriod=$("#minerPeriod").val();
+	alert(JSON.stringify(minerPeriod));
 	var minerDescription=$("#minerDescription").val();
 	
-	if(minerName==""||minerPrice==""||minerGrade=="请选择"||minerEfficiency==""||minerPeriod==""){
+	if(minerName==""||minerPrice==""||minerGrade=="请选择"||minerGrade==""||minerPower==""||minerPeriod==""){
 		alert("请输入必填项");
 	}else{
 		if(check1==1){
 			var data={
 					"minerName":minerName,
 					"minerPrice":minerPrice,
+					"minerGrade":minerGrade,
 					"minerPower":minerPower,
 					"minerPeriod":minerPeriod,
 					"minerDescription":minerDescription,
