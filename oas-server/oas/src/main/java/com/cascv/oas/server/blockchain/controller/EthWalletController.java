@@ -5,7 +5,9 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -247,15 +249,19 @@ public class EthWalletController {
   @PostMapping(value="/listNetwork")
   @ResponseBody
   public ResponseEntity<?> listNetwork(){
+  Map<String,Object> map = new HashMap<>();
+  
 	Set<String> networks = ethWalletService.listNetwork();
 	if (networks == null) {
-		return new ResponseEntity.Builder<Set<String>>()
-		        .setData(networks)
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		        .setData(map)
 		        .setErrorCode(ErrorCode.NO_BLOCKCHAIN_NETWORK)
 		        .build();
 	} else {
-		return new ResponseEntity.Builder<Set<String>>()
-		        .setData(networks)
+	  map.put("network_list", networks);
+	  map.put("network_active", ethWalletService.getActiveNet());
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		        .setData(map)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
 	}

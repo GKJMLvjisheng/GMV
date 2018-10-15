@@ -13,7 +13,7 @@ function initKYCGrid(data) {
 		pagination:true,//显示分页条：页码，条数等
 
 		striped:true,//隔行变色
-		uniqueId:"userName",//Indicate an unique identifier for each row
+		uniqueId:"uuid",//Indicate an unique identifier for each row
 		pageNumber:1,//首页页码
 		sidePagination:"client",//在服务器分页
 
@@ -112,7 +112,7 @@ function initKYCGrid(data) {
 
 function picturePath(value, row, index) {
 	var result = "";
-	var id = row.userName;
+	var id = row.uuid;
 	var picturePath = value;
     result += "<a href='javascript:;' onclick=\"addMessage('" + id + "','" + picturePath + "')\" ><img src="+picturePath+" width='120px' height='80'></a>";
     			//"<span>"+picturePath+"</span>";      
@@ -121,7 +121,7 @@ function picturePath(value, row, index) {
 
 function actionFormatter(value, row, index) {
 	var status = value;
-	var id = row.userName;
+	var id = row.uuid;
 	var result = "";
 	if(status==1){
 		result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"agree('" + id + "')\"><span style='font-size:14px;'>批准</span></a>";
@@ -146,9 +146,9 @@ function actionFormatter1(value, row, index) {
 function addMessage(id,picturePath){		
 	$('#agId').val(id);
 	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
+	$('#agStatus').val(rows.verifyStatus);
 	$('#name').val(rows.userIdentityName);
 	$('#card').val(rows.userIdentityNumber);
-	$('#agStatus').val(rows.verifyStatus);
 	document.getElementById('image').src = picturePath;	
 	$("#addNCModal").modal("show");
 }

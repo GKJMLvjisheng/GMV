@@ -33,7 +33,7 @@
  from 
  		identity_card_info 
  where
- 		user_name = #{userName};
+ 		user_name = #{userName} order by created desc;
   </select>
    <select id="selectUserIdentityByUserNameVerifyStatus" resultMap="userIdentityCardModelMap">
  select 
@@ -86,19 +86,19 @@
         #{userName,jdbcType=VARCHAR},
       </if>
       <if test="userIdentityName != null">
-        #{user_identity_name,jdbcType=VARCHAR},
+        #{userIdentityName,jdbcType=VARCHAR},
         </if>
         <if test="userIdentityNumber != null">
-        #{user_identity_number,jdbcType=VARCHAR},
+        #{userIdentityNumber,jdbcType=VARCHAR},
         </if>
         <if test="frontOfPhoto != null">
-        #{front_of_photo,jdbcType=VARCHAR},
+        #{frontOfPhoto,jdbcType=VARCHAR},
         </if>
         <if test="backOfPhoto != null">
-        #{back_of_photo,jdbcType=VARCHAR},
+        #{backOfPhoto,jdbcType=VARCHAR},
         </if>
         <if test="holdInHand != null">
-        #{hold_in_hand,jdbcType=VARCHAR},
+        #{holdInHand,jdbcType=VARCHAR},
         </if>
         <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -118,6 +118,9 @@
 <update id="updateUserIdentityCardByNameNumberRemarkVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
       <trim prefix="SET" suffixOverrides=",">
+       <if test="uuid != null">
+       uuid= #{uuid},
+       </if>
        <if test="userIdentityName != null">
        user_identity_name= #{userIdentityName},
       </if>
@@ -130,10 +133,32 @@
        <if test="verifyStatus != null">
        verify_status = #{verifyStatus},
        </if>
+        <if test="created != null">
+        created = #{created},
+       </if>
+       <if test="updated != null">
+        updated = #{updated},
+       </if>
        </trim>
-       where user_name = #{userName}
+<!--        where user_name = #{userName} and verify_status=1; -->
+		where uuid = #{uuid};
        </update>
-    
+       
+ <update id="updateUserIdentityCardByVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
+      update identity_card_info 
+      <trim prefix="SET" suffixOverrides=",">
+       <if test="verifyStatus != null">
+       verify_status = #{verifyStatus},
+       </if>
+        <if test="created != null">
+        created = #{created},
+       </if>
+       <if test="updated != null">
+        updated = #{updated},
+       </if>
+       </trim>
+       where user_name = #{userName} and verify_status=0;
+       </update>   
 <update id="updateUserIdentityCardByFrontOfPhoto" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
       update identity_card_info 
 <trim prefix="SET" suffixOverrides=",">
@@ -143,17 +168,17 @@
       <if test="frontOfPhoto != null">
        front_of_photo = #{frontOfPhoto},
       </if>
-<!--        <if test="verifyStatus != null"> -->
-<!--        verify_status = #{verifyStatus}, -->
-<!--        </if> -->
-<!--        <if test="created != null"> -->
-<!--        created = #{created}, -->
-<!--        </if> -->
-<!--       <if test="updated != null"> -->
-<!--        updated = #{updated}, -->
-<!--        </if> -->
+      <if test="verifyStatus != null">
+        verify_status = #{verifyStatus},
+      </if>
+       <if test="created != null">
+        created = #{created},
+      </if>
+      <if test="updated != null">
+        updated = #{updated},
+      </if>
        </trim>
-       where user_name = #{userName}
+       where user_name = #{userName} and verify_status=0;
       </update>
     
 <update id="updateUserIdentityCardByBackOfPhoto" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
@@ -165,17 +190,17 @@
       <if test="backOfPhoto != null">
        back_of_photo = #{backOfPhoto},
       </if>
-<!--        <if test="verifyStatus != null"> -->
-<!--        verify_status = #{verifyStatus}, -->
-<!--        </if> -->
-<!--        <if test="created != null"> -->
-<!--        created = #{created}, -->
-<!--        </if> -->
-<!--       <if test="updated != null"> -->
-<!--        updated = #{updated}, -->
-<!--        </if> -->
+      <if test="verifyStatus != null">
+        verify_status = #{verifyStatus},
+      </if>
+       <if test="created != null">
+        created = #{created},
+      </if>
+      <if test="updated != null">
+        updated = #{updated},
+      </if>
       </trim>
-      where user_name = #{userName}
+      where user_name = #{userName} and verify_status=0;
       </update>
     
 <update id="updateUserIdentityCardByHoldInHand" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
@@ -187,17 +212,17 @@
       <if test="holdInHand != null">
        hold_in_hand = #{holdInHand},
       </if>
-<!--        <if test="verifyStatus != null"> -->
-<!--        verify_status = #{verifyStatus}, -->
-<!--        </if> -->
-<!--        <if test="created != null"> -->
-<!--        created = #{created}, -->
-<!--        </if> -->
-<!--       <if test="updated != null"> -->
-<!--        updated = #{updated}, -->
-<!--        </if> -->
+      <if test="verifyStatus != null">
+        verify_status = #{verifyStatus},
+      </if>
+       <if test="created != null">
+        created = #{created},
+      </if>
+      <if test="updated != null">
+        updated = #{updated},
+      </if>
        </trim>
-       where user_name = #{userName}
+       where user_name = #{userName} and verify_status=0;
        </update>
 
  <!-- select identityNumber-->
@@ -207,7 +232,7 @@
     from 
     	identity_card_info 
     where 
-  		user_identity_number = #{userIdentityNumber} and verify_status = 2
+  		user_identity_number = #{userIdentityNumber} and verify_status = 2;
 </select>
 
 </mapper>

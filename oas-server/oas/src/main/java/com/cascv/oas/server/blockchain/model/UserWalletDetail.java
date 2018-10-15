@@ -15,9 +15,10 @@ public class UserWalletDetail {
 //  @Getter @Setter private String comment;
   @Getter @Setter private String created;
   @Getter @Setter private String remark;
-  @Getter @Setter private String txHash;
+ // @Getter @Setter private String txHash;
   @Getter @Setter private Integer txResult;
-  @Getter @Setter private String txNetwork;
+ // @Getter @Setter private String txNetwork;
   //@Getter @Setter private String changeUserName;
+  @Getter @Setter private String oasDetailUuid;
   
 }
