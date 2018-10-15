@@ -57,10 +57,19 @@ function initMinerGrid(data) {
 			valign: 'middle',
 			width:  '100px',
 
-		}, {
+		}, 
+			{
 
-			title : "矿机效率",
-			field : "minerEfficiency",
+			title : "矿机等级",
+			field : "minerGrade",
+			align: 'center',
+			valign: 'middle',
+			width:  '100px',
+
+		},{
+
+			title : "算力奖励",
+			field : "minerPower",
 			align: 'center',
 			valign: 'middle',
 			width:  '100px',
@@ -111,7 +120,7 @@ function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
     
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditMinerById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditMinerById('" + id + "')\" title='修改'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteMinerById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
@@ -124,7 +133,8 @@ function EditMinerById(id){
 	$('#EminerCode').val(rows.minerCode);
     $('#EminerName').val(rows.minerName);
 	$('#EminerPrice').val(rows.minerPrice);
-	$('#EminerEfficiency').val(rows.minerEfficiency);
+	$('#EminerGrade').val(rows.minerGrade);
+	$('#minerPower').val(rows.minerPower);
 	$('#EminerPeriod').val(rows.minerPeriod);
 	$('#EminerDescription').val(rows.minerDescription);			
 	$("#updateMinerModal").modal("show");           

@@ -63,7 +63,7 @@
 
 				<div class="modal-body">
 
-					<form id="addQuestionForm" action="/Question/addQuestion" method="post" class="form-horizontal">
+					<form id="addMinerForm" action="/miner/addMiner" method="post" class="form-horizontal">
 
 						<div class="form-group">
 							<label for="question" class="col-sm-3 control-label">矿机名：</label><span class="required">*</span>
@@ -81,9 +81,21 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">矿机效率：</label><span class="required">*</span>
+							<label for="question" class="col-sm-3 control-label">矿机等级：</label><span class="required">*</span>
 							<div class="col-sm-7">
-								<input name="minerEfficiency" class="form-control" id="minerEfficiency" required="required"  placeholder="请输入矿机效率" />
+								<select id="minerGrade" class="form-control" name="minerGrade" required="required">
+			                    <option>请选择</option>
+			                    <option>1</option>
+			                    <option>2</option>
+			                    <option>3</option>			 
+			               		 </select>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">算力奖励：</label><span class="required">*</span>
+							<div class="col-sm-7">
+								<input name="minerEfficiency" class="form-control" id="minerEfficiency" required="required"  placeholder="请输入算力奖励" />
 							</div>						
 						</div>
 						
@@ -151,33 +163,45 @@
 				</div>
 
 				<div class="modal-body">
-					<form id="updateQuestionForm" action="/question/updatedQuestion" method="post" class="form-horizontal">
+					<form id="updateMinerForm" action="/miner/updatedMiner" method="post" class="form-horizontal">
 						<input  style="display:none" type="hidden" name="EminerCode" id="EminerCode">
 						
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">矿机名：</label>
+							<label for="question" class="col-sm-3 control-label">矿机名：</label><span class="required">*</span>
 							<div class="col-sm-7">
-								<input name="EminerName" class="form-control" id="EminerName" required="required" onblur="checkEName()"/>
-								<span id="msg_minerEName"></span>
+								<input name="EminerName" class="form-control" id="EminerName" required="required"/>
+								<span id="msg_EminerName"></span>
 							</div>						
 						</div>												
 						
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">矿机单价：</label>
+							<label for="question" class="col-sm-3 control-label">矿机单价：</label><span class="required">*</span>
 							<div class="col-sm-7">
 								<input name="EminerPrice" class="form-control" id="EminerPrice" required="required"/>
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">矿机效率：</label>
+							<label for="question" class="col-sm-3 control-label">矿机等级：</label><span class="required">*</span>
+							<div class="col-sm-7">
+								<select id="EminerGrade" class="form-control" name="EminerGrade" required="required">
+			                    <option>请选择</option>
+			                    <option>1</option>
+			                    <option>2</option>
+			                    <option>3</option>			 
+			               		 </select>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">算力奖励：</label><span class="required">*</span>
 							<div class="col-sm-7">
 								<input name="EminerEfficiency" class="form-control" id="EminerEfficiency" required="required"/>
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">矿机寿命：</label>
+							<label for="question" class="col-sm-3 control-label">矿机寿命：</label><span class="required">*</span>
 							<div class="col-sm-7">
 								<input name="EminerPeriod" class="form-control" id="EminerPeriod"  required="required"/>
 							</div>						
@@ -194,7 +218,7 @@
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" data-dismiss="modal" id="saveQuestion" aria-label="Close" class="btn btn-default" onclick="updateMiner()"><span aria-hidden="true">保存</span></button>
+					<button type="button" id="saveQuestion" class="btn btn-default" onclick="updateMiner()"><span aria-hidden="true">保存</span></button>
 				</div>
 						
 			</div>

@@ -145,10 +145,10 @@ function actionFormatter1(value, row, index) {
 
 function addMessage(id,picturePath){		
 	$('#agId').val(id);
+	$('#agStatus').val(rows.verifyStatus);
 	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
 	$('#name').val(rows.userIdentityName);
 	$('#card').val(rows.userIdentityNumber);
-	$('#agStatus').val(rows.verifyStatus);
 	document.getElementById('image').src = picturePath;	
 	$("#addNCModal").modal("show");
 }
