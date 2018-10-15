@@ -16,6 +16,7 @@ import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
@@ -37,8 +38,8 @@ public class MinerController {
 	
 	@PostMapping(value = "/inquireMinerName")  
 	@ResponseBody
-	public ResponseEntity<?> inquireMinerName(@RequestBody MinerRequest minerRequest){
-		String minerName = minerRequest.getMinerName();
+	public ResponseEntity<?> inquireMinerName(@RequestBody InquireRequest inquireRequest){
+		String minerName = inquireRequest.getMinerName();
 		if(minerMapper.inquireByMinerName(minerName) == null) {
 			return new ResponseEntity.Builder<Integer>()
 			        .setData(0)
@@ -49,6 +50,23 @@ public class MinerController {
 			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
 		}
 		
+	}
+	
+	@PostMapping(value = "/inquireUpdateMinerName")  
+	@ResponseBody
+	public ResponseEntity<?> inquireUpdateMinerName(@RequestBody InquireRequest inquireRequest){
+		String minerCode = inquireRequest.getMinerCode();
+		String minerName = minerMapper.inquireByUuid(minerCode).getMinerName();
+		String updateMinerName = inquireRequest.getMinerName();
+		if(minerMapper.inquireUpdateMinerName(minerName, updateMinerName) == null) {
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.SUCCESS).build();
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		}
 	}
 	
 	@PostMapping(value = "/inquireMiner")  
