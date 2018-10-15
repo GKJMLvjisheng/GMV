@@ -207,7 +207,7 @@
     from 
     	identity_card_info 
     where 
-  		user_identity_number = #{userIdentityNumber} 
+  		user_identity_number = #{userIdentityNumber} and verify_status = 2
 </select>
 
 </mapper>

@@ -20,6 +20,8 @@ import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.miner.service.MinerService;
+import com.cascv.oas.server.miner.wrapper.UserMinerWrapper;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
 import com.cascv.oas.server.walk.wrapper.StepNumQuota;
@@ -38,6 +40,9 @@ public class WalkService {
 	@Autowired
 	private ActivityMapper activityMapper;
 	
+	@Autowired
+	private MinerService minerService;
+	
 	private static final Integer SOURCE_CODE_OF_WALKING = 9;             // 能量球来源：计步为9
 	private static final Integer REWARD_CODE_OF_WALKING_POINT = 1;             //能量球奖励：计步奖励积分，为1
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;         //能量球活跃状态，可被获取
@@ -50,16 +55,26 @@ public class WalkService {
 	
 	/**
      * 得到日期对应的增加的point
+	 * @param userUuid 
 	 * @param stepNum 
      * @return
      */
-	public List<StepPointQuota> getPoint(List<StepNumQuota> quota) {
+	public List<StepPointQuota> getPoint(List<StepNumQuota> quota, String userUuid) {
 		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALKING, REWARD_CODE_OF_WALKING_POINT);
 		List<StepPointQuota> stepPointQuotaList = new ArrayList<>();
 		for(int i=0; i<quota.size(); i++){
 			StepPointQuota stepPointQuota = new StepPointQuota();
 			BigDecimal stepNum = quota.get(i).getStepNum();
-			BigDecimal point = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
+			
+			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
+			List<UserMinerWrapper> userMinerList = minerService.getUserMiner(userUuid);
+			BigDecimal efficiencySum = BigDecimal.ZERO;
+			for(int j=0; j<userMinerList.size(); j++) {
+				efficiencySum = efficiencySum.add(userMinerList.get(j).getMinerEfficiency());
+			}
+			BigDecimal alpha = efficiencySum.add(BigDecimal.ONE);
+			BigDecimal point = pointBefore.multiply(alpha);
+			
 			BigDecimal maxValue = activityRewardConfig.getMaxValue();
 			BigDecimal newPoint;
 			if(point.compareTo(maxValue) == -1)
@@ -128,10 +143,10 @@ public class WalkService {
 		
 		List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
 		stepNumQuotaList.add(stepNumQuota);
-		newEnergyPointBall.setPoint(this.getPoint(stepNumQuotaList).get(0).getPoint());
+		newEnergyPointBall.setPoint(this.getPoint(stepNumQuotaList, userUuid).get(0).getPoint());
 		
-		newEnergyPointBall.setCreated(this.getPoint(stepNumQuotaList).get(0).getDate());
-		newEnergyPointBall.setUpdated(this.getPoint(stepNumQuotaList).get(0).getDate());
+		newEnergyPointBall.setCreated(this.getPoint(stepNumQuotaList, userUuid).get(0).getDate());
+		newEnergyPointBall.setUpdated(this.getPoint(stepNumQuotaList, userUuid).get(0).getDate());
 		
 		activityMapper.insertEnergyPointBall(newEnergyPointBall);
 	}
@@ -149,7 +164,7 @@ public class WalkService {
 			energyPointBall.setSourceCode(SOURCE_CODE_OF_WALKING);
 			energyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 			
-			energyPointBall.setPoint(this.getPoint(quota).get(i).getPoint());
+			energyPointBall.setPoint(this.getPoint(quota, userUuid).get(i).getPoint());
 			
 			energyPointBall.setCreated(walkBall.getCreated());
 			energyPointBall.setUpdated(walkBall.getUpdated());
@@ -213,7 +228,7 @@ public class WalkService {
 							walkMapper.updateStepNumByCreated(userUuid, quota.get(i).getStepNum(), quota.get(i).getDate());
 							List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
 							stepNumQuotaList.add(quota.get(i));
-							walkMapper.updatePointByuuid(walkBallMap.get(now).getUuid(), this.getPoint(stepNumQuotaList).get(0).getPoint());
+							walkMapper.updatePointByuuid(walkBallMap.get(now).getUuid(), this.getPoint(stepNumQuotaList, userUuid).get(0).getPoint());
 							walkBallMap.get(now).setStepNum(quota.get(i).getStepNum());
 							walkBallMap.put(now, walkBallMap.get(now));
 					}

@@ -202,7 +202,7 @@ export default {
     }
   },
   created() {
-    this.getStep()
+    //this.getStep()
     this.getWalkEnergyBall() 
     this.getEnergyBall() 
     this.getCurrentEnergy()
@@ -338,10 +338,10 @@ export default {
      getWalkEnergyBall() {
      
       
-    //var todayStep="0"
+    this.todayStep="15"
     this.input1=this.todayStep
     let time=currentTime(true)
-     //let time="2018-10-13"
+     //let time="2018-10-15"
     //  //console.log("time"+time)
      var data={}
      data['date']=time
@@ -503,7 +503,7 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.getStep()
+      //this.getStep()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
@@ -531,7 +531,7 @@ export default {
     },
    
  skipRefresh() {
-      this.getStep()
+      //this.getStep()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
@@ -757,7 +757,7 @@ header {
       i{
       position: absolute;
       display: inline-block;
-      right: 70%;
+      right: 85%;
       width: 32px;
       height: 32px;
       background-image: url("../assets/images/watch@2x.png");
