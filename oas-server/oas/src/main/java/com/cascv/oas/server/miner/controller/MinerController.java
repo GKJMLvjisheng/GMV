@@ -57,7 +57,6 @@ public class MinerController {
 		log.info(minerModel.getMinerCode());
 		minerModel.setMinerName(minerRequest.getMinerName());
 		minerModel.setMinerDescription(minerRequest.getMinerDescription());
-		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPeriod(minerRequest.getMinerPeriod());
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerEfficiency(minerRequest.getMinerEfficiency());
@@ -90,6 +89,7 @@ public class MinerController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		MinerModel minerModel = new MinerModel();
 		minerModel.setMinerCode(minerUpdate.getMinerCode());
+		minerModel.setMinerName(minerUpdate.getMinerName());
 		minerModel.setMinerDescription(minerUpdate.getMinerDescription());
 		minerModel.setMinerEfficiency(minerUpdate.getMinerEfficiency());
 		minerModel.setMinerPrice(minerUpdate.getMinerPrice());
