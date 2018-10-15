@@ -32,11 +32,31 @@ public class MinerController {
 	@Autowired
 	private MinerMapper minerMapper;
 	
+	@PostMapping(value = "/inquireMinerName")  
+	@ResponseBody
+	public ResponseEntity<?> inquireMinerName(@RequestBody MinerRequest minerRequest){
+		String minerName = minerRequest.getMinerName();
+		if(minerMapper.inquireByMinerName(minerName) == null) {
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.SUCCESS).build();
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		}
+		
+	}
+	
 	@PostMapping(value = "/inquireMiner")  
 	@ResponseBody
 	public ResponseEntity<?> inquireMiner(){
 		Map<String,Object> info=new HashMap<>();
 		List<MinerModel> minerModelList = minerMapper.selectAllMiner();
+		for(int i=0; i<minerModelList.size(); i++) {
+			log.info("updated={}", minerModelList.get(i).getUpdated());
+		}
+		
 		if(minerModelList.size() > 0)
 			info.put("minerModelList", minerModelList);
 		else
@@ -95,6 +115,7 @@ public class MinerController {
 		minerModel.setMinerPrice(minerUpdate.getMinerPrice());
 		minerModel.setMinerPeriod(minerUpdate.getMinerPeriod());
 		minerModel.setUpdated(now);
+		log.info("updated={}", minerModel.getUpdated());
 		minerMapper.updateMiner(minerModel);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)

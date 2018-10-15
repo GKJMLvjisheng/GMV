@@ -15,6 +15,5 @@ public class MinerUpdate implements Serializable {
 	@Getter @Setter private BigDecimal minerPrice;
 	@Getter @Setter private BigDecimal minerEfficiency;
 	@Getter @Setter private Integer minerPeriod;
-	@Getter @Setter private String updated;
 
 }
