@@ -140,7 +140,8 @@
         updated = #{updated},
        </if>
        </trim>
-       where user_name = #{userName} and verify_status=1;
+<!--        where user_name = #{userName} and verify_status=1; -->
+		where uuid = #{uuid};
        </update>
        
  <update id="updateUserIdentityCardByVerifyStatus" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel"> 
