@@ -1071,14 +1071,15 @@ public class UserController {
     @WriteLog(value="checkUserIdentity")
     public ResponseEntity<?> checkUserIdentity(@RequestBody UserIdentityCardModel userIdentityCardModelInfo) {
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
+		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
-//		userIdentityCardModel.setUserName(userIdentityCardModelInfo.getUserName());
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
-		
 		userIdentityCardModel.setVerifyStatus(userIdentityCardModelInfo.getVerifyStatus());
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
+		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
+		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
