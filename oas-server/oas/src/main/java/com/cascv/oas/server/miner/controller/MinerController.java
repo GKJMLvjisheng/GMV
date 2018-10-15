@@ -39,7 +39,7 @@ public class MinerController {
 	@ResponseBody
 	public ResponseEntity<?> inquireMinerName(@RequestBody MinerRequest minerRequest){
 		String minerName = minerRequest.getMinerName();
-		if(minerMapper.inquireByMinerName(minerName) == null) {
+		if(minerMapper.inquireByMinerName(minerName) != null) {
 			return new ResponseEntity.Builder<Integer>()
 			        .setData(0)
 			        .setErrorCode(ErrorCode.SUCCESS).build();
