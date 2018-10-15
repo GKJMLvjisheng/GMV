@@ -73,7 +73,7 @@ function addPostil(){
 	if(postil!=""){
 		data={
 				"verifyStatus":3,
-				"userName":reId,
+				"uuid":reId,
 				"remark":postil,
 				}
 
@@ -113,7 +113,7 @@ function addNC(){
 		alert("审核已完成，不再允许提交信息！")
 	}else{
 		var data={
-				"userName":agId,
+				"uuid":agId,
 				"userIdentityName":name,
 				"userIdentityNumber":card,
 				}
@@ -144,7 +144,8 @@ function addNC(){
 function agree(id){
 	
 	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
-	var userName = id;
+	var uuid = id;
+	alert(JSON.stringify(uuid))
 	$('#name').val(rows.userIdentityName);
 	$('#card').val(rows.userIdentityNumber);
 	var name=rows.userIdentityName;
@@ -153,7 +154,7 @@ function agree(id){
 //	alert(JSON.stringify(card));
 	var data={
 		"verifyStatus":2,
-		"userName":userName,
+		"uuid":uuid,
 		}
 	
 	if(name!=null && name!="" && card!=null && card!="" ){

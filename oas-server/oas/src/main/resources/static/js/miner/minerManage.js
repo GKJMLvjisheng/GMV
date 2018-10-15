@@ -10,7 +10,7 @@ $(function() {
 //发ajax请求到后台判断矿机是否重复
 function checkName() {
 	var minerName = $("#minerName").val(); 
-	alert(JSON.stringify(minerName));
+	//alert(JSON.stringify(minerName));
     if (minerName != "") {
 	  var data = {
         "minerName" : minerName
@@ -26,12 +26,12 @@ function checkName() {
 		async : false,
 
         success : function(res) {
-          if (res.data == 1) {
+          if (res.code == 0) {
             $("#msg_minerName").html("矿机名可以使用");
             $("#msg_minerName").css("color", "green");
             check1 = 1;
             return check1;
-          } else if(res.data == 0) {
+          } else{
             $("#msg_minerName").html("矿机名已存在");
             $("#msg_minerName").css("color", "red");
             check1 = 0;
@@ -43,7 +43,7 @@ function checkName() {
         }
       });
     }else{
-//    	 $("#msg_minerName").html("请填写矿机名！");
+    	 $("#msg_minerName").html("请填写矿机名！");
          $("#msg_minerName").css("color", "red");
     }
 }
@@ -82,38 +82,42 @@ function addMiner(){
 	if(minerName==""||minerPrice==""||minerEfficiency==""||minerPeriod==""){
 		alert("请输入必填项");
 	}else{
-		var data={
-				"minerName":minerName,
-				"minerPrice":minerPrice,
-				"minerEfficiency":minerEfficiency,
-				"minerPeriod":minerPeriod,
-				"minerDescription":minerDescription,
-				}
+		if(check1==1){
+			var data={
+					"minerName":minerName,
+					"minerPrice":minerPrice,
+					"minerEfficiency":minerEfficiency,
+					"minerPeriod":minerPeriod,
+					"minerDescription":minerDescription,
+					}
 
-		$.ajax({
-		url:"/api/v1/miner/addMiner",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data:JSON.stringify(data),
-		processData : false,
-		async : false,
+			$.ajax({
+			url:"/api/v1/miner/addMiner",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(data),
+			processData : false,
+			async : false,
 
-		success:function(res){					
-			$("#Tip").modal('show');
-			$("#addMinerModal").modal('hide');
-			minerReady();
-			$("#minerGrid").bootstrapTable('refresh');							
-		},
-		error:function(){
-			document.getElementById("tipContent").innerText="新增失败";
-			$("#Tip").modal('show');
-			$("#minerModal").modal('hide');
+			success:function(res){					
+				$("#Tip").modal('show');
+				$("#addMinerModal").modal('hide');
+				minerReady();
+				$("#minerGrid").bootstrapTable('refresh');							
+			},
+			error:function(){
+				document.getElementById("tipContent").innerText="新增失败";
+				$("#Tip").modal('show');
+				$("#minerModal").modal('hide');
 
-		},
-	});	   
-
+			},
+		});	   
+			
+		}else if(check1==0){
+			alert("矿机名已存在！")
+		}		
 	}
 }
 
