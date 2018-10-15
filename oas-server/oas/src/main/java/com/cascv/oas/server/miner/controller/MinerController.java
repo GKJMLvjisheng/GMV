@@ -1,8 +1,6 @@
 package com.cascv.oas.server.miner.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +19,7 @@ import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,15 +31,38 @@ public class MinerController {
 	@Autowired
 	private MinerMapper minerMapper;
 	
+	@Autowired
+	private TimeZoneService timeZoneService;
+
+	
+	@PostMapping(value = "/inquireMinerName")  
+	@ResponseBody
+	public ResponseEntity<?> inquireMinerName(@RequestBody MinerRequest minerRequest){
+		String minerName = minerRequest.getMinerName();
+		if(minerMapper.inquireByMinerName(minerName) == null) {
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.SUCCESS).build();
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+			        .setData(0)
+			        .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		}
+		
+	}
+	
 	@PostMapping(value = "/inquireMiner")  
 	@ResponseBody
 	public ResponseEntity<?> inquireMiner(){
-		Map<String,Object> info=new HashMap<>();
 		List<MinerModel> minerModelList = minerMapper.selectAllMiner();
-		if(minerModelList.size() > 0)
-			info.put("minerModelList", minerModelList);
-		else
-			log.info("no message");
+		for(MinerModel minerModel : minerModelList) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+		    String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
+		    minerModel.setUpdated(updated);
+			log.info("updated={}", minerModel.getUpdated());
+		}
 		return new ResponseEntity.Builder<List<MinerModel>>()
 				.setData(minerModelList)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -57,7 +79,6 @@ public class MinerController {
 		log.info(minerModel.getMinerCode());
 		minerModel.setMinerName(minerRequest.getMinerName());
 		minerModel.setMinerDescription(minerRequest.getMinerDescription());
-		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPeriod(minerRequest.getMinerPeriod());
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerEfficiency(minerRequest.getMinerEfficiency());
@@ -90,11 +111,13 @@ public class MinerController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		MinerModel minerModel = new MinerModel();
 		minerModel.setMinerCode(minerUpdate.getMinerCode());
+		minerModel.setMinerName(minerUpdate.getMinerName());
 		minerModel.setMinerDescription(minerUpdate.getMinerDescription());
 		minerModel.setMinerEfficiency(minerUpdate.getMinerEfficiency());
 		minerModel.setMinerPrice(minerUpdate.getMinerPrice());
 		minerModel.setMinerPeriod(minerUpdate.getMinerPeriod());
 		minerModel.setUpdated(now);
+		log.info("updated={}", minerModel.getUpdated());
 		minerMapper.updateMiner(minerModel);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)

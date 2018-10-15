@@ -41,6 +41,7 @@ import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -59,7 +60,8 @@ public class UserWalletController {
 
   @Autowired
   private UserWalletDetailMapper userWalletDetailMapper;
-
+  @Autowired 
+  private TimeZoneService timeZoneService;
   @Autowired
   private UserWalletTradeRecordMapper userWalletTradeRecordMapper;
   
@@ -296,6 +298,14 @@ public class UserWalletController {
   @Transactional
   public ResponseEntity<?> inqureUserWalletTradeRecord(){
 	  List<UserWalletTradeRecordInfo> userWalletTradeRecords=userWalletTradeRecordMapper.selectAllTradeRecord();
+	  for (UserWalletTradeRecordInfo userWalletTradeRecordInfo : userWalletTradeRecords) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+			String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, userWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+			userWalletTradeRecordInfo.setCreated(created);
+			log.info("newCreated={}",created);
+		  }
 		return new ResponseEntity.Builder<List<UserWalletTradeRecordInfo>>()
 		        .setData(userWalletTradeRecords)
 		        .setErrorCode(ErrorCode.SUCCESS)

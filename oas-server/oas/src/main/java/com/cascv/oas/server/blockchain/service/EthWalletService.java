@@ -110,7 +110,7 @@ public class EthWalletService {
     List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectEthTransactionJob(coinClient.getNetName(), 60); 
     if (ethWalletDetailList != null && ethWalletDetailList.size() > 0) {
       for (EthWalletDetail ethWalletDetail:ethWalletDetailList) {
-		Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
+        Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
         log.info("txHash: {}, txResult: {},status: {}", 
             ethWalletDetail.getTxHash(), ethWalletDetail.getTxResult(), status);
         if (status != 0) {
@@ -129,7 +129,9 @@ public class EthWalletService {
         .withIdentity("JobDetailA", "groupA").build();
     jobDetail.getJobDataMap().put("self", schedulerService);
     Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerA", "groupA")
-        .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).repeatForever()).startNow().build();
+        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+            .withIntervalInSeconds(coinClient.getTxInterval()
+        ).repeatForever()).startNow().build();
     jobDetail.getJobDataMap().put("service", this);
     schedulerService.addJob(jobDetail, trigger);
     log.info("add ethRedeem job ...");
@@ -143,6 +145,9 @@ public class EthWalletService {
     return jsonArray.toJSONString();
   }
   
+  public String getActiveNet() {
+    return coinClient.getNetName();
+  }
   public static List<String> fromEncryptedMnemonicList(String encryptedMnemonic){
     if (encryptedMnemonic == null) {
       return null;

@@ -71,9 +71,7 @@
 				<div class="modal-body">
 				
 					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
-						<input style="display:none" type="hidden" name="reId" id="reId">						
-<!-- 						<input style="display:none" type="hidden" name="reName" id="reName"> -->
-<!-- 						<input style="display:none" type="hidden" name="reCard" id="reCard"> -->
+						<input  name="reId" id="reId">						
 						<div class="form-group">
 							<label for="ErewardName" class="col-sm-3 control-label">批注：</label><span class="required">*</span>
 							<div class="col-sm-6">
@@ -106,20 +104,30 @@
 				<div class="modal-body">
 				
 					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
-						<input  style="display:none" type="hidden" name="agId" id="agId">
-<!-- 						<input   style="display:none" type="hidden" name="agPostil" id="agPostil"> -->
+						<input  name="agId" id="agId">
+						<input  name="agStatus" id="agStatus">
+<!-- 						style="display:none" type="hidden" -->
+				
 						<div class="form-group">
-							<label for="ErewardName" class="col-sm-3 control-label">姓名：</label><span class="required">*</span>
-							<div class="col-sm-6">
-								<input name="name" class="form-control" id="name" placeholder="必填项" required="required" /></input>
+							<label for="ErewardName" class="col-sm-3 control-label">图片：</label>
+							<div class="col-sm-7">
+								<img src="" id="image" width="315px" height="190">							
+<!-- 							<span id="image"></span> -->
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-3 control-label">姓名：</label>
+							<div class="col-sm-7">
+								<input name="name" class="form-control" id="name" required="required" /></input>
 								<span id="msg_name"></span>								
 							</div>						
 						</div>
 						
 						<div class="form-group">
-							<label for="ErewardName" class="col-sm-3 control-label">身份证号：</label><span class="required">*</span>
-							<div class="col-sm-6">
-								<input name="card" class="form-control" id="card" onblur="checkCard()" placeholder="必填项" required="required" /></input>
+							<label for="ErewardName" class="col-sm-3 control-label">身份证号：</label>
+							<div class="col-sm-7">
+								<input name="card" class="form-control" id="card" required="required" /></input>
 								<span id="msg_card"></span>								
 							</div>						
 						</div>
@@ -205,6 +213,7 @@
 			</div>					
 		</div>
 	</div>
+	
 	<script type="text/javascript" th:src="@{/js/KYC/KYCManage.js}"></script>
 	<script type="text/javascript" th:src="@{/js/KYC/KYCManageTable.js}"></script>
 </body>

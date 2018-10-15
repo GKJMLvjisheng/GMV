@@ -11,7 +11,6 @@ public class MinerRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Getter @Setter private String minerName;
-	@Getter @Setter private Integer minerGrade;
 	@Getter @Setter private String minerDescription;
 	@Getter @Setter private BigDecimal minerPrice;
 	@Getter @Setter private BigDecimal minerEfficiency;

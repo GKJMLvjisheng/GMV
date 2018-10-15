@@ -13,10 +13,7 @@ import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.*;
-import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
-import com.cascv.oas.server.timezone.model.CountryPromaryModel;
-import com.cascv.oas.server.utils.ShiroUtils;
-
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +32,16 @@ public class EnergyService {
     @Autowired
     private EnergyTradeRecordMapper energyTradeRecordMapper;
     @Autowired
-    private EnergyWalletMapper energyWalletMapper;
-    
+    private EnergyWalletMapper energyWalletMapper;  
     @Autowired
     private UserWalletService userWalletService;
-    
     @Autowired
     private ActivityMapper activityMapper;
-    @Autowired
-    private CountryPromaryModelMapper countryPromaryModelMapper;
-    private static String checkinEnergyBallUuid;
-    private EnergyBall checkinEnergyBall = new EnergyBall();
+	@Autowired 
+	private TimeZoneService timeZoneService;
 
+    private EnergyBall checkinEnergyBall = new EnergyBall();
+    private static String checkinEnergyBallUuid;
     private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
@@ -571,28 +566,9 @@ public class EnergyService {
     }
        
     public List<EnergyChangeDetail> searchEnergyChange(String userUuid, Integer offset, Integer limit,Integer inOrOut) {
-    	String srcFormater = null,dstFormater = null;
-		String dstTimeZoneId=null;
-		String name=ShiroUtils.getAddress();
-		log.info("name={}",name);
-		if(name!=null) 
-		{
-			String [] arr = name.split("\\s+");
-			String newName=arr[0];
-			log.info("newName={}",newName);
-			CountryPromaryModel countryPromaryModel=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName);
-			if(countryPromaryModel!=null) {
-				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName).getTimeZone();
-				log.info("dstTimeZoneId={}",dstTimeZoneId);
-			}else {
-				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByCountryName(newName).getTimeZone();
-				log.info("dstTimeZoneId={}",dstTimeZoneId);
-			}
-		}else
-		{
-			dstTimeZoneId="Asia/Shanghai";
-			log.info("dstTimeZoneId={}",dstTimeZoneId);
-		}
+    	String srcFormater="yyyy-MM-dd HH:mm:ss";
+	    String dstFormater="yyyy-MM-dd HH:mm:ss";
+		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
     if(inOrOut!=null){
     	if(inOrOut==1)
     	{ 	

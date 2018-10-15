@@ -78,7 +78,14 @@ public class RootController {
 	    
 	        return "main";
      }
-	  
-
+	//KYC审核
+	  @GetMapping("/KYC/KYC")
+	  public String KYC() {
+	  	    return "KYC/KYC";  
+	  	    }
+	//矿机管理
+	  @GetMapping("/miner/minerManage")
+	  public String miner() {
+	  	    return "miner/minerManage";  
+	  	    }
 }
-

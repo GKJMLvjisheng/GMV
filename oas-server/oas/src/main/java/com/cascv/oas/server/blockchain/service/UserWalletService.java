@@ -28,6 +28,7 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.MessageService;
@@ -51,7 +52,8 @@ public class UserWalletService {
   
   @Autowired
   private OasDetailMapper oasDetailMapper;
-  
+  @Autowired 
+  private TimeZoneService timeZoneService;
   @Autowired
   private EthWalletService ethWalletService;
   
@@ -230,7 +232,18 @@ public class UserWalletService {
   }
   
   public List<OasDetailResp> getWithdrawList(){
-	  return oasDetailMapper.getAllWithdrawRecord();
+	  
+	  List<OasDetailResp> OasDetailRespList=oasDetailMapper.getAllWithdrawRecord();
+	  for(OasDetailResp OasDetailResp : OasDetailRespList)
+		{
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+			String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, OasDetailResp.getCreated(), dstFormater, dstTimeZoneId);
+			OasDetailResp.setCreated(created);
+			log.info("newCreated={}",created);
+		}
+	  return OasDetailRespList;
   }
   
   public ErrorCode setWithdrawResult(String uuid,Integer result) {

@@ -68,9 +68,16 @@ function initRequestAuditGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
-		},  
+		}, {
+			title : "操作",
+			field : "userName",
+			align: 'center',
+			valign: 'middle',
+			width:  '60px',
+			formatter: actionFormatter1
+		}, 
 		{
-			title : "审核状态",
+			title : "状态",
 			field : "status",
 			align: 'center',
 			valign: 'middle',
@@ -91,12 +98,26 @@ function actionFormatter(value, row, index) {
 		result += "<input type='radio' onclick=\"reject('" + id + "')\" name='radio' id='reject' value='2'>拒绝";
 		return result;
 	}else if(status==1){
-		result += "<span>已通过</span>";      
+		result += "<span>审核已通过</span>";      
 		return result;
 	}else if(status==2){
-		result += "<span>未通过</span>";      
+		result += "<span>审核未通过</span>";      
+		return result;
+	} 
+	else if(status==3){
+		result += "<span>审核已通过-转账成功</span>";      
+		return result;
+	}else{
+		result += "<span>审核未通过-转账失败</span>";      
+		return result;
+	}
+}
+
+function actionFormatter1(value, row, index) {
+	var id = value;
+	var result = "";
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"viewUserMessage('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
 	return result;
-	}       
 }
 
 function agree(id){
@@ -113,4 +134,43 @@ function reject(id){
 	$('#uuid').val(id);
 	document.getElementById("withdrawMoney").innerText="确认拒绝提币请求吗？";
 	$("#agreeModal").modal("show");
+}
+
+function viewUserMessage(id){	
+	var formData = new FormData();
+	formData.append("name", id);
+	$.ajax({
+	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	data:formData,
+	//contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	type: 'post',
+	cache: false,		
+	processData : false,
+	contentType : false,
+	async:false,
+
+	success:function(res){				
+		if(res.code==0){	
+		var rows = res.data;			
+		$('#Qname').val(rows.name);
+		$('#Qnickname').val(rows.nickname);
+		$('#Qgender').val(rows.gender);
+		$('#Qbirthday').val(rows.birthday);
+		$('#Qmobile').val(rows.mobile);
+		$('#Qemail').val(rows.email);
+		$('#Qaddress').val(rows.address);
+		$('#QinviteCode').val(rows.inviteCode);
+		$("#queryModal").modal("show");
+		}
+
+		else{
+			alert("查询失败1");
+			}						
+	},
+
+	error:function(){
+		alert("查询失败2");
+	},
+	});					
 }

@@ -3,7 +3,6 @@ package com.cascv.oas.server.user.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -213,15 +212,15 @@ public class UserService {
 	 * @author Ming Yang
 	 * 根据账户名选出用户的身份认证信息
 	 */
-	public UserIdentityCardModel selectUserIdentityByUserName(String userName) {
-		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserName(userName);
-		 String frontOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getFrontOfPhoto();
-		 String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getBackOfPhoto();
-		 String holdInHand = mediaServer.getImageHost() + userIdentityCardModel.getHoldInHand();
-		 userIdentityCardModel.setFrontOfPhoto(frontOfPhoto);
-		 userIdentityCardModel.setBackOfPhoto(backOfPhoto);
-		 userIdentityCardModel.setHoldInHand(holdInHand);
-		return userIdentityCardModel;
+	public List<UserIdentityCardModel> selectUserIdentityByUserName(String userName) {
+		List<UserIdentityCardModel> userIdentityCardModelList=userIdentityCardModelMapper.selectUserIdentityByUserName(userName);
+		 String frontOfPhoto = mediaServer.getImageHost() + userIdentityCardModelList.get(0).getFrontOfPhoto();
+		 String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModelList.get(0).getBackOfPhoto();
+		 String holdInHand = mediaServer.getImageHost() + userIdentityCardModelList.get(0).getHoldInHand();
+		 userIdentityCardModelList.get(0).setFrontOfPhoto(frontOfPhoto);
+		 userIdentityCardModelList.get(0).setBackOfPhoto(backOfPhoto);
+		 userIdentityCardModelList.get(0).setHoldInHand(holdInHand);
+		return userIdentityCardModelList;
 	}
 	
 	public List<String> selectIdentityNumber(String mobile){
