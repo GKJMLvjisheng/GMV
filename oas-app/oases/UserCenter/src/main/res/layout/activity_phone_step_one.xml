@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.PhoneStepOneActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHeadBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="绑定手机">
+    </com.oases.base.widgets.HeaderBar>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/iphone"
+        android:layout_gravity="bottom|center_horizontal"/>
+    <TextView
+        android:id="@+id/mShowPhoneStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textSize="19dp"
+        android:textColor="@color/common_black"
+        android:text="请输入手机号"/>
+    <TextView
+        android:id="@+id/mShowCurrentPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:text="请输入常联系手机号码"/>
+        <EditText
+            android:id="@+id/mNewPhoneNumber"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@color/common_green"
+            android:textSize="30dp"
+            android:singleLine="true"/>
+    <Button
+        android:id="@+id/mChangeMobileStepOneBtn"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:text="下一步"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:background="@null"
+        android:textColor="@color/common_green" />
+
+</LinearLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.ExchangeDetailActivity">
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="交易记录">
+    </com.oases.base.widgets.HeaderBar>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_white"
+        app:tabTextColor="@color/text_dark"
+        app:tabSelectedTextColor="@color/common_black"
+        android:minHeight="42dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mTabLayout"/>
+    <!--  <RelativeLayout
+          android:layout_width="wrap_content"
+          android:gravity="bottom"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/mViewPager">
+          <ImageView
+              android:layout_width="60dp"
+              android:layout_height="60dp"
+              android:layout_above="@+id/textView"
+              android:layout_centerHorizontal="true" />
+          <android.support.v4.view.ViewPager
+              android:id="@+id/mViewPager"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="18dp" />
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="true"
+              android:layout_alignParentStart="true"
+              android:layout_gravity="center_horizontal"
+              android:gravity="center"
+              android:text=""
+              android:textSize="15sp"
+              android:id="@+id/mBottomShow" />
+      </RelativeLayout>-->
+</LinearLayout>

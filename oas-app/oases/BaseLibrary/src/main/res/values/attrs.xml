@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HeaderBar自定义属性 -->
+    <declare-styleable name="HeaderBar">
+        <attr name="isShowBack" format="boolean"/>
+        <attr name="titleText" format="string"/>
+        <attr name="rightText" format="string"/>
+    </declare-styleable>
+
+    <!-- LabelText自定义属性 -->
+    <declare-styleable name="LabelText">
+        <attr name="labelText" format="string"/>
+        <attr name="contentText" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="HelpWord">
+        <attr name="text" format="string"/>
+        <attr name="textColor" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="InfoBar">
+        <attr name="name" format="string"/>
+        <attr name="value" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="ViewInfoBar">
+        <attr name="viewName" format="string"/>
+        <attr name="viewValue" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="BitValue">
+        <attr name="icon" format="reference"/>
+        <attr name="bitName" format="string"/>
+        <attr name="bitValue" format="string"/>
+         <attr name="bitEqualsValue" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="ExchangeItem">
+        <attr name="leftTop" format="string"/>
+        <attr name="rightTop" format="string"/>
+        <attr name="leftBottom" format="string"/>
+        <attr name="rightBottom" format="string"/>
+        <attr name="notShowRight" format="boolean"/>
+        <attr name="rightTopTextColor" format="color"/>
+    </declare-styleable>
+</resources>

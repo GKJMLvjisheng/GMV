@@ -1,0 +1,42 @@
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/rounded_corner_white"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:id="@+id/mIconIv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/mNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_middle_size"
+        android:textColor="@color/common_black"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/mIconIv" />
+
+    <TextView
+        android:id="@+id/mValueTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="19dp"
+        android:textSize="@dimen/text_middle_size"
+        android:textColor="@color/common_black"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/mEqualsValueTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="19dp"
+        android:textSize="@dimen/text_middle_size"
+        android:textColor="@color/text_bit_equals"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/mValueTv" />
+</RelativeLayout>

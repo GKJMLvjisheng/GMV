@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.oases.user">
+
+    <application
+        android:name="com.oases.base.common.BaseApplication"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ui.activity.RegisterActivity"/>
+        <activity android:name=".ui.activity.ConfirmHelpWordsActivity" />
+        <activity android:name=".ui.activity.RegisterSucceedActivity"></activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.ForgetPwdTwoActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHeadBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.oases.base.widgets.HeaderBar>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:gravity="center"
+        android:text="请输入验证码"
+        android:textColor="@color/common_black"
+        android:textSize="19dp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="验证码已发送至手机："
+            android:textSize="12dp" />
+        <TextView
+            android:id="@+id/mOriginalPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/mPhoneCode"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:inputType="number"
+        android:textSize="20dp"
+        android:textColor="@color/common_green"
+        android:singleLine="true"/>
+    <Button
+        android:id="@+id/mTimeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:textSize="14dp"
+        android:background="@null"
+        android:textColor="@color/common_green"
+        android:text="重新获取验证码"/>
+    <Button
+        android:id="@+id/mForgetPwdTwoBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20dp"
+        android:text="下一步"
+        android:textStyle="bold"
+        android:textColor="@color/common_green"
+        android:background="@null"/>
+</LinearLayout>
