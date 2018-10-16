@@ -74,6 +74,24 @@ public class MinerController {
 		}
 	}
 	
+	@PostMapping(value = "/inquireWebMiner")  
+	@ResponseBody
+	public ResponseEntity<?> inquireWebMiner(){
+		List<MinerModel> minerModelList = minerMapper.selectAllWebMiner();
+		for(MinerModel minerModel : minerModelList) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
+		    minerModel.setUpdated(updated);
+			log.info("updated={}", minerModel.getUpdated());
+		}
+		return new ResponseEntity.Builder<List<MinerModel>>()
+				.setData(minerModelList)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
 	@PostMapping(value = "/inquireMiner")  
 	@ResponseBody
 	public ResponseEntity<?> inquireMiner(@RequestBody PageDomain<Integer> pageInfo){

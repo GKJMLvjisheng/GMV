@@ -19,6 +19,7 @@ public interface MinerMapper {
 	MinerModel inquireByMinerName(@Param("minerName") String minerName);
 	MinerModel inquireUpdateMinerName(@Param("minerName") String minerName, @Param("updateMinerName") String updateMinerName);
 	
+	List<MinerModel> selectAllWebMiner();
 	List<MinerModel> selectAllMiner(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer countNum();
 	

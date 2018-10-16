@@ -42,6 +42,13 @@
          order by updated desc limit #{offset}, #{limit}
     </select>
     
+    <select id="selectAllWebMiner" resultMap="MinerMap">
+        select
+         <include refid="miner_List" />
+         from miner_source 
+         order by updated desc
+    </select>
+    
     <select id="inquireByMinerName" resultMap="MinerMap">
         select * from miner_source where miner_name = #{minerName}
     </select>
