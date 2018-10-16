@@ -19,5 +19,6 @@ public class UserMinerWrapper implements Serializable {
 	@Getter @Setter private Integer minerPeriod;
 	@Getter @Setter private String created;
 	@Getter @Setter private Integer minerNum;
+	@Getter @Setter private BigDecimal priceSum;
 
 }
