@@ -9,71 +9,102 @@
     </selectKey>
      insert into menu_info(
      menu_name,
+     menu_description,
      menu_parent_name,
      menu_level,
      menu_parent_id,
-     menu_order_id)
+     menu_order_id,
+     created,
+     updated
+     )
      values 
      (#{menuName,jdbcType=VARCHAR},
+     #{desc,jdbcType=VARCHAR},
      #{menuParentName,jdbcType=VARCHAR},
      '2',
      #{menuParentId,jdbcType=INTEGER},
-     #{menuOrderId,jdbcType=INTEGER})
+     #{menuOrderId,jdbcType=INTEGER},
+     #{created,jdbcType=VARCHAR},
+     #{updated,jdbcType=VARCHAR}
+     )
 </insert>
 	
 <!-- insert parent_menu -->
 <insert id="insertParentMenu" parameterType="com.cascv.oas.server.user.model.MenuModel">
   	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="menuId">
-          SELECT LAST_INSERT_ID()
+          SELECT LAST_INSERT_ID() 
     </selectKey>
      insert into menu_info(
      menu_name,
+     menu_description,
      menu_level,
      menu_parent_id,
-     menu_parent_name
+     menu_parent_name,
+     created,
+     updated
      )
      values 
      (
      #{menuName,jdbcType=VARCHAR},
+     #{desc,jdbcType=VARCHAR},
      '1',
      '0',
-     #{menuName,jdbcType=VARCHAR})
+     #{menuName,jdbcType=VARCHAR},
+     #{created,jdbcType=VARCHAR},
+     #{updated,jdbcType=VARCHAR}
+     )
 </insert>
 
 <!-- delete menu -->
 <delete id="deleteMenu">
-	delete from menu_info where menu_id = #{menuId}
+	delete from menu_info where menu_id = #{menuId,jdbcType=INTEGER}
 </delete>
 	
 <resultMap id="menuResultMap" type="com.cascv.oas.server.user.model.MenuModel">
     	<id column="menu_id" property="menuId"/>  
     	<result column="menu_name" property="menuName"/>
     	<result column="menu_parent_name" property="menuParentName" />
+    	<result column="menu_description" property="desc" />
     	<result column="menu_order_id" property="menuOrderId"/>
     	<result column="menu_level" property="menuLevel"/>
     	<result column="menu_parent_id" property="menuParentId"/> 
+    	<result column="created" property="created"/> 
 </resultMap>
   	
 <sql id="Base_Column_List">
-     menu_id,menu_name,menu_parent_name,menu_order_id,menu_level,menu_parent_id
+     menu_id,menu_name,menu_parent_name,menu_order_id,menu_level,menu_parent_id,menu_description,created,updated
 </sql>
   
-<select id="selectAllMenu" resultMap="menuResultMap">
+<select id="selectAllMenus" resultMap="menuResultMap">
 select 
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List"/>
 from menu_info order by menu_order_id
 </select>
 
-<select id="selectChildrenById" resultMap="menuResultMap">
-select menu_id from menu_info where menu_parent_id =#{menuId}
-</select>
+<!-- <select id="selectChildrenById" resultMap="menuResultMap"> -->
+<!-- select menu_id from menu_info where menu_parent_id =#{menuId} -->
+<!-- </select> -->
 
-<!-- update menu -->
-<!-- <update id="updateMenu" parameterType="com.cascv.rpms.model.MenuModel"> -->
-<!--  update menu_info set  -->
-<!--       	menu_order_id=#{menuOrderId} -->
-<!--   where menu_id = #{menuId}   -->
-<!-- </update> -->
+<!-- updateMenu-->
+<update id="updateMenu" parameterType="com.cascv.oas.server.user.model.MenuModel">
+ update menu_info 
+        <set>      	
+        	<if	test="menuName!= null ">
+	      	menu_name=#{menuName,jdbcType=VARCHAR},
+	      	</if>
+	      	<if	test="desc!= null ">
+	      	menu_description=#{desc,jdbcType=VARCHAR}
+	      	</if>
+      	</set> 
+ where menu_id =#{menuId,jdbcType=INTEGER}  
+</update>
+
+<!-- updateMenuOrderId-->
+<update id="updateMenuOrderId" parameterType="com.cascv.oas.server.user.model.MenuModel">
+ update menu_info set
+        menu_order_id=#{menuOrderId,jdbcType=INTEGER}
+ where menu_id = #{menuOrderId,jdbcType=INTEGER}  
+</update>
 
 </mapper>
 

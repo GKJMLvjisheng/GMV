@@ -13,7 +13,7 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.reward.mapper.PromotedRewardModelMapper;
 import com.cascv.oas.server.reward.model.PromotedRewardModel;
-
+import com.cascv.oas.server.reward.service.PromotedRewardService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,12 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value="/api/v1/userCenter")
 public class PromotedRewardController {
 	@Autowired
+	private PromotedRewardService promotedRewardService;
+	@Autowired 
 	private PromotedRewardModelMapper promotedRewardModelMapper;
 	
 	@PostMapping(value="/inqureAllPromotedRewardConfig")
 	@ResponseBody
 	public ResponseEntity<?> inqureAllPromotedRewardConfig(){
-		List<PromotedRewardModel> promotedRewardModelList = promotedRewardModelMapper.selectAllPromotedRewards();
+		List<PromotedRewardModel> promotedRewardModelList = promotedRewardService.selectAllPromotedRewardConfig();
 		
 		return new ResponseEntity.Builder<List<PromotedRewardModel>>()
 					.setData(promotedRewardModelList)

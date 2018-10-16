@@ -1,4 +1,4 @@
-package com.cascv.oas.server.user.model;
+package com.cascv.oas.server.user.wrapper;
 /*
 * Name:NewsManage
 * Author:yangming
@@ -8,11 +8,13 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-public class RoleMenu implements Serializable {
+public class RoleMenuViewModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Setter @Getter private Integer roleMenuId;	
 	@Setter @Getter private Integer roleId;
 	@Setter @Getter private Integer menuId;
-	@Setter @Getter private Integer menuStart;
+	@Setter @Getter private Integer menuParentId;
+	@Getter @Setter private String menuName;
+	@Getter @Setter private Integer menuOrderId;
 	@Setter @Getter private String created;
 }

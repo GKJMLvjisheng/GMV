@@ -71,7 +71,7 @@ public class RootController {
 	    if (ServletUtils.isAjaxRequest(request)){
 	      return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"未认证\"}");
 	   }
-	      return "login";  }
+	      return "login";}
   
 	  @GetMapping(value="/main")
 	  public String main(){
@@ -88,9 +88,11 @@ public class RootController {
 	  public String miner() {
 	  	    return "miner/minerManage";  
 	  	    }
+
 	//矿机管理
 	  @GetMapping("/menuManage/menuAuthor")
 	  public String menuAuthor() {
 	  	    return "menuManage/menuAuthor";  
 	  	    }
+
 }

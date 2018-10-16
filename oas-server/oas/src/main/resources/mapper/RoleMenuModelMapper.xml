@@ -3,44 +3,59 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cascv.oas.server.user.mapper.RoleMenuMapper">
 
- <!-- insert user_role -->
+ <!-- insert role_menu -->
 <insert id="insertRoleMenu" parameterType="com.cascv.oas.server.user.model.RoleMenu">
   	<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="roleMenuId">
           SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into role_menu(role_id,menu_id) values (#{roleId,jdbcType=INTEGER},#{menuId,jdbcType=INTEGER})
+    insert into role_menu(
+    role_id,
+    menu_id,
+    created
+    ) values (
+    #{roleId,jdbcType=INTEGER},
+    #{menuId,jdbcType=INTEGER},
+    #{created,jdbcType=VARCHAR}
+    )
 </insert>
  
  
 <!-- delete RoleMenu -->
 
-<delete id="deleteRoleMenu"> delete from role_menu where menu_id = #{menuId}  </delete>
+<delete id="deleteRoleMenu"> delete from role_menu where role_menu_Id = #{roleMenuId}  </delete>
 
 <!-- select role_menu -->
-<resultMap id="roleMenuResultMap" type="com.cascv.oas.server.user.model.RoleMenu">
+<resultMap id="roleMenuResultMap" type="com.cascv.oas.server.user.wrapper.RoleMenuViewModel">
    	<id column="role_menu_id" property="roleMenuId"/> 
    	<result column="role_id" property="roleId"/> 
    	<result column="menu_id" property="menuId"/>
    	<result column="menu_name" property="menuName"/> 
    	<result column="menu_order_id" property="menuOrderId"/>
-   	<result column="menu_parent_id" property="menuParentId"/>   	
+   	<result column="menu_parent_id" property="menuParentId"/> 
+   	<result column="created" property="created"/>    	
  </resultMap>
 
-<select id="selectAllRoleMenu"  resultMap="roleMenuResultMap">
+<select id="selectAllRoleMenus"  resultMap="roleMenuResultMap">
       
 select 
-    menu_info.menu_name,menu_info.menu_id,menu_info.menu_parent_id
+    rm.role_menu_id,
+    rm.created,
+    m.menu_name,
+    m.menu_parent_name,
+    m.menu_order_id,
+    m.menu_parent_id
 from  
-	  menu_info join role_menu on menu_info.menu_id=role_menu.menu_id 
+	menu_info as m join role_menu as rm on m.menu_id=rm.menu_id by m.menu_order_id
 where 
-      role_menu.role_id=#{roleId};
+    role_menu.role_id=#{roleId};
+
 </select>
 
 <!-- </select Id by colum_name> -->
-<select id="selectRoleMenuByColumnName"  resultMap="roleMenuResultMap">
+<!-- <select id="selectRoleMenuByColumnName"  resultMap="roleMenuResultMap"> -->
       
-select * from role_menu where menu_id = #{menuId}
+<!-- select * from role_menu where menu_id = #{menuId} -->
 		
-</select>
+<!-- </select> -->
 
 </mapper>
