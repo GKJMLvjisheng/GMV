@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.wrapper.UserMinerWrapper;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
@@ -22,7 +25,7 @@ public class MinerService {
 	private MinerMapper minerMapper;
 	
 	@Autowired
-	TimeZoneService timeZoneService;
+	private TimeZoneService timeZoneService;
 	
 	public List<UserMinerWrapper> getUserMiner(String userUuid){
 		List<UserMinerWrapper> userMinerList = minerMapper.selectByuserUuid(userUuid);
@@ -52,9 +55,23 @@ public class MinerService {
 		return minerModelList;
 	}
 	
-	public Integer addPurchaseRecord() {
-		
-		return null;
+	public Integer addPurchaseRecord(String userUuid, String minerName, Integer minerNum, BigDecimal priceSum) {
+		MinerModel minerModel = minerMapper.inquireByMinerName(minerName);
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+		PurchaseRecord purchaseRecord = new PurchaseRecord();
+		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
+		purchaseRecord.setUserUuid(userUuid);
+		purchaseRecord.setMinerCode(minerModel.getMinerCode());
+		purchaseRecord.setMinerName(minerName);
+		purchaseRecord.setMinerGrade(minerModel.getMinerGrade());
+		purchaseRecord.setMinerPrice(minerModel.getMinerPrice());
+		purchaseRecord.setMinerNum(minerNum);
+		purchaseRecord.setPriceSum(priceSum);
+		purchaseRecord.setMinerPower(minerModel.getMinerPower());
+		purchaseRecord.setMinerPeriod(minerModel.getMinerPeriod());
+		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
+		purchaseRecord.setCreated(now);
+		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
 	}
 
