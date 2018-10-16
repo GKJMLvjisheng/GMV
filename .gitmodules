@@ -1,4 +1,0 @@
-[submodule "oas-app/console"]
-	path = oas-app/console
-	url = https://github.com/zzzzht/oases.git
-	branch = master
