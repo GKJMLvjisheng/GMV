@@ -1,5 +1,6 @@
 package com.cascv.oas.server.miner.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +11,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.model.PurchaseRecord;
+import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
+import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +40,13 @@ public class MinerController {
 	private MinerMapper minerMapper;
 	
 	@Autowired
+	private MinerService minerService;
+	
+	@Autowired
 	private TimeZoneService timeZoneService;
+	
+	@Autowired
+	private UserWalletMapper userWalletMapper;
 
 	
 	@PostMapping(value = "/inquireMinerName")  
@@ -69,20 +82,53 @@ public class MinerController {
 		}
 	}
 	
-	@PostMapping(value = "/inquireMiner")  
+	@PostMapping(value = "/inquireWebMiner")  
 	@ResponseBody
-	public ResponseEntity<?> inquireMiner(){
-		List<MinerModel> minerModelList = minerMapper.selectAllMiner();
+	public ResponseEntity<?> inquireWebMiner(){
+		List<MinerModel> minerModelList = minerMapper.selectAllWebMiner();
 		for(MinerModel minerModel : minerModelList) {
 			String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
-		    String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		    String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
 		    minerModel.setUpdated(updated);
 			log.info("updated={}", minerModel.getUpdated());
 		}
 		return new ResponseEntity.Builder<List<MinerModel>>()
 				.setData(minerModelList)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
+	@PostMapping(value = "/inquireMiner")  
+	@ResponseBody
+	public ResponseEntity<?> inquireMiner(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+ 
+        if (limit == null) {
+          limit = 10;
+        }
+        
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        
+		List<MinerModel> minerModelList = minerService.selectAllMiner(offset, limit);
+		
+		Integer count = minerMapper.countNum();
+		PageDomain<MinerModel> minerModelDetail = new PageDomain<>();
+		minerModelDetail.setTotal(count);
+		minerModelDetail.setAsc("desc");
+		minerModelDetail.setOffset(offset);
+		minerModelDetail.setPageNum(pageNum);
+		minerModelDetail.setPageSize(pageSize);
+		minerModelDetail.setRows(minerModelList);
+		return new ResponseEntity.Builder<PageDomain<MinerModel>>()
+				.setData(minerModelDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		
@@ -141,6 +187,69 @@ public class MinerController {
 		minerMapper.updateMiner(minerModel);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+		
+	}
+	
+	@PostMapping(value = "/buyMiner")  
+	@ResponseBody
+	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
+		String userUuid = ShiroUtils.getUserUuid();
+		String minerName = userBuyMinerRequest.getMinerName();
+		Integer minerNum = userBuyMinerRequest.getMinerNum();
+		BigDecimal priceSum = userBuyMinerRequest.getPriceSum();
+		BigDecimal balance = userWalletMapper.selectByUserUuid(userUuid).getBalance();
+		//判断自己剩余的OAS代币是否支持购买所需的矿机
+		if(priceSum.compareTo(balance) != 1) {
+			//增加一条购买记录
+			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
+			//更新用户钱包
+			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
+			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH)
+					.build();
+		}
+		
+	}
+	
+	@PostMapping(value = "/inquirePurchaseRecord")  
+	@ResponseBody
+	public ResponseEntity<?> inquirePurchaseRecord(@RequestBody PageDomain<Integer> pageInfo){
+		String userUuid = ShiroUtils.getUserUuid();
+		Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+ 
+        if (limit == null) {
+          limit = 10;
+        }
+        
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        
+        List<PurchaseRecord> purchaseRecordList = minerService.inquerePurchaseRecord(userUuid, offset, limit);
+        
+        Integer count = minerMapper.countByUserUuid(userUuid);
+        PageDomain<PurchaseRecord> purchaseRecordDetail = new PageDomain<>();
+        purchaseRecordDetail.setAsc("desc");
+        purchaseRecordDetail.setOffset(offset);
+        purchaseRecordDetail.setPageNum(pageNum);
+        purchaseRecordDetail.setPageSize(pageSize);
+        purchaseRecordDetail.setRows(purchaseRecordList);
+        purchaseRecordDetail.setTotal(count);
+		return new ResponseEntity.Builder<PageDomain<PurchaseRecord>>()
+				.setData(purchaseRecordDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		

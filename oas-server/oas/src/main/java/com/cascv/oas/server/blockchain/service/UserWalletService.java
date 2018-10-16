@@ -254,7 +254,7 @@ public class UserWalletService {
 	  if(detail.getStatus()!=0) {
 		  return ErrorCode.OAS_EVENT_HAVE_HANDLED;
 	  }
-	  //BigDecimal extra = detail.getExtra(); //手续费
+	  BigDecimal extra = detail.getExtra(); //手续费
 	  BigDecimal value = detail.getValue(); //提币金额
 	  
 	  //查询system账号
@@ -271,12 +271,11 @@ public class UserWalletService {
 		  }
 		  //管理员拒绝该提币请求
 		  if(result == 2) {
-			  ErrorCode resultErrorReturn = errorOperate(userWallet,value,detail,now);
+			  ErrorCode resultErrorReturn = errorOperate(userWallet,systemWallet,value,extra,detail,now);
 			  if(resultErrorReturn.getCode()!=0) {
 				  return resultErrorReturn;
 			  }
 		  }else {		
-			  
 			  //UserCoin tokenCoin = ethWalletService.getUserCoin(detail.getUserUuid());
 			  UserCoin tokenCoin = ethWalletService.getUserCoin(systemInfo.getUuid()); //system的usercoin
 			  
@@ -285,30 +284,32 @@ public class UserWalletService {
 			  BigInteger gasLimit = BigInteger.valueOf(60000);
 			  //获取当前用户的eth wallet
 			  EthWallet ethWallet = ethWalletMapper.selectByUserUuid(detail.getUserUuid());
-			 if(ethWallet == null) {return ErrorCode.NO_ETH_WALLET;}
+			 if(ethWallet == null) {
+				 return ErrorCode.NO_ETH_WALLET;
+			 }
+			 //最初已减掉钱包balance，和手续费，无需再减
+			 /* if(userWallet.getBalance().compareTo(extra) == -1) {
+				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
+			  }
+			 if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
+				  return ErrorCode.UNCONFIRMED_BALANCE;
+			 }*/
 			  
 			 String myName = userModelMapper.selectByUuid(detail.getUserUuid()).getName();
 			 ReturnValue<String> ethInfo = ethWalletService.systemTransfer(true,systemInfo.getUuid(),ethWallet.getAddress(),myName,tokenCoin,value,gasPrice,gasLimit,detail.getRemark());
 			 if(ethInfo == null || ethInfo.getData()==null) {
 				 oasDetailMapper.updateStatusByUuid(detail.getUuid(),OasEventEnum.FAILED.getCode());
-				 errorOperate(userWallet,value,detail,now);
+				 errorOperate(userWallet,systemWallet,value,extra,detail,now);
 				 return ErrorCode.ETH_RETURN_HASH;
 			 }
 			 hash = ethInfo.getData();
 			 
-			  //最初已减掉钱包balance，和手续费，无需再减
-			 /* if(userWallet.getBalance().compareTo(extra) == -1) {
-				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
-			  }*/
-			 if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
-				  return ErrorCode.UNCONFIRMED_BALANCE;
-			  }
-			 
-			 Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance(),userWallet.getUnconfirmedBalance(),now);//.subtract(value)
+			 /* 移到后台确认转账成功进行操作
+			  * Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance(),userWallet.getUnconfirmedBalance(),now);//.subtract(value)
 			 Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
 			 if(tResult == 0 || sResult == 0) {
 				 return ErrorCode.UPDATE_FAILED;
-			 }
+			 }*/
 			//增加在线钱包记录换到提币请求时
 			 //userWalletDetailMapper.insertSelective(setDetail(userWallet, tokenCoin.getAddress(), UserWalletDetailScope.COIN_TO_ETH, value, detail.getRemark(), detail.getRemark(),hash,coinClient.getNetName()));
 			 userWalletDetailMapper.insertSelective(setDetail(systemWallet, myName, UserWalletDetailScope.TRANSFER_IN, value, detail.getRemark(), detail.getRemark(),null));//system转入
@@ -318,16 +319,19 @@ public class UserWalletService {
 		  return ErrorCode.SYSTEM_NOT_EXIST;
 	  }
   }
-  //提币失败，待交易金额退回代币
-  private ErrorCode errorOperate(UserWallet userWallet,BigDecimal value,OasDetail detail,String now) {
+  //提币失败，待交易金额退回代币，手续费从system退回
+  private ErrorCode errorOperate(UserWallet userWallet,UserWallet systemWallet,BigDecimal value,BigDecimal extra,OasDetail detail,String now) {
 	  //待交易记录减去value，代币加value
 	  if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 		  return ErrorCode.UNCONFIRMED_BALANCE;
 	  }
+	  if(systemWallet.getBalance().compareTo(extra) == -1) {
+		  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
+	  }
 	 
-	  Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance().add(value),userWallet.getUnconfirmedBalance().subtract(value),now);
-	  //Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), extra);
-	  if(tResult == 0 ) {
+	  Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance().add(value).add(extra),userWallet.getUnconfirmedBalance().subtract(value),now);
+	  Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), extra);
+	  if(tResult == 0 || sResult == 0) {
 		  return ErrorCode.UPDATE_FAILED;
 	  }
 	  //提币失败更新在线钱包detail状态

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>moduleManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css"  th:href="@{/webjars/bootstrapvalidator/0.5.3/css/bootstrapValidator.min.css}">  
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	 <link rel="stylesheet" type="text/css"  th:href="@{/webjars/jquery-treegrid/0.3.0/css/jquery.treegrid.css}">  
+     <link rel="stylesheet" type="text/css"  th:href="@{/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+   <script type="text/javascript" th:src="@{/bootstrap-table-master/dist/bootstrap-table.min.js}"></script> 
+     <script type="text/javascript" th:src="@{/webjars/jquery-treegrid/0.3.0/js/jquery.treegrid.js}"></script> 
+    <script type="text/javascript" th:src="@{/bootstrap-table-master/dist/extensions/treegrid/bootstrap-table-treegrid.min.js}"></script>  
+ 	<script type="text/javascript" th:src="@{/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>  
+    <script type="text/javascript" th:src="@{/webjars/bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js}"></script>
+   
+    <style>
+    .input-group .datetimepicker{
+     z-index:100000;
+    }
+    .form-group span.required {
+	 color: red;
+	 font-size: 150%;
+	} 
+    </style>   
+</head>
+
+<body>
+	<section class="content-header">
+		<h1>角色管理</h1>
+		
+<!-- 		<a href='javascript:;' style="float:right" onclick="add()">添加角色信息</a>  class="btn btn-primary"-->
+		
+           <input type="button" value="添加角色信息" id="addroleBtn"  data-toggle="modal" data-target="#addRoleModal" class="btn btn-primary"></input>
+  
+	</section>
+
+	<!-- bootstrapTable -->		
+	<table id="roleGrid">
+	</table>
+	
+	<!-- 添加用户角色模态框 -->
+  
+  <div class="modal fade" id="addRoleModal" tabindex="-1" role="dialog">
+
+      <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+          <div class="modal-header">
+          
+             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            <h3 class="modal-title" id="myModalLabel">添加角色信息</h3>
+
+          </div>
+
+          <div class="modal-body">
+
+            <form id="addRoleForm" action="/user/addrole" method="post" class="form-horizontal">
+
+              <div class="form-group">
+
+                <label for="roleName" class="col-sm-3 control-label">角色名称</label><span class="required"></span>
+
+                <div class="col-sm-7">
+
+                  <input type="text" name="roleName" class="form-control" id="roleName" required="required"  placeholder="请输入角色名称" />
+
+                </div>
+                
+              </div> 
+               
+               <div class="form-group"> 
+
+                 <label for="roleDescription" class="col-sm-3 control-label">角色描述</label><span class="required"></span>
+
+                  <div class="col-sm-7"> 
+                 
+                <textarea rows="10" cols="3" name="roleDescription" class="form-control" id="roleDescription" required="required"  placeholder="请进行角色介绍" ></textarea>
+ <!--                   <input type="text" name="user_name" class="form-control" id="user_name" required="required"  placeholder="请进行角色介绍" /> -->
+
+                 </div> 
+                
+               </div>  
+              
+            </form>
+
+          </div>
+          <div class="modal-footer">
+
+            <button type="button" id="saveRole" class="btn btn-default" onclick="addRole()">保存</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="close()">关闭窗口</button>
+          </div>
+        </div>
+      </div>
+    </div>
+				
+				<!-- 修改用户角色模态框 -->
+  
+  <div class="modal fade" id="editRoleModal" tabindex="-1" role="dialog">
+
+      <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+          <div class="modal-header">
+          
+             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            <h3 class="modal-title" id="myModalLabel">修改角色信息</h3>
+
+          </div>
+
+          <div class="modal-body">
+
+            <form id="editRoleForm" action="/user/editrole" method="post" class="form-horizontal"> 
+            <!-- <input  style="display:none" type="hidden" name="Eid" id="Eid"> -->
+            <div class="form-group"> 
+
+                <label for="EroleId" class="col-sm-3 control-label">角色编号</label> 
+
+                <div class="col-sm-7"> 
+
+                  <input readonly="readonly" type="text" name="EroleId" class="form-control" id="EroleId" /> 
+
+                </div> 
+                
+               </div>  
+
+              <div class="form-group">
+
+                <label for="EroleName" class="col-sm-3 control-label">角色名称</label>
+
+                <div class="col-sm-7">
+
+                  <input type="text" name="EroleName" class="form-control" id="EroleName" required="required"/>
+
+                </div>
+                
+              </div> 
+               
+               <div class="form-group"> 
+
+                 <label for="EroleDescription" class="col-sm-3 control-label">角色描述</label> 
+
+                 <div class="col-sm-7"> 
+                 
+                 <textarea rows="10" cols="3" name="EroleDescription" class="form-control" id="EroleDescription" required="required"></textarea>
+<!--                   <input type="text" name="user_name" class="form-control" id="user_name" required="required"  placeholder="请进行角色介绍" /> -->
+
+                </div> 
+                
+                </div> 
+              
+            </form>
+            
+            <div class="modal-footer">
+
+            <button type="button" id="saveEditRole" class="btn btn-default" onclick="updateRole()">保存</button>
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+				
+<!-- 	<div th:include=" /templates/footer : : copy" ></div>	  -->
+				
+<!-- 角色授权模态框 -->
+<!--   <div th:fragment="copy"> -->
+  <div class="modal fade" id="authRoleModal" tabindex="-1" role="dialog">
+
+      <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+          <div class="modal-header">
+          
+             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            <h3 class="modal-title" id="authRoleModalLabel">请给角色授权</h3>
+
+          </div>
+
+          <div class="modal-body">
+
+<!--             <form id="editRoleForm" action="/user/editrole" method="post" class="form-horizontal">  -->
+            <input   type="text" style="display:none" name="authRoleId" id="authRoleId">
+            <!-- <input  style="display:none" type="hidden" name="Eid" id="Eid"> -->
+            
+
+               
+             <table id="authRoleTable">
+
+				</table>
+              
+<!--             </form> -->
+            
+            <div class="modal-footer">
+
+<!--             <button type="button" id="saveEditRole" class="btn btn-default" onclick="updateRole()">保存</button> -->
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>			
+<!-- 	</div>							 -->				
+				
+				
+				
+				
+				
+</body>
+
+<script type="text/javascript" th:src="@{/roleManage/roleManage.js}"></script>
+
+</html>

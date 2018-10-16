@@ -88,4 +88,9 @@ public class RootController {
 	  public String miner() {
 	  	    return "miner/minerManage";  
 	  	    }
+	//矿机管理
+	  @GetMapping("/menuAuthor/menuAuthor")
+	  public String menuAuthor() {
+	  	    return "menuAuthor/menuAuthor";  
+	  	    }
 }

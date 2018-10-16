@@ -676,19 +676,24 @@ public class EthWalletService {
 	  	 if(oasD.getType().equals(OasEventEnum.OAS_OUT.getCode())) {
 	  		 if(flag.equals("success")) {
 	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),null,myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
-	  			if(tResult == null) {
+	  			Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
+	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
 	  		 }else {
-	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
-	  			Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), value);
-	  			if(tResult == null || sResult == null) {
+	  			 if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
+	  				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
+	  			  }
+	  			 
+	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
+	  			Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), oasD.getExtra());
+	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
 	  		 }
 	  		//更新在线钱包记录中的状态
 	  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid());
-	  		if(uwdResult == null) {
+	  		if(uwdResult == 0) {
  		  		 return ErrorCode.UPDATE_FAILED;
  		  	}
 

@@ -3,7 +3,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api': {
-                target: 'http://oas.cascv.com:8080/api/v1',
+                target: 'https://oas.cascv.com/api/v1',
                 //target: 'http://localhost:8080/api/v1',
                 changeOrigin: true,
                 ws: true,
