@@ -14,10 +14,13 @@ public interface MinerMapper {
 	Integer insertMiner(MinerModel minerModel);
 	Integer deleteMiner(@Param("minerCode") String minerCode);
 	Integer updateMiner(MinerModel minerModel);
-	List<MinerModel> selectAllMiner();
+	
 	MinerModel inquireByUuid(@Param("minerCode") String minerCode);
 	MinerModel inquireByMinerName(@Param("minerName") String minerName);
 	MinerModel inquireUpdateMinerName(@Param("minerName") String minerName, @Param("updateMinerName") String updateMinerName);
+	
+	List<MinerModel> selectAllMiner(@Param("offset") Integer offset, @Param("limit") Integer limit);
+	Integer countNum();
 	
 	List<UserMinerWrapper> selectByuserUuid(@Param("userUuid") String userUuid);
 

@@ -1,8 +1,7 @@
-/*
-* Name:NewsManage
-* Author:yangming
-* Date:2018.09.04
-*/
+/**
+ * @author Ming Yang
+ * Date:20181016
+ */
 package com.cascv.oas.server.news.model;
 
 import java.io.Serializable;

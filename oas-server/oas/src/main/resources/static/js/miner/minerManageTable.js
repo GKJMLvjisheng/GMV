@@ -1,12 +1,10 @@
-//答题管理界面创建bootstrapTable
+//矿机管理界面创建bootstrapTable
 document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 
 function initMinerGrid(data) {	
 
 	$("#minerGrid").bootstrapTable({
-
-		//极为重要，缺失无法执行queryParams，传递page参数
-
+		
 		contentType : "application/x-www-form-urlencoded",
 
 		dataType:"json",
@@ -16,7 +14,7 @@ function initMinerGrid(data) {
 		striped:true,//隔行变色
 
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
+		sidePagination:"client",
 
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
@@ -117,13 +115,13 @@ function initMinerGrid(data) {
 }
 
 function actionFormatter(value, row, index) {
-        var id = value;
-        var result = "";
-    
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditMinerById('" + id + "')\" title='修改'><span class='glyphicon glyphicon-pencil'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteMinerById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+    var id = value;
+    var result = "";
 
-        return result;
+    result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditMinerById('" + id + "')\" title='修改'><span class='glyphicon glyphicon-pencil'></span></a>";
+    result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteMinerById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+    return result;
 }
  
 function EditMinerById(id){
@@ -149,7 +147,6 @@ function deleteMinerById(id)
 		 }
 
 	data={"minerCode":id};
-	//alert(JSON.stringify(id));
 	$.ajax({
 
 		url:"/api/v1/miner/deleteMiner",
@@ -167,12 +164,12 @@ function deleteMinerById(id)
 			}
 			else{
 				alert("删除失败");
-				}
-			},
+			}
+		},
 	
 	     error:function(){
-				alert("删除过程发生错误！");
-			}
+			alert("删除过程发生错误！");
+		}
 	});
 });
 }

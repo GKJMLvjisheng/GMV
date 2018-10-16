@@ -39,7 +39,7 @@
         select
          <include refid="miner_List" />
          from miner_source 
-         order by updated desc
+         order by updated desc limit #{offset}, #{limit}
     </select>
     
     <select id="inquireByMinerName" resultMap="MinerMap">
@@ -55,6 +55,10 @@
           (select * from miner_source
             where miner_name not in (select miner_name from miner_source where miner_name=#{minerName}))b
         where b.miner_name = #{updateMinerName}
+    </select>
+    
+    <select id="countNum" resultType="java.lang.Integer">
+  	    select count(*) from miner_source
     </select>
     
     <update id="updateMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
@@ -75,7 +79,7 @@
         delete from miner_source where miner_code=#{minerCode}
     </delete>    
     
-    <resultMap id="userMinerMap" type="com.cascv.oas.server.miner.wrapper.UserMinerWrapper">
+    <resultMap id="purchaseRecordMap" type="com.cascv.oas.server.miner.model.PurchaseRecordMap">
         <result column="uuid" property="uuid"/>
 		<result column="user_uuid" property="userUuid"/>
 		<result column="miner_code" property="minerCode"/>
@@ -84,12 +88,13 @@
 	  	<result column="miner_price" property="minerPrice"/>
 	  	<result column="miner_grade" property="minerGrade"/>
 	  	<result column="miner_num" property="minerNum"/>
+	  	<result column="price_sum" property="priceSum"/>
 	  	<result column="miner_power" property="minerPower"/>
 	  	<result column="miner_period" property="minerPeriod"/>
 	  	<result column="created" property="created"/>
     </resultMap>
     
-    <select id="selectByuserUuid" resultMap="userMinerMap">
+    <select id="selectByuserUuid" resultMap="purchaseRecordMap">
         select * from purchase_record 
         where user_uuid=#{userUuid}
     </select>
