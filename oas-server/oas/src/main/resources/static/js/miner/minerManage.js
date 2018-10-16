@@ -12,7 +12,7 @@ function minerReady(){
     $('#minerGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/miner/inquireMiner",
+		url: "/api/v1/miner/inquireWebMiner",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
