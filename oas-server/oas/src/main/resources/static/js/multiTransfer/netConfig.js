@@ -13,7 +13,7 @@
          			 
          		     if (res.code == 0) {
          		    	  
-         		    	 var optionData=res.data;
+         		    	 var optionData=res.data.network_list;
          		    	 
          		    	 var len=optionData.length;
          		    	 var objNetwork=document.getElementById("network");
@@ -28,6 +28,7 @@
                             //将option增加到下拉列表中。
                                 objNetwork.options.add(option); 
                             	  }
+         		    	$("#network").val(res.data.network_active);
          		    	//$("#network option[value='mainnet']").prop("selected","selected");//根据值让option选中
                           }
          		     else {
@@ -51,7 +52,7 @@
 //                	$("#network option[value='ropstrn']").prop("selected","selected");//根据值让option选中
 //                	thisVal = $(this).val();
 //                }
-                window.parent.setValue(thisVal);
+//                window.parent.setValue(thisVal);
                 var data={"preferNetwork":thisVal};
                $.ajax({
          		   type: 'post',
