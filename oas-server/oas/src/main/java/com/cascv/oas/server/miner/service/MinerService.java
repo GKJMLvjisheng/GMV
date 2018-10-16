@@ -51,5 +51,11 @@ public class MinerService {
 		}
 		return minerModelList;
 	}
+	
+	public Integer addPurchaseRecord() {
+		
+		return null;
+		
+	}
 
 }

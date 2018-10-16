@@ -169,6 +169,7 @@ public class MinerController {
 	@PostMapping(value = "/buyMiner")  
 	@ResponseBody
 	public ResponseEntity<?> buyMiner(){
+		
 		return null;
 	}
 
