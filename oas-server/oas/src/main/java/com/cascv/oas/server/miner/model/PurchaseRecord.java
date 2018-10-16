@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 
-public class PurchaseRecordMap {
+public class PurchaseRecord {
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
 	@Getter @Setter private String minerCode;
