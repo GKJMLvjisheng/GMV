@@ -175,7 +175,9 @@ export default {
       isShowToast: false,
       isShowNewsTip: false,
       energyBallList:[],
+      //energyBallListBackup:[],
       walkEnergyBallList:[],
+      //walkEnergyBallListtBackup:[],
       currentEnergy:0,
       currentPower:0,
       page:1,
@@ -203,13 +205,17 @@ export default {
   },
   created() {
     //this.getStep()
-    this.getWalkEnergyBall() 
-    this.getEnergyBall() 
+    //this.getEnergyBall()
+    //this.getWalkEnergyBall() 
+    this.getBall()
+    
     this.getCurrentEnergy()
     this.getCurrentPower()
+    
     this.getEnergyAnalysis()
     this.getArticleList()
     this.getUserInfo()
+    //this.synchronizeBall()
     window.skipRefresh= this.skipRefresh
      this.location()
     // this.getCurrenttime()
@@ -217,8 +223,9 @@ export default {
   filters: {
   },
   methods: {
+    
    getStep(){
-  this.todayStep=window.Android.getTodaySteps()
+      this.todayStep=window.Android.getTodaySteps()
    },
     //预先加载3条新闻
     getArticleList () {
@@ -298,7 +305,7 @@ export default {
     // 获取用户信息
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
-        console.log(data);
+        console.log("用户信息"+data);
         this.userInfo.avatar=data.profile;
         this.userInfo.nickname = data.nickname
         
@@ -309,29 +316,91 @@ export default {
     window.Android.startLiftComputingPower()
     
     },
+    async getBall() {
+            try {
+                let dataBall={}
+                let dataWalkBall={}
+                let energyBallListBackup=new Array(); 
+                let walkEnergyBallListtBackup=new Array();
+                dataBall=await this.getEnergyBall();
+                //console.log(JSON.stringify(dataBall))
+                if(dataBall.data.code==0)
+                {
+                  console.log("123")
+                  energyBallListBackup = dataBall.data.data.energyBallList.map(el => {
+                    let p = this.randomPoint()
+                    // pArr.splice(randomIdx,1)
+                    el.x = p.x / 75 + 'rem'
+                    el.y = p.y / 75 + 'rem'
+                    if(el.value<50)
+                    { el.generate=true}
+                    else{el.generate=false}
+                    return el
+                  }) 
+              }
+                dataWalkBall=await this.getWalkEnergyBall();
+                //console.log("data1"+JSON.stringify(dataWalkBall))
+                let time=currentTime(true)
+                if(dataWalkBall.data.code==0)
+              { walkEnergyBallListtBackup= dataWalkBall.data.data.map(el => {
+                
+                  let p = this.randomPoint()
+                
+                  el.x = p.x / 75 + 'rem'
+                  el.y = p.y / 75 + 'rem'
+                  
+                    if(el.startDate>=time)
+                  { 
+                    el.generate=true}
+                  else{el.generate=false}
+                  return el
+                }) 
+                for(let i=0;i<walkEnergyBallListtBackup.length;i++)  
+              { 
+              if(walkEnergyBallListtBackup[i].value==0)
+                { 
+                walkEnergyBallListtBackup.splice(i, 1)
+                i--}
+              }
+              }
+              
+
+              this.energyBallList=energyBallListBackup
+              console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
+              this.walkEnergyBallList=walkEnergyBallListtBackup
+              console.log("222"+JSON.stringify(this.walkEnergyBallList))
+              } 
+              catch(err) {
+                    console.log(err);
+                }
+            },
     // 获取悬浮能量球数据
     getEnergyBall () {
      
-      this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
-        // let pArr = createPositionArr()
-        console.log(data)
-       // let i=0
+       return this.$axios.post('/energyPoint/inquireEnergyPointBall')
+      //  .then(({data:{data}})=> {
+      //   // let pArr = createPositionArr()
+      //   console.log("能量球"+data)
+      //  // let i=0
         
-        this.energyBallList = data.energyBallList.map(el => {
-          // let randomIdx = randomNum(0,pArr.length - 1)
-          let p = this.randomPoint()
-          // pArr.splice(randomIdx,1)
-          el.x = p.x / 75 + 'rem'
-          el.y = p.y / 75 + 'rem'
-          if(el.value<50)
-         { el.generate=true}
-         else{el.generate=false}
-         // console.log("{"+i+"}"+JSON.stringify(el))
-          //i++
-          return el
-        }) 
-      }) 
-        
+      //   this.energyBallListBackup = data.energyBallList.map(el => {
+      //     // let randomIdx = randomNum(0,pArr.length - 1)
+      //     let p = this.randomPoint()
+      //     // pArr.splice(randomIdx,1)
+      //     el.x = p.x / 75 + 'rem'
+      //     el.y = p.y / 75 + 'rem'
+      //     if(el.value<50)
+      //    { el.generate=true}
+      //    else{el.generate=false}
+      //    // console.log("{"+i+"}"+JSON.stringify(el))
+      //     //i++
+      //     return el
+      //   }) 
+      //   return this.energyBallListBackup
+      // }
+      
+      // ) 
+       
        
                  
     },
@@ -347,35 +416,38 @@ export default {
      data['date']=time
      data['stepNum']=this.todayStep
      let params = new Array();
-     params.push(data)
-    //   
-      this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
-      //this.input2=data.startDate
-        console.log("data"+JSON.stringify(data))
-       let walkEnergyBallList=new Array();
-        walkEnergyBallList= data.map(el => {
-          // let randomIdx = randomNum(0,pArr.length - 1)
-          let p = this.randomPoint()
-          // pArr.splice(randomIdx,1)
-          el.x = p.x / 75 + 'rem'
-          el.y = p.y / 75 + 'rem'
+     params.push(data)  
+     return this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params})
+    //  .then(({data:{data}}) => {
+    //   //this.input2=data.startDate
+    //     console.log("data"+JSON.stringify(data))
+    //    let walkEnergyBallList=new Array();
+    //     walkEnergyBallList= data.map(el => {
+    //       // let randomIdx = randomNum(0,pArr.length - 1)
+    //       let p = this.randomPoint()
+    //       // pArr.splice(randomIdx,1)
+    //       el.x = p.x / 75 + 'rem'
+    //       el.y = p.y / 75 + 'rem'
          
-           if(el.startDate>=time)
-         { 
-           el.generate=true}
-         else{el.generate=false}
-          return el
-        }) 
-         for(let i=0;i<walkEnergyBallList.length;i++)  
-      { console.log(222)
-        if(walkEnergyBallList[i].value==0)
-        { console.log(111)
-          walkEnergyBallList.splice(i, 1)
-          i--}
-        }
-        this.walkEnergyBallList=walkEnergyBallList
-      })
-     
+    //        if(el.startDate>=time)
+    //      { 
+    //        el.generate=true}
+    //      else{el.generate=false}
+    //       return el
+    //     }) 
+    //      for(let i=0;i<walkEnergyBallList.length;i++)  
+    //   { 
+    //     if(walkEnergyBallList[i].value==0)
+    //     { 
+    //       walkEnergyBallList.splice(i, 1)
+    //       i--}
+    //     }
+    //     console.log("最初de"+walkEnergyBallList)
+    //     this.walkEnergyBallListtBackup=walkEnergyBallList
+    //     console.log("函数里"+this.walkEnergyBallListtBackup)
+    
+    //   })
+   
      
 
                  
@@ -384,7 +456,7 @@ export default {
     // 获取当前能量
     getCurrentEnergy () {
       this.$axios.post('/energyPoint/inquireEnergyPoint').then(({data:{data}}) => {
-        console.log(data)
+        console.log("能量"+data)
         this.currentEnergy = data
       })
     },
@@ -397,7 +469,7 @@ export default {
     // 获取能量分析
     getEnergyAnalysis () {
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
-        console.log(data)
+        console.log("分析"+data)
         this.analysis = data
         this.analysisCount=0
         data.forEach(el => {
@@ -406,6 +478,7 @@ export default {
           this.analysisCount += el.value
         })
       })
+      console.log("能量分析步行备份"+this.walkEnergyBallListtBackup)
     },
     // 获取新闻文章列表
     // getArticleList () {
@@ -494,7 +567,7 @@ export default {
       let len = this.tempArr.length
      
       for (let i = 0; i < len; i++){
-        if(Math.abs(p.x - this.tempArr[i].x) < 75 && Math.abs(p.y - this.tempArr[i].y) < 75) {
+        if(Math.abs(p.x - this.tempArr[i].x) < 80 && Math.abs(p.y - this.tempArr[i].y) < 80) {
           return this.randomPoint()
         }
       }
@@ -507,9 +580,10 @@ export default {
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
-      this.getWalkEnergyBall()
-      this.getEnergyBall()
-     
+      this.getBall()
+     // this.getWalkEnergyBall()
+      //this.getEnergyBall()
+      
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
@@ -533,10 +607,9 @@ export default {
  skipRefresh() {
       //this.getStep()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
-      this.energyBallList=[]
-      this.walkEnergyBallList=[]
-      this.getEnergyBall()
-      this.getWalkEnergyBall()
+      this.getBall()
+     // this.getEnergyBall()
+      //this.getWalkEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()

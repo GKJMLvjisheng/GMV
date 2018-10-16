@@ -213,6 +213,11 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/web3j/**", "anon");
 		filterChainDefinitionMap.put("/logout", "logout");
 		
+		//角色权限管理
+		
+		//filterChainDefinitionMap.put("/api/v1/userCenter/upLoadImg", "roles[admin]");
+		
+		
 		//让微信接口免登录访问
 		filterChainDefinitionMap.put("/api/v1/wx/**", "anon");
 		filterChainDefinitionMap.put("/api/v1/miniProgram/**", "anon");

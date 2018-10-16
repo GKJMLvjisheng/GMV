@@ -85,8 +85,11 @@
      } 
      
      function getIdentifyCode2(){
-    	 window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+"wx03476a8dd19b6933"+
-    			 "&redirect_uri="+"lvjisheng.oicp.io"+"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
+    	 const appId= "wx03476a8dd19b6933";
+    	 //const redirectUri = "lvjisheng.oicp.io";
+    	 const local=window.location.href;
+    	 window.location.href = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+appId+
+    			 "&redirect_uri="+encodeURIComponent(local)+"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect";
      }
     </script>
 </html>
