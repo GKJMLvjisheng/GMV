@@ -96,10 +96,15 @@
                                 <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/requestAudit}">提币审核</a></li> 
                             </ul>
                         </li> 
-                                                                  
+                        
                         <li class="">
-                            <a class="menuItem" href="miner/minerManage"><i class="glyphicon glyphicon-leaf"></i> <span class="nav-label">矿机管理</span> </a>        
-                        </li>
+                            <a href="main"><i class="glyphicon glyphicon-leaf"></i> <span class="nav-label" >矿机管理</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="active"><a class="menuItem" th:href="@{/miner/minerManage}">矿机配置</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/miner/reward}">奖励配置</a></li> 
+                            </ul>
+                        </li> 
+                                                                  
                         <li class="">
                             <a class="menuItem" href="KYC/KYC"><i class="glyphicon glyphicon-star"></i> <span class="nav-label">KYC审核</span> </a>        
                         </li>
