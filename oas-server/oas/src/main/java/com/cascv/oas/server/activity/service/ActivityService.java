@@ -61,10 +61,14 @@ public class ActivityService {
      * @return
      */
 	public EnergyResultPoint getNewPoint(Integer sourceCode, Integer rewardCode) {
+		if(rewardCode == 1) {
 			BigDecimal point = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode).getBaseValue();
+			log.info("point={}",point);
 			EnergyResultPoint energyResultPoint = new EnergyResultPoint();
 			energyResultPoint.setNewPoint(point);
 			return energyResultPoint;
+		}else
+			return null;
 	}
 	
 	/**
@@ -74,10 +78,13 @@ public class ActivityService {
      * @return
      */
 	public EnergyResultPower getNewPower(Integer sourceCode, Integer rewardCode) {
+		if (rewardCode == 2) {
 			BigDecimal power = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode).getBaseValue();
 			EnergyResultPower energyResultPower = new EnergyResultPower();
 			energyResultPower.setNewPower(power);
-			return energyResultPower;			
+			return energyResultPower;	
+		}else
+			return null;
 	}
 	
 	/**

@@ -27,9 +27,9 @@ function KYCReady(){
 }
 
 //发ajax请求到后台判断身份证号是否重复
-function checkCard() {
-  var card = $("#card").val();
-  if (card != "") {
+function checkCard(card) {
+	
+    if (card != "") {
 	  var data = {
         "userIdentityNumber" : card
       };
@@ -45,13 +45,13 @@ function checkCard() {
 
         success : function(res) {
           if (res.data == 1) {
-            $("#msg_card").html("身份证号可以使用");
-            $("#msg_card").css("color", "green");
+//            $("#msg_card").html("身份证号可以使用");
+//            $("#msg_card").css("color", "green");
             check1 = 1;
             return check1;
           } else if(res.data == 0) {
-            $("#msg_card").html("该身份证号已存在");
-            $("#msg_card").css("color", "red");
+//            $("#msg_card").html("身份证号已存在");
+//            $("#msg_card").css("color", "red");
             check1 = 0;
             return check1;
           }
@@ -73,7 +73,7 @@ function addPostil(){
 	if(postil!=""){
 		data={
 				"verifyStatus":3,
-				"userName":reId,
+				"uuid":reId,
 				"remark":postil,
 				}
 
@@ -105,42 +105,93 @@ function addPostil(){
 function addNC(){
 	
 	var agId = $("#agId").val();
+	var agStatus = $("#agStatus").val();
 	var name=$("#name").val();
-	var card=$("#card").val();		
-	if(check1==1 && name!=""){		
-		var data={
-			"verifyStatus":2,
-			"userName":agId,
-			"userIdentityName":name,
-			"userIdentityNumber":card,
-			}
-
-		$.ajax({		
-			url: "/api/v1/userCenter/checkUserIdentity",
-			contentType : 'application/json;charset=utf8',
-			dataType: 'json',
-			cache: false,
-			type: 'post',
-			data:JSON.stringify(data),
-			processData : false,
-			async : false,
-
-			success: function(res) {
-//				document.getElementById("tipContent").innerText="信息添加成功";
-//				$("#Tip").modal('show');
-//				$("#addNCModal").modal('hide');
-//				KYCReady();
-				alert("信息添加成功");
-				location.reload();
-			}, 
-			error: function(){
-				document.getElementById("tipContent").innerText="信息添加失败";
-				$("#Tip").modal('show');
-				$("#addNCModal").modal('hide');
-			}
-			}); 			
+	var card=$("#card").val();	
+	
+	if(agStatus=="2"||agStatus=="3"){
+		alert("审核已完成，不再允许提交信息！")
 	}else{
-		alert("请确认输入信息！");
-		location.reload();
-	}
+		var data={
+				"uuid":agId,
+				"userIdentityName":name,
+				"userIdentityNumber":card,
+				}
+
+			$.ajax({		
+				url: "/api/v1/userCenter/checkUserIdentity",
+				contentType : 'application/json;charset=utf8',
+				dataType: 'json',
+				cache: false,
+				type: 'post',
+				data:JSON.stringify(data),
+				processData : false,
+				async : false,
+
+				success: function(res) {
+					alert("信息添加成功");
+					location.reload();
+				}, 
+				error: function(){
+					document.getElementById("tipContent").innerText="信息添加失败";
+					$("#Tip").modal('show');
+					$("#addNCModal").modal('hide');
+				}
+				}); 	
+	}		
+}
+
+function agree(id){
+	
+	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
+	var uuid = id;
+	//alert(JSON.stringify(uuid));
+	$('#name').val(rows.userIdentityName);
+	$('#card').val(rows.userIdentityNumber);
+	var name=rows.userIdentityName;
+	var card=rows.userIdentityNumber;
+//	alert(JSON.stringify(name));
+//	alert(JSON.stringify(card));
+	var data={
+		"verifyStatus":2,
+		"uuid":uuid,
+		}
+	
+	if(name!=null && name!="" && card!=null && card!="" ){
+		
+		checkCard(card);
+		//alert(JSON.stringify(check1));
+		if(check1==1){
+			
+			$.ajax({		
+				url: "/api/v1/userCenter/checkUserIdentity",
+				contentType : 'application/json;charset=utf8',
+				dataType: 'json',
+				cache: false,
+				type: 'post',
+				data:JSON.stringify(data),
+				processData : false,
+				async : false,
+
+				success: function(res) {
+					if(res.code==0){
+						alert("批准成功");
+						location.reload();
+					}else{
+						document.getElementById("tipContent").innerText="批准过程发生错误1";
+						$("#Tip").modal('show');
+					}
+					
+				}, 
+				error: function(){
+					document.getElementById("tipContent").innerText="批准过程发生错误2";
+					$("#Tip").modal('show');
+				}
+				}); 	
+		}else if(check1==0){
+			alert("该身份证号已存在！")
+		}
+	}else{
+		alert("请输入姓名、身份证号！")
+	}				
 }

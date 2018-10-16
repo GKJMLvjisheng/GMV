@@ -14,7 +14,7 @@ public interface UserIdentityCardModelMapper {
 	Integer insertUserIdentityCard(UserIdentityCardModel userIdentityCardModel);
 	
 	Integer updateUserIdentityCardByNameNumberRemarkVerifyStatus(UserIdentityCardModel userIdentityCardModel);
-	
+	Integer updateUserIdentityCardByVerifyStatus(UserIdentityCardModel userIdentityCardModel);
 	Integer updateUserIdentityCardByFrontOfPhoto(UserIdentityCardModel userIdentityCardModel);
 	
 	Integer updateUserIdentityCardByBackOfPhoto(UserIdentityCardModel userIdentityCardModel);
@@ -23,8 +23,8 @@ public interface UserIdentityCardModelMapper {
 	
 	List<UserIdentityCardModel> selectAllUserIdentityCard();
 	
-	UserIdentityCardModel selectUserIdentityByUserName(@Param("userName") String userName);
-	
+	List<UserIdentityCardModel> selectUserIdentityByUserName(@Param("userName") String userName);
+	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatus(@Param("userName") String userName);
 	UserIdentityCardModel selectUserByIdentityNumber(@Param("userIdentityNumber") String userIdentityNumber);
 	
 }

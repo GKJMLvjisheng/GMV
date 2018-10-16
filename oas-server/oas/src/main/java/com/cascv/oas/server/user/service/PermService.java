@@ -26,6 +26,8 @@ public class PermService {
         perms.add("mvn:install");
         perms.add("mvn:clean");
         perms.add("mvn:test");
+        
+        perms.add("userInfo:upload");
         return perms;
     }
 }

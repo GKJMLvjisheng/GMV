@@ -23,4 +23,13 @@ public class RootEthWalletTradeRecordController {
 	    return "wallet/energyWallet";  
 	    }
 	
+	@GetMapping("/withdrawMoney/brokerageConfig")
+	public String brokerageConfig() {
+		    return "withdrawMoney/brokerageConfig";  
+		    }
+	@GetMapping("/withdrawMoney/requestAudit")
+	public String auditing() {
+		    return "withdrawMoney/requestAudit";  
+		    }
+	
 }
