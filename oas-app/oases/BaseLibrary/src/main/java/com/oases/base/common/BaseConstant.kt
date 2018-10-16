@@ -13,7 +13,7 @@ class BaseConstant{
         //本地服务器地址
         //const val SERVER_ADDRESS = "http://10.0.0.4:8080"
         //远程服务器地址
-        const val SERVER_ADDRESS = "http://oas.cascvs.com:8080"//"http://18.219.19.160:8080"
+        const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"
 
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
