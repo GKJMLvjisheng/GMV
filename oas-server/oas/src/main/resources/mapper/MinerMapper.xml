@@ -86,7 +86,7 @@
         delete from miner_source where miner_code=#{minerCode}
     </delete>    
     
-    <resultMap id="purchaseRecordMap" type="com.cascv.oas.server.miner.model.PurchaseRecordMap">
+    <resultMap id="purchaseRecordMap" type="com.cascv.oas.server.miner.model.PurchaseRecord">
         <result column="uuid" property="uuid"/>
 		<result column="user_uuid" property="userUuid"/>
 		<result column="miner_code" property="minerCode"/>
@@ -100,6 +100,24 @@
 	  	<result column="miner_period" property="minerPeriod"/>
 	  	<result column="created" property="created"/>
     </resultMap>
+    
+    <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+        insert into purchase_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+	        uuid, user_uuid, miner_code, miner_name, miner_grade,
+	        <if test="minerDescription != null">
+	          miner_description,
+	        </if>
+	         miner_price, miner_num, price_sum, miner_power, miner_period, created
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{uuid}, #{userUuid}, #{minerCode}, #{minerName}, #{minerGrade},
+	        <if test="minerDescription != null">
+	           #{minerDescription},
+	        </if>
+	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, #{minerPeriod}, #{created}
+	    </trim>            
+    </insert>
     
     <select id="selectByuserUuid" resultMap="purchaseRecordMap">
         select * from purchase_record 

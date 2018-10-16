@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.wrapper.UserMinerWrapper;
 
 @Component
@@ -24,5 +25,7 @@ public interface MinerMapper {
 	Integer countNum();
 	
 	List<UserMinerWrapper> selectByuserUuid(@Param("userUuid") String userUuid);
+	
+	Integer insertPurchaseRecord(PurchaseRecord purchaseRecord);
 
 }
