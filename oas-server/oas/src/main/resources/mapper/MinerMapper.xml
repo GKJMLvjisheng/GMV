@@ -101,6 +101,12 @@
 	  	<result column="created" property="created"/>
     </resultMap>
     
+    <sql id="purchase_record_List">
+  		uuid, user_uuid, miner_code, miner_name, miner_grade, 
+  		miner_description, miner_price, miner_num, price_sum,
+  		miner_power, miner_period, created
+    </sql>
+    
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         insert into purchase_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -122,6 +128,17 @@
     <select id="selectByuserUuid" resultMap="purchaseRecordMap">
         select * from purchase_record 
         where user_uuid=#{userUuid}
+    </select>
+    
+    <select id="countByUserUuid" resultType="java.lang.Integer">
+  	    select count(*) from purchase_record where user_uuid = #{userUuid}
+    </select>
+    
+    <select id="inquerePurchaseRecord" resultMap="purchaseRecordMap">
+        select
+         <include refid="purchase_record_List" />
+         from purchase_record where user_uuid = #{userUuid} 
+         order by created desc limit #{offset}, #{limit}
     </select>
     
 </mapper>

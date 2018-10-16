@@ -19,6 +19,7 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
@@ -216,6 +217,41 @@ public class MinerController {
 					.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH)
 					.build();
 		}
+		
+	}
+	
+	@PostMapping(value = "/inquirePurchaseRecord")  
+	@ResponseBody
+	public ResponseEntity<?> inquirePurchaseRecord(@RequestBody PageDomain<Integer> pageInfo){
+		String userUuid = ShiroUtils.getUserUuid();
+		Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+ 
+        if (limit == null) {
+          limit = 10;
+        }
+        
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        
+        List<PurchaseRecord> purchaseRecordList = minerService.inquerePurchaseRecord(userUuid, offset, limit);
+        
+        Integer count = minerMapper.countByUserUuid(userUuid);
+        PageDomain<PurchaseRecord> purchaseRecordDetail = new PageDomain<>();
+        purchaseRecordDetail.setAsc("desc");
+        purchaseRecordDetail.setOffset(offset);
+        purchaseRecordDetail.setPageNum(pageNum);
+        purchaseRecordDetail.setPageSize(pageSize);
+        purchaseRecordDetail.setRows(purchaseRecordList);
+        purchaseRecordDetail.setTotal(count);
+		return new ResponseEntity.Builder<PageDomain<PurchaseRecord>>()
+				.setData(purchaseRecordDetail)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
 		
 	}
 

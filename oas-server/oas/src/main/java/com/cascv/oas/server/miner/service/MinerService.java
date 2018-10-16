@@ -12,7 +12,6 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
-import com.cascv.oas.server.miner.wrapper.UserMinerWrapper;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +26,13 @@ public class MinerService {
 	@Autowired
 	private TimeZoneService timeZoneService;
 	
-	public List<UserMinerWrapper> getUserMiner(String userUuid){
-		List<UserMinerWrapper> userMinerList = minerMapper.selectByuserUuid(userUuid);
+	public List<PurchaseRecord> getUserMiner(String userUuid){
+		List<PurchaseRecord> userMinerList = minerMapper.selectByuserUuid(userUuid);
 		return userMinerList;	
 	}
 	
 	public BigDecimal getMinerEfficiency(String userUuid) {
-		List<UserMinerWrapper> userMinerList = this.getUserMiner(userUuid);
+		List<PurchaseRecord> userMinerList = this.getUserMiner(userUuid);
 		BigDecimal powerSum = BigDecimal.ZERO;
 		for(int i=0; i<userMinerList.size(); i++) {
 			
@@ -57,7 +56,7 @@ public class MinerService {
 	
 	public Integer addPurchaseRecord(String userUuid, String minerName, Integer minerNum, BigDecimal priceSum) {
 		MinerModel minerModel = minerMapper.inquireByMinerName(minerName);
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		PurchaseRecord purchaseRecord = new PurchaseRecord();
 		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
 		purchaseRecord.setUserUuid(userUuid);
@@ -73,6 +72,19 @@ public class MinerService {
 		purchaseRecord.setCreated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
+	}
+	
+	public List<PurchaseRecord> inquerePurchaseRecord(String userUuid, Integer offset, Integer limit){
+		List<PurchaseRecord> purchaseRecordList = minerMapper.inquerePurchaseRecord(userUuid, offset, limit);
+		for(PurchaseRecord purchaseRecord : purchaseRecordList) {
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, purchaseRecord.getCreated(), dstFormater, dstTimeZoneId);
+			purchaseRecord.setCreated(created);
+			log.info("created={}", created);
+		}
+		return purchaseRecordList;
 	}
 
 }
