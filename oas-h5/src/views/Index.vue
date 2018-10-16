@@ -55,7 +55,7 @@
     <div class="analysis">
       <div class="title">
         <h3>能量分析</h3>
-        <a href="javascript:;">更多</a>
+        <a href="javascript:;">{{datetime}}</a>
       </div>
       <ul class="progress">
         <li>
@@ -63,36 +63,36 @@
           <span class="equipment">手机</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
         </li>
          <li>
           <i></i>
           <span class="equipment">计步</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
         </li>
         <li>
           <i></i>
           <span class="equipment">手表</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[1]" :style="{width: analysis[1].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[1]" :style="{width: analysis[1].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span v-if="analysis[1]" class="count">{{analysis[1].value}}</span>
+          <span v-if="analysis[1]" class="count">(即将上线)</span>
         </li>
         <li>
           <i></i>
           <span class="equipment">家电</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[2]" :style="{width: analysis[2].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[2]" :style="{width: analysis[2].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span v-if="analysis[2]" class="count">{{analysis[2].value}}</span>
+          <span v-if="analysis[2]" class="count">(即将上线)</span>
         </li>
       </ul>
     </div>
@@ -123,10 +123,10 @@
     </div>
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <div >
-      <input  id="SERVER_TIME"  v-model="input1" />
+      <!-- <input  id="SERVER_TIME" type="hidden" v-model="input1" /> -->
        <!-- <input  id="SERVER_TIME"  v-model="input2" /> -->
        </div>
-    <!-- OASES咨询 End type="hidden"-->
+    <!-- OASES咨询 End -->
     <!-- 底部 Start -->
     <div class="bottom">
       <img :src="bottom" alt="">
@@ -175,20 +175,19 @@ export default {
       isShowToast: false,
       isShowNewsTip: false,
       energyBallList:[],
-      //energyBallListBackup:[],
       walkEnergyBallList:[],
-      //walkEnergyBallListtBackup:[],
       currentEnergy:0,
       currentPower:0,
       page:1,
       newsTotal:1,
       articleList:[],
+      datetime:'',
       analysis:'',
       analysisCount:0,
       tempArr:[],
      // tempArrWalk:[],
-      input1:'',
-      input2:'',
+      //input1:'',
+      //input2:'',
       todayStep:0,
       toastMsg:'提示信息',
       attendanceMsg:{
@@ -204,7 +203,8 @@ export default {
     }
   },
   created() {
-    //this.getStep()
+    this.getStep()
+    this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
     this.getBall()
@@ -218,7 +218,7 @@ export default {
     //this.synchronizeBall()
     window.skipRefresh= this.skipRefresh
      this.location()
-    // this.getCurrenttime()
+    
   },
   filters: {
   },
@@ -407,13 +407,12 @@ export default {
      getWalkEnergyBall() {
      
       
-    this.todayStep="15"
-    this.input1=this.todayStep
-    let time=currentTime(true)
+    //this.todayStep="15"
+    
      //let time="2018-10-15"
-    //  //console.log("time"+time)
+    
      var data={}
-     data['date']=time
+     data['date']=this.datetime
      data['stepNum']=this.todayStep
      let params = new Array();
      params.push(data)  
@@ -468,17 +467,17 @@ export default {
     },
     // 获取能量分析
     getEnergyAnalysis () {
+      this.analysisCount=0
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
-        console.log("分析"+data)
+        console.log("分析"+JSON.stringify(data))
         this.analysis = data
-        this.analysisCount=0
-        data.forEach(el => {
-        //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
-        //不能终止循环，除非抛出异常，map必须返回，返回一个数组
-          this.analysisCount += el.value
-        })
+        //this.analysisCount=data.maxValue
+        // data.forEach(el => {
+        // //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
+        // //不能终止循环，除非抛出异常，map必须返回，返回一个数组
+        //   this.analysisCount += el.value
+        // })
       })
-      console.log("能量分析步行备份"+this.walkEnergyBallListtBackup)
     },
     // 获取新闻文章列表
     // getArticleList () {
@@ -576,10 +575,12 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      //this.getStep()
+      this.getStep()
+      this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
+
       this.getBall()
      // this.getWalkEnergyBall()
       //this.getEnergyBall()
@@ -605,8 +606,12 @@ export default {
     },
    
  skipRefresh() {
-      //this.getStep()
+      this.getStep()
+      this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+      this.energyBallList=[]
+      this.walkEnergyBallList=[]
+      
       this.getBall()
      // this.getEnergyBall()
       //this.getWalkEnergyBall()
@@ -644,9 +649,9 @@ export default {
 },
 getCurrenttime(){
     //var SERVER_TIME = document.getElementById("SERVER_TIME");
-var time=currentTime()
+var time=currentTime(true)
 //this.$refs.input1.value=time
-this.input1=time
+this.datetime=time
 //console.log("year"+this.$refs.input1.value);
 },
   }
@@ -884,11 +889,12 @@ header {
 .analysis,
 .consult {
   margin-top: 40px;
-  padding: 40px;
+  padding: 30px;//40px
+  
 }
 .progress {
   li {
-    display: -webkit-flex;
+    //display: -webkit-flex;
     display: flex;
     height: 48px;
     align-items: center;
@@ -916,18 +922,18 @@ header {
     }
   }
   .equipment {
-    width: 112px;
+    width: 102px;//112px
     text-align: center;
   }
   .bar {
     position: relative;
-    width: 400px;//400px;
+    width: 360px;//400px;
     height:12px; //12px;
     div {
       position: absolute;
       top: 0px;
       left: 0px;
-      width: 400px;
+      width: 360px;
       height: 12px;
       //第一个div全长灰色
       &:first-child {

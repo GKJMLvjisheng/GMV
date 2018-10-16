@@ -1,13 +1,11 @@
-package com.cascv.oas.server.miner.wrapper;
+package com.cascv.oas.server.miner.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class UserMinerWrapper implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class PurchaseRecord {
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
 	@Getter @Setter private String minerCode;

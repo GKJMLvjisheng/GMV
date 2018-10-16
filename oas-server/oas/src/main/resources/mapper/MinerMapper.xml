@@ -39,6 +39,13 @@
         select
          <include refid="miner_List" />
          from miner_source 
+         order by updated desc limit #{offset}, #{limit}
+    </select>
+    
+    <select id="selectAllWebMiner" resultMap="MinerMap">
+        select
+         <include refid="miner_List" />
+         from miner_source 
          order by updated desc
     </select>
     
@@ -55,6 +62,10 @@
           (select * from miner_source
             where miner_name not in (select miner_name from miner_source where miner_name=#{minerName}))b
         where b.miner_name = #{updateMinerName}
+    </select>
+    
+    <select id="countNum" resultType="java.lang.Integer">
+  	    select count(*) from miner_source
     </select>
     
     <update id="updateMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
@@ -75,7 +86,7 @@
         delete from miner_source where miner_code=#{minerCode}
     </delete>    
     
-    <resultMap id="userMinerMap" type="com.cascv.oas.server.miner.wrapper.UserMinerWrapper">
+    <resultMap id="purchaseRecordMap" type="com.cascv.oas.server.miner.model.PurchaseRecord">
         <result column="uuid" property="uuid"/>
 		<result column="user_uuid" property="userUuid"/>
 		<result column="miner_code" property="minerCode"/>
@@ -84,14 +95,50 @@
 	  	<result column="miner_price" property="minerPrice"/>
 	  	<result column="miner_grade" property="minerGrade"/>
 	  	<result column="miner_num" property="minerNum"/>
+	  	<result column="price_sum" property="priceSum"/>
 	  	<result column="miner_power" property="minerPower"/>
 	  	<result column="miner_period" property="minerPeriod"/>
 	  	<result column="created" property="created"/>
     </resultMap>
     
-    <select id="selectByuserUuid" resultMap="userMinerMap">
+    <sql id="purchase_record_List">
+  		uuid, user_uuid, miner_code, miner_name, miner_grade, 
+  		miner_description, miner_price, miner_num, price_sum,
+  		miner_power, miner_period, created
+    </sql>
+    
+    <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+        insert into purchase_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+	        uuid, user_uuid, miner_code, miner_name, miner_grade,
+	        <if test="minerDescription != null">
+	          miner_description,
+	        </if>
+	         miner_price, miner_num, price_sum, miner_power, miner_period, created
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{uuid}, #{userUuid}, #{minerCode}, #{minerName}, #{minerGrade},
+	        <if test="minerDescription != null">
+	           #{minerDescription},
+	        </if>
+	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, #{minerPeriod}, #{created}
+	    </trim>            
+    </insert>
+    
+    <select id="selectByuserUuid" resultMap="purchaseRecordMap">
         select * from purchase_record 
         where user_uuid=#{userUuid}
+    </select>
+    
+    <select id="countByUserUuid" resultType="java.lang.Integer">
+  	    select count(*) from purchase_record where user_uuid = #{userUuid}
+    </select>
+    
+    <select id="inquerePurchaseRecord" resultMap="purchaseRecordMap">
+        select
+         <include refid="purchase_record_List" />
+         from purchase_record where user_uuid = #{userUuid} 
+         order by created desc limit #{offset}, #{limit}
     </select>
     
 </mapper>
