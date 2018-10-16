@@ -18,6 +18,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
@@ -106,7 +107,7 @@ public class UserController extends BaseShiroController{
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
   String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
   String vcode="";
-	
+  
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
@@ -357,7 +358,8 @@ public class UserController extends BaseShiroController{
 	 */
 	@PostMapping(value="/upLoadImg")
 	@WriteLog(value="UpLoadImg")
-	@RequiresRoles("admin")
+	//@RequiresRoles("admin")
+	//@RequiresPermissions("userInfo:error")
 	public ResponseEntity<?> upLoadImg(@RequestParam("file") MultipartFile file)
 	{   
 		log.info("doUpLoadImg-->start");

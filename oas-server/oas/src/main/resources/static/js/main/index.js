@@ -244,9 +244,10 @@ $(function() {
             var id;
             if(dataUrl=="multiTransfer"){
             	id="iframeMultiTransfer";
-            }else{
-            	id="iframe"+dataIndex;
-            }
+            }else if(dataUrl=="netConfiguration/netConfig"){
+            	id="iframenetConfig";
+            	
+            }else{id="iframe"+dataIndex;}
            
             var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" id="' + id + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
             $('.mainContent').find('iframe.RuoYi_iframe').hide().parents('.mainContent').append(str1);

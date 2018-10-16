@@ -23,32 +23,36 @@ $(function ()
 //	$("input").blur(function(){
 //		$(this).css({"outline":"none","border":"0px"});
 //	})
-	//token=$("#userToken",parent.document).val();
-//	var network=$("#net",parent.document).val();
-//	if(network==""){
-//		var data={"preferNetwork":"mainnet"};
-//		 $.ajax({
-//   		   type: 'post',
-//   		   url: '/api/v1/ethWallet/setPreferNetwork',
-//   		   data: JSON.stringify(data),
-//   		   contentType : 'application/json;charset=utf8',
-//   		   dataType: 'json',
-//   		   cache: false,
-//   		   async : false,
-//   		   success: function (res) {
-//   			 
-//   		     if (res.code == 0) {
-//   		    	 
-//   		     } else {
-//   		    	 alert(res.message);
-//   		     }
-//   		   },
-//   		   error: function (res) {
-//   			  alert("option错误"+JSON.stringify(res));
-//   		   },
-//   		  
-//   		  });
-//	}
+	//var network=$("#net",parent.document).val();
+	 if(parent.$("#iframenetConfig")[0])
+     {
+		 var network=parent.$("#iframenetConfig")[0].contentWindow.getValue(); 
+			
+				var data={"preferNetwork":network};
+				 $.ajax({
+		   		   type: 'post',
+		   		   url: '/api/v1/ethWallet/setPreferNetwork',
+		   		   data: JSON.stringify(data),
+		   		   contentType : 'application/json;charset=utf8',
+		   		   dataType: 'json',
+		   		   cache: false,
+		   		   async : false,
+		   		   success: function (res) {
+		   			 
+		   		     if (res.code == 0) {
+		   		    	 
+		   		     } else {
+		   		    	 alert(res.message);
+		   		     }
+		   		   },
+		   		   error: function (res) { 
+		   			  alert("option错误"+JSON.stringify(res));
+		   		   },
+		   		  
+		   		  }); 
+			}
+			
+
 	initsymbol();
 	
 	var tabProduct = document.getElementById("tabProduct");    
@@ -144,7 +148,7 @@ function initsymbol(){
                   		    	// $("#userAddress").text(res.data[0].address);
                   		    	 objContractAddress.innerHTML=optionData[i].contract;
                             	  //$("#contractAddress").val(optionData[i].contract);
-                  		    	
+                  		    	console.log(optionData[i].balance)
                   		    	objMoney.innerHTML=optionData[i].balance;
                             	 // $("#money").val(optionData[i].balance);
                             	  var precision=optionData[i].weiFactor;

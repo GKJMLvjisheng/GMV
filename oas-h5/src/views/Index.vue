@@ -55,7 +55,7 @@
     <div class="analysis">
       <div class="title">
         <h3>能量分析</h3>
-        <a href="javascript:;">更多</a>
+        <a href="javascript:;">{{datetime}}</a>
       </div>
       <ul class="progress">
         <li>
@@ -63,36 +63,36 @@
           <span class="equipment">手机</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
         </li>
          <li>
           <i></i>
           <span class="equipment">计步</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
         </li>
         <li>
           <i></i>
           <span class="equipment">手表</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[1]" :style="{width: analysis[1].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[1]" :style="{width: analysis[1].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span v-if="analysis[1]" class="count">{{analysis[1].value}}</span>
+          <span v-if="analysis[1]" class="count">(即将上线)</span>
         </li>
         <li>
           <i></i>
           <span class="equipment">家电</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[2]" :style="{width: analysis[2].value / analysisCount * 100 + '%'}"></div>
+            <div v-if="analysis[2]" :style="{width: analysis[2].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span v-if="analysis[2]" class="count">{{analysis[2].value}}</span>
+          <span v-if="analysis[2]" class="count">(即将上线)</span>
         </li>
       </ul>
     </div>
@@ -123,10 +123,10 @@
     </div>
     <div v-if="isShowNewsTip" class="news-tips">加载中...</div>
     <div >
-      <input  id="SERVER_TIME"  v-model="input1" />
+      <!-- <input  id="SERVER_TIME" type="hidden" v-model="input1" /> -->
        <!-- <input  id="SERVER_TIME"  v-model="input2" /> -->
        </div>
-    <!-- OASES咨询 End type="hidden"-->
+    <!-- OASES咨询 End -->
     <!-- 底部 Start -->
     <div class="bottom">
       <img :src="bottom" alt="">
@@ -181,12 +181,13 @@ export default {
       page:1,
       newsTotal:1,
       articleList:[],
+      datetime:'',
       analysis:'',
       analysisCount:0,
       tempArr:[],
      // tempArrWalk:[],
-      input1:'',
-      input2:'',
+      //input1:'',
+      //input2:'',
       todayStep:0,
       toastMsg:'提示信息',
       attendanceMsg:{
@@ -202,23 +203,29 @@ export default {
     }
   },
   created() {
-    //this.getStep()
-    this.getWalkEnergyBall() 
-    this.getEnergyBall() 
+    this.getStep()
+    this.getCurrenttime()
+    //this.getEnergyBall()
+    //this.getWalkEnergyBall() 
+    this.getBall()
+    
     this.getCurrentEnergy()
     this.getCurrentPower()
+    
     this.getEnergyAnalysis()
     this.getArticleList()
     this.getUserInfo()
+    //this.synchronizeBall()
     window.skipRefresh= this.skipRefresh
      this.location()
-    // this.getCurrenttime()
+    
   },
   filters: {
   },
   methods: {
+    
    getStep(){
-  this.todayStep=window.Android.getTodaySteps()
+      this.todayStep=window.Android.getTodaySteps()
    },
     //预先加载3条新闻
     getArticleList () {
@@ -298,7 +305,7 @@ export default {
     // 获取用户信息
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
-        console.log(data);
+        console.log("用户信息"+data);
         this.userInfo.avatar=data.profile;
         this.userInfo.nickname = data.nickname
         
@@ -309,73 +316,137 @@ export default {
     window.Android.startLiftComputingPower()
     
     },
+    async getBall() {
+            try {
+                let dataBall={}
+                let dataWalkBall={}
+                let energyBallListBackup=new Array(); 
+                let walkEnergyBallListtBackup=new Array();
+                dataBall=await this.getEnergyBall();
+                //console.log(JSON.stringify(dataBall))
+                if(dataBall.data.code==0)
+                {
+                  console.log("123")
+                  energyBallListBackup = dataBall.data.data.energyBallList.map(el => {
+                    let p = this.randomPoint()
+                    // pArr.splice(randomIdx,1)
+                    el.x = p.x / 75 + 'rem'
+                    el.y = p.y / 75 + 'rem'
+                    if(el.value<50)
+                    { el.generate=true}
+                    else{el.generate=false}
+                    return el
+                  }) 
+              }
+                dataWalkBall=await this.getWalkEnergyBall();
+                //console.log("data1"+JSON.stringify(dataWalkBall))
+                let time=currentTime(true)
+                if(dataWalkBall.data.code==0)
+              { walkEnergyBallListtBackup= dataWalkBall.data.data.map(el => {
+                
+                  let p = this.randomPoint()
+                
+                  el.x = p.x / 75 + 'rem'
+                  el.y = p.y / 75 + 'rem'
+                  
+                    if(el.startDate>=time)
+                  { 
+                    el.generate=true}
+                  else{el.generate=false}
+                  return el
+                }) 
+                for(let i=0;i<walkEnergyBallListtBackup.length;i++)  
+              { 
+              if(walkEnergyBallListtBackup[i].value==0)
+                { 
+                walkEnergyBallListtBackup.splice(i, 1)
+                i--}
+              }
+              }
+              
+
+              this.energyBallList=energyBallListBackup
+              console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
+              this.walkEnergyBallList=walkEnergyBallListtBackup
+              console.log("222"+JSON.stringify(this.walkEnergyBallList))
+              } 
+              catch(err) {
+                    console.log(err);
+                }
+            },
     // 获取悬浮能量球数据
     getEnergyBall () {
      
-      this.$axios.post('/energyPoint/inquireEnergyPointBall').then(({data:{data}}) => {
-        // let pArr = createPositionArr()
-        console.log(data)
-       // let i=0
+       return this.$axios.post('/energyPoint/inquireEnergyPointBall')
+      //  .then(({data:{data}})=> {
+      //   // let pArr = createPositionArr()
+      //   console.log("能量球"+data)
+      //  // let i=0
         
-        this.energyBallList = data.energyBallList.map(el => {
-          // let randomIdx = randomNum(0,pArr.length - 1)
-          let p = this.randomPoint()
-          // pArr.splice(randomIdx,1)
-          el.x = p.x / 75 + 'rem'
-          el.y = p.y / 75 + 'rem'
-          if(el.value<50)
-         { el.generate=true}
-         else{el.generate=false}
-         // console.log("{"+i+"}"+JSON.stringify(el))
-          //i++
-          return el
-        }) 
-      }) 
-        
+      //   this.energyBallListBackup = data.energyBallList.map(el => {
+      //     // let randomIdx = randomNum(0,pArr.length - 1)
+      //     let p = this.randomPoint()
+      //     // pArr.splice(randomIdx,1)
+      //     el.x = p.x / 75 + 'rem'
+      //     el.y = p.y / 75 + 'rem'
+      //     if(el.value<50)
+      //    { el.generate=true}
+      //    else{el.generate=false}
+      //    // console.log("{"+i+"}"+JSON.stringify(el))
+      //     //i++
+      //     return el
+      //   }) 
+      //   return this.energyBallListBackup
+      // }
+      
+      // ) 
+       
        
                  
     },
      getWalkEnergyBall() {
      
       
-    this.todayStep="15"
-    this.input1=this.todayStep
-    let time=currentTime(true)
+    //this.todayStep="15"
+    
      //let time="2018-10-15"
-    //  //console.log("time"+time)
+    
      var data={}
-     data['date']=time
+     data['date']=this.datetime
      data['stepNum']=this.todayStep
      let params = new Array();
-     params.push(data)
-    //   
-      this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params}).then(({data:{data}}) => {
-      //this.input2=data.startDate
-        console.log("data"+JSON.stringify(data))
-       let walkEnergyBallList=new Array();
-        walkEnergyBallList= data.map(el => {
-          // let randomIdx = randomNum(0,pArr.length - 1)
-          let p = this.randomPoint()
-          // pArr.splice(randomIdx,1)
-          el.x = p.x / 75 + 'rem'
-          el.y = p.y / 75 + 'rem'
+     params.push(data)  
+     return this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params})
+    //  .then(({data:{data}}) => {
+    //   //this.input2=data.startDate
+    //     console.log("data"+JSON.stringify(data))
+    //    let walkEnergyBallList=new Array();
+    //     walkEnergyBallList= data.map(el => {
+    //       // let randomIdx = randomNum(0,pArr.length - 1)
+    //       let p = this.randomPoint()
+    //       // pArr.splice(randomIdx,1)
+    //       el.x = p.x / 75 + 'rem'
+    //       el.y = p.y / 75 + 'rem'
          
-           if(el.startDate>=time)
-         { 
-           el.generate=true}
-         else{el.generate=false}
-          return el
-        }) 
-         for(let i=0;i<walkEnergyBallList.length;i++)  
-      { console.log(222)
-        if(walkEnergyBallList[i].value==0)
-        { console.log(111)
-          walkEnergyBallList.splice(i, 1)
-          i--}
-        }
-        this.walkEnergyBallList=walkEnergyBallList
-      })
-     
+    //        if(el.startDate>=time)
+    //      { 
+    //        el.generate=true}
+    //      else{el.generate=false}
+    //       return el
+    //     }) 
+    //      for(let i=0;i<walkEnergyBallList.length;i++)  
+    //   { 
+    //     if(walkEnergyBallList[i].value==0)
+    //     { 
+    //       walkEnergyBallList.splice(i, 1)
+    //       i--}
+    //     }
+    //     console.log("最初de"+walkEnergyBallList)
+    //     this.walkEnergyBallListtBackup=walkEnergyBallList
+    //     console.log("函数里"+this.walkEnergyBallListtBackup)
+    
+    //   })
+   
      
 
                  
@@ -384,7 +455,7 @@ export default {
     // 获取当前能量
     getCurrentEnergy () {
       this.$axios.post('/energyPoint/inquireEnergyPoint').then(({data:{data}}) => {
-        console.log(data)
+        console.log("能量"+data)
         this.currentEnergy = data
       })
     },
@@ -396,15 +467,16 @@ export default {
     },
     // 获取能量分析
     getEnergyAnalysis () {
+      this.analysisCount=0
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
-        console.log(data)
+        console.log("分析"+JSON.stringify(data))
         this.analysis = data
-        this.analysisCount=0
-        data.forEach(el => {
-        //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
-        //不能终止循环，除非抛出异常，map必须返回，返回一个数组
-          this.analysisCount += el.value
-        })
+        //this.analysisCount=data.maxValue
+        // data.forEach(el => {
+        // //forEach() 方法用于调用数组的每个元素，并将元素传递给回调函数。注意: forEach() 对于空数组是不会执行回调函数的。
+        // //不能终止循环，除非抛出异常，map必须返回，返回一个数组
+        //   this.analysisCount += el.value
+        // })
       })
     },
     // 获取新闻文章列表
@@ -494,7 +566,7 @@ export default {
       let len = this.tempArr.length
      
       for (let i = 0; i < len; i++){
-        if(Math.abs(p.x - this.tempArr[i].x) < 75 && Math.abs(p.y - this.tempArr[i].y) < 75) {
+        if(Math.abs(p.x - this.tempArr[i].x) < 80 && Math.abs(p.y - this.tempArr[i].y) < 80) {
           return this.randomPoint()
         }
       }
@@ -503,13 +575,16 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      //this.getStep()
+      this.getStep()
+      this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
-      this.getWalkEnergyBall()
-      this.getEnergyBall()
-     
+
+      this.getBall()
+     // this.getWalkEnergyBall()
+      //this.getEnergyBall()
+      
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
@@ -531,12 +606,15 @@ export default {
     },
    
  skipRefresh() {
-      //this.getStep()
+      this.getStep()
+      this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
-      this.getEnergyBall()
-      this.getWalkEnergyBall()
+      
+      this.getBall()
+     // this.getEnergyBall()
+      //this.getWalkEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
       this.getEnergyAnalysis()
@@ -571,9 +649,9 @@ export default {
 },
 getCurrenttime(){
     //var SERVER_TIME = document.getElementById("SERVER_TIME");
-var time=currentTime()
+var time=currentTime(true)
 //this.$refs.input1.value=time
-this.input1=time
+this.datetime=time
 //console.log("year"+this.$refs.input1.value);
 },
   }
@@ -811,11 +889,12 @@ header {
 .analysis,
 .consult {
   margin-top: 40px;
-  padding: 40px;
+  padding: 30px;//40px
+  
 }
 .progress {
   li {
-    display: -webkit-flex;
+    //display: -webkit-flex;
     display: flex;
     height: 48px;
     align-items: center;
@@ -843,18 +922,18 @@ header {
     }
   }
   .equipment {
-    width: 112px;
+    width: 102px;//112px
     text-align: center;
   }
   .bar {
     position: relative;
-    width: 400px;//400px;
+    width: 360px;//400px;
     height:12px; //12px;
     div {
       position: absolute;
       top: 0px;
       left: 0px;
-      width: 400px;
+      width: 360px;
       height: 12px;
       //第一个div全长灰色
       &:first-child {

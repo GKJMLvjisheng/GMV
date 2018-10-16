@@ -44,13 +44,15 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0)
-    {
+    {   
         String userUuid = ShiroUtils.getUserUuid();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         // 
         info.setRoles(roleService.getRolesByUserUuid(userUuid));
+        log.info("Roles={}",roleService.getRolesByUserUuid(userUuid));
         // 
         info.setStringPermissions(permService.getPermsByUserUuid(userUuid));
+        log.info("Permission={}",permService.getPermsByUserUuid(userUuid));
         return info;
     }
 

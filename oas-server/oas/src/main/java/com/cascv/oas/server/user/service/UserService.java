@@ -23,7 +23,6 @@ public class UserService {
 	
   @Autowired
   private UserModelMapper userModelMapper;
-  
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
   @Autowired 

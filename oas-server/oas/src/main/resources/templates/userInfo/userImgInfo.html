@@ -557,8 +557,10 @@ $("#sureCut").on("click", function() {
 	            	window.parent.func();
 	                
 	            },
-	            error:function(){	 
+	            error:function(res){	 
 	            	alert("error");
+	            	alert(JSON.stringify(res.data));
+	            	
 	             }
 	     }); 
 		closeTailor();// 关闭裁剪框
