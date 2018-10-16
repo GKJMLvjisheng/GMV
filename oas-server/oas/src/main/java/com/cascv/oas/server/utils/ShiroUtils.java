@@ -1,0 +1,94 @@
+package com.cascv.oas.server.utils;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.RealmSecurityManager;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+
+import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.core.utils.BeanUtils;
+import com.cascv.oas.core.utils.StringUtils;
+import com.cascv.oas.server.shiro.UserRealm;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class ShiroUtils {
+    public static Subject getSubjct() {
+        return SecurityUtils.getSubject();
+    }
+
+    public static Session getSession()
+    {
+      Subject subject = getSubjct();
+      return subject != null ? subject.getSession() : null;
+    }
+
+    public static void logout()
+    {
+        getSubjct().logout();
+    }
+
+    public static UserModel getUser()
+    {
+        UserModel userModel = null;
+        Object obj = getSubjct().getPrincipal();
+        if (StringUtils.isNotNull(obj)) {
+        	userModel = new UserModel();
+          BeanUtils.copyBeanProp(userModel, obj);
+          log.info("name {}", userModel.getName());
+          log.info("password {}", userModel.getPassword());
+          log.info("inviteCode {}", userModel.getInviteCode());
+          log.info("salt {}", userModel.getSalt());
+        }
+        return userModel;
+    }
+
+    public static void setUser(UserModel user)
+    {
+        Subject subject = getSubjct();
+        PrincipalCollection principalCollection = subject.getPrincipals();
+        String realmName = principalCollection.getRealmNames().iterator().next();
+        PrincipalCollection newPrincipalCollection = new SimplePrincipalCollection(user, realmName);
+        // 重新加载Principal
+        subject.runAs(newPrincipalCollection);
+    }
+
+    public static void clearCachedAuthorizationInfo()
+    {
+        RealmSecurityManager rsm = (RealmSecurityManager) SecurityUtils.getSecurityManager();
+        UserRealm realm = (UserRealm) rsm.getRealms().iterator().next();
+        realm.clearCachedAuthorizationInfo();
+    }
+
+    public static String getUserUuid()
+    {
+      UserModel userModel = getUser();
+      return userModel != null ? userModel.getUuid() : null;
+    }
+
+    public static String getLoginName()
+    {
+      UserModel userModel = getUser();
+      return userModel != null ? userModel.getName() : null;
+    }
+    
+    public static String getAddress()
+    {
+      UserModel userModel = getUser();
+      return userModel != null ? userModel.getAddress() : null;
+    }
+    
+    public static String getIp()
+    {
+      Session session = getSession();
+      return session != null ? session.getHost() : null;
+    }
+
+    public static String getSessionId()
+    {
+      Session session = getSession();
+      return session != null ? String.valueOf(session.getId()) : null;
+    }
+}

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人信息首页</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<!-- 	<script type="text/javascript" src="/js/qrcode/jquery-1.8.3.min.js" ></script> -->
+	<script type="text/javascript" src="/js/qrcode/jquery.qrcode.js" ></script>
+	
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>	
+	
+    
+
+    <script type="text/javascript" src="/js/qrcode/qrcode.js" ></script> 
+    <script type="text/javascript" src="/js/qrcode/utf.js" ></script>
+<head>
+<style type="text/css">
+
+CSS样式
+  @charset "utf-8"; 
+*{margin:0px;padding:0px}
+/* h5*/
+body{
+/*     background-color:#eceddd; */
+    font-family:Arial, Verdana,'Lucida Grande', Helvetica, sans-serif;
+    text-align: left;
+    color: #333333;
+}
+
+
+ header{                   /*调整个人信息框位置*/
+     background: url(Img/bgheader.jpg) no-repeat #85D0ED; 
+     width: 902px; 
+     height: 60px; 
+     padding-top: 0px; 
+     margin: 0px auto; 
+     color: #000000; 
+     } 
+
+
+header h1 {             /*调整个人信息框格式*/
+    float:left;
+    font-size:1.7em;
+    padding-top:0.1px;
+    padding-left:30px;
+    font-family:Arial,verdana, sans-serif;
+    color:#37210c;
+    font-weight:bolder;
+    letter-spacing:-1px;
+    }
+
+
+.orange{                 /*调整个人信息字体颜色*/
+    color:#e67e1f;
+    }
+
+
+nav{                        /*调整基本信息框右边对齐*/
+    list-style-type:none;
+    margin:0px auto;
+    width:982px;
+    background-color:#303;
+    clear:both;
+    }
+ nav ul{                     /*调整基本信息两框长度*/
+     list-style:none; 
+     margin-bottom:0px; 
+     margin-top:0px; 
+     margin-left:0px; 
+     width:902px; 
+    }
+nav ul li{                  /*调整基本信息格式*/
+    text-align:center;
+    float:left;
+    padding-left:0px;
+    padding-top:0px;
+    padding-bottom:0px;
+    width:100px;          /*调整基本信息框长度*/
+    }
+
+
+nav ul li button{              /*调整基本信息格式字体大小*/
+    display:block;
+     background-color:#293846; 
+
+    border-right:1px solid #fff;     /*调整基本信息框高度*/
+    line-height:1.5em;         /*调整基本信息格式字体大小*/
+    margin-right:0px;         
+    padding:8px 14px 8px 14px;    /*调整基本信息框高度和宽度*/
+      color: #ecf9ff;  /*白色*/
+    
+    font-weight:normal;
+     font-size: 1em;       /*调整基本信息字体大小*/
+    text-decoration: none;
+    }
+
+
+nav ul li .selected{           /*调整基本信息框颜色*/
+    color: #ecf9ff;
+/*       background-color:#e67e1f; /*橘色*/  
+      background-color:#f0ad4e; 
+/*      background-color:#293846;*/ /*深蓝色*/ 
+/* background-color:#d8dbde; *//*灰色*/
+    }
+
+
+
+
+#content{                   /*调整整个个人信息框的位置*/
+    margin:0 auto;
+    width:902px;
+/*     background-color:#dfeef9; */
+    height:530px;            /*调整整个个人信息蓝色底框的高度，需与表格高度一致#dfeef9  500px;*/
+    clear:both;
+    }
+
+
+
+
+section{                       /*调整头像和保存按钮的位置*/
+    float:left;
+    width:75%;
+    margin-right:0px;
+    margin-top:15px;
+    background-color:#FFF;
+    text-align:left;
+    font-size:0.9em;
+    padding:5px;
+    }
+img{
+    display: block;
+    max-width: 100%;
+    border-radius: 3px;   /* 图片以圆角显示 */
+    margin-left:1px;  /* 图片距离左边1px */
+    width: 150px;
+    height: 150px;
+}
+
+/*  二维码弹框    */
+ #qrcode img { 
+     position: absolute; 
+     top: 25%;  
+     left: 35%;  
+     width: 350px; 
+     height: 350px; 
+     display: block; 
+ } 
+
+#qrcode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    z-index: 9999;
+    display: none;
+}    
+
+</style>
+
+
+</head>
+<body> 
+<!-- <header>  -->
+<!--   <h1>  -->
+<!--       <span class="orange"> 个人信息</span> -->
+<!--   </h1> -->
+<!-- </header> -->
+
+
+<nav>
+      <ul>
+        <li><button class="selected" onclick="userinfo()" disabled="disabled">基本信息 </button> </li>
+        <li><button onclick="userimginfo()">更换头像 </button></li>
+        <li><button onclick="usersecurityinfo()">安全设置 </button></li>
+        <li><button style="width:130%; height:100%;" id="QRuserinfocode" onclick="QRcode()">个人信息二维码</button></li>
+        <li><button style="left:630px; position: absolute; width:10%;" id="QRtradecode" onclick="QRtradecode()">交易二维码</button></li>
+      </ul>
+</nav> 
+<div id="qrcode">
+        <div id="qrcodeCanvas"></div>
+        <img id="image" width="100%" height="100%" >
+    </div>
+<div id="content" >
+
+<input type="text" style="display:none" name="userName" class="form-control" id="userName"/>
+<form id="UserInfoForm" action="/user/editUserInfo" method="post" class="form-horizontal">
+
+                        <div class="modal-body">
+                        
+							<div class="form-group">						
+								<label for="EuserImg" class="col-sm-3 control-label">当前头像：</label>
+								 <div class="col-sm-5">
+                                <a class="pf-avatar"><img id ="userProfile" class="img-rounded" ></a>
+                                <a style="color:black;left:60px; top: 120px;position: absolute; width:30%; height:20%;" class="pf-edit-avatar" onclick="userimginfo()" href="#">编辑头像</a>
+                                </div>
+							</div>
+							
+							<div class="form-group">
+								<label for="userNickname" class="col-sm-3 control-label">姓名：</label>
+								<div class="col-sm-5">
+									<input type="text" name="userNickname" class="col-sm-4 form-control" id="userNickname"/>
+								</div>
+							</div>
+								
+							<div class="form-group">
+					        	<label for="userGender" class="col-sm-3 control-label">性别：</label>
+					       		 <div class="col-sm-5">
+								 <label class="radio-inline control-label">
+						        	<input type="radio"  name="userGender" id="userGender1" value="女"> 女
+						        </label>
+							    <label class="radio-inline control-label">
+							        <input type="radio"   name="userGender" id="userGender2" value="男" > 男
+							    </label>
+						       </div>					
+						   </div>	
+							
+							<div class="form-group">
+								<label for="userAddress" class="col-sm-3 control-label">地址：</label>
+								<div class="col-sm-5">
+									<input type="text" name="userAddress" class="form-control" id="userAddress"/>									
+								</div>
+							</div>
+							
+							<div class="form-group">
+								 <label for="datetimepicker1" class="col-sm-3 control-label">生日：</label>
+					       		 <div class="col-sm-5">
+					                <div class="input-group date" id="userBirthday">
+					       				 <input type="text"  name="userBirthday" id="userBirthday" class=" form-control "/>
+					       		 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					        		</div>				
+					      		</div>
+                          </div>
+							
+							<div class="form-group">
+								<label for="userMobile" class="col-sm-3 control-label">手机号码：</label>
+								<div class="col-sm-5">
+									<input  type="text" name="userMobile" class="col-sm-4 form-control" id="userMobile" readonly="readonly"/>								
+							    </div>
+						    </div>
+
+							<div class="form-group">
+								<label for="userEmail" class="col-sm-3 control-label">邮箱：</label>
+								<div class="col-sm-5">
+									<input  type="text" name="userEmail" class="col-sm-4 form-control" id="userEmail" readonly="readonly"/>									
+								</div>
+							</div>
+
+					</div>
+					
+					<div class="modal-footer">
+						<button type="button" id="save" class="btn btn-default" onclick="saveUserInfo()">保存</button>
+					</div>
+					
+                        
+</form>
+</div>
+
+ 
+<script type="text/javascript" th:src="@{/js/userInfo/userInfo.js}"></script> 
+</body>
+<script type="text/javascript">
+
+// $(function(){
+// 	var url = window.location.href;
+// 	var strInfo=getInfoAndAnalysis(url);
+// 	//console.log(JSON.stringify(strInfo));
+// 	var len=strInfo.length;
+	
+// 	if(len>0)
+// 	{
+// 	var userName=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+// 	var userProfile=decodeURI(decodeURI(strInfo[1]));
+// 	var userNickname=decodeURI(decodeURI(strInfo[2]));
+// 	var userGender=decodeURI(decodeURI(strInfo[3]));
+// 	var userAddress=decodeURI(decodeURI(strInfo[4]));
+// 	var userBirthday=decodeURI(decodeURI(strInfo[5]));	
+// 	var userMobile=decodeURI(decodeURI(strInfo[6]));
+// 	var userEmail=decodeURI(decodeURI(strInfo[7]));
+// 	$("#userName").val(userName);
+// 	//$("#userProfile").val(userProfile);
+	
+// 	$("#userProfile").attr("src", userProfile);
+// 	$("#userNickname").val(userNickname);
+// 	//$("#userGender").val(userGender);
+// 	 if(userGender=='女'){
+// 		  $("#userGender1").prop("checked", true);
+		  
+// 		  }
+// 	  else{
+// 		  $("#userGender2").prop("checked", true);
+// 		  }
+// 	 $("#userAddress").val(userAddress);
+	
+// 	 //$("#userBirthday").val(userBirthday);
+// 	 $("input[name='userBirthday']").val(userBirthday);	
+     
+// 	 $("#userBirthday").val(userBirthday);
+    
+// 	 $("#userMobile").val(userMobile);
+// 	 $("#userEmail").val(userEmail);
+// 	}
+// });
+
+
+$(function () {
+	
+    $('#userBirthday').datetimepicker({
+
+        format: 'YYYY-MM-DD',
+        locale: moment.locale('zh-cn'),
+        //autoclose: true,
+       // todayBtn: true,
+    });
+});
+
+//刷新从数据库更新数据
+$(function () {
+	 
+	 refreshUserInfo();
+});
+
+
+</script> 
+
+</html>
+

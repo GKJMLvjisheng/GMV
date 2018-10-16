@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper">
+    <resultMap id="BaseResultMap" type="com.cascv.oas.server.energy.model.EnergySourcePower">
+        <id column="uuid" property="uuid"/>
+        <result column="source_code" property="sourceCode"/>
+        <result column="source_name" property="sourceName"/>
+        <result column="type" property="type"/>
+        <result column="base_value" property="baseValue"/>
+        <result column="increase_speed" property="increaseSpeed"/>
+        <result column="increase_speed_unit" property="increaseSpeedUnitName"/>
+        <result column="max_value" property="maxValue"/>
+    </resultMap>
+
+  <select id="queryPowerSingle" resultType="java.math.BigDecimal">
+    select base_value from activity_reward_config where source_code = #{sourceCode} and reward_code = #{rewardCode}
+  </select>
+  
+  <resultMap id="ActivityResultMap" type="com.cascv.oas.server.energy.vo.ActivityResult">
+        <result column="source_code" property="sourceCode"/>
+        <result column="source_name" property="sourceName"/>
+        <result column="status" property="status"/>
+    </resultMap>
+      <resultMap id="ActivityCompletionStatus" type="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+        <result column="user_uuid" property="userUuid"/>
+        <result column="status" property="status"/>
+        <result column="source_code" property="sourceCode"/>
+    </resultMap>
+    
+  <insert id="insertActivity" parameterType="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+      insert into activity_completion_status 
+      (uuid, user_uuid, source_code, status,created)
+      values (#{uuid}, #{userUuid}, #{sourceCode}, #{status},#{created})
+  </insert>
+  
+  <select id="selectByUserUuid" resultMap="ActivityResultMap">
+      select * from activity_completion_status A left join activity B           
+             on A.source_code = B.source_code 
+             where A.user_uuid = #{userUuid}            
+  </select>
+  
+    <select id="selectACSByUserUuid" resultMap="ActivityCompletionStatus">
+      select * from activity_completion_status 
+             where user_uuid = #{userUuid} and source_code=#{sourceCode}
+  </select>
+  
+  <select id="selectStatusByUserUuid" resultMap="ActivityResultMap">
+      select * from activity_completion_status A left join activity B 
+             on A.source_code = B.source_code 
+             where A.user_uuid = #{userUuid}
+  </select>
+  
+  <update id="updateStatus" parameterType="com.cascv.oas.server.energy.model.ActivityCompletionStatus">
+      update activity_completion_status set status = #{status} where user_uuid=#{userUuid}
+  </update>
+  
+</mapper>

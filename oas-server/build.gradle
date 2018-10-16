@@ -1,0 +1,39 @@
+allprojects{
+  group = 'com.cascv'
+  version='0.0.1-SNAPSHOT'
+}
+
+subprojects {
+  apply plugin : 'java'
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+  
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    compile('com.alibaba:fastjson:1.2.47')
+    compile('org.apache.commons:commons-lang3:3.7')
+    compile('commons-io:commons-io:2.5')
+    compile('net.sourceforge.nekohtml:nekohtml:1.9.22')
+    compile('commons-fileupload:commons-fileupload:1.3.3')          
+    compile('org.apache.shiro:shiro-core:1.4.0')
+    compile('org.apache.shiro:shiro-spring:1.4.0')
+    
+    compile('org.apache.shiro:shiro-ehcache:1.4.0')			
+    
+    compile("org.projectlombok:lombok:1.16.20")
+    
+    compile('org.apache.velocity:velocity:1.7')
+    compile('com.github.penggle:kaptcha:2.3.2') {
+      exclude (group: 'javax.servlet-api', module:'javax.servlet')
+    }
+    compile ('io.springfox:springfox-swagger2:2.7.0')
+    compile ('io.springfox:springfox-swagger-ui:2.7.0')
+    compile('org.jsoup:jsoup:1.11.3')
+    compile('org.apache.poi:poi-ooxml:3.9')
+  }
+
+}
+

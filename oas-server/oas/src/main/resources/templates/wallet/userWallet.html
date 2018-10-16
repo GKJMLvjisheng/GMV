@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+	<link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/wallet/userWallet.js}"></script>
+	<script type="text/javascript" th:src="@{/js/wallet/userWalletTable.js}"></script>
+	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	
+	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>
+	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">				   
+   
+   <style>
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+	}
+	.content-tabs {
+    border-bottom: solid 1px #d8dbde;
+	}	
+	.col-sm-2 {
+    width: 9.33333333%;
+	padding-left: 5px;
+	margin-top:20px;
+   }
+   .input-group	{ 
+    vertical-align:middle;
+	margin-top:11px;
+	}
+    </style>
+</head>
+
+<body>
+
+	<div class="row content-tabs">
+		<nav class="page-tabs menuTabs"> 
+
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">交易记录</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">资金大户排行榜</a>
+			</div>
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">资金流入排行榜</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display4()"id="btn4">资金流出排行榜</a>
+			</div>			
+				
+		</nav>	
+	</div> 
+
+	<div class = "container" id="page1">
+			<table id="userWalletGrid"></table>
+	</div> 
+	
+	<div class = "container" style="display:none" id="page2">
+		<table id="fundBigGrid"></table>
+	</div>
+
+	<div class = "container" style="display:none" id="page3">
+		</br>
+		<label for="datetimepicker1" class="col-sm-2">开始时间：</label>
+			<div class="col-sm-3">
+				<div class="input-group  date" id="userEd2">
+			
+					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control" onblur="FundInReady()"/>
+					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				</div>	
+			</div>
+
+		<label for="datetimepicker1" class="col-sm-2">结束时间：</label>
+			<div class="col-sm-3">
+				<div class="input-group  date" id="userEd3">				
+					<input type="text"  name="endTime2" id="endTime2" value="" class=" form-control " onblur="FundInReady()"/>
+					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				</div>	
+			</div>
+		<table id="fundInGrid"></table>
+	</div>
+
+	<div class = "container" style="display:none" id="page4">
+		</br>
+		<label for="datetimepicker1" class="col-sm-2">开始时间：</label>
+			<div class="col-sm-3">
+				<div class="input-group  date" id="userEd4">
+			
+					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control" onblur="FundOutReady()"/>
+					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				</div>	
+			</div>
+
+		<label for="datetimepicker1" class="col-sm-2">结束时间：</label>
+			<div class="col-sm-3">
+				<div class="input-group  date" id="userEd5">				
+					<input type="text"  name="endTime3" id="endTime3" value="" class=" form-control " onblur="FundOutReady()"/>
+					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				</div>	
+			</div>
+		<table id="fundOutGrid"></table>
+			
+	</div>
+
+
+	<!-- 查看用户信息的模态框 -->
+    <div class="modal fade" id="queryUserModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">用户信息</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">用户名：</label>
+							<div class="col-sm-7">
+								<input name="Qname" class="form-control" id="Qname" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">昵称：</label>
+							<div class="col-sm-7">
+								<input name="Qnickname" class="form-control" id="Qnickname" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">性别：</label>
+							<div class="col-sm-7">
+								<input name="Qgender" class="form-control" id="Qgender" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">生日：</label>
+							<div class="col-sm-7">
+								<input name="Qbirthday" class="form-control" id="Qbirthday" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">手机：</label>
+							<div class="col-sm-7">
+								<input name="Qmobile" class="form-control" id="Qmobile" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邮箱：</label>
+							<div class="col-sm-7">
+								<input name="Qemail" class="form-control" id="Qemail" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">地址：</label>
+							<div class="col-sm-7">
+								<input name="Qaddress" class="form-control" id="Qaddress" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邀请码：</label>
+							<div class="col-sm-7">
+								<input name="QinviteCode" class="form-control" id="QinviteCode" readonly="readonly" required="required"/>
+							</div>						
+						</div>		
+																									
+					</form>
+				</div>					
+			</div>					
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+
+	function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = year + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+	}
+	
+	//时间控件默认显示本月时间
+	$(function(){			
+		var date=new Date;
+		var year=date.getFullYear(); 
+		var month=date.getMonth()+1;
+		month =(month<10 ? "0"+month:month);
+		var todayTime = getNowFormatDate();
+		var mydate1 = (year.toString()+"-"+ month.toString()+"-01");
+		var mydate2 = todayTime;
+		document.getElementById("startTime2").value=mydate1;
+		document.getElementById("endTime2").value=mydate2; 
+		document.getElementById("startTime3").value=mydate1;
+		document.getElementById("endTime3").value=mydate2;                  
+	});
+</script>
+</html>
+

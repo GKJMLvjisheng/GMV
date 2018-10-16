@@ -1,0 +1,9 @@
+/bin/
+/build/
+/.gradle/
+/.settings/
+.project
+.classpath
+/test/*.pyc
+
+

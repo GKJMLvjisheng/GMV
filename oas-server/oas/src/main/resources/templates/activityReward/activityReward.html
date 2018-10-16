@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>activityReward</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	 <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
+	
+	
+	
+    
+   
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
+ .modal-lm {
+    width: 850px;
+    }
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+
+		<form class="form-inline" >
+			<!-- 工具栏 -->
+			<div id="toolbar">
+
+					<input type="button" value="新增活动" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addActivityModal"></input>
+<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			</div>
+		</form>
+		
+		<div class = "container">
+			<table id="activityGrid"></table>
+		</div>
+
+	</section>
+
+	<!-- 新增活动的模态框-->
+
+	<div class="modal fade" id="addActivityModal" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">新增活动</h3>
+				</div>
+
+				<div class="modal-body">
+				
+
+					<form id="addActivityForm" action="/activity" method="post" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="sourceName" class="col-sm-3 control-label">活动名称：</label>
+							<div class="col-sm-8">
+								<input type="text" name="sourceName" class=" form-control" id="sourceName" maxlength="20" placeholder="活动名称最多为20个字符" />
+								<span id='msg_sourceName'></span>
+
+							</div>						
+						</div>
+					
+								
+							<div class="form-group">
+					        	<label for="sourceType" class="col-sm-3 control-label">活动类型：</label>
+					       		 <div class="col-sm-8">
+								<input type="text" name="sourceType" class=" form-control" id="sourceType"/>
+							    <span id='msg_sourceType'></span>
+						       </div>	
+						      			
+						   </div>		
+						
+						
+						
+					
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="conf" class="btn btn-default" onclick="addActivity()">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+		<!-- 查看活动奖励模态框 -->
+	<div class="modal fade" id="activityRewardModal" tabindex="-1" role="dialog">
+
+	<div class="modal-dialog modal-lm" role="document">
+
+		<div class="modal-content">
+
+				<div class="modal-header">
+				
+ 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+					<h3 class="modal-title" id="activityModalLabel">给用户分配角色</h3>
+
+				</div>
+
+				<div class="modal-body">
+				
+					<div id="rewardToolbar"><!--  type="hidden" style="display:none"-->
+					<input   type="text" style="display:none" name="activityId" id="activityId">
+				<!-- data-toggle="modal" data-target="#selectRoleModal" -->
+					<input type="button" value="给活动配置奖励" id="allotRewardBtn"  data-toggle="modal"  class="btn btn-primary"onclick="allotReward()"></input>
+					
+					</div>
+				<!-- <form id="allotroleForm" action="/user/allotrole" method="post" class="form-horizontal"> -->
+				<table id="activityRewardGrid">
+
+				</table>
+				<!--</form>-->	
+				</div>
+<!-- 				<div class="modal-footer"> -->
+
+<!-- 				<button type="button" style="display:block;margin:0 auto" class="btn btn-default" data-dismiss="modal">关闭窗口</button> -->
+
+<!-- 				</div> -->
+			</div>
+		</div>
+	</div>	
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog modal-sm" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+			
+	<!-- 奖励配置模态框 style="display:block;margin:0 auto"-->
+
+<div class="modal fade" id="allotRewardModal" tabindex="-1" role="dialog">
+
+	<div class="modal-dialog" role="document">
+
+		<div class="modal-content">
+
+				<div class="modal-header">
+ 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+					<h3 class="modal-title" id="allotRewardModalLabel">请给活动配置奖励</h3>
+
+				</div>
+
+				<div class="modal-body">
+				
+					
+				 <form id="allotRewardForm" action="/user/allotRewardForm" method="post" class="form-horizontal"> 
+				
+				<input   type="text" style="display:none" name="activitySoureId" id="activitySoureId">
+        
+				<div class="form-group">
+
+				<label for="rewardName" class="col-sm-4 control-label">奖励名称：</label>
+
+				<div class="col-sm-7">
+								
+                <select id="rewardName" class="form-control" name="rewardName"  required="required" >
+<!--                   <option>请选择</option> -->
+                </select>
+            </div>
+        </div>	
+        	<div class="form-group">
+
+				<label for="baseValue" class="col-sm-4 control-label">奖励基础值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="baseValue" class=" form-control" id="baseValue" required="required" oninput="checkBaseValue(this)" placeholder="请输入奖励基础值"/>
+             <span id='msg_baseValue'></span>
+            </div>
+        </div>	
+        	<div class="form-group">
+
+				<label for="increaseSpeed" class="col-sm-4 control-label">奖励增长速度：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="increaseSpeed" class=" form-control" id="increaseSpeed" required="required" oninput="checkIncreaseSpeed(this)" placeholder="请输入奖励增长速度"/>
+             <span id='msg_increaseSpeed'></span>
+            </div>
+        </div>	
+        <div class="form-group">
+
+				<label for="increaseSpeedUnit" class="col-sm-4 control-label">奖励增长速度单位：</label>
+
+				<div class="col-sm-7">
+								
+              <select id="increaseSpeedUnit" class="form-control" name="increaseSpeedUnit"  required="required" >
+<!--               		<option>请选择</option> -->
+<!--                   	<option>积分/秒</option> -->
+<!--                    	<option>积分/步</option> -->
+                </select>
+             <span id='msg_increaseSpeedUnit'></span>
+            </div>
+        </div>	
+        <div class="form-group">
+
+				<label for="maxValue" class="col-sm-4 control-label">奖励最大值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="maxValue" class=" form-control" id="maxValue" required="required" oninput="checkMaxValue(this)" placeholder="请输入奖励最大值"/>
+            <span id='msg_maxValue'></span>
+            </div>
+        </div>	
+         <div class="form-group">
+
+				<label for="period" class="col-sm-4 control-label">可用周期（天）：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="period" class=" form-control" id="period" required="required" oninput="checkPeriod(this)" placeholder="请输入可用周期"/>
+             <span id='msg_period'></span>
+<!--             onblur="checkPeriod(this)" -->
+            </div>
+        </div>	
+			</form>
+				</div>
+				<div class="modal-footer">
+
+				<button type="button" id="allot" class="btn btn-default"  onclick="addAllotReward()">奖励配置</button>
+				<button type="button"  class="btn btn-default"   data-dismiss="modal" onclick="resteAllotReward()">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>			
+	<!-- 编辑活动奖励的模态框 -->
+    <div class="modal fade" id="updateActivityRewardModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">活动奖励配置修改</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EActivitySoureId" id="EActivitySoureId">
+						<input  style="display:none" type="hidden" name="EActivityRewardId" id="EActivityRewardId">
+						
+						<div class="form-group">
+							<label for="ErewardName" class="col-sm-4 control-label">奖励名称：</label>
+							<div class="col-sm-7">
+								<input name="ErewardName" class="form-control" id="ErewardName" readonly="readonly" required="required"   /></input>
+								
+
+							</div>						
+						</div>
+					
+        	<div class="form-group">
+
+				<label for="EbaseValue" class="col-sm-4 control-label">奖励基础值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="EbaseValue" class=" form-control" id="EbaseValue" required="required" oninput="checkEbaseValue(this)" placeholder="请输入奖励基础值"/>
+             <span id='msg_EbaseValue'></span>
+            </div>
+        </div>	
+        	<div class="form-group">
+
+				<label for="EincreaseSpeed" class="col-sm-4 control-label">奖励增长速度：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="EincreaseSpeed" class=" form-control" id="EincreaseSpeed" required="required" oninput="checkEincreaseSpeed(this)" placeholder="请输入奖励增长速度"/>
+             <span id='msg_EincreaseSpeed'></span>
+            </div>
+        </div>	
+        <div class="form-group">
+
+				<label for="EincreaseSpeedUnit" class="col-sm-4 control-label">奖励增长速度单位：</label>
+
+				<div class="col-sm-7">
+				 <select id="EincreaseSpeedUnit" class="form-control" name="EincreaseSpeedUnit"  required="required" >
+<!--               		<option>请选择</option> -->
+<!--                   	<option>积分/秒</option> -->
+<!--                    	<option>积分/步</option> -->
+                </select>				
+            </div>
+        </div>	
+        <div class="form-group">
+
+				<label for="EmaxValue" class="col-sm-4 control-label">奖励最大值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="EmaxValue" class=" form-control" id="EmaxValue" required="required" oninput="checkEmaxValue(this)" placeholder="请输入奖励最大值"/>
+             <span id='msg_EmaxValue'></span>
+            </div>
+        </div>	
+         <div class="form-group">
+
+				<label for="Eperiod" class="col-sm-4 control-label">可用周期：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="Eperiod" class=" form-control" id="Eperiod" required="required" oninput="checkEperiod(this)" placeholder="请输入可用周期"/>
+            <span id='msg_Eperiod'></span>
+            </div>
+        </div>	
+						
+																			
+					</form>
+				</div>
+
+				<div class="modal-footer">
+<!-- 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button> -->
+					<button type="button" class="btn btn-default"  onclick="updateActivityReward()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resteUpdate()">取消</button>
+				</div>
+						
+			</div>
+					
+		</div>
+	</div>
+	<!-- 新增活动的模态框-->
+
+	<div class="modal fade" id="updateActivityModal" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">编辑活动</h3>
+				</div>
+
+				<div class="modal-body">
+				
+
+					<form id="updateActivityForm" action="/updateactivity" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EActivityId" id="EActivityId">
+						<div class="form-group">
+							<label for="EsourceName" class="col-sm-3 control-label">活动名称：</label>
+							<div class="col-sm-8">
+								<input type="text" name="EsourceName" class=" form-control" id="EsourceName" readonly="readonly" maxlength="20" placeholder="活动名称最多为20个字符" />
+								<span id='msg_EsourceName'></span>
+
+							</div>						
+						</div>
+					
+								
+							<div class="form-group">
+					        	<label for="EsourceType" class="col-sm-3 control-label">活动类型：</label>
+					       		 <div class="col-sm-8">
+								<input type="text" name="EsourceType" class=" form-control" id="EsourceType"/>
+							    <span id='msg_EsourceType'></span>
+						       </div>	
+						      			
+						   </div>		
+						
+						
+						
+					
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="conf" class="btn btn-default" onclick="updateActivity()">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" th:src="@{/js/activityReward/activityReward.js}"></script>			
+</body>
+
+</html>
+

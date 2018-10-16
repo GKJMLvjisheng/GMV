@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
+<title>找回密码</title>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+
+<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+<style>
+.col-center-block {
+	float: none;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#labelProgress1:after {
+	content: '1';
+	margin-left: -40px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	top: 76px;
+	color: white;
+}
+
+#labelProgress2:after {
+	content: '2';
+	margin-left: -42px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	top: 76px;
+}
+
+#labelProgress3:after {
+	content: '3';
+	margin-left: -24px; /**图标与文字距离**/
+	/**display:inline-block;**/
+	position: absolute;
+	z-index: 10;
+	top: 76px;
+}
+
+i:after {
+	content: '';
+	width: 10px;
+	height: 10px;
+	border-radius: 20px; /**控制形状**/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
+	margin-right: 25px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -25px;
+}
+
+#labelProgress1:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: orange; /**控制图标颜色#000**/
+	margin-right: -50px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+
+#labelProgress2:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
+	margin-right: -48px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+
+#labelProgress3:before {
+	content: '';
+	width: 25px;
+	height: 25px;
+	border-radius: 20px; /**控制形状**/
+	background-color: #DCDCDC; /**控制图标颜色#000**/
+	margin-right: -30px; /**图标与文字距离**/
+	display: inline-block;
+	position: relative;
+	z-index: 1;
+	top: -20px;
+}
+</style>
+</head>
+<body>
+	<section class="content-header text-center">
+		<div class="container">
+
+			<h2 class="text-center" id="labelPwd1"></h2>
+
+		</div>
+		<br />
+		
+		<div class="container">
+			<h4 class="text-center" style="display: inline-block"
+				id="labelProgress1">验证身份</h4>
+			<i id="cirle1"></i><i id="cirle1"></i><i id="cirle1"></i>
+			<h4 class="text-center" style="display: inline-block"
+				id="labelProgress2">修改邮箱</h4>
+			<i id="cirle1"></i><i id="cirle1"></i><i id="cirle1"></i>
+			<h4 class="text-center" style="display: inline-block"
+				id="labelProgress3">完成</h4>
+		</div>
+	</section>
+
+	<hr />
+	<div class="container">
+
+		<!--    <div class="row myCenter">  -->
+
+		<div class=" col-sm-7 col-center-block">
+			<h4 class="text-center" id="labelContent">请输入登陆账户密码，进行身份验证</h4>
+
+			<!--       <form class="form-signin"> -->
+			<form id="findPasswordForm" action="/user/findPassWord" method="post"
+				class="form-horizontal">
+
+				<input type="text" style="display: none" name="mobileAddMailHiden" id="mobileAddMailHiden">
+
+
+				<div class="form-group">
+					<label for="userName" class="col-sm-3 control-label">登录名:</label>
+					<div class="col-sm-6">
+						<input type="text" name="userName" id="userName"
+							class="form-control" style="border-style: none"
+							readonly="readonly" />
+
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<label for="numberPhone" id=labelMobileMail
+						class="col-sm-3 control-label">****</label>
+					<div class="col-sm-6">
+						<input type="text" id="mobileAddMail" class="form-control"
+							style="border-style: none" readonly="readonly" />
+
+					</div>
+				</div>
+
+				<div class="form-group">
+
+					<label for="userPassword" class="col-sm-3 control-label">密码校验:</label>
+					<span class="required"></span>
+
+					<div class="col-sm-6">
+
+						<input type="password" name="userPassword" class="form-control"
+							id="userPassword" required="required"  placeholder="请输入密码，进行身份验证" />
+<!-- 							onblur = "checkPasswordIn()"  -->
+						<span id="password_span"></span>
+
+					</div>
+
+				</div>
+
+				<div class="form-group">
+					<label for="identify" class="col-sm-3 control-label"></label>
+					<div class="col-sm-6">
+
+						<button class="btn btn-warning   btn-block " id="identifyNext"
+							type="button" onclick="checkLink1()">身份验证</button>
+					</div>
+				</div>
+
+
+			</form>
+
+		</div>
+
+	</div>
+	<!-- <script type="text/javascript" th:src="@{/js/userInfo/resetPassword.js}"></script> -->
+	<script type="text/javascript" th:src="@{/js/userInfo/userInfo.js}"></script>
+
+</body>
+<script type="text/javascript">
+
+	$(function() {
+
+		var url = window.location.href;
+		var strInfo = getInfoAndAnalysis(url);
+        
+		var len = strInfo.length;
+		if (len > 0) {
+			var string1 = decodeURI(decodeURI(strInfo[0]));//标题
+			var strProgress = decodeURI(decodeURI(strInfo[1])); // 修改邮箱 或者 修改手机
+
+			var str = decodeURI(decodeURI(strInfo[2]));// mobileAddMailHiden mail\mobile
+
+			var string2 = decodeURI(decodeURI(strInfo[3])); // labelMobileMail 原手机号或者邮箱
+
+			var userName = decodeURI(decodeURI(strInfo[4])); // 登录名
+
+			document.getElementById("labelPwd1").innerHTML = (string1); // 标题
+			$("#labelPwd1").val(string1);
+
+			document.getElementById("labelProgress2").innerHTML = (strProgress); // 修改邮箱 或者 修改手机
+			$("#labelProgress2").val(strProgress);
+
+			document.getElementById("labelMobileMail").innerHTML = (string2); // 原手机号或者邮箱
+
+			$("#mobileAddMailHiden").val(str);
+			$("#mobileAddMail").val(
+					str.replace(/(.{3}).*(.{3})/, "$1******$2"));
+
+			$("#userName").val(userName); // 登录名
+			
+		}
+
+	});
+	
+	
+	//刷新从数据库更新数据
+	$(function () {
+		 refreshUserInfo();  
+	});
+	
+
+	
+	
+</script>
+</html>
