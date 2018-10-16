@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
@@ -31,6 +33,9 @@ public class MinerController {
 	
 	@Autowired
 	private MinerMapper minerMapper;
+	
+	@Autowired
+	private MinerService minerService;
 	
 	@Autowired
 	private TimeZoneService timeZoneService;
@@ -69,20 +74,53 @@ public class MinerController {
 		}
 	}
 	
-	@PostMapping(value = "/inquireMiner")  
+	@PostMapping(value = "/inquireWebMiner")  
 	@ResponseBody
-	public ResponseEntity<?> inquireMiner(){
-		List<MinerModel> minerModelList = minerMapper.selectAllMiner();
+	public ResponseEntity<?> inquireWebMiner(){
+		List<MinerModel> minerModelList = minerMapper.selectAllWebMiner();
 		for(MinerModel minerModel : minerModelList) {
 			String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
-		    String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		    String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String updated=DateUtils.string2Timezone(srcFormater, minerModel.getUpdated(), dstFormater, dstTimeZoneId);
 		    minerModel.setUpdated(updated);
 			log.info("updated={}", minerModel.getUpdated());
 		}
 		return new ResponseEntity.Builder<List<MinerModel>>()
 				.setData(minerModelList)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
+	@PostMapping(value = "/inquireMiner")  
+	@ResponseBody
+	public ResponseEntity<?> inquireMiner(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+ 
+        if (limit == null) {
+          limit = 10;
+        }
+        
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        
+		List<MinerModel> minerModelList = minerService.selectAllMiner(offset, limit);
+		
+		Integer count = minerMapper.countNum();
+		PageDomain<MinerModel> minerModelDetail = new PageDomain<>();
+		minerModelDetail.setTotal(count);
+		minerModelDetail.setAsc("desc");
+		minerModelDetail.setOffset(offset);
+		minerModelDetail.setPageNum(pageNum);
+		minerModelDetail.setPageSize(pageSize);
+		minerModelDetail.setRows(minerModelList);
+		return new ResponseEntity.Builder<PageDomain<MinerModel>>()
+				.setData(minerModelDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		
@@ -144,6 +182,13 @@ public class MinerController {
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		
+	}
+	
+	@PostMapping(value = "/buyMiner")  
+	@ResponseBody
+	public ResponseEntity<?> buyMiner(){
+		
+		return null;
 	}
 
 }

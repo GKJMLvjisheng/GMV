@@ -15,4 +15,5 @@ public interface UuidPrefix {
   public static final String ACTIVITY_REWARD_CONFIG = "ARC";
   public static final String OAS_DETAIL = "ODE";
   public static final String MINER_MODEL = "MM";
+  public static final String PURCHASE_RECORD = "PR";
 }
