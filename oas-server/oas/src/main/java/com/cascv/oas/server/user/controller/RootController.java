@@ -94,5 +94,9 @@ public class RootController {
 	  public String menuAuthor() {
 	  	    return "menuManage/menuAuthor";  
 	  	    }
-
+	//矿机奖励配置
+	  @GetMapping("/miner/reward")
+	  public String reward() {
+	  	    return "miner/reward";  
+	  	    }
 }

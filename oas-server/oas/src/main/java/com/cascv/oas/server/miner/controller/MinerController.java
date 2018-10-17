@@ -23,12 +23,12 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
-import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
+import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -265,17 +265,17 @@ public class MinerController {
         else 
         	offset = 0;
         
-        List<PurchaseRecord> purchaseRecordList = minerService.inquerePurchaseRecord(userUuid, offset, limit);
+        List<PurchaseRecordWrapper> purchaseRecordList = minerService.inquerePurchaseRecord(userUuid, offset, limit);
         
         Integer count = minerMapper.countByUserUuid(userUuid);
-        PageDomain<PurchaseRecord> purchaseRecordDetail = new PageDomain<>();
+        PageDomain<PurchaseRecordWrapper> purchaseRecordDetail = new PageDomain<>();
         purchaseRecordDetail.setAsc("desc");
         purchaseRecordDetail.setOffset(offset);
         purchaseRecordDetail.setPageNum(pageNum);
         purchaseRecordDetail.setPageSize(pageSize);
         purchaseRecordDetail.setRows(purchaseRecordList);
         purchaseRecordDetail.setTotal(count);
-		return new ResponseEntity.Builder<PageDomain<PurchaseRecord>>()
+		return new ResponseEntity.Builder<PageDomain<PurchaseRecordWrapper>>()
 				.setData(purchaseRecordDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();

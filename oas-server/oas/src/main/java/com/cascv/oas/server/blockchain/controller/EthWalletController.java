@@ -80,6 +80,7 @@ public class EthWalletController {
   }*/
 
   @PostMapping(value="/transfer")
+  //@RequiresPermissions("交易钱包-转账")
   @ResponseBody
   @Transactional
   @WriteLog(value="transfer")
@@ -396,6 +397,7 @@ public class EthWalletController {
    * @return
    */
   @PostMapping(value="/reverseWithdraw")
+  //@RequiresPermissions("充币")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> reverseWithdraw(@RequestBody EthWalletTransfer info){

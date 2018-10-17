@@ -338,8 +338,10 @@ function menuAuthReady()
 		//data:{"roleId":id,},
 		success: function(res) {
 			if(res.code==0){
+				
 				allRoleMenuData=res.data.menuList;
 				lenRoleMenu=allRoleMenuData.length;
+				console.log(JSON.stringify(allRoleMenuData));
 			}
 		}, error: function(){
 		}

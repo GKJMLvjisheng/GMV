@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -176,6 +176,7 @@ public class UserWalletController {
   }
 
   @PostMapping(value="/transfer")
+  //@RequiresPermissions("在线钱包-转账")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
@@ -208,7 +209,9 @@ public class UserWalletController {
    * @param oasDetail
    * @return
    */
+  
   @PostMapping(value="/withdraw")
+  //@RequiresPermissions("提币")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> withdraw(@RequestBody OasDetail oasDetail){

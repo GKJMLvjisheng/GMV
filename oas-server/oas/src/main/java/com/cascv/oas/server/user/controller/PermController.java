@@ -168,18 +168,20 @@ public class PermController {
     @PostMapping(value="/selectAllRoleMenus")
  	@ResponseBody
      public ResponseEntity<?> selectAllRoleMenus()
-     {     
-    	
+     {        	
 	       String uuid=ShiroUtils.getUser().getUuid();	       
 	       List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 	       //获取roleId(目前只有一个角色)
-	       Integer roleId=userRoles.get(0).getRoleId();
-	       log.info("roleId{}=",roleId.intValue());
-	 	   //暂时只能包含一个角色
-	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(roleId); 
- 	       Map<String,Object> info =new HashMap<>();
+//	       Integer roleId=userRoles.get(0).getRoleId();
+//	       log.info("roleId{}=",roleId);
+	 	   //暂时只针对用户角色
+	       
+	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(2);
+	 	   
+ 	       Map<String,Object> info =new HashMap<>();	       	       
  		   if(rmList.size()>0) 			   
- 			{  info.put("menuList",rmList);
+ 			{  
+ 			   info.put("menuList",rmList);
  			   info.put("state", "success");
  			}
  		   else {
@@ -193,11 +195,7 @@ public class PermController {
     
     /**
      * @author lvjisheng
-<<<<<<< HEAD
-     * @param roleId,menuId
-=======
      * @param menuId
->>>>>>> 80199b0803dfaac4211e2e776543118dfffb07ad
      * @return
      */
     @PostMapping(value="/addRoleMenu")
@@ -210,10 +208,10 @@ public class PermController {
 	           String uuid=ShiroUtils.getUser().getUuid();
 	           List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 	           //获取roleId(目前只有一个角色)
-	           Integer roleId=userRoles.get(0).getRoleId();
-	           log.info("roleId={}",roleId);
-	           log.info("menuId={}",roleMenu.getMenuId());
-	           roleMenu.setRoleId(roleId);
+//	           Integer roleId=userRoles.get(0).getRoleId();
+//	           log.info("roleId={}",roleId);
+	           //暂时只针对用户角色
+	           roleMenu.setRoleId(2);
 	           roleMenuMapper.insertRoleMenu(roleMenu);
 		       info.put("state","success");
            }catch(Exception e){
@@ -225,8 +223,7 @@ public class PermController {
 			  	      .setErrorCode(ErrorCode.SUCCESS)
 			  	      .build();
     }
-    
-    
+        
     /**
      * @author lvjisheng
      * @param menuId
@@ -241,8 +238,10 @@ public class PermController {
 	               String uuid=ShiroUtils.getUser().getUuid();
 	               List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 		           //获取roleId(目前只有一个角色)
-		           Integer roleId=userRoles.get(0).getRoleId();
-		           rm.setRoleId(roleId);
+//		           Integer roleId=userRoles.get(0).getRoleId();
+		           //暂时只针对用户角色
+		           rm.setRoleId(2);
+		           
     	           roleMenuMapper.deleteRoleMenu(rm);
     	 	       info.put("state","success");	            
             }catch(Exception e){
