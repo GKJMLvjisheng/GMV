@@ -39,7 +39,7 @@ class PreferencesHelper {
 
     public static void setLastSensorStep(Context context, float lastSensorStep){
         Logger.e(TAG, "setLastSensorStep");
-        getSharedPreferences(context).edit().putFloat(LAST_SENSOR_TIME,lastSensorStep).commit();
+        getSharedPreferences(context).edit().putFloat(LAST_SENSOR_TIME,lastSensorStep).apply();
     }
 
     public static float getLastSensorStep(Context context){
@@ -49,7 +49,7 @@ class PreferencesHelper {
 
     public static void setStepOffset(Context context, float stepOffset){
         Logger.e(TAG, "setStepOffset");
-        getSharedPreferences(context).edit().putFloat(STEP_OFFSET,stepOffset).commit();
+        getSharedPreferences(context).edit().putFloat(STEP_OFFSET,stepOffset).apply();
     }
 
     public static float getStepOffset(Context context){
@@ -59,7 +59,7 @@ class PreferencesHelper {
 
     public static void setStepToday(Context context, String stepToday){
         Logger.e(TAG, "setStepToday");
-        getSharedPreferences(context).edit().putString(STEP_TODAY,stepToday).commit();
+        getSharedPreferences(context).edit().putString(STEP_TODAY,stepToday).apply();
     }
 
     public static String getStepToday(Context context){
@@ -74,7 +74,7 @@ class PreferencesHelper {
      */
     public static void setCleanStep(Context context, boolean cleanStep){
         Logger.e(TAG, "setCleanStep");
-        getSharedPreferences(context).edit().putBoolean(CLEAN_STEP,cleanStep).commit();
+        getSharedPreferences(context).edit().putBoolean(CLEAN_STEP,cleanStep).apply();
     }
 
     /**
@@ -89,7 +89,7 @@ class PreferencesHelper {
 
     public static void setCurrentStep(Context context, float currStep){
         Logger.e(TAG, "setCurrentStep");
-        getSharedPreferences(context).edit().putFloat(CURR_STEP,currStep).commit();
+        getSharedPreferences(context).edit().putFloat(CURR_STEP,currStep).apply();
     }
 
     public static float getCurrentStep(Context context){
@@ -99,7 +99,7 @@ class PreferencesHelper {
 
     public static void setShutdown(Context context, boolean shutdown){
         Logger.e(TAG, "setShutdown");
-        getSharedPreferences(context).edit().putBoolean(SHUTDOWN,shutdown).commit();
+        getSharedPreferences(context).edit().putBoolean(SHUTDOWN,shutdown).apply();
     }
 
     public static boolean getShutdown(Context context){
@@ -109,7 +109,7 @@ class PreferencesHelper {
 
     public static void setElapsedRealtime(Context context, long elapsedRealtime){
         Logger.e(TAG, "setElapsedRealtime");
-        getSharedPreferences(context).edit().putLong(ELAPSED_REALTIMEl,elapsedRealtime).commit();
+        getSharedPreferences(context).edit().putLong(ELAPSED_REALTIMEl,elapsedRealtime).apply();
     }
 
     public static long getElapsedRealtime(Context context){
