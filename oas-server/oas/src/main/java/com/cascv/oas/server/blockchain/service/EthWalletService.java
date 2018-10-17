@@ -123,7 +123,8 @@ public class EthWalletService {
             ethWalletDetail.setTxResult(status);
             ethWalletDetailMapper.update(ethWalletDetail);
             //userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
-            getExchangeResult(ethWalletDetail);
+            ErrorCode result = getExchangeResult(ethWalletDetail);
+            log.info("update Result:",result.getMessage());
         }
       }
     }
@@ -694,9 +695,9 @@ public class EthWalletService {
   		 if(systemWallet == null) {
   			 return ErrorCode.NO_ONLINE_ACCOUNT;
   		 }
-  		 if(systemWallet.getBalance().compareTo(value) == -1) {
+  		/* if(systemWallet.getBalance().compareTo(value) == -1) {
   			 return ErrorCode.BALANCE_NOT_ENOUGH;
-  		 }
+  		 }*/
 	  	 //提币
 	  	 if(oasD.getType().equals(OasEventEnum.OAS_OUT.getCode())) {
 	  		 if(flag.equals("success")) {
@@ -706,9 +707,9 @@ public class EthWalletService {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
 	  		 }else {
-	  			 if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
+	  			/* if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
 	  				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
-	  			  }
+	  			  }*/
 	  			 
 	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
 	  			Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), oasD.getExtra());
@@ -737,9 +738,9 @@ public class EthWalletService {
 		  	 }
 		  	 	//修改待确认交易
 				EthWallet emptyEth = new EthWallet();
-				if(userEthWallet.getUnconfirmedBalance().compareTo(value) == -1) {
+				/*if(userEthWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 					return ErrorCode.UNCONFIRMED_BALANCE;
-				}
+				}*/
 				emptyEth.setUnconfirmedBalance(userEthWallet.getUnconfirmedBalance().subtract(value));
 				emptyEth.setUserUuid(user.getUuid());
 				Integer eResult = ethWalletMapper.update(emptyEth);
