@@ -260,7 +260,7 @@ def ethWalletListCoin(token):
   res=callRpc(url,data,token)
   print (res)
   if res.get('code') == 0:
-    return res.get('data')
+    return res.get('data.userCoin')
 
 def ethWalletTransfer(token):
   url=HOST+"/ethWallet/transfer"
