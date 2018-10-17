@@ -15,7 +15,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.activity.service.ActivityService;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
@@ -56,10 +56,8 @@ public class MinerController {
 	private UserWalletService userWalletService;
 	
 	@Autowired
-	ActivityService activityService;
-	
-	private static final Integer ACTIVITY_SOURCE_CODE_OF_WALKING = 9;  //计步的活动代码
-	private static final Integer REWARD_CODE_OF_MINER = 2;    //购买矿机增加算力
+	private ActivityMapper activityMapper;
+
 
 	//新增矿机时查询矿机名是否重复
 	@PostMapping(value = "/inquireMinerName")  
@@ -217,22 +215,29 @@ public class MinerController {
 	@ResponseBody
 	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
 		String userUuid = ShiroUtils.getUserUuid();
+		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
 		String minerName = userBuyMinerRequest.getMinerName();
 		Integer minerNum = userBuyMinerRequest.getMinerNum();
 		BigDecimal priceSum = userBuyMinerRequest.getPriceSum();
 		BigDecimal balance = userWalletMapper.selectByUserUuid(userUuid).getBalance();
+		BigDecimal minerPower = minerMapper.inquireByMinerName(minerName).getMinerPower();
+		BigDecimal powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum));
 		//判断自己剩余的OAS代币是否支持购买所需的矿机
 		if(priceSum.compareTo(balance) != -1) {
 			//增加一条购买记录
 			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 			//增加在线钱包的消费记录
 			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, priceSum.toString(), "");
+			//增加算力球
+			minerService.addMinerPowerBall(userUuid, powerSum);
 			//增加算力提升记录(有效期)
-			activityService.addPowerTradeRecord(userUuid, ACTIVITY_SOURCE_CODE_OF_WALKING, REWARD_CODE_OF_MINER);
+			minerService.addMinerPowerTradeRecord(userUuid, powerSum);
 			//更新用户钱包
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);
+			//更新用户能量钱包
+			activityMapper.increasePower(userUuid, powerSum, updated);
 			return new ResponseEntity.Builder<Integer>()
 					.setData(0)
 					.setErrorCode(ErrorCode.SUCCESS)
