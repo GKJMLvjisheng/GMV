@@ -334,7 +334,7 @@ public class EthWalletService {
     BigDecimal balance=this.getBalance(userUuid, userCoin.getContract(),userCoin.getWeiFactor());
     userCoin.setEthBalance(ethBalance);
     userCoin.setBalance(balance);
-    userCoin.setValue(this.getValue(balance));
+    userCoin.setValue(this.getValue(balance).setScale(2, BigDecimal.ROUND_HALF_UP));
     return userCoin;
   }
 
@@ -355,7 +355,7 @@ public class EthWalletService {
     ExchangeRateModel oasModel = exchangeRateService.getRate(now, CurrencyCode.CNY);
     ExchangeRateModel ethModel = exchangeRateService.getRate(now, CurrencyCode.ETH);
     if(oasModel!=null && ethModel!=null) {
-    	ethCoin.setValue((ethCoin.getBalance().multiply(oasModel.getRate()).multiply(ethModel.getRate())).setScale(9,BigDecimal.ROUND_HALF_UP));
+    	ethCoin.setValue((ethCoin.getBalance().multiply(oasModel.getRate()).multiply(ethModel.getRate())).setScale(2,BigDecimal.ROUND_HALF_UP));
     	return ethCoin;
     }
 	return null;
