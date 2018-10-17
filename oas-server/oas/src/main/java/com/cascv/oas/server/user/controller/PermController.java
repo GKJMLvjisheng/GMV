@@ -1,11 +1,8 @@
 package com.cascv.oas.server.user.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +18,6 @@ import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MenuModel;
 import com.cascv.oas.server.user.model.RoleMenu;
 import com.cascv.oas.server.user.model.UserRole;
-import com.cascv.oas.server.user.service.RoleService;
 import com.cascv.oas.server.user.wrapper.RoleMenuViewModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -172,18 +168,20 @@ public class PermController {
     @PostMapping(value="/selectAllRoleMenus")
  	@ResponseBody
      public ResponseEntity<?> selectAllRoleMenus()
-     {     
-    	
+     {        	
 	       String uuid=ShiroUtils.getUser().getUuid();	       
 	       List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 	       //获取roleId(目前只有一个角色)
-	       Integer roleId=userRoles.get(0).getRoleId();
-	       log.info("roleId{}=",roleId.intValue());
-	 	   //暂时只能包含一个角色
-	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(roleId);   	   
- 	       Map<String,Object> info =new HashMap<>();
+//	       Integer roleId=userRoles.get(0).getRoleId();
+//	       log.info("roleId{}=",roleId);
+	 	   //暂时只针对用户角色
+	       
+	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(2);
+	 	   
+ 	       Map<String,Object> info =new HashMap<>();	       	       
  		   if(rmList.size()>0) 			   
- 			{  info.put("menuList",rmList);
+ 			{  
+ 			   info.put("menuList",rmList);
  			   info.put("state", "success");
  			}
  		   else {
@@ -210,9 +208,11 @@ public class PermController {
 	           String uuid=ShiroUtils.getUser().getUuid();
 	           List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 	           //获取roleId(目前只有一个角色)
-	           Integer roleId=userRoles.get(0).getRoleId();
-	           log.info("roleId={}",roleId);
-	           roleMenu.setRoleId(roleId);
+//	           Integer roleId=userRoles.get(0).getRoleId();
+//	           log.info("roleId={}",roleId);
+	           //暂时只针对用户角色
+	           roleMenu.setRoleId(2);
+	           
 	           roleMenuMapper.insertRoleMenu(roleMenu);
 		       info.put("state","success");
            }catch(Exception e){
@@ -224,8 +224,7 @@ public class PermController {
 			  	      .setErrorCode(ErrorCode.SUCCESS)
 			  	      .build();
     }
-    
-    
+        
     /**
      * @author lvjisheng
      * @param menuId
@@ -236,13 +235,14 @@ public class PermController {
      public ResponseEntity<?> deleteRoleMenu(@RequestBody RoleMenu rm)
      {     
  	       Map<String,Object> info =new HashMap<>();
-            try {   
-            	
+            try {              	
 	               String uuid=ShiroUtils.getUser().getUuid();
 	               List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 		           //获取roleId(目前只有一个角色)
-		           Integer roleId=userRoles.get(0).getRoleId();
-		           rm.setRoleId(roleId);
+//		           Integer roleId=userRoles.get(0).getRoleId();
+		           //暂时只针对用户角色
+		           rm.setRoleId(2);
+		           
     	           roleMenuMapper.deleteRoleMenu(rm);
     	 	       info.put("state","success");	            
             }catch(Exception e){

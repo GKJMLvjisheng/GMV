@@ -5,13 +5,10 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.cascv.oas.server.user.controller.UserController;
 import com.cascv.oas.server.user.mapper.RoleMenuMapper;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.wrapper.RoleMenuViewModel;
-import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -25,11 +22,18 @@ public class PermService {
     public Set<String> getPermsByUserUuid(String uuid){
    	    Set<String> perms=new HashSet<>();    
         List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
-        for(int i=0;i<userRoles.size();i++){
-        	Integer roleId=userRoles.get(i).getRoleId(); 
-        	log.info("roleId={}",roleId);
-        	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(roleId);
-        	perms.add(rmList.get(i).getMenuName());
+    	Integer roleId=userRoles.get(0).getRoleId();    	
+    	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(roleId);
+        for(int i=0;i<rmList.size();i++){
+    		@SuppressWarnings("unused")
+			String perm=rmList.get(i).getMenuName();
+        	if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==5){
+        		perm="在线钱包-转账";
+        	}else if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==8){
+        		perm="交易钱包-转账";
+        	}       	
+        	perms.add(perm);
+        	log.info("perm={}",perm);
         }
         return perms;
     }

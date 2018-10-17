@@ -50,7 +50,7 @@ from
 	menu_info as m join role_menu as rm on m.menu_id=rm.menu_id
 where 
     rm.role_id=#{roleId};
-   
+       
 </select>
 
 <!-- </select Id by colum_name> -->

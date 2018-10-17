@@ -16,7 +16,6 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import com.cascv.oas.core.exception.CaptchaException;
 import com.cascv.oas.core.exception.RoleBlockedException;
 import com.cascv.oas.core.exception.UserBlockedException;
@@ -52,7 +51,6 @@ public class UserRealm extends AuthorizingRealm {
         log.info("Roles={}",roleService.getRolesByUserUuid(userUuid));
         // 
         info.setStringPermissions(permService.getPermsByUserUuid(userUuid));
-        log.info("Permission={}",permService.getPermsByUserUuid(userUuid));
         return info;
     }
 
