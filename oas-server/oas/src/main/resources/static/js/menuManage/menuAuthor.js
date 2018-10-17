@@ -247,11 +247,11 @@ function doById(index,id)
 				success:function(res){
 	
 					if(res.code==0){
-						document.getElementById("tipContent").innerHTML="授权成功";
+						document.getElementById("tipContent").innerHTML="模块授权成功";
 						$("#Tip").modal('show');
 					}else{
 						$("input:checkbox[name='menuStart']").eq(index).prop("checked", false);
-						document.getElementById("tipContent").innerHTML="授权失败";
+						document.getElementById("tipContent").innerHTML="模块授权失败";
 						$("#Tip").modal('show');
 					}
 				},
@@ -286,11 +286,11 @@ function doById(index,id)
 					success:function(res){
 
 						if(res.code==0){
-							document.getElementById("tipContent").innerHTML="取消授权成功";
+							document.getElementById("tipContent").innerHTML="模块取消授权成功";
 							$("#Tip").modal('show');
 						}else{
 							$("input:checkbox[name='menuStart']").eq(index).prop("checked", true);
-							document.getElementById("tipContent").innerHTML="取消授权失败";
+							document.getElementById("tipContent").innerHTML="模块取消授权失败";
 							$("#Tip").modal('show');
 						}
 					},
