@@ -31,21 +31,28 @@ public class MinerService {
 	
 	private static final Integer STATUS_ACTIVITY_OF_MINER = 0;  //矿机处于工作状态
 	
+	//得到用户购买的矿机的全部信息
 	public List<PurchaseRecord> getUserMiner(String userUuid){
 		List<PurchaseRecord> userMinerList = minerMapper.selectByuserUuid(userUuid);
 		return userMinerList;	
 	}
 	
+	//得到用户通过购买矿机提升的算力
 	public BigDecimal getMinerEfficiency(String userUuid) {
 		List<PurchaseRecord> userMinerList = this.getUserMiner(userUuid);
 		BigDecimal powerSum = BigDecimal.ZERO;
 		for(int i=0; i<userMinerList.size(); i++) {
-			
+			if (userMinerList.get(i).getMinerStatus() == 1) {
+				Integer minerNum = userMinerList.get(i).getMinerNum();
+				BigDecimal minerPower = userMinerList.get(i).getMinerPower();
+				powerSum = powerSum.add(minerPower.multiply(BigDecimal.valueOf((int)minerNum)));
+			}
 		}
 		log.info("efficiencySum={}", powerSum);
 		return powerSum;
 	}
 	
+	//安卓前端显示目前可给购买的矿机的信息
 	public List<MinerModel> selectAllMiner(Integer offset, Integer limit){
 		List<MinerModel> minerModelList = minerMapper.selectAllMiner(offset, limit);
 		for(MinerModel minerModel : minerModelList) {
@@ -59,6 +66,7 @@ public class MinerService {
 		return minerModelList;
 	}
 	
+	//用户购买矿机，并将其记录到购买详情表中
 	public Integer addPurchaseRecord(String userUuid, String minerName, Integer minerNum, BigDecimal priceSum) {
 		MinerModel minerModel = minerMapper.inquireByMinerName(minerName);
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
@@ -80,6 +88,7 @@ public class MinerService {
 		
 	}
 	
+	//用户购买记录查询
 	public List<PurchaseRecord> inquerePurchaseRecord(String userUuid, Integer offset, Integer limit){
 		List<PurchaseRecord> purchaseRecordList = minerMapper.inquerePurchaseRecord(userUuid, offset, limit);
 		for(PurchaseRecord purchaseRecord : purchaseRecordList) {
@@ -93,6 +102,7 @@ public class MinerService {
 		return purchaseRecordList;
 	}
 	
+	//实时查询用户购买的矿机的生命周期
 	public synchronized void updateMinerStatus() {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		List<PurchaseRecord> purchaseRecordList = minerMapper.selectAllRecord();
