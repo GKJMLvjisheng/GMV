@@ -90,7 +90,7 @@ public class PromotedRewardService {
 		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
 			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
 				  String userUuid=purchaseRecord.getUserUuid();
-				  this.giveSuperiorsUserImmediatelyReward(userUuid);
+				  this.giveSuperiorsUserImmediatelyReward(purchaseRecord, userUuid);
 				  minerMapper.updateByMinerPurchaseStatus(purchaseRecord);
 				  log.info("end reward job ...");
 			  }
@@ -123,7 +123,7 @@ public class PromotedRewardService {
 	 * @author Ming Yang
 	 * @return 0 返回成功
 	 */
-	public Integer giveSuperiorsUserImmediatelyReward(String userUuid) {
+	public Integer giveSuperiorsUserImmediatelyReward(PurchaseRecord purchaseRecord,String userUuid) {
 		
 		String rewardCoinName="代币";
 		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
@@ -132,13 +132,15 @@ public class PromotedRewardService {
 		log.info("userName:{}",userName);
 		double n=Math.pow(2,0);
 		BigDecimal N=new BigDecimal(n);
-		List<PurchaseRecord> PurchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
-		PurchaseRecord purchaseRecord=PurchaseRecordList.get(0);//暂时考虑只买了一条矿机记录
+//		List<PurchaseRecord> PurchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
+//		PurchaseRecord purchaseRecord=PurchaseRecordList.get(0);//暂时考虑只买了一条矿机记录
 		//购买矿机用户奖励代币
 		UserWallet buyUserWallet=userWalletMapper.selectByUserUuid(userUuid);
 		BigDecimal value=getImmediatelyReardCionCount(purchaseRecord,N);
 		log.info("buyUserValue:{}",value);
+		log.info("buyUser增加余额:{}",userName);
 		userWalletMapper.increaseBalance(buyUserWallet.getUuid(), value);
+		log.info("buyUser增加记录:{}",userName);
 		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
 		userWalletDetailMapper.insertSelective(userWalletDetail);
 		//根据注册用户找到他的注册邀请码
@@ -159,7 +161,9 @@ public class PromotedRewardService {
 				UserWallet superiorsUserWallet=userWalletMapper.selectByUserUuid(superiorsUserUuid);
 				BigDecimal superiorsValue=getImmediatelyReardCionCount(purchaseRecord,superiorsN);
 				log.info("superiorsValue:{}",superiorsValue);
-				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(), value);
+				log.info("superiorsUser增加余额:{}",superiorsName);
+				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
+				log.info("superiorsUser增加记录:{}",superiorsName);
 				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
