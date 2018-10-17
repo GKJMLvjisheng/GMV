@@ -66,8 +66,8 @@ public class WalkService {
 			BigDecimal stepNum = quota.get(i).getStepNum();
 			
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
-			BigDecimal efficiencySum = minerService.getMinerEfficiency(userUuid);
-			BigDecimal alpha = efficiencySum.add(BigDecimal.ONE);
+			BigDecimal powerSum = minerService.getPowerSum(userUuid);
+			BigDecimal alpha = powerSum.add(BigDecimal.ONE);
 			BigDecimal point = pointBefore.multiply(alpha);			
 			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(alpha);
 			BigDecimal newPoint;
