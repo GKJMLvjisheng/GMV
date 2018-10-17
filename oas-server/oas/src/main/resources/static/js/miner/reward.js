@@ -119,10 +119,10 @@ function updateReward(){
 	
 	var frozenRatio1=$("#frozenRatio").val();
 	var str1 = frozenRatio1.split("%");
-	var frozenRatio2 = str1[0];
-	var intRatio1 = parseFloat(frozenRatio2);	
+	var frozenRatio2 = str1[0];  //类型为string
+	var intRatio1 = parseFloat(frozenRatio2);  //类型为number
+	//alert(JSON.stringify(typeof(intRatio1)));
 	var frozenRatio = intRatio1/100;
-	//alert(JSON.stringify(frozenRatio));
 	
 	var rewardRatio1=$("#rewardRatio").val();
 	var str2 = rewardRatio1.split("%");
@@ -154,7 +154,6 @@ function updateReward(){
 			async : false,
 
 			success:function(res){	
-				
 				if(res.code==0){		
 					alert("修改成功");
 					location.reload();
