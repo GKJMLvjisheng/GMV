@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -59,6 +60,7 @@ import com.cascv.oas.server.common.EthWalletDetailScope;
 import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
+import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
@@ -307,7 +309,7 @@ public class EthWalletService {
   
   public BigDecimal getValue(BigDecimal balance) {
     
-    String time = DateUtils.dateTimeNow(DateUtils.YYYY_MM);
+    String time = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
     ReturnValue<BigDecimal> returnValue = exchangeRateService.exchangeTo(
         balance, 
         time, 
@@ -346,9 +348,27 @@ public class EthWalletService {
     UserCoin userCoin = getUserCoin(userUuid);
     if (userCoin != null)
       userCoinList.add(userCoin);
+    //暂时添加eth的usercoin
+    UserCoin ethCoin = getEthCoinTemporary(userCoin);
+    if(ethCoin != null) {
+    	 userCoinList.add(ethCoin);
+    }
     return userCoinList;
   }
-
+  //获取eth币的usercoin
+  public UserCoin getEthCoinTemporary(UserCoin userCoin) {
+	if(userCoin ==null) return null;
+    UserCoin ethCoin = new UserCoin();
+    ethCoin.setBalance(new BigDecimal(userCoin.getEthBalance()));
+    String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    ExchangeRateModel oasModel = exchangeRateService.getRate(now, CurrencyCode.CNY);
+    ExchangeRateModel ethModel = exchangeRateService.getRate(now, CurrencyCode.ETH);
+    if(oasModel!=null && ethModel!=null) {
+    	ethCoin.setValue((ethCoin.getBalance().multiply(oasModel.getRate()).multiply(ethModel.getRate())).setScale(9,BigDecimal.ROUND_HALF_UP));
+    	return ethCoin;
+    }
+	return null;
+  }
 
   private void addDetail(String address, EthWalletDetailScope ethWalletDetailScope, 
     BigDecimal value, String txHash, String remark, String changeAddress) {

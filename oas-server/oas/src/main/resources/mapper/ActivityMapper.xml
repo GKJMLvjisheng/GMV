@@ -316,6 +316,8 @@
         #{status}, #{created})
     </insert>
     
+    
+    
     <resultMap id="EnergyWall" type="com.cascv.oas.server.energy.model.EnergyWallet">
         <id column="uuid" property="uuid"/>
         <result column="user_uuid" property="userUuid"/>

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
+import com.cascv.oas.server.activity.model.EnergyPowerBall;
+import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
@@ -31,7 +34,16 @@ public class MinerService {
 	@Autowired
 	private TimeZoneService timeZoneService;
 	
-	private static final Integer STATUS_ACTIVITY_OF_MINER = 0;  //矿机处于工作状态
+	@Autowired
+	private ActivityMapper activityMapper;
+	
+	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
+	private static final Integer MINER_PURCHASE_STATUS = 1;  //矿机处于工作状态
+	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
+	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
+	
+	private EnergyPowerBall energyPowerBall = new EnergyPowerBall();
+	private PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
 	
 	//得到用户购买的矿机的全部信息
 	public List<PurchaseRecord> getUserMiner(String userUuid){
@@ -39,19 +51,39 @@ public class MinerService {
 		return userMinerList;	
 	}
 	
-	//得到用户通过购买矿机提升的算力
-	public BigDecimal getPowerSum(String userUuid) {
-		List<PurchaseRecord> userMinerList = this.getUserMiner(userUuid);
+	//一条算力记录的算力
+	public BigDecimal getPowerSum(String uuid) {
+		PurchaseRecord purchaseRecord = minerMapper.selectByUuid(uuid);
 		BigDecimal powerSum = BigDecimal.ZERO;
-		for(int i=0; i<userMinerList.size(); i++) {
-			if (userMinerList.get(i).getMinerStatus() == 1) {
-				Integer minerNum = userMinerList.get(i).getMinerNum();
-				BigDecimal minerPower = userMinerList.get(i).getMinerPower();
-				powerSum = powerSum.add(minerPower.multiply(BigDecimal.valueOf((int)minerNum)));
-			}
-		}
-		log.info("efficiencySum={}", powerSum);
+		Integer minerNum = purchaseRecord.getMinerNum();
+		BigDecimal minerPower = purchaseRecord.getMinerPower();
+		powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum));			
 		return powerSum;
+	}
+	
+	//增加算力球
+	public void addMinerPowerBall(String userUuid, BigDecimal powerSum) {
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		energyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+		energyPowerBall.setSourceCode(ACTIVITY_CODE_OF_MINER);
+		energyPowerBall.setUserUuid(userUuid);
+		energyPowerBall.setStatus(STATUS_ACTIVITY_OF_MINER);
+		energyPowerBall.setPower(powerSum);
+		energyPowerBall.setCreated(now);
+		energyPowerBall.setUpdated(now);
+	}
+	
+	//增加算力记录
+	public void addMinerPowerTradeRecord(String userUuid, BigDecimal powerSum) {
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		powerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+		powerTradeRecord.setUserUuid(userUuid);
+		powerTradeRecord.setEnergyBallUuid(energyPowerBall.getUuid());
+		powerTradeRecord.setInOrOut(ENEGY_IN);
+		powerTradeRecord.setPowerChange(powerSum);
+		powerTradeRecord.setCreated(now);
+		powerTradeRecord.setStatus(STATUS_ACTIVITY_OF_MINER);
+		activityMapper.insertPowerTradeRecord(powerTradeRecord);
 	}
 	
 	//安卓前端显示目前可给购买的矿机的信息
@@ -84,6 +116,7 @@ public class MinerService {
 		purchaseRecord.setMinerPower(minerModel.getMinerPower());
 		purchaseRecord.setMinerPeriod(minerModel.getMinerPeriod());
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
+		purchaseRecord.setMinerPurchaseStaus(MINER_PURCHASE_STATUS);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
@@ -104,6 +137,7 @@ public class MinerService {
 			purchaseRecord.setMinerPower(purchaseRecordList.get(i).getMinerPower());
 			purchaseRecord.setMinerPrice(purchaseRecordList.get(i).getMinerPrice());
 			purchaseRecord.setMinerStatus(purchaseRecordList.get(i).getMinerStatus());
+			purchaseRecord.setMinerPurchaseStatus(purchaseRecordList.get(i).getMinerPurchaseStaus());
 			purchaseRecord.setPriceSum(purchaseRecordList.get(i).getPriceSum());
 			purchaseRecord.setUserUuid(purchaseRecordList.get(i).getUserUuid());
 			purchaseRecord.setUuid(purchaseRecordList.get(i).getUuid());
@@ -155,7 +189,12 @@ public class MinerService {
 				if(et.before(endTime)) {
 					log.info("矿机工作中");
 				}else {
-					minerMapper.updateStatusByUuid(purchaseRecordList.get(i).getUuid());
+					String uuid = purchaseRecordList.get(i).getUuid();
+					String userUuid = purchaseRecordList.get(i).getUserUuid();
+					minerMapper.updateStatusByUuid(uuid);
+					
+					activityMapper.decreasePower(userUuid, this.getPowerSum(uuid), now);
+					this.addMinerPowerTradeRecord(userUuid, this.getPowerSum(uuid));
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
