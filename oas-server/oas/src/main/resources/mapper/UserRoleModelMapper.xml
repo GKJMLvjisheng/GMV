@@ -9,7 +9,12 @@
   </resultMap>
 
   <select id="selectAllUserRole" resultMap="userRoleModelMap">
-select role_info.role_name, user_role.role_priority, user_role.role_id from role_info join user_role on role_info.role_id=user_role.role_id where user_role.uuid = #{uuid}
+select 
+    role_detail.role_name as role_name,
+    user_role.role_priority as role_priority, 
+    user_role.role_id as role_id
+    from role_detail join user_role on role_detail.role_id=user_role.role_id 
+    where user_role.uuid = #{uuid}
   </select>
 </mapper>
 
