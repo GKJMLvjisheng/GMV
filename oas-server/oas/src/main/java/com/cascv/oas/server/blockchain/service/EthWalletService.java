@@ -349,16 +349,12 @@ public class EthWalletService {
     UserCoin userCoin = getUserCoin(userUuid);
     if (userCoin != null)
       userCoinList.add(userCoin);
-    //暂时添加eth的usercoin
-    UserCoin ethCoin = getEthCoinTemporary(userCoin);
-    if(ethCoin != null) {
-    	 userCoinList.add(ethCoin);
-    }
     return userCoinList;
   }
+  
   //获取eth币的usercoin
   public UserCoin getEthCoinTemporary(UserCoin userCoin) {
-	if(userCoin ==null) return null;
+	if(userCoin == null) return null;
     UserCoin ethCoin = new UserCoin();
     ethCoin.setBalance(new BigDecimal(userCoin.getEthBalance()));
     String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);

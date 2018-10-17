@@ -84,12 +84,12 @@ function initsymbol(){
 			  
 		     if (res.code == 0) {
 		    	 
-		    	 $("#userAddress").val(res.data[0].address);
+		    	 $("#userAddress").val(res.data.userCoin[0].address);
 		    	 var objAddress=document.getElementById("userAddress");
 		    	// $("#userAddress").text(res.data[0].address);
-		    	 objAddress.innerHTML=res.data[0].address;
+		    	 objAddress.innerHTML=res.data.userCoin[0].address;
 		    	 //$("#precision").val(6000000);
-		    	 var optionData=res.data;
+		    	 var optionData=res.data.userCoin;
 		    	 
 		    	 var len=optionData.length;
 		    	 
@@ -136,7 +136,7 @@ function initsymbol(){
          			  
          		     if (res.code == 0) {
          		    	  
-         		    	 var optionData=res.data;
+         		    	 var optionData=res.data.userCoin;
          		    	 
          		    	 var len=optionData.length;
 
@@ -843,7 +843,7 @@ function initsymbol(){
     			  
     		     if (res.code == 0) {
     		    	  
-    		    	 var optionData=res.data;
+    		    	 var optionData=res.data.userCoin;
     		    	 
     		    	 var len=optionData.length;
 
