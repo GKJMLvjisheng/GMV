@@ -246,7 +246,7 @@ public class MinerService {
 	        .withIdentity("JobDetailB", "groupB").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerB", "groupB")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(1).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(28800).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("minerService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("check status of miner ...");
