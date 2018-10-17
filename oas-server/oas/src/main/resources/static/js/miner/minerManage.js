@@ -92,8 +92,8 @@ function checkEName() {
 			
 			success : function(res) {
 				if (res.code == 0) {
-//					$("#msg_EminerName").html("该矿机名可用");
-//					$("#msg_EminerName").css("color", "green");
+					$("#msg_EminerName").html("该矿机名可用");
+					$("#msg_EminerName").css("color", "green");
 					check2 = 1;
 					return check2;
 				} else{
