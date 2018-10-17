@@ -146,9 +146,15 @@ function initAuthTable(data)
                 field:'menuName',
 
                 title:'模块名称',
-                align: 'center',
+                //align: 'center',
     			valign: 'middle',
     			width:'220',
+    			formatter: function (value, row, index){
+    				var value="";
+    					value="&nbsp;&nbsp;&nbsp;&nbsp;"+row.menuName;
+    					
+    				return value;
+    			}
 
             },{
 
