@@ -100,6 +100,12 @@ public class UserWalletService {
 		  userWalletDetail.setTxResult(1);
 		  userWalletDetail.setOasDetailUuid(oasDetailUuid);
 	      break;
+	  case 6:
+		  log.info("矿机推广奖励");
+		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+	  case 7:
+		  log.info("矿机推广奖励");
+		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
 	  default:
 		  log.info("swicth-case-end");
 	      break;

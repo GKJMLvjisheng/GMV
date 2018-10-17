@@ -1,5 +1,6 @@
 package com.cascv.oas.server.reward.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,6 @@ public class PromotedRewardController {
 	@ResponseBody
 	public ResponseEntity<?> inqureAllPromotedRewardConfig(){
 		List<PromotedRewardModel> promotedRewardModelList = promotedRewardService.selectAllPromotedRewardConfig();
-		
 		return new ResponseEntity.Builder<List<PromotedRewardModel>>()
 					.setData(promotedRewardModelList)
 					.setErrorCode(ErrorCode.SUCCESS)
@@ -47,9 +47,10 @@ public class PromotedRewardController {
 		
 		promotedRewardModel.setPromotedId(promotedRewardModelInfo.getPromotedId());
 		promotedRewardModel.setRewardName(promotedRewardModelInfo.getRewardName());
-		float frozenRatio=promotedRewardModelInfo.getFrozenRatio();
-		float rewardRatio=promotedRewardModelInfo.getRewardRatio();
-		if(frozenRatio>=0 && frozenRatio<=1) {
+		BigDecimal frozenRatio=promotedRewardModelInfo.getFrozenRatio();
+		BigDecimal rewardRatio=promotedRewardModelInfo.getRewardRatio();
+		BigDecimal a=new BigDecimal(1);
+		if(frozenRatio.compareTo(BigDecimal.ZERO)==1 && frozenRatio.compareTo(a)==-1) {
 		promotedRewardModel.setFrozenRatio(frozenRatio);
 		}else {
 			return new ResponseEntity.Builder<Integer>()
@@ -57,7 +58,7 @@ public class PromotedRewardController {
 					.setErrorCode(ErrorCode.GENERAL_ERROR)
 					.build();
 		}
-		if(rewardRatio>=0 && rewardRatio<=1) {
+		if(rewardRatio.compareTo(BigDecimal.ZERO)==1 && rewardRatio.compareTo(a)==-1) {
 		promotedRewardModel.setRewardRatio(rewardRatio);
 		}else {
 			return new ResponseEntity.Builder<Integer>()
@@ -72,6 +73,15 @@ public class PromotedRewardController {
 		
 		return new ResponseEntity.Builder<PromotedRewardModel>()
 				.setData(promotedRewardModel)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	@PostMapping(value="/AAAAtest")
+	@ResponseBody
+	public ResponseEntity<?> AAAAtest(){
+		Integer test=promotedRewardService.giveSuperiorsUserImmediatelyReward();
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}

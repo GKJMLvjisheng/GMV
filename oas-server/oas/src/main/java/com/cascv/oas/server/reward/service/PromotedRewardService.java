@@ -1,14 +1,25 @@
 package com.cascv.oas.server.reward.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
+import com.cascv.oas.server.blockchain.model.UserWallet;
+import com.cascv.oas.server.blockchain.model.UserWalletDetail;
+import com.cascv.oas.server.blockchain.service.UserWalletService;
+import com.cascv.oas.server.common.UserWalletDetailScope;
+import com.cascv.oas.server.miner.mapper.MinerMapper;
+import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.reward.mapper.PromotedRewardModelMapper;
 import com.cascv.oas.server.reward.model.PromotedRewardModel;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+import com.cascv.oas.server.user.mapper.UserModelMapper;
+import com.cascv.oas.server.user.model.UserModel;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +30,16 @@ public class PromotedRewardService {
 	private PromotedRewardModelMapper promotedRewardModelMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
-	
+	@Autowired 
+	private UserModelMapper userModelMapper;
+	@Autowired 
+	private UserWalletMapper userWalletMapper;
+	@Autowired 
+	private MinerMapper minerMapper;
+	@Autowired 
+	private UserWalletService userWalletService;
+	@Autowired 
+	private UserWalletDetailMapper userWalletDetailMapper;
 	public List<PromotedRewardModel> selectAllPromotedRewardConfig(){
 		List<PromotedRewardModel> promotedRewardModelList = promotedRewardModelMapper.selectAllPromotedRewards();
 
@@ -35,9 +55,84 @@ public class PromotedRewardService {
 		
 		return promotedRewardModelList;
 	}
-	
-	public Integer giveSuperiorsUserReward() {
+	/**
+	 * @author Ming Yang
+	 * @return immediatelyRewardSum
+	 * @return 立即奖励代币额度
+	 */
+	public BigDecimal getImmediatelyReardCionCount(PurchaseRecord purchaseRecord,BigDecimal i) {
+		String rewardCoinName="代币";
+		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);	
+
+		BigDecimal priceSum=purchaseRecord.getPriceSum();//一次购买矿机的总价格
+		log.info("priceSum:{}",priceSum);
+		BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();//冻结比例
+		BigDecimal rewardRatio=promotedRewardModel.getRewardRatio();//返现总提成
+		BigDecimal a=new BigDecimal(1);
+		BigDecimal percentRatio=a.subtract(frozenRatio);//立即奖励代币的比例
+		log.info("percentRatio:{}",percentRatio);
+		//立即奖励代币额度 immediatelyRewardSum
+		BigDecimal ImmediatelyRewardSum=(priceSum.multiply(rewardRatio)).multiply(percentRatio);
+		log.info("ImmediatelyRewardSum:{}",ImmediatelyRewardSum);
+		BigDecimal immediatelyRewardSum=ImmediatelyRewardSum.divide(i,18,BigDecimal.ROUND_HALF_UP);
+		return immediatelyRewardSum;
+	}
+	/**
+	 * @author Ming Yang
+	 * @return 0 返回成功
+	 */
+	public Integer giveSuperiorsUserImmediatelyReward() {
 		
-		return 0;
+		String rewardCoinName="代币";
+		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
+		String userUuid="USR-fb47be5fceb711e88e86062e59711e9e";
+		UserModel userModel=userModelMapper.selectByUuid(userUuid);
+		String userName=userModel.getName();
+		log.info("userName:{}",userName);
+		double n=Math.pow(2,0);
+		BigDecimal N=new BigDecimal(n);
+		List<PurchaseRecord> PurchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
+		PurchaseRecord purchaseRecord=PurchaseRecordList.get(0);//暂时考虑只买了一条矿机记录
+		//购买矿机用户奖励代币
+		UserWallet buyUserWallet=userWalletMapper.selectByUserUuid(userUuid);
+		BigDecimal value=getImmediatelyReardCionCount(purchaseRecord,N);
+		log.info("buyUserValue:{}",value);
+		userWalletMapper.increaseBalance(buyUserWallet.getUuid(), value);
+		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
+		userWalletDetailMapper.insertSelective(userWalletDetail);
+		//根据注册用户找到他的注册邀请码
+		Integer inviteFrom=userModel.getInviteFrom();
+		Integer maxN=promotedRewardModel.getMaxPromotedGrade();
+		log.info("maxN:{}",maxN);
+		if(inviteFrom != 0) {
+			for(int i=1;i<maxN;i++) 
+			{
+				UserModel superiorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(inviteFrom);
+				if(superiorsUserModel !=null) {
+				String superiorsName=superiorsUserModel.getName();
+				log.info("superiorsName:{}",superiorsName);
+				double superiorsn=Math.pow(2,i);
+				BigDecimal superiorsN=new BigDecimal(superiorsn);
+				log.info("superiorsN:{}",superiorsN);
+				String superiorsUserUuid=superiorsUserModel.getUuid();
+				UserWallet superiorsUserWallet=userWalletMapper.selectByUserUuid(superiorsUserUuid);
+				BigDecimal superiorsValue=getImmediatelyReardCionCount(purchaseRecord,superiorsN);
+				log.info("superiorsValue:{}",superiorsValue);
+				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(), value);
+				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
+				inviteFrom=superiorsUserModel.getInviteFrom();
+				log.info("nextInviteFrom:{}",inviteFrom);
+				log.info("N:{}",i);
+				}else {
+					log.info("Nnext:{}",i);
+					break;
+				}
+			}
+			return 0;
+		}else {
+			return -1;
+		}
+		
 	}
 }
