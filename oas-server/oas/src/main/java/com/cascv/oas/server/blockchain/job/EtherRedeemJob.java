@@ -14,15 +14,15 @@ public class EtherRedeemJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		//log.info("job ethRedeem running\n");
+		log.info("job ethRedeem running\n");
 		EthWalletService ethWalletService = (EthWalletService) context.getJobDetail().getJobDataMap().get("service");
 		if (ethWalletService != null) {
-		   //ethWalletService.updateJob();
+		   ethWalletService.updateJob();
 		}
-		//log.info("updating minerStatus\n");
+		log.info("updating minerStatus\n");
 		MinerService minerService = (MinerService) context.getJobDetail().getJobDataMap().get("minerService");
 		if (minerService != null) {
-			//minerService.updateMinerStatus();
+			minerService.updateMinerStatus();
 		}
 	}
 

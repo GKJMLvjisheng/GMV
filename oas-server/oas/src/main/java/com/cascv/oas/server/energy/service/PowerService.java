@@ -215,7 +215,6 @@ public class PowerService {
     	
     	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
     		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange().intValue());
-    		
     		if(energyPowerChangeDetail.getValue() != 0) {
     			powerList.add(energyPowerChangeDetail);
     		}

@@ -43,6 +43,7 @@ import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
+import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -51,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value="/api/v1/ethWallet")
-public class EthWalletController {
+public class EthWalletController extends BaseShiroController {
   
   @Autowired
   private EthWalletService ethWalletService;
@@ -80,6 +81,7 @@ public class EthWalletController {
   }*/
 
   @PostMapping(value="/transfer")
+  //@RequiresPermissions("交易钱包-转账")
   @ResponseBody
   @Transactional
   @WriteLog(value="transfer")
@@ -396,6 +398,7 @@ public class EthWalletController {
    * @return
    */
   @PostMapping(value="/reverseWithdraw")
+  //@RequiresPermissions("充币")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> reverseWithdraw(@RequestBody EthWalletTransfer info){

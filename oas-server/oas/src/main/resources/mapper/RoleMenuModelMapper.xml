@@ -22,6 +22,7 @@
  
 <!-- delete RoleMenu -->
 
+
 <delete id="deleteRoleMenu"> delete from role_menu where menu_Id = #{menuId} and role_id=#{roleId} </delete>
 
 <!-- select role_menu -->
@@ -48,9 +49,8 @@ select
     m.menu_parent_id as menu_parent_id
 from  
 	menu_info as m join role_menu as rm on m.menu_id=rm.menu_id
-where 
-    rm.role_id=#{roleId};
-   
+where
+    rm.role_id=#{roleId}
 </select>
 
 <!-- </select Id by colum_name> -->

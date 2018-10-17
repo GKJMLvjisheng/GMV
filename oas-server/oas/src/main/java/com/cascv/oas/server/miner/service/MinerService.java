@@ -3,6 +3,7 @@ package com.cascv.oas.server.miner.service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
+import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class MinerService {
 	}
 	
 	//得到用户通过购买矿机提升的算力
-	public BigDecimal getMinerEfficiency(String userUuid) {
+	public BigDecimal getPowerSum(String userUuid) {
 		List<PurchaseRecord> userMinerList = this.getUserMiner(userUuid);
 		BigDecimal powerSum = BigDecimal.ZERO;
 		for(int i=0; i<userMinerList.size(); i++) {
@@ -89,17 +91,45 @@ public class MinerService {
 	}
 	
 	//用户购买记录查询
-	public List<PurchaseRecord> inquerePurchaseRecord(String userUuid, Integer offset, Integer limit){
+	public List<PurchaseRecordWrapper> inquerePurchaseRecord(String userUuid, Integer offset, Integer limit){
 		List<PurchaseRecord> purchaseRecordList = minerMapper.inquerePurchaseRecord(userUuid, offset, limit);
-		for(PurchaseRecord purchaseRecord : purchaseRecordList) {
+		List<PurchaseRecordWrapper> purchaseRecordWrapper = new ArrayList<>();
+		for(int i=0; i<purchaseRecordList.size(); i++) {
+			PurchaseRecordWrapper purchaseRecord = new PurchaseRecordWrapper();
+			purchaseRecord.setMinerCode(purchaseRecordList.get(i).getMinerCode());
+			purchaseRecord.setMinerDescription(purchaseRecordList.get(i).getMinerDescription());
+			purchaseRecord.setMinerGrade(purchaseRecordList.get(i).getMinerGrade());
+			purchaseRecord.setMinerName(purchaseRecordList.get(i).getMinerName());
+			purchaseRecord.setMinerNum(purchaseRecordList.get(i).getMinerNum());
+			purchaseRecord.setMinerPower(purchaseRecordList.get(i).getMinerPower());
+			purchaseRecord.setMinerPrice(purchaseRecordList.get(i).getMinerPrice());
+			purchaseRecord.setMinerStatus(purchaseRecordList.get(i).getMinerStatus());
+			purchaseRecord.setPriceSum(purchaseRecordList.get(i).getPriceSum());
+			purchaseRecord.setUserUuid(purchaseRecordList.get(i).getUserUuid());
+			purchaseRecord.setUuid(purchaseRecordList.get(i).getUuid());
 			String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
 			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-			String created=DateUtils.string2Timezone(srcFormater, purchaseRecord.getCreated(), dstFormater, dstTimeZoneId);
+			String created=DateUtils.string2Timezone(srcFormater, purchaseRecordList.get(i).getCreated(), dstFormater, dstTimeZoneId);
 			purchaseRecord.setCreated(created);
-			log.info("created={}", created);
+			Integer period = purchaseRecordList.get(i).getMinerPeriod();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				Date bt = sdf.parse(purchaseRecordList.get(i).getCreated());
+				Calendar beginTime = Calendar.getInstance();
+				beginTime.setTime(bt);
+				beginTime.add(Calendar.DAY_OF_YEAR, period);
+				Date et = beginTime.getTime();
+				String endTime = sdf.format(et);
+				String newEndTime = DateUtils.string2Timezone(srcFormater, endTime, dstFormater, dstTimeZoneId);
+				purchaseRecord.setMinerEndTime(newEndTime);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			purchaseRecordWrapper.add(purchaseRecord);
 		}
-		return purchaseRecordList;
+		return purchaseRecordWrapper;
 	}
 	
 	//实时查询用户购买的矿机的生命周期
