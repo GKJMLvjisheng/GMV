@@ -14,6 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class PermService {
+	/**
+     * 模拟根据用户id查询返回用户的所有权限，实际查询语句参考：
+     * SELECT p.pval FROM perm p, role_perm rp, user_role ur
+     * WHERE p.pid = rp.perm_id AND ur.role_id = rp.role_id
+     * AND ur.user_id = #{userId}
+     * @param uid
+     * @return
+     */
 	@Autowired
 	private RoleMenuMapper roleMenuMapper;
 	@Autowired

@@ -14,9 +14,9 @@ import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.user.mapper.MenuModelMapper;
 import com.cascv.oas.server.user.mapper.RoleMenuMapper;
-import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MenuModel;
 import com.cascv.oas.server.user.model.RoleMenu;
+import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.wrapper.RoleMenuViewModel;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -217,7 +217,6 @@ public class PermController {
 	           */
 	           //暂时只针对用户角色
 	           roleMenu.setRoleId(2);
-	           
 	           roleMenuMapper.insertRoleMenu(roleMenu);
 		       info.put("state","success");
            }catch(Exception e){
