@@ -224,15 +224,15 @@ public class MinerController {
 		BigDecimal minerPower = minerMapper.inquireByMinerName(minerName).getMinerPower();
 		BigDecimal powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum));
 		//判断自己剩余的OAS代币是否支持购买所需的矿机
-		if(priceSum.compareTo(balance) != -1) {
-			//增加一条购买记录
-			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
-			//增加在线钱包的消费记录
-			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, priceSum.toString(), "");
+		if(balance.compareTo(priceSum) != -1) {
 			//增加算力球
 			minerService.addMinerPowerBall(userUuid, powerSum);
 			//增加算力提升记录(有效期)
 			minerService.addMinerPowerTradeRecord(userUuid, powerSum);
+			//增加一条购买记录
+			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
+			//增加在线钱包的消费记录
+			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, priceSum.toString(), "");
 			//更新用户钱包
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);

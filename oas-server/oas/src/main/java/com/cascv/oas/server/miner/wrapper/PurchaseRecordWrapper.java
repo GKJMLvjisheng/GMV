@@ -11,6 +11,7 @@ public class PurchaseRecordWrapper implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
+	@Getter @Setter private String energyBallUuid;
 	@Getter @Setter private String minerCode;
 	@Getter @Setter private String minerName;
 	@Getter @Setter private String minerDescription;
