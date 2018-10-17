@@ -15,8 +15,10 @@ public class PurchaseRecord {
 	@Getter @Setter private Integer minerGrade;
 	@Getter @Setter private BigDecimal minerPower;
 	@Getter @Setter private Integer minerPeriod;
+	@Getter @Setter private Integer minerStatus;
 	@Getter @Setter private String created;
 	@Getter @Setter private Integer minerNum;
+	@Getter @Setter private Integer minerPurchaseStaus;
 	@Getter @Setter private BigDecimal priceSum;
 
 }

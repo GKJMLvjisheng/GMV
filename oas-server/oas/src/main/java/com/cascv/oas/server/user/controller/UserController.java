@@ -48,9 +48,11 @@ import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
+import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.service.MessageService;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.wrapper.AuthCode;
@@ -87,18 +89,18 @@ public class UserController extends BaseShiroController{
 //  @Autowired
 //  private MailBean mailBean;
   @Autowired
-  private PowerService powerService;
-  
+  private PowerService powerService; 
   @Autowired
-  private EthWalletService ethWalletService;
-	
+  private EthWalletService ethWalletService;	
   @Autowired
   private UserWalletService userWalletService;
-
   @Autowired
   private EnergyWalletService energyPointService;
   @Autowired
   private MessageService messageService;
+  @Autowired
+  private UserRoleModelMapper userRoleModelMapper;
+  
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
@@ -150,6 +152,16 @@ public class UserController extends BaseShiroController{
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		userWalletService.create(uuid);
 		energyPointService.create(uuid);
+		//给用户赋予默认角色（普通用户roleId为2)
+		
+		  UserRole userRole=new UserRole();
+		  userRole.setUuid(uuid);
+		  userRole.setRoleId(2);
+		  String now =DateUtils.getTime();
+		  userRole.setRolePriority(1);
+		  userRole.setCreated(now);
+		  userRoleModelMapper.insertUserRole(userRole);  
+					
 		ErrorCode ret = userService.addUser(uuid, userModel);
 //		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
@@ -184,7 +196,7 @@ public class UserController extends BaseShiroController{
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
 	  
 	  //根据前端返回uuid找到新注册用户
-	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
+	UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
 	  
     if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
     		//用户注册失败
@@ -265,6 +277,7 @@ public class UserController extends BaseShiroController{
 	@PostMapping(value="/inquireUserInfo")
 	@ResponseBody
 	public ResponseEntity<?> inquireUserInfo(){
+		
 	  Map<String, String> info = new HashMap<>();
 	  UserModel userModel = ShiroUtils.getUser();
 	  log.info("inviteCode11 {}", userModel.getInviteCode());	  

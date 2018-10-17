@@ -47,8 +47,24 @@ public class PromotedRewardController {
 		
 		promotedRewardModel.setPromotedId(promotedRewardModelInfo.getPromotedId());
 		promotedRewardModel.setRewardName(promotedRewardModelInfo.getRewardName());
-		promotedRewardModel.setFrozenRatio(promotedRewardModelInfo.getFrozenRatio());
-		promotedRewardModel.setRewardRatio(promotedRewardModelInfo.getRewardRatio());
+		float frozenRatio=promotedRewardModelInfo.getFrozenRatio();
+		float rewardRatio=promotedRewardModelInfo.getRewardRatio();
+		if(frozenRatio>=0 && frozenRatio<=1) {
+		promotedRewardModel.setFrozenRatio(frozenRatio);
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(1)
+					.setErrorCode(ErrorCode.GENERAL_ERROR)
+					.build();
+		}
+		if(rewardRatio>=0 && rewardRatio<=1) {
+		promotedRewardModel.setRewardRatio(rewardRatio);
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(1)
+					.setErrorCode(ErrorCode.GENERAL_ERROR)
+					.build();
+		}
 		promotedRewardModel.setMaxPromotedGrade(promotedRewardModelInfo.getMaxPromotedGrade());
 		promotedRewardModel.setCreated(created);
 		

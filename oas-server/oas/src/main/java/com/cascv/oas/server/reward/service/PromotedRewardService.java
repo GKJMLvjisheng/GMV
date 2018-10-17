@@ -35,4 +35,9 @@ public class PromotedRewardService {
 		
 		return promotedRewardModelList;
 	}
+	
+	public Integer giveSuperiorsUserReward() {
+		
+		return 0;
+	}
 }

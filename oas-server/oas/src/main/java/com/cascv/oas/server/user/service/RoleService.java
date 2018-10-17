@@ -26,9 +26,9 @@ public class RoleService {
         Set<String> roles = new HashSet<>();
        List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid); 
        for(int i=0;i<userRoles.size();i++)
-       {
+       {   
     	   roles.add(userRoles.get(i).getRoleName());
        }
-        return roles;
-    }
+       return roles;
+    }   
 }
