@@ -47,7 +47,7 @@ public abstract class BaseShiroController {
 //    }
        Map<String,Object> info = new HashMap<>();
        info.put("code", "-998");
-       info.put("message", "您没有访问权限");
+       info.put("message", "在当前时间段，XXX功能暂时无法使用。\n欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");
        writeJson(info, response);
 //       return new ResponseEntity.Builder<>()
 //               .setErrorCode(ErrorCode.GENERAL_ERROR).build();
