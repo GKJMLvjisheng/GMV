@@ -8,6 +8,7 @@ import com.oases.computingpower.data.protocol.MinerInfoReq
 import com.oases.computingpower.data.protocol.MinerInfoResp
 import com.oases.computingpower.presenter.view.BuyingMinerView
 import com.oases.computingpower.service.ComputingPowerService
+import java.math.BigDecimal
 import javax.inject.Inject
 
 
@@ -28,9 +29,8 @@ class BuyingMinerPresenter @Inject constructor() : BasePresenter<BuyingMinerView
             }
         },lifecycleProvider)
     }
-
-    fun confirmBuyMiner(minerName:String,minerNum:Int,minerTotalAcount:String){
-        val req = ConfirmBuyMinerReq(minerName,minerNum,minerTotalAcount)
+    fun confirmBuyMiner(mMinerName:String,mMinerNum:Int,mMinerSum:BigDecimal){
+        val req = ConfirmBuyMinerReq(mMinerName,mMinerNum,mMinerSum)
         if (!checkNetWork()){
             return
         }

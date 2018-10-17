@@ -63,6 +63,10 @@ class ComputingPowerServiceImpl @Inject constructor(): ComputingPowerService {
         return repository.confirmBuyMiner(req).convert()
     }
 
+    override fun getBuyingMinerHistory(req: BuyingMinerHistoryReq):Observable<BuyingMinerHistoryResp>{
+        return repository.getBuyingMinerHistory(req).convert()
+    }
+
 
 
 }
