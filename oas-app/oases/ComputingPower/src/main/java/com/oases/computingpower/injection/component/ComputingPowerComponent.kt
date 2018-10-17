@@ -15,4 +15,5 @@ interface ComputingPowerComponent {
     fun inject(activity: ComputingPowerHistoryActivity)
     fun inject(activity: KYCActivity)
     fun inject(activity: BuyingMinerActivity)
+    fun inject(activity: BuyingMinerHistoryActivity)
 }

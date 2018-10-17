@@ -9,14 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp">
-
         <ImageView
             android:id="@+id/mMinerImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/onelevel" />
-
         <TextView
             android:id="@+id/mMinerName"
             android:layout_width="wrap_content"
@@ -30,145 +28,74 @@
             android:id="@+id/mMinerPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/mMinerImage"
-            android:layout_marginEnd="60dp"
+            android:layout_toRightOf="@+id/mMinerName"
+            android:paddingLeft="20dp"
             android:gravity="center"
             android:text="5,000,000"
             android:textColor="@color/common_green"
             android:textSize="13dp" />
-
         <TextView
-            android:id="@+id/mUnit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/mMinerImage"
-            android:layout_marginEnd="28dp"
-            android:gravity="center"
-            android:text="OAS"
-            android:textColor="@color/common_green"
-            android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/mContent1"
+            android:id="@+id/mCpomutingPowerValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mMinerName"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/mMinerImage"
-            android:text="算力"
+            android:text="5000000"
             android:textSize="13dp" />
-
         <TextView
-            android:id="@+id/mCpomutingPowerValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/mContent1"
-            android:layout_alignTop="@+id/mContent1"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="xxxx"
-            android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/mContent2"
+            android:id="@+id/mPrescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mMinerName"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/mCpomutingPowerValue"
-            android:text="，时效"
-            android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/mPrescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/mContent1"
-            android:layout_toRightOf="@+id/mContent2"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:text="200"
             android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/mContent3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/mContent1"
-            android:layout_toRightOf="@+id/mPrescription"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="天，"
-            android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/mContent4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/mContent1"
-            android:layout_marginTop="2dp"
-            android:layout_toRightOf="@+id/mMinerImage"
-            android:text="最高每天可产生"
-            android:textSize="13dp" />
-
         <TextView
             android:id="@+id/mMaxOutput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/mContent4"
-            android:layout_toRightOf="@+id/mContent4"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_below="@+id/mCpomutingPowerValue"
+            android:layout_toRightOf="@+id/mMinerImage"
             android:text="xxxxxxx"
             android:textSize="13dp" />
-
-        <TextView
-            android:id="@+id/mContent5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/mContent4"
-            android:layout_toRightOf="@+id/mMaxOutput"
-            android:text="OAS"
-            android:textSize="13dp" />
-
         <ImageView
             android:id="@+id/mReduce1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/mContent4"
+            android:layout_alignBottom="@+id/mMinerImage"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/mMinerImage"
             android:src="@drawable/reduce1" />
-
-        <TextView
-            android:id="@+id/mNumber"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/mMinerNumber"
+            android:layout_width="80dp"
+            android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/mMinerImage"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="165dp"
-            android:text="2000"
-            android:textSize="13dp" />
-
+            android:layout_toRightOf="@+id/mReduce1"
+            android:padding="5dp"
+            android:text="5"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:textSize="13dp"/>
         <ImageView
             android:id="@+id/mAdd1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/mMinerImage"
-            android:layout_toStartOf="@+id/mMinerPrice"
+            android:layout_toRightOf="@+id/mMinerNumber"
             android:src="@drawable/add1" />
-
         <Button
             android:id="@+id/mBuyButton"
             android:layout_width="60dp"
             android:layout_height="25dp"
             android:layout_alignBottom="@+id/mMinerImage"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="28dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/authentication"
             android:text="购买"
-            android:textColor="@color/common_white" />
+            android:textColor="@color/common_white"/>
     </RelativeLayout>
 </FrameLayout>
