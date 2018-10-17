@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minerManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>   
+   
+   <style>
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+	}
+	label{ 
+    vertical-align:middle;
+	}
+	
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+		
+		<div class = "container">
+			<table id="rewardGrid"></table>
+		</div>
+
+	</section>
+
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- 编辑矿机信息的模态框 -->
+    <div class="modal fade" id="updateRewardModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="ModalLabel">奖励配置</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateRewardForm" action="/reward/updatedReward" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="promotedId" id="promotedId">
+
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">奖励名称：</label>
+							<div class="col-sm-7">
+								<input name="rewardName" class="form-control" id="rewardName" readonly="readonly" required="required"/>
+							</div>						
+						</div>												
+						
+						<div class="form-group" id="frozen">
+							<label for="question" class="col-sm-3 control-label">冻结返现比例：</label>
+							<div class="col-sm-7">
+								<input name="frozenRatio" class="form-control" id="frozenRatio" required="required" onblur="checkFrozenRate()"/>
+								<span id="msg_frozenRatio"></span>
+							</div>						
+						</div>
+						
+						
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">奖励比例：</label>
+							<div class="col-sm-7">
+								<input name="rewardRatio" class="form-control" id="rewardRatio" required="required" onblur="checkRewardRate()"/>
+								<span id="msg_rewardRatio"></span>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">返现级别：</label>
+							<div class="col-sm-7">
+								<input name="maxPromotedGrade" class="form-control" id="maxPromotedGrade"  required="required" onblur="checkGrade()"/>
+								<span id="msg_maxPromotedGrade"></span>
+							</div>						
+						</div>						
+																											
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="saveReward" class="btn btn-default" onclick="updateReward()"><span aria-hidden="true">保存</span></button>
+				</div>
+						
+			</div>
+					
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/miner/reward.js}"></script>
+	<script type="text/javascript" th:src="@{/js/miner/rewardTable.js}"></script>			
+</body>
+</html>
+
