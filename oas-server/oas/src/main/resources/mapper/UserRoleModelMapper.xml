@@ -16,5 +16,23 @@ select
     from role_detail join user_role on role_detail.role_id=user_role.role_id 
     where user_role.uuid = #{uuid}
   </select>
+  
+  <!-- insert user_role -->
+<insert id="insertUserRole" parameterType="com.cascv.oas.server.user.model.UserRole">
+  	<selectKey resultType="java.lang.Integer" order="AFTER">
+          SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into user_role(
+    role_id,
+    uuid,
+    role_priority,
+    created
+    ) values (
+    #{roleId,jdbcType=INTEGER},
+    #{uuid,jdbcType=INTEGER},
+    #{rolePriority,jdbcType=INTEGER},
+    #{created,jdbcType=VARCHAR}
+    )
+</insert> 
 </mapper>
 
