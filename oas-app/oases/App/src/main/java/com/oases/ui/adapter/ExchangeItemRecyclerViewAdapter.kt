@@ -208,7 +208,7 @@ class ExchangeItemRecyclerViewAdapter(
                 item = eValues[position]
                 holder.mExchangeItemView.setLeftTopText(item.category?:"")
                 holder.mExchangeItemView.setLeftBottomText(item.created?:"")
-                holder.mExchangeItemView.setRightTopText((if(item.inOrOut==0) "-" else "+").plus(item.value?.setScale(5).toString()))
+                holder.mExchangeItemView.setRightTopText((if(item.inOrOut==0) "-" else "+").plus(item.decPoint?.setScale(5).toString()))
                 holder.mExchangeItemView.setRightBottomText(item.activity?:"")
                 holder.mExchangeItemView.setRightTopTextColor()
 

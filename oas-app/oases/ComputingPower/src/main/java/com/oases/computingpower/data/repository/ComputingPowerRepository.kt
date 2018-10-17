@@ -60,6 +60,10 @@ class ComputingPowerRepository @Inject constructor() {
         return RetrofitFactory.instance.create(ComputingPowerApi::class.java).confirmBuyMiner(req)
     }
 
+    fun getBuyingMinerHistory(req: BuyingMinerHistoryReq):Observable<BaseResp<BuyingMinerHistoryResp>>{
+        return RetrofitFactory.instance.create(ComputingPowerApi::class.java).getBuyingMinerHistory(req)
+    }
+
 
 
 }

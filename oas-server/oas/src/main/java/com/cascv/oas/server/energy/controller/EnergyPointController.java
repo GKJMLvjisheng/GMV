@@ -21,6 +21,8 @@ import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -359,6 +361,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 
 
     @PostMapping(value = "/redeemPoint")
+    @RequiresPermissions("积分兑换代币")
     @ResponseBody
     public ResponseEntity<?> redeemPoint(@RequestBody EnergyPointRedeem energyPointRedeem) {
       
