@@ -3,10 +3,18 @@ package com.cascv.oas.server.reward.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.job.EtherRedeemJob;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.UserWallet;
@@ -15,8 +23,10 @@ import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
+import com.cascv.oas.server.reward.job.RewardJob;
 import com.cascv.oas.server.reward.mapper.PromotedRewardModelMapper;
 import com.cascv.oas.server.reward.model.PromotedRewardModel;
+import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
@@ -38,6 +48,8 @@ public class PromotedRewardService {
 	private MinerMapper minerMapper;
 	@Autowired 
 	private UserWalletService userWalletService;
+	@Autowired
+	private SchedulerService schedulerService;
 	@Autowired 
 	private UserWalletDetailMapper userWalletDetailMapper;
 	public List<PromotedRewardModel> selectAllPromotedRewardConfig(){
@@ -55,6 +67,36 @@ public class PromotedRewardService {
 		
 		return promotedRewardModelList;
 	}
+	/**
+	 * @author Ming Yang
+	 * 
+	 *     开启查询用户是否购买矿机job
+	 */
+	  @PostConstruct
+	  public void startJob() {
+	    JobDetail jobDetail = JobBuilder.newJob(RewardJob.class)
+	        .withIdentity("JobDetailC", "groupC").build();
+	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
+	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
+	    jobDetail.getJobDataMap().put("promotedRewardService", this);
+	    schedulerService.addJob(jobDetail, trigger);
+	    log.info("add reward job ...");
+	  }
+	  
+	  public synchronized void checkUserWhetherBuyMiner() {
+		  log.info(" check all users whether buy miner");
+		  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
+		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+				  String userUuid=purchaseRecord.getUserUuid();
+				  this.giveSuperiorsUserImmediatelyReward(userUuid);
+				  minerMapper.updateByMinerPurchaseStatus(purchaseRecord);
+				  log.info("end reward job ...");
+			  }
+		  }
+	  }
+	  
 	/**
 	 * @author Ming Yang
 	 * @return immediatelyRewardSum
@@ -81,11 +123,10 @@ public class PromotedRewardService {
 	 * @author Ming Yang
 	 * @return 0 返回成功
 	 */
-	public Integer giveSuperiorsUserImmediatelyReward() {
+	public Integer giveSuperiorsUserImmediatelyReward(String userUuid) {
 		
 		String rewardCoinName="代币";
 		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
-		String userUuid="USR-fb47be5fceb711e88e86062e59711e9e";
 		UserModel userModel=userModelMapper.selectByUuid(userUuid);
 		String userName=userModel.getName();
 		log.info("userName:{}",userName);
