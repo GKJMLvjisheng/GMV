@@ -89,6 +89,7 @@
     <resultMap id="purchaseRecordMap" type="com.cascv.oas.server.miner.model.PurchaseRecord">
         <result column="uuid" property="uuid"/>
 		<result column="user_uuid" property="userUuid"/>
+		<result column="energy_ball_uuid" property="energyBallUuid"/>
 		<result column="miner_code" property="minerCode"/>
 		<result column="miner_name" property="minerName"/>
 	  	<result column="miner_description" property="minerDescription"/>
@@ -104,7 +105,7 @@
     </resultMap>
     
     <sql id="purchase_record_List">
-  		uuid, user_uuid, miner_code, miner_name, miner_grade, 
+  		uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade, 
   		miner_description, miner_price, miner_num, price_sum,
   		miner_power, miner_period, miner_status, miner_purchase_status, created
     </sql>
@@ -112,7 +113,7 @@
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         insert into purchase_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
-	        uuid, user_uuid, miner_code, miner_name, miner_grade,
+	        uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade,
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
@@ -120,7 +121,7 @@
 	         miner_period, miner_status, miner_purchase_status, created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
-	        #{uuid}, #{userUuid}, #{minerCode}, #{minerName}, #{minerGrade},
+	        #{uuid}, #{userUuid}, #{energyBallUuid}, #{minerCode}, #{minerName}, #{minerGrade},
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
@@ -133,12 +134,18 @@
         select <include refid="purchase_record_List" /> from purchase_record 
         where user_uuid=#{userUuid}
     </select>
+
+     <select id="selectByMinerPurchaseStatus" resultMap="purchaseRecordMap">
+      select <include refid="purchase_record_List" /> from purchase_record 
+       where miner_purchase_status=0;
+    </select>
+
     
     <select id="selectByUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
         where uuid = #{uuid}
     </select>
-    
+
     <select id="selectAllRecord" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record
         where miner_status = 1

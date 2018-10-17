@@ -103,6 +103,12 @@ public class UserWalletService {
 	  case 6:
 		  log.info("购买矿机");
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+	  case 7:
+		  log.info("矿机推广奖励");
+		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+	  case 8:
+		  log.info("矿机推广奖励");
+		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
 	  default:
 		  log.info("swicth-case-end");
 	      break;

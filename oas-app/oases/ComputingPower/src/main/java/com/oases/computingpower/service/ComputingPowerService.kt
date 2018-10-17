@@ -18,6 +18,7 @@ interface ComputingPowerService {
     fun changeKYCStatus(req: KYCImageUriReq):Observable<Int>
     fun getMinerInfo(req: MinerInfoReq):Observable<MinerInfoResp>
     fun confirmBuyMiner(req: ConfirmBuyMinerReq):Observable<Int>
+    fun getBuyingMinerHistory(req: BuyingMinerHistoryReq):Observable<BuyingMinerHistoryResp>
 
 
 }

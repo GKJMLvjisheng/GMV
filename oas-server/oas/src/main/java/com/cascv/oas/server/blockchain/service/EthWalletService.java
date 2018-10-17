@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -62,7 +61,6 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
-import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -107,9 +105,7 @@ public class EthWalletService {
  
   @Autowired
   private UserWalletDetailMapper userWalletDetailMapper;
-  
-  @Autowired
-  private MinerService minerService;
+
 
   public synchronized void updateJob() {
     log.info("update job ...");
@@ -123,7 +119,8 @@ public class EthWalletService {
             ethWalletDetail.setTxResult(status);
             ethWalletDetailMapper.update(ethWalletDetail);
             //userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
-            getExchangeResult(ethWalletDetail);
+            ErrorCode result = getExchangeResult(ethWalletDetail);
+            log.info("update Result:",result.getMessage());
         }
       }
     }
@@ -133,13 +130,11 @@ public class EthWalletService {
   public void startJob() {
     JobDetail jobDetail = JobBuilder.newJob(EtherRedeemJob.class)
         .withIdentity("JobDetailA", "groupA").build();
-    jobDetail.getJobDataMap().put("self", schedulerService);
     Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerA", "groupA")
         .withSchedule(SimpleScheduleBuilder.simpleSchedule()
             .withIntervalInSeconds(coinClient.getTxInterval()
         ).repeatForever()).startNow().build();
     jobDetail.getJobDataMap().put("service", this);
-    jobDetail.getJobDataMap().put("minerService", minerService);
     schedulerService.addJob(jobDetail, trigger);
     log.info("add ethRedeem job ...");
   }
@@ -339,7 +334,7 @@ public class EthWalletService {
     BigDecimal balance=this.getBalance(userUuid, userCoin.getContract(),userCoin.getWeiFactor());
     userCoin.setEthBalance(ethBalance);
     userCoin.setBalance(balance);
-    userCoin.setValue(this.getValue(balance));
+    userCoin.setValue(this.getValue(balance).setScale(2, BigDecimal.ROUND_HALF_UP));
     return userCoin;
   }
 
@@ -348,23 +343,19 @@ public class EthWalletService {
     UserCoin userCoin = getUserCoin(userUuid);
     if (userCoin != null)
       userCoinList.add(userCoin);
-    //暂时添加eth的usercoin
-    UserCoin ethCoin = getEthCoinTemporary(userCoin);
-    if(ethCoin != null) {
-    	 userCoinList.add(ethCoin);
-    }
     return userCoinList;
   }
+  
   //获取eth币的usercoin
   public UserCoin getEthCoinTemporary(UserCoin userCoin) {
-	if(userCoin ==null) return null;
+	if(userCoin == null) return null;
     UserCoin ethCoin = new UserCoin();
     ethCoin.setBalance(new BigDecimal(userCoin.getEthBalance()));
     String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
     ExchangeRateModel oasModel = exchangeRateService.getRate(now, CurrencyCode.CNY);
     ExchangeRateModel ethModel = exchangeRateService.getRate(now, CurrencyCode.ETH);
     if(oasModel!=null && ethModel!=null) {
-    	ethCoin.setValue((ethCoin.getBalance().multiply(oasModel.getRate()).multiply(ethModel.getRate())).setScale(9,BigDecimal.ROUND_HALF_UP));
+    	ethCoin.setValue((ethCoin.getBalance().multiply(oasModel.getRate()).multiply(ethModel.getRate())).setScale(2,BigDecimal.ROUND_HALF_UP));
     	return ethCoin;
     }
 	return null;
@@ -694,9 +685,9 @@ public class EthWalletService {
   		 if(systemWallet == null) {
   			 return ErrorCode.NO_ONLINE_ACCOUNT;
   		 }
-  		 if(systemWallet.getBalance().compareTo(value) == -1) {
+  		/* if(systemWallet.getBalance().compareTo(value) == -1) {
   			 return ErrorCode.BALANCE_NOT_ENOUGH;
-  		 }
+  		 }*/
 	  	 //提币
 	  	 if(oasD.getType().equals(OasEventEnum.OAS_OUT.getCode())) {
 	  		 if(flag.equals("success")) {
@@ -706,9 +697,9 @@ public class EthWalletService {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
 	  		 }else {
-	  			 if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
+	  			/* if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
 	  				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
-	  			  }
+	  			  }*/
 	  			 
 	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
 	  			Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), oasD.getExtra());
@@ -737,9 +728,9 @@ public class EthWalletService {
 		  	 }
 		  	 	//修改待确认交易
 				EthWallet emptyEth = new EthWallet();
-				if(userEthWallet.getUnconfirmedBalance().compareTo(value) == -1) {
+				/*if(userEthWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 					return ErrorCode.UNCONFIRMED_BALANCE;
-				}
+				}*/
 				emptyEth.setUnconfirmedBalance(userEthWallet.getUnconfirmedBalance().subtract(value));
 				emptyEth.setUserUuid(user.getUuid());
 				Integer eResult = ethWalletMapper.update(emptyEth);

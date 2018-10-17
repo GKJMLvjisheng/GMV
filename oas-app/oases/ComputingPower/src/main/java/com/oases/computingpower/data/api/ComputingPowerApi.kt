@@ -50,8 +50,12 @@ interface ComputingPowerApi {
     @POST("/api/v1/miner/inquireMiner")
     fun getMinerInfo(@Body req: MinerInfoReq):Observable<BaseResp<MinerInfoResp>>
 
-    @POST("/api/v1/miner/inquireMiner")
+    @POST("/api/v1/miner/buyMiner")
     fun confirmBuyMiner(@Body req:ConfirmBuyMinerReq):Observable<BaseResp<Int>>
+
+    @POST("/api/v1/miner/inquirePurchaseRecord")
+    fun getBuyingMinerHistory(@Body req:BuyingMinerHistoryReq):Observable<BaseResp<BuyingMinerHistoryResp>>
+
 
 
 }

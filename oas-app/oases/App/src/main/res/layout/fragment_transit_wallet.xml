@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             app:bitName="OAS"
             app:icon="@drawable/icon_oas"
-            app:bitValue="12.298"
-            app:bitEqualsValue="≈ ¥ 184,170.00">
+            app:bitValue="0"
+            app:bitEqualsValue="≈ ¥ 0">
         </com.oases.base.widgets.BitValue>
         <com.oases.base.widgets.BitValue
             android:id="@+id/mEth"

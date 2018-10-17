@@ -65,7 +65,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(积分)</span>
         </li>
          <li>
           <i></i>
@@ -74,7 +74,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(步)</span>
         </li>
         <li>
           <i></i>
@@ -203,7 +203,7 @@ export default {
     }
   },
   created() {
-    this.getStep()
+    //this.getStep()
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
@@ -407,7 +407,7 @@ export default {
      getWalkEnergyBall() {
      
       
-    //this.todayStep="15"
+    this.todayStep="15"
     
      //let time="2018-10-15"
     
