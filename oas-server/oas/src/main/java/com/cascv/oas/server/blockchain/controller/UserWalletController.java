@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +41,7 @@ import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
@@ -50,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value="/api/v1/userWallet")
-public class UserWalletController {
+public class UserWalletController extends BaseShiroController {
   
   @Autowired
   private UserWalletService userWalletService;
@@ -176,6 +177,7 @@ public class UserWalletController {
   }
 
   @PostMapping(value="/transfer")
+  @RequiresPermissions("在线钱包-转账")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
@@ -208,7 +210,9 @@ public class UserWalletController {
    * @param oasDetail
    * @return
    */
+  
   @PostMapping(value="/withdraw")
+  @RequiresPermissions("提币")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> withdraw(@RequestBody OasDetail oasDetail){
