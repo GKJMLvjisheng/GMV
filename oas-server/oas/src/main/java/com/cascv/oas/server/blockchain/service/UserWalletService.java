@@ -100,6 +100,9 @@ public class UserWalletService {
 		  userWalletDetail.setTxResult(1);
 		  userWalletDetail.setOasDetailUuid(oasDetailUuid);
 	      break;
+	  case 6:
+		  log.info("购买矿机");
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
 	  default:
 		  log.info("swicth-case-end");
 	      break;
@@ -113,7 +116,7 @@ public class UserWalletService {
 	  return userWalletDetail;
   }
   
-  private void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+  public void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
 	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
