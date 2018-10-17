@@ -101,9 +101,12 @@ public class UserWalletService {
 		  userWalletDetail.setOasDetailUuid(oasDetailUuid);
 	      break;
 	  case 6:
+		  log.info("购买矿机");
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+	  case 7:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
-	  case 7:
+	  case 8:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
 	  default:
@@ -119,7 +122,7 @@ public class UserWalletService {
 	  return userWalletDetail;
   }
   
-  private void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+  public void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
 	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }

@@ -10,13 +10,13 @@ public class MenuModel implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
-	@Setter @Getter private Long menuId;       	
+	@Setter @Getter private Integer menuId;       	
 	@Setter @Getter private String menuName;  
-	@Setter@Getter private String menuOrderId;
+	@Setter@Getter private Integer menuOrderId;
 	@Setter@Getter private Integer menuLevel;
 	@Setter@Getter private Integer menuParentId;
 	@Setter@Getter private String menuParentName;	
 	@Setter @Getter private String desc;   	
-	@Setter @Getter private Date created;   
-	@Setter @Getter private Date updated;   
+	@Setter @Getter private String created;   
+	@Setter @Getter private String updated;   
 }

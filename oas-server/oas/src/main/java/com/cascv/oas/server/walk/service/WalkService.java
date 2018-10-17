@@ -19,7 +19,11 @@ import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.miner.mapper.MinerMapper;
+import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
@@ -42,6 +46,12 @@ public class WalkService {
 	@Autowired
 	private MinerService minerService;
 	
+	@Autowired
+	private MinerMapper minerMapper;
+	
+	@Autowired
+	private EnergyService energyService;
+	
 	private static final Integer SOURCE_CODE_OF_WALKING = 9;             // 能量球来源：计步为9
 	private static final Integer REWARD_CODE_OF_WALKING_POINT = 1;             //能量球奖励：计步奖励积分，为1
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;         //能量球活跃状态，可被获取
@@ -63,13 +73,20 @@ public class WalkService {
 		List<StepPointQuota> stepPointQuotaList = new ArrayList<>();
 		for(int i=0; i<quota.size(); i++){
 			StepPointQuota stepPointQuota = new StepPointQuota();
-			BigDecimal stepNum = quota.get(i).getStepNum();
-			
+			BigDecimal stepNum = quota.get(i).getStepNum();			
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
-			BigDecimal efficiencySum = minerService.getMinerEfficiency(userUuid);
-			BigDecimal alpha = efficiencySum.add(BigDecimal.ONE);
-			BigDecimal point = pointBefore.multiply(alpha);			
-			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(alpha);
+			List<PurchaseRecord> purchaseRcordList = minerMapper.selectByuserUuid(userUuid);
+			BigDecimal powerSum = BigDecimal.ZERO; 
+			for(int j=0; j<purchaseRcordList.size(); j++) {
+				if(purchaseRcordList.get(j).getMinerStatus() == 1) {
+					BigDecimal power = minerService.getPowerSum(purchaseRcordList.get(j).getUuid());
+					powerSum = powerSum.add(power);
+				}				
+			}
+			EnergyWallet energyWallet = energyService.findByUserUuid(userUuid);
+			powerSum = powerSum.add(energyWallet.getPower());
+			BigDecimal point = pointBefore.multiply(powerSum);			
+			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
 			BigDecimal newPoint;
 			if(point.compareTo(maxValue) == -1)
 				newPoint = point;

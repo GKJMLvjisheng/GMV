@@ -15,16 +15,20 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
+import com.cascv.oas.server.blockchain.model.UserWallet;
+import com.cascv.oas.server.blockchain.service.UserWalletService;
+import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
-import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
+import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -47,8 +51,15 @@ public class MinerController {
 	
 	@Autowired
 	private UserWalletMapper userWalletMapper;
-
 	
+	@Autowired
+	private UserWalletService userWalletService;
+	
+	@Autowired
+	private ActivityMapper activityMapper;
+
+
+	//新增矿机时查询矿机名是否重复
 	@PostMapping(value = "/inquireMinerName")  
 	@ResponseBody
 	public ResponseEntity<?> inquireMinerName(@RequestBody InquireRequest inquireRequest){
@@ -65,6 +76,7 @@ public class MinerController {
 		
 	}
 	
+	//修改矿机信息时查询矿机名是否重复
 	@PostMapping(value = "/inquireUpdateMinerName")  
 	@ResponseBody
 	public ResponseEntity<?> inquireUpdateMinerName(@RequestBody InquireRequest inquireRequest){
@@ -82,6 +94,7 @@ public class MinerController {
 		}
 	}
 	
+	//给web端矿机详情
 	@PostMapping(value = "/inquireWebMiner")  
 	@ResponseBody
 	public ResponseEntity<?> inquireWebMiner(){
@@ -100,6 +113,8 @@ public class MinerController {
 				.build();
 	}
 	
+	
+	//安卓端的矿机详情，分页
 	@PostMapping(value = "/inquireMiner")  
 	@ResponseBody
 	public ResponseEntity<?> inquireMiner(@RequestBody PageDomain<Integer> pageInfo){
@@ -134,6 +149,7 @@ public class MinerController {
 		
 	}
 	
+	//新增矿机
 	@PostMapping(value = "/addMiner")  
 	@ResponseBody
 	public ResponseEntity<?> addMiner(@RequestBody MinerRequest minerRequest){
@@ -157,6 +173,7 @@ public class MinerController {
 		
 	}
 	
+	//删除矿机
 	@PostMapping(value = "/deleteMiner")  
 	@ResponseBody
 	public ResponseEntity<?> deleteMiner(@RequestBody MinerDelete minerDelete){
@@ -170,6 +187,7 @@ public class MinerController {
 		
 	}
 	
+	//更新矿机
 	@PostMapping(value = "/updateMiner")  
 	@ResponseBody
 	public ResponseEntity<?> updateMiner(@RequestBody MinerUpdate minerUpdate){
@@ -192,21 +210,34 @@ public class MinerController {
 		
 	}
 	
+	//购买矿机
 	@PostMapping(value = "/buyMiner")  
 	@ResponseBody
 	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
 		String userUuid = ShiroUtils.getUserUuid();
+		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
+		UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
 		String minerName = userBuyMinerRequest.getMinerName();
 		Integer minerNum = userBuyMinerRequest.getMinerNum();
 		BigDecimal priceSum = userBuyMinerRequest.getPriceSum();
 		BigDecimal balance = userWalletMapper.selectByUserUuid(userUuid).getBalance();
+		BigDecimal minerPower = minerMapper.inquireByMinerName(minerName).getMinerPower();
+		BigDecimal powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum));
 		//判断自己剩余的OAS代币是否支持购买所需的矿机
-		if(priceSum.compareTo(balance) != 1) {
+		if(balance.compareTo(priceSum) != -1) {
+			//增加算力球
+			minerService.addMinerPowerBall(userUuid, powerSum);
+			//增加算力提升记录(有效期)
+			minerService.addMinerPowerTradeRecord(userUuid, powerSum);
 			//增加一条购买记录
 			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
+			//增加在线钱包的消费记录
+			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, priceSum.toString(), "");
 			//更新用户钱包
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);
+			//更新用户能量钱包
+			activityMapper.increasePower(userUuid, powerSum, updated);
 			return new ResponseEntity.Builder<Integer>()
 					.setData(0)
 					.setErrorCode(ErrorCode.SUCCESS)
@@ -220,6 +251,7 @@ public class MinerController {
 		
 	}
 	
+	//查询用户矿机购买记录，分页
 	@PostMapping(value = "/inquirePurchaseRecord")  
 	@ResponseBody
 	public ResponseEntity<?> inquirePurchaseRecord(@RequestBody PageDomain<Integer> pageInfo){
@@ -238,17 +270,17 @@ public class MinerController {
         else 
         	offset = 0;
         
-        List<PurchaseRecord> purchaseRecordList = minerService.inquerePurchaseRecord(userUuid, offset, limit);
+        List<PurchaseRecordWrapper> purchaseRecordList = minerService.inquerePurchaseRecord(userUuid, offset, limit);
         
         Integer count = minerMapper.countByUserUuid(userUuid);
-        PageDomain<PurchaseRecord> purchaseRecordDetail = new PageDomain<>();
+        PageDomain<PurchaseRecordWrapper> purchaseRecordDetail = new PageDomain<>();
         purchaseRecordDetail.setAsc("desc");
         purchaseRecordDetail.setOffset(offset);
         purchaseRecordDetail.setPageNum(pageNum);
         purchaseRecordDetail.setPageSize(pageSize);
         purchaseRecordDetail.setRows(purchaseRecordList);
         purchaseRecordDetail.setTotal(count);
-		return new ResponseEntity.Builder<PageDomain<PurchaseRecord>>()
+		return new ResponseEntity.Builder<PageDomain<PurchaseRecordWrapper>>()
 				.setData(purchaseRecordDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();

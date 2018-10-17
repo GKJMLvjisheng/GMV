@@ -10,10 +10,8 @@ import lombok.Setter;
 
 public class RoleMenu implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@Setter @Getter private Long roleId;
-	@Setter @Getter private Long menuId;
-	@Setter @Getter private Integer roleMenuId;
-//	@Setter @Getter private String roleName;
-//	@Setter @Getter private String menuName;	
+	@Setter @Getter private Integer roleMenuId;	
+	@Setter @Getter private Integer roleId;
+	@Setter @Getter private Integer menuId;
 	@Setter @Getter private String created;
 }

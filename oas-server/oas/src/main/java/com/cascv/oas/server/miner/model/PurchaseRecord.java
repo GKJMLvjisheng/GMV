@@ -8,6 +8,7 @@ import lombok.Setter;
 public class PurchaseRecord {
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
+	@Getter @Setter private String energyBallUuid;
 	@Getter @Setter private String minerCode;
 	@Getter @Setter private String minerName;
 	@Getter @Setter private String minerDescription;
@@ -18,7 +19,7 @@ public class PurchaseRecord {
 	@Getter @Setter private Integer minerStatus;
 	@Getter @Setter private String created;
 	@Getter @Setter private Integer minerNum;
-	@Getter @Setter private BigDecimal priceSum;
 	@Getter @Setter private Integer minerPurchaseStatus;
+	@Getter @Setter private BigDecimal priceSum;
 
 }

@@ -5,7 +5,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.cascv.oas.server.blockchain.service.EthWalletService;
-import com.cascv.oas.server.miner.service.MinerService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,11 +17,6 @@ public class EtherRedeemJob implements Job {
 		EthWalletService ethWalletService = (EthWalletService) context.getJobDetail().getJobDataMap().get("service");
 		if (ethWalletService != null) {
 		   ethWalletService.updateJob();
-		}
-		log.info("updating minerStatus\n");
-		MinerService minerService = (MinerService) context.getJobDetail().getJobDataMap().get("minerService");
-		if (minerService != null) {
-			minerService.updateMinerStatus();
 		}
 	}
 

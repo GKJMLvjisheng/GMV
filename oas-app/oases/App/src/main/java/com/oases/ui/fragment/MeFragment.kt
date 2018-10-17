@@ -52,7 +52,7 @@ class MeFragment : BaseMvpFragment<MainPresenter>(), MainView, View.OnClickListe
         serverAddress =BaseConstant.SERVER_ADDRESS+"null"
         if (AppPrefsUtils.getString(BaseConstant.USER_ICON)==serverAddress||AppPrefsUtils.getString(BaseConstant.USER_ICON)==""){
             Log.d("lhlhlhlh",serverAddress)
-            mUserIconIv.setImageResource(com.oases.user.R.drawable.icon_default_user)
+            mUserIconIv.setImageResource(R.drawable.icon_default_user)
         }else{
             Picasso.get().load(AppPrefsUtils.getString(BaseConstant.USER_ICON))
                     .into(mUserIconIv)
