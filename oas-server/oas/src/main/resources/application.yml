@@ -98,3 +98,5 @@ quartz:
     org.quartz.threadPool.threadPriority: 5
     # JobStore
     org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
+    
+exchangeHourseuUrl : http://www.zzex.pro/m/allticker

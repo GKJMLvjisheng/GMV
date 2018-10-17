@@ -104,7 +104,7 @@ public class UserWalletController {
     BigDecimal balance = userWallet.getBalance();
       
     ReturnValue<BigDecimal> returnType = exchangeRateService.exchangeTo(
-         balance, DateUtils.dateTimeNow(DateUtils.YYYY_MM), 
+         balance, DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD), 
          CurrencyCode.CNY);
     if (returnType.getErrorCode() != ErrorCode.SUCCESS) {
         return new ResponseEntity.Builder<UserWalletBalanceSummary>()
