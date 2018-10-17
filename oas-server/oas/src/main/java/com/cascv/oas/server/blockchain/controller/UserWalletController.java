@@ -41,6 +41,7 @@ import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
@@ -50,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value="/api/v1/userWallet")
-public class UserWalletController {
+public class UserWalletController extends BaseShiroController {
   
   @Autowired
   private UserWalletService userWalletService;
@@ -211,7 +212,7 @@ public class UserWalletController {
    */
   
   @PostMapping(value="/withdraw")
-  //@RequiresPermissions("提币")
+  @RequiresPermissions("提币")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> withdraw(@RequestBody OasDetail oasDetail){

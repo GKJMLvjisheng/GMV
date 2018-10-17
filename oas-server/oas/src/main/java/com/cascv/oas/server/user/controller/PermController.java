@@ -168,12 +168,14 @@ public class PermController {
     @PostMapping(value="/selectAllRoleMenus")
  	@ResponseBody
      public ResponseEntity<?> selectAllRoleMenus()
-     {        	
+     {     
+    	/**
 	       String uuid=ShiroUtils.getUser().getUuid();	       
 	       List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 	       //获取roleId(目前只有一个角色)
-//	       Integer roleId=userRoles.get(0).getRoleId();
-//	       log.info("roleId{}=",roleId);
+	       Integer roleId=userRoles.get(0).getRoleId();
+	       log.info("roleId{}=",roleId);
+	       **/
 	 	   //暂时只针对用户角色
 	       
 	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(2);
@@ -205,11 +207,14 @@ public class PermController {
 	       Map<String,Object> info =new HashMap<>();
            try {       
 	           roleMenu.setCreated(DateUtils.getTime());
+	           /**
 	           String uuid=ShiroUtils.getUser().getUuid();
-	           List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
+	           //List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 	           //获取roleId(目前只有一个角色)
-//	           Integer roleId=userRoles.get(0).getRoleId();
-//	           log.info("roleId={}",roleId);
+	           Integer roleId=userRoles.get(0).getRoleId();
+	           log.info("roleId={}",roleId);
+	           *
+	           */
 	           //暂时只针对用户角色
 	           roleMenu.setRoleId(2);
 	           
@@ -236,11 +241,14 @@ public class PermController {
      {     
  	       Map<String,Object> info =new HashMap<>();
             try {              	
-	               String uuid=ShiroUtils.getUser().getUuid();
+	            /**   
+            	String uuid=ShiroUtils.getUser().getUuid();
 	               List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
 		           //获取roleId(目前只有一个角色)
-//		           Integer roleId=userRoles.get(0).getRoleId();
+		           Integer roleId=userRoles.get(0).getRoleId();
 		           //暂时只针对用户角色
+		            * 
+		            */
 		           rm.setRoleId(2);
 		           
     	           roleMenuMapper.deleteRoleMenu(rm);
