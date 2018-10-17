@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.CreateHelpWordsActivity"
+    android:orientation="vertical">
+
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="请牢记助记词">
+    </com.oases.base.widgets.HeaderBar>
+
+    <LinearLayout
+        android:id="@+id/mContainerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginRight="@dimen/common_user_page_margin"
+        android:layout_marginLeft="@dimen/common_user_page_margin">
+
+        <LinearLayout
+            android:layout_marginTop="32dp"
+            android:id="@+id/mHelpWordsContainer"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_red"
+            android:layout_marginTop="42dp"
+            android:text="@string/security_reminder" />
+        <Button
+            android:id="@+id/mNextBtn"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/qb2"
+            android:text="@string/next"
+            android:textColor="@color/common_white"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_progress2"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+
+</LinearLayout>

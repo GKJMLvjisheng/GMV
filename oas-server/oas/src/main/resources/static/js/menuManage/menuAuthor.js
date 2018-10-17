@@ -117,6 +117,9 @@ function initAuthTable(data)
                 field:'ID',
 
                 title:'序号',
+                align: 'center',
+    			valign: 'middle',
+    			width:'120',
                 formatter: function (value, row, index) {
 
                     //获取每页显示的数量
@@ -143,22 +146,17 @@ function initAuthTable(data)
                 field:'menuName',
 
                 title:'模块名称',
-               
+                align: 'center',
+    			valign: 'middle',
+    			width:'220',
 
             },{
 
-                field:'menuStart',
+                field:'desc',
 
-                title:'顶级模块',
-                visible: false,
-               
-
-            },{
-
-                field:'created',
-
-                title:'创建时间',
-                	
+                title:'模块描述',
+                align: 'center',
+    			valign: 'middle',
                
 
             },{
@@ -186,6 +184,7 @@ function initAuthTable(data)
     			field : "menuId",//user_allot
     			align: 'center',
     			valign: 'middle',
+    			width:'120',
     			formatter: function (value, row, index){
   				var id =value;
   				var result = "";
@@ -193,6 +192,8 @@ function initAuthTable(data)
   		        {
 					
 					result +="<a href='javascript:;'  onclick=\"doById('" +index+"','"+id+ "')\" ><input type='checkbox' name='menuStart' id='menuStart' class='checkbox-inline' title='启用权限'></a>";
+  		        }else{
+  		        	result +="<a href='javascript:;'  onclick=\"doById('" +index+"','"+id+ "')\" ><input type='checkbox' style='display:none' name='menuStart' id='menuStart' class='checkbox-inline' title='启用权限'></a>";
   		        }
   		     
   		        return result;
@@ -205,11 +206,6 @@ function initAuthTable(data)
         treeShowField: 'menuName',
 
         parentIdField: 'menuParentId',
-       
-
-        
-        
-
     	});
    
 }
@@ -218,135 +214,85 @@ function doById(index,id)
 
 {
 		console.log(allMenuData);
-		var row=$("#authRoleTable").bootstrapTable('getRowByUniqueId',id);
+		var row=$("#menuAuthorGrid").bootstrapTable('getRowByUniqueId',id);
 
 		var rowAdd = new Object();
-		rowAdd['menuName']=row.menuName;
-		rowAdd['menuParentId']=row.menuParentId;
+		//rowAdd['menuName']=row.menuName;
+		//rowAdd['menuParentId']=row.menuParentId;
 		rowAdd['menuId']=row.menuId;
-		console.log(row);
-		 
+		
+		
 		 objS=document.getElementsByName("menuStart");
-		 
-			  if(objS[index].checked)
-			  {rowAdd['menuStart']=1;}
-		  else{rowAdd['menuStart']=0;}
-		  //var roleId=$('#authRoleId').val();
-		rowAdd['roleMenuId']=row.roleMenuId;;
-		 
-		  console.log("之后的"+rowAdd);
-		  if(rowAdd.menuStart==1)
-	     {
-			 
-			  if(row.menuParentId!=0)
-		        {
-		        
-		          var menuParentId=row.menuParentId
-		          for(var i=index-1;i>=0;i--)
-		          {
-		            var menuId=allMenuData[i].menuId; 
-		              if(menuId==menuParentId)
-		              {  
-		                
-		                if(objS[i].checked!=1)
-		                {
-		                $("input:checkbox[name='menuStart']").eq(i).prop("checked", true);
-		                  }
-		                menuParentId=allMenuData[i].menuParentId;
-		              }
-		              
-		            }
-		        
-		            
-		          }
-			  
-		  $.ajax({
-	     
-
-			url:"/doAddRoleMenu",
-
-			dataType:"json",
-
-			traditional: true,//属性在这里设置
-
-			method:"post",
-
-			data:rowAdd,
-
-			success:function(data){
-
-				alert("角色授权成功！");
-			},
-
-			error:function(){
-				alert("角色授权失败！");
-			}
-
-			});
-	     }
+		 if(objS[index].checked)
+			{   
+			  $.ajax({
+		     
+	
+				url:"/api/v1/usermCenter/addRoleMenu",
+				contentType : 'application/json;charset=utf8',
+				dataType:"json",
+	
+				traditional: true,//属性在这里设置
+	
+				method:"post",
+	
+				data:JSON.stringify(rowAdd),
+	
+				success:function(res){
+	
+					if(res.code==0){
+						document.getElementById("tipContent").innerHTML="授权成功";
+						$("#Tip").modal('show');
+					}else{
+						$("input:checkbox[name='menuStart']").eq(index).prop("checked", false);
+						document.getElementById("tipContent").innerHTML="授权失败";
+						$("#Tip").modal('show');
+					}
+				},
+	
+				error:function(){
+					$("input:checkbox[name='menuStart']").eq(index).prop("checked", false);
+					alert("角色授权失败！");
+				}
+	
+				});
+		     }
 		  else{
 			
 			Ewin.confirm({ message: "确认要取消授权吗？" }).on(function (e) {
 					if (!e) {
+						$("input:checkbox[name='menuStart']").eq(index).prop("checked", true);
 					  return;}
-					rowAdd.menuC=0;
-					rowAdd.menuD=0;
-					rowAdd.menuU=0;
-					rowAdd.menuR=0;
-					var menuId=row.menuId;
-			          var len=allMenuData.length;
-			            for(var i=parseInt(index)+1;i<len;i++)
-			            {
-
-			              var menuParentId=allMenuData[i].menuParentId
-			              if(menuParentId==allMenuData[i+1].menuId)
-			                { 
-			                  if(menuId==menuParentId)
-			                  { 
-			                  
-			                    if(objS[i].checked)
-			                    {
-			                      $("input:checkbox[name='menuStart']").eq(i).prop("checked", false);
-			                    }
-			                  
-			                  
-			                  }else{break;}
-			                menuId=allMenuData[i].menuId;
-			                
-			                }else{
-			                  
-			                    if(menuId==menuParentId)
-			                    {  
-			                  
-			                      if(objS[i].checked)
-			                      {
-			                        $("input:checkbox[name='menuStart']").eq(i).prop("checked", false);
-			                      }
-			                  
-			                  
-			                    }else{break;}
-			                   }
-			              }
+					
 			  $.ajax({
 				     
 
-					url:"/doDeleteRoleMenu",
-
+					url:"/api/v1/usermCenter/deleteRoleMenu",
+					contentType : 'application/json;charset=utf8',
 					dataType:"json",
 
 					traditional: true,//属性在这里设置
 
 					method:"post",
 
-					data:rowAdd,
+					data:JSON.stringify(rowAdd),
 
-					success:function(data){
+					success:function(res){
 
-						alert("角色取消授权成功！");
+						if(res.code==0){
+							document.getElementById("tipContent").innerHTML="取消授权成功";
+							$("#Tip").modal('show');
+						}else{
+							$("input:checkbox[name='menuStart']").eq(index).prop("checked", true);
+							document.getElementById("tipContent").innerHTML="取消授权失败";
+							$("#Tip").modal('show');
+						}
 					},
 
 					error:function(){
+						$("input:checkbox[name='menuStart']").eq(index).prop("checked", true);
 						alert("角色取消授权失败！");
+						
 					}
 
 					});
@@ -360,7 +306,7 @@ function doById(index,id)
 var allMenuData;
 function menuAuthReady()
 {
-	$('#authRoleTable').bootstrapTable('destroy');
+	$('#menuAuthorGrid').bootstrapTable('destroy');
 	//var allMenuData;
 	var allRoleMenuData;
 	var lenMenu;
@@ -368,44 +314,44 @@ function menuAuthReady()
 	var idsIndex=[];
 	var idsRole=[];
 	 $.ajax({
-		 //所有模块权限
-		url: "/selectAllMenus",
+		 //所有模块
+		url: "/api/v1/usermCenter/selectAllMenus",
+		contentType : 'application/json;charset=utf8',
 		type: 'post',
 		async: false,
 		dataType: "json",
 		//data:{"roleId":id,},
 		success: function(res) {
 			if(res.code==0)
-			 {allMenuData=result.data.list;
+			 {allMenuData=res.data.menuList;
 			 lenMenu=allMenuData.length;}
 		}, error: function(){
 		}
 		 }); 
-//	 $.ajax({
-//		 //所有模块权限
-//		url: "/doSelectAllRoleMenu",
-//		type: 'GET',
-//		async: false,
-//		dataType: "json",
-//		data:{"roleId":id,},
-//		success: function(result) {
-//			 alert("success");
-//			 allRoleMenuData=result.data.list;
-//
-//			 lenRoleMenu=allRoleMenuData.length;
-//			 
-//			
-//		}, error: function(){
-//		}
-//		 }); 
-//	 for(var i=0; i<lenRoleMenu;i++)
-//	 { for(var j=0;j<lenMenu;j++)
-//		 {if(allRoleMenuData[i].menuId==allMenuData[j].menuId)
-//			 {idsIndex.push(j);
-//			 idsRole.push(i);}
-//		 }
-//	 }
-	 initAuthTable(allMenuData);
+	 $.ajax({
+		 //所有模块权限
+		url: "/api/v1/usermCenter/selectAllRoleMenus",
+		contentType : 'application/json;charset=utf8',
+		type: 'post',
+		async: false,
+		dataType: "json",
+		//data:{"roleId":id,},
+		success: function(res) {
+			if(res.code==0){
+				allRoleMenuData=res.data.menuList;
+				lenRoleMenu=allRoleMenuData.length;
+			}
+		}, error: function(){
+		}
+		 }); 
+	 for(var i=0; i<lenRoleMenu;i++)
+	 { for(var j=0;j<lenMenu;j++)
+		 {if(allRoleMenuData[i].menuId==allMenuData[j].menuId)
+			 {idsIndex.push(j);
+			 idsRole.push(i);}
+		 }
+	 }
+	 initAuthTable(allMenuData); 
 	 $("#menuAuthorGrid").treegrid({
 
 		    initialState: 'collapsed',//收缩
@@ -423,21 +369,13 @@ function menuAuthReady()
 
 		    }
 		});
-//	 var leni=idsIndex.length;
-//	 var lenr=idsRole.length;
-//	 for(var k=0; k<leni;k++)
-//	 {if(allRoleMenuData[idsRole[k]].menuC==1)
-//		 {$("input:checkbox[name='menuCId']").eq(idsIndex[k]).attr('checked', 'true');}
-//	 if(allRoleMenuData[idsRole[k]].menuD==1)
-//	 	{$("input:checkbox[name='menuDId']").eq(idsIndex[k]).attr('checked', 'true');}
-//	 if(allRoleMenuData[idsRole[k]].menuU==1)
-//	 	{$("input:checkbox[name='menuUId']").eq(idsIndex[k]).attr('checked', 'true');}
-//	 if(allRoleMenuData[idsRole[k]].menuR==1)
-//	 	{$("input:checkbox[name='menuRId']").eq(idsIndex[k]).attr('checked', 'true');}
-//	 if(allRoleMenuData[idsRole[k]].menuStart==1)
-//	 	{$("input:checkbox[name='menuStart']").eq(idsIndex[k]).attr('checked', 'true');}
-//	 }
-//	
+	 var leni=idsIndex.length;
+	 var lenr=idsRole.length;
+	 for(var k=0; k<leni;k++)
+
+	 	{$("input:checkbox[name='menuStart']").eq(idsIndex[k]).attr('checked', 'true');}
+	 
+	
 	 }
 
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.oases.base.widgets.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/mImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/mName"
+            android:layout_marginTop="2dp"
+            android:lines="2"
+            android:textSize="12sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/common_black"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello world"/>
+    </LinearLayout>
+</com.oases.base.widgets.SquareRelativeLayout>

@@ -13,6 +13,5 @@ public class RoleMenu implements Serializable {
 	@Setter @Getter private Integer roleMenuId;	
 	@Setter @Getter private Integer roleId;
 	@Setter @Getter private Integer menuId;
-	@Setter @Getter private Integer menuStart;
 	@Setter @Getter private String created;
 }

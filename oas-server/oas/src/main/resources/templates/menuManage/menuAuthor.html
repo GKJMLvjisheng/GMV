@@ -28,16 +28,19 @@
 </head>
 
 <body>
-<div class="container">
+<!-- style="width:800px" -->
+<div class="container" >
+
 	<section class="content-header">
 		
 		
 <!-- 		<a href='javascript:;' style="float:right" onclick="add()">添加角色信息</a>  class="btn btn-primary"-->
 		
-           <input type="button" value="添加角色信息" id="addroleBtn"  data-toggle="modal" data-target="#addRoleModal" class="btn btn-primary"></input>
+<!--            <input type="button" value="模块新增" id="addroleBtn"  data-toggle="modal" data-target="#addRoleModal" class="btn btn-primary"></input> -->
   
 	</section>
-
+<br/>
+<br/>
 	<!-- bootstrapTable -->		
 	<table id="menuAuthorGrid">
 	</table>
@@ -99,7 +102,30 @@
       </div>
     </div>
 				
-	
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog modal-sm"  role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
 				
 		
 				

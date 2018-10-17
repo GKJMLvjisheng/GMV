@@ -30,5 +30,5 @@ public class RoleService {
     	   roles.add(userRoles.get(i).getRoleName());
        }
         return roles;
-    }
+    }   
 }

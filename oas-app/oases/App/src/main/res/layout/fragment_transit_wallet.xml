@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragment.TransitWalletFragment"
+    android:background="@color/common_bg">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:background="@drawable/bg_token">
+        <TextView
+            android:textSize="@dimen/text_big_size"
+            android:text="总市值CNY"
+            android:layout_marginTop="46dp"
+            android:layout_marginLeft="38dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_white"/>
+        <TextView
+            android:id="@+id/mSummary"
+            android:textSize="48sp"
+            android:layout_marginTop="66dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_white"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="322dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="142dp"
+        android:layout_gravity="center_horizontal">
+        <com.oases.base.widgets.BitValue
+            android:id="@+id/mOas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bitName="OAS"
+            app:icon="@drawable/icon_oas"
+            app:bitValue="12.298"
+            app:bitEqualsValue="≈ ¥ 184,170.00">
+        </com.oases.base.widgets.BitValue>
+        <com.oases.base.widgets.BitValue
+            android:id="@+id/mEth"
+            android:layout_below="@+id/mOas"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bitValue="0"
+            app:bitEqualsValue="≈ ¥ 0"
+            app:bitName="ETH"
+            app:icon="@drawable/icon_eth">
+        </com.oases.base.widgets.BitValue>
+        <com.oases.base.widgets.BitValue
+            android:id="@+id/mBtc"
+            android:layout_below="@+id/mEth"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bitName="BTC"
+            app:icon="@drawable/icon_btc"
+            app:bitValue="0"
+            app:bitEqualsValue="≈ ¥ 0">
+        </com.oases.base.widgets.BitValue>
+    </RelativeLayout>
+
+</FrameLayout>

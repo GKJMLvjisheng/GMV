@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public interface RoleMenuMapper {	
 	 Integer insertRoleMenu(RoleMenu roleMenu);
-	 List<RoleMenuViewModel> selectAllRoleMenus(@Param("role") Object role);
+	 Integer deleteRoleMenu(@Param("menuId") Integer menuId);
+	 List<RoleMenuViewModel> selectAllRoleMenus(@Param("roleId") Integer roleId);
 	 //List<RoleMenu> selectRoleMenuIdByColumnName(@Param("menuId") String menuId);
-	 Integer deleteRoleMenu(@Param("roleMenuId") Integer roleMenuId);
-	 Integer updateRoleMenu(RoleMenu roleMenu);
+	 Integer deleteRoleMenu(RoleMenu roleMenu);
 }
 

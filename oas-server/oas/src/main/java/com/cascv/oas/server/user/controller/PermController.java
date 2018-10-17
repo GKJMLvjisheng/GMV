@@ -1,15 +1,13 @@
 package com.cascv.oas.server.user.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
@@ -18,21 +16,23 @@ import com.cascv.oas.server.user.mapper.MenuModelMapper;
 import com.cascv.oas.server.user.mapper.RoleMenuMapper;
 import com.cascv.oas.server.user.model.MenuModel;
 import com.cascv.oas.server.user.model.RoleMenu;
-import com.cascv.oas.server.user.service.RoleService;
+import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
+import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.wrapper.RoleMenuViewModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
+@RequestMapping(value="/api/v1/usermCenter")
 public class PermController {
+	@Autowired
+	private UserRoleModelMapper userRoleModelMapper;
 	@Autowired
 	private MenuModelMapper menuModelMapper;
 	@Autowired
 	private RoleMenuMapper roleMenuMapper;
-	@Autowired
-	private RoleService roleService;
-	
+
     @PostMapping(value="/selectAllMenus")
 	@ResponseBody
     public ResponseEntity<?> selectAllMenus()
@@ -168,15 +168,15 @@ public class PermController {
     @PostMapping(value="/selectAllRoleMenus")
  	@ResponseBody
      public ResponseEntity<?> selectAllRoleMenus()
-     {
-	 	   String uuid=ShiroUtils.getUser().getUuid();
-	 	   Set<String> roles=roleService.getRolesByUserUuid(uuid);
-	 	   //暂时每个用户只有一个角色
-//	 	   for(String role:roles) {
-//	 	   }
-	 	   List<String> list = new ArrayList(roles);
-	 	   log.info("role={}",list.get(0));
-    	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(list.get(0));
+     {     
+    	
+	       String uuid=ShiroUtils.getUser().getUuid();	       
+	       List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
+	       //获取roleId(目前只有一个角色)
+	       Integer roleId=userRoles.get(0).getRoleId();
+	       log.info("roleId{}=",roleId.intValue());
+	 	   //暂时只能包含一个角色
+	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(roleId); 
  	       Map<String,Object> info =new HashMap<>();
  		   if(rmList.size()>0) 			   
  			{  info.put("menuList",rmList);
@@ -193,7 +193,11 @@ public class PermController {
     
     /**
      * @author lvjisheng
+<<<<<<< HEAD
      * @param roleId,menuId
+=======
+     * @param menuId
+>>>>>>> 80199b0803dfaac4211e2e776543118dfffb07ad
      * @return
      */
     @PostMapping(value="/addRoleMenu")
@@ -203,6 +207,13 @@ public class PermController {
 	       Map<String,Object> info =new HashMap<>();
            try {       
 	           roleMenu.setCreated(DateUtils.getTime());
+	           String uuid=ShiroUtils.getUser().getUuid();
+	           List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
+	           //获取roleId(目前只有一个角色)
+	           Integer roleId=userRoles.get(0).getRoleId();
+	           log.info("roleId={}",roleId);
+	           log.info("menuId={}",roleMenu.getMenuId());
+	           roleMenu.setRoleId(roleId);
 	           roleMenuMapper.insertRoleMenu(roleMenu);
 		       info.put("state","success");
            }catch(Exception e){
@@ -218,7 +229,7 @@ public class PermController {
     
     /**
      * @author lvjisheng
-     * @param roleMenuId
+     * @param menuId
      * @return
      */
     @PostMapping(value="/deleteRoleMenu")
@@ -226,9 +237,14 @@ public class PermController {
      public ResponseEntity<?> deleteRoleMenu(@RequestBody RoleMenu rm)
      {     
  	       Map<String,Object> info =new HashMap<>();
-            try {   
-    	            roleMenuMapper.deleteRoleMenu(rm.getRoleMenuId());
-    	 	        info.put("state","success");	            
+            try {              	
+	               String uuid=ShiroUtils.getUser().getUuid();
+	               List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
+		           //获取roleId(目前只有一个角色)
+		           Integer roleId=userRoles.get(0).getRoleId();
+		           rm.setRoleId(roleId);
+    	           roleMenuMapper.deleteRoleMenu(rm);
+    	 	       info.put("state","success");	            
             }catch(Exception e){
 	         	    log.info(e.getMessage());
 	                info.put("state","failure");

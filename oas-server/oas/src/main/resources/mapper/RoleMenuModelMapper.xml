@@ -22,33 +22,35 @@
  
 <!-- delete RoleMenu -->
 
-<delete id="deleteRoleMenu"> delete from role_menu where role_menu_Id = #{roleMenuId}  </delete>
+
+<delete id="deleteRoleMenu"> delete from role_menu where menu_Id = #{menuId} and role_id=#{roleId} </delete>
 
 <!-- select role_menu -->
 <resultMap id="roleMenuResultMap" type="com.cascv.oas.server.user.wrapper.RoleMenuViewModel">
    	<id column="role_menu_id" property="roleMenuId"/> 
    	<result column="role_id" property="roleId"/> 
    	<result column="menu_id" property="menuId"/>
+   	<result column="role_name" property="roleName"/> 
    	<result column="menu_name" property="menuName"/> 
    	<result column="menu_order_id" property="menuOrderId"/>
    	<result column="menu_parent_id" property="menuParentId"/> 
+   	<result column="menu_parent_name" property="menuParentName"/>
    	<result column="created" property="created"/>    	
  </resultMap>
 
 <select id="selectAllRoleMenus"  resultMap="roleMenuResultMap">
       
 select 
-    rm.role_menu_id,
-    rm.created,
-    m.menu_name,
-    m.menu_parent_name,
-    m.menu_order_id,
-    m.menu_parent_id
+    rm.menu_id as menu_id,
+    rm.created as created,
+    m.menu_name as menu_name,
+    m.menu_parent_id as menu_parent_id,
+    m.menu_parent_name as menu_parent_name,
+    m.menu_parent_id as menu_parent_id
 from  
-	menu_info as m join role_menu as rm on m.menu_id=rm.menu_id by m.menu_order_id
+	menu_info as m join role_menu as rm on m.menu_id=rm.menu_id
 where 
-    role_menu.role_id=#{roleId};
-
+    rm.role_id=#{roleId};   
 </select>
 
 <!-- </select Id by colum_name> -->

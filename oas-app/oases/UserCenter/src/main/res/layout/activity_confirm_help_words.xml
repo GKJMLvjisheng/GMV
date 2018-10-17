@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.ConfirmHelpWordsActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="请验证助记词">
+    </com.oases.base.widgets.HeaderBar>
+
+    <LinearLayout
+        android:id="@+id/mContainerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="@dimen/common_user_page_margin"
+        android:layout_marginLeft="@dimen/common_user_page_margin"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbarThumbHorizontal="@color/common_green"
+            android:scrollbarAlwaysDrawHorizontalTrack="true"
+            android:scrollbars="horizontal"
+            android:fadeScrollbars="false"
+            android:id="@+id/mScrollView">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="54dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:id="@+id/mHelpWordsSelectedList">
+            </LinearLayout>
+        </HorizontalScrollView>
+        <LinearLayout
+            android:layout_marginTop="12dp"
+            android:id="@+id/mHelpWordsContainer"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="根据你所记助记词按顺序点击排序进行验证"
+            android:textColor="@color/common_red"/>
+        <Button
+            android:id="@+id/mConfirmNextBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/next"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/qb2"
+            android:textColor="@color/common_white"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_progress3"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+</LinearLayout>
