@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.DoneMailActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHeadBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="完成">
+    </com.oases.base.widgets.HeaderBar>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/email"
+        android:layout_gravity="bottom|center_horizontal"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textSize="19dp"
+        android:textColor="@color/common_black"
+        android:text="点击确定完成邮箱绑定"/>
+    <Button
+        android:id="@+id/mDoneMailBtn"
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:text="确定"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:textColor="@color/common_green"
+        android:background="@null"/>
+
+</LinearLayout>

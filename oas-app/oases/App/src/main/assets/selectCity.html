@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html class="pixel-ratio-1"><head>
+    <meta charset="utf-8">
+    <title>country</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link href="css/weui.css" rel="stylesheet">
+    <link href="css/weui2.css" rel="stylesheet">
+    <link href="css/weui3.css" rel="stylesheet">
+   <!-- <link href="js/zepto.min.js" rel=preload as=script>-->
+    <script src="js/zepto.min.js"></script>
+    <script src="js/picker.js"></script>
+    <script src="js/picker-city.js"></script>
+
+<script type="text/javascript">
+ var Address
+ $(function(){
+
+ $("#ss").cityPicker({
+        title: "选择省市",
+        showDistrict: false
+      });   	  
+
+//var height = $(window).height();
+//var slide = $(".weui-picker-modal").height()
+//$(".weui-picker-modal").css("bottom",(height)/3 + 'px')
+});
+//
+
+function getContent(){
+  Address=$("#ss").val();
+    var contents=Address;
+  //  window.Android.getText(contents);
+    return contents;
+};
+</script>
+</head>
+<body ontouchstart style="background-color: #f8f8f8;">
+<form id="form">
+<div class="weui_cells weui_cells_form ">          
+     <div class="weui_cell">
+        <div class="weui_cell_hd"><label  class="weui_label">省市:</label></div>
+             <div class="weui_cell_bd weui_cell_primary">
+                <input class="weui_input" type="text" id='ss' placeholder="点击此处选择省市"/>
+                </div>
+            </div>
+ </div>
+ </form>
+</body>
+</html>

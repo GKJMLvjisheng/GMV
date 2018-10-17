@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.AddressActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHeadBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="地址 "
+        app:rightText="保存">
+    </com.oases.base.widgets.HeaderBar>
+    <WebView
+        android:id="@+id/mCountry"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </WebView>
+
+</LinearLayout>

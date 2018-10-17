@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/exchangeOutLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.RedrawOasActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mchangeOutHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:rightText="接收"
+        app:titleText="OAS发送"></com.oases.base.widgets.HeaderBar>
+
+    <com.oases.base.widgets.ExchangeItem
+        android:id="@+id/mMyAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        app:leftTop="我的地址"
+        app:notShowRight="true"
+        app:rightTop="1111" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/common_white"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:paddingVertical="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="发送给"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+
+        <EditText
+            android:id="@+id/mReceiveAccount"
+            android:layout_width="222dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dip"
+            android:background="@null"
+            android:hint="请输入接收方账号"
+            android:gravity="right"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/text_big_size" />
+
+        <ImageView
+            android:id="@+id/qrImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:paddingBottom="2dip"
+            android:scaleType="centerInside"
+            android:src="@mipmap/scan" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:paddingLeft="19dp"
+        android:background="@color/common_white"
+        android:paddingRight="19dp"
+        android:paddingVertical="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="转账金额"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+
+        <EditText
+            android:id="@+id/mMoney"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@color/common_white"
+            android:drawable="@color/common_bg"
+            android:hint="请输入转账金额"
+            android:gravity="right"
+            android:singleLine="true"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/text_big_size" />
+
+        <TextView
+            android:id="@+id/mAvailableOasPostfix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/mMoney"
+            android:hint="OAS代币可用"
+            android:paddingLeft="4dp"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+
+        <TextView
+            android:id="@+id/mAvailableAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mMoney"
+            android:layout_toLeftOf="@+id/mAvailableOasPostfix"
+            android:text="123345"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/common_green"
+            android:textSize="@dimen/text_big_size" />
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/fourthLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:background="@color/common_white"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:paddingVertical="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="手续费（估计）"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+
+        <TextView
+            android:id="@+id/mFactorTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/mRightTopPostfix"
+            android:text="12.000002"
+            android:textColor="@color/common_green"
+            android:textSize="@dimen/text_big_size" />
+
+        <TextView
+            android:id="@+id/mRightTopPostfix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:paddingLeft="3dp"
+            android:text="ETH"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+
+        <LinearLayout
+            android:id="@+id/tipLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tipTop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="14dp"
+                android:gravity="right"
+                android:text="1"
+                android:textColor="@color/common_black"
+                android:textSize="@dimen/text_small_size" />
+        </LinearLayout>
+        <SeekBar
+            android:id="@+id/mSeakBar"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/mRightTopPostfix"
+            android:max="9"
+            android:maxHeight="6dp"
+            android:min="0"
+            android:minHeight="6dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="5dp"
+            android:progressDrawable="@drawable/layer_progress"
+            android:thumb="@drawable/shape_circle" />
+
+        <TextView
+            android:id="@+id/tipRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="45dp"
+            android:hint="0 GWEI"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_small_size" />
+
+        <TextView
+            android:id="@+id/tipLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/tipRight"
+            android:hint="0 GWEI"
+            android:layout_marginTop="45dp"
+            android:layout_marginRight="140dp"
+            android:textColor="@color/common_green"
+            android:textSize="@dimen/text_small_size" />
+
+        <TextView
+            android:id="@+id/mHandMoneyTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tipRight"
+            android:hint="ETH可用"
+            android:paddingLeft="4dp"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_small_size" />
+
+        <TextView
+            android:id="@+id/canUseMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tipRight"
+            android:layout_toLeftOf="@+id/mHandMoneyTip"
+            android:text="123345"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/common_green"
+            android:textSize="@dimen/text_small_size" />
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/common_white"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp"
+        android:paddingVertical="15dp">
+
+        <TextView
+            android:id="@+id/mCommentName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="备注"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+
+        <EditText
+            android:id="@+id/mRemark"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@color/common_white"
+            android:drawable="@color/common_bg"
+            android:gravity="right"
+            android:hint="无"
+            android:textColor="@color/text_dark"
+            android:textSize="@dimen/text_big_size" />
+
+        <TextView
+            android:id="@+id/mLeftBottomTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/mCommentName"
+            android:text="最多不超过100字符"
+            android:textSize="@dimen/text_small_size" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/mExchangeOutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/qb2"
+        android:text="发送"
+        android:textColor="@color/common_white" />
+</LinearLayout>

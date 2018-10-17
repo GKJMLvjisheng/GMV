@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <solid android:color="@color/help_word_back_clicked" />
+    <padding
+        android:left="@dimen/text_small_size"
+        android:right="@dimen/text_small_size"
+        android:bottom="@dimen/common_padding_min"
+        android:top="@dimen/common_padding_min"/>
+    <corners android:radius = "@dimen/common_radius" />
+</shape>

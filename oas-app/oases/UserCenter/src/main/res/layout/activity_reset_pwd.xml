@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.ResetPwdActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHeadBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.oases.base.widgets.HeaderBar>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="请设置密码"
+        android:textColor="@color/common_black"
+        android:textSize="19dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="当前用户名为："
+            android:textSize="12dp" />
+        <TextView
+            android:id="@+id/mUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/common_user_page_margin"
+        android:layout_marginRight="@dimen/common_user_page_margin"
+        android:orientation="vertical">
+    <EditText
+        android:id="@+id/mNewPwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:hint="@string/set_pwd"
+        android:inputType="textPassword"
+        android:imeActionId="6"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionUnspecified"
+        android:drawableLeft="@drawable/key_selector"/>
+
+    <EditText
+        android:id="@+id/mNewPwdConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:gravity="center_horizontal"
+        android:hint="@string/confirm_pwd"
+        android:inputType="textPassword"
+        android:imeActionId="6"
+        android:imeActionLabel="@string/action_sign_in_short"
+        android:imeOptions="actionUnspecified"
+        android:drawableLeft="@drawable/lock_selector"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:gravity="center"
+        android:text="需至少5位字符"
+        android:textColor="@color/common_green"
+        android:textSize="12dp" />
+    <Button
+        android:id="@+id/mResetPwdBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20dp"
+        android:text="完成"
+        android:textStyle="bold"
+        android:textColor="@color/common_green"
+        android:background="@null"/>
+</LinearLayout>

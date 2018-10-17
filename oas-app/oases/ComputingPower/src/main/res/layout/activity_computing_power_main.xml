@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="@color/common_bg"
+    tools:context=".ui.activity.ComputingPowerMainActivity">
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="提升算力"
+        app:rightText="算力记录">
+    </com.oases.base.widgets.HeaderBar>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/mHead"
+        android:layout_height="196dp"
+        android:background="@drawable/bg_energy">
+        <TextView
+            android:id="@+id/mCurrentComputingPower"
+            android:textSize="48sp"
+            android:paddingTop="28dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/common_white"
+            android:text="13000" />
+        <TextView
+            android:id="@+id/mCurrentPowerTag"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/mCurrentComputingPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="当前算力"
+            android:textColor="@color/common_white"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/common_float_page_width"
+        android:layout_height="match_parent"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/rounded_corner_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:text="提升算力获取更高积分"
+            android:textColor="@color/common_black"
+            android:textSize="@dimen/text_big_size" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

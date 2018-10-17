@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.RegisterActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="加入我们">
+    </com.oases.base.widgets.HeaderBar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/common_user_page_margin"
+        android:layout_marginRight="@dimen/common_user_page_margin"
+        android:orientation="vertical">
+
+        <ImageView
+            style="@style/WrapWrap"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/logo" />
+
+        <EditText
+            android:id="@+id/mNameEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:gravity="center_horizontal"
+            android:hint="@string/create_account"
+            android:lines="1"
+            android:drawableLeft="@drawable/user_selector"/>
+
+        <EditText
+            android:id="@+id/mPwdEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:gravity="center_horizontal"
+            android:hint="@string/set_pwd"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/key_selector"/>
+
+        <EditText
+        android:id="@+id/mPwdConfirmEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:gravity="center_horizontal"
+        android:hint="@string/confirm_pwd"
+        android:inputType="textPassword"
+        android:drawableLeft="@drawable/lock_selector"/>
+
+        <EditText
+            android:id="@+id/mInviteFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:gravity="center_horizontal"
+            android:hint="填写邀请码"
+            android:inputType="text"
+            android:drawableLeft="@drawable/lock_selector"/>
+        <Button
+            android:id="@+id/mRegisterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/common_user_input_margin"
+            android:background="@drawable/qb2"
+            android:text="获取助记词"
+            android:textColor="@color/common_white" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/img_progress1"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+</LinearLayout>

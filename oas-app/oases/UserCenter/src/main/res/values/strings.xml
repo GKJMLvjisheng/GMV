@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">UserCenter</string>
+    <string name="welcome">欢迎加入我们!</string>
+    <string name="set_pwd">设置密码</string>
+    <string name="create_account">创建账户</string>
+    <string name="confirm_pwd">确认密码</string>
+    <string name="next">下一步</string>
+    <string name="register_success">注册成功</string>
+    <string name="pwdNotSame">密码不一致</string>
+
+    <string name="to_head_page">进入首页</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_name">This name is invalid</string>
+    <string name="error_invalid_password">密码太短</string>
+    <string name="error_empty_password">密码不能为空</string>
+    <string name="error_password_is_not_equal">确认密码和密码不一致</string>
+    <string name="error_field_required">不能为空</string>
+    <string name="security_reminder">【安全提示】请抄好12个助忆词， 您只可以用这些单词恢复账户！一旦丢失，资产将无法找回！一旦泄露，资产将会被盗！</string>
+</resources>

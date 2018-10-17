@@ -25,7 +25,9 @@ public interface MinerMapper {
 	List<MinerModel> selectAllMiner(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer countNum();
 	
+	List<PurchaseRecord> selectAllRecord();
 	List<PurchaseRecord> selectByuserUuid(@Param("userUuid") String userUuid);
+	Integer updateStatusByUuid(@Param("uuid") String uuid);
 	
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 
 			@Param("offset") Integer offset, @Param("limit") Integer limit);

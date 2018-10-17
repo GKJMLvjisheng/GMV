@@ -1,0 +1,7 @@
+package com.oases.viewmodels
+
+enum class EnumList{
+    ENEYGE_ALL,ENEYGE_OUT,ENEYGE_IN,
+    WALLET_ALL,WALLET_OUT,WALLET_IN,
+    EXCHANGE_ALL,EXCHANGE_OUT,EXANGE_IN
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.RegisterSucceedActivity">
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="注册成功">
+    </com.oases.base.widgets.HeaderBar>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:src="@drawable/img_balloon"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:layout_gravity="center_horizontal"
+        android:text="     恭喜您，注册成功！\n赶紧开启您的OASES之旅"/>
+    <Button
+        android:id="@+id/mToHeadPageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="前往首页"
+        android:textColor="@color/common_white"
+        android:background="@drawable/qb2"
+        android:layout_marginTop="@dimen/common_top_margin"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/common_user_page_margin"
+        android:layout_marginLeft="@dimen/common_user_page_margin"
+        android:layout_marginTop="46dp"
+        android:src="@drawable/gb_success"/>
+</LinearLayout>

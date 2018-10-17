@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:orientation="horizontal"
+    android:background="@drawable/border_bottom">
+    <TextView
+        style="@style/WrapWrap"
+        android:textSize="15sp"
+        android:textColor="@color/common_black"
+        android:layout_gravity="center_vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:paddingLeft="19dp"
+        android:id="@+id/mNameTv"/>
+    <TextView
+        android:id="@+id/mValueTv"
+        android:textSize="15sp"
+        style="@style/WrapWrap"
+        android:layout_alignParentRight="true"
+        android:paddingRight="19dp"
+        android:layout_centerInParent="true"
+        android:textColor="@color/text_dark"
+        android:drawableRight="@drawable/right"/>
+</RelativeLayout>

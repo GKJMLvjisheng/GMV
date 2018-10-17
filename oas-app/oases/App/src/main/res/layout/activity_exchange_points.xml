@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.ExchangePointsActivity">
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="兑换代币">
+    </com.oases.base.widgets.HeaderBar>
+
+    <com.oases.base.widgets.ExchangeItem
+        android:id="@+id/mPeriod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:leftTop="能量积分周期"
+        app:rightTop="2018-08"
+        app:rightBottom="287125">
+    </com.oases.base.widgets.ExchangeItem>
+
+    <com.oases.base.widgets.ExchangeItem
+        android:id="@+id/mType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:leftTop="兑换资产类型"
+        app:rightTop="OAS">
+    </com.oases.base.widgets.ExchangeItem>
+
+    <com.oases.base.widgets.ExchangeItem
+        android:id="@+id/mFactor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:leftTop="档期兑换因子"
+        app:leftBottom="兑换比率，根据不同时间的环境状况，动态调整"
+        app:rightTop="0.000001"
+        app:notShowRight ="true">
+    </com.oases.base.widgets.ExchangeItem>
+
+    <com.oases.base.widgets.ExchangeItem
+        android:id="@+id/mAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:leftTop="兑换积分数量"
+        app:leftBottom="仅支持档期全部兑换"
+        app:rightTop="2871215"
+        app:notShowRight ="true"
+        app:rightTopTextColor="@color/common_green">
+    </com.oases.base.widgets.ExchangeItem>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <Button
+        android:id="@+id/mExchangePointsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/qb2"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="48dp"
+        android:textColor="@color/common_white"
+        android:text="一键兑换"/>
+</LinearLayout>

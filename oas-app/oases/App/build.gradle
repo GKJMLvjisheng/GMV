@@ -1,0 +1,73 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+    compileSdkVersion compile_sdk_version
+    defaultConfig {
+        applicationId "com.oases"
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode version_code
+        versionName version_name
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+    kapt {
+        generateStubs = true
+        arguments {
+            arg("moduleName", project.getName())
+        }
+    }
+    buildToolsVersion build_tools_version
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    implementation project(':Provider')
+    implementation project(':BaseLibrary')
+    implementation project(':UserCenter')
+    implementation project(':ComputingPower')
+    implementation project(':todaystepcounterlib')
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    /*添加依赖*/
+    implementation 'com.github.yuzhiqiang1993:zxing:2.1.8'
+    //二维码
+    implementation 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+    //权限
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    // api "com.alibaba:arouter-api:$arouter_api_version"
+    kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
+
+    implementation 'com.allenliu.versionchecklib:library:2.0.8'
+
+}
