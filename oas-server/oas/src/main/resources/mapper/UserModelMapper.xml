@@ -144,7 +144,13 @@
   	<include refid="Base_Column_List" />
   	from user_info where invite_code=#{inviteCode}
   </select>
-
+  
+   <select id="selectSuperiorsUserByInviteFrom" parameterType="java.lang.Integer" resultMap="userModelMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from user_info where invite_code = #{inviteFrom}
+   </select>
+  
 	<!-- Name:upadateUserInfo -->
 	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.03 -->

@@ -8,7 +8,7 @@ $(function() {
 });
 
 function minerReady(){
-
+	
     $('#minerGrid').bootstrapTable('destroy');
 	var data2;
 	 $.ajax({		
@@ -71,7 +71,6 @@ function checkName() {
     }
 }
 
-//发ajax请求到后台判断矿机是否重复--修改矿机
 function checkEName() {
 	var minerName = $("#EminerName").val();
 	var minerCode = $("#EminerCode").val();
@@ -80,30 +79,39 @@ function checkEName() {
 		"minerCode" : minerCode,
 		"minerName" : minerName
 	};
-	$.ajax({
-		url: "/api/v1/miner/inquireUpdateMinerName",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data:JSON.stringify(data),
-		processData : false,
-		async : false,
-		
-		success : function(res) {
-			if (res.code == 0) {
-				check2 = 1;  //矿机名可用
-				return check2;
-			} else{
-				check2 = 0;  //矿机名已存在
-				return check2;
+	if (minerName != "") {
+		$.ajax({
+			url: "/api/v1/miner/inquireUpdateMinerName",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(data),
+			processData : false,
+			async : false,
+			
+			success : function(res) {
+				if (res.code == 0) {
+//					$("#msg_EminerName").html("该矿机名可用");
+//					$("#msg_EminerName").css("color", "green");
+					check2 = 1;
+					return check2;
+				} else{
+					$("#msg_EminerName").html("矿机名已存在");
+					$("#msg_EminerName").css("color", "red");
+					check2 = 0;
+					return check2;
+				}
+			},
+			error : function() {		
+			    check2 = 2;  //检查矿机名是否存在发生错误
+			    return check2;
 			}
-		},
-		error : function() {		
-		    check2 = 2;  //检查矿机名是否存在发生错误
-		    return check2;
-		}
-	});
+		});
+	}else{
+		$("#msg_EminerName").html("请填写矿机名！");
+        $("#msg_EminerName").css("color", "red");
+	}
 }
 
 //新增矿机信息

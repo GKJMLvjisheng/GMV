@@ -62,6 +62,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -106,6 +107,9 @@ public class EthWalletService {
  
   @Autowired
   private UserWalletDetailMapper userWalletDetailMapper;
+  
+  @Autowired
+  private MinerService minerService;
 
   public synchronized void updateJob() {
     log.info("update job ...");
@@ -135,6 +139,7 @@ public class EthWalletService {
             .withIntervalInSeconds(coinClient.getTxInterval()
         ).repeatForever()).startNow().build();
     jobDetail.getJobDataMap().put("service", this);
+    jobDetail.getJobDataMap().put("minerService", minerService);
     schedulerService.addJob(jobDetail, trigger);
     log.info("add ethRedeem job ...");
   }
