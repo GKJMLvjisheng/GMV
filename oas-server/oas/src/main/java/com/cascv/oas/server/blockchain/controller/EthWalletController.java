@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,7 +82,7 @@ public class EthWalletController extends BaseShiroController {
   }*/
 
   @PostMapping(value="/transfer")
-  //@RequiresPermissions("交易钱包-转账")
+  @RequiresPermissions("交易钱包-转账")
   @ResponseBody
   @Transactional
   @WriteLog(value="transfer")
@@ -398,7 +399,7 @@ public class EthWalletController extends BaseShiroController {
    * @return
    */
   @PostMapping(value="/reverseWithdraw")
-  //@RequiresPermissions("充币")
+  @RequiresPermissions("充币")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> reverseWithdraw(@RequestBody EthWalletTransfer info){

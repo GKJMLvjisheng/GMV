@@ -177,7 +177,7 @@ public class UserWalletController extends BaseShiroController {
   }
 
   @PostMapping(value="/transfer")
-  //@RequiresPermissions("在线钱包-转账")
+  @RequiresPermissions("在线钱包-转账")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
