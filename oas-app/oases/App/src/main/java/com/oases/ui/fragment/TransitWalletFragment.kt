@@ -75,6 +75,8 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
     override fun setCoin(coins: ListCoinResp) {
         mOas.setValue(coins[0].balance)
         mOas.setEqualsValue(coins[0].value)
+        mEth.setValue(if(coins.size>1) coins[1].balance else "0".toDouble())
+        mEth.setEqualsValue(if(coins.size>1) coins[1].value else "0".toDouble())
         AppPrefsUtils.putString(BaseConstant.MY_OAS_ADDRESS,coins[0].address)
         AppPrefsUtils.putString(BaseConstant.MY_OAS_PROTOCOL,coins[0].contract)
         AppPrefsUtils.putString(BaseConstant.USER_OWN_ETH,coins[0].ethBalance.toString())
