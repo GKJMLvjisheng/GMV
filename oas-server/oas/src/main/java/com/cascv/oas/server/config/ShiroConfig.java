@@ -329,6 +329,6 @@ public class ShiroConfig {
 			@Qualifier("securityManager") SecurityManager securityManager) {
 		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
 		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
-		r00000000eturn authorizationAttributeSourceAdvisor;
+		return authorizationAttributeSourceAdvisor;
 	}
 }

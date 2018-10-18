@@ -50,14 +50,6 @@ public class PromotedRewardController {
 		BigDecimal frozenRatio=promotedRewardModelInfo.getFrozenRatio();
 		BigDecimal rewardRatio=promotedRewardModelInfo.getRewardRatio();
 		BigDecimal a=new BigDecimal(1);
-		if(frozenRatio.compareTo(BigDecimal.ZERO)==1 && frozenRatio.compareTo(a)==-1) {
-		promotedRewardModel.setFrozenRatio(frozenRatio);
-		}else {
-			return new ResponseEntity.Builder<Integer>()
-					.setData(1)
-					.setErrorCode(ErrorCode.GENERAL_ERROR)
-					.build();
-		}
 		if(rewardRatio.compareTo(BigDecimal.ZERO)==1 && rewardRatio.compareTo(a)==-1) {
 		promotedRewardModel.setRewardRatio(rewardRatio);
 		}else {
