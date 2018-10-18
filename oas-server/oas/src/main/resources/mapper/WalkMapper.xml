@@ -28,6 +28,12 @@
        from walk_ball where user_uuid = #{userUuid} and status = #{status}
    </select>
    
+   <select id="selectTodayWalkBall" resultMap="walkBallMap">
+       select
+        <include refid="walkBall_List" />
+       from walk_ball where user_uuid = #{userUuid} and created = #{created}
+   </select>
+   
    <select id="selectWalkBallbyUuid" resultMap="walkBallMap">
        select <include refid="walkBall_List" />
          from walk_ball where uuid = #{uuid}
