@@ -124,7 +124,11 @@
 	          miner_description,
 	        </if>
 	         miner_price, miner_num, price_sum, miner_power, 
+<<<<<<< HEAD
 	         miner_period, miner_status, finish_reward_number, miner_purchase_status, created
+=======
+	         miner_period, miner_status, miner_purchase_status, created, updated
+>>>>>>> 9ef148289dbfcab86f5f136c6f65f7dd8ded2749
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{uuid}, #{userUuid}, #{energyBallUuid}, #{minerCode}, #{minerName}, #{minerGrade},
@@ -135,7 +139,7 @@
 	           #{minerDescription},
 	        </if>
 	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, 
-	        #{minerPeriod}, #{minerStatus}, #{finishRewardNumber}, #{minerPurchaseStatus}, #{created}, #{updated}
+	        #{minerPeriod}, #{minerStatus},  #{minerPurchaseStatus}, #{created}
 	    </trim>            
     </insert>
     
@@ -177,7 +181,7 @@
     
     <update id="updateStatusByUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         update purchase_record
-          set miner_status = 0, updated = #{updated}
+          set miner_status = 0
         where uuid = #{uuid}
     </update>
     
