@@ -151,6 +151,7 @@ public class MinerService {
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
+		purchaseRecord.setUpdated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
 	}
