@@ -7,6 +7,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
+
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +24,12 @@ import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.EnergyPowerBall;
 import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.miner.job.MinerJob;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
+import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +47,17 @@ public class MinerService {
 	@Autowired
 	private ActivityMapper activityMapper;
 	
+	@Autowired
+	private SchedulerService schedulerService;
+	
 	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
+	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer MINER_PURCHASE_STATUS = 1;  //矿机处于工作状态
 	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
+	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
 	
 	private EnergyPowerBall energyPowerBall = new EnergyPowerBall();
-	private PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
 	
 	//得到用户购买的矿机的全部信息
 	public List<PurchaseRecord> getUserMiner(String userUuid){
@@ -73,8 +87,9 @@ public class MinerService {
 		energyPowerBall.setUpdated(now);
 	}
 	
-	//增加算力记录
+	//往power_trade_recocrd插入算力增加的记录
 	public void addMinerPowerTradeRecord(String userUuid, BigDecimal powerSum) {
+		PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		powerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		powerTradeRecord.setUserUuid(userUuid);
@@ -85,6 +100,20 @@ public class MinerService {
 		powerTradeRecord.setStatus(STATUS_ACTIVITY_OF_MINER);
 		activityMapper.insertPowerTradeRecord(powerTradeRecord);
 	}
+	
+	//往power_trade_recocrd插入算力减少的记录
+	public void subMinerPowerTradeRecord(String userUuid, String energyBallUuid, String uuid) {
+		PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		powerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+		powerTradeRecord.setUserUuid(userUuid);
+		powerTradeRecord.setEnergyBallUuid(energyBallUuid);
+		powerTradeRecord.setPowerChange(this.getPowerSum(uuid));
+		powerTradeRecord.setInOrOut(ENEGY_OUT);
+		powerTradeRecord.setStatus(STATUS_DIE_OF_MINER);
+		powerTradeRecord.setCreated(now);
+	}
+
 	
 	//安卓前端显示目前可给购买的矿机的信息
 	public List<MinerModel> selectAllMiner(Integer offset, Integer limit){
@@ -107,6 +136,7 @@ public class MinerService {
 		PurchaseRecord purchaseRecord = new PurchaseRecord();
 		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
 		purchaseRecord.setUserUuid(userUuid);
+		purchaseRecord.setEnergyBallUuid(energyPowerBall.getUuid());
 		purchaseRecord.setMinerCode(minerModel.getMinerCode());
 		purchaseRecord.setMinerName(minerName);
 		purchaseRecord.setMinerGrade(minerModel.getMinerGrade());
@@ -116,7 +146,7 @@ public class MinerService {
 		purchaseRecord.setMinerPower(minerModel.getMinerPower());
 		purchaseRecord.setMinerPeriod(minerModel.getMinerPeriod());
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
-		purchaseRecord.setMinerPurchaseStaus(MINER_PURCHASE_STATUS);
+		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
@@ -137,10 +167,11 @@ public class MinerService {
 			purchaseRecord.setMinerPower(purchaseRecordList.get(i).getMinerPower());
 			purchaseRecord.setMinerPrice(purchaseRecordList.get(i).getMinerPrice());
 			purchaseRecord.setMinerStatus(purchaseRecordList.get(i).getMinerStatus());
-			purchaseRecord.setMinerPurchaseStatus(purchaseRecordList.get(i).getMinerPurchaseStaus());
+			purchaseRecord.setMinerPurchaseStatus(purchaseRecordList.get(i).getMinerPurchaseStatus());
 			purchaseRecord.setPriceSum(purchaseRecordList.get(i).getPriceSum());
 			purchaseRecord.setUserUuid(purchaseRecordList.get(i).getUserUuid());
 			purchaseRecord.setUuid(purchaseRecordList.get(i).getUuid());
+			purchaseRecord.setEnergyBallUuid(purchaseRecordList.get(i).getEnergyBallUuid());
 			String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
 			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
@@ -168,6 +199,7 @@ public class MinerService {
 	
 	//实时查询用户购买的矿机的生命周期
 	public synchronized void updateMinerStatus() {
+		log.info("check status ...");
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		List<PurchaseRecord> purchaseRecordList = minerMapper.selectAllRecord();
 		for(int i=0; i<purchaseRecordList.size(); i++) {
@@ -191,10 +223,15 @@ public class MinerService {
 				}else {
 					String uuid = purchaseRecordList.get(i).getUuid();
 					String userUuid = purchaseRecordList.get(i).getUserUuid();
+					String energyBallUuid = purchaseRecordList.get(i).getEnergyBallUuid();
+					//更新购买记录的状态(即更新矿机的状态)
 					minerMapper.updateStatusByUuid(uuid);
-					
+					//更新算力球状态
+					activityMapper.updatePowerStatusByUuid(energyBallUuid, STATUS_DIE_OF_MINER, now);
+					//更新能量钱包
 					activityMapper.decreasePower(userUuid, this.getPowerSum(uuid), now);
-					this.addMinerPowerTradeRecord(userUuid, this.getPowerSum(uuid));
+					//增加算力减少的记录
+					this.subMinerPowerTradeRecord(userUuid, energyBallUuid, uuid);
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -202,5 +239,17 @@ public class MinerService {
 			}
 		}
 	}
+	
+	@PostConstruct
+	  public void startMinerJob() {
+	    JobDetail jobDetail = JobBuilder.newJob(MinerJob.class)
+	        .withIdentity("JobDetailB", "groupB").build();
+	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerB", "groupB")
+	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+	            .withIntervalInSeconds(28800).repeatForever()).startNow().build();
+	    jobDetail.getJobDataMap().put("minerService", this);
+	    schedulerService.addJob(jobDetail, trigger);
+	    log.info("check status of miner ...");
+	  }
 
 }

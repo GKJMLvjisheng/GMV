@@ -122,9 +122,9 @@ class KYCActivity : BaseMvpActivity<KYCPresenter>(), KYCView,TakePhoto.TakeResul
                         Log.d("qqqqq", frontOfId.length.toString())
                         toast("您未重新上传照片，请上传后提交")
                     }else{
-                        var frontIdUri = frontOfId.substring(25, frontOfId.length)
-                        var backIdUri = backOfId.substring(25, backOfId.length)
-                        var handIdUri = handOfId.substring(25, handOfId.length)
+                        var frontIdUri = frontOfId.substring(serverAddress.length-3, frontOfId.length)
+                        var backIdUri = backOfId.substring(serverAddress.length-3, backOfId.length)
+                        var handIdUri = handOfId.substring(serverAddress.length-3, handOfId.length)
                         mPresenter.changeKYCStatus(frontIdUri, backIdUri, handIdUri)
                     }
                 }else{
