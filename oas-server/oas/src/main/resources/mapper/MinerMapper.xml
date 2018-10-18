@@ -102,6 +102,7 @@
 	  	<result column="miner_period" property="minerPeriod"/>
 	  	<result column="miner_status" property="minerStatus"/>
 	  	<result column="miner_purchase_status" property="minerPurchaseStatus"/>
+	  	<result column="power_reward_status" property="powerRewardStatus"/>
 	  	<result column="finish_reward_number" property="finishRewardNumber"/>
 	  	<result column="finish_reward_updated" property="finishRewardUpdated"/>
 	  	<result column="created" property="created"/>
@@ -110,7 +111,7 @@
     <sql id="purchase_record_List">
   		uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade, 
   		miner_description, miner_price, miner_num, price_sum,miner_power,miner_period,miner_status, 
-  		miner_purchase_status,finish_reward_number,finish_reward_updated,created
+  		miner_purchase_status,power_reward_status,finish_reward_number,finish_reward_updated,created
     </sql>
     
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
@@ -124,7 +125,7 @@
 	          miner_description,
 	        </if>
 	         miner_price, miner_num, price_sum, miner_power, 
-	         miner_period, miner_status, finish_reward_number, miner_purchase_status,created
+	         miner_period, miner_status, finish_reward_number, miner_purchase_status,power_reward_status,created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{uuid}, #{userUuid}, #{energyBallUuid}, #{minerCode}, #{minerName}, #{minerGrade},
@@ -135,7 +136,7 @@
 	           #{minerDescription},
 	        </if>
 	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, 
-	        #{minerPeriod}, #{minerStatus},#{finishRewardNumber},#{minerPurchaseStatus},#{created}
+	        #{minerPeriod}, #{minerStatus},#{finishRewardNumber},#{minerPurchaseStatus},#{powerRewardStatus},#{created}
 	    </trim>            
     </insert>
     
@@ -149,9 +150,28 @@
        where miner_purchase_status=0;
     </select>
     
+    <select id="selectByMinerStatusPowerRewardStatus" resultMap="purchaseRecordMap">
+     select <include refid="purchase_record_List" /> from purchase_record 
+     where miner_status=1 and power_reward_status=0;
+    </select>  
+    
+    
    <select id="selectByuserUuidMinerStatus" resultMap="purchaseRecordMap">
     select <include refid="purchase_record_List" /> from purchase_record 
      where user_uuid=#{userUuid} and miner_status=1 order by miner_grade desc;
+    </select>
+    
+    <select id="selectByMinerStatus" resultMap="purchaseRecordMap">
+    select <include refid="purchase_record_List" /> from purchase_record 
+     
+    where miner_num>finish_reward_number and miner_status=1 and user_uuid=#{userUuid} 
+    
+    order by created asc;
+    </select>
+    
+    <select id="selectUserUuidByMinerStatus" resultType="java.lang.String">
+    select distinct user_uuid from purchase_record 
+    where miner_num>finish_reward_number and miner_status=1 
     </select>
     
     <update id="updateByMinerPurchaseStatus" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
@@ -159,6 +179,13 @@
           set miner_purchase_status = 1 
         where uuid = #{uuid}
     </update>
+    
+    <update id="updateByPowerRewardStatus" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+          set power_reward_status = 1 
+        where uuid = #{uuid}
+    </update>
+    
     
     <select id="selectByUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
@@ -183,8 +210,8 @@
     
     <update id="updateStatusByUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         update purchase_record
-          set miner_status = 0
-        where uuid = #{uuid}
+        set miner_status = 0,power_reward_status=2
+        where uuid = #{uuid};
     </update>
     
 </mapper>

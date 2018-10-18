@@ -80,28 +80,22 @@ function checkPrice() {
 	var minerPrice1 = parseFloat(minerPrice);
 	
 	if(minerPrice!=""){
+	
+		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
+			 $("#msg_minerPrice").html("填写矿机单价符合要求");
+	         $("#msg_minerPrice").css("color", "green");
+	         check2 = 1;
+			 return check2;
 			
-			if(minerPrice1!=0){
-				if (/^\d+(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
-					 $("#msg_minerPrice").html("填写矿机单价符合要求");
-			         $("#msg_minerPrice").css("color", "green");
-			         check2 = 1;
-					 return check2;
-					
-			    }else{
-			    	
-			         $("#msg_minerPrice").html("请填写大于0的数字！");
-			         $("#msg_minerPrice").css("color", "red");
-			    }
-			}else{
-				 $("#msg_minerPrice").html("请填写大于0的数字！");
-		         $("#msg_minerPrice").css("color", "red");		   
-			}
-			 
-		}else{
-		   	 $("#msg_minerPrice").html("矿机单价不能为空！");
-		     $("#msg_minerPrice").css("color", "red");		   
-		}   
+	    }else{
+	    	
+	         $("#msg_minerPrice").html("请填写大于0的数字！");
+	         $("#msg_minerPrice").css("color", "red");
+	    }			 
+	}else{
+	   	 $("#msg_minerPrice").html("矿机单价不能为空！");
+	     $("#msg_minerPrice").css("color", "red");		   
+	}   
 }
 //新增矿机--算力奖励的判断
 function checkPower() {
@@ -110,25 +104,18 @@ function checkPower() {
 	var minerPower1 = parseFloat(minerPower);
 	//alert(JSON.stringify(minerPower1));
 	
-	if(minerPower!=""){
-		
-		if(minerPower1!=0){
-			if (/^\d+(?=\.{0,1}\d+$|$)/.test(minerPower)) {
-				 $("#msg_minerPower").html("填写算力奖励符合要求");
-		         $("#msg_minerPower").css("color", "green");
-		         check3 = 1;
-				 return check3;
-				
-		    }else{
-		    	
-		         $("#msg_minerPower").html("请填写大于0的数字！");
-		         $("#msg_minerPower").css("color", "red");		       
-		    }
-		}else{
-			 $("#msg_minerPower").html("请填写大于0的数字！");
-	         $("#msg_minerPower").css("color", "red");	        
-		}
-		 
+	if(minerPower!=""){				
+		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPower)) {
+			 $("#msg_minerPower").html("填写算力奖励符合要求");
+	         $("#msg_minerPower").css("color", "green");
+	         check3 = 1;
+			 return check3;			
+	    }else{
+	    	
+	         $("#msg_minerPower").html("请填写大于0的数字！");
+	         $("#msg_minerPower").css("color", "red");		       
+	    }
+	 
 	}else{
 	   	 $("#msg_minerPower").html("算力奖励不能为空！");
 	     $("#msg_minerPower").css("color", "red");	     
@@ -141,12 +128,11 @@ function checkPeriod() {
 	//alert(JSON.stringify(minerPeriod));
 	
 	if(minerPeriod!=""){
-		if (!/\D/.test(minerPeriod)) {
+		if (/^[1-9]+$/.test(minerPeriod)) {
 	    	 $("#msg_minerPeriod").html("填写矿机寿命符合要求");  //\D为非数字
 	         $("#msg_minerPeriod").css("color", "green");
 	         check4 = 1;
-			 return check4;
-			
+			 return check4;			
 	    }else{
 	    	 $("#msg_minerPeriod").html("请填写正整数");
 	         $("#msg_minerPeriod").css("color", "red");	       
@@ -154,8 +140,7 @@ function checkPeriod() {
 	}else{
 		$("#msg_minerPeriod").html("矿机寿命不能为空！");
         $("#msg_minerPeriod").css("color", "red");      
-	}
-	
+	}	
 }
 //修改矿机--矿机名的判断
 function EcheckName() {
@@ -204,26 +189,20 @@ function EcheckPrice() {
 	var minerPrice = $("#EminerPrice").val(); 
 	var minerPrice1 = parseFloat(minerPrice);
 	
-	if(minerPrice!=""){
-			
-			if(minerPrice1!=0){
-				if (/^\d+(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
-					 $("#msg_EminerPrice").html("填写矿机单价符合要求");
-			         $("#msg_EminerPrice").css("color", "green");
-			         check6 = 1;
-					 return check6;					
-			    }else{			    	
-			         $("#msg_EminerPrice").html("请填写大于0的数字！");
-			         $("#msg_EminerPrice").css("color", "red");			 
-			    }
-			}else{
-				 $("#msg_EminerPrice").html("请填写大于0的数字！");
-		         $("#msg_EminerPrice").css("color", "red");		      
-			}			 
-		}else{
-		   	 $("#msg_EminerPrice").html("矿机单价不能为空！");
-		     $("#msg_EminerPrice").css("color", "red");
-		}   
+	if(minerPrice!=""){						
+		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
+			 $("#msg_EminerPrice").html("填写矿机单价符合要求");
+	         $("#msg_EminerPrice").css("color", "green");
+	         check6 = 1;
+			 return check6;					
+	    }else{			    	
+	         $("#msg_EminerPrice").html("请填写大于0的数字！");
+	         $("#msg_EminerPrice").css("color", "red");			 
+	    }				 
+	}else{
+	   	 $("#msg_EminerPrice").html("矿机单价不能为空！");
+	     $("#msg_EminerPrice").css("color", "red");
+	}   
 }
 //修改矿机--算力奖励的判断
 function EcheckPower() {
@@ -232,21 +211,16 @@ function EcheckPower() {
 	var minerPower1 = parseFloat(minerPower);
 	//alert(JSON.stringify(minerPower1));
 	
-	if(minerPower!=""){		
-		if(minerPower1!=0){
-			if (/^\d+(?=\.{0,1}\d+$|$)/.test(minerPower)) {
-				 $("#msg_EminerPower").html("填写算力奖励符合要求");
-		         $("#msg_EminerPower").css("color", "green");
-		         check7 = 1;
-				 return check7;				
-		    }else{		    	
-		         $("#msg_EminerPower").html("请填写大于0的数字！");
-		         $("#msg_EminerPower").css("color", "red");
-		    }
-		}else{
-			 $("#msg_EminerPower").html("请填写大于0的数字！");
+	if(minerPower!=""){				
+		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPower)) {
+			 $("#msg_EminerPower").html("填写算力奖励符合要求");
+	         $("#msg_EminerPower").css("color", "green");
+	         check7 = 1;
+			 return check7;				
+	    }else{		    	
+	         $("#msg_EminerPower").html("请填写大于0的数字！");
 	         $("#msg_EminerPower").css("color", "red");
-		}		 
+	    }			 
 	}else{
 	   	 $("#msg_EminerPower").html("算力奖励不能为空！");
 	     $("#msg_EminerPower").css("color", "red");
@@ -259,12 +233,11 @@ function EcheckPeriod() {
 	//alert(JSON.stringify(minerPeriod));
 	
 	if(minerPeriod!=""){
-		if (!/\D/.test(minerPeriod)) {
-	    	 $("#msg_EminerPeriod").html("填写矿机寿命符合要求");  //\D为非数字
+		if (/^[1-9]+$/.test(minerPeriod)) {
+	    	 $("#msg_EminerPeriod").html("填写矿机寿命符合要求");  
 	         $("#msg_EminerPeriod").css("color", "green");
 	         check8 = 1;
-			 return check8;
-			
+			 return check8;			
 	    }else{
 	    	 $("#msg_EminerPeriod").html("请填写正整数");
 	         $("#msg_EminerPeriod").css("color", "red");
@@ -274,7 +247,6 @@ function EcheckPeriod() {
         $("#msg_EminerPeriod").css("color", "red");
 	}	
 }
-
 
 //新增矿机信息
 function addMiner(){	

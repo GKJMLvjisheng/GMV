@@ -69,13 +69,13 @@ public class PromotedRewardController {
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}
-//	@PostMapping(value="/AAAAtest")
-//	@ResponseBody
-//	public ResponseEntity<?> AAAAtest(){
-//		Integer test=promotedRewardService.giveSuperiorsUserImmediatelyReward();
-//		return new ResponseEntity.Builder<Integer>()
-//				.setData(0)
-//				.setErrorCode(ErrorCode.SUCCESS)
-//				.build();
-//	}
+	@PostMapping(value="/AAAAtest")
+	@ResponseBody
+	public ResponseEntity<?> AAAAtest(){
+		BigDecimal test=promotedRewardService.getNowRate();
+		return new ResponseEntity.Builder<BigDecimal>()
+				.setData(test)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
 }

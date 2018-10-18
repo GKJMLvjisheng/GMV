@@ -21,7 +21,12 @@ public class DateUtils {
     public static String getDate() {
         return dateTimeNow(YYYY_MM_DD);
     }
-
+    public static String getYear() {
+        return dateTimeNow(YYYY);
+    }
+    public static String getYearMonth() {
+        return dateTimeNow(YYYY_MM);
+    }
     public static final String getTime() {
         return dateTimeNow(YYYY_MM_DD_HH_MM_SS);
     }

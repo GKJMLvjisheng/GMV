@@ -62,4 +62,14 @@ where
 	uw.user_uuid=u.uuid
 order by value desc
    </select>
+  
+<select id="selectUserPointToOas" resultMap="walletTotalTradeRecordMap">
+select 
+	 SUM(value) as value
+from 
+	 user_wallet_detail
+where
+     user_uuid= # {userUuid} and title='积分兑换OAS代币' and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
+   </select> 
+   
 </mapper>
