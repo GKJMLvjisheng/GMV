@@ -35,7 +35,7 @@
         </div>
         <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
-          <img :src="energyBall" alt="">
+          <img :src="energyBall" alt="" >
           <p>{{item.value}}</p>
         <div>
           <i></i> 
@@ -65,7 +65,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(积分)</span>
         </li>
          <li>
           <i></i>
@@ -74,7 +74,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(步)</span>
         </li>
         <li>
           <i></i>
@@ -203,7 +203,7 @@ export default {
     }
   },
   created() {
-    this.getStep()
+    //this.getStep()
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
@@ -407,7 +407,7 @@ export default {
      getWalkEnergyBall() {
      
       
-    //this.todayStep="15"
+    this.todayStep="100"
     
      //let time="2018-10-15"
     
@@ -575,7 +575,7 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.getStep()
+      //this.getStep()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
@@ -830,12 +830,12 @@ header {
         
       float: right;
       display: flex;
-      align-items: center;
-      
+     
+      text-align: center;
       i{
       position: absolute;
       display: inline-block;
-      right: 85%;
+      right: 70%;
       width: 32px;
       height: 32px;
       background-image: url("../assets/images/watch@2x.png");
@@ -859,6 +859,7 @@ header {
       }
 
     }
+
   
   }
   

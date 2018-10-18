@@ -52,7 +52,7 @@ public class MinerService {
 	
 	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
-	private static final Integer MINER_PURCHASE_STATUS = 1;  //矿机处于工作状态
+	private static final Integer MINER_PURCHASE_STATUS = 0;  //矿机推广立即奖励未完成
 	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
@@ -85,6 +85,7 @@ public class MinerService {
 		energyPowerBall.setPower(powerSum);
 		energyPowerBall.setCreated(now);
 		energyPowerBall.setUpdated(now);
+		activityMapper.insertEnergyPowerBall(energyPowerBall);
 	}
 	
 	//往power_trade_recocrd插入算力增加的记录
@@ -112,6 +113,7 @@ public class MinerService {
 		powerTradeRecord.setInOrOut(ENEGY_OUT);
 		powerTradeRecord.setStatus(STATUS_DIE_OF_MINER);
 		powerTradeRecord.setCreated(now);
+		activityMapper.insertPowerTradeRecord(powerTradeRecord);
 	}
 
 	
@@ -149,6 +151,7 @@ public class MinerService {
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
+		purchaseRecord.setUpdated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
 	}
@@ -246,7 +249,7 @@ public class MinerService {
 	        .withIdentity("JobDetailB", "groupB").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerB", "groupB")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(1).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(28800).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("minerService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("check status of miner ...");

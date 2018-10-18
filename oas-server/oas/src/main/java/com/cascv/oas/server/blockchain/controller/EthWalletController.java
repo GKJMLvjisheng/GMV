@@ -3,6 +3,7 @@ package com.cascv.oas.server.blockchain.controller;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
+import com.cascv.oas.server.blockchain.model.UserCoinResp;
 import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
@@ -165,8 +167,15 @@ public class EthWalletController extends BaseShiroController {
     String userUuid = ShiroUtils.getUserUuid();
     List<UserCoin> userCoinList = ethWalletService.listCoin(userUuid);
 
-    return new ResponseEntity.Builder<List<UserCoin>>()
-            .setData(userCoinList)
+    UserCoinResp listDouble = new UserCoinResp();
+    listDouble.setUserCoin(userCoinList);
+    if(userCoinList!=null && userCoinList.size()>0) {
+    	List<UserCoin> noUserCoinList = new ArrayList<>();
+    	noUserCoinList.add(ethWalletService.getEthCoinTemporary(userCoinList.get(0)));
+    	listDouble.setNoShowCoin(noUserCoinList);
+    }
+    return new ResponseEntity.Builder<UserCoinResp>()
+            .setData(listDouble)
             .setErrorCode(ErrorCode.SUCCESS)
             .build();
   }
@@ -225,7 +234,7 @@ public class EthWalletController extends BaseShiroController {
     }
   }
   
-  
+  	
   @PostMapping(value="/summary")
   @ResponseBody
   @Transactional
@@ -237,8 +246,14 @@ public class EthWalletController extends BaseShiroController {
     ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);
 
     if (tokenCoin != null) {
-      ethWalletSummary.setTotalBalance(tokenCoin.getBalance());
-      ethWalletSummary.setTotalValue(tokenCoin.getValue());
+      UserCoin ethCoin = ethWalletService.getEthCoinTemporary(tokenCoin);
+      if(ethCoin!=null) {
+    	  ethWalletSummary.setTotalBalance(tokenCoin.getBalance().add(ethCoin.getBalance()));
+          ethWalletSummary.setTotalValue(tokenCoin.getValue().add(ethCoin.getValue()));
+      }else {
+          ethWalletSummary.setTotalBalance(tokenCoin.getBalance());
+          ethWalletSummary.setTotalValue(tokenCoin.getValue());
+      }
     } else {
       ethWalletSummary.setTotalBalance(BigDecimal.ZERO);
       ethWalletSummary.setTotalValue(BigDecimal.ZERO);

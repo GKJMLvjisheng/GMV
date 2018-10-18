@@ -23,6 +23,15 @@
   	<include refid="Base_Column_List" />
   	from promoted_reward_config;
   </select>
+  
+   <select id="selectPromotedRewardByRewardName" resultMap="promotedRewardModelMap">
+select 
+  	<include refid="Base_Column_List" />
+from 
+  	promoted_reward_config
+where 
+  	reward_name = #{rewardName};
+  </select>
 
     <update id="updatePromotedReward" parameterType="com.cascv.oas.server.reward.model.PromotedRewardModel">
     update promoted_reward_config
