@@ -4,8 +4,8 @@ import time
 import jsonapi
 import codecs
 
-#HOST='https://oas.cascv.com:8080/api/v1'
-HOST='http://localhost:8080/api/v1'
+HOST='https://oas.cascv.com:8080/api/v1'
+#HOST='http://localhost:8080/api/v1'
 
 filename=time.strftime("%Y-%m-%d-%H_%M_%S",time.localtime(time.time())) 
 print ("filename %s" % filename)
