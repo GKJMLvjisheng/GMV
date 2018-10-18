@@ -138,13 +138,11 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                 REFRESH_STEP_WHAT -> {
                     //每隔500毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
-                        var step = 0
                         try {
-                            step = iSportStepInterface!!.currentTimeSportStep
+                            mTodaySteps = iSportStepInterface!!.currentTimeSportStep
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        mTodaySteps = step
                         mSteps.text = mTodaySteps.toString()
                     }
                     mDelayHandler.sendEmptyMessageDelayed(REFRESH_STEP_WHAT, TIME_INTERVAL_REFRESH)
@@ -180,6 +178,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         myWebHome.webViewClient = MyWebViewClient(homeUrl)
         myWebHome.webChromeClient = WebChromeClient()
     }
+
     fun initHeadBar(homeFragment: View){
         mHeadBar = homeFragment.findViewById(R.id.mHeadBar) as Toolbar
         (activity as AppCompatActivity).setSupportActionBar(mHeadBar)
@@ -191,6 +190,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
         }
     }
+
     fun onBackPressed(superBackPressed:()->Unit) {
         if (myWebHome.canGoBack()) {
             myWebHome.goBack()
