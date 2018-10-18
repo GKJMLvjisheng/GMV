@@ -334,9 +334,9 @@ public class UserWalletService {
 	  if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 		  return ErrorCode.UNCONFIRMED_BALANCE;
 	  }
-	  if(systemWallet.getBalance().compareTo(extra) == -1) {
+/*	  if(systemWallet.getBalance().compareTo(extra) == -1) {
 		  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
-	  }
+	  }*/
 	 
 	  Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance().add(value).add(extra),userWallet.getUnconfirmedBalance().subtract(value),now);
 	  Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), extra);
