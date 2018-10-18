@@ -68,5 +68,7 @@ class BaseConstant{
         //const val APP_VERSION = "app_version"
         //const val APP_VERSION_NAME="app_version_name"
 
+        const val LAST_STEP_UPLOAD_DATE = "last_step_upload_date"
+
     }
 }
