@@ -85,6 +85,7 @@ public class MinerService {
 		energyPowerBall.setPower(powerSum);
 		energyPowerBall.setCreated(now);
 		energyPowerBall.setUpdated(now);
+		activityMapper.insertEnergyPowerBall(energyPowerBall);
 	}
 	
 	//往power_trade_recocrd插入算力增加的记录
@@ -112,6 +113,7 @@ public class MinerService {
 		powerTradeRecord.setInOrOut(ENEGY_OUT);
 		powerTradeRecord.setStatus(STATUS_DIE_OF_MINER);
 		powerTradeRecord.setCreated(now);
+		activityMapper.insertPowerTradeRecord(powerTradeRecord);
 	}
 
 	
