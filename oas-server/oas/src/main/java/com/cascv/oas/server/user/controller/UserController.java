@@ -42,8 +42,6 @@ import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.energy.service.PowerService;
-import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
@@ -88,8 +86,6 @@ public class UserController extends BaseShiroController{
   private MediaServer mediaServer;
 //  @Autowired
 //  private MailBean mailBean;
-  @Autowired
-  private PowerService powerService; 
   @Autowired
   private EthWalletService ethWalletService;	
   @Autowired
