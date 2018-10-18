@@ -81,9 +81,8 @@ public class PermService {
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
     	for(RoleMenuViewModel rm:rmList) {
     		getRewardByWalk=(rm.getMenuName().equals("计步"))? true:false;
-    		if(getRewardByWalk){
-    			break;
-    		}
+    		if(getRewardByWalk)
+    	    break;   		
     	}
     	    log.info("walk={}",getRewardByWalk);
         return getRewardByWalk;
@@ -93,9 +92,8 @@ public class PermService {
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
     	for(RoleMenuViewModel rm:rmList) {	
     		getRewardByPromotion=(rm.getMenuName().equals("获得推广奖励"))? true:false;
-    		if(getRewardByPromotion){
-    			break;
-    		}
+    		if(getRewardByPromotion)
+    		break;
     	}  
     	    log.info("promotion={}",getRewardByPromotion);
         return getRewardByPromotion;

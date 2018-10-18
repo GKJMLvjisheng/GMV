@@ -96,13 +96,15 @@ public class UserController extends BaseShiroController{
   private MessageService messageService;
   @Autowired
   private UserRoleModelMapper userRoleModelMapper;
-  
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
+  
+  
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
   String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
   String vcode="";
+  
   
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")

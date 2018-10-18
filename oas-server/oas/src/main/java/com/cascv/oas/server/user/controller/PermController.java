@@ -18,10 +18,7 @@ import com.cascv.oas.server.user.model.MenuModel;
 import com.cascv.oas.server.user.model.RoleMenu;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.UserRole;
-import com.cascv.oas.server.user.service.PermService;
 import com.cascv.oas.server.user.wrapper.RoleMenuViewModel;
-import com.cascv.oas.server.utils.ShiroUtils;
-
 import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
@@ -33,16 +30,11 @@ public class PermController {
 	private MenuModelMapper menuModelMapper;
 	@Autowired
 	private RoleMenuMapper roleMenuMapper;
-	@Autowired
-	private PermService permService;
 
     @PostMapping(value="/selectAllMenus")
 	@ResponseBody
     public ResponseEntity<?> selectAllMenus()
-    {      
-    	   log.info("walk={}",permService.getWalkPerm());
-    	   log.info("promotion={}",permService.getPromotionPerm());
-    	   
+    {         	   
 	       List<MenuModel> menuList =menuModelMapper.selectAllMenus();
 	       Map<String,Object> info =new HashMap<>();
 		   if(menuList.size()>0)

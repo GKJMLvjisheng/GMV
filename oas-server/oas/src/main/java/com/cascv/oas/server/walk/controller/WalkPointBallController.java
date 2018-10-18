@@ -14,6 +14,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
+import com.cascv.oas.server.user.service.PermService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.service.WalkService;
 import com.cascv.oas.server.walk.wrapper.StepNumWrapper;
@@ -27,7 +28,8 @@ public class WalkPointBallController {
 	
 	@Autowired
 	private WalkService walkService; 
-
+	@Autowired
+	private PermService permService;
 	
 	 @PostMapping(value = "/inquireWalkPointBall")  
 	 @ResponseBody
@@ -50,15 +52,20 @@ public class WalkPointBallController {
 	 @ResponseBody
 	 public ResponseEntity<?> takeWalkPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException{
 		 String userUuid = ShiroUtils.getUserUuid();
-		 ErrorCode errorCode = ErrorCode.SUCCESS;
-		 EnergyBallTakenResult energyBallTakenResult = walkService.takeWalkPointBall(userUuid, energyBallTokenRequest.getBallId());
-		 if(energyBallTakenResult == null)
-			 errorCode = ErrorCode.GENERAL_ERROR;
-		return new ResponseEntity.Builder<EnergyBallTakenResult>()
+		 ErrorCode errorCode = ErrorCode.GENERAL_ERROR;
+		 EnergyBallTakenResult energyBallTakenResult=new EnergyBallTakenResult();
+		 
+		 //判断是否具有获取奖励得权限
+		 if(permService.getWalkPerm()){
+		     energyBallTakenResult = walkService.takeWalkPointBall(userUuid, energyBallTokenRequest.getBallId());
+		     log.info("you have the permission");
+		     if(energyBallTakenResult != null)
+			     errorCode= ErrorCode.SUCCESS;
+		 }	     	
+		 
+		 return new ResponseEntity.Builder<EnergyBallTakenResult>()
 				.setData(energyBallTakenResult)
 				.setErrorCode(errorCode)
-				.build();
-		 
+				.build();		 
 	 }
-
 }
