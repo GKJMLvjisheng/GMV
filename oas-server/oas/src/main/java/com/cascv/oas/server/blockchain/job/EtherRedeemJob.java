@@ -11,12 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EtherRedeemJob implements Job {
 
-  @Override
-  public void execute(JobExecutionContext context) throws JobExecutionException {
-    //log.info("job ethRedeem running\n");
-    EthWalletService ethWalletService = (EthWalletService)context.getJobDetail().getJobDataMap().get("service");
-    if (ethWalletService != null) {
-      //ethWalletService.updateJob();
-    }
-  }
+	@Override
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		log.info("job ethRedeem running\n");
+		EthWalletService ethWalletService = (EthWalletService) context.getJobDetail().getJobDataMap().get("service");
+		if (ethWalletService != null) {
+		   ethWalletService.updateJob();
+		}
+	}
+
 }

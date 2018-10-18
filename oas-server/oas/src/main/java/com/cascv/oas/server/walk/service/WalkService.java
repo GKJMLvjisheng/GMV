@@ -19,8 +19,9 @@ import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.model.EnergyWallet;
+import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
 import com.cascv.oas.server.walk.wrapper.StepNumQuota;
@@ -40,7 +41,7 @@ public class WalkService {
 	private ActivityMapper activityMapper;
 	
 	@Autowired
-	private MinerService minerService;
+	private EnergyService energyService;
 	
 	private static final Integer SOURCE_CODE_OF_WALKING = 9;             // 能量球来源：计步为9
 	private static final Integer REWARD_CODE_OF_WALKING_POINT = 1;             //能量球奖励：计步奖励积分，为1
@@ -63,13 +64,12 @@ public class WalkService {
 		List<StepPointQuota> stepPointQuotaList = new ArrayList<>();
 		for(int i=0; i<quota.size(); i++){
 			StepPointQuota stepPointQuota = new StepPointQuota();
-			BigDecimal stepNum = quota.get(i).getStepNum();
-			
+			BigDecimal stepNum = quota.get(i).getStepNum();			
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
-			BigDecimal efficiencySum = minerService.getMinerEfficiency(userUuid);
-			BigDecimal alpha = efficiencySum.add(BigDecimal.ONE);
-			BigDecimal point = pointBefore.multiply(alpha);			
-			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(alpha);
+			EnergyWallet energyWallet = energyService.findByUserUuid(userUuid);
+			BigDecimal powerSum = energyWallet.getPower();
+			BigDecimal point = pointBefore.multiply(powerSum);			
+			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
 			BigDecimal newPoint;
 			if(point.compareTo(maxValue) == -1)
 				newPoint = point;

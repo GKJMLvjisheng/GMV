@@ -22,21 +22,20 @@
     <!-- 挖矿部分 Start -->
     <div class="map">
       <div class="energy-block">
-        <div @click="handleClickEnergy($event,item)"  v-for="(item,index) in energyBallList" :key="index" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
+        <div @click="handleClickEnergy($event,item)"  v-for="(item,index) in energyBallList" :key="index" :style="{top:item.y,left:item.x}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
-          <img :src="energyBall" alt="" >
-          <p>{{item.value}}</p>
-         
-          <!-- <span v-if="item.generate" :style="{color:'#006600',size:'12px'}">{{item.name}}</span> -->
+          <img :src="energyBall" alt="" :style="{width: formatSize(item.value),height: formatSize(item.value)}">
+          <p >{{item.value}}</p>
+         <div>
          <span v-if="item.generate" :style="{color:'#006600'}"><font size="1px" v-if="item.generate">{{item.name}}</font></span>
-         
+         <!--使用display:inner-block显示块居中-->
           <span v-else ><font size="1px" >{{item.name}}</font></span>
-        
+         </div>
         </div>
-        <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x,width: formatSize(item.value),height: formatSize(item.value)}" class="energy-ball flash infinite animated  ">
+        <div @click="handleClickWalkEnergy($event,item)"  v-for="(item,index) in walkEnergyBallList" :key="index+energyBallList.length" :style="{top:item.y,left:item.x}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
-          <img :src="energyBall" alt="">
-          <p>{{item.value}}</p>
+          <img :src="energyBall" alt="" :style="{width: formatSizeWalk(item.value),height: formatSizeWalk(item.value)}" >
+          <p >{{item.value}}</p>
         <div>
           <i></i> 
           <!-- class="ballcolor" -->
@@ -63,36 +62,36 @@
           <span class="equipment">手机</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
+            <div v-if="analysis[0]" :style="{width: formatWalkAnalysis(analysis[0].value,analysis[0].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(积分)</span>
         </li>
          <li>
           <i></i>
           <span class="equipment">计步</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[0]" :style="{width: analysis[0].value / analysis[0].maxValue * 100 + '%'}"></div>
+            <div v-if="analysis[1]" :style="{width: formatWalkAnalysis(analysis[1].value,analysis[1].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(天)</span>
+          <span  v-if="analysis[1]" class="count">{{analysis[1].value}}(步)</span>
         </li>
         <li>
           <i></i>
           <span class="equipment">手表</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[1]" :style="{width: analysis[1].value / analysis[0].maxValue * 100 + '%'}"></div>
+            <div v-if="analysis[2]" :style="{width: formatWalkAnalysis(analysis[2].value,analysis[2].maxValue)}"></div>
           </div>
-          <span v-if="analysis[1]" class="count">(即将上线)</span>
+          <span v-if="analysis[2]" class="count">(即将上线)</span>
         </li>
         <li>
           <i></i>
           <span class="equipment">家电</span>
           <div class="bar">
             <div></div>
-            <div v-if="analysis[2]" :style="{width: analysis[2].value / analysis[0].maxValue * 100 + '%'}"></div>
+            <div v-if="analysis[3]" :style="{width: formatWalkAnalysis(analysis[3].value,analysis[3].maxValue)}"></div>
           </div>
-          <span v-if="analysis[2]" class="count">(即将上线)</span>
+          <span v-if="analysis[3]" class="count">(即将上线)</span>
         </li>
       </ul>
     </div>
@@ -337,7 +336,14 @@ export default {
                     else{el.generate=false}
                     return el
                   }) 
-              }
+                   for(let i=0;i<energyBallListBackup.length;i++)  
+                  { 
+                  if(energyBallListBackup[i].value==0)
+                    { 
+                    energyBallListBackup.splice(i, 1)
+                    i--}
+                  }
+                }
                 dataWalkBall=await this.getWalkEnergyBall();
                 //console.log("data1"+JSON.stringify(dataWalkBall))
                 let time=currentTime(true)
@@ -366,9 +372,9 @@ export default {
               
 
               this.energyBallList=energyBallListBackup
-              console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
+              //console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
               this.walkEnergyBallList=walkEnergyBallListtBackup
-              console.log("222"+JSON.stringify(this.walkEnergyBallList))
+              //console.log("222"+JSON.stringify(this.walkEnergyBallList))
               } 
               catch(err) {
                     console.log(err);
@@ -407,7 +413,7 @@ export default {
      getWalkEnergyBall() {
      
       
-    //this.todayStep="15"
+    //this.todayStep="20000"
     
      //let time="2018-10-15"
     
@@ -489,9 +495,6 @@ export default {
     formatSize: function (value) {
       /*if (value > 9999) {
         return 75 / 75 + 'rem'
-      }
-      if (value > 999) {
-        return 64 / 75 + 'rem'
       }*/
       if (value >= 100) {
         return 75 / 75 + 'rem'
@@ -503,6 +506,31 @@ export default {
         return 52 / 75 + 'rem'
       }
     },
+    formatSizeWalk: function (value) {
+      /*if (value > 9999) {
+        return 75 / 75 + 'rem'
+      }*/
+     if (value >= 1000) {
+        return 85 / 75 + 'rem'
+      }
+      if (value >= 500) {
+        return 75 / 75 + 'rem'
+      }
+      if (value >= 100) {
+        return 64 / 75 + 'rem'
+      }
+      if (value >= 0) {
+        return 52 / 75 + 'rem'
+      }
+    },
+   formatWalkAnalysis: function (value,maxValue) {
+     if(value>maxValue)
+     {return 100+'%'}
+     else{
+      return value /maxValue * 100 + '%'
+     }
+    
+   },
     // 点击悬浮能量小球事件
     handleClickEnergy (event, data) {
       console.log(JSON.stringify(data));
@@ -808,7 +836,7 @@ header {
     background-size: 100% 100%;
     .energy-ball {
       // animation: 1.5s twinkling infinite;
-      width: 75px;
+      width: 100px;
       position: absolute;
       top: 0;
       left: 0;
@@ -821,6 +849,7 @@ header {
       }
       p {
         position: absolute;
+        margin-top: -20px;
         top: 50%;
         left: 50%;
         transform: translate(-50%,-50%);
@@ -828,14 +857,15 @@ header {
       }
       div {
         
-      float: right;
+      //float: right;
       display: flex;
-      align-items: center;
-      
+      justify-content: center;
+      text-align: center;
       i{
-      position: absolute;
+     //position: absolute;
+      position: relative;
       display: inline-block;
-      right: 85%;
+      right: 0.1rem;
       width: 32px;
       height: 32px;
       background-image: url("../assets/images/watch@2x.png");
@@ -859,6 +889,7 @@ header {
       }
 
     }
+
   
   }
   

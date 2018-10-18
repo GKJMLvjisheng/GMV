@@ -48,10 +48,11 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
         setContentView(R.layout.activity_charge_coin_oas)
         //OAS积分
         var balance:String = getIntent().getStringExtra("balance")
+        var unconfirmed:String = getIntent().getStringExtra("unconfirmed")
         tipLeft.setHint((BaseConstant.GAS_PRICE_LOW.toString()).plus(" GWEI"))
         tipRight.setHint(BaseConstant.GAS_PRICE_HIGH.toString().plus(" GWEI"))
         //mFactorTv.text = balance
-        mAvailableAmount.text = balance
+        mAvailableAmount.text = (balance.toBigDecimal().subtract(unconfirmed.toBigDecimal())).setScale(4,BigDecimal.ROUND_HALF_UP).toString()
 
         //接收方地址
         if(address.length == 42){
@@ -100,6 +101,25 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
             }
         })
 
+        mRemark.addTextChangedListener(object :TextWatcher{
+            var beforeRankText:String = ""
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                beforeRankText = p0.toString()
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val inputString = p0.toString()
+                if(!inputString.isNullOrBlank()){
+                    if(inputString.length > 100){
+                        val diff = inputString.length - beforeRankText.length
+                        mRemark.setText(beforeRankText)
+                        mRemark.setSelection(inputString.length-diff) //删除字符重写光标位置
+                    }
+                }
+            }
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
+
         mExchangeOutBtn.onClick {
             //val receiveAccount:String = mReceiveAccount.text.toString().replace("\n","").replace(" ","")
             val receiveMoney:String = mMoney.text.toString().replace(" ","")
@@ -110,7 +130,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
             }*/
 
             if(receiveMoney.isEmpty() || !ToolUtil.regularExpressionValidate(receiveMoney,BaseConstant.NUMBER_POINT_FOUR)){
-                toast("转账金额格式有误！")
+                toast("充币金额格式有误！")
                 return@onClick
             }
             if(receiveMoney.toBigDecimal() > mAvailableAmount.text.toString().toBigDecimal() ){
@@ -198,9 +218,9 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
     }
 
     override fun reverseWithdraw(t: Int) {
-        var text = "充币操作失败！"
+        var text = "充币请求提交失败！"
         if(t == 1){
-            text ="充币操作成功！"
+            text ="充币请求提交成功！"
             clearInput()
             toast(text)
             // var pair:Pair<String,String> = Pair<String,String>("balance",tMoney.toString())

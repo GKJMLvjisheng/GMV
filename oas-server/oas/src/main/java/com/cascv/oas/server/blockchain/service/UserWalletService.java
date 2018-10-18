@@ -100,6 +100,15 @@ public class UserWalletService {
 		  userWalletDetail.setTxResult(1);
 		  userWalletDetail.setOasDetailUuid(oasDetailUuid);
 	      break;
+	  case 6:
+		  log.info("购买矿机");
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+	  case 7:
+		  log.info("矿机推广奖励");
+		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+	  case 8:
+		  log.info("矿机推广奖励");
+		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
 	  default:
 		  log.info("swicth-case-end");
 	      break;
@@ -113,7 +122,7 @@ public class UserWalletService {
 	  return userWalletDetail;
   }
   
-  private void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+  public void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
 	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
@@ -325,9 +334,9 @@ public class UserWalletService {
 	  if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 		  return ErrorCode.UNCONFIRMED_BALANCE;
 	  }
-	  if(systemWallet.getBalance().compareTo(extra) == -1) {
+/*	  if(systemWallet.getBalance().compareTo(extra) == -1) {
 		  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
-	  }
+	  }*/
 	 
 	  Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(detail.getUserUuid(),userWallet.getBalance().add(value).add(extra),userWallet.getUnconfirmedBalance().subtract(value),now);
 	  Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), extra);

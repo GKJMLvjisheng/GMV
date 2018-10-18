@@ -4,14 +4,14 @@ import time
 import jsonapi
 import codecs
 
-#HOST='http://18.219.19.160:8080/api/v1'
-HOST='http://localhost:8080/api/v1'
+HOST='https://oas.cascv.com:8080/api/v1'
+#HOST='http://localhost:8080/api/v1'
 
-filename=str(time.time())
+filename=time.strftime("%Y-%m-%d-%H_%M_%S",time.localtime(time.time())) 
 print ("filename %s" % filename)
 
 #file = open(filename,'w+') 
-file = codecs.open(filename,'w+','utf-8') 
+file = codecs.open("result/"+filename,'w+','utf-8') 
 
 
 def callRpc(url, data, token=None):
@@ -260,7 +260,7 @@ def ethWalletListCoin(token):
   res=callRpc(url,data,token)
   print (res)
   if res.get('code') == 0:
-    return res.get('data')
+    return res.get('data.userCoin')
 
 def ethWalletTransfer(token):
   url=HOST+"/ethWallet/transfer"

@@ -45,7 +45,8 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     private var totalItems:ArrayList<PointItem>? =null
     private var outItems:ArrayList<PointItem>? =null
     private var inItems:ArrayList<PointItem>? =null
-    private var balance:String? = null
+    private var balance:String? = "0"
+    private var unconfirmedBalance:String? = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +58,12 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
        waitRorExchange.setRightTopText(AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION))*/
 
         mBuyOas.onClick {
-            var pair:Pair<String,String> = Pair<String,String>("balance",balance?:"")
-            startActivity<OasExchangeToOnlineActivity>(pair)//Toast.makeText(this, "即将上线", Toast.LENGTH_SHORT).show()
+           // var pair:Pair<String,String> = Pair<String,String>({"balance":balance,"unconfirmed":unconfirmedBalance})
+            startActivity<OasExchangeToOnlineActivity>("balance" to balance,"unconfirmed" to unconfirmedBalance) //Toast.makeText(this, "即将上线", Toast.LENGTH_SHORT).show()
         }
         mExchangeBtn.onClick {
-            var pair:Pair<String,String> = Pair<String,String>("balance",balance?:"")
-            startActivity(intentFor<ExchangeOutActivity>(pair).singleTop().clearTop())
+            //var pair:Pair<String,String> = Pair<String,String>("balance",balance?:"")
+            startActivity(intentFor<ExchangeOutActivity>("balance" to balance,"unconfirmed" to unconfirmedBalance).singleTop().clearTop())
         }
         mCoinMoreDetail.onClick {
             val req = InquirePointsDetailReq(1, BaseConstant.PAGE_SIZE)
@@ -175,10 +176,11 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     }
 
     override fun setCoin(coins: ListCoinResp) {
-        balance = coins[0].balance.toString()
-        nowCoin.setRightTopText(coins[0].balance.toString())
-        sumCoin.setRightTopText(coins[0].value.toString())
-        waitRorExchange.setRightTopText(coins[0].unconfirmedBalance.toString())//AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION)
+        balance = coins.userCoin[0].balance.toString()
+        unconfirmedBalance = coins.userCoin[0].unconfirmedBalance.toString()
+        nowCoin.setRightTopText(coins.userCoin[0].balance.toString())
+        sumCoin.setRightTopText("≈ ¥".plus(coins.userCoin[0].value.toString()))
+        waitRorExchange.setRightTopText(coins.userCoin[0].unconfirmedBalance.toString())//AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION)
     }
     override fun getExchangeResult(t: Int) {
         if(t == 1){

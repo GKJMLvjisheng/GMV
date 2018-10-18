@@ -70,6 +70,24 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
             override fun afterTextChanged(p0: Editable?) {
             }
         })
+        mRemark.addTextChangedListener(object :TextWatcher{
+            var beforeRankText:String = ""
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                beforeRankText = p0.toString()
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val inputString = p0.toString()
+                if(!inputString.isNullOrBlank()){
+                    if(inputString.length > 100){
+                        val diff = inputString.length - beforeRankText.length
+                        mRemark.setText(beforeRankText)
+                        mRemark.setSelection(inputString.length-diff) //删除字符重写光标位置
+                    }
+                }
+            }
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
 
         mConfirmRedrawBtn.onClick {
            // val receiveAccount:String =  mMyAddress.getRightTopText().toString().replace("\n","").replace(" ","")
@@ -80,7 +98,7 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
                 return@onClick
             }*/
             if(receiveMoney.isEmpty() || !ToolUtil.regularExpressionValidate(receiveMoney,BaseConstant.NUMBER_POINT_FOUR)){
-                toast("转账金额格式有误！")
+                toast("提币金额格式有误！")
                 return@onClick
             }
             if(receiveMoney.toBigDecimal().add(mFactorTv.text.toString().toBigDecimal()) > mAvailableAmount.text.toString().toBigDecimal() ){

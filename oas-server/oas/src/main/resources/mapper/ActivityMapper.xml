@@ -238,6 +238,15 @@
         from energy_point_ball where uuid = #{uuid}
     </select>
     
+    <select id="selectAllByUserUuid" resultMap="EnergyPointBall">
+        select 
+          <include refid="Energy_Point_Ball_List" />
+        from energy_point_ball where 
+          user_uuid = #{userUuid} and
+          status = #{status} and
+          updated like #{updated}"%"
+    </select>
+    
   <!-- 插入积分球 -->
     <insert id="insertEnergyPointBall" parameterType="com.cascv.oas.server.activity.model.EnergyPointBall">
         insert into energy_point_ball (
@@ -315,6 +324,8 @@
         #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{powerChange},
         #{status}, #{created})
     </insert>
+    
+    
     
     <resultMap id="EnergyWall" type="com.cascv.oas.server.energy.model.EnergyWallet">
         <id column="uuid" property="uuid"/>

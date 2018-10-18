@@ -221,7 +221,7 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
     private fun alertView(){
         var dialogBuilder = AlertDialog.Builder(this.context!!)
 
-        dialogBuilder?.setMessage("进行提现、转账操作时需要通过KYC认证审核")?.setPositiveButton("前往认证", DialogInterface.OnClickListener{
+         dialogBuilder?.setMessage("进行提现、转账操作时需要通过KYC认证审核")?.setPositiveButton("前往认证", DialogInterface.OnClickListener{
                 dialog, id ->
             ARouter.getInstance().build("/computingPower/KYCActivity").navigation()
             })?.setNegativeButton("取消", null)
@@ -233,10 +233,10 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
        // dialog.findViewById<Button>(AlertDialog.BUTTON_NEGATIVE)?.gravity = Gravity.LEFT
        // dialog.findViewById<Button>(AlertDialog.BUTTON_POSITIVE)?.gravity = Gravity.RIGHT
         dialog.run {
-            getButton(AlertDialog.BUTTON_POSITIVE).background = resources.getDrawable(R.drawable.button_kyc1)
-            getButton(AlertDialog.BUTTON_NEGATIVE).background = resources.getDrawable(R.drawable.button_kyc1)
-            getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.common_bg))
-            getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.common_bg))
+         //   getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundResource(R.drawable.authentication)
+         //   getButton(AlertDialog.BUTTON_NEGATIVE).setBackgroundResource(R.drawable.authentication)
+         //   getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.common_bg))
+         //   getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.common_bg))
         }
     }
 

@@ -28,6 +28,9 @@ import com.today.step.lib.TodayStepService
 import org.jetbrains.anko.support.v4.startActivity
 import android.os.IBinder
 import com.oases.base.ui.fragment.BaseMvpFragment
+import com.oases.base.utils.DateUtils.DATE_FORMAT
+import com.oases.base.utils.DateUtils.getDaysBetweenDates
+import com.oases.base.utils.DateUtils.getNow
 import com.oases.data.protocol.WalkPoint.InquireWalkPointResp
 import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
@@ -77,7 +80,6 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         initView()
         initHeadBar(homeFragment)
         createTodayStepService()
-       // getHistorySteps()
 
         return homeFragment
     }
@@ -93,14 +95,21 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     }
 
     fun getHistorySteps(){
-        iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS)
+
+        //iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS)
+
 
     }
 
-    fun getDate():String{
+    fun getDateByOffset(offset: Int):String{
         val cal = Calendar.getInstance()
-        cal.add(Calendar.DAY_OF_MONTH, -HISTORY_DAYS)
+        cal.add(Calendar.DAY_OF_MONTH, offset)
         return SimpleDateFormat("yyyy-MM-dd").format(cal.time)
+    }
+
+    fun uploadHistorySteps(days: Long){
+        Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getStepUploadDate(), days as Int).toString())
+       // updateStepUploadDate()
     }
 
     fun createTodayStepService(){
@@ -113,7 +122,12 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                 iSportStepInterface = ISportStepInterface.Stub.asInterface(service)
                 try {
                     mTodaySteps = iSportStepInterface!!.getCurrentTimeSportStep()
-                    Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS).toString())
+                    val daysGap = getDaysBetweenDates(getStepUploadDate(), getNow(DATE_FORMAT))
+                    if (daysGap > 1){
+                        uploadHistorySteps(daysGap)
+                       // Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDateByOffset(-1), ).toString())
+                    }
+
                     mSteps.text = mTodaySteps.toString()
                 } catch (e: RemoteException) {
                     e.printStackTrace()
@@ -127,6 +141,14 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         }, Context.BIND_AUTO_CREATE)
     }
 
+    fun setStepUploadDate(date: String){
+        AppPrefsUtils.putString(BaseConstant.LAST_STEP_UPLOAD_DATE, date)
+    }
+
+    fun getStepUploadDate(): String{
+        return AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE)
+    }
+
     override fun onInquireWalkPoint(value: InquireWalkPointResp)
     {}
 
@@ -137,13 +159,11 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                 REFRESH_STEP_WHAT -> {
                     //每隔500毫秒获取一次计步数据刷新UI
                     if (null != iSportStepInterface) {
-                        var step = 0
                         try {
-                            step = iSportStepInterface!!.currentTimeSportStep
+                            mTodaySteps = iSportStepInterface!!.currentTimeSportStep
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        mTodaySteps = step
                         mSteps.text = mTodaySteps.toString()
                     }
                     mDelayHandler.sendEmptyMessageDelayed(REFRESH_STEP_WHAT, TIME_INTERVAL_REFRESH)
@@ -179,6 +199,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         myWebHome.webViewClient = MyWebViewClient(homeUrl)
         myWebHome.webChromeClient = WebChromeClient()
     }
+
     fun initHeadBar(homeFragment: View){
         mHeadBar = homeFragment.findViewById(R.id.mHeadBar) as Toolbar
         (activity as AppCompatActivity).setSupportActionBar(mHeadBar)
@@ -190,6 +211,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
         }
     }
+
     fun onBackPressed(superBackPressed:()->Unit) {
         if (myWebHome.canGoBack()) {
             myWebHome.goBack()
