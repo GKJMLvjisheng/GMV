@@ -128,8 +128,13 @@ public class PromotedRewardService {
 	 */
 	public Integer getUserMaxMinerGrade(String userUuid) {
 		List<PurchaseRecord> purchaseRecordList=minerMapper.selectByuserUuidMinerStatus(userUuid);
-		Integer userMaxMinerGrade = purchaseRecordList.get(0).getMinerGrade();
-		return userMaxMinerGrade;
+		if(purchaseRecordList.size()>0) {
+		    Integer userMaxMinerGrade = purchaseRecordList.get(0).getMinerGrade();
+		    return userMaxMinerGrade;
+		}else {
+			Integer userMaxMinerGrade = 0;//
+			return userMaxMinerGrade;
+		}	
 	}
 	
 	/**

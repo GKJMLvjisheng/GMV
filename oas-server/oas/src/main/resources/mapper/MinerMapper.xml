@@ -103,54 +103,57 @@
 	  	<result column="miner_status" property="minerStatus"/>
 	  	<result column="miner_purchase_status" property="minerPurchaseStatus"/>
 	  	<result column="finish_reward_number" property="finishRewardNumber"/>
-	  	<result column="updated" property="updated"/>
+	  	<result column="finish_reward_updated" property="finishRewardUpdated"/>
 	  	<result column="created" property="created"/>
     </resultMap>
     
     <sql id="purchase_record_List">
   		uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade, 
   		miner_description, miner_price, miner_num, price_sum,miner_power,miner_period,miner_status, 
-  		miner_purchase_status,finish_reward_number,updated,created
+  		miner_purchase_status,finish_reward_number,finish_reward_updated,created
     </sql>
     
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         insert into purchase_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
-	        uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade,
+	        uuid,user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade,
+	        <if test="finishRewardUpdated != null">
+	          finish_reward_updated,
+	        </if>
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
-	        <if test="finishRewardNumber != null">
-	          finish_reward_number,
-	        </if>
 	         miner_price, miner_num, price_sum, miner_power, 
-	         miner_period, miner_status, miner_purchase_status,created,updated
+	         miner_period, miner_status, finish_reward_number, miner_purchase_status,created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{uuid}, #{userUuid}, #{energyBallUuid}, #{minerCode}, #{minerName}, #{minerGrade},
+	         <if test="finishRewardUpdated != null">
+	           #{finishRewardUpdated},
+	        </if>
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
-	        <if test="finishRewardNumber != null">
-	           #{finishRewardNumber,jdbcType=INTEGER},
-	        </if>
 	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, 
-	        #{minerPeriod}, #{minerStatus}, #{minerPurchaseStatus}, #{created}, #{updated}
+	        #{minerPeriod}, #{minerStatus},#{finishRewardNumber},#{minerPurchaseStatus},#{created}
 	    </trim>            
     </insert>
     
     <select id="selectByuserUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
-        where user_uuid=#{userUuid};
+        where user_uuid=#{userUuid}
     </select>
-    <select id="selectByuserUuidMinerStatus" resultMap="purchaseRecordMap">
-        select <include refid="purchase_record_List" /> from purchase_record 
-        where user_uuid=#{userUuid} and miner_status=1 order by miner_grade desc;
-    </select>
+
      <select id="selectByMinerPurchaseStatus" resultMap="purchaseRecordMap">
       select <include refid="purchase_record_List" /> from purchase_record 
        where miner_purchase_status=0;
     </select>
+    
+   <select id="selectByuserUuidMinerStatus" resultMap="purchaseRecordMap">
+    select <include refid="purchase_record_List" /> from purchase_record 
+     where user_uuid=#{userUuid} and miner_status=1 order by miner_grade desc;
+    </select>
+    
     <update id="updateByMinerPurchaseStatus" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         update purchase_record
           set miner_purchase_status = 1 
@@ -180,7 +183,7 @@
     
     <update id="updateStatusByUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         update purchase_record
-          set miner_status = 0 
+          set miner_status = 0
         where uuid = #{uuid}
     </update>
     

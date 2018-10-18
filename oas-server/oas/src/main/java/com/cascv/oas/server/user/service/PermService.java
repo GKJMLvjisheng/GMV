@@ -1,6 +1,5 @@
 package com.cascv.oas.server.user.service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +10,8 @@ import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.wrapper.RoleMenuViewModel;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
@@ -28,6 +29,8 @@ public class PermService {
 	@Autowired
 	private UserRoleModelMapper userRoleModelMapper;
 	
+	private Boolean getRewardByWalk=false;
+	private Boolean getRewardByPromotion=false;
 //	@Autowired
 //	private RoleService roleService;
 	
@@ -65,5 +68,34 @@ public class PermService {
         	log.info("perm={}",perm);
         }
         return perms;
+    }
+       
+    /**
+     * @category 行走/推广奖励的权限控制
+     * @author lvjisheng
+     * @param 
+     * @return
+     */
+    public Boolean getWalkPerm(){
+    	//针对用户角色
+    	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
+    	for(RoleMenuViewModel rm:rmList) {
+    		getRewardByWalk=(rm.getMenuName().equals("计步"))? true:false;
+    		if(getRewardByWalk)
+    	    break;   		
+    	}
+    	    log.info("walk={}",getRewardByWalk);
+        return getRewardByWalk;
+    }
+    public Boolean getPromotionPerm(){
+    	//针对用户角色
+    	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
+    	for(RoleMenuViewModel rm:rmList) {	
+    		getRewardByPromotion=(rm.getMenuName().equals("获得推广奖励"))? true:false;
+    		if(getRewardByPromotion)
+    		break;
+    	}  
+    	    log.info("promotion={}",getRewardByPromotion);
+        return getRewardByPromotion;
     }
 }

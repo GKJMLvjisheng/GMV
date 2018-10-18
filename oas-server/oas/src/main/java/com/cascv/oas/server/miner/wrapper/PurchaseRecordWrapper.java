@@ -19,7 +19,6 @@ public class PurchaseRecordWrapper implements Serializable {
 	@Getter @Setter private Integer minerGrade;
 	@Getter @Setter private BigDecimal minerPower;
 	@Getter @Setter private Integer minerStatus;
-	@Getter @Setter private Integer minerPurchaseStatus;
 	@Getter @Setter private String created;
 	@Getter @Setter private String minerEndTime;
 	@Getter @Setter private Integer minerNum;
