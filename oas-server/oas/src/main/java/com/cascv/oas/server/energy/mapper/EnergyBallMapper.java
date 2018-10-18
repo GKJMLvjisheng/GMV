@@ -40,4 +40,6 @@ public interface EnergyBallMapper {
     int insertEnergyBall(EnergyBall energyBall);
     
     Integer countByUserUuidAndPowerSource(@Param("userUuid") String userUuid,@Param("sourceCode") Integer sourceCode);
+    //查询一段时间内用户步行产生的积分总数
+    Integer selectAllPointByTime(@Param("startTime") String startTime,@Param("endTime") String endTime);
 }
