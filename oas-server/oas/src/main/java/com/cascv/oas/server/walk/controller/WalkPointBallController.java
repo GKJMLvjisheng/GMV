@@ -52,16 +52,16 @@ public class WalkPointBallController {
 	 @ResponseBody
 	 public ResponseEntity<?> takeWalkPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException{
 		 String userUuid = ShiroUtils.getUserUuid();
-		 ErrorCode errorCode = ErrorCode.SUCCESS;
+		 ErrorCode errorCode = ErrorCode.GENERAL_ERROR;
 		 EnergyBallTakenResult energyBallTakenResult=new EnergyBallTakenResult();
 		 
 		 //判断是否具有获取奖励得权限
 		 if(permService.getWalkPerm()){
 		     energyBallTakenResult = walkService.takeWalkPointBall(userUuid, energyBallTokenRequest.getBallId());
 		     log.info("you have the permission");
-			 if(energyBallTakenResult == null)
-				 errorCode = ErrorCode.GENERAL_ERROR;
-		 }
+		     if(energyBallTakenResult != null)
+			     errorCode= ErrorCode.SUCCESS;
+		 }	     	
 		 
 		 return new ResponseEntity.Builder<EnergyBallTakenResult>()
 				.setData(energyBallTakenResult)
