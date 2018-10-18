@@ -24,6 +24,7 @@ public interface WalkMapper {
             @Param("point") BigDecimal point);
 	
 	WalkBall selectWalkBallbyUuid(@Param("uuid") String uuid);
+	WalkBall selectTodayWalkBall(@Param("userUuid") String userUuid, @Param("created") String created);
 	
 	List<WalkBallReturn> selectEnergyBallList(@Param("userUuid") String userUuid, 
 			@Param("sourceCode") Integer sourceCode, @Param("status") Integer status);

@@ -26,6 +26,7 @@ import com.oases.presenter.ExchangeOutPresenter
 import com.oases.presenter.view.ExchangeOutView
 import com.oases.ui.type.ToolUtil
 import com.tbruyelle.rxpermissions.RxPermissions
+import com.yzq.zxinglibrary.android.BeepManager
 import com.yzq.zxinglibrary.android.CaptureActivity
 import com.yzq.zxinglibrary.bean.ZxingConfig
 import com.yzq.zxinglibrary.common.Constant
@@ -57,10 +58,11 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
         setContentView(R.layout.activity_wallet_exchange_out)
         //OAS积分
         var balance:String = getIntent().getStringExtra("balance")
+        var unconfirmed:String = getIntent().getStringExtra("unconfirmed")
         tipLeft.setHint((BaseConstant.GAS_PRICE_LOW.toString()).plus(" GWEI"))
         tipRight.setHint(BaseConstant.GAS_PRICE_HIGH.toString().plus(" GWEI"))
         //mFactorTv.text = balance
-        mAvailableAmount.text = balance
+        mAvailableAmount.text = (balance.toBigDecimal().subtract(unconfirmed.toBigDecimal())).setScale(4,BigDecimal.ROUND_HALF_UP).toString()
 
         permission = RxPermissions(this)
         //接收方地址

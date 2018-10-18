@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="260dp"
+    android:layout_height="200dp"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+    <View
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:textSize="20dp" />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_marginLeft="50dp"
+        android:text="请您核对购买信息："
+        android:textColor="@color/common_black"
+        android:textSize="18dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp">
+    <TextView
+        android:id="@+id/minerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="名称："
+        android:textColor="@color/common_black"
+        android:textSize="15dp" />
+    <TextView
+        android:id="@+id/mSelectMinerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/minerName"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:text="一级矿机"
+        android:textColor="@color/common_green"
+        android:textSize="15dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:padding="3dp">
+        <TextView
+            android:id="@+id/minerNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="数量："
+            android:textColor="@color/common_black"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/mSelectMinerNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/minerNum"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:padding="3dp">
+        <TextView
+            android:id="@+id/minerSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="总计："
+            android:textColor="@color/common_black"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/mSelectMinerSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/minerSum"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:text="5,000,000"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/mSelectMinerSum"
+            android:gravity="center"
+            android:text="（OAS）"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <Button
+            android:id="@+id/mMinerCancel"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:background="@drawable/authentication"
+            android:textColor="@color/common_white"
+            android:layout_marginLeft="50dp"
+            android:text="取消"
+            android:textSize="15dp"
+            android:textStyle="bold"/>
+        <Button
+            android:id="@+id/mMinerConfirm"
+            android:layout_width="90dp"
+            android:layout_height="35dp"
+            android:layout_toRightOf="@+id/mMinerCancel"
+            android:background="@drawable/authentication"
+            android:textColor="@color/common_white"
+            android:layout_marginLeft="40dp"
+            android:text="购买"
+            android:textSize="15dp"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/mMinerCancel"
+            android:textSize="20dp" />
+    </RelativeLayout>
+</LinearLayout>

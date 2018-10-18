@@ -28,6 +28,9 @@ import com.today.step.lib.TodayStepService
 import org.jetbrains.anko.support.v4.startActivity
 import android.os.IBinder
 import com.oases.base.ui.fragment.BaseMvpFragment
+import com.oases.base.utils.DateUtils.DATE_FORMAT
+import com.oases.base.utils.DateUtils.getDaysBetweenDates
+import com.oases.base.utils.DateUtils.getNow
 import com.oases.data.protocol.WalkPoint.InquireWalkPointResp
 import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
@@ -77,7 +80,6 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         initView()
         initHeadBar(homeFragment)
         createTodayStepService()
-       // getHistorySteps()
 
         return homeFragment
     }
@@ -94,14 +96,19 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
     fun getHistorySteps(){
 
-        iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS)
+       // iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS)
 
     }
 
-    fun getDate():String{
+    fun getDateByOffset(offset: Int):String{
         val cal = Calendar.getInstance()
-        cal.add(Calendar.DAY_OF_MONTH, -HISTORY_DAYS)
+        cal.add(Calendar.DAY_OF_MONTH, offset)
         return SimpleDateFormat("yyyy-MM-dd").format(cal.time)
+    }
+
+    fun uploadHistorySteps(days: Long){
+        Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getStepUploadDate(), days as Int).toString())
+       // updateStepUploadDate()
     }
 
     fun createTodayStepService(){
@@ -114,7 +121,12 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                 iSportStepInterface = ISportStepInterface.Stub.asInterface(service)
                 try {
                     mTodaySteps = iSportStepInterface!!.getCurrentTimeSportStep()
-                    Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS).toString())
+                    val daysGap = getDaysBetweenDates(getStepUploadDate(), getNow(DATE_FORMAT))
+                    if (daysGap > 1){
+                        uploadHistorySteps(daysGap)
+                       // Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDateByOffset(-1), ).toString())
+                    }
+
                     mSteps.text = mTodaySteps.toString()
                 } catch (e: RemoteException) {
                     e.printStackTrace()
@@ -126,6 +138,14 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
             override fun onServiceDisconnected(name: ComponentName) {
             }
         }, Context.BIND_AUTO_CREATE)
+    }
+
+    fun setStepUploadDate(date: String){
+        AppPrefsUtils.putString(BaseConstant.LAST_STEP_UPLOAD_DATE, date)
+    }
+
+    fun getStepUploadDate(): String{
+        return AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE)
     }
 
     override fun onInquireWalkPoint(value: InquireWalkPointResp)

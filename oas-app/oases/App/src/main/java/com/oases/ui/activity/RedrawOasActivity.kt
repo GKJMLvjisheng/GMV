@@ -98,7 +98,7 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
                 return@onClick
             }*/
             if(receiveMoney.isEmpty() || !ToolUtil.regularExpressionValidate(receiveMoney,BaseConstant.NUMBER_POINT_FOUR)){
-                toast("转账金额格式有误！")
+                toast("提币金额格式有误！")
                 return@onClick
             }
             if(receiveMoney.toBigDecimal().add(mFactorTv.text.toString().toBigDecimal()) > mAvailableAmount.text.toString().toBigDecimal() ){

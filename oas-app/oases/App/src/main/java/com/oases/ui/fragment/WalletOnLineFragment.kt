@@ -233,10 +233,10 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
        // dialog.findViewById<Button>(AlertDialog.BUTTON_NEGATIVE)?.gravity = Gravity.LEFT
        // dialog.findViewById<Button>(AlertDialog.BUTTON_POSITIVE)?.gravity = Gravity.RIGHT
         dialog.run {
-            getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundResource(R.drawable.authentication)
-            getButton(AlertDialog.BUTTON_NEGATIVE).setBackgroundResource(R.drawable.authentication)
-            getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.common_bg))
-            getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.common_bg))
+         //   getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundResource(R.drawable.authentication)
+         //   getButton(AlertDialog.BUTTON_NEGATIVE).setBackgroundResource(R.drawable.authentication)
+         //   getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.common_bg))
+         //   getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(resources.getColor(R.color.common_bg))
         }
     }
 

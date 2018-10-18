@@ -561,7 +561,7 @@ public class EthWalletService {
 	  oasDetail.setType(OasEventEnum.OAS_IN.getCode());
 	  //插入充币提币表
 	  Integer oResult = oasDetailMapper.insertSelective(oasDetail);
-	  if(oResult == null) {
+	  if(oResult == 0) {
 		  return ErrorCode.UPDATE_FAILED;
 	  }
 	  
