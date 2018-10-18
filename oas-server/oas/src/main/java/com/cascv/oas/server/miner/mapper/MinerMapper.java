@@ -34,7 +34,9 @@ public interface MinerMapper {
 	PurchaseRecord selectByUuid(@Param("uuid") String uuid);
 	Integer updateStatusByUuid(@Param("uuid") String uuid);
 	List<PurchaseRecord> selectByMinerPurchaseStatus();
+	List<PurchaseRecord> selectByMinerStatusPowerRewardStatus();
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
+	Integer updateByPowerRewardStatus(PurchaseRecord purchaseRecord);
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 
 			@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer insertPurchaseRecord(PurchaseRecord purchaseRecord);

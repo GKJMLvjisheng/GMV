@@ -53,6 +53,7 @@ public class MinerService {
 	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer MINER_PURCHASE_STATUS = 0;  //矿机推广立即奖励未完成
+	private static final Integer POWER_REWARD_STATUS = 0;  //矿机推广算力立即奖励未完成
 	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
@@ -149,6 +150,7 @@ public class MinerService {
 		purchaseRecord.setMinerPeriod(minerModel.getMinerPeriod());
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
+		purchaseRecord.setPowerRewardStatus(POWER_REWARD_STATUS);
 		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
