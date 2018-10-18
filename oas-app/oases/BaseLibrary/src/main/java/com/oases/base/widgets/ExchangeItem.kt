@@ -95,4 +95,14 @@ class ExchangeItem @JvmOverloads constructor(context: Context, attrs: AttributeS
         mRightTopTv.setPaddingRelative(0,0,0,10)
         mRightTopTv.setTextSize(20.toFloat())
     }
+
+    fun setTimeTextSize(){
+        mLeftBottomTv.setTextSize(10.toFloat())
+        mRightBottomTv.setTextSize(10.toFloat())
+    }
+
+    fun setTimeTextMoveDown(){
+        mLeftBottomTv.setPaddingRelative(0,15,0,0)
+        mRightBottomTv.setPaddingRelative(0,15,0,0)
+    }
 }
