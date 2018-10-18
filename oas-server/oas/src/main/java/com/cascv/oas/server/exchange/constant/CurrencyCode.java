@@ -48,19 +48,7 @@ public enum CurrencyCode {
   }
   
   public static CurrencyCode get(Integer code) {
-    CurrencyCode [] codeSet = {
-        CurrencyCode.POINT,
-        CurrencyCode.CNY,
-        CurrencyCode.USD,
-        CurrencyCode.JPY,
-        CurrencyCode.EUR,
-        CurrencyCode.DEM,
-        CurrencyCode.FRF,
-        CurrencyCode.CAD,
-        CurrencyCode.HKD,
-        CurrencyCode.OAS
-    };
-    for (CurrencyCode currencyCode:codeSet) {
+    for (CurrencyCode currencyCode : CurrencyCode.values()) {
       if (code == currencyCode.getCode())
         return currencyCode;
     }

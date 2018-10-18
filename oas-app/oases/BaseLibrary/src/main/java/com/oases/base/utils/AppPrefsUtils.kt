@@ -22,7 +22,7 @@ object AppPrefsUtils {
      */
     fun putBoolean(key: String, value: Boolean) {
         ed.putBoolean(key, value)
-        ed.commit()
+        ed.apply()
     }
 
     /*
@@ -37,7 +37,7 @@ object AppPrefsUtils {
      */
     fun putString(key: String, value: String) {
         ed.putString(key, value)
-        ed.commit()
+        ed.apply()
     }
 
     /*
@@ -52,7 +52,7 @@ object AppPrefsUtils {
      */
     fun putInt(key: String, value: Int) {
         ed.putInt(key, value)
-        ed.commit()
+        ed.apply()
     }
 
     /*
@@ -67,7 +67,7 @@ object AppPrefsUtils {
      */
     fun putLong(key: String, value: Long) {
         ed.putLong(key, value)
-        ed.commit()
+        ed.apply()
     }
 
     /*
@@ -84,7 +84,7 @@ object AppPrefsUtils {
         val localSet = getStringSet(key).toMutableSet()
         localSet.addAll(set)
         ed.putStringSet(key, localSet)
-        ed.commit()
+        ed.apply()
     }
 
     /*
@@ -100,6 +100,6 @@ object AppPrefsUtils {
      */
     fun remove(key: String) {
         ed.remove(key)
-        ed.commit()
+        ed.apply()
     }
 }
