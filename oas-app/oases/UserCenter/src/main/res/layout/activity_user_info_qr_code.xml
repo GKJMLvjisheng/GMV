@@ -27,7 +27,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_energy"
         android:gravity="center_horizontal">
-
         <RelativeLayout
             android:id="@+id/mQrCodeImage"
             android:layout_width="250dp"
@@ -35,12 +34,10 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="80dp"
             android:background="@color/common_white">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp">
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/mUserIconIv"
                     android:layout_width="@dimen/common_icon_width"
@@ -48,7 +45,6 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/common_margin"
                     android:src="@drawable/icon_default_user" />
-
                 <TextView
                     android:id="@+id/mUserNameTv"
                     style="@style/WrapWrap"
@@ -58,7 +54,6 @@
                     android:layout_toRightOf="@id/mUserIconIv"
                     android:textColor="@color/common_black"
                     android:textSize="@dimen/text_large_size" />
-
                 <TextView
                     android:id="@+id/mInviteName"
                     style="@style/WrapWrap"
@@ -69,7 +64,6 @@
                     android:text="邀请码"
                     android:textColor="@color/common_black"
                     android:textSize="@dimen/text_small_size" />
-
                 <TextView
                     android:id="@+id/mInviteNumberTv"
                     style="@style/WrapWrap"
@@ -85,20 +79,14 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="60dp">
+                android:layout_marginTop="50dp">
 
                 <ImageView
                     android:id="@+id/mUserInfoQrCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop" />
-
-                <View
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
-                    android:layout_margin="30dp"
-                    android:layout_weight="1" />
-
+                    android:layout_height="150dp"
+                    android:scaleType="centerCrop"
+                    android:layout_margin="50dp"/>
                 <TextView
                     android:layout_width="200dp"
                     android:layout_height="30dp"
