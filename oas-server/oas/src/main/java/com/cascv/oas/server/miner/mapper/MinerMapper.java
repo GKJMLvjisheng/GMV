@@ -29,7 +29,7 @@ public interface MinerMapper {
 	List<PurchaseRecord> selectByuserUuid(@Param("userUuid") String userUuid);
 	List<PurchaseRecord> selectByuserUuidMinerStatus(@Param("userUuid") String userUuid);
 	PurchaseRecord selectByUuid(@Param("uuid") String uuid);
-	Integer updateStatusByUuid(@Param("uuid") String uuid, @Param("updated") String updated);
+	Integer updateStatusByUuid(@Param("uuid") String uuid);
 	List<PurchaseRecord> selectByMinerPurchaseStatus();
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 

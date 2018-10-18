@@ -152,7 +152,6 @@ public class MinerService {
 		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
-		purchaseRecord.setUpdated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
 	}
@@ -228,7 +227,7 @@ public class MinerService {
 					String userUuid = purchaseRecordList.get(i).getUserUuid();
 					String energyBallUuid = purchaseRecordList.get(i).getEnergyBallUuid();
 					//更新购买记录的状态(即更新矿机的状态)
-					minerMapper.updateStatusByUuid(uuid, now);
+					minerMapper.updateStatusByUuid(uuid);
 					//更新算力球状态
 					activityMapper.updatePowerStatusByUuid(energyBallUuid, STATUS_DIE_OF_MINER, now);
 					//更新能量钱包
