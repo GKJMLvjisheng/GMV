@@ -234,7 +234,7 @@ public class EthWalletController extends BaseShiroController {
     }
   }
   
-  
+  	
   @PostMapping(value="/summary")
   @ResponseBody
   @Transactional
@@ -246,8 +246,14 @@ public class EthWalletController extends BaseShiroController {
     ethWalletSummary.setTotalTransaction(BigDecimal.ZERO);
 
     if (tokenCoin != null) {
-      ethWalletSummary.setTotalBalance(tokenCoin.getBalance());
-      ethWalletSummary.setTotalValue(tokenCoin.getValue());
+      UserCoin ethCoin = ethWalletService.getEthCoinTemporary(tokenCoin);
+      if(ethCoin!=null) {
+    	  ethWalletSummary.setTotalBalance(tokenCoin.getBalance().add(ethCoin.getBalance()));
+          ethWalletSummary.setTotalValue(tokenCoin.getValue().add(ethCoin.getValue()));
+      }else {
+          ethWalletSummary.setTotalBalance(tokenCoin.getBalance());
+          ethWalletSummary.setTotalValue(tokenCoin.getValue());
+      }
     } else {
       ethWalletSummary.setTotalBalance(BigDecimal.ZERO);
       ethWalletSummary.setTotalValue(BigDecimal.ZERO);
