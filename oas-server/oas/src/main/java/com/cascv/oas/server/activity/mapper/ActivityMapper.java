@@ -40,6 +40,9 @@ public interface ActivityMapper {
 	Integer insertPowerTradeRecord(PowerTradeRecord powerTradeRecord);
 	
 	EnergyPointBall selectByUuid(@Param("uuid") String uuid);
+	List<EnergyPointBall> selectAllByUserUuid(@Param("userUuid") String userUuid,
+            @Param("status") Integer status,
+            @Param("updated") String updated);
 	
 	Integer updatePointStatusByUuid(@Param("uuid") String uuid,
             @Param("status") Integer status,
