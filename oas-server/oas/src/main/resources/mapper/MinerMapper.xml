@@ -120,33 +120,24 @@
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
-	        <if test="finishRewardNumber != null">
-	          finish_reward_number,
-	        </if>
 	         miner_price, miner_num, price_sum, miner_power, 
-	         miner_period, miner_status, miner_purchase_status,created,updated
+	         miner_period, miner_status, finish_reward_number, miner_purchase_status, created, updated
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{uuid}, #{userUuid}, #{energyBallUuid}, #{minerCode}, #{minerName}, #{minerGrade},
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
-	        <if test="finishRewardNumber != null">
-	           #{finishRewardNumber,jdbcType=INTEGER},
-	        </if>
 	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, 
-	        #{minerPeriod}, #{minerStatus}, #{minerPurchaseStatus}, #{created}, #{updated}
+	        #{minerPeriod}, #{minerStatus}, #{finishRewardNumber}, #{minerPurchaseStatus}, #{created}, #{updated}
 	    </trim>            
     </insert>
     
     <select id="selectByuserUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
-        where user_uuid=#{userUuid};
+        where user_uuid=#{userUuid}
     </select>
-    <select id="selectByuserUuidMinerStatus" resultMap="purchaseRecordMap">
-        select <include refid="purchase_record_List" /> from purchase_record 
-        where user_uuid=#{userUuid} and miner_status=1 order by miner_grade desc;
-    </select>
+
      <select id="selectByMinerPurchaseStatus" resultMap="purchaseRecordMap">
       select <include refid="purchase_record_List" /> from purchase_record 
        where miner_purchase_status=0;
@@ -180,7 +171,7 @@
     
     <update id="updateStatusByUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         update purchase_record
-          set miner_status = 0 
+          set miner_status = 0, updated = #{updated}
         where uuid = #{uuid}
     </update>
     

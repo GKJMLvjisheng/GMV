@@ -22,9 +22,6 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.miner.mapper.MinerMapper;
-import com.cascv.oas.server.miner.model.PurchaseRecord;
-import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
 import com.cascv.oas.server.walk.wrapper.StepNumQuota;
@@ -42,12 +39,6 @@ public class WalkService {
 	
 	@Autowired
 	private ActivityMapper activityMapper;
-	
-	@Autowired
-	private MinerService minerService;
-	
-	@Autowired
-	private MinerMapper minerMapper;
 	
 	@Autowired
 	private EnergyService energyService;

@@ -38,10 +38,11 @@ class RecycleMinerHistoryViewAdapter(val mList:MutableList<MinerHistoryItem>)
                  minerStatus = "（寿终正寝）"
             }
             holder.mExchangeItemView.setLeftTopText((mData.minerName).plus(minerStatus))
-
-            holder.mExchangeItemView.setLeftBottomText("购买时间：".plus(mData.created))
+            holder.mExchangeItemView.setLeftBottomText("购买：".plus(mData.created))
             holder.mExchangeItemView.setRightTopText("x".plus(mData.minerNum.toString()))
             holder.mExchangeItemView.setRightBottomText("到期：".plus(mData.minerEndTime))
+            holder.mExchangeItemView.setTimeTextSize()
+            holder.mExchangeItemView.setTimeTextMoveDown()
         }
 
     }

@@ -54,7 +54,7 @@ public interface ActivityMapper {
 	Integer decreasePoint(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
 	Integer increasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
 	Integer decreasePower(@Param("userUuid") String userUuid, @Param("value") BigDecimal value, @Param("updated") String updated);
-	Integer updateEnergyWalletUpdated(@Param("userUuid") String userUuid);
+	
     
 	RewardConfigResult inquireACSByUserUuidAndSouceCode(@Param("sourceCode") Integer sourceCode,@Param("userUuid") String userUuid);
 }
