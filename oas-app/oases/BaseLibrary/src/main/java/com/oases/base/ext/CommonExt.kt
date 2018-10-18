@@ -4,6 +4,8 @@ import android.graphics.drawable.AnimationDrawable
 import android.view.MotionEvent
 import android.view.View
 import android.widget.*
+import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.kennyc.view.MultiStateView
 import com.oases.base.R
 import com.oases.base.data.protocol.BaseResp
@@ -131,4 +133,12 @@ fun TextView.onRightDrawableClickListener(method: ()->Unit){
         }else
             false
     }
+}
+
+inline fun <reified T : Any> Gson.fromJson(json: String): T {
+    return Gson().fromJson(json, T::class.java)
+}
+
+inline fun <reified T : Any> Gson.fromJson(json: JsonElement): T {
+    return Gson().fromJson(json, T::class.java)
 }

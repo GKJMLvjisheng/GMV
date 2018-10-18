@@ -27,15 +27,22 @@ import com.today.step.lib.ISportStepInterface
 import com.today.step.lib.TodayStepService
 import org.jetbrains.anko.support.v4.startActivity
 import android.os.IBinder
+import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
+import com.oases.base.ext.fromJson
 import com.oases.base.ui.fragment.BaseMvpFragment
 import com.oases.base.utils.DateUtils.DATE_FORMAT
 import com.oases.base.utils.DateUtils.getDaysBetweenDates
 import com.oases.base.utils.DateUtils.getNow
+import com.oases.data.protocol.WalkPoint.InquireWalkPointReq
 import com.oases.data.protocol.WalkPoint.InquireWalkPointResp
+import com.oases.data.protocol.WalkPoint.StepItem
 import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
 import com.oases.presenter.HomePresenter
 import com.oases.presenter.view.HomeView
+import com.today.step.lib.TodayStepData
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.support.v4.startService
 import org.jetbrains.anko.support.v4.toast
@@ -53,7 +60,6 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     var mTodaySteps:Int = 0
     //循环取当前时刻的步数中间的间隔时间
     private val TIME_INTERVAL_REFRESH: Long = 500
-    private val HISTORY_DAYS = 7
     private val REFRESH_STEP_WHAT = 0
     private var iSportStepInterface: ISportStepInterface? = null
 
@@ -94,25 +100,44 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         mPresenter.mView = this
     }
 
-    fun getHistorySteps(){
-
-        //iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS)
-
-
-    }
-
     fun getDateByOffset(offset: Int):String{
         val cal = Calendar.getInstance()
         cal.add(Calendar.DAY_OF_MONTH, offset)
         return SimpleDateFormat("yyyy-MM-dd").format(cal.time)
     }
 
-    fun uploadHistorySteps(days: Long){
-        Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getStepUploadDate(), days as Int).toString())
-       // updateStepUploadDate()
+    private fun transformToReq(steps: String): InquireWalkPointReq {
+        val jsonParser = JsonParser()
+        val stepsArray = jsonParser.parse(steps).asJsonArray
+        val gson = Gson()
+
+        val stepList: MutableList<StepItem> = ArrayList()
+
+        for (stepJson in stepsArray){
+            val item = gson.fromJson<StepItem>(stepJson)
+            stepList.add(item)
+        }
+        return InquireWalkPointReq(stepList)
     }
 
-    fun createTodayStepService(){
+    private fun uploadHistorySteps() {
+        val lastUpdateDate = getStepUploadDate()
+        val daysGap = getDaysBetweenDates(lastUpdateDate, getNow(DATE_FORMAT))
+
+        if (daysGap >= 1) {
+            val steps = iSportStepInterface!!.getTodaySportStepArrayByStartDateAndDays(lastUpdateDate, daysGap)
+            if (steps == "[]") {
+                Log.d("zbb", "uploadHistorySteps: no steps $steps")
+            }
+            else {
+                Log.d("zbb", "update history steps $steps")
+                mPresenter.inquireWalkPoint(transformToReq(steps))
+            }
+            updateStepUploadDate()
+        }
+    }
+
+    private fun createTodayStepService(){
         var intent = Intent()
         intent.setClass(activity, TodayStepService::class.java)
         activity?.startService(intent)
@@ -122,11 +147,8 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                 iSportStepInterface = ISportStepInterface.Stub.asInterface(service)
                 try {
                     mTodaySteps = iSportStepInterface!!.getCurrentTimeSportStep()
-                    val daysGap = getDaysBetweenDates(getStepUploadDate(), getNow(DATE_FORMAT))
-                    if (daysGap > 1){
-                        uploadHistorySteps(daysGap)
-                       // Log.d("zbb", iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDateByOffset(-1), ).toString())
-                    }
+
+                        uploadHistorySteps()
 
                     mSteps.text = mTodaySteps.toString()
                 } catch (e: RemoteException) {
@@ -141,13 +163,17 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         }, Context.BIND_AUTO_CREATE)
     }
 
-    fun setStepUploadDate(date: String){
-        AppPrefsUtils.putString(BaseConstant.LAST_STEP_UPLOAD_DATE, date)
+    private fun updateStepUploadDate(){
+        return AppPrefsUtils.putString(BaseConstant.LAST_STEP_UPLOAD_DATE, getNow(DATE_FORMAT))
     }
 
-    fun getStepUploadDate(): String{
-        return AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE)
+    fun getStepUploadDate(): String {
+        return if (AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE) == "")
+            getNow(DATE_FORMAT)
+        else
+            AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE)
     }
+
 
     override fun onInquireWalkPoint(value: InquireWalkPointResp)
     {}

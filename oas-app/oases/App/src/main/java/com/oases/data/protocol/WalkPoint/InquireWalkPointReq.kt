@@ -1,4 +1,3 @@
 package com.oases.data.protocol.WalkPoint
 
-class InquireWalkPointReq {
-}
+data class InquireWalkPointReq (val quota: StepQuota)

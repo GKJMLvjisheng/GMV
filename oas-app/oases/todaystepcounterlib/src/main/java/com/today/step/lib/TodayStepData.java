@@ -76,7 +76,7 @@ public class TodayStepData implements Serializable, Parcelable {
     @Override
     public String toString() {
         return "TodayStepData{" +
-                ", today=" + today +
+                "today=" + today +
                 ", date=" + date +
                 ", step=" + step +
                 '}';

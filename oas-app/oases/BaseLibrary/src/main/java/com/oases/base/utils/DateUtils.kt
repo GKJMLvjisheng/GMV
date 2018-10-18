@@ -1,5 +1,6 @@
 package com.oases.base.utils
 
+import android.util.Log
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -260,17 +261,18 @@ object DateUtils {
     }
 
     // date format: yyyy-mm-dd
-    val DATE_FORMAT = "yyyy-mm-dd"  //or use "M/d/yyyy"
+    val DATE_FORMAT = "yyyy-MM-dd"  //or use "M/d/yyyy"
 
-    fun getDaysBetweenDates(start: String, end: String): Long {
+    fun getDaysBetweenDates(start: String, end: String): Int {
         val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
         val startDate: Date
         val endDate: Date
-        var numberOfDays: Long = 0
+        var numberOfDays: Int = 0
+        Log.d("zbb", "days between $start, $end")
         try {
             startDate = dateFormat.parse(start)
             endDate = dateFormat.parse(end)
-            numberOfDays = getUnitBetweenDates(startDate, endDate, TimeUnit.DAYS)
+            numberOfDays = getUnitBetweenDates(startDate, endDate, TimeUnit.DAYS).toInt()
         } catch (e: ParseException) {
             e.printStackTrace()
         }
