@@ -48,10 +48,11 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
         setContentView(R.layout.activity_charge_coin_oas)
         //OAS积分
         var balance:String = getIntent().getStringExtra("balance")
+        var unconfirmed:String = getIntent().getStringExtra("unconfirmed")
         tipLeft.setHint((BaseConstant.GAS_PRICE_LOW.toString()).plus(" GWEI"))
         tipRight.setHint(BaseConstant.GAS_PRICE_HIGH.toString().plus(" GWEI"))
         //mFactorTv.text = balance
-        mAvailableAmount.text = balance
+        mAvailableAmount.text = (balance.toBigDecimal().subtract(unconfirmed.toBigDecimal())).setScale(4,BigDecimal.ROUND_HALF_UP).toString()
 
         //接收方地址
         if(address.length == 42){
@@ -129,7 +130,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
             }*/
 
             if(receiveMoney.isEmpty() || !ToolUtil.regularExpressionValidate(receiveMoney,BaseConstant.NUMBER_POINT_FOUR)){
-                toast("转账金额格式有误！")
+                toast("充币金额格式有误！")
                 return@onClick
             }
             if(receiveMoney.toBigDecimal() > mAvailableAmount.text.toString().toBigDecimal() ){
