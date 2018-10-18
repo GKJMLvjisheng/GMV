@@ -85,6 +85,7 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
         dialogBuilder.setCancelable(true)
         val dialog = dialogBuilder?.create() as AlertDialog
         dialogBtnConfirm.setOnClickListener {
+            dialog.dismiss()
             mPresenter.confirmBuyMiner(name.text.toString(),num.text.toString().toInt(),sum.text.toString().toBigDecimal())
         }
         dialogBtnCancel.setOnClickListener {
