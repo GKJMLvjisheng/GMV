@@ -93,7 +93,6 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     }
 
     fun getHistorySteps(){
-
         iSportStepInterface?.getTodaySportStepArrayByStartDateAndDays(getDate(), HISTORY_DAYS)
 
     }
