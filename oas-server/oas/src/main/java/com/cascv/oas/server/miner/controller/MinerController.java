@@ -236,7 +236,7 @@ public class MinerController {
 			//更新用户钱包
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);
-			//更新用户能量钱包
+			//更新用户能量钱包，即提升算力
 			activityMapper.increasePower(userUuid, powerSum, updated);
 			return new ResponseEntity.Builder<Integer>()
 					.setData(0)
