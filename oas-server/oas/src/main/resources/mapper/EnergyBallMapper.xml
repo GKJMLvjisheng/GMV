@@ -79,7 +79,7 @@
     </select>
     
 <!-- 查询某用户步行特定时间段产生的球 -->
-<select id="selectAllPointByTime" resultMap="BaseResultMap">
+<select id="selectUserPointByTime" resultMap="BaseResultMap">
         select SUM(point) as point
         from energy_point_ball
         where user_uuid=#{userUuid} and source_code=9 and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}

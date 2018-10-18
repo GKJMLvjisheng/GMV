@@ -48,7 +48,8 @@ public class ActivityController {
 	@PostMapping(value = "/addActivity")
     @ResponseBody
     public ResponseEntity<?> addActivity(@RequestBody ActivityRequest activityRequest){
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+//		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		String now = DateUtils.getYear();
 		ActivityModel activityModel = new ActivityModel();
 		activityModel.setSourceName(activityRequest.getSourceName());
 		activityModel.setType(activityRequest.getType());

@@ -154,6 +154,19 @@
      where user_uuid=#{userUuid} and miner_status=1 order by miner_grade desc;
     </select>
     
+    <select id="selectByMinerStatus" resultMap="purchaseRecordMap">
+    select <include refid="purchase_record_List" /> from purchase_record 
+     
+    where miner_num>finish_reward_number and miner_status=1 and user_uuid=#{userUuid} 
+    
+    order by created asc;
+    </select>
+    
+    <select id="selectUserUuidByMinerStatus" resultType="java.lang.String">
+    select distinct user_uuid from purchase_record 
+    where miner_num>finish_reward_number and miner_status=1 
+    </select>
+    
     <update id="updateByMinerPurchaseStatus" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
         update purchase_record
           set miner_purchase_status = 1 
