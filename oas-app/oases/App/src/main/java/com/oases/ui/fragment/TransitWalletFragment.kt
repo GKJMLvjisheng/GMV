@@ -73,13 +73,15 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
     }
 
     override fun setCoin(coins: ListCoinResp) {
-        mOas.setValue(coins[0].balance)
-        mOas.setEqualsValue(coins[0].value)
-        mEth.setValue(if(coins.size>1) coins[1].balance else "0".toDouble())
-        mEth.setEqualsValue(if(coins.size>1) coins[1].value else "0".toDouble())
-        AppPrefsUtils.putString(BaseConstant.MY_OAS_ADDRESS,coins[0].address)
-        AppPrefsUtils.putString(BaseConstant.MY_OAS_PROTOCOL,coins[0].contract)
-        AppPrefsUtils.putString(BaseConstant.USER_OWN_ETH,coins[0].ethBalance.toString())
+        val userCoinList = coins.userCoin
+        val noShowCoinList = coins.noShowCoin
+        mOas.setValue(userCoinList[0].balance)
+        mOas.setEqualsValue(userCoinList[0].value)
+        mEth.setValue(if(noShowCoinList!=null) noShowCoinList[0].balance else "0".toDouble())
+        mEth.setEqualsValue(if(noShowCoinList!=null) noShowCoinList[0].value else "0".toDouble())
+        AppPrefsUtils.putString(BaseConstant.MY_OAS_ADDRESS,userCoinList[0].address)
+        AppPrefsUtils.putString(BaseConstant.MY_OAS_PROTOCOL,userCoinList[0].contract)
+        AppPrefsUtils.putString(BaseConstant.USER_OWN_ETH,userCoinList[0].ethBalance.toString())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -175,10 +175,10 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     }
 
     override fun setCoin(coins: ListCoinResp) {
-        balance = coins[0].balance.toString()
-        nowCoin.setRightTopText(coins[0].balance.toString())
-        sumCoin.setRightTopText("≈ ¥".plus(coins[0].value.toString()))
-        waitRorExchange.setRightTopText(coins[0].unconfirmedBalance.toString())//AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION)
+        balance = coins.userCoin[0].balance.toString()
+        nowCoin.setRightTopText(coins.userCoin[0].balance.toString())
+        sumCoin.setRightTopText("≈ ¥".plus(coins.userCoin[0].value.toString()))
+        waitRorExchange.setRightTopText(coins.userCoin[0].unconfirmedBalance.toString())//AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION)
     }
     override fun getExchangeResult(t: Int) {
         if(t == 1){
