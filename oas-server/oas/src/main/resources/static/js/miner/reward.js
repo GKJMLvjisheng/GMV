@@ -40,28 +40,30 @@ function checkFrozenRate() {
 	if(rate!=len-1){ 
 		$("#msg_frozenRatio").html("请输入0-100之间的数字并加%，例如20%"); //判断%在不在最后一位
 		$("#msg_frozenRatio").css("color", "red");
-		check1 = 0;
-		return check1;
 	}else{
 		var str = frozenRatio.split("%");
 		var digit = str[0];
 		var intRatio = parseFloat(digit);		
-		//alert(JSON.stringify(intRatio));		
+		//alert(JSON.stringify(digit));		
 		
 		if(rewardName=="算力"){
 			check1 = 1;
 			return check1;
 		}else{
-			if (intRatio>0 && intRatio< 100) {								
-				$("#msg_frozenRatio").html("输入比例符合要求");
-				$("#msg_frozenRatio").css("color", "green");
-				check1 = 1;
-				return check1;		
+			
+			if (/^\d+(?=\.{0,1}\d+$|$)/.test(digit)) {
+				if (intRatio>0 && intRatio< 100) {								
+					$("#msg_frozenRatio").html("输入比例符合要求");  ///^\d+(?=\.{0,1}\d+$|$)/为正数，包括0
+					$("#msg_frozenRatio").css("color", "green");
+					check1 = 1;
+					return check1;		
+				}else{
+					$("#msg_frozenRatio").html("请输入0-100之间的数字并加%，例如20%");
+			        $("#msg_frozenRatio").css("color", "red");
+				}
 			}else{
 				$("#msg_frozenRatio").html("请输入0-100之间的数字并加%，例如20%");
 		        $("#msg_frozenRatio").css("color", "red");
-		        check1 = 0;
-				return check1;
 			}
 		}
 	}
@@ -70,32 +72,30 @@ function checkFrozenRate() {
 function checkRewardRate() {
 	var rewardRatio = $("#rewardRatio").val();
 	var rate = rewardRatio.indexOf("%"); //%出现的位置
-	//alert(rate);
 	var len = rewardRatio.length;
-	//alert(JSON.stringify(len));
 	if(rate!=len-1){ 
 		$("#msg_rewardRatio").html("请输入0-100之间的数字并加%，例如20%"); //判断%在不在最后一位
 		$("#msg_rewardRatio").css("color", "red");
-		check2 = 0;
-		return check2;
 	}else{
 		var str = rewardRatio.split("%");
 		var digit = str[0];
 		var intRatio = parseFloat(digit);		
 		//alert(JSON.stringify(intRatio));
-		if (intRatio>0 && intRatio< 100) {								
-			$("#msg_rewardRatio").html("输入比例符合要求");
-			$("#msg_rewardRatio").css("color", "green");
-			check2 = 1;
-			return check2;		
+		if (/^\d+(?=\.{0,1}\d+$|$)/.test(digit)) {
+			if (intRatio>0 && intRatio< 100) {								
+				$("#msg_rewardRatio").html("输入比例符合要求");
+				$("#msg_rewardRatio").css("color", "green");
+				check2 = 1;
+				return check2;		
+			}else{
+				$("#msg_rewardRatio").html("请请输入0-100之间的数字并加%，例如20%");
+		        $("#msg_rewardRatio").css("color", "red");
+			}
 		}else{
 			$("#msg_rewardRatio").html("请请输入0-100之间的数字并加%，例如20%");
-	        $("#msg_rewardRatio").css("color", "red");
-	        check2 = 0;
-			return check2;
+	        $("#msg_rewardRatio").css("color", "red");	  
 		}
-	}
-	
+	}	
 }
 
 function checkGrade() {
@@ -109,26 +109,26 @@ function checkGrade() {
 	}else{
 		$("#msg_maxPromotedGrade").html("请输入0-10之间的数字，包括10！");
         $("#msg_maxPromotedGrade").css("color", "red");
-        check3 = 0;
-		return check3;
 	}
 }
 
 function updateReward(){
-	var promotedId=$("#promotedId").val();
 	
+	var promotedId=$("#promotedId").val();	
 	var frozenRatio1=$("#frozenRatio").val();
 	var str1 = frozenRatio1.split("%");
 	var frozenRatio2 = str1[0];  //类型为string
 	var intRatio1 = parseFloat(frozenRatio2);  //类型为number
-	//alert(JSON.stringify(typeof(intRatio1)));
-	var frozenRatio = intRatio1/100;
+	var frozenRatio3 = intRatio1/100;
+	var frozenRatio = frozenRatio3.toString();  //类型为string
+	//alert(JSON.stringify(frozenRatio3));
 	
 	var rewardRatio1=$("#rewardRatio").val();
 	var str2 = rewardRatio1.split("%");
 	var rewardRatio2 = str2[0];
 	var intRatio2 = parseFloat(rewardRatio2);	
-	var rewardRatio = intRatio2/100;
+	var rewardRatio3 = intRatio2/100;
+	var rewardRatio = rewardRatio3.toString();
 	//alert(JSON.stringify(rewardRatio));
 	
 	var maxPromotedGrade=$("#maxPromotedGrade").val();	
@@ -142,6 +142,7 @@ function updateReward(){
 	checkFrozenRate();
 	checkRewardRate();
 	checkGrade();
+	
 	if(check1==1 && check2==1 && check3==1){
 		$.ajax({
 			url:"/api/v1/userCenter/updatePromotedRewardConfig",
@@ -154,6 +155,7 @@ function updateReward(){
 			async : false,
 
 			success:function(res){	
+				//alert(JSON.stringify(res));
 				if(res.code==0){		
 					alert("修改成功");
 					location.reload();
