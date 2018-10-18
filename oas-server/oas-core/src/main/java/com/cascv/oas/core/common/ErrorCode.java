@@ -56,7 +56,11 @@ public enum ErrorCode {
   SEND_SMS_ERROR(10039,"给管理员发送信息失败"),
   UNAUTHENTICATED_ACCESS(10040,"未认证的访问"),
   UNAUTHORIZATED_ACCESS(10041,"未授权的访问"),
-  NO_PERMISSION(10042,"在当前时间段，XXX功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");	
+  NO_WALK_PERMISSION(10042,"在当前时间段，计步奖励功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
+  No_TRANSFER_PERMISSION(10043,"在当前时间段，转账功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
+  No_REVERSEWITHDRAW_PERMISSION(10043,"在当前时间段，充币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
+  No_WITHDRAW_PERMISSION(10043,"在当前时间段，提币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");
+	
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 

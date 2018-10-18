@@ -62,7 +62,7 @@ public class WalkPointBallController {
 		     if(energyBallTakenResult == null)
 			     errorCode= ErrorCode.GENERAL_ERROR;
 		 }else{
-			  errorCode = ErrorCode.NO_PERMISSION;
+			  errorCode = ErrorCode.NO_WALK_PERMISSION;
 		 }	     	
 		 
 		 return new ResponseEntity.Builder<EnergyBallTakenResult>()
