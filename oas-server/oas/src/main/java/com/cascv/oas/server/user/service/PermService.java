@@ -1,5 +1,6 @@
 package com.cascv.oas.server.user.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,10 +28,30 @@ public class PermService {
 	@Autowired
 	private UserRoleModelMapper userRoleModelMapper;
 	
+//	@Autowired
+//	private RoleService roleService;
+	
     public Set<String> getPermsByUserUuid(String uuid){
    	    Set<String> perms=new HashSet<>();    
         List<UserRole> userRoles=userRoleModelMapper.selectAllUserRole(uuid);
-    	Integer roleId=userRoles.get(0).getRoleId();    	
+        
+        /**多个角色
+        Integer roleId;
+        Set<Integer> roleIds=new HashSet<>();
+        for(int j=0;j<userRoles.size();j++){
+            roleId=userRoles.get(j).getRoleId();
+            roleIds.add(roleId);
+        }
+        List<RoleMenuViewModel> rmList= new ArrayList<RoleMenuViewModel>();
+        for(int z=0;z<roleIds.size();z++){
+        	rmList.add(roleMenuMapper.selectAllRoleMenus(roleId).get(z));
+        }
+        for(int k=0;k<rmList.size();k++){
+        	perms.add(rmList.get(k).getMenuName());
+        }
+        **/
+    	        
+    	Integer roleId=userRoles.get(0).getRoleId();
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(roleId);
         for(int i=0;i<rmList.size();i++){
     		@SuppressWarnings("unused")
