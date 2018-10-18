@@ -55,8 +55,8 @@ public enum ErrorCode {
   UNLOGIN_FAILED(10038,"该用户未登录"),
   SEND_SMS_ERROR(10039,"给管理员发送信息失败"),
   UNAUTHENTICATED_ACCESS(10040,"未认证的访问"),
-  UNAUTHORIZATED_ACCESS(10041,"未授权的访问");
-
+  UNAUTHORIZATED_ACCESS(10041,"未授权的访问"),
+  NO_PERMISSION(10042,"在当前时间段，XXX功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");	
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
 
