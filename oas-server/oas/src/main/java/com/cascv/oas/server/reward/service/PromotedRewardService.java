@@ -122,6 +122,7 @@ public class PromotedRewardService {
 	/**
 	 * @author Ming Yang
 	 * @return 0 返回成功
+	 * @return -1失败
 	 */
 	public Integer giveSuperiorsUserImmediatelyReward(PurchaseRecord purchaseRecord,String userUuid) {
 		
