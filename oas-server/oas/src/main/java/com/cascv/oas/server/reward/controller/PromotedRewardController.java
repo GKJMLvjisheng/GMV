@@ -49,6 +49,7 @@ public class PromotedRewardController {
 		promotedRewardModel.setRewardName(promotedRewardModelInfo.getRewardName());
 		BigDecimal frozenRatio=promotedRewardModelInfo.getFrozenRatio();
 		BigDecimal rewardRatio=promotedRewardModelInfo.getRewardRatio();
+		promotedRewardModel.setFrozenRatio(frozenRatio);
 		BigDecimal a=new BigDecimal(1);
 		if(rewardRatio.compareTo(BigDecimal.ZERO)==1 && rewardRatio.compareTo(a)==-1) {
 		promotedRewardModel.setRewardRatio(rewardRatio);
