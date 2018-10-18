@@ -119,9 +119,23 @@ public class PromotedRewardService {
 		BigDecimal immediatelyRewardSum=ImmediatelyRewardSum.divide(i,18,BigDecimal.ROUND_HALF_UP);
 		return immediatelyRewardSum;
 	}
+	
+	/**
+	 * @author Ming Yang
+	 * @param purchaseRecord
+	 * @param userUuid
+	 * @return userMaxMinerGrade
+	 */
+	public Integer getUserMaxMinerGrade(String userUuid) {
+		List<PurchaseRecord> purchaseRecordList=minerMapper.selectByuserUuidMinerStatus(userUuid);
+		Integer userMaxMinerGrade = purchaseRecordList.get(0).getMinerGrade();
+		return userMaxMinerGrade;
+	}
+	
 	/**
 	 * @author Ming Yang
 	 * @return 0 返回成功
+	 * @return -1失败
 	 */
 	public Integer giveSuperiorsUserImmediatelyReward(PurchaseRecord purchaseRecord,String userUuid) {
 		
@@ -132,8 +146,6 @@ public class PromotedRewardService {
 		log.info("userName:{}",userName);
 		double n=Math.pow(2,0);
 		BigDecimal N=new BigDecimal(n);
-//		List<PurchaseRecord> PurchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
-//		PurchaseRecord purchaseRecord=PurchaseRecordList.get(0);//暂时考虑只买了一条矿机记录
 		//购买矿机用户奖励代币
 		UserWallet buyUserWallet=userWalletMapper.selectByUserUuid(userUuid);
 		BigDecimal value=getImmediatelyReardCionCount(purchaseRecord,N);
@@ -143,6 +155,8 @@ public class PromotedRewardService {
 		log.info("buyUser增加记录:{}",userName);
 		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
 		userWalletDetailMapper.insertSelective(userWalletDetail);
+		Integer userMaxMinerGrade=this.getUserMaxMinerGrade(userUuid);
+		log.info("buyUser最大矿机级别:{}",userMaxMinerGrade);
 		//根据注册用户找到他的注册邀请码
 		Integer inviteFrom=userModel.getInviteFrom();
 		Integer maxN=promotedRewardModel.getMaxPromotedGrade();
@@ -158,6 +172,9 @@ public class PromotedRewardService {
 				BigDecimal superiorsN=new BigDecimal(superiorsn);
 				log.info("superiorsN:{}",superiorsN);
 				String superiorsUserUuid=superiorsUserModel.getUuid();
+				Integer superiorsUserMaxMinerGrade=this.getUserMaxMinerGrade(superiorsUserUuid);
+				log.info("superiorsUser最大矿机级别:{}",superiorsUserMaxMinerGrade);
+				if(superiorsUserMaxMinerGrade>=userMaxMinerGrade) {
 				UserWallet superiorsUserWallet=userWalletMapper.selectByUserUuid(superiorsUserUuid);
 				BigDecimal superiorsValue=getImmediatelyReardCionCount(purchaseRecord,superiorsN);
 				log.info("superiorsValue:{}",superiorsValue);
@@ -167,6 +184,10 @@ public class PromotedRewardService {
 				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
+				}else {
+					inviteFrom=superiorsUserModel.getInviteFrom();
+					continue;
+				}
 				log.info("nextInviteFrom:{}",inviteFrom);
 				log.info("N:{}",i);
 				}else {

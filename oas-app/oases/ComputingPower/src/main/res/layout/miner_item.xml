@@ -8,6 +8,7 @@
         android:id="@+id/mMinerItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
         android:padding="10dp">
         <ImageView
             android:id="@+id/mMinerImage"
@@ -77,8 +78,10 @@
             android:layout_toRightOf="@+id/mReduce1"
             android:padding="5dp"
             android:text="5"
+            android:textColor="@color/common_black"
             android:background="@null"
             android:cursorVisible="false"
+            android:inputType="number"
             android:textSize="13dp"/>
         <ImageView
             android:id="@+id/mAdd1"
