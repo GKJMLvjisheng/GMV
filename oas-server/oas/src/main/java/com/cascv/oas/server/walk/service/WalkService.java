@@ -75,16 +75,8 @@ public class WalkService {
 			StepPointQuota stepPointQuota = new StepPointQuota();
 			BigDecimal stepNum = quota.get(i).getStepNum();			
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
-			List<PurchaseRecord> purchaseRcordList = minerMapper.selectByuserUuid(userUuid);
-			BigDecimal powerSum = BigDecimal.ZERO; 
-			for(int j=0; j<purchaseRcordList.size(); j++) {
-				if(purchaseRcordList.get(j).getMinerStatus() == 1) {
-					BigDecimal power = minerService.getPowerSum(purchaseRcordList.get(j).getUuid());
-					powerSum = powerSum.add(power);
-				}				
-			}
 			EnergyWallet energyWallet = energyService.findByUserUuid(userUuid);
-			powerSum = powerSum.add(energyWallet.getPower());
+			BigDecimal powerSum = energyWallet.getPower();
 			BigDecimal point = pointBefore.multiply(powerSum);			
 			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
 			BigDecimal newPoint;
