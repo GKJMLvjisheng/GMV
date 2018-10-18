@@ -21,7 +21,7 @@ public class PurchaseRecord {
 	@Getter @Setter private Integer minerNum;
 	@Getter @Setter private Integer minerPurchaseStatus;
 	@Getter @Setter private Integer finishRewardNumber;
-	@Getter @Setter private String updated;
+	@Getter @Setter private String finishRewardUpdated;
 	@Getter @Setter private BigDecimal priceSum;
 
 }

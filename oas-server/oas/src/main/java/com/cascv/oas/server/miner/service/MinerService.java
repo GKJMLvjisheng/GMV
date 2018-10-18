@@ -152,6 +152,7 @@ public class MinerService {
 		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
+		purchaseRecord.setFinishRewardUpdated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
 	}
