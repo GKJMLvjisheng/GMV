@@ -151,8 +151,10 @@ function initAuthTable(data)
     			width:'220',
     			formatter: function (value, row, index){
     				var value="";
-    					value="&nbsp;&nbsp;&nbsp;&nbsp;"+row.menuName;
-    					
+    				if(row.menuParentId!=0)
+    					value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+row.menuName;
+    				else{
+    					value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+row.menuName;}
     				return value;
     			}
 

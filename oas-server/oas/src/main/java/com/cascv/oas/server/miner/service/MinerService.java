@@ -149,8 +149,10 @@ public class MinerService {
 		purchaseRecord.setMinerPeriod(minerModel.getMinerPeriod());
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
+		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
+		purchaseRecord.setFinishRewardUpdated(now);
 		return minerMapper.insertPurchaseRecord(purchaseRecord);
 		
 	}
@@ -169,7 +171,6 @@ public class MinerService {
 			purchaseRecord.setMinerPower(purchaseRecordList.get(i).getMinerPower());
 			purchaseRecord.setMinerPrice(purchaseRecordList.get(i).getMinerPrice());
 			purchaseRecord.setMinerStatus(purchaseRecordList.get(i).getMinerStatus());
-			purchaseRecord.setMinerPurchaseStatus(purchaseRecordList.get(i).getMinerPurchaseStatus());
 			purchaseRecord.setPriceSum(purchaseRecordList.get(i).getPriceSum());
 			purchaseRecord.setUserUuid(purchaseRecordList.get(i).getUserUuid());
 			purchaseRecord.setUuid(purchaseRecordList.get(i).getUuid());

@@ -55,6 +55,9 @@ class RecycleMinerViewAdapter(
             // holder.mExchangeItemView.mMaxOutput.setText("最高每天可产生".plus(mData.minerMaxOutput.toString().plus("  OAS")))
 
             holder.mExchangeItemView.mMinerNumber.setOnClickListener {
+                /*holder.mExchangeItemView.mMinerNumber.isFocusable = true
+                holder.mExchangeItemView.mMinerNumber.requestFocus()
+                holder.mExchangeItemView.mMinerNumber.requestFocusFromTouch()*/
                 holder.mExchangeItemView.mMinerNumber.isCursorVisible = true
             }
             //实现点击减号数量-1
@@ -63,6 +66,7 @@ class RecycleMinerViewAdapter(
                     holder.mExchangeItemView.mMinerNumber.setText("5")
                 }
                 holder.mExchangeItemView.mMinerNumber.isCursorVisible = false
+                //holder.mExchangeItemView.mMinerNumber.isFocusableInTouchMode = true
                 var mMinerNumberNow = holder.mExchangeItemView.mMinerNumber.text.toString().toInt()
                 if (mMinerNumberNow != 0) {
                     mMinerNumberNow --
@@ -76,6 +80,7 @@ class RecycleMinerViewAdapter(
                     holder.mExchangeItemView.mMinerNumber.setText("5")
                 }
                 holder.mExchangeItemView.mMinerNumber.isCursorVisible = false
+                //holder.mExchangeItemView.mMinerNumber.isFocusableInTouchMode = true
                 var mMinerNumberNow = holder.mExchangeItemView.mMinerNumber.text.toString().toInt()
                 mMinerNumberNow ++
                 holder.mExchangeItemView.mMinerNumber.setText(mMinerNumberNow.toString())
@@ -83,7 +88,7 @@ class RecycleMinerViewAdapter(
 
             holder.mExchangeItemView.mBuyButton.setOnClickListener {
                 Log.d("adapter", "setOnClickListener")
-                    if (subClickListener != null) {
+                    if (subClickListener != null && holder.mExchangeItemView.mMinerNumber.text.toString()!="") {
                         subClickListener!!.onTopicClickListener(holder.mExchangeItemView.mMinerName.text.toString(), holder.mExchangeItemView.mMinerNumber.text.toString().toInt(), mData.minerPrice.multiply(holder.mExchangeItemView.mMinerNumber.text.toString().toBigDecimal()))
                         Log.d("adapter", "qqqqqqq")
                     }

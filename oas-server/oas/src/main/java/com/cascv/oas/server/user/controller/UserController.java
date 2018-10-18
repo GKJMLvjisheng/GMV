@@ -42,8 +42,6 @@ import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.energy.service.PowerService;
-import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
@@ -89,8 +87,6 @@ public class UserController extends BaseShiroController{
 //  @Autowired
 //  private MailBean mailBean;
   @Autowired
-  private PowerService powerService; 
-  @Autowired
   private EthWalletService ethWalletService;	
   @Autowired
   private UserWalletService userWalletService;
@@ -100,13 +96,15 @@ public class UserController extends BaseShiroController{
   private MessageService messageService;
   @Autowired
   private UserRoleModelMapper userRoleModelMapper;
-  
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
+  
+  
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
   String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
   String vcode="";
+  
   
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")

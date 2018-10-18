@@ -6,6 +6,8 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
+import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.common.BaseController;
@@ -20,6 +22,8 @@ import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
+import com.cascv.oas.server.walk.mapper.WalkMapper;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -51,6 +55,10 @@ public class EnergyPointController extends BaseController{
     private EnergyWalletTradeRecordMapper energyWalletTradeRecordMapper;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private ActivityMapper activityMapper;
+    @Autowired
+    private WalkMapper walkMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
     @PostMapping(value = "/checkin")
@@ -156,13 +164,22 @@ public class EnergyPointController extends BaseController{
     @PostMapping(value = "/inquireEnergyPointByCategory")
     @ResponseBody
     public ResponseEntity<?> inquireEnergyPointByCategory(String periodType) {
+    	String userUuid = ShiroUtils.getUserUuid();
+    	Integer status = 0;
+    	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    	BigDecimal point = BigDecimal.ZERO;
+    	List<EnergyPointBall> energyPointBallList = activityMapper.selectAllByUserUuid(userUuid, status, now);
+    	for(int i=0; i<energyPointBallList.size(); i++) {
+    		point = point.add(energyPointBallList.get(i).getPoint());
+    	}
+    	BigDecimal stepNum = walkMapper.selectTodayWalkBall(userUuid, now).getStepNum();
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
-        String[] nameArray = {"手机", "手表", "家电"};
-        Integer[] valueArray = {10000, 5000, 0};
-        Integer[] maxValueArray = {20000, 20000, 20000};
+        String[] nameArray = {"手机", "计步", "手表", "家电"};
+        Integer[] valueArray = {point.intValue(), stepNum.intValue(), 0, 0};
+        Integer[] maxValueArray = {10000, 10000, 20000, 20000};
 
-        for (Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 4; i++) {
             EnergyPointCategory energyPointCategory = new EnergyPointCategory();
             energyPointCategory.setId(i);
             energyPointCategory.setName(nameArray[i]);

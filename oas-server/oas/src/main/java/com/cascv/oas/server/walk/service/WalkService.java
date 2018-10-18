@@ -22,9 +22,6 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
-import com.cascv.oas.server.miner.mapper.MinerMapper;
-import com.cascv.oas.server.miner.model.PurchaseRecord;
-import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
 import com.cascv.oas.server.walk.wrapper.StepNumQuota;
@@ -42,12 +39,6 @@ public class WalkService {
 	
 	@Autowired
 	private ActivityMapper activityMapper;
-	
-	@Autowired
-	private MinerService minerService;
-	
-	@Autowired
-	private MinerMapper minerMapper;
 	
 	@Autowired
 	private EnergyService energyService;
@@ -75,16 +66,8 @@ public class WalkService {
 			StepPointQuota stepPointQuota = new StepPointQuota();
 			BigDecimal stepNum = quota.get(i).getStepNum();			
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
-			List<PurchaseRecord> purchaseRcordList = minerMapper.selectByuserUuid(userUuid);
-			BigDecimal powerSum = BigDecimal.ZERO; 
-			for(int j=0; j<purchaseRcordList.size(); j++) {
-				if(purchaseRcordList.get(j).getMinerStatus() == 1) {
-					BigDecimal power = minerService.getPowerSum(purchaseRcordList.get(j).getUuid());
-					powerSum = powerSum.add(power);
-				}				
-			}
 			EnergyWallet energyWallet = energyService.findByUserUuid(userUuid);
-			powerSum = powerSum.add(energyWallet.getPower());
+			BigDecimal powerSum = energyWallet.getPower();
 			BigDecimal point = pointBefore.multiply(powerSum);			
 			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
 			BigDecimal newPoint;

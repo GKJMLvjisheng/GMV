@@ -103,9 +103,8 @@ function actionFormatter1(value, row, index) {
 	var rewardName = row.rewardName;
 	if(rewardName!="算力"){
 		var intRatio = parseFloat(value);
-		var intRatio1 = intRatio*100;
-		var ch = "%";
-		var intRatio2 = intRatio1+ch;
+		var intRatio1 = (intRatio*100).toFixed(0);
+		var intRatio2 = intRatio1.toString()+"%";
 	    //alert(JSON.stringify(intRatio2));
 	    var result = "";
 	    result += "<span>"+intRatio2+"</span>";
@@ -114,11 +113,12 @@ function actionFormatter1(value, row, index) {
 }
 
 function actionFormatter2(value, row, index) {
-	var ratio = parseFloat(value);
-	var ratio1 = ratio*100;
-	var ch = "%";
-	var ratio2 = ratio1+ch;
-    //alert(JSON.stringify(ratio2));
+	var ratio = parseFloat(value);	
+	var ratio1 =(ratio*100).toFixed(0);	
+	//alert(JSON.stringify(ratio1));	
+	var ratio2 = ratio1.toString()+"%";	
+	//alert(JSON.stringify(ratio2));
+	
     var result = "";
     result += "<span>"+ratio2+"</span>";
     return result;
@@ -141,14 +141,14 @@ function EditRewardById(id){
 	}else if(rewardName=="代币"){
 		document.getElementById("frozen").style.display="block"; 
 	}
-	//alert(JSON.stringify(rows))
+	//alert(JSON.stringify(rows));
 	
-	var frozenRatio1 = rows.frozenRatio*100;
-	var ch = "%";
-	var frozenRatio = frozenRatio1+ch;
+	var frozenRatio1 = (rows.frozenRatio*100).toFixed(0);
+	//var frozenRatio1 = frozenRatio1.toFixed(0);
+	var frozenRatio = frozenRatio1+"%";
 	
-	var rewardRatio1 = rows.rewardRatio*100;
-	var rewardRatio = rewardRatio1+ch;
+	var rewardRatio1 = (rows.rewardRatio*100).toFixed(0);
+	var rewardRatio = rewardRatio1+"%";
 		
     $('#promotedId').val(rows.promotedId);
 	$('#rewardName').val(rows.rewardName);
