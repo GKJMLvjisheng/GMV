@@ -231,4 +231,41 @@
         where uuid = #{uuid};
     </update>
     
+    <resultMap id="SystemParameterMap" type="com.cascv.oas.server.miner.model.SystemParameterModel">
+		<id column="uuid" property="uuid" />
+		<result column="parameter_value" property="parameterValue"/>
+	  	<result column="parameter_name" property="parameterName"/>
+	  	<result column="created" property="created"/>
+	  	<result column="updated" property="updated"/>
+    </resultMap>
+    
+    <insert id="insertSystemParameter" parameterType="com.cascv.oas.server.miner.model.SystemParameterModel">
+        <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
+	      SELECT LAST_INSERT_ID()
+	    </selectKey>
+        insert into system_parameter 
+          (parameter_value, parameter_name, created, updated)
+        values
+          (#{parameterValue}, #{parameterName}, #{created}, #{updated})           
+    </insert>
+    
+    <delete id="deleteSystemParameterByUuid">
+        delete from system_parameter where uuid = #{uuid}
+    </delete>
+    
+    <select id="selectSystemParameter" resultMap="SystemParameterMap">
+        select * from system_parameter
+    </select>
+    
+    <select id="selectSystemParameterByUuid" resultMap="SystemParameterMap">
+        select * from system_parameter where uuid = #{uuid}
+    </select>
+    
+    <update id="updateSystemParameterByUuid" parameterType="com.cascv.oas.server.miner.model.SystemParameterModel">
+        update system_parameter
+         set parameter_value = #{parameterValue},
+             updated = #{updated}
+         where uuid = #{uuid}
+    </update>
+    
 </mapper>

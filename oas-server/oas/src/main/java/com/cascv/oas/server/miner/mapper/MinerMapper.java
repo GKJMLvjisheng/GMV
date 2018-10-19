@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
+import com.cascv.oas.server.miner.model.SystemParameterModel;
 
 
 @Component
@@ -24,6 +25,13 @@ public interface MinerMapper {
 	List<MinerModel> selectAllWebMiner();
 	List<MinerModel> selectAllMiner(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer countNum();
+	
+	
+	Integer insertSystemParameter(SystemParameterModel systemParameterModel);
+	Integer deleteSystemParameterByUuid(@Param("uuid") Integer uuid);
+	List<SystemParameterModel> selectSystemParameter();
+	SystemParameterModel selectSystemParameterByUuid(@Param("uuid") String uuid);
+	Integer updateSystemParameterByUuid(SystemParameterModel systemParameterModel);
 	
 	List<PurchaseRecord> selectAllRecord();
 	List<PurchaseRecord> selectByuserUuid(@Param("userUuid") String userUuid);
