@@ -218,6 +218,9 @@ public class PowerService {
     		if(energyPowerChangeDetail.getValue() != BigDecimal.ZERO) {
     			powerList.add(energyPowerChangeDetail);
     		}
+    		if(energyPowerChangeDetail.getSourceCode() == 12) {
+    			energyPowerChangeDetail.setActivity("矿机失效");
+    		}
     		String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
 			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
