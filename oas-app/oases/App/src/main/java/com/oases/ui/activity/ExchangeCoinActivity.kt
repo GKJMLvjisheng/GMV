@@ -47,6 +47,7 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     private var inItems:ArrayList<PointItem>? =null
     private var balance:String? = "0"
     private var unconfirmedBalance:String? = "0"
+    private var eth:String? = "0"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +60,11 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
 
         mBuyOas.onClick {
            // var pair:Pair<String,String> = Pair<String,String>({"balance":balance,"unconfirmed":unconfirmedBalance})
-            startActivity<OasExchangeToOnlineActivity>("balance" to balance,"unconfirmed" to unconfirmedBalance) //Toast.makeText(this, "即将上线", Toast.LENGTH_SHORT).show()
+            startActivity<OasExchangeToOnlineActivity>("balance" to balance,"unconfirmed" to unconfirmedBalance,"eth" to eth) //Toast.makeText(this, "即将上线", Toast.LENGTH_SHORT).show()
         }
         mExchangeBtn.onClick {
             //var pair:Pair<String,String> = Pair<String,String>("balance",balance?:"")
-            startActivity(intentFor<ExchangeOutActivity>("balance" to balance,"unconfirmed" to unconfirmedBalance).singleTop().clearTop())
+            startActivity(intentFor<ExchangeOutActivity>("balance" to balance,"unconfirmed" to unconfirmedBalance,"eth" to eth).singleTop().clearTop())
         }
         mCoinMoreDetail.onClick {
             val req = InquirePointsDetailReq(1, BaseConstant.PAGE_SIZE)
@@ -178,9 +179,11 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     override fun setCoin(coins: ListCoinResp) {
         balance = coins.userCoin[0].balance.toString()
         unconfirmedBalance = coins.userCoin[0].unconfirmedBalance.toString()
+        eth = coins.userCoin[0].ethBalance.toString()
         nowCoin.setRightTopText(coins.userCoin[0].balance.toString())
         sumCoin.setRightTopText("≈ ¥".plus(coins.userCoin[0].value.toString()))
         waitRorExchange.setRightTopText(coins.userCoin[0].unconfirmedBalance.toString())//AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION)
+        //AppPrefsUtils.putString(BaseConstant.USER_OWN_ETH,coins.userCoin[0].ethBalance.toString())
     }
     override fun getExchangeResult(t: Int) {
         if(t == 1){

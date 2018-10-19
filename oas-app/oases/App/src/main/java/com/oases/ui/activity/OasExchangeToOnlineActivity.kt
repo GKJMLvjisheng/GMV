@@ -53,6 +53,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
         tipRight.setHint(BaseConstant.GAS_PRICE_HIGH.toString().plus(" GWEI"))
         //mFactorTv.text = balance
         mAvailableAmount.text = (balance.toBigDecimal().subtract(unconfirmed.toBigDecimal())).setScale(4,BigDecimal.ROUND_HALF_UP).toString()
+        canUseMoney.text = getIntent().getStringExtra("eth")
 
         //接收方地址
         if(address.length == 42){
@@ -147,7 +148,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
         //手续费计算
         mFactorTv.text = ToolUtil.caculateETH(text.text.toString().toInt(),BaseConstant.GAS_LIMIT)
         //用户账号可用的ETH余额,不知道咋获取
-        canUseMoney.text = getEth()
+       // canUseMoney.text = getEth()
 
         mSeakBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             //SeekBar滚动过程中的回调函数
