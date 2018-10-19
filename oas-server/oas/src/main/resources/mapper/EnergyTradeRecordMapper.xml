@@ -145,6 +145,7 @@
     <result column="source_name" property="activity"/>
     <result column="power_change" property="powerChange"/>
     <result column="in_or_out" property="inOrOut"/>
+    <result column="source_code" property="sourceCode"/>
   </resultMap>
   
   <select id="selectPowerByPage" resultMap="detailPowerResultMap">
@@ -155,7 +156,8 @@
     	U.created as created, 
     	U.in_or_out as in_or_out,
     	T.source_name as source_name, 
-    	T.type as type from power_trade_record U 
+    	T.type as type,
+    	T.source_code as source_code from power_trade_record U 
     	left outer join energy_power_ball A on U.energy_ball_uuid = A.uuid 
     	left outer join activity T on A.source_code = T.source_code
     	where U.user_uuid = #{userUuid} 
