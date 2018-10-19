@@ -22,6 +22,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
+import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
 import com.cascv.oas.server.walk.model.WalkBall;
 import com.cascv.oas.server.walk.wrapper.StepNumQuota;
@@ -41,6 +42,9 @@ public class WalkService {
 	private ActivityMapper activityMapper;
 	
 	@Autowired
+	private MinerMapper minerMapper;
+	
+	@Autowired
 	private EnergyService energyService;
 	
 	private static final Integer SOURCE_CODE_OF_WALKING = 9;             // 能量球来源：计步为9
@@ -48,7 +52,7 @@ public class WalkService {
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;         //能量球活跃状态，可被获取
 	private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;            //能量球死亡状态，不可被获取
 	private static final Integer ENERGY_IN = 1;                            //表示能量球的进账
-	private static final Integer SYSTEM_PARAMETER_UUID = 1;                //表示系统变量的编号
+	private static final Integer SYSTEM_PARAMETER_UUID = 1;                //表示系统变量β的编号
 	
 	private EnergyPointBall energyPointBall = new EnergyPointBall();
 	private PointTradeRecord pointTradeRecord = new PointTradeRecord();
@@ -69,7 +73,8 @@ public class WalkService {
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
 			EnergyWallet energyWallet = energyService.findByUserUuid(userUuid);
 			BigDecimal powerSum = energyWallet.getPower();
-			BigDecimal point = pointBefore.multiply(powerSum);			
+			BigDecimal β = minerMapper.selectSystemParameterByUuid(SYSTEM_PARAMETER_UUID).getParameterValue();
+			BigDecimal point = β.multiply(pointBefore.multiply(powerSum));			
 			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
 			BigDecimal newPoint;
 			if(point.compareTo(maxValue) == -1)
