@@ -81,7 +81,7 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
         mEth.setEqualsValue(if(noShowCoinList!=null) noShowCoinList[0].value else "0".toDouble())
         AppPrefsUtils.putString(BaseConstant.MY_OAS_ADDRESS,userCoinList[0].address)
         AppPrefsUtils.putString(BaseConstant.MY_OAS_PROTOCOL,userCoinList[0].contract)
-        AppPrefsUtils.putString(BaseConstant.USER_OWN_ETH,userCoinList[0].ethBalance.toString())
+        //AppPrefsUtils.putString(BaseConstant.USER_OWN_ETH,userCoinList[0].ethBalance.toString())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
