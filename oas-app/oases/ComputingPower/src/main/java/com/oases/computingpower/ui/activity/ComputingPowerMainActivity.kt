@@ -102,6 +102,10 @@ class ComputingPowerMainActivity :
     }
 
     private fun initView() {
+        //当前算力值
+        mPresenter.inquireCurrentPeriodPoints()
+
+        //活动状态
         mPresenter.inquirePowerActivityStatus()
         val gridManager = GridLayoutManager(this, 3)
        /* gridManager.setSpanSizeLookup(object : GridLayoutManager.SpanSizeLookup() {
@@ -147,7 +151,7 @@ class ComputingPowerMainActivity :
             //mKYC ->startActivity<KYCActivity>()
             mKYC ->intentKYCActivity()
             mModuleConstruction ->toast("即将上线")
-        else -> toast("您已通过此方式提升算力哦！")
+        else -> toast("即将上线")
         }
     }
 
@@ -172,11 +176,6 @@ class ComputingPowerMainActivity :
         val  mModuleConstruction: String = "模块建设中"
 
     }
-
-    /*override fun onResume() {
-        super.onResume()
-        mPresenter.inquirePowerActivityStatus()
-    }*/
 
     override fun onCheckPhoneResult(result: PhoneStatusResp) {
         if (result.mobile=="empty"){
