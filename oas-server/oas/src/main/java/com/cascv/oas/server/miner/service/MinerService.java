@@ -209,9 +209,11 @@ public class MinerService {
 	public synchronized void updateMinerStatus() {
 		log.info("check status ...");
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		log.info("now={}", now);
 		List<PurchaseRecord> purchaseRecordList = minerMapper.selectAllRecord();
 		for(int i=0; i<purchaseRecordList.size(); i++) {
 			String created = purchaseRecordList.get(i).getCreated();
+			log.info("created={}", created);
 			Integer period = purchaseRecordList.get(i).getMinerPeriod();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			log.info("sdf={}",sdf);
@@ -254,7 +256,7 @@ public class MinerService {
 	        .withIdentity("JobDetailB", "groupB").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerB", "groupB")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(28800).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(3600).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("minerService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("check status of miner ...");
