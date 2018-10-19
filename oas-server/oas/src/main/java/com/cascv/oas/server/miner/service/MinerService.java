@@ -57,7 +57,7 @@ public class MinerService {
 	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
-	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
+	
 	
 	private EnergyPowerBall energyPowerBall = new EnergyPowerBall();
 	
