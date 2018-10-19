@@ -71,8 +71,7 @@ public class PromotedRewardService {
 	private EnergyBallMapper energyBallMapper;
 	@Autowired
 	private ActivityMapper activityMapper;
-	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
-	private static final Integer ACTIVITY_CODE_OF_MINER = 11;  //矿机推广奖励
+
 	public List<PromotedRewardModel> selectAllPromotedRewardConfig(){
 		List<PromotedRewardModel> promotedRewardModelList = promotedRewardModelMapper.selectAllPromotedRewards();
 
@@ -198,8 +197,7 @@ public class PromotedRewardService {
 //	      log.info("trade3:{}",trade3);
 		  return toRate;
 	  }
-	  
-	  
+  
 	/**
 	 * @author Ming Yang
 	 * @return immediatelyRewardSum
@@ -245,24 +243,6 @@ public class PromotedRewardService {
 		BigDecimal rewardPowerSum=powerSum.multiply(rewardRatio);
 		BigDecimal toUserPowerReward=rewardPowerSum.divide(i,18,BigDecimal.ROUND_HALF_UP);
 		return toUserPowerReward;
-	}
-	
-	/**
-	 * @author Ming Yang
-	 * @param userUuid
-	 * @param powerSum
-	 */
-	public void addRewardPowerBall(String userUuid, BigDecimal powerSum) {
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-		EnergyPowerBall energyPowerBall = new EnergyPowerBall();
-		energyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-		energyPowerBall.setSourceCode(ACTIVITY_CODE_OF_MINER);
-		energyPowerBall.setUserUuid(userUuid);
-		energyPowerBall.setStatus(STATUS_ACTIVITY_OF_MINER);
-		energyPowerBall.setPower(powerSum);
-		energyPowerBall.setCreated(now);
-		energyPowerBall.setUpdated(now);
-		activityMapper.insertEnergyPowerBall(energyPowerBall);
 	}
 	
 	/**
@@ -456,7 +436,7 @@ public class PromotedRewardService {
 		BigDecimal toBuyUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord, N);
 		log.info("buyUserPower:{}",toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力球:{}",userName);
-		this.addRewardPowerBall(userUuid, toBuyUserPowerRewardCount);
+		minerService.addRewardPowerBall(userUuid, toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力记录:{}",userName);
 		minerService.addMinerPowerTradeRecord(userUuid, toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力奖励:{}",userName);
@@ -483,7 +463,7 @@ public class PromotedRewardService {
 				BigDecimal toSuperiorsUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord,superiorsN);
 				log.info("superiorsUserPower:{}",toSuperiorsUserPowerRewardCount);
 				log.info("superiorsUser增加算力球:{}",superiorsName);
-				this.addRewardPowerBall(userUuid, toSuperiorsUserPowerRewardCount);
+				minerService.addRewardPowerBall(userUuid, toSuperiorsUserPowerRewardCount);
 				log.info("buyUser增加算力记录:{}",superiorsName);
 				minerService.addMinerPowerTradeRecord(userUuid, toSuperiorsUserPowerRewardCount);
 				log.info("buyUser增加算力奖励:{}",superiorsName);

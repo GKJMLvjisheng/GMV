@@ -103,6 +103,7 @@
 	  	<result column="miner_status" property="minerStatus"/>
 	  	<result column="miner_purchase_status" property="minerPurchaseStatus"/>
 	  	<result column="power_reward_status" property="powerRewardStatus"/>
+	  	<result column="reward_energy_ball_uuid" property="rewardEnergyBallUuid"/>
 	  	<result column="finish_reward_number" property="finishRewardNumber"/>
 	  	<result column="finish_reward_updated" property="finishRewardUpdated"/>
 	  	<result column="created" property="created"/>
@@ -111,7 +112,7 @@
     <sql id="purchase_record_List">
   		uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade, 
   		miner_description, miner_price, miner_num, price_sum,miner_power,miner_period,miner_status, 
-  		miner_purchase_status,power_reward_status,finish_reward_number,finish_reward_updated,created
+  		miner_purchase_status,power_reward_status,reward_energy_ball_uuid,finish_reward_number,finish_reward_updated,created
     </sql>
     
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
@@ -125,7 +126,13 @@
 	          miner_description,
 	        </if>
 	         miner_price, miner_num, price_sum, miner_power, 
-	         miner_period, miner_status, finish_reward_number, miner_purchase_status,power_reward_status,created
+	         miner_period, miner_status, 
+	         
+	          <if test="rewardEnergyBallUuid != null">
+	          reward_energy_ball_uuid,
+	          </if>
+	        
+	         finish_reward_number, miner_purchase_status,power_reward_status,created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{uuid}, #{userUuid}, #{energyBallUuid}, #{minerCode}, #{minerName}, #{minerGrade},
@@ -136,7 +143,11 @@
 	           #{minerDescription},
 	        </if>
 	        #{minerPrice}, #{minerNum}, #{priceSum}, #{minerPower}, 
-	        #{minerPeriod}, #{minerStatus},#{finishRewardNumber},#{minerPurchaseStatus},#{powerRewardStatus},#{created}
+	        #{minerPeriod}, #{minerStatus},
+	        <if test="rewardEnergyBallUuid != null">
+	           #{rewardEnergyBallUuid},
+	        </if>
+	        #{finishRewardNumber},#{minerPurchaseStatus},#{powerRewardStatus},#{created}
 	    </trim>            
     </insert>
     
