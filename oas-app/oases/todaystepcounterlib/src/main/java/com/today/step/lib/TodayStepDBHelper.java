@@ -89,6 +89,16 @@ class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBHelper{
         contentValues.put(STEP, todayStepData.getStep());
         getWritableDatabase().insert(TABLE_NAME, null, contentValues);
     }
+/*
+  //Todo we can only keep one step for one day
+    @Override
+    public synchronized void update(TodayStepData todayStepData){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TODAY, todayStepData.getToday());
+        contentValues.put(DATE, todayStepData.getDate());
+        contentValues.put(STEP, todayStepData.getStep());
+        getWritableDatabase().insert(TABLE_NAME, null, contentValues);
+    }*/
 
     @Override
     public synchronized List<TodayStepData> getQueryAll() {

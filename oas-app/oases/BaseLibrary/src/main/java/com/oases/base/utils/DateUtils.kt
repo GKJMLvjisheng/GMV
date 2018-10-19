@@ -1,10 +1,13 @@
 package com.oases.base.utils
 
+import android.util.Log
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.TimeZone
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.xml.datatype.DatatypeConstants.DAYS
+
+
 
 /**
  * 日期工具类 默认使用 "yyyy-MM-dd HH:mm:ss" 格式化日期
@@ -255,6 +258,31 @@ object DateUtils {
     // date要转换的date类型的时间
     fun dateToLong(date: Date): Long {
         return date.time
+    }
+
+    // date format: yyyy-mm-dd
+    val DATE_FORMAT = "yyyy-MM-dd"  //or use "M/d/yyyy"
+
+    fun getDaysBetweenDates(start: String, end: String): Int {
+        val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
+        val startDate: Date
+        val endDate: Date
+        var numberOfDays: Int = 0
+        Log.d("zbb", "days between $start, $end")
+        try {
+            startDate = dateFormat.parse(start)
+            endDate = dateFormat.parse(end)
+            numberOfDays = getUnitBetweenDates(startDate, endDate, TimeUnit.DAYS).toInt()
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+
+        return numberOfDays
+    }
+
+    private fun getUnitBetweenDates(startDate: Date, endDate: Date, unit: TimeUnit): Long {
+        val timeDiff = endDate.time - startDate.time
+        return unit.convert(timeDiff, TimeUnit.MILLISECONDS)
     }
 
     //当前时间毫秒数

@@ -214,8 +214,8 @@ public class PowerService {
     	List<EnergyPowerChangeDetail> powerList = new ArrayList<>();
     	
     	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
-    		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange().intValue());
-    		if(energyPowerChangeDetail.getValue() != 0) {
+    		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange());
+    		if(energyPowerChangeDetail.getValue() != BigDecimal.ZERO) {
     			powerList.add(energyPowerChangeDetail);
     		}
     		String srcFormater="yyyy-MM-dd HH:mm:ss";

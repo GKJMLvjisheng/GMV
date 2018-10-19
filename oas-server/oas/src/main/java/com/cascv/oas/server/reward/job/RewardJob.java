@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RewardJob implements Job {
-	@Autowired
-	private PermService permService;
+//	@Autowired
+//	private PermService permService;
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		log.info("job detection buy miner running\n");
@@ -22,6 +22,9 @@ public class RewardJob implements Job {
 		if (promotedRewardService != null) {
 //            if(flag==true)
 			promotedRewardService.checkUserWhetherBuyMiner();
+			promotedRewardService.giveUserPowerRewardBuyMiner();
+			promotedRewardService.decreaseUserPowerRewardBuyMiner();
+//			promotedRewardService.checkBuyUserMinerRedeem();
 //            else
 //            log.info("no permission to do reward job");
 		}

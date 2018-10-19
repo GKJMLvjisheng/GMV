@@ -1,4 +1,5 @@
 package com.cascv.oas.server.blockchain.mapper;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -12,4 +13,6 @@ public interface UserWalletTradeRecordMapper {
 	List<WalletTotalTradeRecordInfo> selectAllOutTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
 	List<WalletTotalTradeRecordInfo> selectAllInTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
 	List<WalletTotalTradeRecordInfo> selectAllUserBalanceRecord();
+	
+	BigDecimal selectUserPointToOas(@Param("userUuid") String userUuid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

@@ -1,4 +1,4 @@
 package com.oases.data.protocol.WalkPoint
 
-class InquireWalkPointResp {
-}
+data class WalkType(val startDate: String)
+data class InquireWalkPointResp(val data: List<WalkType>)

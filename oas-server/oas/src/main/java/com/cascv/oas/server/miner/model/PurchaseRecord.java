@@ -20,6 +20,8 @@ public class PurchaseRecord {
 	@Getter @Setter private String created;
 	@Getter @Setter private Integer minerNum;
 	@Getter @Setter private Integer minerPurchaseStatus;
+	@Getter @Setter private String rewardEnergyBallUuid;
+	@Getter @Setter private Integer powerRewardStatus;
 	@Getter @Setter private Integer finishRewardNumber;
 	@Getter @Setter private String finishRewardUpdated;
 	@Getter @Setter private BigDecimal priceSum;
