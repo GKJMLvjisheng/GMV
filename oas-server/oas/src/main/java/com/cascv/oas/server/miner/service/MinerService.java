@@ -60,7 +60,7 @@ public class MinerService {
 	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
 	
 	private EnergyPowerBall energyPowerBall = new EnergyPowerBall();
-	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
+	
 	//得到用户购买的矿机的全部信息
 	public List<PurchaseRecord> getUserMiner(String userUuid){
 		List<PurchaseRecord> userMinerList = minerMapper.selectByuserUuid(userUuid);
@@ -88,25 +88,6 @@ public class MinerService {
 		energyPowerBall.setCreated(now);
 		energyPowerBall.setUpdated(now);
 		activityMapper.insertEnergyPowerBall(energyPowerBall);
-	}
-	
-	/**
-	 * @author Ming Yang
-	 * Date:20181019
-	 * @param userUuid
-	 * @param powerSum
-	 *            增加奖励算力球记录
-	 */
-	public void addRewardPowerBall(String userUuid, BigDecimal powerSum) {
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-		rewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-		rewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_MINER);
-		rewardEnergyPowerBall.setUserUuid(userUuid);
-		rewardEnergyPowerBall.setStatus(STATUS_ACTIVITY_OF_MINER);
-		rewardEnergyPowerBall.setPower(powerSum);
-		rewardEnergyPowerBall.setCreated(now);
-		rewardEnergyPowerBall.setUpdated(now);
-		activityMapper.insertEnergyPowerBall(rewardEnergyPowerBall);
 	}
 	
 	//往power_trade_recocrd插入算力增加的记录
@@ -157,6 +138,7 @@ public class MinerService {
 		MinerModel minerModel = minerMapper.inquireByMinerName(minerName);
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		PurchaseRecord purchaseRecord = new PurchaseRecord();
+		String rewardEnergyBallUuid="not exist";
 		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
 		purchaseRecord.setUserUuid(userUuid);
 		purchaseRecord.setEnergyBallUuid(energyPowerBall.getUuid());
@@ -171,7 +153,7 @@ public class MinerService {
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
 		purchaseRecord.setPowerRewardStatus(POWER_REWARD_STATUS);
-		purchaseRecord.setRewardEnergyBallUuid(rewardEnergyPowerBall.getUuid());
+		purchaseRecord.setRewardEnergyBallUuid(rewardEnergyBallUuid);
 		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);

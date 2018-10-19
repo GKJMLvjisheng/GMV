@@ -17,6 +17,7 @@ import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.EnergyPowerBall;
+import com.cascv.oas.server.activity.model.PowerTradeRecord;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
@@ -72,6 +73,17 @@ public class PromotedRewardService {
 	@Autowired
 	private ActivityMapper activityMapper;
 
+	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
+	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
+	private static final Integer MINER_PURCHASE_STATUS = 0;  //矿机推广立即奖励未完成
+	private static final Integer POWER_REWARD_STATUS = 0;  //矿机推广算力立即奖励未完成
+	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
+	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
+	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
+	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
+	
+	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
+	
 	public List<PromotedRewardModel> selectAllPromotedRewardConfig(){
 		List<PromotedRewardModel> promotedRewardModelList = promotedRewardModelMapper.selectAllPromotedRewards();
 
@@ -151,6 +163,44 @@ public class PromotedRewardService {
 //		 }
 //		  log.info("end reward buy miner redeem job");
 //	  }
+	  
+		/**
+		 * @author Ming Yang
+		 * Date:20181019
+		 * @param userUuid
+		 * @param powerSum
+		 *            增加奖励算力球记录
+		 */
+		public void addRewardPowerBall(String userUuid, BigDecimal powerSum) {
+			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+			rewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+			rewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_MINER);
+			rewardEnergyPowerBall.setUserUuid(userUuid);
+			rewardEnergyPowerBall.setStatus(STATUS_ACTIVITY_OF_MINER);
+			rewardEnergyPowerBall.setPower(powerSum);
+			rewardEnergyPowerBall.setCreated(now);
+			rewardEnergyPowerBall.setUpdated(now);
+			activityMapper.insertEnergyPowerBall(rewardEnergyPowerBall);
+		}
+		
+		/**
+		 * @author Ming Yang
+		 * @param userUuid
+		 * @param powerSum
+		 *      增加算力奖励记录
+		 */
+		public void addRewardPowerTradeRecord(String userUuid, BigDecimal powerSum) {
+			PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
+			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+			powerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+			powerTradeRecord.setUserUuid(userUuid);
+			powerTradeRecord.setEnergyBallUuid(rewardEnergyPowerBall.getUuid());
+			powerTradeRecord.setInOrOut(ENEGY_IN);
+			powerTradeRecord.setPowerChange(powerSum);
+			powerTradeRecord.setCreated(now);
+			powerTradeRecord.setStatus(STATUS_ACTIVITY_OF_MINER);
+			activityMapper.insertPowerTradeRecord(powerTradeRecord);
+		}
 	  
 	  /**
 	   * @author Ming Yang
@@ -436,9 +486,9 @@ public class PromotedRewardService {
 		BigDecimal toBuyUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord, N);
 		log.info("buyUserPower:{}",toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力球:{}",userName);
-		minerService.addRewardPowerBall(userUuid, toBuyUserPowerRewardCount);
+		this.addRewardPowerBall(userUuid, toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力记录:{}",userName);
-		minerService.addMinerPowerTradeRecord(userUuid, toBuyUserPowerRewardCount);
+		this.addRewardPowerTradeRecord(userUuid, toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力奖励:{}",userName);
 		activityMapper.increasePower(userUuid, toBuyUserPowerRewardCount, updated);
 		Integer userMaxMinerGrade=this.getUserMaxMinerGrade(userUuid);
@@ -463,9 +513,9 @@ public class PromotedRewardService {
 				BigDecimal toSuperiorsUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord,superiorsN);
 				log.info("superiorsUserPower:{}",toSuperiorsUserPowerRewardCount);
 				log.info("superiorsUser增加算力球:{}",superiorsName);
-				minerService.addRewardPowerBall(userUuid, toSuperiorsUserPowerRewardCount);
+				this.addRewardPowerBall(userUuid, toSuperiorsUserPowerRewardCount);
 				log.info("buyUser增加算力记录:{}",superiorsName);
-				minerService.addMinerPowerTradeRecord(userUuid, toSuperiorsUserPowerRewardCount);
+				this.addRewardPowerTradeRecord(userUuid, toSuperiorsUserPowerRewardCount);
 				log.info("buyUser增加算力奖励:{}",superiorsName);
 				activityMapper.increasePower(userUuid, toSuperiorsUserPowerRewardCount, updated);
 				inviteFrom=superiorsUserModel.getInviteFrom();
