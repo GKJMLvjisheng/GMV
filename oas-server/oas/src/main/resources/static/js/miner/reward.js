@@ -83,16 +83,16 @@ function checkRewardRate() {
 		//alert(JSON.stringify(intRatio));
 		if (/^\d+(?=\.{0,1}\d+$|$)/.test(digit)) {
 			if (intRatio>0 && intRatio< 100) {								
-				$("#msg_rewardRatio").html("输入比例符合要求");
+				$("#msg_rewardRatio").html("输入比例符合要求");  // (?=(">)) 表示 匹配以(">)结尾的字符串，并且捕获(存储)到分组中
 				$("#msg_rewardRatio").css("color", "green");
 				check2 = 1;
 				return check2;		
 			}else{
-				$("#msg_rewardRatio").html("请请输入0-100之间的数字并加%，例如20%");
+				$("#msg_rewardRatio").html("请输入0-100之间的数字并加%，例如20%");
 		        $("#msg_rewardRatio").css("color", "red");
 			}
 		}else{
-			$("#msg_rewardRatio").html("请请输入0-100之间的数字并加%，例如20%");
+			$("#msg_rewardRatio").html("请输入0-100之间的数字并加%，例如20%");
 	        $("#msg_rewardRatio").css("color", "red");	  
 		}
 	}	

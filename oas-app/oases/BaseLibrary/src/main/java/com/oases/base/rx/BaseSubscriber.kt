@@ -1,5 +1,6 @@
 package com.oases.base.rx
 
+import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter.printStackTrace
 import com.oases.base.presenter.view.BaseView
@@ -26,6 +27,9 @@ open class BaseSubscriber<T>(val baseView: BaseView) : Observer<T> {
     override fun onError(e: Throwable) {
         baseView.hideLoading()
         if (e is BaseException) {
+            if (e.code == 10001){
+                //finish(), todo
+            }
             baseView.onError(e.msg)
         } else if (e is DataNullException){
             baseView.onDataIsNull()

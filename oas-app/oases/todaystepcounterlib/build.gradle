@@ -18,7 +18,7 @@ android {
             buildConfigField "boolean", "TODAY_STEP_DEBUG", "true"
         }
         release {
-            buildConfigField "boolean", "TODAY_STEP_DEBUG", "false"
+            buildConfigField "boolean", "TODAY_STEP_DEBUG", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

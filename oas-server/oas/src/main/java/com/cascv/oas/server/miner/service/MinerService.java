@@ -53,9 +53,11 @@ public class MinerService {
 	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer MINER_PURCHASE_STATUS = 0;  //矿机推广立即奖励未完成
+	private static final Integer POWER_REWARD_STATUS = 0;  //矿机推广算力立即奖励未完成
 	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
+	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
 	
 	private EnergyPowerBall energyPowerBall = new EnergyPowerBall();
 	
@@ -115,7 +117,7 @@ public class MinerService {
 		powerTradeRecord.setCreated(now);
 		activityMapper.insertPowerTradeRecord(powerTradeRecord);
 	}
-
+    
 	
 	//安卓前端显示目前可给购买的矿机的信息
 	public List<MinerModel> selectAllMiner(Integer offset, Integer limit){
@@ -136,6 +138,7 @@ public class MinerService {
 		MinerModel minerModel = minerMapper.inquireByMinerName(minerName);
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		PurchaseRecord purchaseRecord = new PurchaseRecord();
+		String rewardEnergyBallUuid="not exist";
 		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
 		purchaseRecord.setUserUuid(userUuid);
 		purchaseRecord.setEnergyBallUuid(energyPowerBall.getUuid());
@@ -149,6 +152,8 @@ public class MinerService {
 		purchaseRecord.setMinerPeriod(minerModel.getMinerPeriod());
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
+		purchaseRecord.setPowerRewardStatus(POWER_REWARD_STATUS);
+		purchaseRecord.setRewardEnergyBallUuid(rewardEnergyBallUuid);
 		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
