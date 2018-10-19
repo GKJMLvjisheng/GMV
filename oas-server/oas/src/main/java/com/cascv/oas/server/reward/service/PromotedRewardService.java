@@ -171,7 +171,7 @@ public class PromotedRewardService {
 		 * @param powerSum
 		 *            增加奖励算力球记录
 		 */
-		public void addRewardPowerBall(String userUuid, BigDecimal powerSum) {
+		public void addRewardPowerBall(PurchaseRecord purchaseRecord,String userUuid, BigDecimal powerSum) {
 			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			rewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 			rewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_MINER);
@@ -181,13 +181,19 @@ public class PromotedRewardService {
 			rewardEnergyPowerBall.setCreated(now);
 			rewardEnergyPowerBall.setUpdated(now);
 			activityMapper.insertEnergyPowerBall(rewardEnergyPowerBall);
+			//更新购买记录中算力球产生信息
+			String rewardEnergyBallUuid=rewardEnergyPowerBall.getUuid();
+			String purchaseRecordUuid=purchaseRecord.getUuid();
+			purchaseRecord.setUuid(purchaseRecordUuid);
+			purchaseRecord.setRewardEnergyBallUuid(rewardEnergyBallUuid);
+			minerMapper.updateByRewardEnergyBallUuid(purchaseRecord);
 		}
 		
 		/**
 		 * @author Ming Yang
 		 * @param userUuid
 		 * @param powerSum
-		 *      增加算力奖励记录
+		 *       增加算力奖励记录
 		 */
 		public void addRewardPowerTradeRecord(String userUuid, BigDecimal powerSum) {
 			PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
@@ -486,7 +492,7 @@ public class PromotedRewardService {
 		BigDecimal toBuyUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord, N);
 		log.info("buyUserPower:{}",toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力球:{}",userName);
-		this.addRewardPowerBall(userUuid, toBuyUserPowerRewardCount);
+		this.addRewardPowerBall(purchaseRecord, userUuid, toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力记录:{}",userName);
 		this.addRewardPowerTradeRecord(userUuid, toBuyUserPowerRewardCount);
 		log.info("buyUser增加算力奖励:{}",userName);
@@ -513,11 +519,11 @@ public class PromotedRewardService {
 				BigDecimal toSuperiorsUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord,superiorsN);
 				log.info("superiorsUserPower:{}",toSuperiorsUserPowerRewardCount);
 				log.info("superiorsUser增加算力球:{}",superiorsName);
-				this.addRewardPowerBall(userUuid, toSuperiorsUserPowerRewardCount);
+				this.addRewardPowerBall(purchaseRecord,superiorsUserUuid,toSuperiorsUserPowerRewardCount);
 				log.info("buyUser增加算力记录:{}",superiorsName);
-				this.addRewardPowerTradeRecord(userUuid, toSuperiorsUserPowerRewardCount);
+				this.addRewardPowerTradeRecord(superiorsUserUuid,toSuperiorsUserPowerRewardCount);
 				log.info("buyUser增加算力奖励:{}",superiorsName);
-				activityMapper.increasePower(userUuid, toSuperiorsUserPowerRewardCount, updated);
+				activityMapper.increasePower(superiorsUserUuid,toSuperiorsUserPowerRewardCount,updated);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {
 					inviteFrom=superiorsUserModel.getInviteFrom();

@@ -35,6 +35,7 @@ public interface MinerMapper {
 	Integer updateStatusByUuid(@Param("uuid") String uuid);
 	List<PurchaseRecord> selectByMinerPurchaseStatus();
 	List<PurchaseRecord> selectByMinerStatusPowerRewardStatus();
+	Integer updateByRewardEnergyBallUuid(PurchaseRecord purchaseRecord);
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatus(PurchaseRecord purchaseRecord);
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 

@@ -197,6 +197,12 @@
         where uuid = #{uuid}
     </update>
     
+     <update id="updateByRewardEnergyBallUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+      set reward_energy_ball_uuid = #{rewardEnergyBallUuid} 
+        where uuid = #{uuid}
+    </update>
+    
     
     <select id="selectByUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
