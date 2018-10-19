@@ -246,7 +246,7 @@ public class ComputingPowerController {
 		Integer count = energyService.countEnergyChange(ShiroUtils.getUserUuid());                
         PageDomain<EnergyPowerChangeDetail> pageEnergyPowerDetail = new PageDomain<>();
         pageEnergyPowerDetail.setTotal(count);
-        pageEnergyPowerDetail.setAsc("asc");
+        pageEnergyPowerDetail.setAsc("desc");
         pageEnergyPowerDetail.setOffset(offset);
         pageEnergyPowerDetail.setPageNum(pageNum);
         pageEnergyPowerDetail.setPageSize(pageSize);

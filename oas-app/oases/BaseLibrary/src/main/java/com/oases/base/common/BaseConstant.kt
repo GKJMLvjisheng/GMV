@@ -46,7 +46,7 @@ class BaseConstant{
         const val OUT_ITEM = "out_item"
         const val IN_ITEM = "in_item"
 
-        const val PAGE_SIZE = 10 //100
+        const val PAGE_SIZE = 50 //100
         const val GAS_LIMIT = 60000
         const val GAS_AMOUNT = 37247
         const val GAS_PRICE_LOW = 1 //seekbar显示的最小值

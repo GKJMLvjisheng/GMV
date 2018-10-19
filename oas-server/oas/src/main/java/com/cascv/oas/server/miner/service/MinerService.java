@@ -58,6 +58,7 @@ public class MinerService {
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
 	
+	
 	private EnergyPowerBall energyPowerBall = new EnergyPowerBall();
 	
 	//得到用户购买的矿机的全部信息
@@ -116,7 +117,7 @@ public class MinerService {
 		powerTradeRecord.setCreated(now);
 		activityMapper.insertPowerTradeRecord(powerTradeRecord);
 	}
-
+    
 	
 	//安卓前端显示目前可给购买的矿机的信息
 	public List<MinerModel> selectAllMiner(Integer offset, Integer limit){
@@ -137,6 +138,7 @@ public class MinerService {
 		MinerModel minerModel = minerMapper.inquireByMinerName(minerName);
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		PurchaseRecord purchaseRecord = new PurchaseRecord();
+		String rewardEnergyBallUuid="not exist";
 		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
 		purchaseRecord.setUserUuid(userUuid);
 		purchaseRecord.setEnergyBallUuid(energyPowerBall.getUuid());
@@ -151,6 +153,7 @@ public class MinerService {
 		purchaseRecord.setMinerStatus(STATUS_ACTIVITY_OF_MINER);
 		purchaseRecord.setMinerPurchaseStatus(MINER_PURCHASE_STATUS);
 		purchaseRecord.setPowerRewardStatus(POWER_REWARD_STATUS);
+		purchaseRecord.setRewardEnergyBallUuid(rewardEnergyBallUuid);
 		purchaseRecord.setFinishRewardNumber(0);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
@@ -206,9 +209,11 @@ public class MinerService {
 	public synchronized void updateMinerStatus() {
 		log.info("check status ...");
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		log.info("now={}", now);
 		List<PurchaseRecord> purchaseRecordList = minerMapper.selectAllRecord();
 		for(int i=0; i<purchaseRecordList.size(); i++) {
 			String created = purchaseRecordList.get(i).getCreated();
+			log.info("created={}", created);
 			Integer period = purchaseRecordList.get(i).getMinerPeriod();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			log.info("sdf={}",sdf);
@@ -251,7 +256,7 @@ public class MinerService {
 	        .withIdentity("JobDetailB", "groupB").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerB", "groupB")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(28800).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(3600).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("minerService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("check status of miner ...");

@@ -239,12 +239,13 @@
     </select>
     
     <select id="selectAllByUserUuid" resultMap="EnergyPointBall">
-        select 
-          <include refid="Energy_Point_Ball_List" />
-        from energy_point_ball where 
-          user_uuid = #{userUuid} and
-          status = #{status} and
-          updated like #{updated}"%"
+        select * from energy_point_ball A
+         left join activity B on A.source_code = B.source_code
+          where 
+          A.user_uuid = #{userUuid} and
+          A.status = #{status} and
+          updated like #{updated}"%" and
+          B.type = '手机'
     </select>
     
   <!-- 插入积分球 -->
