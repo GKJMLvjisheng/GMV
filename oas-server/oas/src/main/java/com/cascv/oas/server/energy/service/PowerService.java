@@ -218,7 +218,7 @@ public class PowerService {
     		if(energyPowerChangeDetail.getValue() != BigDecimal.ZERO) {
     			powerList.add(energyPowerChangeDetail);
     		}
-    		if(energyPowerChangeDetail.getSourceCode() == 12) {
+    		if(energyPowerChangeDetail.getSourceCode() == 10 && energyPowerChangeDetail.getInOrOut() == 0) {
     			energyPowerChangeDetail.setActivity("矿机失效");
     		}
     		String srcFormater="yyyy-MM-dd HH:mm:ss";
