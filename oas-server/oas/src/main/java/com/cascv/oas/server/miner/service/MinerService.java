@@ -204,9 +204,11 @@ public class MinerService {
 	public synchronized void updateMinerStatus() {
 		log.info("check status ...");
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		System.out.println(now);
 		List<PurchaseRecord> purchaseRecordList = minerMapper.selectAllRecord();
 		for(int i=0; i<purchaseRecordList.size(); i++) {
 			String created = purchaseRecordList.get(i).getCreated();
+			System.out.println(created);
 			Integer period = purchaseRecordList.get(i).getMinerPeriod();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			log.info("sdf={}",sdf);
