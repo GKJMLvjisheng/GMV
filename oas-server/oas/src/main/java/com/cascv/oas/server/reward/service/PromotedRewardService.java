@@ -32,7 +32,6 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
-import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.reward.job.RewardJob;
 import com.cascv.oas.server.reward.mapper.PromotedRewardModelMapper;
 import com.cascv.oas.server.reward.model.PromotedRewardModel;
@@ -62,8 +61,6 @@ public class PromotedRewardService {
 	private SchedulerService schedulerService;
 	@Autowired
 	private ExchangeRateService exchangeRateService;
-	@Autowired
-	private MinerService minerService;
 	@Autowired 
 	private UserWalletDetailMapper userWalletDetailMapper;
 	@Autowired 
@@ -74,16 +71,13 @@ public class PromotedRewardService {
 	private ActivityMapper activityMapper;
 
 	private static final Integer STATUS_ACTIVITY_OF_MINER = 1;  //矿机处于工作状态
-	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
-	private static final Integer MINER_PURCHASE_STATUS = 0;  //矿机推广立即奖励未完成
-	private static final Integer POWER_REWARD_STATUS = 0;  //矿机推广算力立即奖励未完成
-	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
+	private static final Integer STATUS_DIE_OF_MINER = 0;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
 	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
-	
+	private static final Integer REWARD_CODE_OF_DIE_MINER = 12;  //矿机推广奖励到期
 	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
-	
+	private EnergyPowerBall decreaseRewardEnergyPowerBall = new EnergyPowerBall();
 	public List<PromotedRewardModel> selectAllPromotedRewardConfig(){
 		List<PromotedRewardModel> promotedRewardModelList = promotedRewardModelMapper.selectAllPromotedRewards();
 
@@ -110,7 +104,7 @@ public class PromotedRewardService {
 	        .withIdentity("JobDetailC", "groupC").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(120).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("promotedRewardService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("add reward job ...");
@@ -143,6 +137,19 @@ public class PromotedRewardService {
 			  }
 		  }
 	  }
+	  public synchronized void decreaseUserPowerRewardBuyMiner() {
+		  log.info(" check decrease user power reward...");
+		  List<PurchaseRecord> purchaseRecordList = minerMapper.selectByMinerStatusPowerRewardStatusToDecrease();
+		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+				  String userUuid=purchaseRecord.getUserUuid();
+				  this.decreaseSuperiorsUserPowerReward(purchaseRecord, userUuid);
+				  minerMapper.updateByPowerRewardStatusToDecrease(purchaseRecord);
+				  log.info("end decrease power job ...");
+			  }
+		  }
+	  }
+	  
 //	  public synchronized void checkBuyUserMinerRedeem() {
 //		  log.info("check all buy users whether buy miner redeem");
 //		  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
@@ -191,6 +198,33 @@ public class PromotedRewardService {
 		
 		/**
 		 * @author Ming Yang
+		 * @param purchaseRecord
+		 * @param userUuid
+		 * @param powerSum
+		 *         增加删除算力的球
+		 */
+		public void addDecreaseRewardPowerBall(PurchaseRecord purchaseRecord,String userUuid, BigDecimal powerSum) {
+			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+			decreaseRewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
+			decreaseRewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_DIE_MINER);
+			decreaseRewardEnergyPowerBall.setUserUuid(userUuid);
+			decreaseRewardEnergyPowerBall.setStatus(STATUS_DIE_OF_MINER);
+			decreaseRewardEnergyPowerBall.setPower(powerSum);
+			decreaseRewardEnergyPowerBall.setCreated(now);
+			decreaseRewardEnergyPowerBall.setUpdated(now);
+			activityMapper.insertEnergyPowerBall(decreaseRewardEnergyPowerBall);
+			//更新购买记录中算力球产生信息
+			String decreaseRewardEnergyBallUuid=decreaseRewardEnergyPowerBall.getUuid();
+			String purchaseRecordUuid=purchaseRecord.getUuid();
+			purchaseRecord.setUuid(purchaseRecordUuid);
+			purchaseRecord.setRewardEnergyBallUuid(decreaseRewardEnergyBallUuid);
+			minerMapper.updateByRewardEnergyBallUuid(purchaseRecord);
+		}
+		
+		
+		
+		/**
+		 * @author Ming Yang
 		 * @param userUuid
 		 * @param powerSum
 		 *       增加算力奖励记录
@@ -207,7 +241,25 @@ public class PromotedRewardService {
 			powerTradeRecord.setStatus(STATUS_ACTIVITY_OF_MINER);
 			activityMapper.insertPowerTradeRecord(powerTradeRecord);
 		}
-	  
+		/**
+		 * @author Ming Yang
+		 * @param userUuid
+		 * @param powerSum
+		 *       增加算力消失原因记录
+		 */
+		public void addDecreaseRewardPowerTradeRecord(String userUuid, BigDecimal powerSum) {
+			PowerTradeRecord powerTradeRecord = new PowerTradeRecord();
+			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+			powerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+			powerTradeRecord.setUserUuid(userUuid);
+			powerTradeRecord.setEnergyBallUuid(decreaseRewardEnergyPowerBall.getUuid());
+			powerTradeRecord.setInOrOut(ENEGY_OUT);
+			powerTradeRecord.setPowerChange(powerSum);
+			powerTradeRecord.setCreated(now);
+			powerTradeRecord.setStatus(STATUS_DIE_OF_MINER);
+			activityMapper.insertPowerTradeRecord(powerTradeRecord);
+		}
+		
 	  /**
 	   * @author Ming Yang
 	   * @return 获取用户在特定时间获取的积分转换成的代币积累
@@ -540,5 +592,68 @@ public class PromotedRewardService {
 		}else {
 			return -1;
 		}
+	}
+	
+	/**
+	 * @author Ming Yang
+	 * @param purchaseRecord
+	 * @param userUuid
+	 * @return   减少各级用户算力奖励
+	 */
+	public Integer decreaseSuperiorsUserPowerReward(PurchaseRecord purchaseRecord,String userUuid) {
+		String rewardCoinName="算力";
+		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
+		UserModel userModel=userModelMapper.selectByUuid(userUuid);
+		String userName=userModel.getName();
+		log.info("userName:{}",userName);
+		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
+		double n=Math.pow(2,0);//2的幂次方
+		BigDecimal N=new BigDecimal(n);
+		//最大反奖励等级用户
+		Integer maxN=promotedRewardModel.getMaxPromotedGrade();
+		log.info("maxN:{}",maxN);
+		BigDecimal toBuyUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord, N);
+		log.info("buyUserPower:{}",toBuyUserPowerRewardCount);
+		log.info("buyUser增加减少算力球:{}",userName);
+		this.addDecreaseRewardPowerBall(purchaseRecord, userUuid, toBuyUserPowerRewardCount);
+		log.info("buyUser增加算力记录:{}",userName);
+		this.addDecreaseRewardPowerTradeRecord(userUuid, toBuyUserPowerRewardCount);
+		log.info("buyUser减少算力奖励:{}",userName);
+		activityMapper.decreasePower(userUuid, toBuyUserPowerRewardCount, updated);
+		//根据注册用户找到他的注册邀请码
+		Integer inviteFrom=userModel.getInviteFrom();
+		
+		if(inviteFrom != 0) {
+			for(int i=1;i<maxN;i++) 
+			{
+				UserModel superiorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(inviteFrom);
+				if(superiorsUserModel !=null){
+				String superiorsName=superiorsUserModel.getName();
+				log.info("superiorsName:{}",superiorsName);
+				double superiorsn=Math.pow(2,i);
+				BigDecimal superiorsN=new BigDecimal(superiorsn);
+				log.info("superiorsN:{}",superiorsN);
+				String superiorsUserUuid=superiorsUserModel.getUuid();
+				BigDecimal toSuperiorsUserPowerRewardCount=this.getPowerRewardCount(purchaseRecord,superiorsN);
+				log.info("superiorsUserPower:{}",toSuperiorsUserPowerRewardCount);
+				log.info("superiorsUser增加减少算力球:{}",superiorsName);
+				this.addDecreaseRewardPowerBall(purchaseRecord,superiorsUserUuid,toSuperiorsUserPowerRewardCount);
+				log.info("buyUser增加算力记录:{}",superiorsName);
+				this.addDecreaseRewardPowerTradeRecord(superiorsUserUuid,toSuperiorsUserPowerRewardCount);
+				log.info("buyUser减少算力奖励:{}",superiorsName);
+				activityMapper.decreasePower(superiorsUserUuid,toSuperiorsUserPowerRewardCount,updated);
+				inviteFrom=superiorsUserModel.getInviteFrom();
+				log.info("nextInviteFrom:{}",inviteFrom);
+				log.info("N:{}",i);
+				}else {
+					log.info("Nnext:{}",i);
+					break;
+				}
+			}
+			return 0;
+		}else {
+			return -1;
+		}
+		
 	}
 }

@@ -166,6 +166,10 @@
      where miner_status=1 and power_reward_status=0;
     </select>  
     
+    <select id="selectByMinerStatusPowerRewardStatusToDecrease" resultMap="purchaseRecordMap">
+     select <include refid="purchase_record_List" /> from purchase_record 
+     where miner_status=0 and power_reward_status=2;
+    </select> 
     
    <select id="selectByuserUuidMinerStatus" resultMap="purchaseRecordMap">
     select <include refid="purchase_record_List" /> from purchase_record 
@@ -197,12 +201,23 @@
         where uuid = #{uuid}
     </update>
     
+        <update id="updateByPowerRewardStatusToDecrease" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+          set power_reward_status = 3 
+        where uuid = #{uuid}
+    </update>
+    
      <update id="updateByRewardEnergyBallUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
      update purchase_record
       set reward_energy_ball_uuid = #{rewardEnergyBallUuid} 
         where uuid = #{uuid}
     </update>
     
+    <update id="updateByPowerRewardStatusRewardEnergyBallUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+     set reward_energy_ball_uuid = #{rewardEnergyBallUuid},power_reward_status=2 
+      where uuid = #{uuid}
+    </update>
     
     <select id="selectByUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
