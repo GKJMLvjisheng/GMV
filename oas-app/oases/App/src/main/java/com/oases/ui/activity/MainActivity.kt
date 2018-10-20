@@ -232,8 +232,8 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
                             .getInstance()
                             .downloadOnly(uiData)as DownloadBuilder
                     //builder.setDownloadAPKPath("/storage/emulated/0/oases_download")
-                    //builder.setForceRedownload(true); 本地有安装包缓存仍重新下载apk
                     builder .excuteMission(this)
+                    builder.setForceRedownload(true) //本地有安装包缓存仍重新下载apk
 
 
 
