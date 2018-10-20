@@ -105,6 +105,7 @@
 	  	<result column="power_reward_status" property="powerRewardStatus"/>
 	  	<result column="reward_energy_ball_uuid" property="rewardEnergyBallUuid"/>
 	  	<result column="finish_reward_number" property="finishRewardNumber"/>
+	  	<result column="remain_time_oas" property="remainTimeOas"/>
 	  	<result column="finish_reward_updated" property="finishRewardUpdated"/>
 	  	<result column="created" property="created"/>
     </resultMap>
@@ -112,7 +113,7 @@
     <sql id="purchase_record_List">
   		uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade, 
   		miner_description, miner_price, miner_num, price_sum,miner_power,miner_period,miner_status, 
-  		miner_purchase_status,power_reward_status,reward_energy_ball_uuid,finish_reward_number,finish_reward_updated,created
+  		miner_purchase_status,power_reward_status,reward_energy_ball_uuid,finish_reward_number,remain_time_oas,finish_reward_updated,created
     </sql>
     
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
@@ -131,7 +132,9 @@
 	          <if test="rewardEnergyBallUuid != null">
 	          reward_energy_ball_uuid,
 	          </if>
-	        
+	          <if test="remainTimeOas != null">
+	          remain_time_oas,
+	          </if>
 	         finish_reward_number, miner_purchase_status,power_reward_status,created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -146,6 +149,9 @@
 	        #{minerPeriod}, #{minerStatus},
 	        <if test="rewardEnergyBallUuid != null">
 	           #{rewardEnergyBallUuid},
+	        </if>
+	        <if test="remainTimeOas != null">
+	           #{remainTimeOas},
 	        </if>
 	        #{finishRewardNumber},#{minerPurchaseStatus},#{powerRewardStatus},#{created}
 	    </trim>            
@@ -198,6 +204,18 @@
     <update id="updateByPowerRewardStatus" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
      update purchase_record
           set power_reward_status = 1 
+        where uuid = #{uuid}
+    </update>
+    
+     <update id="updateByFinishRewardNumber" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+          set finish_reward_number = #{finishRewardNumber} 
+        where uuid = #{uuid}
+    </update>
+    
+        <update id="updateByFinishRewardUpdated" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+          set finish_reward_updated = #{finishRewardUpdated},remain_time_oas=#{remainTimeOas} 
         where uuid = #{uuid}
     </update>
     

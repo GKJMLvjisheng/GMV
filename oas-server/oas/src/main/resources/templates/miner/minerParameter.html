@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>activityReward</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	 <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
+	
+	
+	
+    
+   
+   <style>
+	.input-group .datetimepicker{
+	z-index:100000;
+	}
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
+ .modal-lm {
+    width: 850px;
+    }
+    </style>
+</head>
+
+<body>
+
+	<section class="content table-content">
+
+		<form class="form-inline" >
+			<!-- 工具栏 -->
+			<div id="toolbar">
+
+					<input type="button" value="新增参数" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addActivityModal"></input>
+<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			</div>
+		</form>
+		
+		<div class = "container">
+			<table id="parameterGrid"></table>
+		</div>
+
+	</section>
+
+	<!-- 新增活动的模态框-->
+
+	<div class="modal fade" id="addActivityModal" tabindex="-1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">新增活动</h3>
+				</div>
+
+				<div class="modal-body">
+				
+
+					<form id="addActivityForm" action="/activity" method="post" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="sourceName" class="col-sm-3 control-label">活动名称：</label>
+							<div class="col-sm-8">
+								<input type="text" name="sourceName" class=" form-control" id="sourceName" maxlength="20" placeholder="活动名称最多为20个字符" />
+								<span id='msg_sourceName'></span>
+
+							</div>						
+						</div>
+					
+								
+							<div class="form-group">
+					        	<label for="sourceType" class="col-sm-3 control-label">活动类型：</label>
+					       		 <div class="col-sm-8">
+								<input type="text" name="sourceType" class=" form-control" id="sourceType"/>
+							    <span id='msg_sourceType'></span>
+						       </div>	
+						      			
+						   </div>		
+						
+						
+						
+					
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" id="conf" class="btn btn-default" onclick="addActivity()">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- 编辑活动奖励的模态框 -->
+    <div class="modal fade" id="updateParameterModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">矿机参数修改</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateParameterForm" action="/updatedParameter" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="EparameterId" id="EparameterId">
+						
+						
+						<div class="form-group">
+							<label for="EparameterName" class="col-sm-4 control-label">矿机参数名称：</label>
+							<div class="col-sm-7">
+								<input name="EparameterName" class="form-control" id="EparameterName" readonly="readonly" required="required"   /></input>
+								
+
+							</div>						
+						</div>
+					
+        	<div class="form-group">
+
+				<label for="EparameterValue" class="col-sm-4 control-label">矿机参数值：</label>
+
+				<div class="col-sm-7">
+								
+               <input type="text" name="EparameterValue" class=" form-control" id="EparameterValue" required="required" oninput="checkEparameterValue(this)" placeholder="请输入奖励基础值"/>
+             <span id='msg_EparameterValue'></span>
+            </div>
+        </div>	
+        		
+																			
+					</form>
+				</div>
+
+				<div class="modal-footer">
+<!-- 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="updateVersion()"><span aria-hidden="true">保存</span></button> -->
+					<button type="button" class="btn btn-default"  onclick="updateparameter()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resteUpdate()">取消</button>
+				</div>
+						
+			</div>
+					
+		</div>
+	</div>
+<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog modal-sm" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>	
+<script type="text/javascript" th:src="@{/js//miner/minerParameter.js}"></script>			
+</body>
+
+</html>
+
