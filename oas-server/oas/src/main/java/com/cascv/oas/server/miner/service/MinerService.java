@@ -139,6 +139,7 @@ public class MinerService {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		PurchaseRecord purchaseRecord = new PurchaseRecord();
 		String rewardEnergyBallUuid="not exist";
+		BigDecimal remainTimeOas=new BigDecimal(0.000000000000000000);
 		purchaseRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.PURCHASE_RECORD));
 		purchaseRecord.setUserUuid(userUuid);
 		purchaseRecord.setEnergyBallUuid(energyPowerBall.getUuid());
@@ -155,6 +156,7 @@ public class MinerService {
 		purchaseRecord.setPowerRewardStatus(POWER_REWARD_STATUS);
 		purchaseRecord.setRewardEnergyBallUuid(rewardEnergyBallUuid);
 		purchaseRecord.setFinishRewardNumber(0);
+		purchaseRecord.setRemainTimeOas(remainTimeOas);
 		purchaseRecord.setMinerDescription(minerModel.getMinerDescription());
 		purchaseRecord.setCreated(now);
 		purchaseRecord.setFinishRewardUpdated(now);

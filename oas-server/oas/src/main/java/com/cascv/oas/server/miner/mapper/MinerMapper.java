@@ -37,6 +37,8 @@ public interface MinerMapper {
 	List<PurchaseRecord> selectByMinerPurchaseStatus();
 	List<PurchaseRecord> selectByMinerStatusPowerRewardStatus();
 	Integer updateByRewardEnergyBallUuid(PurchaseRecord purchaseRecord);
+	Integer updateByFinishRewardUpdated(PurchaseRecord purchaseRecord);
+	Integer updateByFinishRewardNumber(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatusRewardEnergyBallUuid(PurchaseRecord purchaseRecord);//撤出算力更新记录
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatus(PurchaseRecord purchaseRecord);

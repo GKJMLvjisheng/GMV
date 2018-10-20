@@ -24,7 +24,7 @@ public class RewardJob implements Job {
 			promotedRewardService.checkUserWhetherBuyMiner();
 			promotedRewardService.giveUserPowerRewardBuyMiner();
 			promotedRewardService.decreaseUserPowerRewardBuyMiner();
-//			promotedRewardService.checkBuyUserMinerRedeem();
+			promotedRewardService.checkBuyUserMinerRedeem();
 //            else
 //            log.info("no permission to do reward job");
 		}

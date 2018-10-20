@@ -23,6 +23,7 @@ public class PurchaseRecord {
 	@Getter @Setter private String rewardEnergyBallUuid;
 	@Getter @Setter private Integer powerRewardStatus;
 	@Getter @Setter private Integer finishRewardNumber;
+	@Getter @Setter private BigDecimal remainTimeOas;
 	@Getter @Setter private String finishRewardUpdated;
 	@Getter @Setter private BigDecimal priceSum;
 

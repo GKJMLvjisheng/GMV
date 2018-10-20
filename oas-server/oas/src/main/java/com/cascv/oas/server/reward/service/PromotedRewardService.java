@@ -76,8 +76,10 @@ public class PromotedRewardService {
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
 	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
 	private static final Integer REWARD_CODE_OF_DIE_MINER = 12;  //矿机推广奖励到期
+	
 	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
 	private EnergyPowerBall decreaseRewardEnergyPowerBall = new EnergyPowerBall();
+	
 	public List<PromotedRewardModel> selectAllPromotedRewardConfig(){
 		List<PromotedRewardModel> promotedRewardModelList = promotedRewardModelMapper.selectAllPromotedRewards();
 
@@ -104,7 +106,7 @@ public class PromotedRewardService {
 	        .withIdentity("JobDetailC", "groupC").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(120).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("promotedRewardService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("add reward job ...");
@@ -150,26 +152,49 @@ public class PromotedRewardService {
 		  }
 	  }
 	  
-//	  public synchronized void checkBuyUserMinerRedeem() {
-//		  log.info("check all buy users whether buy miner redeem");
-//		  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
-//		  if(userUuidList!=null && userUuidList.size()>0) {
-//			  for(String userUuid:userUuidList) {
-//		  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerStatus(userUuid);
-//		  BigDecimal minerPrice=purchaseRecordList.get(0).getMinerPrice();
-//		  Integer finishRewardNumber=purchaseRecordList.get(0).getFinishRewardNumber();
-//		  String startTime=purchaseRecordList.get(0).getFinishRewardUpdated();
-//		  String endTime=DateUtils.getTime();
-//		  BigDecimal userTimePointToOas=this.getUserTimeOas(userUuid, startTime, endTime);
-//		  
-//		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
-//			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {  
-//			  } 
-//		  }
-//			  }
-//		 }
-//		  log.info("end reward buy miner redeem job");
-//	  }
+	  public synchronized void checkBuyUserMinerRedeem() {
+		  log.info("check all buy users whether buy miner redeem");
+		  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
+		  if(userUuidList!=null && userUuidList.size()>0) {
+			  for(String userUuid:userUuidList) {
+				  	this.doUserMinerRedeem(userUuid);
+			  }
+		  }
+		  log.info("end reward buy miner redeem job");
+	  	}
+	  
+	  /**
+	   * @author Ming Yang
+	   * @param userUuid
+	   *         实现冻结代币返还逻辑
+	   */
+	  public void doUserMinerRedeem(String userUuid) {
+		  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerStatus(userUuid);
+		  BigDecimal minerPrice=purchaseRecordList.get(0).getMinerPrice();
+		  Integer finishRewardNumber=purchaseRecordList.get(0).getFinishRewardNumber();
+		  String startTime=purchaseRecordList.get(0).getFinishRewardUpdated();
+		  String endTime=DateUtils.getTime();
+		  BigDecimal userTimePointToOas=this.getUserTimePointToOas(userUuid,startTime,endTime);
+		  BigDecimal remainTimeOas=purchaseRecordList.get(0).getRemainTimeOas();
+		  remainTimeOas = remainTimeOas.add(userTimePointToOas);
+		  if(remainTimeOas.compareTo(minerPrice)==1) {
+			  finishRewardNumber=finishRewardNumber+1;
+			  purchaseRecordList.get(0).setFinishRewardNumber(finishRewardNumber);
+			  minerMapper.updateByFinishRewardNumber(purchaseRecordList.get(0));
+			  remainTimeOas=remainTimeOas.subtract(minerPrice);//存储多余的代币，下次计算使用
+			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+				  purchaseRecord.setFinishRewardUpdated(endTime);
+				  purchaseRecord.setRemainTimeOas(remainTimeOas);
+				  minerMapper.updateByFinishRewardUpdated(purchaseRecord);
+			  }
+		  }else {
+			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+				  purchaseRecord.setFinishRewardUpdated(endTime);
+				  purchaseRecord.setRemainTimeOas(remainTimeOas);
+				  minerMapper.updateByFinishRewardUpdated(purchaseRecord);
+			  }
+		  }
+	  }
 	  
 		/**
 		 * @author Ming Yang
@@ -267,18 +292,24 @@ public class PromotedRewardService {
 	  public BigDecimal getUserTimePointToOas(String userUuid,String startTime,String endTime) {
 		  BigDecimal totalPoint = energyBallMapper.selectUserPointByTime(userUuid, startTime, endTime);
 		  BigDecimal nowRate=this.getNowRate();
+		  if(totalPoint !=null) {
 		  BigDecimal userTimePointToOas=totalPoint.multiply(nowRate);
 		  return userTimePointToOas;
+		  }else {
+		  BigDecimal  userTimePointToOas=BigDecimal.ZERO;
+		  return userTimePointToOas;
+		  }
+		 
 	  }
 	  
-	  /**
-	   * @author Ming Yang
-	   * @return 获取用户在特定时间获取的代币积累
-	   */
-	  public BigDecimal getUserTimeOas(String userUuid,String startTime,String endTime) {
-		  BigDecimal userTimeOas=userWalletTradeRecordMapper.selectUserPointToOas(userUuid, startTime, endTime);
-		  return userTimeOas;
-	  }
+//	  /**
+//	   * @author Ming Yang
+//	   * @return 获取用户在特定时间获取的代币积累
+//	   */
+//	  public BigDecimal getUserTimeOas(String userUuid,String startTime,String endTime) {
+//		  BigDecimal userTimeOas=userWalletTradeRecordMapper.selectUserPointToOas(userUuid, startTime, endTime);
+//		  return userTimeOas;
+//	  }
 	  
 	  /**
 	   * @author Ming Yang
@@ -288,6 +319,7 @@ public class PromotedRewardService {
 		  String time=DateUtils.getYearMonth();
 		  ExchangeRateModel exchangeRateModel=exchangeRateService.getRate(time, CurrencyCode.POINT);
 		  Integer currency=exchangeRateModel.getCurrency();
+		  log.info("currency:{}",currency);
 		  BigDecimal rate=exchangeRateModel.getRate();
 		  BigDecimal bigCurrency=new BigDecimal(currency);
 		  BigDecimal toRate=bigCurrency.divide(rate);
