@@ -7,6 +7,7 @@ import android.os.Build
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.telephony.TelephonyManager
+import android.util.Log
 import org.jetbrains.anko.toast
 
 fun requestPhoneStatePermission(activity: Activity){
@@ -22,6 +23,7 @@ fun getDeviceId(activity: Activity): String {
         val telephonyManager = activity.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             ImeiNumber = telephonyManager.imei
+            Log.d("zbb", "get imei $ImeiNumber")
             if (ImeiNumber == null){
                 ImeiNumber = telephonyManager.meid
             }

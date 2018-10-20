@@ -29,7 +29,7 @@ open class BaseSubscriber<T>(val baseView: BaseView) : Observer<T> {
         baseView.hideLoading()
         if (e is BaseException) {
             if (e.code == 10001){
-             //   ARouter.getInstance().build("/UserCenter/LoginActivity").navigation()
+                ARouter.getInstance().build("/userCenter/login").navigation()
                 return
             }
             baseView.onError(e.msg)

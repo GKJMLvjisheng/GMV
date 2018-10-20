@@ -310,8 +310,9 @@ public class TodayStepService extends Service implements Handler.Callback {
                 Logger.e(TAG, "saveDb currentStep : " + currentStep);
 
                 microlog4AndroidError("saveDb currentStep : " + currentStep);
-
-                mTodayStepDBHelper.insert(todayStepData);
+                if (mTodayStepDBHelper.update(todayStepData) == 0){
+                    mTodayStepDBHelper.insert(todayStepData);
+                }
             }
         }
     }

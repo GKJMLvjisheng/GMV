@@ -21,6 +21,8 @@ interface ITodayStepDBHelper {
 
     void insert(TodayStepData todayStepData);
 
+    int update(TodayStepData todayStepData);
+
     List<TodayStepData> getQueryAll();
 
     List<TodayStepData> getStepListByDate(String dateString);
