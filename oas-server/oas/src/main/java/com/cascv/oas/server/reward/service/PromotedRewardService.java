@@ -32,7 +32,8 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
-import com.cascv.oas.server.reward.job.RewardJob;
+import com.cascv.oas.server.reward.job.DelayRewardJob;
+import com.cascv.oas.server.reward.job.ImmediatelyRewardJob;
 import com.cascv.oas.server.reward.mapper.PromotedRewardModelMapper;
 import com.cascv.oas.server.reward.model.PromotedRewardModel;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
@@ -102,13 +103,20 @@ public class PromotedRewardService {
 	 */
 	  @PostConstruct
 	  public void startJob() {
-	    JobDetail jobDetail = JobBuilder.newJob(RewardJob.class)
+	    JobDetail immediatelyJobDetail = JobBuilder.newJob(ImmediatelyRewardJob.class)
 	        .withIdentity("JobDetailC", "groupC").build();
-	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
+	    JobDetail delayJobDetail = JobBuilder.newJob(DelayRewardJob.class)
+		        .withIdentity("JobDetailD", "groupD").build();
+	    Trigger immediatelyTrigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(60).repeatForever()).startNow().build();
-	    jobDetail.getJobDataMap().put("promotedRewardService", this);
-	    schedulerService.addJob(jobDetail, trigger);
+	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
+	    Trigger delayTrigger = TriggerBuilder.newTrigger().withIdentity("triggerD", "groupD")
+		        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+		            .withIntervalInSeconds(3600).repeatForever()).startNow().build();
+	    immediatelyJobDetail.getJobDataMap().put("promotedRewardService", this);
+	    delayJobDetail.getJobDataMap().put("promotedRewardService", this);
+	    schedulerService.addJob(immediatelyJobDetail, immediatelyTrigger);
+	    schedulerService.addJob(delayJobDetail, delayTrigger);
 	    log.info("add reward job ...");
 	  }
 	  /**
@@ -116,7 +124,7 @@ public class PromotedRewardService {
 	   *           定是查询是否有用户购买矿机
 	   */
 	  public synchronized void checkUserWhetherBuyMiner() {
-		  log.info(" check all users whether buy miner");
+		  log.info(" check all users whether buy miner give them immediately oas reward ...");
 		  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
 		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
 			  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
@@ -153,14 +161,14 @@ public class PromotedRewardService {
 	  }
 	  
 	  public synchronized void checkBuyUserMinerRedeem() {
-		  log.info("check all buy users whether buy miner redeem");
+		  log.info("check all buy users whether buy miner redeem ...");
 		  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
 		  if(userUuidList!=null && userUuidList.size()>0) {
 			  for(String userUuid:userUuidList) {
 				  	this.doUserMinerRedeem(userUuid);
 			  }
 		  }
-		  log.info("end reward buy miner redeem job");
+		  log.info("end reward buy miner redeem job ...");
 	  	}
 	  
 	  /**
@@ -319,7 +327,6 @@ public class PromotedRewardService {
 		  String time=DateUtils.getYearMonth();
 		  ExchangeRateModel exchangeRateModel=exchangeRateService.getRate(time, CurrencyCode.POINT);
 		  Integer currency=exchangeRateModel.getCurrency();
-		  log.info("currency:{}",currency);
 		  BigDecimal rate=exchangeRateModel.getRate();
 		  BigDecimal bigCurrency=new BigDecimal(currency);
 		  BigDecimal toRate=bigCurrency.divide(rate);
