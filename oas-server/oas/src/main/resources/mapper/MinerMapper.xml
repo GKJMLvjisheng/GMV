@@ -203,7 +203,7 @@
     
     <update id="updateByPowerRewardStatus" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
      update purchase_record
-          set finish_reward_updated = #{finishRewardUpdated} 
+          set power_reward_status = 1 
         where uuid = #{uuid}
     </update>
     

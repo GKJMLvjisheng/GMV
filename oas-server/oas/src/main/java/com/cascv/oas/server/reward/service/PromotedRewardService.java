@@ -106,7 +106,7 @@ public class PromotedRewardService {
 	        .withIdentity("JobDetailC", "groupC").build();
 	    Trigger trigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(60).repeatForever()).startNow().build();
 	    jobDetail.getJobDataMap().put("promotedRewardService", this);
 	    schedulerService.addJob(jobDetail, trigger);
 	    log.info("add reward job ...");
