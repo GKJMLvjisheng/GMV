@@ -183,7 +183,10 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
         }
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        initView()
+    }
 
 
 }

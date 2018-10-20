@@ -35,7 +35,11 @@ class RecycleDetailViewAdapter(val mList:MutableList<ComputingPowerItem>)
             val mData = list.get(position)
             holder.mExchangeItemView.setLeftTopText(mData.activity?:"")
             holder.mExchangeItemView.setLeftBottomText(mData.created?:"")
-            holder.mExchangeItemView.setRightTopText("+".plus(mData.powerChange))
+            if (mData.inOrOut==1) {
+                holder.mExchangeItemView.setRightTopText("+".plus(mData.powerChange))
+            }else if (mData.inOrOut==0){
+                holder.mExchangeItemView.setRightTopText("-".plus(mData.powerChange))
+            }
             holder.mExchangeItemView.setRightTopTextColor()
             holder.mExchangeItemView.setRightTopMoveDown()
         }

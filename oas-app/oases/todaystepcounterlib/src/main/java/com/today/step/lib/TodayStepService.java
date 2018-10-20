@@ -37,7 +37,7 @@ public class TodayStepService extends Service implements Handler.Callback {
     /**
      * 数据库中保存多少天的运动数据
      */
-    private static final int DB_LIMIT = 2;
+    private static final int DB_LIMIT = 7;
 
     //保存数据库频率
     private static final int DB_SAVE_COUNTER = 50;
