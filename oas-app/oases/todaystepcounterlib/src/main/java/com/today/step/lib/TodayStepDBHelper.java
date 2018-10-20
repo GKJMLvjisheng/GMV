@@ -36,7 +36,7 @@ class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBHelper{
             + PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + TODAY + " TEXT, "
             + DATE + " long, "
-            + STEP + " long);";
+            + STEP + " long) ";
     private static final String SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE_NAME;
     private static final String SQL_QUERY_STEP = "SELECT * FROM " + TABLE_NAME + " WHERE " + TODAY + " = ? AND " + STEP + " = ?";
