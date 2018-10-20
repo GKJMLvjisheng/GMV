@@ -69,7 +69,7 @@ select
 from 
 	 user_wallet_detail
 where
-     user_uuid= # {userUuid} and title='积分兑换OAS代币' and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
+     user_uuid= # {userUuid} and title='积分兑换OAS代币'  and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
    </select> 
    
 </mapper>
