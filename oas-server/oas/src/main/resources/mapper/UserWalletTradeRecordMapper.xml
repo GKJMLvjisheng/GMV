@@ -20,6 +20,7 @@ from
 where
 	  ud.user_uuid=u.uuid
 order by ud.created desc
+limit #{offset}, #{limit};
 </select>
 
 <resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
@@ -38,6 +39,7 @@ where
 
 group by u.name 
 order by value desc
+limit #{offset}, #{limit};
 </select>
    
 <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
@@ -51,6 +53,7 @@ where
 
 group by u.name 
 order by value desc
+limit #{offset}, #{limit};
    </select>
    
 <select id="selectAllUserBalanceRecord" resultMap="walletTotalTradeRecordMap">
@@ -61,6 +64,7 @@ from
 where
 	uw.user_uuid=u.uuid
 order by value desc
+limit #{offset}, #{limit};
    </select>
   
 <select id="selectUserPointToOas" resultMap="walletTotalTradeRecordMap">
@@ -69,7 +73,7 @@ select
 from 
 	 user_wallet_detail
 where
-     user_uuid= # {userUuid} and title='积分兑换OAS代币'  and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
+     user_uuid= # {userUuid} and title='积分兑换OAS代币' and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
    </select> 
    
 </mapper>
