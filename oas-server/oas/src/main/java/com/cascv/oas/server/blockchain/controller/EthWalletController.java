@@ -446,7 +446,7 @@ public class EthWalletController extends BaseShiroController {
   }
   
   
-  @PostMapping(value="/backupEthWallet")
+  @PostMapping(value="/backup")
   @ResponseBody
   public ResponseEntity<?> backupEthWallet(){
 	  BackupEthWallet ethWallet = new BackupEthWallet();
