@@ -36,6 +36,7 @@ import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserCoinResp;
 import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
+import com.cascv.oas.server.blockchain.wrapper.BackupEthWallet;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
@@ -444,6 +445,24 @@ public class EthWalletController extends BaseShiroController {
 	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.reverseWithdraw(info,user)).build();
   }
   
+  
+  @PostMapping(value="/backupEthWallet")
+  @ResponseBody
+  public ResponseEntity<?> backupEthWallet(){
+	  BackupEthWallet ethWallet = new BackupEthWallet();
+	  UserModel user = ShiroUtils.getUser();
+	  if(user == null) {
+		  return new ResponseEntity.Builder<BackupEthWallet>()
+				  .setData(ethWallet)
+				  .setErrorCode(ErrorCode.USER_NOT_EXISTS).build();
+	  }
+	  ErrorCode errorCode = ethWalletService.backupEthWallet(user.getUuid(), ethWallet);
+	  return new ResponseEntity.Builder<BackupEthWallet>()
+			  .setData(ethWallet)
+			  .setErrorCode(errorCode)
+			  .build();
+  }
+
   /**
       *  点击交易钱包记录查看区块链上转账记录，并标记状态
    * @param detail

@@ -53,6 +53,7 @@ import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserWallet;
+import com.cascv.oas.server.blockchain.wrapper.BackupEthWallet;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.common.EthWalletDetailScope;
@@ -150,17 +151,22 @@ public class EthWalletService {
   public String getActiveNet() {
     return coinClient.getNetName();
   }
+  
+  public static List<String> fromMnemonicList(String mnemonic) {
+    JSONArray jsonArray = JSONArray.parseArray(mnemonic);
+	List<String> x = new ArrayList<>();
+    for (Integer i = 0; i< jsonArray.size(); i++) {
+      x.add(jsonArray.getString(i));
+    }
+    return x;
+  }
+  
   public static List<String> fromEncryptedMnemonicList(String encryptedMnemonic){
     if (encryptedMnemonic == null) {
       return null;
     }
     String mnemonic = CryptoUtils.decrypt(encryptedMnemonic, KEY_SALT);
-    JSONArray jsonArray = JSONArray.parseArray(mnemonic);
-    List<String> x = new ArrayList<>();
-    for (Integer i = 0; i< jsonArray.size(); i++) {
-      x.add(jsonArray.getString(i));
-    }
-    return x;
+    return fromMnemonicList(mnemonic);
   }
   
   public boolean checkMnemonic(String password, List <String> mnemonic) {
@@ -764,6 +770,21 @@ public class EthWalletService {
   	  return flag;
   }
   
+  public ErrorCode backupEthWallet(String userUuid, BackupEthWallet backupEthWallet){
+	  EthWallet ethWallet = getEthWalletByUserUuid(userUuid);
+	  if (ethWallet == null)
+		  return ErrorCode.NO_ETH_WALLET;
+	  String key = ethWallet.getPrivateKey();
+	  String mnemonicList = ethWallet.getMnemonicList();
+	  
+	  if (ethWallet.getCrypto() != 0) {
+		  key = CryptoUtils.decrypt(key, KEY_SALT);
+		  mnemonicList = CryptoUtils.decrypt(mnemonicList, KEY_SALT);
+	  }
+	  backupEthWallet.setPrivateKey(key);
+	  backupEthWallet.setMnemonicList(fromMnemonicList(mnemonicList));
+	  return ErrorCode.SUCCESS;
+  }
 }
 
 
