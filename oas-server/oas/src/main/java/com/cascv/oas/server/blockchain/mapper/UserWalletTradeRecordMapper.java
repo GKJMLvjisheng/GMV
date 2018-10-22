@@ -9,10 +9,10 @@ import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;;
 
 public interface UserWalletTradeRecordMapper {
 	
-	List<UserWalletTradeRecordInfo> selectAllTradeRecord();
-	List<WalletTotalTradeRecordInfo> selectAllOutTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
-	List<WalletTotalTradeRecordInfo> selectAllInTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime);
-	List<WalletTotalTradeRecordInfo> selectAllUserBalanceRecord();
+	List<UserWalletTradeRecordInfo> selectAllTradeRecord(@Param("offset") Integer offset, @Param("limit") Integer limit);
+	List<WalletTotalTradeRecordInfo> selectAllOutTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("offset") Integer offset, @Param("limit") Integer limit);
+	List<WalletTotalTradeRecordInfo> selectAllInTotalTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("offset") Integer offset, @Param("limit") Integer limit);
+	List<WalletTotalTradeRecordInfo> selectAllUserBalanceRecord(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	
 	BigDecimal selectUserPointToOas(@Param("userUuid") String userUuid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }
