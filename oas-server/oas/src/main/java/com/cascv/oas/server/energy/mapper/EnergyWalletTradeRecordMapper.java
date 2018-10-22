@@ -11,6 +11,7 @@ public interface EnergyWalletTradeRecordMapper {
 	
 	List<EnergyWalletTradeRecordInfo> selectAllTradeRecord(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	List<EnergyWalletBalanceRecordInfo> selectAllEnergyWalletBalanceRecord(@Param("offset") Integer offset, @Param("limit") Integer limit);
+	Integer countByEnergyWalletBalanceRecord();
 	List<EnergyWalletPointRecordInfo> selectAllInTotalPointTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("offset") Integer offset, @Param("limit") Integer limit);
 	List<EnergyWalletPointRecordInfo> selectAllOutTotalPointTradeRecord(@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("offset") Integer offset, @Param("limit") Integer limit);
 }
