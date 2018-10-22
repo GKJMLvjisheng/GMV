@@ -4,10 +4,11 @@ document.write("<script language=javascript src='/js/wallet/energyWalletTable.js
 //主界面用户表格回显
 $(function() {
 	//初始加载	
-	EnergyWalletReady();
-	FundBigReady();
-	FundInReady();
-	FundOutReady();
+//	EnergyWalletReady();
+//	FundBigReady();
+//	FundInReady();
+//	FundOutReady();
+	initFundBigGrid();
 });
 
 //时间控件
@@ -77,14 +78,17 @@ function EnergyWalletReady(){
 function FundBigReady(){
     $('#fundBigGrid').bootstrapTable('destroy');
 	var data2;
+	//var params = {"limit":10,"offset":0};
+	var params = {"limit":10,"offset":0};
 	 $.ajax({		
 		url: "/api/v1/energyPoint/inqureEnergyWalletBalanceRecord",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
+		data:JSON.stringify(queryParams(params)),
 		success: function(res) {
-			data2=res.data;
+			data2=res.data.rows;
 			initFundBigGrid(data2);
 		}, 
 		error: function(){

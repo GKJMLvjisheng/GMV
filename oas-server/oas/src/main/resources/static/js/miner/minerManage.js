@@ -12,6 +12,7 @@ var check8;
 $(function() {
 	//初始加载	
 	minerReady();
+		
 });
 
 function minerReady(){
