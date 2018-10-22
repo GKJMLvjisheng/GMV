@@ -77,6 +77,7 @@ function checkEparameterValue(){
 function checkParameterValue(){
 	var parameterValue=$("#parameterValue").val();
 	var num=parameterValue.split('.');
+	console.log(JSON.stringify(num))
 	if(validate(parameterValue)&&0<parameterValue&&parameterValue<=1){
 		
 		check3=1;
@@ -88,10 +89,12 @@ function checkParameterValue(){
 		 $("#msg_parameterValue").css("color", "red");
 		check3=0;
 	}
+	if(num[1]){
 	if(num[1].length>6){
 		$("#msg_parameterValue").html("矿机参数值精度为6");
 		 $("#msg_parameterValue").css("color", "red");
 		 check3=0;
+	}
 	}
 }
 
@@ -134,9 +137,14 @@ function addParameter(){
 		alert("请配置正确的参数值");
 		return;
 		}
+	if($("input[name='time']").val()==="")
+	{
+	alert("有效时间不能为空");
+	return;
+	}
 	var data={"parameterValue":$("#parameterValue").val(),
 				"parameterName":$("#parameterName").val(),
-				"period": $("input[name='time']").val();	
+				"period": $("input[name='time']").val()	
 			}
 	$.ajax({
 		url:"/api/v1/miner/addSystemParameter",
@@ -151,11 +159,11 @@ function addParameter(){
 				if(res.code==0)
 				{document.getElementById("tipContent").innerText="新增成功";
 				$("#Tip").modal('show');
-				$("#addActivityModal").modal('hide');}
+				$("#addParameterModal").modal('hide');}
 				else{
 				document.getElementById("tipContent").innerText="新增失败";
 				$("#Tip").modal('show');
-				$("#addActivityModal").modal('hide');
+				$("#addParameterModal").modal('hide');
 				
 				 
 				//$("#newsGrid").bootstrapTable('refresh');	
@@ -164,7 +172,7 @@ function addParameter(){
 		error:function(){
 			document.getElementById("tipContent").innerText="新增失败";
 			$("#Tip").modal('show');
-			$("#addActivityModal").modal('hide');
+			$("#addParameterModal").modal('hide');
 
 		},
 	});
@@ -262,6 +270,16 @@ function initParameterGrid(data) {
 			//width:  '120px',
 
 		},
+		{
+
+			title : "有效期",
+
+			field : "period",
+			align: 'center',
+			valign: 'middle',
+			//width:  '90px',
+
+		},
 		
 		{
 
@@ -303,7 +321,7 @@ function actionFormatter(value, row, index) {
     var id = value;
     var result = "";
     result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editParameterById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-    result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteParameterById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+    //result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteParameterById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
     return result;
 }
@@ -349,6 +367,7 @@ function editParameterById(id){
 	    $("#EparameterName").val(rows.parameterName); 
 	    
 		$("#EparameterValue").val(rows.parameterValue);
+		$("#Etime").val(rows.period);
 		$("#updateParameterModal").modal("show");
 }
 function updateparameter(){

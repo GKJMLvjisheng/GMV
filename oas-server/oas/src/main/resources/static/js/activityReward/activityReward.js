@@ -105,10 +105,12 @@ function checkEincreaseSpeed(){
 		 $("#msg_EincreaseSpeed").css("color", "red");
 		check3=0;
 	}
+	if(num[1]){
 	if(num[1].length>6){
 		$("#msg_EincreaseSpeed").html("奖励增长速度精度为6");
 		 $("#msg_EincreaseSpeed").css("color", "red");
 		 check3=0;
+	}
 	}
 }
 function checkEmaxValue(){
@@ -161,10 +163,13 @@ function checkIncreaseSpeed(){
 		 $("#msg_increaseSpeed").css("color", "red");
 		check3=0;
 	}
+	if(num[1]){
 	if(num[1].length>6){
+		console.log(num[1])
 		$("#msg_increaseSpeed").html("奖励增长速度精度为6");
 		 $("#msg_increaseSpeed").css("color", "red");
 		 check3=0;
+	}
 	}
 }
 function checkMaxValue(){
@@ -621,7 +626,7 @@ function addAllotReward(){
 	}
 	//var param = $("#allotRewardForm").serializeArray();
 	
-	var rewardCode=$("#rewardName").val();
+	//var rewardCode=$("#rewardName").val();
 	var baseValue=$("#baseValue").val();
 	var increaseSpeed=$("#increaseSpeed").val();
 	var increaseSpeedUnit=$("#increaseSpeedUnit").val();
@@ -629,6 +634,10 @@ function addAllotReward(){
 		increaseSpeedUnit="";
 	}
 	var maxValue=$("#maxValue").val();
+	if(maxValue===""){
+		alert("奖励最大值不允许为空!");
+		return;
+	}
 	var period=$("#period").val();
 	var sourceCode=$("#activitySoureId").val();
 	var data={

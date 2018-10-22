@@ -48,11 +48,15 @@
         select
          <include refid="miner_List" />
          from miner_source 
-         order by updated desc
+         order by order_num asc
     </select>
     
     <select id="inquireByMinerName" resultMap="MinerMap">
         select * from miner_source where miner_name = #{minerName}
+    </select>
+    
+    <select id="inquireByOrderNum" resultMap="MinerMap">
+        select * from miner_source where order_num = #{orderNum}
     </select>
     
     <select id="inquireByUuid" resultMap="MinerMap">
@@ -80,6 +84,14 @@
           miner_grade = #{minerGrade},
           miner_period = #{minerPeriod},
           updated = #{updated}
+        where
+          miner_code = #{minerCode}
+    </update>
+    
+    <update id="updateOrderNum" parameterType="com.cascv.oas.server.miner.model.MinerModel">
+        update miner_source
+        set
+          order_num = #{orderNum}
         where
           miner_code = #{minerCode}
     </update>
@@ -279,9 +291,20 @@
 	      SELECT LAST_INSERT_ID()
 	    </selectKey>
         insert into system_parameter 
-          (parameter_value, parameter_name, period, created, updated)
-        values
-          (#{parameterValue}, #{parameterName}, #{period}, #{created}, #{updated})           
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+	        parameter_value, parameter_name,
+	        <if test="period != null">
+	          period,
+	        </if>
+	        created, updated
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{parameterValue}, #{parameterName},
+	         <if test="period != null">
+	           #{period},
+	        </if>
+	        #{created}, #{updated}
+	    </trim>      
     </insert>
     
     <delete id="deleteSystemParameterByUuid">

@@ -474,6 +474,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 		log.info("newCreated={}",created);
 	  }
   	 PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
+  	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
+  	 	energyWalletTradeRecordInfo.setTotal(count);
 	  	energyWalletTradeRecordInfo.setAsc("desc");
 	  	energyWalletTradeRecordInfo.setOffset(offset);
 	  	energyWalletTradeRecordInfo.setPageNum(pageNum);
@@ -561,14 +563,16 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   		  endTime=nowDate;
   	  
   	  List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecord(startTime, endTime,offset, limit);
-  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletPointRecordInfo = new PageDomain<>();
-	  	energyWalletPointRecordInfo.setAsc("desc");
-	  	energyWalletPointRecordInfo.setOffset(offset);
-	  	energyWalletPointRecordInfo.setPageNum(pageNum);
-	  	energyWalletPointRecordInfo.setPageSize(pageSize);
-	  	energyWalletPointRecordInfo.setRows(energyWalletInTotalPointTradeRecordList);
+  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletInTotalPointRecordInfo = new PageDomain<>();
+  	  Integer count=energyWalletTradeRecordMapper.countByInTotalPointTradeRecord(startTime, endTime);
+	  	energyWalletInTotalPointRecordInfo.setTotal(count);
+	  	energyWalletInTotalPointRecordInfo.setAsc("desc");
+	  	energyWalletInTotalPointRecordInfo.setOffset(offset);
+	  	energyWalletInTotalPointRecordInfo.setPageNum(pageNum);
+	  	energyWalletInTotalPointRecordInfo.setPageSize(pageSize);
+	  	energyWalletInTotalPointRecordInfo.setRows(energyWalletInTotalPointTradeRecordList);
   		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
-  		        .setData(energyWalletPointRecordInfo)
+  		        .setData(energyWalletInTotalPointRecordInfo)
   		        .setErrorCode(ErrorCode.SUCCESS)
   		        .build();
     }
@@ -614,14 +618,16 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   		  endTime=nowDate;
   	  
   	  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecord(startTime, endTime,offset, limit);
-  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletPointRecordInfo = new PageDomain<>();
-	  	energyWalletPointRecordInfo.setAsc("desc");
-	  	energyWalletPointRecordInfo.setOffset(offset);
-	  	energyWalletPointRecordInfo.setPageNum(pageNum);
-	  	energyWalletPointRecordInfo.setPageSize(pageSize);
-	  	energyWalletPointRecordInfo.setRows(energyWalletOutTotalPointTradeRecordList);
+  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletOutTotalPointRecordInfo = new PageDomain<>();
+  	  Integer count=energyWalletTradeRecordMapper.countByOutTotalPointTradeRecord(startTime, endTime);
+	  	energyWalletOutTotalPointRecordInfo.setTotal(count);
+	  	energyWalletOutTotalPointRecordInfo.setAsc("desc");
+	  	energyWalletOutTotalPointRecordInfo.setOffset(offset);
+	  	energyWalletOutTotalPointRecordInfo.setPageNum(pageNum);
+	  	energyWalletOutTotalPointRecordInfo.setPageSize(pageSize);
+	  	energyWalletOutTotalPointRecordInfo.setRows(energyWalletOutTotalPointTradeRecordList);
   		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
-  		        .setData(energyWalletPointRecordInfo)
+  		        .setData(energyWalletOutTotalPointRecordInfo)
   		        .setErrorCode(ErrorCode.SUCCESS)
   		        .build();
     }

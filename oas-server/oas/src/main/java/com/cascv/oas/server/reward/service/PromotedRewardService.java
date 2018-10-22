@@ -201,6 +201,34 @@ public class PromotedRewardService {
 		  }
 	  }
 	  
+	  /**
+	   * @author Ming Yang
+	   * @param userName
+	   * @return
+	   *           获取加密字符串，保留后三位，其他用三个星代替
+	   */
+	  public String getEncryptionUserName(String userName) {
+		  Integer length=userName.length();
+		  if(length>3) {
+		  Integer number=length-3;
+		  String str="";
+		  for(Integer i=0;i<number;i++) {
+			  str=str+"*";
+		  }
+		  userName=userName.substring(length-3, length);
+		  userName=str+userName;
+		  }else if(length == 3){
+		  userName=userName.substring(length-2, length);
+		  userName="**"+userName;
+		  }else if(length == 2) {
+		  userName=userName.substring(length-1, length);
+		  userName="*"+userName;
+		  }else {
+		  userName="*";
+		  }	  
+		  return userName;
+	  }
+	  
 		/**
 		 * @author Ming Yang
 		 * Date:20181019
@@ -435,6 +463,7 @@ public class PromotedRewardService {
 		UserModel userModel=userModelMapper.selectByUuid(userUuid);
 		String userName=userModel.getName();
 		log.info("userName:{}",userName);
+		userName=this.getEncryptionUserName(userName);
 //		double n=Math.pow(2,0);
 //		BigDecimal N=new BigDecimal(n);
 //		//购买矿机用户奖励代币
@@ -571,6 +600,7 @@ public class PromotedRewardService {
 		UserModel userModel=userModelMapper.selectByUuid(userUuid);
 		String userName=userModel.getName();
 		log.info("userName:{}",userName);
+		userName=this.getEncryptionUserName(userName);
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 //		double n=Math.pow(2,0);//2的幂次方
 //		BigDecimal N=new BigDecimal(n);

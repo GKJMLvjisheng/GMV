@@ -81,6 +81,7 @@ public ResponseEntity<?> upLoadApp(VersionModel versionInfo,@RequestParam(name="
 		versionModel.setVersionCode(versionInfo.getVersionCode());
 	    versionModel.setVersionStatus(versionInfo.getVersionStatus());
 	    versionModel.setAppUrl(appUrl);
+	    versionModel.setUpGradeStatus(versionInfo.getUpGradeStatus());
 	    versionModel.setCreated(DateUtils.getTime());
 	   
 	    versionModelMapper.insertApp(versionModel);
@@ -147,6 +148,7 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 	versionModel.setUuid(versionInfo.getUuid());
 	versionModel.setVersionCode(versionInfo.getVersionCode());
 	versionModel.setVersionStatus(versionInfo.getVersionStatus());
+	versionModel.setUpGradeStatus(versionInfo.getUpGradeStatus());
 	
 	if(file!=null) {
 		//日期时间生成唯一标识文件名
@@ -204,7 +206,8 @@ public ResponseEntity<?> downloadApp(){
 	downloadVersionInfo.setVersionCode(versionCode);
 	String appUrl=stableVersionModel.get(0).getAppUrl();
 	downloadVersionInfo.setAppUrl(appUrl);
-	
+	Integer upGradeStatus=stableVersionModel.get(0).getUpGradeStatus();
+	downloadVersionInfo.setUpGradeStatus(upGradeStatus);
 	return new ResponseEntity.Builder<DownloadVersionInfo>()
 			.setData(downloadVersionInfo)
 			.setErrorCode(ErrorCode.SUCCESS)

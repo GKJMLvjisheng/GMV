@@ -24,18 +24,25 @@ function initMinerGrid(data) {
 
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
-		sortName: 'updated', // 要排序的字段
-	    sortOrder: 'desc', // 排序规则
+		sortName: 'orderNum', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
 		data:data,				
 			 
-		columns : [{
+		columns : [{  
+			title: '序号',  
+			field: 'orderNum',
+			align: 'center',
+			valign: 'middle', 
+			width:  '60px', 
+			visible: true,
+
+			} ,{
 
 			title : "矿机名",
 			field : "minerName",
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
-
 		},
 			{
 
@@ -105,6 +112,33 @@ function initMinerGrid(data) {
 		//当拖拽结束后，整个表格的数据            
 		onReorderRow: function (newData) { 
 			alert(JSON.stringify(newData));
+			
+//			$('#minerGrid').bootstrapTable('destroy');
+//			var data2;
+//			
+//			var data = {
+//					"minerName" : newData
+//				};
+//			
+//			 $.ajax({		
+//				url: "/api/v1/miner/inquireWebMiner",
+//			    contentType : 'application/json;charset=utf8',
+//				dataType: 'json',
+//				cache: false,
+//				type: 'post',
+//				data:JSON.stringify(data),
+//				processData : false,
+//				async : false,
+//				
+//				success: function(res) {
+//					//alert(JSON.stringify(res));
+//					data2=res.data;
+//					initMinerGrid(data2);
+//				}, 
+//				error: function(){
+//					alert("调整顺序后矿机详细信息回显失败！")
+//				}
+//				}); 
 		 },
 		 
 	});

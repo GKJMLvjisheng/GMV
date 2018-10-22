@@ -324,6 +324,8 @@ public class UserWalletController extends BaseShiroController {
 			log.info("newCreated={}",created);
 		  }
 	  PageDomain<UserWalletTradeRecordInfo> userWalletTradeRecordInfo = new PageDomain<>();
+	  Integer count=userWalletTradeRecordMapper.countByTradeRecord();
+	      userWalletTradeRecordInfo.setTotal(count);
 		  userWalletTradeRecordInfo.setAsc("desc");
 		  userWalletTradeRecordInfo.setOffset(offset);
 		  userWalletTradeRecordInfo.setPageNum(pageNum);
@@ -375,14 +377,16 @@ public class UserWalletController extends BaseShiroController {
 		  endTime=nowDate;
 	  
 	  List<WalletTotalTradeRecordInfo> userWalletInTotalTradeRecordList=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime,offset, limit);
-	  PageDomain<WalletTotalTradeRecordInfo> walletTotalTradeRecordInfo = new PageDomain<>();
-		  walletTotalTradeRecordInfo.setAsc("desc");
-		  walletTotalTradeRecordInfo.setOffset(offset);
-		  walletTotalTradeRecordInfo.setPageNum(pageNum);
-		  walletTotalTradeRecordInfo.setPageSize(pageSize);
-		  walletTotalTradeRecordInfo.setRows(userWalletInTotalTradeRecordList);
+	  PageDomain<WalletTotalTradeRecordInfo> walletInTotalTradeRecordInfo = new PageDomain<>();
+	  Integer count=userWalletTradeRecordMapper.countByInTotalTradeRecord(startTime, endTime);
+		  walletInTotalTradeRecordInfo.setTotal(count);
+		  walletInTotalTradeRecordInfo.setAsc("desc");
+		  walletInTotalTradeRecordInfo.setOffset(offset);
+		  walletInTotalTradeRecordInfo.setPageNum(pageNum);
+		  walletInTotalTradeRecordInfo.setPageSize(pageSize);
+		  walletInTotalTradeRecordInfo.setRows(userWalletInTotalTradeRecordList);
 		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
-		        .setData(walletTotalTradeRecordInfo)
+		        .setData(walletInTotalTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
@@ -427,14 +431,16 @@ public class UserWalletController extends BaseShiroController {
 		  endTime=nowDate;
 	  
 	  List<WalletTotalTradeRecordInfo> userWalletOutTotalTradeRecordList=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime,offset, limit);
-	  PageDomain<WalletTotalTradeRecordInfo> walletTotalTradeRecordInfo = new PageDomain<>();
-		  walletTotalTradeRecordInfo.setAsc("desc");
-		  walletTotalTradeRecordInfo.setOffset(offset);
-		  walletTotalTradeRecordInfo.setPageNum(pageNum);
-		  walletTotalTradeRecordInfo.setPageSize(pageSize);
-		  walletTotalTradeRecordInfo.setRows(userWalletOutTotalTradeRecordList);
+	  PageDomain<WalletTotalTradeRecordInfo> walletOutTotalTradeRecordInfo = new PageDomain<>();
+	  Integer count=userWalletTradeRecordMapper.countByOutTotalTradeRecord(startTime, endTime);
+		  walletOutTotalTradeRecordInfo.setTotal(count);
+		  walletOutTotalTradeRecordInfo.setAsc("desc");
+		  walletOutTotalTradeRecordInfo.setOffset(offset);
+		  walletOutTotalTradeRecordInfo.setPageNum(pageNum);
+		  walletOutTotalTradeRecordInfo.setPageSize(pageSize);
+		  walletOutTotalTradeRecordInfo.setRows(userWalletOutTotalTradeRecordList);
 		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
-		        .setData(walletTotalTradeRecordInfo)
+		        .setData(walletOutTotalTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
@@ -461,9 +467,17 @@ public class UserWalletController extends BaseShiroController {
 	    else 
 	    	offset = 0;
 	  
-	  List<WalletTotalTradeRecordInfo> userWalletBalanceRecords=userWalletTradeRecordMapper.selectAllUserBalanceRecord(offset, limit);
-		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
-		        .setData(userWalletBalanceRecords)
+	  List<WalletTotalTradeRecordInfo> userWalletBalanceRecordList=userWalletTradeRecordMapper.selectAllUserBalanceRecord(offset, limit);
+	  PageDomain<WalletTotalTradeRecordInfo> userWalletBalanceRecordInfo = new PageDomain<>();
+	  Integer count=userWalletTradeRecordMapper.countByUserBalanceRecord();
+	  userWalletBalanceRecordInfo.setTotal(count);
+	  userWalletBalanceRecordInfo.setAsc("desc");
+	  userWalletBalanceRecordInfo.setOffset(offset);
+	  userWalletBalanceRecordInfo.setPageNum(pageNum);
+	  userWalletBalanceRecordInfo.setPageSize(pageSize);
+	  userWalletBalanceRecordInfo.setRows(userWalletBalanceRecordList);
+		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+		        .setData(userWalletBalanceRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
