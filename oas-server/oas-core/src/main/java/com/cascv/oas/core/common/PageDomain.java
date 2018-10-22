@@ -14,5 +14,7 @@ public class PageDomain<T> implements Serializable {
   @Getter @Setter private String asc;
   @Getter @Setter private Integer total;
   @Getter @Setter private Integer offset;
+  @Getter @Setter private String startTime;
+  @Getter @Setter private String endTime;
   @Getter @Setter private List<T> rows;
 }

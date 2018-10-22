@@ -528,7 +528,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     @PostMapping(value="/inqureEnergyWalletInTotalPointTradeRecord")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> inqureEnergyWalletInTotalPointTradeRecord(String startTime,String endTime,@RequestBody PageDomain<Integer> pageInfo){
+    public ResponseEntity<?> inqureEnergyWalletInTotalPointTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
     	
     	Integer pageNum = pageInfo.getPageNum();
         Integer pageSize = pageInfo.getPageSize();
@@ -556,7 +556,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         String nowDate = format.format(d);
         log.info("nowDate:{}",nowDate);
         
-  	  
+        String startTime=pageInfo.getStartTime();
+        String endTime=pageInfo.getEndTime();
   	  if(startTime=="")
   		  startTime=nowMonthOfFirstDay;
   	  if(endTime=="")
@@ -584,7 +585,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     @PostMapping(value="/inqureEnergyWalletOutTotalPointTradeRecord")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> inqureEnergyWalletOutTotalPointTradeRecord(String startTime,String endTime,@RequestBody PageDomain<Integer> pageInfo){
+    public ResponseEntity<?> inqureEnergyWalletOutTotalPointTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
   	  
     	Integer pageNum = pageInfo.getPageNum();
         Integer pageSize = pageInfo.getPageSize();
@@ -612,6 +613,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         String nowDate = format.format(d);
         log.info("nowDate:{}",nowDate);
   	  
+        String startTime=pageInfo.getStartTime();
+        String endTime=pageInfo.getEndTime();
   	  if(startTime=="")
   		  startTime=nowMonthOfFirstDay;
   	  if(endTime=="")
