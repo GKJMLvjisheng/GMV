@@ -5,8 +5,8 @@ document.write("<script language=javascript src='/js/wallet/energyWalletTable.js
 $(function() {
 	initEnergyWalletGrid();
 	initFundBigGrid();
-//	initFundInGrid();
-//	initFundOutGrid();
+	initFundInGrid();
+	initFundOutGrid();
 });
 
 //时间控件
@@ -97,7 +97,9 @@ function todayDate(){
 //function FundInReady(){
 //	var startTime2=$("#startTime2").val();
 //	var endTime2=$("#endTime2").val();
-//	data={"startTime":startTime2,"endTime":endTime2};
+//	//alert(JSON.stringify(startTime2));
+//	
+//	var data={"startTime":startTime2,"endTime":endTime2};
 //
 //    $('#fundInGrid').bootstrapTable('destroy');
 //	var data2;
@@ -106,7 +108,6 @@ function todayDate(){
 //	    contentType : 'application/json;charset=utf8',
 //		dataType: 'json',
 //		cache: false,
-//		type: 'post',
 //		type: 'post',
 //		data:JSON.stringify(data),
 //		processData : false,

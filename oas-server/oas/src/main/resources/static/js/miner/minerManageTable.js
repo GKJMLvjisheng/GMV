@@ -23,7 +23,7 @@ function initMinerGrid(data) {
 		uniqueId:"minerCode",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
-		sortable: true,//是否启用排序
+		sortable: false,//是否启用排序
 		sortName: 'orderNum', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 		data:data,				
@@ -42,7 +42,7 @@ function initMinerGrid(data) {
 			field : "minerName",
 			align: 'center',
 			valign: 'middle',
-			width:  '120px',
+			width:  '110px',
 		},
 			{
 
@@ -50,7 +50,7 @@ function initMinerGrid(data) {
 			field : "minerPrice",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		}, 
 			{
@@ -59,7 +59,7 @@ function initMinerGrid(data) {
 			field : "minerGrade",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		},{
 
@@ -67,7 +67,7 @@ function initMinerGrid(data) {
 			field : "minerPower",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		},
 		{
@@ -76,7 +76,7 @@ function initMinerGrid(data) {
 			field : "minerPeriod",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		},
 		{
@@ -97,54 +97,45 @@ function initMinerGrid(data) {
 		},
 		{
 
+			title : " 排序",			
+			field : "minerCode",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
+			formatter: actionFormatter1
+		},
+		{
+
 			title : " 操作",			
 			field : "minerCode",
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
-			formatter: actionFormatter
+			formatter: actionFormatter2
 		}],
 		
 		search : true,//搜索
         searchOnEnterKey : true,
 		clickToSelect: false, 
-		
-		//当拖拽结束后，整个表格的数据            
-		onReorderRow: function (newData) { 
-			alert(JSON.stringify(newData));
-			
-//			$('#minerGrid').bootstrapTable('destroy');
-//			var data2;
-//			
-//			var data = {
-//					"minerName" : newData
-//				};
-//			
-//			 $.ajax({		
-//				url: "/api/v1/miner/inquireWebMiner",
-//			    contentType : 'application/json;charset=utf8',
-//				dataType: 'json',
-//				cache: false,
-//				type: 'post',
-//				data:JSON.stringify(data),
-//				processData : false,
-//				async : false,
-//				
-//				success: function(res) {
-//					//alert(JSON.stringify(res));
-//					data2=res.data;
-//					initMinerGrid(data2);
-//				}, 
-//				error: function(){
-//					alert("调整顺序后矿机详细信息回显失败！")
-//				}
-//				}); 
-		 },
-		 
 	});
 }
+		
+//当拖拽结束后，整个表格的数据            
+//		onReorderRow: function (newData) { 
+//			alert(JSON.stringify(newData));			
+//		}
 
-function actionFormatter(value, row, index) {
+function actionFormatter1(value, row, index) {
+    var minerCode = value;
+    var result = "";
+
+    result += "<a href='javascript:;' onclick=\"up('" + minerCode + "')\">上移 </a>";
+    result += "<a href='javascript:;' onclick=\"down('" + minerCode + "')\">下移</a>";
+
+    return result;
+}
+
+function actionFormatter2(value, row, index) {
     var id = value;
     var result = "";
 
@@ -154,6 +145,62 @@ function actionFormatter(value, row, index) {
     return result;
 }
  
+function up(minerCode){
+	var data = {
+		"minerCode" : minerCode,
+	};
+	
+	$.ajax({
+		url: "/api/v1/miner/upMiner",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(data),
+		processData : false,
+		async : false,
+		
+		success : function(res) {
+			if (res.message == "已是第一个，不能上移") {
+				alert("已是第一个，不能上移！")
+			} else if(res.message == "成功"){
+				minerReady();
+			}
+		},
+		error : function() {		
+			alert("上移过程发生错误！");
+		}
+	});	
+}
+
+function down(minerCode){
+
+	var data = {
+		"minerCode" : minerCode,
+	};
+	
+	$.ajax({
+		url: "/api/v1/miner/downMiner",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(data),
+		processData : false,
+		async : false,
+		
+		success : function(res) {
+			if (res.message == "已是最后一个，不能下移"){
+				alert("已是最后一个，不能下移！")
+			}else if(res.message == "成功"){
+				minerReady();
+			}
+		},
+		error : function() {		
+			alert("下移过程发生错误！");
+		}
+	});	
+}
 
 function EditMinerById(id){
     

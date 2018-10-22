@@ -14,6 +14,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -113,7 +115,10 @@ public class UserController extends BaseShiroController{
 	@PostMapping(value="/login")
 	@ResponseBody
 	@WriteLog(value="Login")
-	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo) {
+	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo,HttpServletRequest request) {
+		//获取请求头，来判断是来自web的请求还是移动端的请求
+		String userAgent=request.getHeader("user-agent");
+		log.info("user-agent={}",userAgent);		
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
@@ -136,8 +141,8 @@ public class UserController extends BaseShiroController{
           /**String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
           String IMEINew=loginVo.getIMEI();
           
-          //判断是否是网页登录
-          if(IMEINew!=null) {
+          //判断是否是移动端登录
+          if(userAgent.indexOf("android")!=-1) {
 	          if(IMEIOri==null) {
 	        	   userModel.setIMEI(loginVo.getIMEI());
 	               this.updateIMEI(userModel);
@@ -165,8 +170,8 @@ public class UserController extends BaseShiroController{
 	@ResponseBody
 	@Transactional
 	@WriteLog(value="Register")
-	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
-
+	public ResponseEntity<?> register(@RequestBody UserModel userModel){
+	  
 	  String password = userModel.getPassword();
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);

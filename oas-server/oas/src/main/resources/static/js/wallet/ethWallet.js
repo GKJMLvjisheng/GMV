@@ -2,8 +2,8 @@
 $(function() {
 	//初始加载	
 	initEthWalletGrid();	
-//	initFundInGrid();
-//	initFundOutGrid();
+	initFundInGrid();
+	initFundOutGrid();
 });
 
 //时间控件
