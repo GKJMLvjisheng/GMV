@@ -39,7 +39,12 @@ limit #{offset}, #{limit};
 </select> 
 
 <select id="countByEnergyWalletBalanceRecord" resultType="java.lang.Integer">
-select  count(*) from energy_wallet
+select  
+		count(*) 
+from 
+		energy_wallet ew,user_info u
+where
+		ew.user_uuid=u.uuid
 </select> 
 
 <resultMap id="energyWalletPointRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletPointRecordInfo">
