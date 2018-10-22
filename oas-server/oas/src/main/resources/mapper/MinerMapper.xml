@@ -269,6 +269,7 @@
 		<id column="uuid" property="uuid" />
 		<result column="parameter_value" property="parameterValue"/>
 	  	<result column="parameter_name" property="parameterName"/>
+	  	<result column="period" property="period"/>
 	  	<result column="created" property="created"/>
 	  	<result column="updated" property="updated"/>
     </resultMap>
@@ -278,9 +279,9 @@
 	      SELECT LAST_INSERT_ID()
 	    </selectKey>
         insert into system_parameter 
-          (parameter_value, parameter_name, created, updated)
+          (parameter_value, parameter_name, period, created, updated)
         values
-          (#{parameterValue}, #{parameterName}, #{created}, #{updated})           
+          (#{parameterValue}, #{parameterName}, #{period}, #{created}, #{updated})           
     </insert>
     
     <delete id="deleteSystemParameterByUuid">
