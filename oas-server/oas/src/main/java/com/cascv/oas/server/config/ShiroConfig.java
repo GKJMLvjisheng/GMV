@@ -215,7 +215,7 @@ public class ShiroConfig {
 		
 		//角色权限管理
 		
-		//filterChainDefinitionMap.put("/api/v1/userCenter/upLoadImg", "roles[admin]");
+//		filterChainDefinitionMap.put("/api/v1/userCenter/login", "roles[admin]");
 		
 		
 		//让微信接口免登录访问
