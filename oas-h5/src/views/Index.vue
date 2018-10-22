@@ -202,7 +202,7 @@ export default {
     }
   },
   created() {
-    this.getStep()
+    //this.getStep()
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
@@ -372,9 +372,9 @@ export default {
               
 
               this.energyBallList=energyBallListBackup
-              //console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
+              console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
               this.walkEnergyBallList=walkEnergyBallListtBackup
-              //console.log("222"+JSON.stringify(this.walkEnergyBallList))
+              console.log("222"+JSON.stringify(this.walkEnergyBallList))
               } 
               catch(err) {
                     console.log(err);
@@ -413,7 +413,7 @@ export default {
      getWalkEnergyBall() {
      
       
-    //this.todayStep="20000"
+    this.todayStep="20000"
     
      //let time="2018-10-15"
     
@@ -603,7 +603,7 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.getStep()
+      //this.getStep()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]

@@ -1,34 +1,29 @@
 package com.oases.user.ui.activity
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-
 import android.text.TextUtils
 import android.view.View
 import android.util.Log
-import android.view.MotionEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import com.oases.base.common.AppManager
-import com.oases.base.common.BaseConstant
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.oases.base.ext.onClick
-import com.oases.base.ext.onRightDrawableClickListener
 import com.oases.base.ui.activity.BaseMvpActivity
-import com.oases.base.utils.AppPrefsUtils
 import com.oases.provider.common.isLogined
+import com.oases.provider.router.RouterPath
 import com.oases.user.R
 import com.oases.user.data.protocol.UserInfo
 import com.oases.user.injection.component.DaggerUserComponent
 import com.oases.user.injection.module.UserModule
 import com.oases.user.presenter.LoginPresenter
 import com.oases.user.presenter.view.LoginView
-
+import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 
-//, LoaderCallbacks<Cursor>
+@Route(path = RouterPath.UserCenter.PATH_LOGIN)
 class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -41,7 +36,10 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     private fun initView() {
-        mLoginBtn.setOnClickListener { attemptLogin() }
+        mLoginBtn.setOnClickListener {
+            toast(getDeviceId(this))
+            attemptLogin()
+        }
         mRegisterBtn.setOnClickListener { startActivity<RegisterActivity>() }
       //  mUserName.onRightDrawableClickListener{mUserName.text.clear()}
 

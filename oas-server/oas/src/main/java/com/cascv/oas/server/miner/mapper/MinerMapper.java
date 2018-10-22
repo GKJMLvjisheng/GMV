@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
+import com.cascv.oas.server.miner.model.SystemParameterModel;
 
 
 @Component
@@ -25,6 +26,13 @@ public interface MinerMapper {
 	List<MinerModel> selectAllMiner(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer countNum();
 	
+	
+	Integer insertSystemParameter(SystemParameterModel systemParameterModel);
+	Integer deleteSystemParameterByUuid(@Param("uuid") Integer uuid);
+	List<SystemParameterModel> selectSystemParameter();
+	SystemParameterModel selectSystemParameterByUuid(@Param("uuid") Integer uuid);
+	Integer updateSystemParameterByUuid(SystemParameterModel systemParameterModel);
+	
 	List<PurchaseRecord> selectAllRecord();
 	List<PurchaseRecord> selectByuserUuid(@Param("userUuid") String userUuid);
 	List<PurchaseRecord> selectByuserUuidMinerStatus(@Param("userUuid") String userUuid);
@@ -33,11 +41,16 @@ public interface MinerMapper {
 	
 	PurchaseRecord selectByUuid(@Param("uuid") String uuid);
 	Integer updateStatusByUuid(@Param("uuid") String uuid);
+	List<PurchaseRecord> selectByMinerStatusPowerRewardStatusToDecrease();
 	List<PurchaseRecord> selectByMinerPurchaseStatus();
 	List<PurchaseRecord> selectByMinerStatusPowerRewardStatus();
 	Integer updateByRewardEnergyBallUuid(PurchaseRecord purchaseRecord);
+	Integer updateByFinishRewardUpdated(PurchaseRecord purchaseRecord);
+	Integer updateByFinishRewardNumber(PurchaseRecord purchaseRecord);
+	Integer updateByPowerRewardStatusRewardEnergyBallUuid(PurchaseRecord purchaseRecord);//撤出算力更新记录
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatus(PurchaseRecord purchaseRecord);
+	Integer updateByPowerRewardStatusToDecrease(PurchaseRecord purchaseRecord);
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 
 			@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer insertPurchaseRecord(PurchaseRecord purchaseRecord);

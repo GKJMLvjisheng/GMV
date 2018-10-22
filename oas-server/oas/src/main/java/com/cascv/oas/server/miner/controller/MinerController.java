@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
@@ -23,12 +24,16 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
+import com.cascv.oas.server.miner.model.SystemParameterModel;
 import com.cascv.oas.server.miner.service.MinerService;
+import com.cascv.oas.server.miner.wrapper.AddSystemParameter;
+import com.cascv.oas.server.miner.wrapper.DeleteSystemParameter;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
 import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
+import com.cascv.oas.server.miner.wrapper.SystemParameterModelRequest;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -59,6 +64,65 @@ public class MinerController {
 	private ActivityMapper activityMapper;
 
 
+	//增加系统变量
+	@PostMapping(value = "/addSystemParameter")  
+	@ResponseBody
+	public ResponseEntity<?> addSystemParameter(@RequestBody AddSystemParameter systemParameterModelRequest){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		SystemParameterModel systemParameterModel = new SystemParameterModel();
+		systemParameterModel.setParameterName(systemParameterModelRequest.getParameterName());
+		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
+		systemParameterModel.setCreated(now);
+		systemParameterModel.setUpdated(now);
+		minerMapper.insertSystemParameter(systemParameterModel);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();		
+	}
+	
+	//
+	@PostMapping(value = "/deleteSystemParameter")  
+	@ResponseBody
+	public ResponseEntity<?> deleteSystemParameter(@RequestBody DeleteSystemParameter deleteSystemParameter){
+		log.info("uuid={}", deleteSystemParameter.getUuid());
+		minerMapper.deleteSystemParameterByUuid(deleteSystemParameter.getUuid());
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+		
+	}
+	
+	//修改系统变量值
+	@PostMapping(value = "/updatedSystemParameter")  
+	@ResponseBody
+	public ResponseEntity<?> updatedSystemParameter(@RequestBody SystemParameterModelRequest systemParameterModelRequest){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		SystemParameterModel systemParameterModel = new SystemParameterModel();
+		systemParameterModel.setUuid(systemParameterModelRequest.getUuid());
+		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
+		systemParameterModel.setUpdated(now);
+        minerMapper.updateSystemParameterByUuid(systemParameterModel);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+		
+	}
+	
+	//显示系统变量
+	@PostMapping(value = "/selectSystemParameter")  
+	@ResponseBody
+	public ResponseEntity<?> selectSystemParameter(){
+		List<SystemParameterModel> systemParameterModel = minerMapper.selectSystemParameter();
+		return new ResponseEntity.Builder<List<SystemParameterModel>>()
+				.setData(systemParameterModel)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
+	
 	//新增矿机时查询矿机名是否重复
 	@PostMapping(value = "/inquireMinerName")  
 	@ResponseBody
