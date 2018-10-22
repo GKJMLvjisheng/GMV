@@ -46,6 +46,7 @@ import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
+import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
@@ -96,6 +97,8 @@ public class UserController extends BaseShiroController{
   private MessageService messageService;
   @Autowired
   private UserRoleModelMapper userRoleModelMapper;
+  @Autowired
+  private UserModelMapper userModelMapper;
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
   
@@ -520,6 +523,7 @@ public class UserController extends BaseShiroController{
        String nameIn = userModel.getName(); 
        String passwordIn = userModel.getPassword();
        UserModel userNewModel = userService.findUserByName(nameIn); 
+       log.info("name={}",nameIn);
        String saltDb = userNewModel.getSalt();  
        String userPasswordDb = userNewModel.getPassword(); 
        String userPasswordOu = new Md5Hash(nameIn+passwordIn+saltDb).toHex().toString(); 
@@ -1166,4 +1170,54 @@ public class UserController extends BaseShiroController{
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
 	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param IMEI,name
+	 * @return 
+	 */
+	@PostMapping(value="/updateIMEI")
+    @ResponseBody
+    @WriteLog(value="updateIMEI")
+    public ResponseEntity<?> updateIMEI(@RequestBody UserModel userModel) {
+		Map<String,Object> info=new HashMap<>(); 
+		UserModel userNeWModel=new UserModel();
+		String IMEI=userModel.getIMEI();
+		userNeWModel.setIMEI(IMEI);
+		userNeWModel.setName(userModel.getName());
+		info.put("state",true);	
+		userModelMapper.updateIMEI(userNeWModel);
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		  	      .setData(info)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param IMEI,name
+	 * @return 
+	 */
+    @RequestMapping(value="/checkIMEI",method = RequestMethod.POST)
+    @ResponseBody
+    @WriteLog(value="CheckIMEI")
+    public ResponseEntity<?> checkIMEI(@RequestBody UserModel userModel) {
+       Map<String,Boolean> info=new HashMap<>();
+       String nameIn = userModel.getName(); 
+       String IMEIIn = userModel.getIMEI();
+       UserModel userNewModel = userService.findUserByName(nameIn); 
+       String IMEIOld =userNewModel.getIMEI();
+       log.info("IMEI={}",IMEIOld);
+       if (IMEIOld.equals(IMEIIn)){
+        info.put("state", true);
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+			      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
+		
+       }else{
+        info.put("state", false);
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+			      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+       }
+    }
+	
 }

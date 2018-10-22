@@ -64,5 +64,7 @@ public interface UserModelMapper {
 	 
 	 //更改密码
 	 Integer updateUserPassworde(UserModel userModel);
+	 
+	 Integer updateIMEI(UserModel userModel);
 }
 
