@@ -72,9 +72,20 @@ public class PromotedRewardController {
 	@PostMapping(value="/AAAAtest")
 	@ResponseBody
 	public ResponseEntity<?> AAAAtest(){
-		BigDecimal test=promotedRewardService.getNowRate();
-		return new ResponseEntity.Builder<BigDecimal>()
-				.setData(test)
+		String str="大c中z国";
+		String str1="大中国zxc";
+		String str2="wddrftf";
+		Integer length=str.length();
+		Integer length1=str1.length();
+		Integer length2=str2.length();
+		str=str.substring(length-3, length);
+		str1=str1.substring(length1-3, length1);
+		str2=str2.substring(length2-3, length2);
+		log.info("str:{}",str);
+		log.info("str1:{}",str1);
+		log.info("str2:{}",str2);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}
