@@ -13,32 +13,8 @@ function queryParams(params){
     }
 }
 
-//请求服务数据时所传参数
-function queryParams1(params){
-    return{
-        //每页多少条数据
-        pageSize: params.limit,
-        //当前页码
-        pageNum: params.offset / params.limit + 1,
-        startTime: $("#startTime2").val(),
-        endTime: $("#endTime2").val(),
-    }
-}
-
-//请求服务数据时所传参数
-function queryParams2(params){
-    return{
-        //每页多少条数据
-        pageSize: params.limit,
-        //当前页码
-        pageNum: params.offset / params.limit + 1,
-        startTime: $("#startTime3").val(),
-        endTime: $("#endTime3").val(),
-    }
-}
-
 function initUserWalletGrid() {	
-
+	$("#userWalletGrid").bootstrapTable('destroy');
 	$("#userWalletGrid").bootstrapTable({
 		url: '/api/v1/userWallet/inqureUserWalletTradeRecord',
 		contentType : "application/json",
@@ -59,7 +35,6 @@ function initUserWalletGrid() {
 		sortable: true,//是否启用排序
 		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,	
 			
 		columns : [{  
 		title: '序号',  
@@ -136,7 +111,8 @@ function responseHandler1(res){
     };
 };
 
-function initFundBigGrid() {	
+function initFundBigGrid() {
+	$("#fundBigGrid").bootstrapTable('destroy');//解决bootstraptable多次请求只触发一次的问题
 	$("#fundBigGrid").bootstrapTable({
 		url: '/api/v1/userWallet/inqureUserWalletBalanceRecord',
 		contentType : "application/json",
@@ -157,7 +133,6 @@ function initFundBigGrid() {
 		sortable: true,//是否启用排序
 		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,	
 
 		columns : [{  
 		title: '序号',  
@@ -208,6 +183,7 @@ function responseHandler2(res){
 };
 
 function initFundInGrid() {	
+	$("#fundInGrid").bootstrapTable('destroy');
 	$("#fundInGrid").bootstrapTable({
 		url: '/api/v1/userWallet/inqureUserWalletInTotalTradeRecord',
 		contentType : "application/json",
@@ -220,7 +196,7 @@ function initFundInGrid() {
 		pageNumber:1,//首页页码
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		queryParams:queryParams1,//请求服务器时所传的参数
+		queryParams:queryParams3,//请求服务器时所传的参数
 		responseHandler:responseHandler3,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
@@ -228,7 +204,6 @@ function initFundInGrid() {
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,	
 
 		columns : [{  
 		title: '序号',  
@@ -266,6 +241,26 @@ function initFundInGrid() {
 	});
 }
 
+//请求服务数据时所传参数
+function queryParams3(params){
+	var startTime2 = $("#startTime2").val();
+	var endTime2 = $("#endTime2").val();
+	alert(JSON.stringify(startTime2));
+	
+	//data={"startTime":startTime2,"endTime":endTime2};
+	
+	 return{
+	        //每页多少条数据
+	        pageSize: params.limit,
+	        //当前页码
+	        pageNum: params.offset / params.limit + 1,
+	        //data: data,
+	        startTime: startTime2,
+	        endTime: endTime2,
+	        
+	    }
+}
+
 //请求成功方法
 function responseHandler3(res){
     var code = res.code;//在此做了错误代码的判断
@@ -281,6 +276,7 @@ function responseHandler3(res){
 };
 
 function initFundOutGrid() {	
+	$("#fundOutGrid").bootstrapTable('destroy');
 	$("#fundOutGrid").bootstrapTable({
 		url: '/api/v1/userWallet/inqureUserWalletOutTotalTradeRecord',
 		contentType : "application/json",
@@ -293,15 +289,14 @@ function initFundOutGrid() {
 		pageNumber:1,//首页页码
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		queryParams:queryParams2,//请求服务器时所传的参数
+		queryParams:queryParams4,//请求服务器时所传的参数
 		responseHandler:responseHandler4,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
-	    sortOrder: 'asc', // 排序规则
-		data:data,	
+	    sortOrder: 'asc', // 排序规则	
 
 		columns : [{  
 		title: '序号',  
@@ -336,6 +331,19 @@ function initFundOutGrid() {
         searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
+}
+
+//请求服务数据时所传参数
+function queryParams4(params){
+    return{
+    	startTime: $("#startTime3").val(),
+        endTime: $("#endTime3").val(),
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+       
+    }
 }
 
 //请求成功方法

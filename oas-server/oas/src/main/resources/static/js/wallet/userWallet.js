@@ -6,8 +6,8 @@ $(function() {
 	//初始加载	
 	initUserWalletGrid();	
 	initFundBigGrid();
-//	initFundInGrid();
-//	initFundOutGrid();
+	initFundInGrid();
+	initFundOutGrid();
 });
 
 //时间控件
