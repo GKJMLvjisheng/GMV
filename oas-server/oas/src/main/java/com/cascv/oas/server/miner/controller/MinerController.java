@@ -317,6 +317,60 @@ public class MinerController {
 		
 	}
 	
+	//上移(自己的orderNum减1，换位置的对方加1)
+	@PostMapping(value = "/upMiner")  
+	@ResponseBody
+	public ResponseEntity<?> upMiner(@RequestBody MinerDelete minerDelete){
+		String minerCode = minerDelete.getMinerCode();
+		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
+		if(orderNum == 1) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.THE_FIRST_ONE)
+					.build();
+		}
+		Integer newOrderNum = orderNum - 1;
+		log.info("newOrderNum={}",newOrderNum);
+		String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
+		orderNum = orderNum - 1;
+		newOrderNum = newOrderNum + 1;
+		log.info("orderNum={}",orderNum);
+		log.info("newOrderNum={}",newOrderNum);
+		minerMapper.updateOrderNum(minerCode, orderNum);
+		minerMapper.updateOrderNum(newMinerCode, newOrderNum);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
+	//下移(自己的orderNum加1，换位置的对方减1)
+	@PostMapping(value = "/downMiner")  
+	@ResponseBody
+	public ResponseEntity<?> downMiner(@RequestBody MinerDelete minerDelete){
+		String minerCode = minerDelete.getMinerCode();
+		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
+		if(orderNum == minerMapper.selectAllWebMiner().size()) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.THE_LAST_ONE)
+					.build();
+		}
+		Integer newOrderNum = orderNum + 1;
+		log.info("newOrderNum={}",newOrderNum);
+		String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
+		orderNum = orderNum + 1;
+		newOrderNum = newOrderNum - 1;
+		log.info("orderNum={}",orderNum);
+		log.info("newOrderNum={}",newOrderNum);
+		minerMapper.updateOrderNum(minerCode, orderNum);
+		minerMapper.updateOrderNum(newMinerCode, newOrderNum);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
 	//查询用户矿机购买记录，分页
 	@PostMapping(value = "/inquirePurchaseRecord")  
 	@ResponseBody

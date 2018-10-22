@@ -55,6 +55,10 @@
         select * from miner_source where miner_name = #{minerName}
     </select>
     
+    <select id="inquireByOrderNum" resultMap="MinerMap">
+        select * from miner_source where order_num = #{orderNum}
+    </select>
+    
     <select id="inquireByUuid" resultMap="MinerMap">
         select * from miner_source where miner_code = #{minerCode}
     </select>
@@ -80,6 +84,14 @@
           miner_grade = #{minerGrade},
           miner_period = #{minerPeriod},
           updated = #{updated}
+        where
+          miner_code = #{minerCode}
+    </update>
+    
+    <update id="updateOrderNum" parameterType="com.cascv.oas.server.miner.model.MinerModel">
+        update miner_source
+        set
+          order_num = #{orderNum}
         where
           miner_code = #{minerCode}
     </update>

@@ -59,7 +59,9 @@ public enum ErrorCode {
   NO_WALK_PERMISSION(10042,"在当前时间段，计步奖励功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
   No_TRANSFER_PERMISSION(10043,"在当前时间段，转账功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
   No_REVERSEWITHDRAW_PERMISSION(10043,"在当前时间段，充币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
-  No_WITHDRAW_PERMISSION(10043,"在当前时间段，提币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");
+  No_WITHDRAW_PERMISSION(10043,"在当前时间段，提币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
+  THE_FIRST_ONE(10044, "已是第一个，不能上移"),
+  THE_LAST_ONE(10045, "已是最后一个，不能下移");
 	
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;
