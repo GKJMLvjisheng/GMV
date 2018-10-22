@@ -9,11 +9,12 @@
 	<result column="version_code" property="versionCode"/>
 	<result column="version_status" property="versionStatus"/>
 	<result column="app_url" property="appUrl"/>
+	<result column="up_grade_status" property="upGradeStatus"/>
 	<result column="created" property="created"/>
   </resultMap>
  
   <sql id="Base_Column_List">
-    uuid, version_code, version_status,app_url,created
+    uuid, version_code, version_status,app_url,up_grade_status,created
   </sql>
   
 <!--   insert app -->
@@ -32,6 +33,9 @@
       <if test="appUrl != null">
         app_url,
       </if>
+       <if test="upGradeStatus != null">
+        up_grade_status,
+      </if>
       <if test="created != null">
         created,
        </if>
@@ -45,6 +49,9 @@
       </if>
       <if test="appUrl != null">
         #{appUrl,jdbcType=VARCHAR},
+      </if>
+       <if test="upGradeStatus != null">
+        #{upGradeStatus,jdbcType=INTEGER},
       </if>
       <if test="created != null">
         #{created,jdbcType=VARCHAR},

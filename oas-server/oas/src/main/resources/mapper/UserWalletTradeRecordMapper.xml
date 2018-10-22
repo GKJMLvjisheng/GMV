@@ -23,6 +23,15 @@ order by ud.created desc
 limit #{offset}, #{limit};
 </select>
 
+  <select id="countByTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(*)
+from 
+	  user_wallet_detail ud,user_info u
+where
+	  ud.user_uuid=u.uuid;
+</select>
+
 <resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
     <result column="name" property="name"/>
 	<result column="value" property="value"/>
@@ -41,6 +50,16 @@ group by u.name
 order by value desc
 limit #{offset}, #{limit};
 </select>
+
+<select id="countByInTotalTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(distinct ud.user_uuid)
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+</select>
    
 <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
 select 
@@ -56,6 +75,16 @@ order by value desc
 limit #{offset}, #{limit};
    </select>
    
+  <select id="countByOutTotalTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(distinct ud.user_uuid)
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+   </select>
+   
 <select id="selectAllUserBalanceRecord" resultMap="walletTotalTradeRecordMap">
 select 
 	 u.name,uw.balance as value
@@ -65,6 +94,15 @@ where
 	uw.user_uuid=u.uuid
 order by value desc
 limit #{offset}, #{limit};
+   </select>
+   
+   <select id="countByUserBalanceRecord" resultType="java.lang.Integer">
+select 
+	 count(*)
+from 
+	 user_wallet uw,user_info u
+where
+	uw.user_uuid=u.uuid;
    </select>
   
 <select id="selectUserPointToOas" resultMap="walletTotalTradeRecordMap">
