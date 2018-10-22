@@ -148,29 +148,14 @@ function checkVersionCode() {
         $("#msg_versionCode").css("color", "red");
 		
 		return;}
-	if (len>30) {
-		$("#msg_versionCode").html("输入版本号长度为30个字符，已达上限");
+	if (len>20) {
+		$("#msg_versionCode").html("输入版本号长度为20个字符，已达上限");
         $("#msg_versionCode").css("color", "red");
 	}
 	else {
 		check1=1;
 		$("#msg_versionCode").html("");
         $("#msg_versionCode").css("color", "green");
-	}
-}
-
-//检查版本状态
-function checkVersionStatus() {
-	var abstract = $("#versionStatus").val(); 
-	var len=abstract.length;
-	//alert(len);
-	if (len>40) {
-		$("#msg_versionStatus").html("输入版本状态长度为40个字符，已达上限");
-        $("#msg_versionStatus").css("color", "red");
-	}
-	else {
-		$("#msg_versionStatus").html("");
-        $("#msg_versionStatus").css("color", "green");
 	}
 }
 
@@ -446,7 +431,25 @@ function initVersionGrid(data) {
 			//width:  '140px',
 			formatter: versionPath
 
-		}, 
+		}, {
+
+			title : "是否强制升级",
+
+			field : "upGradeStatus",
+			align: 'center',
+			valign: 'middle',
+			//width:  '140px',
+			formatter: function versionUp(value, row, index){
+				var value="";
+				if(row.upGradeStatus==0){
+					value="否";
+				}else{
+					value="是"
+				}
+				return value;
+			}
+
+		},
 		{
 
 			title : "创建时间",
