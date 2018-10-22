@@ -75,8 +75,6 @@ public class PromotedRewardService {
 	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
 	private static final Integer REWARD_CODE_OF_DIE_MINER = 12;  //矿机推广奖励到期
 	
-	private static final String ENCRYPTION_STR = "***";//加密字符串前缀
-	
 	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
 	private EnergyPowerBall decreaseRewardEnergyPowerBall = new EnergyPowerBall();
 	
@@ -212,16 +210,23 @@ public class PromotedRewardService {
 	  public String getEncryptionUserName(String userName) {
 		  Integer length=userName.length();
 		  if(length>3) {
+		  Integer number=length-3;
+		  String str="";
+		  for(Integer i=0;i<number;i++) {
+			  str=str+"*";
+		  }
 		  userName=userName.substring(length-3, length);
+		  userName=str+userName;
 		  }else if(length == 3){
 		  userName=userName.substring(length-2, length);
+		  userName="**"+userName;
 		  }else if(length == 2) {
 		  userName=userName.substring(length-1, length);
+		  userName="*"+userName;
 		  }else {
-		  userName=userName.substring(length, length);
+		  userName="*";
 		  }	  
-		  String encryptionUserName=ENCRYPTION_STR+userName;
-		  return encryptionUserName;
+		  return userName;
 	  }
 	  
 		/**
