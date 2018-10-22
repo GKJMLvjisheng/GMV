@@ -353,7 +353,7 @@ public class EthWalletController extends BaseShiroController {
   @ResponseBody
   @Transactional
 
-  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(String startTime,String endTime,@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
   	
 	Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
@@ -380,6 +380,8 @@ public class EthWalletController extends BaseShiroController {
       String nowDate = format.format(d);
       log.info("nowDate:{}",nowDate);
       
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
 	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
 	  if(endTime=="")
@@ -407,7 +409,7 @@ public class EthWalletController extends BaseShiroController {
   @ResponseBody
   @Transactional
 
-  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(String startTime,String endTime,@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
   	
 	Integer pageNum = pageInfo.getPageNum();
     Integer pageSize = pageInfo.getPageSize();
@@ -434,6 +436,8 @@ public class EthWalletController extends BaseShiroController {
       String nowDate = format.format(d);
       log.info("nowDate={}",nowDate);
 	  
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
 	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
 	  if(endTime=="")

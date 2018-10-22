@@ -343,7 +343,7 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/inqureUserWalletInTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureUserWalletInTotalTradeRecord(String startTime,String endTime,@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> inqureUserWalletInTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
 	  
 	  	Integer pageNum = pageInfo.getPageNum();
 	    Integer pageSize = pageInfo.getPageSize();
@@ -371,6 +371,8 @@ public class UserWalletController extends BaseShiroController {
       String nowDate = format.format(d);
       log.info("nowDate:{}",nowDate);
 	  
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
 	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
 	  if(endTime=="")
@@ -397,7 +399,7 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/inqureUserWalletOutTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureUserWalletOutTotalTradeRecord(String startTime,String endTime,@RequestBody PageDomain<Integer> pageInfo){
+  public ResponseEntity<?> inqureUserWalletOutTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
 	  
 	  	Integer pageNum = pageInfo.getPageNum();
 	    Integer pageSize = pageInfo.getPageSize();
@@ -425,6 +427,8 @@ public class UserWalletController extends BaseShiroController {
       String nowDate = format.format(d);
       log.info("nowDate={}",nowDate);
 	  
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
 	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
 	  if(endTime=="")
