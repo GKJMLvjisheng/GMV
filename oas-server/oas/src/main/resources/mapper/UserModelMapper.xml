@@ -1,229 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cascv.oas.server.user.mapper.UserModelMapper">
-  <resultMap id="userModelMap" type="com.cascv.oas.server.user.model.UserModel">
-	<id column="uuid" property="uuid" />
-	<result column="name" property="name"/>
-	<result column="nickname" property="nickname"/>
-	<result column="password" property="password"/>
-    <result column="confirmed" property="confirmed"/>
-    <result column="invite_from" property="inviteFrom" jdbcType="INTEGER"/>
-	<result column="invite_code" property="inviteCode" jdbcType="INTEGER"/>
-	<result column="gender" property="gender"/>
-	<result column="birthday" property="birthday"/>
-	<result column="address" property="address"/>
-	<result column="mobile" property="mobile"/>
-	<result column="email" property="email"/>
-    <result column="mobile_checked" property="mobileChecked"/>
-	<result column="email_checked" property="emailChecked"/>
-	<result column="salt" property="salt"/>
-	<result column="created" property="created"/>
-	<result column="updated" property="updated"/>
-	<result column="profile" property="profile"/> 
-	<result column="identify_code" property="identifyCode"/> 
-  </resultMap>
- 
-  <sql id="Base_Column_List">
-    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated,profile,identify_code 
-  </sql>
-  
-  <!-- insert user -->
-  <insert id="insertUser" parameterType="com.cascv.oas.server.user.model.UserModel">
-    <selectKey keyProperty="inviteCode" order="AFTER" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into user_info
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      uuid,
-      name,
-      password,
-      salt,
-      <if test="nickname != null">
-        nickname,
-      </if>
-      <if test="inviteFrom != null">
-        invite_from,
-      </if>
-      <if test="inviteCode != null">
-        invite_code,
-      </if>
-      <if test="gender != null">
-        gender,
-      </if>
-      <if test="birthday != null">
-        birthday,
-      </if>
-      <if test="address != null">
-        address,
-      </if>
-      <if test="mobile != null">
-        mobile,
-      </if>
-      <if test="mobileChecked != null">
-        mobile_checked,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="emailChecked != null">
-        email_checked,
-      </if>
-      <if test="updated != null">
-        updated,
-      </if>
-      <if test="created != null">
-        created,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      #{uuid,jdbcType=VARCHAR},
-      #{name,jdbcType=VARCHAR},
-      #{password,jdbcType=VARCHAR},
-      #{salt,jdbcType=VARCHAR},
-      <if test="nickname != null">
-        #{nickname,jdbcType=VARCHAR},
-      </if>
-      <if test="inviteFrom != null">
-        #{inviteFrom,jdbcType=INTEGER},
-      </if>
-      <if test="inviteCode != null">
-        #{inviteCode,jdbcType=INTEGER},
-      </if>
-      <if test="gender != null">
-        #{gender,jdbcType=VARCHAR},
-      </if>
-      <if test="birthday != null">
-        #{birthday,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="mobile != null">
-        #{mobile,jdbcType=VARCHAR},
-      </if>
-      <if test="mobileChecked != null">
-        #{mobileChecked,jdbcType=INTEGER},
-      </if>
+<mapper
+	namespace="com.cascv.oas.server.user.mapper.UserModelMapper">
+	<resultMap id="userModelMap"
+		type="com.cascv.oas.server.user.model.UserModel">
+		<id column="uuid" property="uuid" />
+		<result column="name" property="name" />
+		<result column="nickname" property="nickname" />
+		<result column="password" property="password" />
+		<result column="confirmed" property="confirmed" />
+		<result column="invite_from" property="inviteFrom"
+			jdbcType="INTEGER" />
+		<result column="invite_code" property="inviteCode"
+			jdbcType="INTEGER" />
+		<result column="gender" property="gender" />
+		<result column="birthday" property="birthday" />
+		<result column="address" property="address" />
+		<result column="mobile" property="mobile" />
+		<result column="email" property="email" />
+		<result column="mobile_checked" property="mobileChecked" />
+		<result column="email_checked" property="emailChecked" />
+		<result column="salt" property="salt" />
+		<result column="created" property="created" />
+		<result column="updated" property="updated" />
+		<result column="profile" property="profile" />
+		<result column="identify_code" property="identifyCode" />
+	</resultMap>
 
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      
-      <if test="emailChecked != null">
-        #{emailChecked,jdbcType=INTEGER},
-      </if>
+	<sql id="Base_Column_List">
+		uuid, name, nickname,password,invite_from,invite_code,
+		gender, birthday,
+		address, mobile, mobile_checked, email,
+		email_checked, confirmed,
+		salt,created,updated,profile,identify_code,IMEI
+	</sql>
 
-      <if test="updated != null">
-        #{updated,jdbcType=VARCHAR},
-      </if>
-      <if test="created != null">
-        #{created,jdbcType=VARCHAR}
-      </if>
-    </trim>
-   </insert>
-  
-  <!-- delete user -->
-  <delete id="deleteUser" parameterType="java.lang.String">
-    delete from user_info where uuid = #{uuid}
-  </delete>
+	<!-- insert user -->
+	<insert id="insertUser"
+		parameterType="com.cascv.oas.server.user.model.UserModel">
+		<selectKey keyProperty="inviteCode" order="AFTER"
+			resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into user_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			uuid,
+			name,
+			password,
+			salt,
+			<if test="nickname != null">
+				nickname,
+			</if>
+			<if test="inviteFrom != null">
+				invite_from,
+			</if>
+			<if test="inviteCode != null">
+				invite_code,
+			</if>
+			<if test="gender != null">
+				gender,
+			</if>
+			<if test="birthday != null">
+				birthday,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="mobile != null">
+				mobile,
+			</if>
+			<if test="mobileChecked != null">
+				mobile_checked,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="emailChecked != null">
+				email_checked,
+			</if>
+			<if test="updated != null">
+				updated,
+			</if>
+			<if test="created != null">
+				created,
+			</if>
 
-  <select id="selectByName" parameterType="java.lang.String" resultMap="userModelMap">
-  	select 
-  	<include refid="Base_Column_List" />
-  	from user_info where name=#{name}     
-  </select>
+			<!-- <if test="IMEI != null"> -->
+			<!-- IMEI -->
+			<!-- </if> -->
 
-  <select id="selectByUuid" parameterType="java.lang.String" resultMap="userModelMap">
-  	select 
-  	<include refid="Base_Column_List" />
-  	from user_info where uuid=#{uuid}
-  </select>
-  
-  <select id="selectByInviteCode" parameterType="java.lang.Integer" resultMap="userModelMap">
-  	select 
-  	<include refid="Base_Column_List" />
-  	from user_info where invite_code=#{inviteCode}
-  </select>
-  
-   <select id="selectSuperiorsUserByInviteFrom" parameterType="java.lang.Integer" resultMap="userModelMap">
-  	select 
-  	<include refid="Base_Column_List" />
-  	from user_info where invite_code = #{inviteFrom}
-   </select>
-  
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			#{uuid,jdbcType=VARCHAR},
+			#{name,jdbcType=VARCHAR},
+			#{password,jdbcType=VARCHAR},
+			#{salt,jdbcType=VARCHAR},
+			<if test="nickname != null">
+				#{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="inviteFrom != null">
+				#{inviteFrom,jdbcType=INTEGER},
+			</if>
+			<if test="inviteCode != null">
+				#{inviteCode,jdbcType=INTEGER},
+			</if>
+			<if test="gender != null">
+				#{gender,jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				#{birthday,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				#{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="mobileChecked != null">
+				#{mobileChecked,jdbcType=INTEGER},
+			</if>
+
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+
+			<if test="emailChecked != null">
+				#{emailChecked,jdbcType=INTEGER},
+			</if>
+
+			<if test="updated != null">
+				#{updated,jdbcType=VARCHAR},
+			</if>
+			<if test="created != null">
+				#{created,jdbcType=VARCHAR}
+			</if>
+
+			<!-- <if test="IMEI != null"> -->
+			<!-- #{IMEI,jdbcType=VARCHAR} -->
+			<!-- </if> -->
+
+		</trim>
+	</insert>
+
+	<!-- delete user -->
+	<delete id="deleteUser" parameterType="java.lang.String">
+		delete from user_info
+		where uuid = #{uuid}
+	</delete>
+
+	<select id="selectByName" parameterType="java.lang.String"
+		resultMap="userModelMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info where name=#{name}
+	</select>
+
+	<select id="selectByUuid" parameterType="java.lang.String"
+		resultMap="userModelMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info where uuid=#{uuid}
+	</select>
+
+	<select id="selectByInviteCode"
+		parameterType="java.lang.Integer" resultMap="userModelMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info where invite_code=#{inviteCode}
+	</select>
+
+	<select id="selectSuperiorsUserByInviteFrom"
+		parameterType="java.lang.Integer" resultMap="userModelMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info where invite_code = #{inviteFrom}
+	</select>
+
 	<!-- Name:upadateUserInfo -->
 	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.03 -->
-    <update id="updateUserInfo" parameterType="com.cascv.oas.server.user.model.UserModel"> 
-      update user_info 
-      <trim prefix="SET" suffixOverrides=",">
-      <if test="nickname != null">
-       nickname = #{nickname},
-      </if>
-      <if test="gender!= null">
-        gender= #{gender},
-      </if>
-      <if test="address != null">
-       address = #{address},
-      </if>
-      <if test="birthday != null">
-       birthday = #{birthday}
-      </if>
-    </trim>
-     where name = #{name}
-    </update>
-   
-    <!-- update userprofile -->
-   	<!-- Author:lvjisheng -->
+	<update id="updateUserInfo"
+		parameterType="com.cascv.oas.server.user.model.UserModel">
+		update user_info
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="nickname != null">
+				nickname = #{nickname},
+			</if>
+			<if test="gender!= null">
+				gender= #{gender},
+			</if>
+			<if test="address != null">
+				address = #{address},
+			</if>
+			<if test="birthday != null">
+				birthday = #{birthday}
+			</if>
+		</trim>
+		where name = #{name}
+	</update>
+
+	<!-- update userprofile -->
+	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.04 -->
-    <update id="updateUserProfile" parameterType="com.cascv.oas.server.user.model.UserModel">
-        update user_info set 
-      	profile = #{profile}
-      where name = #{name}  
-    </update>
-    
-      <update id="updateIdentifyCode" parameterType="com.cascv.oas.server.user.model.UserModel">
-      update user_info set 
-   	  identify_code = #{identifyCode}
-      where name = #{name}  
-    </update>
-    
-        <update id="updateUserPassworde" parameterType="com.cascv.oas.server.user.model.UserModel">
-        update user_info set 
-      	password = #{password}
-      where name = #{name}  
-    </update>
-    
-    <!-- resetMobileByName -->
-   	<!-- @Author:lvjisheng -->
+	<update id="updateUserProfile"
+		parameterType="com.cascv.oas.server.user.model.UserModel">
+		update user_info set
+		profile = #{profile}
+		where name =
+		#{name}
+	</update>
+
+	<update id="updateIdentifyCode"
+		parameterType="com.cascv.oas.server.user.model.UserModel">
+		update user_info set
+		identify_code = #{identifyCode}
+		where name = #{name}
+	</update>
+
+	<update id="updateUserPassworde"
+		parameterType="com.cascv.oas.server.user.model.UserModel">
+		update user_info set
+		password = #{password}
+		where name =
+		#{name}
+	</update>
+
+	<!-- resetMobileByName -->
+	<!-- @Author:lvjisheng -->
 	<!-- @Date:2018.09.06 -->
-    <update parameterType="com.cascv.oas.server.user.model.UserModel" id="resetMobileByName">
-    update user_info set mobile = #{mobile} where name = #{name} 
-    </update>
-    <update parameterType="com.cascv.oas.server.user.model.UserModel" id="resetEmailByName">
-    update user_info set email = #{email} where name = #{name} 
-    </update>
-    
-     <!-- select user email-->
-    <select id="selectUserMail" resultMap="userModelMap">
-    select email from user_info where email = #{email} </select>
-    
-     <!-- select user mobile-->
-    <select id="selectUserMobile" resultMap="userModelMap">
-    select mobile from user_info where mobile = #{mobile} </select>
-    
-    <!-- select userInfo by mobile-->
-    <select id="findUserByMobile" resultType="java.lang.String">
-    select name from user_info where mobile = #{mobile} </select>
-    
-    
-    <!-- selectByInviteFrom -->
-   	<!-- @Author:yangming -->
+	<update
+		parameterType="com.cascv.oas.server.user.model.UserModel"
+		id="resetMobileByName">
+		update user_info set mobile = #{mobile} where name = #{name}
+	</update>
+	<update
+		parameterType="com.cascv.oas.server.user.model.UserModel"
+		id="resetEmailByName">
+		update user_info set email = #{email} where name = #{name}
+	</update>
+
+	<!-- select user email -->
+	<select id="selectUserMail" resultMap="userModelMap">
+		select email from
+		user_info where email = #{email}
+	</select>
+
+	<!-- select user mobile -->
+	<select id="selectUserMobile" resultMap="userModelMap">
+		select mobile from
+		user_info where mobile = #{mobile}
+	</select>
+
+	<!-- select userInfo by mobile -->
+	<select id="findUserByMobile" resultType="java.lang.String">
+		select name from
+		user_info where mobile = #{mobile}
+	</select>
+
+
+	<!-- selectByInviteFrom -->
+	<!-- @Author:yangming -->
 	<!-- @Date:2018.09.19 -->
-    <select id="selectByInviteFrom" parameterType="java.lang.Integer" resultMap="userModelMap">
-  	select 
-  	<include refid="Base_Column_List" />
-  	from user_info where invite_from=#{inviteFrom}
-  </select>
+	<select id="selectByInviteFrom"
+		parameterType="java.lang.Integer" resultMap="userModelMap">
+		select
+		<include refid="Base_Column_List" />
+		from user_info where invite_from=#{inviteFrom}
+	</select>
+
+	<!-- updateIMEI -->
+	<!-- @Author:lvjisheng -->
+	<!-- @Date:2018.10.22 -->
+	<update id="updateIMEI" parameterType="com.cascv.oas.server.user.model.UserModel">
+	update user_info set
+	IMEI = #{IMEI}
+	where name = #{name}
+	</update>
+
 </mapper>
 

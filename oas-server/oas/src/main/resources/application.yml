@@ -64,23 +64,18 @@ shiro:
     prefix: "shiro"
 
 server:
-  port: 8080
+  port: 443
   session-timeout: -100000000 #1800
+  ssl:
+    key-store-type: JKS
+    key-store: classpath:keystore.jks
+    key-store-password: 1540543585197
+    key-alias: alias
 
 media:
   server:
     imageHost : https://oas.cascv.com
-    
-wallet:
-  providers:
-    ropsten: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
-    mainnet: "https://mainnet.infura.io/16897256b61d42689d088039a362a61b"
-  defaultNet: mainnet
-  
-  token: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
-  contracts[0]: 
-    address: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
-    
+
 mail:
   mailBean:
     rootMail: "3602745100@qq.com"

@@ -1,6 +1,7 @@
 package com.cascv.oas.server.energy.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.PageIODomain;
@@ -187,6 +188,7 @@ public class EnergyPointController extends BaseController{
             energyPointCategory.setMaxValue(maxValueArray[i]);
             energyPointCategoryList.add(energyPointCategory);
         }
+        log.info(JSON.toJSONString(energyPointCategoryList));
         return new ResponseEntity.Builder<List<EnergyPointCategory>>()
                 .setData(energyPointCategoryList)
                 .setErrorCode(ErrorCode.SUCCESS)

@@ -46,6 +46,7 @@ import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
+import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
@@ -97,6 +98,8 @@ public class UserController extends BaseShiroController{
   @Autowired
   private UserRoleModelMapper userRoleModelMapper;
   @Autowired
+  private UserModelMapper userModelMapper;
+  @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
   
   
@@ -123,8 +126,28 @@ public class UserController extends BaseShiroController{
           UserModel userModel=new UserModel();
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
           userModel=ShiroUtils.getUser();
-          userModel.setProfile(fullLink);
+          userModel.setProfile(fullLink);         
+          //userModel.setIMEI(loginVo.getIMEI());
           ShiroUtils.setUser(userModel);
+          
+          /**
+           * 判断IMEI是否相匹配
+           */
+          /**String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+          String IMEINew=loginVo.getIMEI();
+          
+          //判断是否是网页登录
+          if(IMEINew!=null) {
+	          if(IMEIOri==null) {
+	        	   userModel.setIMEI(loginVo.getIMEI());
+	               this.updateIMEI(userModel);
+	               //ShiroUtils.setUser(userModel);
+	          }
+	          else if(!IMEIOri.equals(IMEINew))
+	        	   throw new AuthenticationException();         	  
+          }
+          **/
+          
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -157,9 +180,10 @@ public class UserController extends BaseShiroController{
 		  userRole.setRoleId(2);
 		  String now =DateUtils.getTime();
 		  userRole.setRolePriority(1);
-		  userRole.setCreated(now);
+		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);  
 					
+		  
 		ErrorCode ret = userService.addUser(uuid, userModel);
 //		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
@@ -520,6 +544,7 @@ public class UserController extends BaseShiroController{
        String nameIn = userModel.getName(); 
        String passwordIn = userModel.getPassword();
        UserModel userNewModel = userService.findUserByName(nameIn); 
+       log.info("name={}",nameIn);
        String saltDb = userNewModel.getSalt();  
        String userPasswordDb = userNewModel.getPassword(); 
        String userPasswordOu = new Md5Hash(nameIn+passwordIn+saltDb).toHex().toString(); 
@@ -1166,4 +1191,27 @@ public class UserController extends BaseShiroController{
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
 	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param IMEI,name
+	 * @return 
+	 * @throws 如果IMEI为空,则视为重置
+	 */
+	@PostMapping(value="/updateIMEI")
+    @ResponseBody
+    @WriteLog(value="updateIMEI")
+    public ResponseEntity<?> updateIMEI(@RequestBody UserModel userModel) {
+		Map<String,Object> info=new HashMap<>(); 
+		UserModel userNeWModel=new UserModel();
+		String IMEI=userModel.getIMEI();
+		userNeWModel.setIMEI(IMEI);
+		userNeWModel.setName(userModel.getName());
+		info.put("state",true);	
+		userModelMapper.updateIMEI(userNeWModel);
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		  	      .setData(info)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+	}		
 }
