@@ -504,7 +504,9 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         else 
         	offset = 0;
   	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
+  	  Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecord();
   	    PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
+  	    energyWalletBalanceRecordInfo.setTotal(count);
   	    energyWalletBalanceRecordInfo.setAsc("desc");
   	    energyWalletBalanceRecordInfo.setOffset(offset);
   	    energyWalletBalanceRecordInfo.setPageNum(pageNum);

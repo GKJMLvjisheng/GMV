@@ -38,6 +38,10 @@ order by ew.point desc
 limit #{offset}, #{limit};
 </select> 
 
+<select id="countByEnergyWalletBalanceRecord" resultType="java.lang.Integer">
+select  count(*) from energy_wallet
+</select> 
+
 <resultMap id="energyWalletPointRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletPointRecordInfo">
     <result column="name" property="name"/>
 	<result column="point" property="point"/>

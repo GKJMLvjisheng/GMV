@@ -18,7 +18,8 @@ from
 	eth_wallet_detail ed,user_info u,eth_wallet e
 where
 	ed.address=e.address and e.user_uuid=u.uuid
-order by ed.created desc;
+order by ed.created desc
+limit #{offset}, #{limit};
 </select>
 
 
@@ -35,7 +36,8 @@ from
 where
 		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name 
-order by value desc;
+order by value desc
+limit #{offset}, #{limit};
    </select>
    
       <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
@@ -46,6 +48,7 @@ from
 where
 		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name 
-order by value desc;
+order by value desc
+limit #{offset}, #{limit};
    </select>
 </mapper>
