@@ -48,7 +48,7 @@
         select
          <include refid="miner_List" />
          from miner_source 
-         order by updated desc
+         order by order_num asc
     </select>
     
     <select id="inquireByMinerName" resultMap="MinerMap">
@@ -279,9 +279,20 @@
 	      SELECT LAST_INSERT_ID()
 	    </selectKey>
         insert into system_parameter 
-          (parameter_value, parameter_name, period, created, updated)
-        values
-          (#{parameterValue}, #{parameterName}, #{period}, #{created}, #{updated})           
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+	        parameter_value, parameter_name,
+	        <if test="period != null">
+	          period,
+	        </if>
+	        created, updated
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{parameterValue}, #{parameterName},
+	         <if test="period != null">
+	           #{period},
+	        </if>
+	        #{created}, #{updated}
+	    </trim>      
     </insert>
     
     <delete id="deleteSystemParameterByUuid">

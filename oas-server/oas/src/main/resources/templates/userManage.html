@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minerManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>   
+    
+   <style>
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+	}
+	label{ 
+    vertical-align:middle;
+	}
+	
+    </style>
+</head>
+
+<body>
+
+	<div class="row content-tabs">
+		<nav class="page-tabs menuTabs"> 
+
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">正常账号</a>
+			</div>
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">测试账号</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display4()"id="btn4">系统账号</a>
+			</div>			
+				
+		</nav>	
+	</div> 
+
+	<div class = "container" id="page1">
+			<table id="normalGrid"></table>
+	</div> 
+	
+
+	<div class = "container" style="display:none" id="page3">		 		  
+		<table id="testGrid"></table>
+	</div>
+
+	<div class = "container" style="display:none" id="page4">			
+		<table id="systemGrid"></table>
+	</div>
+
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- 查看用户信息的模态框 -->
+    <div class="modal fade" id="queryEnergyModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">详细信息</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">KYC认证状态：</label>
+							<div class="col-sm-7">
+								<input name="QverifyStatus" class="form-control" id="QverifyStatus" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">姓名：</label>
+							<div class="col-sm-7">
+								<input name="QuserIdentityName" class="form-control" id="QuserIdentityName" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">身份证号：</label>
+							<div class="col-sm-7">
+								<input name="QuserIdentityNumber" class="form-control" id="QuserIdentityNumber" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">批注：</label>
+							<div class="col-sm-7">
+								<input name="Qremark" class="form-control" id="Qremark" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">IMEI：</label>
+							<div class="col-sm-7">
+								<input name="IMEI" class="form-control" id="IMEI" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+																									
+					</form>
+				</div>					
+			</div>					
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/user/userManage.js}"></script>
+	<script type="text/javascript" th:src="@{/js/user/userManageTable.js}"></script>			
+</body>
+</html>
+
