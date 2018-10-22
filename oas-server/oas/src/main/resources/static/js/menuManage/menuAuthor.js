@@ -232,7 +232,11 @@ function doById(index,id)
 		
 		 objS=document.getElementsByName("menuStart");
 		 if(objS[index].checked)
-			{   
+			{ 
+			 Ewin.confirm({ message: "确认要给此模块授权吗？" +<br/>+"【注意】:"+"此操作会导致该模块启用!!!"}).on(function (e) {
+					if (!e) {
+						$("input:checkbox[name='menuStart']").eq(index).prop("checked", false);
+					  return;}
 			  $.ajax({
 		     
 	
@@ -264,10 +268,11 @@ function doById(index,id)
 				}
 	
 				});
+			 });
 		     }
 		  else{
 			
-			Ewin.confirm({ message: "确认要取消授权吗？" }).on(function (e) {
+			Ewin.confirm({ message: "确认要取消该模块权限吗？"+<br/>+"【注意】:"+"此操作会导致该模块禁用!!!" }).on(function (e) {
 					if (!e) {
 						$("input:checkbox[name='menuStart']").eq(index).prop("checked", true);
 					  return;}

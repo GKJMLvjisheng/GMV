@@ -75,6 +75,8 @@ public class PromotedRewardService {
 	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
 	private static final Integer REWARD_CODE_OF_DIE_MINER = 12;  //矿机推广奖励到期
 	
+	private static final String ENCRYPTION_STR = "***";//加密字符串前缀
+	
 	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
 	private EnergyPowerBall decreaseRewardEnergyPowerBall = new EnergyPowerBall();
 	
@@ -199,6 +201,19 @@ public class PromotedRewardService {
 				  minerMapper.updateByFinishRewardUpdated(purchaseRecord);
 			  }
 		  }
+	  }
+	  
+	  /**
+	   * @author Ming Yang
+	   * @param userName
+	   * @return
+	   *           获取加密字符串，保留后三位，其他用三个星代替
+	   */
+	  public String getEncryptionUserName(String userName) {
+		  Integer length=userName.length();
+		  userName=userName.substring(length-3, length);
+		  String encryptionUserName=ENCRYPTION_STR+userName;
+		  return encryptionUserName;
 	  }
 	  
 		/**
@@ -435,6 +450,7 @@ public class PromotedRewardService {
 		UserModel userModel=userModelMapper.selectByUuid(userUuid);
 		String userName=userModel.getName();
 		log.info("userName:{}",userName);
+		userName=this.getEncryptionUserName(userName);
 //		double n=Math.pow(2,0);
 //		BigDecimal N=new BigDecimal(n);
 //		//购买矿机用户奖励代币
@@ -571,6 +587,7 @@ public class PromotedRewardService {
 		UserModel userModel=userModelMapper.selectByUuid(userUuid);
 		String userName=userModel.getName();
 		log.info("userName:{}",userName);
+		userName=this.getEncryptionUserName(userName);
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 //		double n=Math.pow(2,0);//2的幂次方
 //		BigDecimal N=new BigDecimal(n);

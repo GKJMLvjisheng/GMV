@@ -332,11 +332,13 @@ public class EthWalletController extends BaseShiroController {
 			log.info("newCreated={}",created);
 		  }
 	  PageDomain<EthWalletTradeRecordInfo> ethWalletTradeRecordInfo = new PageDomain<>();
-	  ethWalletTradeRecordInfo.setAsc("desc");
-	  ethWalletTradeRecordInfo.setOffset(offset);
-	  ethWalletTradeRecordInfo.setPageNum(pageNum);
-	  ethWalletTradeRecordInfo.setPageSize(pageSize);
-	  ethWalletTradeRecordInfo.setRows(ethWalletTradeRecordList);
+	  Integer count=ethWalletTradeRecordMapper.countByTradeRecord();
+		  ethWalletTradeRecordInfo.setTotal(count);
+		  ethWalletTradeRecordInfo.setAsc("desc");
+		  ethWalletTradeRecordInfo.setOffset(offset);
+		  ethWalletTradeRecordInfo.setPageNum(pageNum);
+		  ethWalletTradeRecordInfo.setPageSize(pageSize);
+		  ethWalletTradeRecordInfo.setRows(ethWalletTradeRecordList);
 		return new ResponseEntity.Builder<PageDomain<EthWalletTradeRecordInfo>>()
 		        .setData(ethWalletTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
@@ -384,14 +386,16 @@ public class EthWalletController extends BaseShiroController {
 		  endTime=nowDate;
 	  
 	  List<WalletTotalTradeRecordInfo> ethWalletInTotalTradeRecordList=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime,offset, limit);
-	  PageDomain<WalletTotalTradeRecordInfo> walletTotalTradeRecordInfo = new PageDomain<>();
-		  walletTotalTradeRecordInfo.setAsc("desc");
-		  walletTotalTradeRecordInfo.setOffset(offset);
-		  walletTotalTradeRecordInfo.setPageNum(pageNum);
-		  walletTotalTradeRecordInfo.setPageSize(pageSize);
-		  walletTotalTradeRecordInfo.setRows(ethWalletInTotalTradeRecordList);
+	  PageDomain<WalletTotalTradeRecordInfo> walletInTotalTradeRecordInfo = new PageDomain<>();
+	  Integer count=ethWalletTradeRecordMapper.countByInTotalTradeRecord(startTime, endTime);
+	  walletInTotalTradeRecordInfo.setTotal(count);
+	  walletInTotalTradeRecordInfo.setAsc("desc");
+	  walletInTotalTradeRecordInfo.setOffset(offset);
+	  walletInTotalTradeRecordInfo.setPageNum(pageNum);
+	  walletInTotalTradeRecordInfo.setPageSize(pageSize);
+	  walletInTotalTradeRecordInfo.setRows(ethWalletInTotalTradeRecordList);
 		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
-		        .setData(walletTotalTradeRecordInfo)
+		        .setData(walletInTotalTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
@@ -436,14 +440,16 @@ public class EthWalletController extends BaseShiroController {
 		  endTime=nowDate;
 	  
 	  List<WalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecordList=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime,offset, limit);
-	  PageDomain<WalletTotalTradeRecordInfo> walletTotalTradeRecordInfo = new PageDomain<>();
-	  walletTotalTradeRecordInfo.setAsc("desc");
-	  walletTotalTradeRecordInfo.setOffset(offset);
-	  walletTotalTradeRecordInfo.setPageNum(pageNum);
-	  walletTotalTradeRecordInfo.setPageSize(pageSize);
-	  walletTotalTradeRecordInfo.setRows(ethWalletOutTotalTradeRecordList);
+	  PageDomain<WalletTotalTradeRecordInfo> walletOutTotalTradeRecordInfo = new PageDomain<>();
+	  Integer count=ethWalletTradeRecordMapper.countByOutTotalTradeRecord(startTime, endTime);
+	  walletOutTotalTradeRecordInfo.setTotal(count);
+	  walletOutTotalTradeRecordInfo.setAsc("desc");
+	  walletOutTotalTradeRecordInfo.setOffset(offset);
+	  walletOutTotalTradeRecordInfo.setPageNum(pageNum);
+	  walletOutTotalTradeRecordInfo.setPageSize(pageSize);
+	  walletOutTotalTradeRecordInfo.setRows(ethWalletOutTotalTradeRecordList);
 		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
-		        .setData(walletTotalTradeRecordInfo)
+		        .setData(walletOutTotalTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }

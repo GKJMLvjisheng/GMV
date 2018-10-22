@@ -14,4 +14,5 @@ public class VersionInfo implements Serializable {
 	@Getter @Setter private Integer versionCode;
 	@Getter @Setter private String appUrl;
 	@Getter @Setter private String versionStatus;
+	@Getter @Setter private Integer upGradeStatus;
 }

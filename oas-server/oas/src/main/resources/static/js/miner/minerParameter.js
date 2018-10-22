@@ -4,9 +4,18 @@
 //新闻管理界面创建bootstrapTable
 document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 
-var check1=1;
+var check3=1;
 var check2=1;
+$(function () {
+	
+    $('#time').datetimepicker({
 
+        format: 'YYYY-MM',
+        locale: moment.locale('zh-cn'),
+        //autoclose: true,
+       // todayBtn: true,
+    });
+});
 //主界面用户表格回显
 $(function() {
 
@@ -62,25 +71,26 @@ function checkEparameterValue(){
 	if(num[1].length>6){
 		$("#msg_EparameterValue").html("矿机参数值精度为6");
 		 $("#msg_EparameterValue").css("color", "red");
-		 check3=0;
+		 check2=0;
 	}
 }
-function checkEincreaseSpeed(){
-	var increaseSpeed=$("#EincreaseSpeed").val();
-	var num=increaseSpeed.split('.');
-	
-	if(validate(increaseSpeed)||increaseSpeed===""){
+function checkParameterValue(){
+	var parameterValue=$("#parameterValue").val();
+	var num=parameterValue.split('.');
+	if(validate(parameterValue)&&0<parameterValue&&parameterValue<=1){
+		
 		check3=1;
-		$("#msg_EincreaseSpeed").html("");
+		$("#msg_parameterValue").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
-		 $("#msg_EincreaseSpeed").html("请输入大于等于0的数值");
-		 $("#msg_EincreaseSpeed").css("color", "red");
+		
+		 $("#msg_parameterValue").html("请输入大于0小于等于1的数值");
+		 $("#msg_parameterValue").css("color", "red");
 		check3=0;
 	}
 	if(num[1].length>6){
-		$("#msg_EincreaseSpeed").html("奖励增长速度精度为6");
-		 $("#msg_EincreaseSpeed").css("color", "red");
+		$("#msg_parameterValue").html("矿机参数值精度为6");
+		 $("#msg_parameterValue").css("color", "red");
 		 check3=0;
 	}
 }
@@ -111,21 +121,25 @@ function validateInter(num)
 }
 
 //新增活动
-function addActivity(){
+function addParameter(){
 	
-    
-	if($("#sourceName").val()==="")
+
+	if($("#parameterValue").val()==="")
 		{
-		alert("活动名称不能为空");
+		alert("参数值不能为空");
 		return;
 		}
-
-	
-	var data={"sourceName":$("#sourceName").val(),
-				"type":$("#sourceType").val()
+	if(check3==0)
+	{
+		alert("请配置正确的参数值");
+		return;
+		}
+	var data={"parameterValue":$("#parameterValue").val(),
+				"parameterName":$("#parameterName").val(),
+				"period": $("input[name='time']").val();	
 			}
 	$.ajax({
-		url:"/api/v1/activityConfig/addActivity",
+		url:"/api/v1/miner/addSystemParameter",
 		data: JSON.stringify(data),
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
@@ -154,8 +168,9 @@ function addActivity(){
 
 		},
 	});
+	check3=1;
 	resetAddModal();
-	activityReady();
+	parameterReady();
 }
 
 
@@ -163,10 +178,11 @@ function addActivity(){
 function resetAddModal(){
 	//document.getElementById("addActivityForm").reset();
 	//document.getElementById("updateActivityRewardForm").reset();
-	$("#addActivityForm").find('textarea,input[type=text],select').each(function() {
+	$("#addParameterModal").find('textarea,input[type=text],select').each(function() {
         		$(this).val('');
         		$(this).html('');
     });
+	
 	
  }
 //	 $("input[type=radio]").prop("checked",false);
@@ -336,8 +352,12 @@ function editParameterById(id){
 		$("#updateParameterModal").modal("show");
 }
 function updateparameter(){
+	if(!$("#EparameterValue").val()){
+		alert("参数值不能为空!");
+		return;
+	}
 	if(check2==0){
-		alert("请给奖励配置正确参数!");
+		alert("请给参数值配置正确参数!");
 		return;
 	}
 	var uuid=$("#EparameterId").val();  
@@ -375,7 +395,7 @@ function updateparameter(){
 
 			},
 		});
-		 check1=1;
+		 
 		 check2=1;
 		
 		parameterReady();

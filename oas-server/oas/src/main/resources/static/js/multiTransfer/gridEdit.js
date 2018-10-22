@@ -16,7 +16,8 @@
 
 //     // 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
 document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
-var token;
+var activeNetwork;
+var optionData;
 $(function ()
 	{
 
@@ -24,36 +25,59 @@ $(function ()
 //		$(this).css({"outline":"none","border":"0px"});
 //	})
 	//var network=$("#net",parent.document).val();
-	 if(parent.$("#iframenetConfig")[0])
-     {
-		 var network=parent.$("#iframenetConfig")[0].contentWindow.getValue(); 
-			
-				var data={"preferNetwork":network};
-				 $.ajax({
-		   		   type: 'post',
-		   		   url: '/api/v1/ethWallet/setPreferNetwork',
-		   		   data: JSON.stringify(data),
-		   		   contentType : 'application/json;charset=utf8',
-		   		   dataType: 'json',
-		   		   cache: false,
-		   		   async : false,
-		   		   success: function (res) {
-		   			 
-		   		     if (res.code == 0) {
-		   		    	 
-		   		     } else {
-		   		    	 alert(res.message);
-		   		     }
-		   		   },
-		   		   error: function (res) { 
-		   			  alert("option错误"+JSON.stringify(res));
-		   		   },
-		   		  
-		   		  }); 
-			}
+//	 if(parent.$("#iframenetConfig")[0])
+//     {
+//		 var network=parent.$("#iframenetConfig")[0].contentWindow.getValue(); 
+//			
+//				var data={"preferNetwork":network};
+//				 $.ajax({
+//		   		   type: 'post',
+//		   		   url: '/api/v1/ethWallet/setPreferNetwork',
+//		   		   data: JSON.stringify(data),
+//		   		   contentType : 'application/json;charset=utf8',
+//		   		   dataType: 'json',
+//		   		   cache: false,
+//		   		   async : false,
+//		   		   success: function (res) {
+//		   			 
+//		   		     if (res.code == 0) {
+//		   		    	 
+//		   		     } else {
+//		   		    	 alert(res.message);
+//		   		     }
+//		   		   },
+//		   		   error: function (res) { 
+//		   			  alert("option错误"+JSON.stringify(res));
+//		   		   },
+//		   		  
+//		   		  }); 
+//			}
 			
 
 	initsymbol();
+	
+	$.ajax({
+		   type: 'post',
+		   url: '/api/v1/ethWallet/listNetwork',
+		   //data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   success: function (res) {
+			 
+		     if (res.code == 0) {
+		    	  
+		    	 activeNetwork=res.data.network_active;
+             }
+		     else {
+		    	 alert(res.message);
+		     }
+		   },
+		   error: function (res) {
+			  alert("option错误"+JSON.stringify(res));
+		   },
+		  
+		  });
 	
 	var tabProduct = document.getElementById("tabProduct");    
 	
@@ -64,6 +88,7 @@ $(function ()
 //	alert($(this).children('option:selected').val()); 
 //	})
 function initsymbol(){
+	 optionData=[];
 	 var objContractAddress=document.getElementById("contractAddress");
 	 var objMoney=document.getElementById("money");
 	 var objPrecision=document.getElementById("precision");
@@ -89,7 +114,7 @@ function initsymbol(){
 		    	// $("#userAddress").text(res.data[0].address);
 		    	 objAddress.innerHTML=res.data.userCoin[0].address;
 		    	 //$("#precision").val(6000000);
-		    	 var optionData=res.data.userCoin;
+		    	  optionData=res.data.userCoin;
 		    	 
 		    	 var len=optionData.length;
 		    	 
@@ -125,18 +150,19 @@ function initsymbol(){
 		 
                 var thisVal = $(this).val();
                 if(thisVal!="请选择")
-                { $.ajax({
-         		   type: 'post',
-         		   url: '/api/v1/ethWallet/listCoin',
-         		   //data: JSON.stringify(data),
-         		   contentType : 'application/json;charset=utf8',
-         		   dataType: 'json',
-         		   cache: false,
-         		   success: function (res) {
-         			  
-         		     if (res.code == 0) {
-         		    	  
-         		    	 var optionData=res.data.userCoin;
+                { 
+//                	$.ajax({
+//         		   type: 'post',
+//         		   url: '/api/v1/ethWallet/listCoin',
+//         		   //data: JSON.stringify(data),
+//         		   contentType : 'application/json;charset=utf8',
+//         		   dataType: 'json',
+//         		   cache: false,
+//         		   success: function (res) {
+//         			  
+//         		     if (res.code == 0) {
+//         		    	  
+//         		    	 var optionData=res.data.userCoin;
          		    	 
          		    	 var len=optionData.length;
 
@@ -148,7 +174,7 @@ function initsymbol(){
                   		    	// $("#userAddress").text(res.data[0].address);
                   		    	 objContractAddress.innerHTML=optionData[i].contract;
                             	  //$("#contractAddress").val(optionData[i].contract);
-                  		    	console.log(optionData[i].balance)
+                  		    	
                   		    	objMoney.innerHTML=optionData[i].balance;
                             	 // $("#money").val(optionData[i].balance);
                             	  var precision=optionData[i].weiFactor;
@@ -160,15 +186,15 @@ function initsymbol(){
                             	  }
                           }
          			     
-         		     } else {
-         		    	 alert(res.message);
-         		     }
-         		   },
-         		   error: function (res) {
-         			  alert("option错误"+JSON.stringify(res));
-         		   },
-         		  
-         		  });
+//         		     } else {
+//         		    	 alert(res.message);
+//         		     }
+//         		   },
+//         		   error: function (res) {
+//         			  alert("option错误"+JSON.stringify(res));
+//         		   },
+//         		  
+//         		  });
                 }
                 else{
 //              $("#contractAddress").val("");
@@ -670,10 +696,18 @@ function initsymbol(){
     }
     function validateAddress(num)
     {
-     
+    	var flag=false;
+        var flag1=false;
     	 var reg = /^[0-9a-zA-Z]{42}$/;
-      if(reg.test(num)) return true;
-      return false ;  
+    	 var reg1 = /^0x.*$/;//以0x开头
+    	 if(reg.test(num)){
+        	 console.log("42")
+        	 flag=true;}
+          if(reg1.test(num)){
+        	  console.log("0x")
+        	  flag1=true;}
+          return flag&&flag1;  
+     
     } 
     //判断正整数
     function validateGas(num)
@@ -681,6 +715,16 @@ function initsymbol(){
     
       var reg = /^[0-9]*[1-9][0-9]*$/;//不包括0和“”
     	//var reg =/^[+]{0,1}(\d+)$/;//包括0不包括“”
+      if(reg.test(num)) 
+      {return true;}
+      return false ;  
+     
+    }
+    function validateOx(num)
+    {
+    
+      var reg = /^0x.*$/;//
+    
       if(reg.test(num)){
     	 
     	  return true;}
@@ -717,13 +761,13 @@ function initsymbol(){
     		     		return;}}
     		 else if(gasPrice==="")
     			 {if(check1)
-    				 {alert("gasLimit/gasPrice请输入大于0的正整数默认不输入");
+    				 {alert("gasLimit/gasPrice请输入大于0的正整数或默认不输入");
     		     		return;}}
     		 
      		 }
     	else if(check1||check2)
         {
-    		alert("gasLimit/gasPrice请输入大于0的正整数默认不输入");
+    		alert("gasLimit/gasPrice请输入大于0的正整数或默认不输入");
     		return;
         }
 
@@ -760,7 +804,7 @@ function initsymbol(){
     	{	alert("金额请输入大于0的正数");
     		return;}
        if(flag2)
-   	{	alert("地址由42位的字母数字组成");
+   	{	alert("地址且以0x开头的42位字母数字组成");
    		return;}
       
        if($("#money").text()<sunmary){
@@ -781,6 +825,7 @@ function initsymbol(){
         		"gasLimit":gasLimit,
         	    "quota":data,
         	}; 
+       console.log(JSON.stringify(dataSum))
     $.ajax({
 
 		url:"/api/v1/ethWallet/multiTtransfer",
@@ -798,13 +843,12 @@ function initsymbol(){
          {  
 				var strMain="https://etherscan.io/tx/"+res.data.txHash;
 				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
-				//var network=$("#network").val();
-				var network=$("#net",parent.document).val();
+				 if(parent.$("#iframenetConfig")[0])
+				     {
+						  activeNetwork=parent.$("#iframenetConfig")[0].contentWindow.getValue();}
 				
-				console.log(network);
-				if(network==""){
-					var str=strMain;
-				}else if(strTest.indexOf(network)!=-1)
+				console.log(activeNetwork);
+				if(strTest.indexOf(activeNetwork)!=-1)
 						{console.log(11);
 						str=strTest;}
 					else{console.log(22);
@@ -818,6 +862,7 @@ function initsymbol(){
          }
          else{
         	 alert("转账失败");
+        	
          	}
 		     
 		},
