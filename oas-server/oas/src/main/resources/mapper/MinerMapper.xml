@@ -9,30 +9,31 @@
 	  	<result column="miner_grade" property="minerGrade"/>
 	  	<result column="miner_power" property="minerPower"/>
 	  	<result column="miner_period" property="minerPeriod"/>
+	  	<result column="order_num" property="orderNum"/>
 	  	<result column="miner_purchase_status" property="minerPurchaseStatus"/>
 	  	<result column="created" property="created"/>
 	  	<result column="updated" property="updated"/>
     </resultMap>
         
     <sql id="miner_List">
-  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_power, miner_period, created, updated
+  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_power, miner_period, order_num, created, updated
     </sql>
     
     <insert id="insertMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
         insert into miner_source
         <trim prefix="(" suffix=")" suffixOverrides=",">
-	        miner_code, miner_name, miner_grade,
+	        miner_code, miner_name, miner_grade, 
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
-	         miner_price, miner_power, miner_period, created, updated
+	         miner_price, miner_power, miner_period, order_num, created, updated
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{minerCode}, #{minerName}, #{minerGrade},
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
-	        #{minerPrice}, #{minerPower}, #{minerPeriod}, #{created}, #{updated}
+	        #{minerPrice}, #{minerPower}, #{minerPeriod}, #{orderNum}, #{created}, #{updated}
 	    </trim>            
     </insert>
     
@@ -40,7 +41,7 @@
         select
          <include refid="miner_List" />
          from miner_source 
-         order by updated desc limit #{offset}, #{limit}
+         order by order_num asc limit #{offset}, #{limit}
     </select>
     
     <select id="selectAllWebMiner" resultMap="MinerMap">

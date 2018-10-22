@@ -200,7 +200,7 @@ public class MinerController {
 		Integer count = minerMapper.countNum();
 		PageDomain<MinerModel> minerModelDetail = new PageDomain<>();
 		minerModelDetail.setTotal(count);
-		minerModelDetail.setAsc("desc");
+		minerModelDetail.setAsc("asc");
 		minerModelDetail.setOffset(offset);
 		minerModelDetail.setPageNum(pageNum);
 		minerModelDetail.setPageSize(pageSize);
@@ -226,6 +226,7 @@ public class MinerController {
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPower(minerRequest.getMinerPower());
+		minerModel.setOrderNum(minerRequest.getOrderNum());
 		minerModel.setCreated(now);
 		minerModel.setUpdated(now);
 		minerMapper.insertMiner(minerModel);
