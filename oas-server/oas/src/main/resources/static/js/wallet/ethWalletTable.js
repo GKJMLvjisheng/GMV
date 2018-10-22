@@ -3,13 +3,17 @@ function initEthWalletGrid(data) {
 	$("#ethWalletGrid").bootstrapTable({
 		contentType : "application/x-www-form-urlencoded",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
 		striped:true,//隔行变色
-		uniqueId:"name",//Indicate an unique identifier for each row
+		
+		pagination:true,//显示分页条：页码，条数等
+		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams,//请求服务器时所传的参数
+		//queryParamsType:'limit',//查询参数组织方式
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		sortName: 'topicId', // 要排序的字段
@@ -77,16 +81,31 @@ function initEthWalletGrid(data) {
 	});
 }
 	
+//请求服务数据时所传参数
+function queryParams(params){
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: (params.offset / params.limit) + 1,
+    }
+}
+
 function initFundInGrid(data) {	
 	$("#fundInGrid").bootstrapTable({
 		contentType : "application/x-www-form-urlencoded",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
 		striped:true,//隔行变色
+		
+		pagination:true,//显示分页条：页码，条数等
+		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams,//请求服务器时所传的参数
+		//queryParamsType:'limit',//查询参数组织方式
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段

@@ -214,13 +214,15 @@ public class PowerService {
     	List<EnergyPowerChangeDetail> powerList = new ArrayList<>();
     	
     	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
+    		if(energyPowerChangeDetail.getSourceCode() == 10 && energyPowerChangeDetail.getInOrOut() == 0) {
+    			energyPowerChangeDetail.setActivity("矿机失效");
+    		}
+    		
     		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange());
     		if(energyPowerChangeDetail.getValue() != BigDecimal.ZERO) {
     			powerList.add(energyPowerChangeDetail);
     		}
-//    		if(energyPowerChangeDetail.getSourceCode() == 10 && energyPowerChangeDetail.getInOrOut() == 0) {
-//    			energyPowerChangeDetail.setActivity("矿机失效");
-//    		}
+    		
     		String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
 			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();

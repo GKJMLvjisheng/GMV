@@ -17,7 +17,8 @@ from
 	  energy_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid
-order by etr.time_created desc;
+order by etr.time_created desc
+limit #{offset}, #{limit};
 </select>
 
 <resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">
@@ -34,6 +35,16 @@ from
 where
 	ew.user_uuid=u.uuid
 order by ew.point desc
+limit #{offset}, #{limit};
+</select> 
+
+<select id="countByEnergyWalletBalanceRecord" resultType="java.lang.Integer">
+select  
+		count(*) 
+from 
+		energy_wallet ew,user_info u
+where
+		ew.user_uuid=u.uuid
 </select> 
 
 <resultMap id="energyWalletPointRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletPointRecordInfo">
@@ -50,6 +61,7 @@ where
 	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name
 order by point desc
+limit #{offset}, #{limit};
 </select>   
    
 <select id="selectAllOutTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
@@ -61,6 +73,7 @@ where
 	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name
 order by point desc
+limit #{offset}, #{limit};
 </select>
    
 </mapper>

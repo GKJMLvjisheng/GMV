@@ -26,19 +26,9 @@ function initMinerGrid(data) {
 		sortable: true,//是否启用排序
 		sortName: 'updated', // 要排序的字段
 	    sortOrder: 'desc', // 排序规则
-		data:data,
-		
-		columns : [{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle', 
-		width:  '60px', 
-		formatter: function (value, row, index) {  
-			return index+1;  
-			}  
-		}  ,
-			{
+		data:data,				
+			 
+		columns : [{
 
 			title : "矿机名",
 			field : "minerName",
@@ -88,7 +78,7 @@ function initMinerGrid(data) {
 			field : "minerDescription",
 			align: 'center',
 			valign: 'middle',
-			width:  '170px',
+			//width:  '150px',
 		}, 
 		{
 
@@ -97,7 +87,7 @@ function initMinerGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '160px',
-		}, 
+		},
 		{
 
 			title : " 操作",			
@@ -110,7 +100,13 @@ function initMinerGrid(data) {
 		
 		search : true,//搜索
         searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false, 
+		
+		//当拖拽结束后，整个表格的数据            
+		onReorderRow: function (newData) { 
+			alert(JSON.stringify(newData));
+		 },
+		 
 	});
 }
 
@@ -124,6 +120,7 @@ function actionFormatter(value, row, index) {
     return result;
 }
  
+
 function EditMinerById(id){
     
     //获取选中行的数据
