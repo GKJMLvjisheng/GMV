@@ -211,7 +211,15 @@ public class PromotedRewardService {
 	   */
 	  public String getEncryptionUserName(String userName) {
 		  Integer length=userName.length();
+		  if(length>3) {
 		  userName=userName.substring(length-3, length);
+		  }else if(length == 3){
+		  userName=userName.substring(length-2, length);
+		  }else if(length == 2) {
+		  userName=userName.substring(length-1, length);
+		  }else {
+		  userName=userName.substring(length, length);
+		  }	  
 		  String encryptionUserName=ENCRYPTION_STR+userName;
 		  return encryptionUserName;
 	  }
