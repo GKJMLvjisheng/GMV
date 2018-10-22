@@ -94,7 +94,7 @@
             </div>
         </div>		
 		<div class="form-group">
-						 <label for="datetimepicker1" class="col-sm-4 control-label">生效时间：</label>
+						 <label for="datetimepicker1" class="col-sm-4 control-label">有效时间：</label>
 			       		 <div class="col-sm-7">
 			                <div class="input-group date" id="time">
 			       				 <input type="text"  name="time" id="time" class=" form-control "/>
@@ -116,7 +116,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- 编辑活动奖励的模态框 -->
+	<!-- 编辑参数的模态框 -->
     <div class="modal fade" id="updateParameterModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
@@ -149,11 +149,19 @@
 
 				<div class="col-sm-7">
 								
-               <input type="text" name="EparameterValue" class=" form-control" id="EparameterValue" required="required" oninput="checkEparameterValue(this)" placeholder="请输入奖励基础值"/>
+               <input type="text" name="EparameterValue" class=" form-control" id="EparameterValue" required="required" oninput="checkEparameterValue(this)" placeholder="请输入参数值"/>
              <span id='msg_EparameterValue'></span>
             </div>
         </div>	
-        		
+        		<div class="form-group">
+						 <label for="datetimepicker1" class="col-sm-4 control-label">有效时间：</label>
+			       		 <div class="col-sm-7">
+			               
+			       				 <input type="text"  name="Etime" id="Etime" class=" form-control " readonly="readonly"/>
+			       		
+			        		</div>				
+			      		
+                        </div>	
 																			
 					</form>
 				</div>
@@ -192,7 +200,7 @@
 		</div>
 
 	</div>	
-<script type="text/javascript" th:src="@{/js//miner/minerParameter.js}"></script>			
+<script type="text/javascript" th:src="@{/js/miner/minerParameter.js}"></script>			
 </body>
 
 </html>
