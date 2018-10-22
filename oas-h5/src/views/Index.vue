@@ -182,7 +182,7 @@ export default {
       articleList:[],
       datetime:'',
       analysis:'',
-      analysisCount:0,
+      //analysisCount:0,
       tempArr:[],
      // tempArrWalk:[],
       //input1:'',
@@ -359,6 +359,10 @@ export default {
                   { 
                     el.generate=true}
                   else{el.generate=false}
+                   if(el.value>100)
+                    { let value=el.value.split('.');
+                      el.value=value[0]}
+                    
                   return el
                 }) 
                 for(let i=0;i<walkEnergyBallListtBackup.length;i++)  
@@ -473,7 +477,7 @@ export default {
     },
     // 获取能量分析
     getEnergyAnalysis () {
-      this.analysisCount=0
+      //this.analysisCount=0
       this.$axios.post('/energyPoint/inquireEnergyPointByCategory').then(({data:{data}}) => {
         console.log("分析"+JSON.stringify(data))
         this.analysis = data

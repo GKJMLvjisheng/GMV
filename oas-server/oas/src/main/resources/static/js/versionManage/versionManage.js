@@ -137,7 +137,7 @@ function checkVersionCode() {
 	var abstract = $("#versionCode").val(); 
 	var len=abstract.length;
 	//alert(len);
-	check1=1;
+	//check1=1;
 	if(!validateNumber(abstract))
 		{
 		
@@ -151,6 +151,7 @@ function checkVersionCode() {
         $("#msg_versionCode").css("color", "red");
 	}
 	else {
+		check1=1;
 		$("#msg_versionCode").html("");
         $("#msg_versionCode").css("color", "green");
 	}
