@@ -1,18 +1,57 @@
+var pageSize;
+var pageNum;
 
-function initEthWalletGrid(data) {	
+//请求服务数据时所传参数
+function queryParams(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+    }
+}
+
+//请求服务数据时所传参数
+function queryParams1(params){
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+        startTime: $("#startTime2").val(),
+        endTime: $("#endTime2").val(),
+    }
+}
+
+//请求服务数据时所传参数
+function queryParams2(params){
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+        startTime: $("#startTime3").val(),
+        endTime: $("#endTime3").val(),
+    }
+}
+function initEthWalletGrid() {	
 	$("#ethWalletGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/ethWallet/inqureEthWalletInTotalTradeRecord',
+		contentType : "application/json",
 		dataType:"json",
+		method: 'post',
 		striped:true,//隔行变色
 		
-		pagination:true,//显示分页条：页码，条数等
-		
+		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		queryParams:queryParams,//请求服务器时所传的参数
-		//queryParamsType:'limit',//查询参数组织方式
+		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
 		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
@@ -26,7 +65,7 @@ function initEthWalletGrid(data) {
 		align: 'center',
 		valign: 'middle',  
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1;  
 			}  
 		}  ,{
 			title : "用户名",
@@ -81,30 +120,36 @@ function initEthWalletGrid(data) {
 	});
 }
 	
-//请求服务数据时所传参数
-function queryParams(params){
-    return{
-        //每页多少条数据
-        pageSize: params.limit,
-        //当前页码
-        pageNum: (params.offset / params.limit) + 1,
+//请求成功方法
+function responseHandler1(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("交易钱包回显失败，错误代码:" + code);
+        return;
     }
-}
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
 
-function initFundInGrid(data) {	
+function initFundInGrid() {	
 	$("#fundInGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/ethWallet/inqureEthWalletInTotalTradeRecord',
+		contentType : "application/json",
 		dataType:"json",
+		method: 'post',
 		striped:true,//隔行变色
 		
-		pagination:true,//显示分页条：页码，条数等
-		
+		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		queryParams:queryParams,//请求服务器时所传的参数
-		//queryParamsType:'limit',//查询参数组织方式
+		queryParams:queryParams1,//请求服务器时所传的参数
+		responseHandler:responseHandler3,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
 		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
@@ -118,7 +163,7 @@ function initFundInGrid(data) {
 		align: 'center',
 		valign: 'middle',  
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1;
 			}  
 		}  ,{
 			title : "用户名",
@@ -146,16 +191,37 @@ function initFundInGrid(data) {
 	});
 }
 
-function initFundOutGrid(data) {	
+//请求成功方法
+function responseHandler3(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("资金流入Top榜回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
+function initFundOutGrid() {	
 	$("#fundOutGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/ethWallet/inqureEthWalletOutTotalTradeRecord',
+		contentType : "application/json",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
+		method: 'post',
 		striped:true,//隔行变色
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams2,//请求服务器时所传的参数
+		responseHandler:responseHandler4,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
@@ -168,7 +234,7 @@ function initFundOutGrid(data) {
 		align: 'center', 
 		valign: 'middle', 
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1; 
 			}  
 		}  ,{
 			title : "用户名",
@@ -196,6 +262,20 @@ function initFundOutGrid(data) {
 		clickToSelect: false,         
 	});
 }
+
+//请求成功方法
+function responseHandler4(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("资金流出Top榜回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
 
 	function actionFormatter(value, row, index) {
         var id = value;
