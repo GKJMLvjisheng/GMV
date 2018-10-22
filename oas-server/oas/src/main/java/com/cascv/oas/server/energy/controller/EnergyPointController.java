@@ -472,11 +472,28 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     @PostMapping(value="/inqureEnergyWalletBalanceRecord")
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> inqureEnergyWalletBalanceRecord(){
+    public ResponseEntity<?> inqureEnergyWalletBalanceRecord(@RequestBody PageDomain<Integer> pageInfo){
+    	Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
  
-  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecords=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord();
-  		return new ResponseEntity.Builder<List<EnergyWalletBalanceRecordInfo>>()
-  		        .setData(energyWalletBalanceRecords)
+        if (pageSize == 0) {
+          limit = 10;
+        }
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
+  	    PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
+  	    energyWalletBalanceRecordInfo.setAsc("desc");
+  	    energyWalletBalanceRecordInfo.setOffset(offset);
+  	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
+  	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
+  	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
+  		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
+  		        .setData(energyWalletBalanceRecordInfo)
   		        .setErrorCode(ErrorCode.SUCCESS)
   		        .build();
     }
