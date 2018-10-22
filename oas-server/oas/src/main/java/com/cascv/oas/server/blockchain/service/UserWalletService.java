@@ -102,13 +102,18 @@ public class UserWalletService {
 	      break;
 	  case 6:
 		  log.info("购买矿机");
+		  log.info("comment={}", comment);
+		  log.info("subtitle={}", userWalletDetailScope.getSubTitle()+comment);
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+		  break;
 	  case 7:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+		  break;
 	  case 8:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+		  break;
 	  default:
 		  log.info("swicth-case-end");
 	      break;
@@ -123,6 +128,7 @@ public class UserWalletService {
   }
   
   public void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+	  log.info("comment={}", comment);
 	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
