@@ -71,6 +71,7 @@ public class CoinClient {
       else 
         return Integer.parseInt(status);
     } catch (Exception e) {
+      log.info("exception with txHash {}", txHash);
       e.printStackTrace();
       return 0;  
     }

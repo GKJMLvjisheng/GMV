@@ -110,7 +110,7 @@ public class EthWalletService {
 
   public synchronized void updateJob() {
     log.info("update job ...");
-    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectEthTransactionJob(coinClient.getNetName(), 60); 
+    List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectEthTransactionJob(coinClient.getNetName(), 30); 
     if (ethWalletDetailList != null && ethWalletDetailList.size() > 0) {
       for (EthWalletDetail ethWalletDetail:ethWalletDetailList) {
         Integer status = coinClient.getTransactionStatus(ethWalletDetail.getTxHash());
@@ -118,11 +118,15 @@ public class EthWalletService {
             ethWalletDetail.getTxHash(), ethWalletDetail.getTxResult(), status);
         if (status != 0) {
             ethWalletDetail.setTxResult(status);
-            ethWalletDetailMapper.update(ethWalletDetail);
             //userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
             ErrorCode result = getExchangeResult(ethWalletDetail);
             log.info("update Result:",result.getMessage());
+        } else {
+          if (ethWalletDetail.getPrior() > 2880) {
+            ethWalletDetail.setTxResult(0x4);
+          }
         }
+        ethWalletDetailMapper.update(ethWalletDetail);
       }
     }
   }
