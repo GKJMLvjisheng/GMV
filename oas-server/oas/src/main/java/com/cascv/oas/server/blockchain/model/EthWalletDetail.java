@@ -19,6 +19,7 @@ public class EthWalletDetail implements Serializable {
   @Getter @Setter private Integer txResult;
   @Getter @Setter private String txNetwork;
   @Getter @Setter private String remark;
+  @Getter @Setter private Integer prior;
   @Getter @Setter private String created;
 //  @Getter @Setter private String changeAddress;
 }

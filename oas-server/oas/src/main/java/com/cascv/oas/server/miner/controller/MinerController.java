@@ -71,6 +71,7 @@ public class MinerController {
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
 		systemParameterModel.setParameterName(systemParameterModelRequest.getParameterName());
 		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
+		systemParameterModel.setPeriod(systemParameterModelRequest.getPeriod());
 		systemParameterModel.setCreated(now);
 		systemParameterModel.setUpdated(now);
 		minerMapper.insertSystemParameter(systemParameterModel);
@@ -200,7 +201,7 @@ public class MinerController {
 		Integer count = minerMapper.countNum();
 		PageDomain<MinerModel> minerModelDetail = new PageDomain<>();
 		minerModelDetail.setTotal(count);
-		minerModelDetail.setAsc("desc");
+		minerModelDetail.setAsc("asc");
 		minerModelDetail.setOffset(offset);
 		minerModelDetail.setPageNum(pageNum);
 		minerModelDetail.setPageSize(pageSize);
@@ -226,6 +227,7 @@ public class MinerController {
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPower(minerRequest.getMinerPower());
+		minerModel.setOrderNum(minerRequest.getOrderNum());
 		minerModel.setCreated(now);
 		minerModel.setUpdated(now);
 		minerMapper.insertMiner(minerModel);
