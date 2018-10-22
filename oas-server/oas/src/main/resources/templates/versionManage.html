@@ -112,9 +112,9 @@
 					<form id="addVersionForm" action="/version" method="post" class="form-horizontal">
 
 						<div class="form-group">
-							<label for="versionCode" class="col-sm-3 control-label">版本号：</label>
-							<div class="col-sm-8">
-								<input name="versionCode" class="form-control" id="versionCode" required="required" oninput="checkVersionCode()" maxlength="30" placeholder="版本号长度最多为30个字符" /></input>
+							<label for="versionCode" class="col-sm-4 control-label">版本号：</label>
+							<div class="col-sm-6">
+								<input name="versionCode" class="form-control" id="versionCode" required="required" oninput="checkVersionCode()" maxlength="20" placeholder="版本号长度最多为20个字符" /></input>
 								<span id='msg_versionCode'></span>
 
 							</div>						
@@ -122,8 +122,8 @@
 					
 								
 							<div class="form-group">
-					        	<label for="versionStatus" class="col-sm-3 control-label">版本状态：</label>
-					       		 <div class="col-sm-8">
+					        	<label for="versionStatus" class="col-sm-4 control-label">版本状态：</label>
+					       		 <div class="col-sm-6">
 			
 								 <label class="radio-inline control-label">
 						        	<input type="radio"  name="versionStatus" id="versionStatus1" readonly="readonly" value="开发版"> 开发版
@@ -140,11 +140,11 @@
 						      			
 						   </div>		
 								<div class="form-group">
-					        	<label for="versionUp" class="col-sm-3 control-label">是否强制版本升级：</label>
-					       		 <div class="col-sm-8">
+					        	<label for="versionUp" class="col-sm-4 control-label">强制升级：</label>
+					       		 <div class="col-sm-6">
 			
 								 <label class="radio-inline control-label">
-						        	<input type="radio"  name="versionUp" id="versionUp1" readonly="readonly" value="1"> 是
+						        	<input type="radio"  name="versionUp" id="versionUp1" readonly="readonly" value="1">是
 						        </label>
 							    <label class="radio-inline control-label">
 							        <input type="radio"   name="versionUp" id="versionUp2" value="0" > 否
@@ -155,8 +155,8 @@
 						      			
 						   </div>		
 						<div class="form-group">
-							<label for="versionFile" class="col-sm-3 control-label">版本上传：</label>
-							<div class="col-sm-8">
+							<label for="versionFile" class="col-sm-4 control-label">版本上传：</label>
+							<div class="col-sm-6">
 								<input type="file" name="versionFile" id="versionFile" /><span id='msg_versionFile'></span>
 							</div>
 <!-- 							onblur='checkVersionFile()' -->
@@ -164,6 +164,7 @@
 						
 					
 					</form>
+				
 				</div>
 
 				<div class="modal-footer">
