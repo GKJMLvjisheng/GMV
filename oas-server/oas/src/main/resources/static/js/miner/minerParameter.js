@@ -135,7 +135,8 @@ function addParameter(){
 		return;
 		}
 	var data={"parameterValue":$("#parameterValue").val(),
-				"parameterName":$("#parameterName").val()
+				"parameterName":$("#parameterName").val(),
+				"period": $("input[name='time']").val();	
 			}
 	$.ajax({
 		url:"/api/v1/miner/addSystemParameter",

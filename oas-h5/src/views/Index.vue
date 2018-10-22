@@ -294,8 +294,9 @@ export default {
         {this.isShowSuccessMsg = false}
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
-        
+        this.getEnergyAnalysis()
       })
+      
     },
     // 签到弹窗确认按钮
     handleAttendanceConfirm () {
@@ -562,7 +563,7 @@ export default {
       ele.classList.remove('infinite')
       this.getCurrentEnergy()
       this.getCurrentPower()
-       
+      this.getEnergyAnalysis()
       })
       
     },
@@ -585,7 +586,7 @@ export default {
       ele.classList.remove('infinite')
       this.getCurrentEnergy()
       this.getCurrentPower()
-       
+      this.getEnergyAnalysis()
       })
     },
     // 随机生成不重复坐标点方法

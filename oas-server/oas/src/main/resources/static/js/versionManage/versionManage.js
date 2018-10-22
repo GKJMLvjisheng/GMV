@@ -65,7 +65,7 @@ $('#versionFile').change(function(e) {
 	var fileSize = file.size;           //获取上传的文件大小
 	//alert("fileSize="+fileSize/1000+"KB");
 	var maxSize = 10485760;//最大10MB
-	check2=1;
+	
 	if(ext !='.APK'){
 		
 	    $("#msg_versionFile").html("app类型错误,请上传.apk后缀的文件");
@@ -80,6 +80,7 @@ $('#versionFile').change(function(e) {
 	//    
 	//}
 	else {
+		check2=1;
 		$("#msg_versionFile").html("上传的版本格式符合要求");
 	    $("#msg_versionFile").css("color", "green");
 	    
@@ -99,7 +100,7 @@ $('#versionFile').change(function(e) {
 		var fileSize = file.size;           //获取上传的文件大小
 		//alert("fileSize="+fileSize/1000+"KB");
 		var maxSize = 10485760;//最大10MB
-		check3=1;
+		
 		if(ext !='.APK'){
 			
 		    $("#msg_EversionFile").html("app类型错误,请上传.apk后缀的文件");
@@ -114,6 +115,7 @@ $('#versionFile').change(function(e) {
 		//    
 		//}
 		else {
+			check3=1;
 			$("#msg_EversionFile").html("上传的版本格式符合要求");
 		    $("#msg_EversionFile").css("color", "green");
 		    
@@ -185,22 +187,22 @@ function addVersion(){
 	if(check1===0)
 		{alert("请输入正确的版本号");
 		return;}
-//	 var versionStatus = document.getElementsByName("versionStatus");
-//	 
-//	 var status=null;
-//	 for(var i = 0; i < versionStatus.length; i++)
-//	    {
-//
-//	        if(versionStatus[i].checked)
-//
-//	        {
-//	        status=versionStatus[i].value;}
-//
-//	    }
-//	 console.log("status"+status);
-//	 if(status==null)
-//		 {alert("请选择版本状态");
-//		 return;}
+	 var versionUp = document.getElementsByName("versionUp");
+	 
+	 var upGradeStatus=null;
+	 for(var i = 0; i < versionUp.length; i++)
+	    {
+
+	        if(versionUp[i].checked)
+
+	        {
+	        	upGradeStatus=versionUp[i].value;}
+
+	    }
+	 console.log("status"+upGradeStatus);
+	 if(upGradeStatus==null)
+		 {alert("请选择是否强制升级");
+		 return;}
 	var versionStatus=$("#versionStatus1").val();
 	
 	 var animateimg = $("#versionFile").val(); //获取上传的图片名 0\1\2
@@ -212,7 +214,8 @@ function addVersion(){
 		}
 		//checkVersionFile(animateimg);
 		if(check2===0)
-			{return;}
+			{alert("请输入正确的版本文件")
+			return;}
 		var formData = new FormData();
 		var version_file = document.getElementById("versionFile");
 		var fileobj = version_file.files[0];
@@ -220,6 +223,7 @@ function addVersion(){
 		formData.append("file",fileobj);//添加fileobj到formData的键file中
 		formData.append("versionCode", $("#versionCode").val());
 		formData.append("versionStatus", versionStatus);
+		formData.append("upGradeStatus", upGradeStatus);
 	//alert(JSON.stringify(formData));
 	$.ajax({
 		url:"/api/v1/userCenter/upLoadApp",
@@ -259,7 +263,8 @@ function addVersion(){
 
 		},
 	});
-	
+	check1=1;
+	check2=1;
 	document.getElementById("load").style.display="block";
 }
 

@@ -24,7 +24,7 @@
   </resultMap>
  
   <sql id="Base_Column_List">
-    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated,profile,identify_code 
+    uuid, name, nickname,password,invite_from,invite_code, gender, birthday, address, mobile, mobile_checked, email, email_checked, confirmed, salt,created,updated,profile,identify_code,IMEI 
   </sql>
   
   <!-- insert user -->
@@ -225,5 +225,15 @@
   	<include refid="Base_Column_List" />
   	from user_info where invite_from=#{inviteFrom}
   </select>
+  
+    <!-- updateIMEI -->
+   	<!-- @Author:lvjisheng -->
+	<!-- @Date:2018.10.22 -->  
+    <update id="updateIMEI" parameterType="com.cascv.oas.server.user.model.UserModel">
+      update user_info set 
+      IMEI = #{IMEI}
+      where name = #{name}  
+    </update>
+  
 </mapper>
 
