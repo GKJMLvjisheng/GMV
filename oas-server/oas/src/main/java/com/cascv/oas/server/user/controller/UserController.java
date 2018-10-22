@@ -126,8 +126,28 @@ public class UserController extends BaseShiroController{
           UserModel userModel=new UserModel();
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
           userModel=ShiroUtils.getUser();
-          userModel.setProfile(fullLink);
+          userModel.setProfile(fullLink);         
+          //userModel.setIMEI(loginVo.getIMEI());
           ShiroUtils.setUser(userModel);
+          
+          /**
+           * 判断IMEI是否相匹配
+           */
+          /**String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+          String IMEINew=loginVo.getIMEI();
+          
+          //判断是否是网页登录
+          if(IMEINew!=null) {
+	          if(IMEIOri==null) {
+	        	   userModel.setIMEI(loginVo.getIMEI());
+	               this.updateIMEI(userModel);
+	               //ShiroUtils.setUser(userModel);
+	          }
+	          else if(!IMEIOri.equals(IMEINew))
+	        	   throw new AuthenticationException();         	  
+          }
+          **/
+          
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -160,9 +180,10 @@ public class UserController extends BaseShiroController{
 		  userRole.setRoleId(2);
 		  String now =DateUtils.getTime();
 		  userRole.setRolePriority(1);
-		  userRole.setCreated(now);
+		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);  
 					
+		  
 		ErrorCode ret = userService.addUser(uuid, userModel);
 //		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
@@ -1175,6 +1196,7 @@ public class UserController extends BaseShiroController{
 	 * @author lvjisheng
 	 * @param IMEI,name
 	 * @return 
+	 * @throws 如果IMEI为空,则视为重置
 	 */
 	@PostMapping(value="/updateIMEI")
     @ResponseBody
@@ -1191,33 +1213,5 @@ public class UserController extends BaseShiroController{
 		  	      .setData(info)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
-	}
-	
-	/**
-	 * @author lvjisheng
-	 * @param IMEI,name
-	 * @return 
-	 */
-    @RequestMapping(value="/checkIMEI",method = RequestMethod.POST)
-    @ResponseBody
-    @WriteLog(value="CheckIMEI")
-    public ResponseEntity<?> checkIMEI(@RequestBody UserModel userModel) {
-       Map<String,Boolean> info=new HashMap<>();
-       String nameIn = userModel.getName(); 
-       String IMEIIn = userModel.getIMEI();
-       UserModel userNewModel = userService.findUserByName(nameIn); 
-       String IMEIOld =userNewModel.getIMEI();
-       log.info("IMEI={}",IMEIOld);
-       if (IMEIOld.equals(IMEIIn)){
-        info.put("state", true);
-		return new ResponseEntity.Builder<Map<String, Boolean>>()
-			      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
-		
-       }else{
-        info.put("state", false);
-		return new ResponseEntity.Builder<Map<String, Boolean>>()
-			      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-       }
-    }
-	
+	}		
 }

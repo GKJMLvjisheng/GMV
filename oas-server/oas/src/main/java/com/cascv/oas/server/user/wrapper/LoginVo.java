@@ -11,5 +11,6 @@ public class LoginVo implements Serializable{
   @Setter @Getter private String name;
   @Setter @Getter private String password;
   @Setter @Getter private Boolean rememberMe;
+  @Setter @Getter private String IMEI;
   @Setter @Getter private Integer control;
 }

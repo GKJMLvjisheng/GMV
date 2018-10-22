@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.news.config.MediaServer;
@@ -98,6 +99,7 @@ public class UserService {
     userModel.setUpdated(now);
     
     userModelMapper.insertUser(userModel);
+    
     /**
      * @author Ming Yang
      * Date:20181012 
@@ -233,6 +235,21 @@ public class UserService {
 	public List<String> selectIdentityNumber(String mobile){
 		return userModelMapper.selectUserMobile(mobile);
 	}
+	
+	
+	/**
+	 *检查登录时的IMEI是否一致
+	 */
+    public Boolean checkIMEI(LoginVo loginVo) {
+        String nameIn = loginVo.getName(); 
+        String IMEIIn = loginVo.getIMEI();
+        UserModel userNewModel = this.findUserByName(nameIn); 
+        String IMEIOld =userNewModel.getIMEI();
+        log.info("IMEI={}",IMEIOld);
+        Boolean isRightIMEI=IMEIOld.equals(IMEIIn)?true:false;
+        return isRightIMEI;
+     }
+	
 }
 
 
