@@ -6,6 +6,7 @@
    	<result column="role_priority" property="rolePriority"/>
    	<result column="role_name" property="roleName"/>
    	<result column="uuid" property="uuid"/>
+<!--    	<result column="name" property="name"/> -->
   </resultMap>
 
   <select id="selectAllUserRole" resultMap="userRoleModelMap">
@@ -34,5 +35,12 @@ select
     #{created,jdbcType=VARCHAR}
     )
 </insert> 
+
+	<!-- delete user role -->
+	<delete id="deleteUserRole">
+		delete from user_role
+		where uuid = #{uuid}
+	</delete>
+	
 </mapper>
 

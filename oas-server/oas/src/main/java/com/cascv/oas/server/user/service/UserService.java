@@ -1,6 +1,7 @@
 package com.cascv.oas.server.user.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.crypto.hash.Md5Hash;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.wrapper.LoginVo;
+import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
@@ -250,6 +253,25 @@ public class UserService {
         return isRightIMEI;
      }
 	
+    public List<UserDetailModel> selectUsersByPage(Integer offset, Integer limit,Integer roleId){
+    	String srcFormater="yyyy-MM-dd HH:mm:ss";
+	    String dstFormater="yyyy-MM-dd HH:mm:ss";
+		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+		List<UserDetailModel> userModel=userModelMapper.selectUsersByPage(offset,limit,roleId);
+		List<UserDetailModel>  userList=new ArrayList<>();
+		for(UserDetailModel userNewModel:userModel){
+			log.info("created={}",userNewModel.getCreated());
+			String created=DateUtils.string2Timezone(srcFormater, userNewModel.getCreated(), dstFormater, dstTimeZoneId);
+			log.info("createdAfter={}",created);
+			userNewModel.setCreated(created);
+			userList.add(userNewModel);
+		}
+    	return userList;
+    }
+    
+    public Integer countUsers(Integer roleId) {
+    	return userModelMapper.countUsers(roleId);
+    }
 }
 
 

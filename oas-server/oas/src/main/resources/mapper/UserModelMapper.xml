@@ -276,6 +276,38 @@
 	IMEI = #{IMEI}
 	where name = #{name}
 	</update>
-
+	
+	
+  <resultMap id="userResultMap" type="com.cascv.oas.server.user.wrapper.UserDetailModel">
+    <id column="name" property="name"/>
+    <result column="nickname" property="nickname"/>
+    <result column="gender" property="gender"/>
+    <result column="birthday" property="birthday"/>
+    <result column="address" property="address"/>
+    <result column="mobile" property="mobile"/>
+    <result column="email" property="email"/>
+    <result column="IMEI" property="IMEI"/>
+    <result column="created" property="created"/>
+  </resultMap>
+  
+  <select id="selectUsersByPage" resultMap="userResultMap">
+	 select 
+		name,
+	    nickname,
+	    gender,
+	    birthday,
+	    address,
+	    mobile,
+	    email,
+	    IMEI,
+		U.created as created from user_info U 
+		join user_role UR on U.uuid = UR.uuid 
+		where UR.role_id=#{roleId}
+		order by U.created desc 
+	    limit #{offset}, #{limit}
+  </select>
+  <select id="countUsers" resultType="java.lang.Integer">
+  	select count(*) from user_role where role_id = #{roleId};
+  </select>
 </mapper>
 

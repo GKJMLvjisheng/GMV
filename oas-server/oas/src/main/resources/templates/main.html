@@ -54,13 +54,15 @@
                         </ul>
                     </li>
                     
-                    <shiro:hasRole name="admin">
+                    <shiro:hasRole name="系统账号">
                          <li class="">
                             <a href="main"><i class="glyphicon glyphicon-usd"></i> <span class="nav-label" >钱包管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/wallet/energyWallet}">积分钱包查询</a></li>
                                 <li class="active"><a class="menuItem" th:href="@{/wallet/ethWallet}">交易钱包查询</a></li> 
                                 <li class="active"><a class="menuItem" th:href="@{/wallet/userWallet}">在线钱包查询</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/requestAudit}">提币审核</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/brokerageConfig}">提币手续费配置</a></li>
                             </ul>
                         </li>    
                         
@@ -71,61 +73,38 @@
                                 <li class="active"><a class="menuItem" th:href="@{/QA/QAManage}">环保答题</a></li>                      
                             </ul>
                         </li>  
-                                    
+                        
                         <li class="">
-                            <a href="#"><i class="glyphicon glyphicon-user "></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">用户管理</span> </a>                   
-                        </li>
-                        <li class="">
-                            <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label"data-toggle="tooltip" title="待开发功能"data-placement="right">角色管理</span> </a>                    
-                        </li>
-                        <li class="">
-                            <a href="#"><i class="glyphicon glyphicon-wrench"></i> <span class="nav-label">模块管理</span> </a>                    
-                       <ul class="nav nav-second-level">
-                                <li class="active"><a class="menuItem" th:href="@{/menuManage/menuAuthor}">模块授权</a></li>
-                            </ul>
-                        </li>
-                       
-                         <li class="">
-                        <a href="#"><i class="glyphicon glyphicon-transfer"></i> <span class="nav-label" data-toggle="tooltip" title="请优先配置网络"data-placement="right">转账配置</span></a>
-                        <ul class="nav nav-second-level">
-                            <li class="active"><a class="menuItem" th:href="@{netConfiguration/netConfig}">配置</a></li>
-                            <li class="active"><a class="menuItem"href="multiTransfer">一对多转账</a></li> 
-                        </ul>                                   
-                        </li>
-
-                        <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-usd"></i> <span class="nav-label" >提币管理</span></a>
+                            <a href="main"><i class="glyphicon glyphicon-th-large"></i> <span class="nav-label" >挖矿管理</span></a>
                             <ul class="nav nav-second-level">
-                                <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/brokerageConfig}">手续费配置</a></li>
-                                <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/requestAudit}">提币审核</a></li> 
+	                            <li class="active"><a class="menuItem" th:href="@{/activityReward/activityReward}">活动管理</a></li>
+	                            <li class="active"><a class="menuItem" th:href="@{/activityReward/rewardManage}">奖励管理</a></li>
+	                            <li class="active"><a class="menuItem" th:href="@{/miner/minerManage}">矿机管理</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/miner/reward}">矿机奖励配置</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/miner/minerParameter}">挖矿参数配置</a></li>                                
+                                <li class="active"><a class="menuItem" th:href="@{/miner/minerMana}">算力记录查询</a></li>
                             </ul>
                         </li> 
                         
                         <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-leaf"></i> <span class="nav-label" >矿机管理</span></a>
+                            <a href="main"><i class="glyphicon glyphicon-user"></i> <span class="nav-label" >用户管理</span></a>
                             <ul class="nav nav-second-level">
-                                <li class="active"><a class="menuItem" th:href="@{/miner/minerManage}">矿机配置</a></li>
-                                <li class="active"><a class="menuItem" th:href="@{/miner/reward}">奖励配置</a></li> 
-
-                                 <li class="active"><a class="menuItem" th:href="@{/miner/minerParameter}">挖矿参数配置</a></li> 
-
+                                <li class="active"><a class="menuItem" th:href="@{/KYC/KYC}">KYC认证</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/userAccountManage}">用户账号管理</a></li> 
+                                <li class="active"><a class="menuItem" th:href="@{/wallet/userWa}">用户权限管理</a></li>
                             </ul>
                         </li> 
-                                                                  
+                        
                         <li class="">
-                            <a class="menuItem" href="KYC/KYC"><i class="glyphicon glyphicon-star"></i> <span class="nav-label">KYC审核</span> </a>        
-                        </li>
-
-                        <li class="">
-                            <a class="menuItem"href="versionManage"><i class="glyphicon glyphicon-list-alt"></i> <span class="nav-label">版本管理</span>  </a>                         
-                        </li>
-                         <li class="">
-                        <a href="#"><i class="glyphicon glyphicon-gift"></i> <span class="nav-label" >活动奖励管理</span></a>
-                        <ul class="nav nav-second-level">
-                            <li class="active"><a class="menuItem" th:href="@{activityReward/activityReward}">活动管理</a></li>
-                            <li class="active"><a class="menuItem" th:href="@{activityReward/rewardManage}">奖励管理</a></li> 
-                        </ul>
-                    </li>
+                            <a href="main"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label" >系统管理</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="active"><a class="menuItem" th:href="@{/versionManage}">APP版本管理</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/netConfiguration/netConfig}">ETH网络设置</a></li> 
+                                <li class="active"><a class="menuItem" th:href="@{/menuManage/menuAuthor}">系统模块授权</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/multiTransfer}">一对多转账</a></li>
+                            </ul>
+                        </li>   
+                                                              
                     </shiro:hasRole>
                 </ul>
             </div>
