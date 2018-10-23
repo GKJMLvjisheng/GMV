@@ -31,11 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class KickoutSessionControlFilter extends AccessControlFilter {
-  @Getter @Setter private String kickoutUrl;        
-  @Getter @Setter private int maxSession = 1;       
+  @Getter @Setter private String kickoutUrl;      //踢出后的地址
+  @Getter @Setter private int maxSession = 1;     //同一个账号会话数
   @Getter @Setter private SessionManager sessionManager;
   @Getter @Setter private Cache<String, Deque<Serializable>> cache;
   
+  //isAccessAllowed表示是否允许访问;mappedValue就是[urls]配置中拦截器参数部分，如果允许访问返回true，否则false
   @Override
   protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)
       throws Exception {

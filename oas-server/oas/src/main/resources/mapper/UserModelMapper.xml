@@ -309,5 +309,13 @@
   <select id="countUsers" resultType="java.lang.Integer">
   	select count(*) from user_role where role_id = #{roleId};
   </select>
+  
+  
+  <update id="updateUserStatus" parameterType="com.cascv.oas.server.user.wrapper.UserStatus">
+	update user_info set
+	status = #{status}
+	where name = #{name}
+  </update>
+  
 </mapper>
 
