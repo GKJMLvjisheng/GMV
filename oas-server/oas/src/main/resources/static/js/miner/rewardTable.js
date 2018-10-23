@@ -22,9 +22,9 @@ function initRewardGrid(data) {
 		uniqueId:"promotedId",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
-		sortable: false,//是否启用排序
-		sortName: 'created', // 要排序的字段
-	    sortOrder: 'desc', // 排序规则
+//		sortable: false,//是否启用排序
+//		sortName: 'created', // 要排序的字段
+//	    sortOrder: 'desc', // 排序规则
 		data:data,
 		
 		columns : [{  
