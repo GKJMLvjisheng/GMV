@@ -5,11 +5,16 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.wrapper.UserDetailModel;
+
 import org.springframework.stereotype.Component;
 
 @Component
 public interface UserModelMapper {
+	 List<UserDetailModel> selectUsersByPage( @Param("offset") Integer offset, @Param("limit") Integer limit,@Param("roleId")Integer roleId); 
+	 Integer countUsers( @Param("roleId") Integer roleId);
 	 Integer insertUser(UserModel userModel);
 	 UserModel selectByName(@Param("name") String name);
 	 UserModel selectByUuid(@Param("uuid") String uuid);
