@@ -64,7 +64,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: formatWalkAnalysis(analysis[0].value,analysis[0].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}(积分)</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}} 积分</span>
         </li>
          <li>
           <i></i>
@@ -73,7 +73,7 @@
             <div></div>
             <div v-if="analysis[1]" :style="{width: formatWalkAnalysis(analysis[1].value,analysis[1].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[1]" class="count">{{analysis[1].value}}(步)</span>
+          <span  v-if="analysis[1]" class="count">{{analysis[1].value}} 步</span>
         </li>
         <li>
           <i></i>
@@ -153,7 +153,7 @@ const promote = require("@/assets/images/promote_btn.png");
 const bottom = require("@/assets/images/bottom_logo@2x.png");
 const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
-
+const info = require("@/assets/images/icon_default_user.png");
 import { randomNum } from '@/utils/utils.js'
 import $ from 'jquery'
 export default {
@@ -168,6 +168,7 @@ export default {
       promote: promote,
       bottom: bottom,
       energyBall: energyBall,
+      info: info,
       width: "80%",
       isShowMask: false,
       isShowSuccessMsg: false,
@@ -201,6 +202,20 @@ export default {
       
     }
   },
+  beforeMount() {
+         //设置定时器，每3秒刷新一次
+         var self = this;
+         setInterval(getTotelNumber,10000)
+         function getTotelNumber() {
+            //this.getStep()
+            let list={}
+            list=self.getWalkEnergyBall() 
+            console.log(JSON.stringify(list))
+            self.getEnergyAnalysis()
+           
+         }
+         //getTotelNumber();      
+    },
   created() {
     //this.getStep()
     this.getCurrenttime()
@@ -214,14 +229,17 @@ export default {
     this.getEnergyAnalysis()
     this.getArticleList()
     this.getUserInfo()
+    
     //this.synchronizeBall()
     window.skipRefresh= this.skipRefresh
      this.location()
+    
     
   },
   filters: {
   },
   methods: {
+    
     
    getStep(){
       this.todayStep=window.Android.getTodaySteps()
@@ -305,8 +323,14 @@ export default {
     // 获取用户信息
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
-        console.log("用户信息"+data);
-        this.userInfo.avatar=data.profile;
+        console.log("用户信息"+JSON.stringify(data));
+          let profile=data.profile.split('.')
+           console.log(profile)
+        if(profile[profile.length-1]=="comnull"){
+        this.userInfo.avatar=info
+        }else{
+        this.userInfo.avatar=data.profile
+        }
         this.userInfo.nickname = data.nickname
         
       })
@@ -361,9 +385,10 @@ export default {
                     el.generate=true}
                   else{el.generate=false}
                    if(el.value>100)
-                    { let value=el.value.split('.');
-                      el.value=value[0]}
-                    
+                    { console.log(el.value)
+                      el.value=parseInt(el.value)
+                      console.log(el.value)
+                   } 
                   return el
                 }) 
                 for(let i=0;i<walkEnergyBallListtBackup.length;i++)  
@@ -418,7 +443,7 @@ export default {
      getWalkEnergyBall() {
      
       
-    this.todayStep="20000"
+    this.todayStep="100"
     
      //let time="2018-10-15"
     
@@ -599,7 +624,7 @@ export default {
       let len = this.tempArr.length
      
       for (let i = 0; i < len; i++){
-        if(Math.abs(p.x - this.tempArr[i].x) < 80 && Math.abs(p.y - this.tempArr[i].y) < 80) {
+        if(Math.abs(p.x - this.tempArr[i].x) < 90 && Math.abs(p.y - this.tempArr[i].y) < 90) {
           return this.randomPoint()
         }
       }
