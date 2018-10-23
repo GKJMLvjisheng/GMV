@@ -20,6 +20,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -110,7 +111,7 @@ public class UserController extends BaseShiroController{
   String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
   String vcode="";
   
-  
+    
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
