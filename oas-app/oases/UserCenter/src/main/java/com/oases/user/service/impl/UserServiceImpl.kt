@@ -102,4 +102,9 @@ class UserServiceImpl @Inject constructor():UserService{
         return repository.resetPwd(name,newPwd).convert()
     }
 
+    //账户与安全中的设置密码
+    override fun confirmOldPwd(req: confirmOldPwdReq): Observable<confirmOldPwdResp> {
+        return repository.confirmOldPwd(req).convert()
+    }
+
 }

@@ -29,6 +29,7 @@ class BuyingMinerPresenter @Inject constructor() : BasePresenter<BuyingMinerView
             }
         },lifecycleProvider)
     }
+
     fun confirmBuyMiner(mMinerName:String,mMinerNum:Int,mMinerSum:BigDecimal){
         val req = ConfirmBuyMinerReq(mMinerName,mMinerNum,mMinerSum)
         if (!checkNetWork()){

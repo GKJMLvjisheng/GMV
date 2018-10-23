@@ -36,4 +36,10 @@ interface UserService {
    // fun checkIdentifyCode(mobileCode:String):Observable<CheckPhoneCodeResp>
     fun resetPwd(name:String,newPwd:String):Observable<Int>
 
+
+    /**
+     * 用户旧密码比对
+     */
+    fun confirmOldPwd(req: confirmOldPwdReq):Observable<confirmOldPwdResp>
+
 }
