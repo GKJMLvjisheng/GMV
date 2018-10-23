@@ -1245,7 +1245,7 @@ public class UserController extends BaseShiroController{
 	@PostConstruct
 	private void registerSystem() {
 		UserModel userModel = new UserModel();
-		userModel.setName("SYSTEM2222");
+		userModel.setName("SYSTEM");
 		userModel.setPassword("123456");
 		String password = userModel.getPassword();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
