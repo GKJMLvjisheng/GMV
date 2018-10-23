@@ -6,6 +6,7 @@ $(function() {
 	initNormalGrid();
 	initTestGrid();
 	initSystemGrid();
+	
 });
 
 function reset(name){
