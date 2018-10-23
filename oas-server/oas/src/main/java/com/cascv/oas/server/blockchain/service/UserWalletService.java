@@ -109,7 +109,7 @@ public class UserWalletService {
 	  case 7:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
-		  remark="您推广下线购买矿机,奖励冻结50%,待下线矿机回本后一次性返还";
+		  remark="您推广下线购买矿机立即奖励总奖励的50%,冻结总奖励的50%,待下线矿机回本后一次性返还";
 		  break;
 	  case 8:
 		  log.info("矿机推广奖励");
