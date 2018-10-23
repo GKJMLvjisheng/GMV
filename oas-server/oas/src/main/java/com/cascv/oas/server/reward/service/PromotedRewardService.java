@@ -170,6 +170,33 @@ public class PromotedRewardService {
 	  
 	  /**
 	   * @author Ming Yang
+	   * @return
+	   *             返回代币奖励冻结比例
+	   */ 
+	  public BigDecimal getOasFrozenRewardRatio() {
+		  String rewardCoinName="代币";
+		  PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
+		  BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();
+		  return frozenRatio;
+	  }
+	  
+	  /**
+	   * @author Ming Yang
+	   * @return
+	   *             返回代币奖励比例
+	   */ 
+	  public BigDecimal getOasRewardRatio() {
+		  String rewardCoinName="代币";
+		  PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
+		  BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();
+		  BigDecimal a=new BigDecimal(1);
+		  BigDecimal rewardRatio=a.subtract(frozenRatio);
+		  return rewardRatio;
+	  }
+	  
+	  
+	  /**
+	   * @author Ming Yang
 	   * @param userUuid
 	   *         实现冻结代币返还逻辑
 	   */

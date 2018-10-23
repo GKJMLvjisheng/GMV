@@ -28,6 +28,7 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.reward.service.PromotedRewardService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
@@ -48,8 +49,9 @@ public class UserWalletService {
   private UserWalletDetailMapper userWalletDetailMapper; 
   
   @Autowired
+  private static PromotedRewardService promotedRewardService;
+  @Autowired
   private ExchangeRateService exchangeRateService;
-  
   @Autowired
   private OasDetailMapper oasDetailMapper;
   @Autowired 
@@ -62,13 +64,14 @@ public class UserWalletService {
   
   @Autowired
   private MessageService messageService;
- 
+  
 /*  @Autowired
   private CoinClient coinClient;*/
   
   public UserWallet find(String userUuid){
     return userWalletMapper.selectByUserUuid(userUuid);
   }
+
   
   public static UserWalletDetail setDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark,String oasDetailUuid) {
 	  UserWalletDetail userWalletDetail = new UserWalletDetail();
@@ -109,12 +112,12 @@ public class UserWalletService {
 	  case 7:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
-		  remark="您推广下线购买矿机立即奖励总奖励的50%,冻结总奖励的50%,待下线矿机回本后一次性返还";
+		  remark="您推广下线购买矿机立即奖励总奖励的"+promotedRewardService.getOasRewardRatio()+",冻结总奖励的"+promotedRewardService.getOasFrozenRewardRatio()+",待下线矿机回本后一次性返还";
 		  break;
 	  case 8:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
-		  remark="返还您推广下线购买矿机奖励冻结的50%";
+		  remark="返还您推广下线购买矿机奖励冻结的"+promotedRewardService.getOasFrozenRewardRatio();
 		  break;
 	  default:
 		  log.info("swicth-case-end");
