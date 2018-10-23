@@ -16,12 +16,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -40,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
@@ -72,15 +68,11 @@ import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
-
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
-
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
-
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -155,44 +147,44 @@ public class UserController extends BaseShiroController{
           /**
            * 判断IMEI是否相匹配
            */
-//          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
-//          String IMEINew=loginVo.getIMEI();
-//          String uuid=ShiroUtils.getUser().getUuid();
-//          Set<String> roles=roleService.getRolesByUserUuid(uuid);
-//          List<String>  roleList =new ArrayList<>(roles);
-//          log.info("roles={}",roles);
-//          
-//         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
-//         if(status==0)
-//        	 throw new AuthenticationException();
-//         //判断是否是移动端登录
-//         if(userAgent.indexOf("android")!=-1){
-//        	 log.info("this is android!");
-//        	 log.info(roleList.get(0));
-//        	 switch(roleList.get(0)){
-//	        	 case "系统账号":
-//	        		 throw new AuthenticationException();
-//	        	 case "正常账号":
-//	        		 if(IMEIOri==null) {
-//	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-//	  	        	   userModelMapper.updateIMEI(userModel);
-//	  	        	   }
-//	        		 else if(!IMEIOri.equals(IMEINew))
-//	  	        	   throw new AuthenticationException();
-//	        	     break;
-//	        	 case "测试账号":
-//		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-//		        	   userModelMapper.updateIMEI(userModel);
-//	        	     break;
-//	        	 default:
-//	        		 log.info("default");
-//	        		 break;
-//        	 }
-//         } 
-//         
-//          //普通用户无法在web端登录
-//          else if(!roles.contains("系统账号"))
-//        	       throw new AuthenticationException();    
+          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+          String IMEINew=loginVo.getIMEI();
+          String uuid=ShiroUtils.getUser().getUuid();
+          Set<String> roles=roleService.getRolesByUserUuid(uuid);
+          List<String>  roleList =new ArrayList<>(roles);
+          log.info("roles={}",roles);
+          
+         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
+         if(status==0)
+        	 throw new AuthenticationException();
+         //判断是否是移动端登录
+         if(userAgent.indexOf("android")!=-1){
+        	 log.info("this is android!");
+        	 log.info(roleList.get(0));
+        	 switch(roleList.get(0)){
+	        	 case "系统账号":
+	        		 throw new AuthenticationException();
+	        	 case "正常账号":
+	        		 if(IMEIOri==null) {
+	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+	  	        	   userModelMapper.updateIMEI(userModel);
+	  	        	   }
+	        		 else if(!IMEIOri.equals(IMEINew))
+	  	        	   throw new AuthenticationException();
+	        	     break;
+	        	 case "测试账号":
+		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+		        	   userModelMapper.updateIMEI(userModel);
+	        	     break;
+	        	 default:
+	        		 log.info("default");
+	        		 break;
+        	 }
+         } 
+         
+          //普通用户无法在web端登录
+          else if(!roles.contains("系统账号"))
+        	       throw new AuthenticationException();    
                  
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
