@@ -28,6 +28,7 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.reward.service.PromotedRewardService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
@@ -40,35 +41,30 @@ public class UserWalletService {
   
   @Autowired
   private UserWalletMapper userWalletMapper;
-  
   @Autowired
   private UserModelMapper userModelMapper;
-  
   @Autowired 
   private UserWalletDetailMapper userWalletDetailMapper; 
-  
   @Autowired
   private ExchangeRateService exchangeRateService;
-  
   @Autowired
   private OasDetailMapper oasDetailMapper;
   @Autowired 
   private TimeZoneService timeZoneService;
   @Autowired
   private EthWalletService ethWalletService;
-  
   @Autowired
   private EthWalletMapper ethWalletMapper;
-  
   @Autowired
   private MessageService messageService;
- 
+  
 /*  @Autowired
   private CoinClient coinClient;*/
   
   public UserWallet find(String userUuid){
     return userWalletMapper.selectByUserUuid(userUuid);
   }
+
   
   public static UserWalletDetail setDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark,String oasDetailUuid) {
 	  UserWalletDetail userWalletDetail = new UserWalletDetail();

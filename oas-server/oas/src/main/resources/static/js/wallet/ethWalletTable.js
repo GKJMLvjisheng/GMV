@@ -3,18 +3,20 @@ var pageNum;
 
 //请求服务数据时所传参数
 function queryParams(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
     return{
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize: pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
+        pageNum: pageNum,
     }
 }
 
 function initEthWalletGrid() {	
 	$("#ethWalletGrid").bootstrapTable('destroy');
 	$("#ethWalletGrid").bootstrapTable({
-		url: '/api/v1/ethWallet/inqureEthWalletInTotalTradeRecord',
+		url: '/api/v1/ethWallet/inqureEthWalletTradeRecord',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -35,33 +37,34 @@ function initEthWalletGrid() {
 	    sortOrder: 'asc', // 排序规则
 			
 		columns : [{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle',  
-		formatter: function (value, row, index) {  
-			return pageSize * (pageNum - 1) + index + 1;  
-			}  
-		}  ,{
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle',  
+			width:  '75px',
+			formatter: function (value, row, index) {
+				return pageSize * (pageNum - 1) + index + 1;  
+				}  
+			}  ,{
 			title : "用户名",
 			field : "name",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '90px',
 		},
 			{
 			title : "交易金额",
 			field : "value",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '90px',
 		},
 		{
 			title : "交易类型",
 			field : "title",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '130px',
 		},
 		{
 			title : "交易细节",
@@ -75,7 +78,7 @@ function initEthWalletGrid() {
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '190px',
+			width:  '170px',
 		}, {
 			title : "交易备注",
 			field : "remark",
@@ -87,6 +90,7 @@ function initEthWalletGrid() {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
+			width:  '60px',
 			formatter: actionFormatter
 		}],		
 		search : true,//搜索
@@ -168,17 +172,15 @@ function initFundInGrid() {
 
 //请求服务数据时所传参数
 function queryParams3(params){
-	var startTime2 = $("#startTime2").val();
-	var endTime2 = $("#endTime2").val();
-	//alert(JSON.stringify(startTime2));
-	
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
     return{
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize: pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
-        startTime: $("#startTime2").val(),
-        endTime: $("#endTime2").val(),
+        pageNum: pageNum,
+        startTime: $("#startTime4").val(),
+        endTime: $("#endTime4").val(),
     }
 }
 
@@ -256,13 +258,15 @@ function initFundOutGrid() {
 
 //请求服务数据时所传参数
 function queryParams4(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
     return{
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize: pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
-        startTime: $("#startTime3").val(),
-        endTime: $("#endTime3").val(),
+        pageNum: pageNum,
+        startTime: $("#startTime5").val(),
+        endTime: $("#endTime5").val(),
     }
 }
 
@@ -280,48 +284,48 @@ function responseHandler4(res){
     };
 };
 
-	function actionFormatter(value, row, index) {
-        var id = value;
-        var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";       
-        return result;
-	}
-	
-	function ViewViewById(id){	
-		var formData = new FormData();
-		$('#Qname').val(id);	
-		formData.append("name", $("#Qname").val());
-		$.ajax({
-		url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
-		data:formData,
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		type: 'post',
-		cache: false,		
-		processData : false,
-		contentType : false,
-		async:false,
+function actionFormatter(value, row, index) {
+    var id = value;
+    var result = "";
+    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";       
+    return result;
+}
 
-		success:function(res){				
-			if(res.code==0){
-			//alert(JSON.stringify(res));			
-			rows = res.data;			
-			$('#Qname').val(rows.name);
-			$('#Qnickname').val(rows.nickname);
-			$('#Qgender').val(rows.gender);
-			$('#Qbirthday').val(rows.birthday);
-			$('#Qmobile').val(rows.mobile);
-			$('#Qemail').val(rows.email);
-			$('#Qaddress').val(rows.address);
-			$('#QinviteCode').val(rows.inviteCode);
-			$("#queryEthModal").modal("show");
-			}
-			else{
-				alert("查询失败1");
-				}						
-		},
-		error:function(){
-			alert("查询失败2");
-		},
-		});					
-	}
+function ViewViewById(id){	
+	var formData = new FormData();
+	$('#Qname').val(id);	
+	formData.append("name", $("#Qname").val());
+	$.ajax({
+	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	data:formData,
+	contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	type: 'post',
+	cache: false,		
+	processData : false,
+	contentType : false,
+	async:false,
+
+	success:function(res){				
+		if(res.code==0){
+		//alert(JSON.stringify(res));			
+		rows = res.data;			
+		$('#Qname').val(rows.name);
+		$('#Qnickname').val(rows.nickname);
+		$('#Qgender').val(rows.gender);
+		$('#Qbirthday').val(rows.birthday);
+		$('#Qmobile').val(rows.mobile);
+		$('#Qemail').val(rows.email);
+		$('#Qaddress').val(rows.address);
+		$('#QinviteCode').val(rows.inviteCode);
+		$("#queryEthModal").modal("show");
+		}
+		else{
+			alert("查询失败1");
+			}						
+	},
+	error:function(){
+		alert("查询失败2");
+	},
+	});					
+}
