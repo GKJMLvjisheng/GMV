@@ -119,6 +119,19 @@ order by point desc
 limit #{offset}, #{limit};
 </select>   
 
+<select id="selectAllInTotalPointTradeRecordBySearchValue" resultMap="energyWalletPointRecordMap">
+select 
+	u.name,SUM(etr.point_change) as point
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
+group by u.name
+order by point desc
+limit #{offset}, #{limit};
+</select>
+
 <select id="countByInTotalPointTradeRecord" resultType="java.lang.Integer">
 select 
 	count(distinct etr.user_uuid)
@@ -126,7 +139,17 @@ from
 	energy_trade_record etr,user_info u
 where
 	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
-</select>  
+</select> 
+
+<select id="countByInTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	count(distinct etr.user_uuid)
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
+</select> 
    
 <select id="selectAllOutTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
 select 
@@ -140,6 +163,19 @@ order by point desc
 limit #{offset}, #{limit};
 </select>
 
+<select id="selectAllOutTotalPointTradeRecordBySearchValue" resultMap="energyWalletPointRecordMap">
+select 
+	u.name,SUM(etr.point_change) as point
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
+group by u.name
+order by point desc
+limit #{offset}, #{limit};
+</select>
+
 <select id="countByOutTotalPointTradeRecord" resultType="java.lang.Integer">
 select 
 	count(distinct etr.user_uuid)
@@ -147,6 +183,16 @@ from
 	energy_trade_record etr,user_info u
 where
 	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+</select>
+
+<select id="countByOutTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	count(distinct etr.user_uuid)
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
 </select>
    
 </mapper>
