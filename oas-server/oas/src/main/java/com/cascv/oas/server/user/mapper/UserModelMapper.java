@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public interface UserModelMapper {
 	 List<UserDetailModel> selectUsersByPage( @Param("offset") Integer offset, @Param("limit") Integer limit,@Param("roleId")Integer roleId); 
 	 Integer countUsers( @Param("roleId") Integer roleId);
+	 Integer updateUserStatus(@Param("status") Integer status,@Param("name") String name);
 	 Integer insertUser(UserModel userModel);
 	 UserModel selectByName(@Param("name") String name);
 	 UserModel selectByUuid(@Param("uuid") String uuid);
