@@ -109,7 +109,7 @@ public class PromotedRewardService {
 	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
 	    Trigger delayTrigger = TriggerBuilder.newTrigger().withIdentity("triggerD", "groupD")
 		        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-		            .withIntervalInSeconds(3600).repeatForever()).startNow().build();
+		            .withIntervalInSeconds(60).repeatForever()).startNow().build();
 	    immediatelyJobDetail.getJobDataMap().put("promotedRewardService", this);
 	    delayJobDetail.getJobDataMap().put("promotedRewardService", this);
 	    schedulerService.addJob(immediatelyJobDetail, immediatelyTrigger);
