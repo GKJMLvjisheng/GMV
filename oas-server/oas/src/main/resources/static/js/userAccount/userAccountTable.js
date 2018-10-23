@@ -137,10 +137,13 @@ function responseHandler1(res){
         return;
     }
     //如果没有错误则返回数据，渲染表格
+//    debugger;
+//    $(":radio[name='radio'][value='2']").prop("checked", "checked");
     return {
         total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
         data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
     };
+    debugger;
 };
 
 function initTestGrid() {	
@@ -447,9 +450,10 @@ function actionFormatter2(value, row, index) {
 function actionFormatter3(value, row, index) {
 	 var name = value;
 	var result = "";	
-	result += "<input type='radio' onclick=\"normal('" + name + "')\"' name='radio' id='normal' value='1'>正常账号  ";
-	result += "<input type='radio' onclick=\"test('" + name + "')\"' name='radio' id='test' value='2'>测试账号  ";
-	result += "<input type='radio' onclick=\"system('" + name + "')\"' name='radio' id='system' value='3'>系统账号";
+
+	result += "<input type='radio' onclick=\"normal('" + name + "')\"' name='radio' id='normal' value='2'>正常账号  ";
+	result += "<input type='radio' onclick=\"test('" + name + "')\"' name='radio' id='test' value='3'>测试账号  ";
+	result += "<input type='radio' onclick=\"system('" + name + "')\"' name='radio' id='system' value='1'>系统账号";
 	return result;	
 }
 
