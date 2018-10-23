@@ -528,7 +528,8 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				String remark="您推广下线购买矿机立即奖励总奖励的"+this.getOasRewardRatio()+",冻结总奖励的"+this.getOasFrozenRewardRatio()+",待下线矿机回本后一次性返还";
+				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,remark,null);
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {
@@ -601,7 +602,8 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				String remark="返还您推广下线购买矿机奖励冻结的"+this.getOasFrozenRewardRatio();
+				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,remark,null);
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {

@@ -41,15 +41,10 @@ public class UserWalletService {
   
   @Autowired
   private UserWalletMapper userWalletMapper;
-  
   @Autowired
   private UserModelMapper userModelMapper;
-  
   @Autowired 
   private UserWalletDetailMapper userWalletDetailMapper; 
-  
-  @Autowired
-  private static PromotedRewardService promotedRewardService;
   @Autowired
   private ExchangeRateService exchangeRateService;
   @Autowired
@@ -58,10 +53,8 @@ public class UserWalletService {
   private TimeZoneService timeZoneService;
   @Autowired
   private EthWalletService ethWalletService;
-  
   @Autowired
   private EthWalletMapper ethWalletMapper;
-  
   @Autowired
   private MessageService messageService;
   
@@ -112,12 +105,10 @@ public class UserWalletService {
 	  case 7:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
-		  remark="您推广下线购买矿机立即奖励总奖励的"+promotedRewardService.getOasRewardRatio()+",冻结总奖励的"+promotedRewardService.getOasFrozenRewardRatio()+",待下线矿机回本后一次性返还";
 		  break;
 	  case 8:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
-		  remark="返还您推广下线购买矿机奖励冻结的"+promotedRewardService.getOasFrozenRewardRatio();
 		  break;
 	  default:
 		  log.info("swicth-case-end");
