@@ -533,19 +533,36 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         	offset = (pageNum - 1) * limit;
         else 
         	offset = 0;
-  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
-  	  Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecord();
-  	    PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
-  	    energyWalletBalanceRecordInfo.setTotal(count);
-  	    energyWalletBalanceRecordInfo.setAsc("desc");
-  	    energyWalletBalanceRecordInfo.setOffset(offset);
-  	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
-  	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
-  	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
-  		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
-  		        .setData(energyWalletBalanceRecordInfo)
-  		        .setErrorCode(ErrorCode.SUCCESS)
-  		        .build();
+       String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+       if(searchValue != null) {
+    	   List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecordBySearchValue(offset, limit, searchValue);
+    	   Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecordBySearchValue(searchValue);
+    	   PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
+     	    energyWalletBalanceRecordInfo.setTotal(count);
+     	    energyWalletBalanceRecordInfo.setAsc("desc");
+     	    energyWalletBalanceRecordInfo.setOffset(offset);
+     	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
+     	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
+     	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
+     		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
+     		        .setData(energyWalletBalanceRecordInfo)
+     		        .setErrorCode(ErrorCode.SUCCESS)
+     		        .build();
+       }else {
+    	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
+    	  Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecord();
+    	  PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
+    	    energyWalletBalanceRecordInfo.setTotal(count);
+    	    energyWalletBalanceRecordInfo.setAsc("desc");
+    	    energyWalletBalanceRecordInfo.setOffset(offset);
+    	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
+    	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
+    	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
+    		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
+    		        .setData(energyWalletBalanceRecordInfo)
+    		        .setErrorCode(ErrorCode.SUCCESS)
+    		        .build();
+       }
     }
     /**
      * @author Ming Yang
