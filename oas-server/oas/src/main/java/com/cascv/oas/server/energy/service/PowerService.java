@@ -217,7 +217,12 @@ public class PowerService {
     		if(energyPowerChangeDetail.getSourceCode() == 10 && energyPowerChangeDetail.getInOrOut() == 0) {
     			energyPowerChangeDetail.setActivity("矿机失效");
     		}
-    		
+    		if(energyPowerChangeDetail.getSourceCode() == 11 && energyPowerChangeDetail.getInOrOut() == 1) {
+    			energyPowerChangeDetail.setActivity("矿机推广奖励");
+    		}
+    		if(energyPowerChangeDetail.getSourceCode() == 12 && energyPowerChangeDetail.getInOrOut() == 0) {
+    			energyPowerChangeDetail.setActivity("矿机推广奖励到期");
+    		}
     		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange());
     		if(energyPowerChangeDetail.getValue() != BigDecimal.ZERO) {
     			powerList.add(energyPowerChangeDetail);
