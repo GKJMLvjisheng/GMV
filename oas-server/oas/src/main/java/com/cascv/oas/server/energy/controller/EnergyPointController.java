@@ -464,6 +464,31 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         	offset = (pageNum - 1) * limit;
         else 
         	offset = 0;
+    
+    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+    if(searchValue !=null) {
+    List<EnergyWalletTradeRecordInfo> energyWalletTradeRecordList=energyWalletTradeRecordMapper.selectAllTradeRecordBySearchValue(offset, limit, searchValue);
+  	for (EnergyWalletTradeRecordInfo energyWalletTradeRecordInfo : energyWalletTradeRecordList) {
+		String srcFormater="yyyy-MM-dd HH:mm:ss";
+		String dstFormater="yyyy-MM-dd HH:mm:ss";
+		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getTimeCreated(), dstFormater, dstTimeZoneId);
+		energyWalletTradeRecordInfo.setTimeCreated(created);
+		log.info("newCreated={}",created);
+	  }
+  	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
+ 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
+ 	 	energyWalletTradeRecordInfo.setTotal(count);
+	  	energyWalletTradeRecordInfo.setAsc("desc");
+	  	energyWalletTradeRecordInfo.setOffset(offset);
+	  	energyWalletTradeRecordInfo.setPageNum(pageNum);
+	  	energyWalletTradeRecordInfo.setPageSize(pageSize);
+	  	energyWalletTradeRecordInfo.setRows(energyWalletTradeRecordList);
+ 		return new ResponseEntity.Builder<PageDomain<EnergyWalletTradeRecordInfo>>()
+ 		        .setData(energyWalletTradeRecordInfo)
+ 		        .setErrorCode(ErrorCode.SUCCESS)
+ 		        .build();
+    }else {
   	List<EnergyWalletTradeRecordInfo> energyWalletTradeRecordList=energyWalletTradeRecordMapper.selectAllTradeRecord(offset, limit);
   	for (EnergyWalletTradeRecordInfo energyWalletTradeRecordInfo : energyWalletTradeRecordList) {
 		String srcFormater="yyyy-MM-dd HH:mm:ss";
@@ -473,18 +498,19 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 		energyWalletTradeRecordInfo.setTimeCreated(created);
 		log.info("newCreated={}",created);
 	  }
-  	 PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
-  	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
-  	 	energyWalletTradeRecordInfo.setTotal(count);
+  	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
+ 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
+ 	 	energyWalletTradeRecordInfo.setTotal(count);
 	  	energyWalletTradeRecordInfo.setAsc("desc");
 	  	energyWalletTradeRecordInfo.setOffset(offset);
 	  	energyWalletTradeRecordInfo.setPageNum(pageNum);
 	  	energyWalletTradeRecordInfo.setPageSize(pageSize);
 	  	energyWalletTradeRecordInfo.setRows(energyWalletTradeRecordList);
-  		return new ResponseEntity.Builder<PageDomain<EnergyWalletTradeRecordInfo>>()
-  		        .setData(energyWalletTradeRecordInfo)
-  		        .setErrorCode(ErrorCode.SUCCESS)
-  		        .build();
+ 		return new ResponseEntity.Builder<PageDomain<EnergyWalletTradeRecordInfo>>()
+ 		        .setData(energyWalletTradeRecordInfo)
+ 		        .setErrorCode(ErrorCode.SUCCESS)
+ 		        .build();
+    }
     }
     
     /**
