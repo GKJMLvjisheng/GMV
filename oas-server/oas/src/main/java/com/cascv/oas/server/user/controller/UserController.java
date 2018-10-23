@@ -145,44 +145,44 @@ public class UserController extends BaseShiroController{
           /**
            * 判断IMEI是否相匹配
            */
-          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
-          String IMEINew=loginVo.getIMEI();
-          String uuid=ShiroUtils.getUser().getUuid();
-          Set<String> roles=roleService.getRolesByUserUuid(uuid);
-          List<String>  roleList =new ArrayList<>(roles);
-          log.info("roles={}",roles);
-          
-         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
-         if(status==0)
-        	 throw new AuthenticationException();
-         //判断是否是移动端登录
-         if(userAgent.indexOf("android")!=-1){
-        	 log.info("this is android!");
-        	 
-        	 switch(roleList.get(0)){
-	        	 case "系统账号":
-	        		 throw new AuthenticationException();
-	        	 case "正常账号":
-	        		 if(IMEIOri==null) {
-	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-	  	        	   userModelMapper.updateIMEI(userModel);
-	  	        	   }
-	        		 else if(!IMEIOri.equals(IMEINew))
-	  	        	   throw new AuthenticationException();
-	        	     break;
-	        	 case "测试账号":
-		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-		        	   userModelMapper.updateIMEI(userModel);
-	        	     break;
-	        	 default:
-	        		 log.info("default");
-	        		 break;
-        	 }
-         } 
-         
-          //普通用户无法在web端登录
-          else if(!roles.contains("系统账号"))
-        	       throw new AuthenticationException();    
+//          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+//          String IMEINew=loginVo.getIMEI();
+//          String uuid=ShiroUtils.getUser().getUuid();
+//          Set<String> roles=roleService.getRolesByUserUuid(uuid);
+//          List<String>  roleList =new ArrayList<>(roles);
+//          log.info("roles={}",roles);
+//          
+//         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
+//         if(status==0)
+//        	 throw new AuthenticationException();
+//         //判断是否是移动端登录
+//         if(userAgent.indexOf("android")!=-1){
+//        	 log.info("this is android!");
+//        	 log.info(roleList.get(0));
+//        	 switch(roleList.get(0)){
+//	        	 case "系统账号":
+//	        		 throw new AuthenticationException();
+//	        	 case "正常账号":
+//	        		 if(IMEIOri==null) {
+//	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+//	  	        	   userModelMapper.updateIMEI(userModel);
+//	  	        	   }
+//	        		 else if(!IMEIOri.equals(IMEINew))
+//	  	        	   throw new AuthenticationException();
+//	        	     break;
+//	        	 case "测试账号":
+//		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+//		        	   userModelMapper.updateIMEI(userModel);
+//	        	     break;
+//	        	 default:
+//	        		 log.info("default");
+//	        		 break;
+//        	 }
+//         } 
+//         
+//          //普通用户无法在web端登录
+//          else if(!roles.contains("系统账号"))
+//        	       throw new AuthenticationException();    
                  
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()

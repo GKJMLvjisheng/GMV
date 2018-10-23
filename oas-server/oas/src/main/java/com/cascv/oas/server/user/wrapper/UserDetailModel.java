@@ -1,9 +1,6 @@
 package com.cascv.oas.server.user.wrapper;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +15,6 @@ public class UserDetailModel implements Serializable {
 	@Getter @Setter private String email;      //邮箱
 	@Getter @Setter private String created;
 	@Getter @Setter private String IMEI;
+	@Getter @Setter private Integer status;
+	@Getter @Setter private Integer roleId;
 }
