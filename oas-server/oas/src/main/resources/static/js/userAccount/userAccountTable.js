@@ -4,7 +4,7 @@ var pageNum;
 function initNormalGrid() {	
 	$("#normalGrid").bootstrapTable('destroy');
 	$("#normalGrid").bootstrapTable({
-		url: '/api/v1/energyPoint/inqureEnergyWalletOutTotalPointTradeRecord',
+		url: '/api/v1/userCenter/selectAllUsers',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -24,69 +24,95 @@ function initNormalGrid() {
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 			
-		columns : [{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle',  
-		formatter: function (value, row, index) {  
-			return pageSize * (pageNum - 1) + index + 1; 
-			}  
-		}  ,{
-			title : "用户名",
-			field : "name",
+	    columns : [{  
+			title: '序号',  
+			field: '',
 			align: 'center',
-			valign: 'middle',
-			width:  '100px',
-		},
-		{
-			title : "昵称",
-			field : "nickName",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-			
-		},
-		{
-			title : "手机",
-			field : "mobile",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-		},
-		{
-			title : "邮箱",
-			field : "email",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-		},
-		{
-			title : "IMEI",
-			field : "status",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-			
-		},
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+			},
 			{
-			title : "创建时间",
-			field : "created",
-			align: 'center',
-			valign: 'middle',
-			width:  '200px',
-		},{
+				title : "昵称",
+				field : "nickname",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				
+			},
+			{
+				title : "手机",
+				field : "mobile",
+				align: 'center',
+				valign: 'middle',
+				width:  '100px',
+			},
+			{
+				title : "邮箱",
+				field : "email",
+				align: 'center',
+				valign: 'middle',
+				width:  '93px',
+			},
+			{
+				title : "IMEI",
+				field : "imei",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '200px',
+				visible: false,
+			},{
 
-			title : "操作",
-			field : "uuid",
-			align: 'center',
-			valign: 'middle',
-			width:  '60px',
-			formatter: actionFormatter
-		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
-		clickToSelect: false,         
+				title : "查看",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '45px',
+				formatter: actionFormatter1
+			},{
+
+				title : "重置IMEI",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '70px',
+				formatter: actionFormatter2
+			},{
+
+				title : "角色授权",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				//width:  '90px',
+				formatter: actionFormatter3
+			},{
+
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '100px',
+				formatter: actionFormatter4
+			}],		
+//		search : true,//搜索
+//        searchOnEnterKey : true,
+		clickToSelect: true,         
 	});
 }
 	
@@ -120,7 +146,7 @@ function responseHandler1(res){
 function initTestGrid() {	
 	$("#testGrid").bootstrapTable('destroy');
 	$("#testGrid").bootstrapTable({
-		url: '/api/v1/energyPoint/inqureEnergyWalletOutTotalPointTradeRecord',
+		url: '/api/v1/userCenter/selectAllUsers',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -135,75 +161,99 @@ function initTestGrid() {
 		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
-		uniqueId:"uuid",//Indicate an unique identifier for each row
-
 		toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 			
-		columns : [{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle',  
-		formatter: function (value, row, index) {  
-			return pageSize * (pageNum - 1) + index + 1;
-			}  
-		}  ,{
-			title : "用户名",
-			field : "name",
+	    columns : [{  
+			title: '序号',  
+			field: '',
 			align: 'center',
-			valign: 'middle',
-			width:  '100px',
-		},
-		{
-			title : "昵称",
-			field : "nickName",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-			
-		},
-		{
-			title : "手机",
-			field : "mobile",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-		},
-		{
-			title : "邮箱",
-			field : "email",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-		},
-		{
-			title : "IMEI",
-			field : "status",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-			
-		},
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+			},
 			{
-			title : "创建时间",
-			field : "created",
-			align: 'center',
-			valign: 'middle',
-			width:  '200px',
-		},{
+				title : "昵称",
+				field : "nickname",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				
+			},
+			{
+				title : "手机",
+				field : "mobile",
+				align: 'center',
+				valign: 'middle',
+				width:  '100px',
+			},
+			{
+				title : "邮箱",
+				field : "email",
+				align: 'center',
+				valign: 'middle',
+				width:  '93px',
+			},
+			{
+				title : "IMEI",
+				field : "imei",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '200px',
+				visible: false,
+			},{
 
-			title : "操作",
-			field : "uuid",
-			align: 'center',
-			valign: 'middle',
-			width:  '60px',
-			formatter: actionFormatter
-		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+				title : "查看",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '45px',
+				formatter: actionFormatter1
+			},{
+
+				title : "重置IMEI",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '70px',
+				formatter: actionFormatter2
+			},{
+
+				title : "角色授权",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				//width:  '90px',
+				formatter: actionFormatter3
+			},{
+
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '100px',
+				formatter: actionFormatter4
+			}],		
+//		search : true,//搜索
+//        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
@@ -240,7 +290,7 @@ function responseHandler2(res){
 function initSystemGrid() {	
 	$("#systemGrid").bootstrapTable('destroy');
 	$("#systemGrid").bootstrapTable({
-		url: '/api/v1/energyPoint/inqureEnergyWalletOutTotalPointTradeRecord',
+		url: '/api/v1/userCenter/selectAllUsers',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -255,91 +305,99 @@ function initSystemGrid() {
 		responseHandler:responseHandler3,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 
-		uniqueId:"uuid",//Indicate an unique identifier for each row
-
 		toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 			
-		columns : [{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle',  
-		formatter: function (value, row, index) {  
-			return pageSize * (pageNum - 1) + index + 1; 
-			}  
-		}  ,{
-			title : "用户名",
-			field : "name",
+	    columns : [{  
+			title: '序号',  
+			field: '',
 			align: 'center',
-			valign: 'middle',
-			width:  '100px',
-		},
-		{
-			title : "昵称",
-			field : "nickName",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-			
-		},
-		{
-			title : "手机",
-			field : "mobile",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-		},
-		{
-			title : "邮箱",
-			field : "email",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-		},
-		{
-			title : "IMEI",
-			field : "status",
-			align: 'center',
-			valign: 'middle',
-			width:  '150px',
-			
-		},
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+			},
 			{
-			title : "创建时间",
-			field : "created",
-			align: 'center',
-			valign: 'middle',
-			width:  '200px',
-		},{
+				title : "昵称",
+				field : "nickname",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				
+			},
+			{
+				title : "手机",
+				field : "mobile",
+				align: 'center',
+				valign: 'middle',
+				width:  '100px',
+			},
+			{
+				title : "邮箱",
+				field : "email",
+				align: 'center',
+				valign: 'middle',
+				width:  '93px',
+			},
+			{
+				title : "IMEI",
+				field : "imei",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '200px',
+				visible: false,
+			},{
 
-			title : "查看",
-			field : "name",
-			align: 'center',
-			valign: 'middle',
-			width:  '60px',
-			formatter: actionFormatter1
-		},{
+				title : "查看",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '45px',
+				formatter: actionFormatter1
+			},{
 
-			title : "配置IMEI",
-			field : "name",
-			align: 'center',
-			valign: 'middle',
-			width:  '60px',
-			formatter: actionFormatter2
-		},{
+				title : "重置IMEI",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '70px',
+				formatter: actionFormatter2
+			},{
 
-			title : "操作",
-			field : "uuid",
-			align: 'center',
-			valign: 'middle',
-			width:  '60px',
-			formatter: actionFormatter3
-		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+				title : "角色授权",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				//width:  '90px',
+				formatter: actionFormatter3
+			},{
+
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '100px',
+				formatter: actionFormatter4
+			}],		
+//		  search : true,//搜索
+//        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
@@ -381,26 +439,32 @@ function actionFormatter1(value, row, index) {
 
 function actionFormatter2(value, row, index) {
 	 var name = value;
-	var result = "";
-	
-	result += "<input type='radio' onclick=\"reset('" + name + "')\"' name='radio' id='reset' value='1'>重置 ";
-	result += "<input type='radio' onclick=\"Coordinate('" + name + "')\" name='radio' id='Coordinate' value='2'>通配";
-	result += "<input type='radio' onclick=\"disorder('" + name + "')\" name='radio' id='disorder' value='3'>紊乱";
+	var result = "";	
+	result += "<input type='radio' onclick=\"reset('" + name + "')\"' name='radio' id='reset' value='1'>重置  ";
 	return result;	
 }
 
 function actionFormatter3(value, row, index) {
-	var id = row.uuid;
+	 var name = value;
+	var result = "";	
+	result += "<input type='radio' onclick=\"normal('" + name + "')\"' name='radio' id='normal' value='1'>正常账号  ";
+	result += "<input type='radio' onclick=\"test('" + name + "')\"' name='radio' id='test' value='2'>测试账号  ";
+	result += "<input type='radio' onclick=\"system('" + name + "')\"' name='radio' id='system' value='3'>系统账号";
+	return result;	
+}
+
+function actionFormatter4(value, row, index) {
+	var name = value;
 	var result = "";
 	
-	result += "<input type='radio' onclick=\"active('" + id + "')\"' name='radio' id='active' value='4'>激活 ";
-	result += "<input type='radio' onclick=\"ban('" + id + "')\" name='radio' id='ban' value='5'>禁用";
+	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
+	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
 	return result;	
 }
 
 function ViewViewById(name){	
 	var data = {
-		"name", name,	
+		"name": name
 	};
 	$.ajax({
 	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",

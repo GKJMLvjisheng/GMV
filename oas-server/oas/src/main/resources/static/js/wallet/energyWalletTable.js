@@ -5,11 +5,14 @@ var pageNum;
 function queryParams(params){
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;
+	var searchValue = $("#energy1").val();
+	//alert(JSON.stringify(searchValue));
     return{
         //每页多少条数据
         pageSize: params.limit,
         //当前页码
         pageNum: params.offset / params.limit + 1,
+        searchValue: searchValue,
     }
 }
 	
@@ -97,8 +100,7 @@ function initEnergyWalletGrid() {
 			width:  '60px',
 			formatter: actionFormatter
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+
 		clickToSelect: false,         
 	});
 }
