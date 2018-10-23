@@ -15,11 +15,11 @@ import javax.inject.Inject
  * 2018/8/14
  */
 class UserRepository @Inject constructor() {
-    fun register(name:String, pwd:String,inviteFrom:String): Observable<BaseResp<RegisterResp>> {
-        return RetrofitFactory.instance.create(UserApi::class.java).register(RegisterReq(name, pwd,inviteFrom))
+    fun register(req:RegisterReq): Observable<BaseResp<RegisterResp>> {
+        return RetrofitFactory.instance.create(UserApi::class.java).register(req)
     }
-    fun login(name:String, pwd:String): Observable<BaseResp<UserInfo>> {
-        return RetrofitFactory.instance.create(UserApi::class.java).login(LoginReq(name, pwd))
+    fun login(name:String, pwd:String, imei: String): Observable<BaseResp<UserInfo>> {
+        return RetrofitFactory.instance.create(UserApi::class.java).login(LoginReq(name, pwd, imei))
     }
 
     fun registerConfirm(uuid:String): Observable<BaseResp<Int>> {

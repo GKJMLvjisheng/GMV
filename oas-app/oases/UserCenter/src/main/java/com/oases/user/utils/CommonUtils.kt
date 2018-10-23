@@ -8,6 +8,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.telephony.TelephonyManager
 import android.util.Log
+import com.lahm.library.EasyProtectorLib
+import com.oases.user.BuildConfig
 import org.jetbrains.anko.toast
 
 fun requestPhoneStatePermission(activity: Activity){
@@ -18,6 +20,10 @@ fun requestPhoneStatePermission(activity: Activity){
 @SuppressWarnings("deprecated")
 fun getDeviceId(activity: Activity): String {
     var ImeiNumber = ""
+    if (EasyProtectorLib.checkIsDebug(activity)
+        && EasyProtectorLib.checkIsRunningInEmulator()){
+        return ImeiNumber;
+    }
     requestPhoneStatePermission(activity)
     if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
         val telephonyManager = activity.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
@@ -29,6 +35,7 @@ fun getDeviceId(activity: Activity): String {
             }
         }
         else {
+            @SuppressWarnings("deprecated")
             ImeiNumber = telephonyManager.getDeviceId()
         }
     }
