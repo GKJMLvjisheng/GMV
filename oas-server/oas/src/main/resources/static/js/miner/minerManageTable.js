@@ -34,7 +34,7 @@ function initMinerGrid(data) {
 			align: 'center',
 			valign: 'middle', 
 			width:  '60px', 
-			visible: true,
+			visible: false,
 
 			} ,{
 
@@ -129,8 +129,8 @@ function actionFormatter1(value, row, index) {
     var minerCode = value;
     var result = "";
 
-    result += "<a href='javascript:;' onclick=\"up('" + minerCode + "')\">上移 </a>";
-    result += "<a href='javascript:;' onclick=\"down('" + minerCode + "')\">下移</a>";
+    result += "<a href='javascript:;' title='上移' class='btn btn-xs blue' onclick=\"up('" + minerCode + "')\"><span class='glyphicon glyphicon-upload' style='font-size:15px;'></span> </a>";
+    result += "<a href='javascript:;' title='下移' class='btn btn-xs blue' onclick=\"down('" + minerCode + "')\"><span class='glyphicon glyphicon-download' style='font-size:15px;'></span></a>";
 
     return result;
 }
