@@ -10,8 +10,9 @@ import com.cascv.oas.server.energy.vo.EnergyWalletTradeRecordInfo;;
 public interface EnergyWalletTradeRecordMapper {
 	
 	List<EnergyWalletTradeRecordInfo> selectAllTradeRecord(@Param("offset") Integer offset, @Param("limit") Integer limit);
-	List<EnergyWalletTradeRecordInfo> selectAllTradeRecordBySearchValue(@Param("offset") Integer offset, @Param("limit") Integer limit,@Param("searchValue") String searchValue);
 	Integer countByEnergyWalletTradeRecord();
+	List<EnergyWalletTradeRecordInfo> selectAllTradeRecordBySearchValue(@Param("offset") Integer offset, @Param("limit") Integer limit,@Param("searchValue") String searchValue);
+	Integer countByEnergyWalletTradeRecordBySearchValue(@Param("searchValue") String searchValue);
 	
 	List<EnergyWalletBalanceRecordInfo> selectAllEnergyWalletBalanceRecord(@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer countByEnergyWalletBalanceRecord();

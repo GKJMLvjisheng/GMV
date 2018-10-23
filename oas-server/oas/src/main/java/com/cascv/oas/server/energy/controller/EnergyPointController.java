@@ -477,7 +477,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 		log.info("newCreated={}",created);
 	  }
   	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
- 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
+ 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecordBySearchValue(searchValue);
  	 	energyWalletTradeRecordInfo.setTotal(count);
 	  	energyWalletTradeRecordInfo.setAsc("desc");
 	  	energyWalletTradeRecordInfo.setOffset(offset);

@@ -42,6 +42,16 @@ where
 	  etr.user_uuid=u.uuid;
 </select>
 
+ <select id="countByEnergyWalletTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	  count(*) 
+from 
+	  energy_trade_record etr,user_info u
+where
+	  etr.user_uuid=u.uuid and
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created) like concat('%',#{searchValue},'%');
+</select>
+
 <resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">
     <result column="name" property="name"/>
 	<result column="point" property="point"/>
