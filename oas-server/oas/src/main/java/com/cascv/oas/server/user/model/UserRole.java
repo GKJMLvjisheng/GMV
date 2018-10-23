@@ -12,6 +12,7 @@ import lombok.Setter;
 public class UserRole implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Setter @Getter private String uuid;
+	@Setter @Getter private String name;
 	@Setter @Getter private Integer roleId;
 	@Setter @Getter private Integer userRoleId;
 	@Setter @Getter private Integer rolePriority;

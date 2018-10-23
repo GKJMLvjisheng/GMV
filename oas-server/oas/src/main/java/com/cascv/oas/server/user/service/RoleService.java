@@ -36,6 +36,7 @@ public class RoleService {
        return roles;
     }  
     
+    //更新用户的角色
     public void updateUerRoles(String uuid,Integer roleId){
         UserRole userRole=new UserRole();
         Set<String> roles=this.getRolesByUserUuid(uuid);

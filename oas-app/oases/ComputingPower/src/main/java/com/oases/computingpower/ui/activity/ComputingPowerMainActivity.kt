@@ -281,4 +281,9 @@ class ComputingPowerMainActivity :
         startActivity<ComputingPowerMainActivity>()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.inquireCurrentPeriodPoints()
+    }
 }

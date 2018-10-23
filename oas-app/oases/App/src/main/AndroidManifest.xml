@@ -15,8 +15,8 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
 
     <application
@@ -32,7 +32,8 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -48,23 +49,30 @@
         <activity
             android:name=".ui.activity.ExchangePointsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.ExchangeDetailActivity"
+        <activity
+            android:name=".ui.activity.ExchangeDetailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.RedrawOasActivity"
+        <activity
+            android:name=".ui.activity.RedrawOasActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.WalletOutActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.WalletInActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.ExchangeCoinActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.ExchangeOutActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.ExchangeInActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.OasExchangeToOnlineActivity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".ui.activity.WalletOutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.WalletInActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ExchangeCoinActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ExchangeOutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ExchangeInActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.OasExchangeToOnlineActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

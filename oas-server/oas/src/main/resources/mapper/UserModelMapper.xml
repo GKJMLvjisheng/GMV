@@ -288,6 +288,8 @@
     <result column="email" property="email"/>
     <result column="IMEI" property="IMEI"/>
     <result column="created" property="created"/>
+     <result column="status" property="status"/>
+     <result column="roleId" property="roleId"/>
   </resultMap>
   
   <select id="selectUsersByPage" resultMap="userResultMap">
@@ -300,7 +302,10 @@
 	    mobile,
 	    email,
 	    IMEI,
-		U.created as created from user_info U 
+	    status,
+		U.created as created,
+		UR.role_id as roleId
+		from user_info U 
 		join user_role UR on U.uuid = UR.uuid 
 		where UR.role_id=#{roleId}
 		order by U.created desc 
@@ -309,5 +314,13 @@
   <select id="countUsers" resultType="java.lang.Integer">
   	select count(*) from user_role where role_id = #{roleId};
   </select>
+  
+  
+  <update id="updateUserStatus" parameterType="com.cascv.oas.server.user.wrapper.UserStatus">
+	update user_info set
+	status = #{status}
+	where name = #{name}
+  </update>
+  
 </mapper>
 

@@ -48,6 +48,7 @@ dependencies {
     api project(':Provider')
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v4:27.1.1'
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation 'com.github.yuzhiqiang1993:zxing:2.1.8' //二维码
     kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"

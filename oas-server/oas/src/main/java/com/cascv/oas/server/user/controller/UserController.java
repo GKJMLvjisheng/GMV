@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
-import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
@@ -46,7 +46,6 @@ import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
-import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
@@ -68,6 +67,7 @@ import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
+import com.cascv.oas.server.user.wrapper.UserStatus;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
@@ -111,14 +111,12 @@ public class UserController extends BaseShiroController{
   private UserModelMapper userModelMapper;
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
-  
-  
+   
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
   String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
   String vcode="";
-  
-    
+     
 	@ApiOperation(value="Login", notes="")
 	//@RequiresRoles("admin")
 	@PostMapping(value="/login")
@@ -142,35 +140,50 @@ public class UserController extends BaseShiroController{
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
           userModel=ShiroUtils.getUser();
           userModel.setProfile(fullLink);         
-          //userModel.setIMEI(loginVo.getIMEI());
           ShiroUtils.setUser(userModel);
           
           /**
            * 判断IMEI是否相匹配
            */
-          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
-          String IMEINew=loginVo.getIMEI();
-          String uuid=ShiroUtils.getUser().getUuid();
-          Set<String> roles=roleService.getRolesByUserUuid(uuid);
-          //IMEIModel imeiModel=new IMEIModel();
-          
-          log.info("roles={}",roles);
-          //判断是否是移动端登录
-         /** if(userAgent.indexOf("android")!=-1) {
-	          if(IMEIOri==null){
-	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-	        	   userModelMapper.updateIMEI(userModel);
-	        	   log.info("this is android!");
-	               //ShiroUtils.setUser(userModel);
-	          }
-	          else if(!IMEIOri.equals(IMEINew))
-	        	   throw new AuthenticationException();         	  
-          }
-          //普通用户无法在web端登录
-          else if(!roles.contains("系统账号"))
-        	       throw new AuthenticationException();    
-         **/
-          
+//          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+//          String IMEINew=loginVo.getIMEI();
+//          String uuid=ShiroUtils.getUser().getUuid();
+//          Set<String> roles=roleService.getRolesByUserUuid(uuid);
+//          List<String>  roleList =new ArrayList<>(roles);
+//          log.info("roles={}",roles);
+//          
+//         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
+//         if(status==0)
+//        	 throw new AuthenticationException();
+//         //判断是否是移动端登录
+//         if(userAgent.indexOf("android")!=-1){
+//        	 log.info("this is android!");
+//        	 log.info(roleList.get(0));
+//        	 switch(roleList.get(0)){
+//	        	 case "系统账号":
+//	        		 throw new AuthenticationException();
+//	        	 case "正常账号":
+//	        		 if(IMEIOri==null) {
+//	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+//	  	        	   userModelMapper.updateIMEI(userModel);
+//	  	        	   }
+//	        		 else if(!IMEIOri.equals(IMEINew))
+//	  	        	   throw new AuthenticationException();
+//	        	     break;
+//	        	 case "测试账号":
+//		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+//		        	   userModelMapper.updateIMEI(userModel);
+//	        	     break;
+//	        	 default:
+//	        		 log.info("default");
+//	        		 break;
+//        	 }
+//         } 
+//         
+//          //普通用户无法在web端登录
+//          else if(!roles.contains("系统账号"))
+//        	       throw new AuthenticationException();    
+                 
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -196,7 +209,7 @@ public class UserController extends BaseShiroController{
 		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		userWalletService.create(uuid);
 		energyPointService.create(uuid);
-		//给用户赋予默认角色（普通用户roleId为2)
+		//给用户赋予默认角色(正常账号roleId为2)
 		
 		  UserRole userRole=new UserRole();
 		  userRole.setUuid(uuid);
@@ -1234,8 +1247,8 @@ public class UserController extends BaseShiroController{
 		userModelMapper.updateIMEI(userNeWModel);
 		
 		//删除旧角色,添加新角色
-		String uuid =userService.findUserByName(imeiModel.getName()).getUuid();
-		roleService.updateUerRoles(uuid,imeiModel.getRoleId());
+//		String uuid =userService.findUserByName(imeiModel.getName()).getUuid();
+//		roleService.updateUerRoles(uuid,imeiModel.getRoleId());
 		
 		return new ResponseEntity.Builder<Map<String,Object>>()
 		  	      .setData(info)
@@ -1282,5 +1295,45 @@ public class UserController extends BaseShiroController{
 	                .setData(pageUserDetail)
 	                .setErrorCode(ErrorCode.SUCCESS)
 	                .build();
+	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param name,roleId
+	 * @return 
+	 * @throws 如果IMEI为空,则视为重置
+	 */
+	@PostMapping(value="/updateUserRole")
+    @ResponseBody
+    @WriteLog(value="updateUserRole")
+    public ResponseEntity<?> updateUserRole(@RequestBody UserRole userRole) {
+		Map<String,Object> info=new HashMap<>(); 	
+		info.put("state",true);		
+		//删除旧角色,添加新角色
+		String uuid =userService.findUserByName(userRole.getName()).getUuid();
+		roleService.updateUerRoles(uuid,userRole.getRoleId());		
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		  	      .setData(info)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param name,status
+	 * @return 
+	 * @throws 如果IMEI为空,则视为重置
+	 */
+	@PostMapping(value="/updateUserStatus")
+    @ResponseBody
+    @WriteLog(value="updateUserStatus")
+    public ResponseEntity<?> updateUserStatus(@RequestBody UserStatus userStatus) {
+		Map<String,Object> info=new HashMap<>(); 	
+		info.put("state",true);	
+		userModelMapper.updateUserStatus(userStatus.getStatus(), userStatus.getName());
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		  	      .setData(info)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
 	}
 }
