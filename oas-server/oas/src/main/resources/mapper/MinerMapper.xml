@@ -9,30 +9,31 @@
 	  	<result column="miner_grade" property="minerGrade"/>
 	  	<result column="miner_power" property="minerPower"/>
 	  	<result column="miner_period" property="minerPeriod"/>
+	  	<result column="order_num" property="orderNum"/>
 	  	<result column="miner_purchase_status" property="minerPurchaseStatus"/>
 	  	<result column="created" property="created"/>
 	  	<result column="updated" property="updated"/>
     </resultMap>
         
     <sql id="miner_List">
-  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_power, miner_period, created, updated
+  		miner_code, miner_name, miner_grade, miner_description, miner_price, miner_power, miner_period, order_num, created, updated
     </sql>
     
     <insert id="insertMiner" parameterType="com.cascv.oas.server.miner.model.MinerModel">
         insert into miner_source
         <trim prefix="(" suffix=")" suffixOverrides=",">
-	        miner_code, miner_name, miner_grade,
+	        miner_code, miner_name, miner_grade, 
 	        <if test="minerDescription != null">
 	          miner_description,
 	        </if>
-	         miner_price, miner_power, miner_period, created, updated
+	         miner_price, miner_power, miner_period, order_num, created, updated
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
 	        #{minerCode}, #{minerName}, #{minerGrade},
 	        <if test="minerDescription != null">
 	           #{minerDescription},
 	        </if>
-	        #{minerPrice}, #{minerPower}, #{minerPeriod}, #{created}, #{updated}
+	        #{minerPrice}, #{minerPower}, #{minerPeriod}, #{orderNum}, #{created}, #{updated}
 	    </trim>            
     </insert>
     
@@ -40,18 +41,22 @@
         select
          <include refid="miner_List" />
          from miner_source 
-         order by updated desc limit #{offset}, #{limit}
+         order by order_num asc limit #{offset}, #{limit}
     </select>
     
     <select id="selectAllWebMiner" resultMap="MinerMap">
         select
          <include refid="miner_List" />
          from miner_source 
-         order by updated desc
+         order by order_num asc
     </select>
     
     <select id="inquireByMinerName" resultMap="MinerMap">
         select * from miner_source where miner_name = #{minerName}
+    </select>
+    
+    <select id="inquireByOrderNum" resultMap="MinerMap">
+        select * from miner_source where order_num = #{orderNum}
     </select>
     
     <select id="inquireByUuid" resultMap="MinerMap">
@@ -83,6 +88,14 @@
           miner_code = #{minerCode}
     </update>
     
+    <update id="updateOrderNum" parameterType="com.cascv.oas.server.miner.model.MinerModel">
+        update miner_source
+        set
+          order_num = #{orderNum}
+        where
+          miner_code = #{minerCode}
+    </update>
+    
     <delete id="deleteMiner">
         delete from miner_source where miner_code=#{minerCode}
     </delete>    
@@ -105,6 +118,7 @@
 	  	<result column="power_reward_status" property="powerRewardStatus"/>
 	  	<result column="reward_energy_ball_uuid" property="rewardEnergyBallUuid"/>
 	  	<result column="finish_reward_number" property="finishRewardNumber"/>
+	  	<result column="remain_time_oas" property="remainTimeOas"/>
 	  	<result column="finish_reward_updated" property="finishRewardUpdated"/>
 	  	<result column="created" property="created"/>
     </resultMap>
@@ -112,7 +126,7 @@
     <sql id="purchase_record_List">
   		uuid, user_uuid, energy_ball_uuid, miner_code, miner_name, miner_grade, 
   		miner_description, miner_price, miner_num, price_sum,miner_power,miner_period,miner_status, 
-  		miner_purchase_status,power_reward_status,reward_energy_ball_uuid,finish_reward_number,finish_reward_updated,created
+  		miner_purchase_status,power_reward_status,reward_energy_ball_uuid,finish_reward_number,remain_time_oas,finish_reward_updated,created
     </sql>
     
     <insert id="insertPurchaseRecord" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
@@ -131,7 +145,9 @@
 	          <if test="rewardEnergyBallUuid != null">
 	          reward_energy_ball_uuid,
 	          </if>
-	        
+	          <if test="remainTimeOas != null">
+	          remain_time_oas,
+	          </if>
 	         finish_reward_number, miner_purchase_status,power_reward_status,created
 	    </trim>
 	    <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -146,6 +162,9 @@
 	        #{minerPeriod}, #{minerStatus},
 	        <if test="rewardEnergyBallUuid != null">
 	           #{rewardEnergyBallUuid},
+	        </if>
+	        <if test="remainTimeOas != null">
+	           #{remainTimeOas},
 	        </if>
 	        #{finishRewardNumber},#{minerPurchaseStatus},#{powerRewardStatus},#{created}
 	    </trim>            
@@ -201,6 +220,18 @@
         where uuid = #{uuid}
     </update>
     
+     <update id="updateByFinishRewardNumber" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+          set finish_reward_number = #{finishRewardNumber} 
+        where uuid = #{uuid}
+    </update>
+    
+        <update id="updateByFinishRewardUpdated" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+          set finish_reward_updated = #{finishRewardUpdated},remain_time_oas=#{remainTimeOas} 
+        where uuid = #{uuid}
+    </update>
+    
         <update id="updateByPowerRewardStatusToDecrease" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
      update purchase_record
           set power_reward_status = 3 
@@ -250,6 +281,7 @@
 		<id column="uuid" property="uuid" />
 		<result column="parameter_value" property="parameterValue"/>
 	  	<result column="parameter_name" property="parameterName"/>
+	  	<result column="period" property="period"/>
 	  	<result column="created" property="created"/>
 	  	<result column="updated" property="updated"/>
     </resultMap>
@@ -259,9 +291,20 @@
 	      SELECT LAST_INSERT_ID()
 	    </selectKey>
         insert into system_parameter 
-          (parameter_value, parameter_name, created, updated)
-        values
-          (#{parameterValue}, #{parameterName}, #{created}, #{updated})           
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+	        parameter_value, parameter_name,
+	        <if test="period != null">
+	          period,
+	        </if>
+	        created, updated
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides=",">
+	        #{parameterValue}, #{parameterName},
+	         <if test="period != null">
+	           #{period},
+	        </if>
+	        #{created}, #{updated}
+	    </trim>      
     </insert>
     
     <delete id="deleteSystemParameterByUuid">

@@ -40,4 +40,5 @@ public class UserModel implements Serializable {
 	 * Date:2018.09.04
 	 */
 	@Getter @Setter private String profile;
+	@Getter @Setter private String IMEI;
 }

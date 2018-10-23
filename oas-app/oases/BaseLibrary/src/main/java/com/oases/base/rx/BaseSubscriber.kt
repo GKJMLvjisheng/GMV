@@ -2,6 +2,7 @@ package com.oases.base.rx
 
 import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
+import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.android.arouter.launcher.ARouter.printStackTrace
 import com.oases.base.presenter.view.BaseView
 import io.reactivex.Observer
@@ -28,7 +29,8 @@ open class BaseSubscriber<T>(val baseView: BaseView) : Observer<T> {
         baseView.hideLoading()
         if (e is BaseException) {
             if (e.code == 10001){
-                //finish(), todo
+                ARouter.getInstance().build("/userCenter/login").navigation()
+                return
             }
             baseView.onError(e.msg)
         } else if (e is DataNullException){

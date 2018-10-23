@@ -11,5 +11,6 @@ public class AddSystemParameter implements Serializable {
 	
 	@Getter @Setter private String parameterName;
 	@Getter @Setter private BigDecimal parameterValue;
+	@Getter @Setter private String period;
 
 }

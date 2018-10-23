@@ -71,6 +71,7 @@ public class MinerController {
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
 		systemParameterModel.setParameterName(systemParameterModelRequest.getParameterName());
 		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
+		systemParameterModel.setPeriod(systemParameterModelRequest.getPeriod());
 		systemParameterModel.setCreated(now);
 		systemParameterModel.setUpdated(now);
 		minerMapper.insertSystemParameter(systemParameterModel);
@@ -200,7 +201,7 @@ public class MinerController {
 		Integer count = minerMapper.countNum();
 		PageDomain<MinerModel> minerModelDetail = new PageDomain<>();
 		minerModelDetail.setTotal(count);
-		minerModelDetail.setAsc("desc");
+		minerModelDetail.setAsc("asc");
 		minerModelDetail.setOffset(offset);
 		minerModelDetail.setPageNum(pageNum);
 		minerModelDetail.setPageSize(pageSize);
@@ -226,6 +227,7 @@ public class MinerController {
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPower(minerRequest.getMinerPower());
+		minerModel.setOrderNum(minerRequest.getOrderNum());
 		minerModel.setCreated(now);
 		minerModel.setUpdated(now);
 		minerMapper.insertMiner(minerModel);
@@ -292,7 +294,8 @@ public class MinerController {
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);
 			//增加在线钱包的消费记录
-			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, priceSum.toString(), "");
+			log.info("commet={}", minerNum+"台"+minerName);
+			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "");
 			//增加算力球
 			minerService.addMinerPowerBall(userUuid, powerSum);
 			//增加算力提升记录(有效期)
@@ -312,6 +315,60 @@ public class MinerController {
 					.build();
 		}
 		
+	}
+	
+	//上移(自己的orderNum减1，换位置的对方加1)
+	@PostMapping(value = "/upMiner")  
+	@ResponseBody
+	public ResponseEntity<?> upMiner(@RequestBody MinerDelete minerDelete){
+		String minerCode = minerDelete.getMinerCode();
+		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
+		if(orderNum == 1) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.THE_FIRST_ONE)
+					.build();
+		}
+		Integer newOrderNum = orderNum - 1;
+		log.info("newOrderNum={}",newOrderNum);
+		String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
+		orderNum = orderNum - 1;
+		newOrderNum = newOrderNum + 1;
+		log.info("orderNum={}",orderNum);
+		log.info("newOrderNum={}",newOrderNum);
+		minerMapper.updateOrderNum(minerCode, orderNum);
+		minerMapper.updateOrderNum(newMinerCode, newOrderNum);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
+	//下移(自己的orderNum加1，换位置的对方减1)
+	@PostMapping(value = "/downMiner")  
+	@ResponseBody
+	public ResponseEntity<?> downMiner(@RequestBody MinerDelete minerDelete){
+		String minerCode = minerDelete.getMinerCode();
+		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
+		if(orderNum == minerMapper.selectAllWebMiner().size()) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.THE_LAST_ONE)
+					.build();
+		}
+		Integer newOrderNum = orderNum + 1;
+		log.info("newOrderNum={}",newOrderNum);
+		String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
+		orderNum = orderNum + 1;
+		newOrderNum = newOrderNum - 1;
+		log.info("orderNum={}",orderNum);
+		log.info("newOrderNum={}",newOrderNum);
+		minerMapper.updateOrderNum(minerCode, orderNum);
+		minerMapper.updateOrderNum(newMinerCode, newOrderNum);
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
 	}
 	
 	//查询用户矿机购买记录，分页

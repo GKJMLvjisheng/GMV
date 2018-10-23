@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minerManager</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script> 
+	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	  
+    
+   <style>
+	.form-group span.required {
+	color: red;
+	font-size: 150%;
+	} 
+	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+	}
+	.content-tabs {
+    border-bottom: solid 1px #d8dbde;
+	}	
+	.col-sm-2 {
+    width: 9.33333333%;
+	padding-left: 5px;
+	margin-top:20px;
+   }
+   .input-group	{ 
+    vertical-align:middle;
+	margin-top:11px;
+	}
+	
+    </style>
+</head>
+
+<body>
+
+	<div class="row content-tabs">
+		<nav class="page-tabs menuTabs"> 
+
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">正常账号</a>
+			</div>
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">测试账号</a>
+			</div>
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display4()"id="btn4">系统账号</a>
+			</div>			
+				
+		</nav>	
+	</div> 
+
+	<div class = "container" id="page1">
+			<table id="normalGrid"></table>
+	</div> 
+	
+
+	<div class = "container" style="display:none" id="page3">		 		  
+		<table id="testGrid"></table>
+	</div>
+
+	<div class = "container" style="display:none" id="page4">			
+		<table id="systemGrid"></table>
+	</div>
+
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	
+	<!-- 配置IMEI -->
+    <div class="modal fade" id="IMEIModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">确认信息</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="IMEIForm" action="/IMEI" method="post" class="form-horizontal">						
+						<input  style="display:none" type="hidden" name="name" id="name">
+						<input  style="display:none" type="hidden" name="status" id="status">
+						<input  style="display:none" type="hidden" name="msg" id="msg">
+<!-- 							<input   name="uuid" id="uuid"> -->
+<!-- 							<input   name="status" id="status"> -->
+						<div class="form-group">
+							<label for="confirm" id="confirm" style="font-size:16px;" class="col-sm-8 control-label">确认重置IMEI吗？</label>													
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="Confirm()"><span aria-hidden="true">确认</span></button>
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="refresh()"><span aria-hidden="true">取消</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	 
+	
+	<!-- 查看信息的模态框 -->
+    <div class="modal fade" id="queryModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">详细信息</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">KYC认证状态：</label>
+							<div class="col-sm-7">
+								<input name="verifyStatus" class="form-control" id="verifyStatus" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">姓名：</label>
+							<div class="col-sm-7">
+								<input name="userIdentityName" class="form-control" id="userIdentityName" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">身份证号：</label>
+							<div class="col-sm-7">
+								<input name="userIdentityNumber" class="form-control" id="userIdentityNumber" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">批注：</label>
+							<div class="col-sm-7">
+								<input name="remark" class="form-control" id="remark" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">IMEI：</label>
+							<div class="col-sm-7">
+								<input name="IMEI" class="form-control" id="IMEI" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+																									
+					</form>
+				</div>					
+			</div>					
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/user/userAccount.js}"></script>
+	<script type="text/javascript" th:src="@{/js/user/userAccountTable.js}"></script>			
+</body>
+</html>
+

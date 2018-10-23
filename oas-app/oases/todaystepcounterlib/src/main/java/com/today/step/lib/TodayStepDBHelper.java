@@ -36,7 +36,7 @@ class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBHelper{
             + PRIMARY_KEY + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + TODAY + " TEXT, "
             + DATE + " long, "
-            + STEP + " long);";
+            + STEP + " long) ";
     private static final String SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     private static final String SQL_QUERY_ALL = "SELECT * FROM " + TABLE_NAME;
     private static final String SQL_QUERY_STEP = "SELECT * FROM " + TABLE_NAME + " WHERE " + TODAY + " = ? AND " + STEP + " = ?";
@@ -89,16 +89,15 @@ class TodayStepDBHelper extends SQLiteOpenHelper implements ITodayStepDBHelper{
         contentValues.put(STEP, todayStepData.getStep());
         getWritableDatabase().insert(TABLE_NAME, null, contentValues);
     }
-/*
-  //Todo we can only keep one step for one day
+
     @Override
-    public synchronized void update(TodayStepData todayStepData){
+    public synchronized int update(TodayStepData todayStepData){
         ContentValues contentValues = new ContentValues();
         contentValues.put(TODAY, todayStepData.getToday());
         contentValues.put(DATE, todayStepData.getDate());
         contentValues.put(STEP, todayStepData.getStep());
-        getWritableDatabase().insert(TABLE_NAME, null, contentValues);
-    }*/
+        return getWritableDatabase().update(TABLE_NAME, contentValues, TODAY + "=?", new String[]{todayStepData.getToday()});
+    }
 
     @Override
     public synchronized List<TodayStepData> getQueryAll() {

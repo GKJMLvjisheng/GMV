@@ -52,6 +52,7 @@ import com.oases.ui.adapter.ExchangeItemRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_wallet_on_line.*
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
+import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -309,7 +310,7 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         mCurrentPoints.text = balance.availableBalance.toString()
         mOngoingTransaction.text = balance.ongoingBalance.toString()
         //AppPrefsUtils.putString(BaseConstant.ON_GOING_TRANSACTION,balance.ongoingBalance.toString())
-        mOasValue.text = "≈ ¥ " + balance.availableBalanceValue.toString()
+        mOasValue.text = "≈ ¥ " + (balance.availableBalanceValue.toBigDecimal()).setScale(2,BigDecimal.ROUND_HALF_UP)
     }
 
     private fun checkAndStartDetialActivity()

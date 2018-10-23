@@ -1,18 +1,7 @@
-if (isUserModule.toBoolean()) {
-    apply plugin: 'com.android.library'
-} else {
-    apply plugin: 'com.android.application'
-}
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-
-kapt {
-    arguments {
-        arg("moduleName", project.getName())
-    }
-}
 
 android {
     compileSdkVersion compile_sdk_version
@@ -33,12 +22,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    kapt {
-        generateStubs = true
-        arguments {
-            arg("moduleName", project.getName())
-        }
-    }
+
     sourceSets {
         main {
             if (isUserModule.toBoolean()) {
@@ -46,6 +30,12 @@ android {
             } else {
                 manifest.srcFile 'src/main/debug/AndroidManifest.xml'
             }
+        }
+    }
+    kapt {
+        generateStubs = true
+        arguments {
+            arg("moduleName", project.getName())
         }
     }
 }
@@ -61,4 +51,5 @@ dependencies {
 }
 repositories {
     mavenCentral()
+    google()
 }

@@ -36,8 +36,10 @@ import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserCoinResp;
 import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
+import com.cascv.oas.server.blockchain.wrapper.BackupEthWallet;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletStatus;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
@@ -45,6 +47,7 @@ import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
 import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
+import com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
@@ -68,21 +71,6 @@ public class EthWalletController extends BaseShiroController {
   @Autowired
   private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
   
-/*  @PostMapping(value="/selectContractSymbol")
-  @ResponseBody
-  @Transactional
-  public ResponseEntity<?> selectContractSymbol(@RequestBody SelectContractSymbolName selectContractSymbolName){
-//	  UserModel userModel = ShiroUtils.getUser();
-//	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(userModel.getName());
-	  String name = selectContractSymbolName.getName();
-	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(name);
-	return new ResponseEntity.Builder<List<ContractSymbol>>()
-			.setData(conractSymbolList)
-			.setErrorCode(ErrorCode.SUCCESS)
-			.build();
-	  
-  }*/
-
   @PostMapping(value="/transfer")
   @RequiresPermissions("交易钱包-转账")
   @ResponseBody
@@ -306,9 +294,22 @@ public class EthWalletController extends BaseShiroController {
   @PostMapping(value="/inqureEthWalletTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureEthWalletTradeRecord(){
-	  List<EthWalletTradeRecordInfo> ethWalletTradeRecords=ethWalletTradeRecordMapper.selectAllTradeRecord();
-	  for (EthWalletTradeRecordInfo ethWalletTradeRecordInfo : ethWalletTradeRecords) {
+  public ResponseEntity<?> inqureEthWalletTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
+	  
+  	Integer pageNum = pageInfo.getPageNum();
+    Integer pageSize = pageInfo.getPageSize();
+    Integer limit = pageSize;
+    Integer offset;
+
+    if (pageSize == 0) {
+      limit = 10;
+    }
+    if (pageNum != null && pageNum > 0)
+    	offset = (pageNum - 1) * limit;
+    else 
+    	offset = 0;
+	  List<EthWalletTradeRecordInfo> ethWalletTradeRecordList=ethWalletTradeRecordMapper.selectAllTradeRecord(offset, limit);
+	  for (EthWalletTradeRecordInfo ethWalletTradeRecordInfo : ethWalletTradeRecordList) {
 			String srcFormater="yyyy-MM-dd HH:mm:ss";
 			String dstFormater="yyyy-MM-dd HH:mm:ss";
 			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
@@ -316,8 +317,16 @@ public class EthWalletController extends BaseShiroController {
 			ethWalletTradeRecordInfo.setCreated(created);
 			log.info("newCreated={}",created);
 		  }
-		return new ResponseEntity.Builder<List<EthWalletTradeRecordInfo>>()
-		        .setData(ethWalletTradeRecords)
+	  PageDomain<EthWalletTradeRecordInfo> ethWalletTradeRecordInfo = new PageDomain<>();
+	  Integer count=ethWalletTradeRecordMapper.countByTradeRecord();
+		  ethWalletTradeRecordInfo.setTotal(count);
+		  ethWalletTradeRecordInfo.setAsc("desc");
+		  ethWalletTradeRecordInfo.setOffset(offset);
+		  ethWalletTradeRecordInfo.setPageNum(pageNum);
+		  ethWalletTradeRecordInfo.setPageSize(pageSize);
+		  ethWalletTradeRecordInfo.setRows(ethWalletTradeRecordList);
+		return new ResponseEntity.Builder<PageDomain<EthWalletTradeRecordInfo>>()
+		        .setData(ethWalletTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
@@ -330,8 +339,20 @@ public class EthWalletController extends BaseShiroController {
   @ResponseBody
   @Transactional
 
-  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
-	  
+  public ResponseEntity<?> inqureEthWalletInTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
+  	
+	Integer pageNum = pageInfo.getPageNum();
+    Integer pageSize = pageInfo.getPageSize();
+    Integer limit = pageSize;
+    Integer offset;
+
+    if (pageSize == 0) {
+      limit = 10;
+    }
+    if (pageNum != null && pageNum > 0)
+    	offset = (pageNum - 1) * limit;
+    else 
+    	offset = 0;
 	  //获取当月第一天
 	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	  Calendar c = Calendar.getInstance();
@@ -345,23 +366,24 @@ public class EthWalletController extends BaseShiroController {
       String nowDate = format.format(d);
       log.info("nowDate:{}",nowDate);
       
-	  String startTime=timeLimitInfo.getStartTime();
-	  String endTime=timeLimitInfo.getEndTime();
-	  
-	  if(startTime=="") {
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
+	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
-	  }else {
-		  startTime=timeLimitInfo.getStartTime();
-	  }
-	  if(endTime=="") {
+	  if(endTime=="")
 		  endTime=nowDate;
-	  }else {
-		  endTime=timeLimitInfo.getEndTime();
-	  }
 	  
-	  List<WalletTotalTradeRecordInfo> ethWalletInTotalTradeRecords=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
-		        .setData(ethWalletInTotalTradeRecords)
+	  List<WalletTotalTradeRecordInfo> ethWalletInTotalTradeRecordList=ethWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime,offset, limit);
+	  PageDomain<WalletTotalTradeRecordInfo> walletInTotalTradeRecordInfo = new PageDomain<>();
+	  Integer count=ethWalletTradeRecordMapper.countByInTotalTradeRecord(startTime, endTime);
+	  walletInTotalTradeRecordInfo.setTotal(count);
+	  walletInTotalTradeRecordInfo.setAsc("desc");
+	  walletInTotalTradeRecordInfo.setOffset(offset);
+	  walletInTotalTradeRecordInfo.setPageNum(pageNum);
+	  walletInTotalTradeRecordInfo.setPageSize(pageSize);
+	  walletInTotalTradeRecordInfo.setRows(ethWalletInTotalTradeRecordList);
+		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+		        .setData(walletInTotalTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
@@ -373,8 +395,20 @@ public class EthWalletController extends BaseShiroController {
   @ResponseBody
   @Transactional
 
-  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
-	  
+  public ResponseEntity<?> inqureEthWalletOutTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
+  	
+	Integer pageNum = pageInfo.getPageNum();
+    Integer pageSize = pageInfo.getPageSize();
+    Integer limit = pageSize;
+    Integer offset;
+
+    if (pageSize == 0) {
+      limit = 10;
+    }
+    if (pageNum != null && pageNum > 0)
+    	offset = (pageNum - 1) * limit;
+    else 
+    	offset = 0;
 	  //获取当月第一天
 	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	  Calendar c = Calendar.getInstance();
@@ -387,24 +421,25 @@ public class EthWalletController extends BaseShiroController {
       Date d = new Date();
       String nowDate = format.format(d);
       log.info("nowDate={}",nowDate);
-      
-	  String startTime=timeLimitInfo.getStartTime();
-	  String endTime=timeLimitInfo.getEndTime();
 	  
-	  if(startTime=="") {
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
+	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
-	  }else {
-		  startTime=timeLimitInfo.getStartTime();
-	  }
-	  if(endTime=="") {
+	  if(endTime=="")
 		  endTime=nowDate;
-	  }else {
-		  endTime=timeLimitInfo.getEndTime();
-	  }
 	  
-	  List<WalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecords=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
-		        .setData(ethWalletOutTotalTradeRecords)
+	  List<WalletTotalTradeRecordInfo> ethWalletOutTotalTradeRecordList=ethWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime,offset, limit);
+	  PageDomain<WalletTotalTradeRecordInfo> walletOutTotalTradeRecordInfo = new PageDomain<>();
+	  Integer count=ethWalletTradeRecordMapper.countByOutTotalTradeRecord(startTime, endTime);
+	  walletOutTotalTradeRecordInfo.setTotal(count);
+	  walletOutTotalTradeRecordInfo.setAsc("desc");
+	  walletOutTotalTradeRecordInfo.setOffset(offset);
+	  walletOutTotalTradeRecordInfo.setPageNum(pageNum);
+	  walletOutTotalTradeRecordInfo.setPageSize(pageSize);
+	  walletOutTotalTradeRecordInfo.setRows(ethWalletOutTotalTradeRecordList);
+		return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+		        .setData(walletOutTotalTradeRecordInfo)
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
   }
@@ -444,8 +479,43 @@ public class EthWalletController extends BaseShiroController {
 	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.reverseWithdraw(info,user)).build();
   }
   
+  
+  @PostMapping(value="/backup")
+  @ResponseBody
+  public ResponseEntity<?> backupEthWallet(){
+	  BackupEthWallet ethWallet = new BackupEthWallet();
+	  UserModel user = ShiroUtils.getUser();
+	  if(user == null) {
+		  return new ResponseEntity.Builder<BackupEthWallet>()
+				  .setData(ethWallet)
+				  .setErrorCode(ErrorCode.USER_NOT_EXISTS).build();
+	  }
+	  ErrorCode errorCode = ethWalletService.backupEthWallet(user.getUuid(), ethWallet);
+	  return new ResponseEntity.Builder<BackupEthWallet>()
+			  .setData(ethWallet)
+			  .setErrorCode(errorCode)
+			  .build();
+  }
+
+  @PostMapping(value="/status")
+  @ResponseBody
+  public ResponseEntity<?> statusEthWallet(){
+    EthWalletStatus ethWalletStatus = new EthWalletStatus();
+    UserModel user = ShiroUtils.getUser();
+	  if(user == null) {
+		  return new ResponseEntity.Builder<EthWalletStatus>()
+				  .setData(ethWalletStatus)
+				  .setErrorCode(ErrorCode.USER_NOT_EXISTS).build();
+	  }
+	  ErrorCode errorCode = ethWalletService.statusEthWallet(user.getUuid(), ethWalletStatus);
+	  return new ResponseEntity.Builder<EthWalletStatus>()
+			  .setData(ethWalletStatus)
+			  .setErrorCode(errorCode)
+			  .build();
+  }
+
   /**
-      *  点击交易钱包记录查看区块链上转账记录，并标记状态
+   *  点击交易钱包记录查看区块链上转账记录，并标记状态
    * @param detail
    * @return
    */

@@ -17,7 +17,39 @@ from
 	  energy_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid
-order by etr.time_created desc;
+order by etr.time_created desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="selectAllTradeRecordBySearchValue" resultMap="EnergyWalletTradeRecordMap">
+select 
+	  u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created 
+from 
+	  energy_trade_record etr,user_info u
+where
+	  etr.user_uuid=u.uuid and 
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created) like concat('%',#{searchValue},'%')
+order by etr.time_created desc
+limit #{offset}, #{limit};
+</select>
+
+  <select id="countByEnergyWalletTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(*) 
+from 
+	  energy_trade_record etr,user_info u
+where
+	  etr.user_uuid=u.uuid;
+</select>
+
+ <select id="countByEnergyWalletTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	  count(*) 
+from 
+	  energy_trade_record etr,user_info u
+where
+	  etr.user_uuid=u.uuid and
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created) like concat('%',#{searchValue},'%');
 </select>
 
 <resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">
@@ -34,7 +66,41 @@ from
 where
 	ew.user_uuid=u.uuid
 order by ew.point desc
+limit #{offset}, #{limit};
 </select> 
+
+<select id="selectAllEnergyWalletBalanceRecordBySearchValue" resultMap="energyWalletBalanceRecordMap">
+select 
+	u.name,ew.point,ew.power
+from 	
+	energy_wallet ew,user_info u
+where
+	ew.user_uuid=u.uuid and
+	concat(u.name,ew.point,ew.power) like concat('%',#{searchValue},'%')
+order by ew.point desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="countByEnergyWalletBalanceRecord" resultType="java.lang.Integer">
+select  
+		count(*) 
+from 
+		energy_wallet ew,user_info u
+where
+		ew.user_uuid=u.uuid
+</select>
+
+<select id="countByEnergyWalletBalanceRecordBySearchValue" resultType="java.lang.Integer">
+select  
+		count(*) 
+from 
+		energy_wallet ew,user_info u
+where
+		ew.user_uuid=u.uuid and
+		concat(u.name,ew.point,ew.power) like concat('%',#{searchValue},'%')
+		
+</select> 
+
 
 <resultMap id="energyWalletPointRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletPointRecordInfo">
     <result column="name" property="name"/>
@@ -50,7 +116,40 @@ where
 	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name
 order by point desc
+limit #{offset}, #{limit};
 </select>   
+
+<select id="selectAllInTotalPointTradeRecordBySearchValue" resultMap="energyWalletPointRecordMap">
+select 
+	u.name,SUM(etr.point_change) as point
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
+group by u.name
+order by point desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="countByInTotalPointTradeRecord" resultType="java.lang.Integer">
+select 
+	count(distinct etr.user_uuid)
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+</select> 
+
+<select id="countByInTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	count(distinct etr.user_uuid)
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
+</select> 
    
 <select id="selectAllOutTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
 select 
@@ -61,6 +160,39 @@ where
 	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name
 order by point desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="selectAllOutTotalPointTradeRecordBySearchValue" resultMap="energyWalletPointRecordMap">
+select 
+	u.name,SUM(etr.point_change) as point
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
+group by u.name
+order by point desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="countByOutTotalPointTradeRecord" resultType="java.lang.Integer">
+select 
+	count(distinct etr.user_uuid)
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+</select>
+
+<select id="countByOutTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	count(distinct etr.user_uuid)
+from 	
+	energy_trade_record etr,user_info u
+where
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
 </select>
    
 </mapper>

@@ -12,6 +12,7 @@ var check8;
 $(function() {
 	//初始加载	
 	minerReady();
+		
 });
 
 function minerReady(){
@@ -128,7 +129,7 @@ function checkPeriod() {
 	//alert(JSON.stringify(minerPeriod));
 	
 	if(minerPeriod!=""){
-		if (/^[1-9]+$/.test(minerPeriod)) {
+		if (/^[1-9]\d*$/.test(minerPeriod)) {
 	    	 $("#msg_minerPeriod").html("填写矿机寿命符合要求");  //\D为非数字
 	         $("#msg_minerPeriod").css("color", "green");
 	         check4 = 1;
@@ -233,7 +234,7 @@ function EcheckPeriod() {
 	//alert(JSON.stringify(minerPeriod));
 	
 	if(minerPeriod!=""){
-		if (/^[1-9]+$/.test(minerPeriod)) {
+		if (/^[1-9]\d*$/.test(minerPeriod)) {
 	    	 $("#msg_EminerPeriod").html("填写矿机寿命符合要求");  
 	         $("#msg_EminerPeriod").css("color", "green");
 	         check8 = 1;

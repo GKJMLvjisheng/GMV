@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -34,6 +36,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
@@ -42,23 +46,28 @@ import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
+import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.service.MessageService;
+import com.cascv.oas.server.user.service.RoleService;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.wrapper.AuthCode;
+import com.cascv.oas.server.user.wrapper.IMEIModel;
 import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
+import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
@@ -87,6 +96,8 @@ public class UserController extends BaseShiroController{
 //  @Autowired
 //  private MailBean mailBean;
   @Autowired
+  private RoleService roleService;
+  @Autowired
   private EthWalletService ethWalletService;	
   @Autowired
   private UserWalletService userWalletService;
@@ -97,6 +108,8 @@ public class UserController extends BaseShiroController{
   @Autowired
   private UserRoleModelMapper userRoleModelMapper;
   @Autowired
+  private UserModelMapper userModelMapper;
+  @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
   
   
@@ -105,12 +118,17 @@ public class UserController extends BaseShiroController{
   String IDENTITY_UPLOADED =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"identityCard"+File.separator;	
   String vcode="";
   
-  
+    
 	@ApiOperation(value="Login", notes="")
+	//@RequiresRoles("admin")
 	@PostMapping(value="/login")
 	@ResponseBody
 	@WriteLog(value="Login")
-	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo) {
+	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo,HttpServletRequest request) {
+		
+		//获取请求头，来判断是来自web的请求还是移动端的请求
+		String userAgent=request.getHeader("user-agent");
+		log.info("user-agent={}",userAgent);		
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
@@ -123,8 +141,36 @@ public class UserController extends BaseShiroController{
           UserModel userModel=new UserModel();
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
           userModel=ShiroUtils.getUser();
-          userModel.setProfile(fullLink);
+          userModel.setProfile(fullLink);         
+          //userModel.setIMEI(loginVo.getIMEI());
           ShiroUtils.setUser(userModel);
+          
+          /**
+           * 判断IMEI是否相匹配
+           */
+          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+          String IMEINew=loginVo.getIMEI();
+          String uuid=ShiroUtils.getUser().getUuid();
+          Set<String> roles=roleService.getRolesByUserUuid(uuid);
+          //IMEIModel imeiModel=new IMEIModel();
+          
+          log.info("roles={}",roles);
+          //判断是否是移动端登录
+         /** if(userAgent.indexOf("android")!=-1) {
+	          if(IMEIOri==null){
+	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+	        	   userModelMapper.updateIMEI(userModel);
+	        	   log.info("this is android!");
+	               //ShiroUtils.setUser(userModel);
+	          }
+	          else if(!IMEIOri.equals(IMEINew))
+	        	   throw new AuthenticationException();         	  
+          }
+          //普通用户无法在web端登录
+          else if(!roles.contains("系统账号"))
+        	       throw new AuthenticationException();    
+         **/
+          
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -132,7 +178,7 @@ public class UserController extends BaseShiroController{
       } catch (AuthenticationException e)  {
           return new ResponseEntity.Builder<LoginResult>()
                 .setData(loginResult)
-                .setErrorCode(ErrorCode.GENERAL_ERROR).build();
+                .setErrorCode(ErrorCode.LOGIN_FAILED).build();
       }
 	}
 	
@@ -142,8 +188,8 @@ public class UserController extends BaseShiroController{
 	@ResponseBody
 	@Transactional
 	@WriteLog(value="Register")
-	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
-
+	public ResponseEntity<?> register(@RequestBody UserModel userModel){
+	  
 	  String password = userModel.getPassword();
 		RegisterResult registerResult = new RegisterResult();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
@@ -157,9 +203,10 @@ public class UserController extends BaseShiroController{
 		  userRole.setRoleId(2);
 		  String now =DateUtils.getTime();
 		  userRole.setRolePriority(1);
-		  userRole.setCreated(now);
+		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);  
 					
+		  
 		ErrorCode ret = userService.addUser(uuid, userModel);
 //		log.info("inviteCode {}", userModel.getInviteCode());
   	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
@@ -520,6 +567,7 @@ public class UserController extends BaseShiroController{
        String nameIn = userModel.getName(); 
        String passwordIn = userModel.getPassword();
        UserModel userNewModel = userService.findUserByName(nameIn); 
+       log.info("name={}",nameIn);
        String saltDb = userNewModel.getSalt();  
        String userPasswordDb = userNewModel.getPassword(); 
        String userPasswordOu = new Md5Hash(nameIn+passwordIn+saltDb).toHex().toString(); 
@@ -1165,5 +1213,74 @@ public class UserController extends BaseShiroController{
 		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
+	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param IMEI,name
+	 * @return 
+	 * @throws 如果IMEI为空,则视为重置
+	 */
+	@PostMapping(value="/updateIMEI")
+    @ResponseBody
+    @WriteLog(value="updateIMEI")
+    public ResponseEntity<?> updateIMEI(@RequestBody IMEIModel imeiModel) {
+		Map<String,Object> info=new HashMap<>(); 
+		UserModel userNeWModel=new UserModel();
+		String IMEI=imeiModel.getIMEI();
+		userNeWModel.setIMEI(IMEI);
+		userNeWModel.setName(imeiModel.getName());
+		info.put("state",true);	
+		userModelMapper.updateIMEI(userNeWModel);
+		
+		//删除旧角色,添加新角色
+		String uuid =userService.findUserByName(imeiModel.getName()).getUuid();
+		roleService.updateUerRoles(uuid,imeiModel.getRoleId());
+		
+		return new ResponseEntity.Builder<Map<String,Object>>()
+		  	      .setData(info)
+		  	      .setErrorCode(ErrorCode.SUCCESS)
+		  	      .build();
+	}		
+	
+	/**
+	 * @author lvjisheng
+	 * @param offset,limit,roleId
+	 * @category 根据角色名称查找相应的用户
+	 * @return
+	 */
+	@PostMapping(value="/selectAllUsers")
+    @ResponseBody
+    @WriteLog(value="selectAllUsers")
+    public ResponseEntity<?> selectAllUsers(@RequestBody PageDomain<Integer> pageInfo){
+	        Integer pageNum = pageInfo.getPageNum();
+	        Integer pageSize = pageInfo.getPageSize();
+	        Integer limit = pageSize;
+	        Integer offset;
+	 
+	        if (limit == null) {
+	          limit = 10;
+	        }
+	        
+	        if (pageNum != null && pageNum > 0)
+	        	offset = (pageNum - 1) * limit;
+	        else 
+	        	offset = 0;
+		    
+	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit, pageInfo.getRoleId());
+	        Integer count = userService.countUsers(pageInfo.getRoleId());			        			     
+	        
+	        PageDomain<UserDetailModel> pageUserDetail = new PageDomain<>();
+	        pageUserDetail.setTotal(count);
+	        pageUserDetail.setAsc("asc");
+	        pageUserDetail.setOffset(offset);
+	        pageUserDetail.setPageNum(pageNum);
+	        pageUserDetail.setPageSize(pageSize);
+	        pageUserDetail.setRows(userList);
+
+	        return new ResponseEntity.Builder<PageDomain<UserDetailModel>>()
+	                .setData(pageUserDetail)
+	                .setErrorCode(ErrorCode.SUCCESS)
+	                .build();
 	}
 }
