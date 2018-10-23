@@ -21,6 +21,18 @@ order by etr.time_created desc
 limit #{offset}, #{limit};
 </select>
 
+<select id="selectAllTradeRecordBySearchValue" resultMap="EnergyWalletTradeRecordMap">
+select 
+	  u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created 
+from 
+	  energy_trade_record etr,user_info u
+where
+	  etr.user_uuid=u.uuid and 
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created) like concat('%',#{searchValue},'%')
+order by etr.time_created desc
+limit #{offset}, #{limit};
+</select>
+
   <select id="countByEnergyWalletTradeRecord" resultType="java.lang.Integer">
 select 
 	  count(*) 

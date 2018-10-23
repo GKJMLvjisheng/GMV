@@ -39,6 +39,7 @@ import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.BackupEthWallet;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransferResp;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletStatus;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletSummary;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
@@ -70,21 +71,6 @@ public class EthWalletController extends BaseShiroController {
   @Autowired
   private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
   
-/*  @PostMapping(value="/selectContractSymbol")
-  @ResponseBody
-  @Transactional
-  public ResponseEntity<?> selectContractSymbol(@RequestBody SelectContractSymbolName selectContractSymbolName){
-//	  UserModel userModel = ShiroUtils.getUser();
-//	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(userModel.getName());
-	  String name = selectContractSymbolName.getName();
-	  List<ContractSymbol> conractSymbolList = ethWalletService.selectContractSymbol(name);
-	return new ResponseEntity.Builder<List<ContractSymbol>>()
-			.setData(conractSymbolList)
-			.setErrorCode(ErrorCode.SUCCESS)
-			.build();
-	  
-  }*/
-
   @PostMapping(value="/transfer")
   @RequiresPermissions("交易钱包-转账")
   @ResponseBody
@@ -511,8 +497,25 @@ public class EthWalletController extends BaseShiroController {
 			  .build();
   }
 
+  @PostMapping(value="/status")
+  @ResponseBody
+  public ResponseEntity<?> statusEthWallet(){
+    EthWalletStatus ethWalletStatus = new EthWalletStatus();
+    UserModel user = ShiroUtils.getUser();
+	  if(user == null) {
+		  return new ResponseEntity.Builder<EthWalletStatus>()
+				  .setData(ethWalletStatus)
+				  .setErrorCode(ErrorCode.USER_NOT_EXISTS).build();
+	  }
+	  ErrorCode errorCode = ethWalletService.statusEthWallet(user.getUuid(), ethWalletStatus);
+	  return new ResponseEntity.Builder<EthWalletStatus>()
+			  .setData(ethWalletStatus)
+			  .setErrorCode(errorCode)
+			  .build();
+  }
+
   /**
-      *  点击交易钱包记录查看区块链上转账记录，并标记状态
+   *  点击交易钱包记录查看区块链上转账记录，并标记状态
    * @param detail
    * @return
    */

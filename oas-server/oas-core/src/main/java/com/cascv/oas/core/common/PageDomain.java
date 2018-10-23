@@ -16,5 +16,7 @@ public class PageDomain<T> implements Serializable {
   @Getter @Setter private Integer offset;
   @Getter @Setter private String startTime;
   @Getter @Setter private String endTime;
+  @Getter @Setter private String searchValue;//搜索关键词
   @Getter @Setter private List<T> rows;
+  @Getter @Setter private Integer roleId;
 }
