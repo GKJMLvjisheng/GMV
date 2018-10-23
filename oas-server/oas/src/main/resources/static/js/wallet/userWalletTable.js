@@ -7,9 +7,9 @@ function queryParams(params){
 	pageNum = params.offset / params.limit + 1;
     return{
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize: pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
+        pageNum: pageNum,
     }
 }
 
@@ -40,7 +40,8 @@ function initUserWalletGrid() {
 		title: '序号',  
 		field: '',
 		align: 'center',
-		valign: 'middle',  
+		valign: 'middle',
+		width:  '70px',
 		formatter: function (value, row, index) {  
 			return pageSize * (pageNum - 1) + index + 1;  
 			}  
@@ -63,7 +64,7 @@ function initUserWalletGrid() {
 			field : "title",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '150px',
 		},
 		{
 			title : "交易细节",
@@ -77,7 +78,7 @@ function initUserWalletGrid() {
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '170px',
 		}, {
 			title : "交易备注",
 			field : "remark",
@@ -89,6 +90,7 @@ function initUserWalletGrid() {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
+			width:  '60px',
 			formatter: actionFormatter
 		}],		
 		search : true,//搜索
@@ -243,22 +245,18 @@ function initFundInGrid() {
 
 //请求服务数据时所传参数
 function queryParams3(params){
-	var startTime2 = $("#startTime2").val();
-	var endTime2 = $("#endTime2").val();
-	//alert(JSON.stringify(startTime2));
-	
-	//data={"startTime":startTime2,"endTime":endTime2};
+	var startTime = $("#startTime6").val();
+	var endTime = $("#endTime6").val();
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
 	
 	 return{
 	        //每页多少条数据
-	        pageSize: params.limit,
+	        pageSize: pageSize,
 	        //当前页码
-	        pageNum: params.offset / params.limit + 1,
-	        //data: data,
-	        //data: JSON.stringify(data),
-	        startTime: startTime2,
-	        endTime: endTime2,
-	        
+	        pageNum: pageNum,
+	        startTime: startTime,
+	        endTime: endTime,	        
 	    }
 }
 
@@ -336,13 +334,16 @@ function initFundOutGrid() {
 
 //请求服务数据时所传参数
 function queryParams4(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
     return{
-    	startTime: $("#startTime3").val(),
-        endTime: $("#endTime3").val(),
+    	startTime: $("#startTime7").val(),
+        endTime: $("#endTime7").val(),
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize: pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
+        pageNum: pageNum,
        
     }
 }
@@ -368,41 +369,41 @@ function actionFormatter(value, row, index) {
         return result;
 	}
 	
-	function ViewViewById(id){	
-		var formData = new FormData();
-		$('#Qname').val(id);	
-		formData.append("name", $("#Qname").val());
-		$.ajax({
-		url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
-		data:formData,
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		type: 'post',
-		cache: false,		
-		processData : false,
-		contentType : false,
-		async:false,
+function ViewViewById(id){	
+	var formData = new FormData();
+	$('#Qname').val(id);	
+	formData.append("name", $("#Qname").val());
+	$.ajax({
+	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	data:formData,
+	contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	type: 'post',
+	cache: false,		
+	processData : false,
+	contentType : false,
+	async:false,
 
-		success:function(res){				
-			if(res.code==0){
-			//alert(JSON.stringify(res));			
-			rows = res.data;			
-			$('#Qname').val(rows.name);
-			$('#Qnickname').val(rows.nickname);
-			$('#Qgender').val(rows.gender);
-			$('#Qbirthday').val(rows.birthday);
-			$('#Qmobile').val(rows.mobile);
-			$('#Qemail').val(rows.email);
-			$('#Qaddress').val(rows.address);
-			$('#QinviteCode').val(rows.inviteCode);
-			$("#queryUserModal").modal("show");
-			}
-			else{
-				alert("查询失败1");
-				}						
-		},
-		error:function(){
-			alert("查询失败2");
-		},
-		});					
-	}
+	success:function(res){				
+		if(res.code==0){
+		//alert(JSON.stringify(res));			
+		rows = res.data;			
+		$('#Qname').val(rows.name);
+		$('#Qnickname').val(rows.nickname);
+		$('#Qgender').val(rows.gender);
+		$('#Qbirthday').val(rows.birthday);
+		$('#Qmobile').val(rows.mobile);
+		$('#Qemail').val(rows.email);
+		$('#Qaddress').val(rows.address);
+		$('#QinviteCode').val(rows.inviteCode);
+		$("#queryUserModal").modal("show");
+		}
+		else{
+			alert("查询失败1");
+			}						
+	},
+	error:function(){
+		alert("查询失败2");
+	},
+	});					
+}

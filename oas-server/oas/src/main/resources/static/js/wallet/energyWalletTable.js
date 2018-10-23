@@ -41,6 +41,7 @@ function initEnergyWalletGrid() {
 		field: '',
 		align: 'center',
 		valign: 'middle',  
+		width:  '80px',
 		formatter: function (value, row, index) {  
 			return pageSize * (pageNum - 1) + index + 1;  
 			}  
@@ -56,7 +57,7 @@ function initEnergyWalletGrid() {
 			field : "inOrOut",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '130px',
 			formatter: actionFormatter1
 		},
 		{
@@ -64,21 +65,21 @@ function initEnergyWalletGrid() {
 			field : "pointChange",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '130px',
 		},
 		{
 			title : "获得算力",
 			field : "powerChange",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '130px',
 		},
 		{
 			title : "兑换状态",
 			field : "status",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '130px',
 			formatter: actionFormatter2
 		},
 			{
@@ -102,41 +103,41 @@ function initEnergyWalletGrid() {
 	});
 }
 
-	function actionFormatter1(value, row, index) {
-		var result = "";
-		if(value==1){
-		result += "<span>获得</span>";      
-        return result;
-		}else if(value==0){
-		result += "<span>支出</span>";      
-        return result;
-		}        
-	}
+function actionFormatter1(value, row, index) {
+	var result = "";
+	if(value==1){
+	result += "<span>获得</span>";      
+    return result;
+	}else if(value==0){
+	result += "<span>支出</span>";      
+    return result;
+	}        
+}
 
-	function actionFormatter2(value, row, index) {
-        var result = "";
-        if(value==1){
-		result += "<span>未兑换</span>";      
-        return result;
-		}else if(value==0){
-		result += "<span>已兑换</span>";      
-        return result;
-		}    
-	}	
-	
-	//请求成功方法
-	function responseHandler1(res){
-	    var code = res.code;//在此做了错误代码的判断
-	    if(code != 0){
-	        alert("能量钱包回显失败，错误代码:" + code);
-	        return;
-	    }
-	    //如果没有错误则返回数据，渲染表格
-	    return {
-	        total : res.data.total, //总页数,前面的key必须为"total"
-	        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
-	    };
-	};
+function actionFormatter2(value, row, index) {
+    var result = "";
+    if(value==1){
+	result += "<span>未兑换</span>";      
+    return result;
+	}else if(value==0){
+	result += "<span>已兑换</span>";      
+    return result;
+	}    
+}	
+
+//请求成功方法
+function responseHandler1(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("能量钱包回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
 
 	
 function initFundBigGrid() {	
@@ -282,12 +283,13 @@ function initFundInGrid() {
 function queryParams3(params){
 	var startTime2 = $("#startTime2").val();
 	var endTime2 = $("#endTime2").val();
-	alert(JSON.stringify(startTime2));
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
     return{
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize: pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
+        pageNum: pageNum,
         
         startTime: startTime2,
         endTime: endTime2,
@@ -374,11 +376,13 @@ function initFundOutGrid() {
 
 //请求服务数据时所传参数
 function queryParams4(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
     return{
         //每页多少条数据
-        pageSize: params.limit,
+        pageSize:pageSize,
         //当前页码
-        pageNum: params.offset / params.limit + 1,
+        pageNum: pageNum,
         startTime: $("#startTime3").val(),
         endTime: $("#endTime3").val(),
     }
