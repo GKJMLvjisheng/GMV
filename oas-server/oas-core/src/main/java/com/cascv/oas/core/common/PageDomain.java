@@ -17,4 +17,5 @@ public class PageDomain<T> implements Serializable {
   @Getter @Setter private String startTime;
   @Getter @Setter private String endTime;
   @Getter @Setter private List<T> rows;
+  @Getter @Setter private Integer roleId;
 }

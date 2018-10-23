@@ -109,7 +109,7 @@ public class PromotedRewardService {
 	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
 	    Trigger delayTrigger = TriggerBuilder.newTrigger().withIdentity("triggerD", "groupD")
 		        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-		            .withIntervalInSeconds(3600).repeatForever()).startNow().build();
+		            .withIntervalInSeconds(60).repeatForever()).startNow().build();
 	    immediatelyJobDetail.getJobDataMap().put("promotedRewardService", this);
 	    delayJobDetail.getJobDataMap().put("promotedRewardService", this);
 	    schedulerService.addJob(immediatelyJobDetail, immediatelyTrigger);
@@ -167,6 +167,41 @@ public class PromotedRewardService {
 		  }
 		  log.info("end reward buy miner redeem job ...");
 	  	}
+	  
+	  /**
+	   * @author Ming Yang
+	   * @return
+	   *             返回代币奖励冻结比例
+	   */ 
+	  public String getOasFrozenRewardRatio() {
+		  String rewardCoinName="代币";
+		  PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
+		  BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();
+		  BigDecimal n=new BigDecimal(100);
+		  frozenRatio=frozenRatio.multiply(n);
+		  String frozenRatio2String=frozenRatio.toString();
+		  frozenRatio2String=frozenRatio2String+"%";
+		  return frozenRatio2String;
+	  }
+	  
+	  /**
+	   * @author Ming Yang
+	   * @return
+	   *             返回代币奖励比例
+	   */ 
+	  public String getOasRewardRatio() {
+		  String rewardCoinName="代币";
+		  PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
+		  BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();
+		  BigDecimal a=new BigDecimal(1);
+		  BigDecimal rewardRatio=a.subtract(frozenRatio);
+		  BigDecimal n=new BigDecimal(100);
+		  rewardRatio=rewardRatio.multiply(n);
+		  String rewardRatio2String=rewardRatio.toString();
+		  rewardRatio2String=rewardRatio2String+"%";
+		  return rewardRatio2String;
+	  }
+	  
 	  
 	  /**
 	   * @author Ming Yang
@@ -501,7 +536,8 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				String remark="您推广下线购买矿机立即奖励总奖励的"+this.getOasRewardRatio()+",冻结总奖励的"+this.getOasFrozenRewardRatio()+",待下线矿机回本后一次性返还";
+				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,remark,null);
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {
@@ -574,7 +610,8 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				String remark="返还您推广下线购买矿机奖励冻结的"+this.getOasFrozenRewardRatio();
+				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,remark,null);
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {
