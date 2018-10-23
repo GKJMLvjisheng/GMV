@@ -66,6 +66,7 @@ import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletStatus;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -787,6 +788,14 @@ public class EthWalletService {
 	  }
 	  backupEthWallet.setPrivateKey(key);
 	  backupEthWallet.setMnemonicList(fromMnemonicList(mnemonicList));
+	  return ErrorCode.SUCCESS;
+  }
+
+  public ErrorCode statusEthWallet(String userUuid, EthWalletStatus ethWalletStatus){
+	  EthWallet ethWallet = getEthWalletByUserUuid(userUuid);
+	  if (ethWallet == null)
+		  return ErrorCode.NO_ETH_WALLET;
+    ethWalletStatus.setBackup(ethWallet.getBackup());
 	  return ErrorCode.SUCCESS;
   }
 }
