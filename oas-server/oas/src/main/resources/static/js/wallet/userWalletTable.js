@@ -245,7 +245,7 @@ function initFundInGrid() {
 function queryParams3(params){
 	var startTime2 = $("#startTime2").val();
 	var endTime2 = $("#endTime2").val();
-	alert(JSON.stringify(startTime2));
+	//alert(JSON.stringify(startTime2));
 	
 	//data={"startTime":startTime2,"endTime":endTime2};
 	
@@ -255,6 +255,7 @@ function queryParams3(params){
 	        //当前页码
 	        pageNum: params.offset / params.limit + 1,
 	        //data: data,
+	        //data: JSON.stringify(data),
 	        startTime: startTime2,
 	        endTime: endTime2,
 	        
