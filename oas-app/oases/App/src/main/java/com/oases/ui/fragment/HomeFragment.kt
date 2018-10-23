@@ -278,6 +278,10 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         override fun onPageFinished(view: WebView, url: String) {
             view.settings.blockNetworkImage = false
             view.settings.loadsImagesAutomatically = true
+
+          //  view.loadUrl("javascript:window.Android.checkCode" +
+          //          "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+      //  }
         }
 
         @Suppress("deprecation")

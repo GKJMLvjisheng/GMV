@@ -22,12 +22,12 @@ class LoginPresenter @Inject constructor() : BasePresenter<LoginView>() {
     /*
         登录
      */
-    fun login(name: String, pwd: String) {
+    fun login(name: String, pwd: String, imei: String) {
         if (!checkNetWork()) {
             return
         }
         mView.showLoading()
-        userService.login(name, pwd).execute(object : BaseSubscriber<UserInfo>(mView) {
+        userService.login(name, pwd, imei).execute(object : BaseSubscriber<UserInfo>(mView) {
             override fun onNext(t: UserInfo) {
                 AppPrefsUtils.putString(BaseConstant.USER_TOKEN, t.token)
                 putUserInfo(t)

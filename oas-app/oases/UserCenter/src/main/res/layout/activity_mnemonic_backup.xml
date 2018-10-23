@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.MnemonicBackupActivity">
+    <com.oases.base.widgets.HeaderBar
+        android:id="@+id/mHeadBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="助记词备份">
+    </com.oases.base.widgets.HeaderBar>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/common_white"
+        app:tabTextColor="@color/text_dark"
+        app:tabSelectedTextColor="@color/common_black"
+        android:minHeight="42dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/mTabLayout"/>
+
+</LinearLayout>

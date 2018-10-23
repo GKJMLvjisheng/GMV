@@ -20,6 +20,39 @@ from
 where
 	  ud.user_uuid=u.uuid
 order by ud.created desc
+limit #{offset}, #{limit};
+</select>
+
+  <select id="selectAllTradeRecordBySearchValue" resultMap="UserWalletTradeRecordMap">
+select 
+	  u.name,ud.value,ud.title,ud.created,ud.remark 
+	  ,ud.sub_title
+from 
+	  user_wallet_detail ud,user_info u
+where
+	  ud.user_uuid=u.uuid and
+	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%')
+order by ud.created desc
+limit #{offset}, #{limit};
+</select>
+
+  <select id="countByTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(*)
+from 
+	  user_wallet_detail ud,user_info u
+where
+	  ud.user_uuid=u.uuid;
+</select>
+
+<select id="countByTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	  count(*)
+from 
+	  user_wallet_detail ud,user_info u
+where
+	  ud.user_uuid=u.uuid and
+	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%');
 </select>
 
 <resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
@@ -38,6 +71,42 @@ where
 
 group by u.name 
 order by value desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="selectAllInTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
+select 
+	  u.name,SUM(ud.value) as value
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+      and concat(u.name,ud.value) like concat('%',#{searchValue},'%')
+group by u.name 
+order by value desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="countByInTotalTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(distinct ud.user_uuid)
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+</select>
+
+<select id="countByInTotalTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	  count(distinct ud.user_uuid)
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	  and concat(u.name,ud.value) like concat('%',#{searchValue},'%');
 </select>
    
 <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
@@ -51,6 +120,42 @@ where
 
 group by u.name 
 order by value desc
+limit #{offset}, #{limit};
+   </select>
+
+<select id="selectAllOutTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
+select 
+	  u.name,SUM(ud.value) as value
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+      and concat(u.name,ud.value) like concat('%',#{searchValue},'%')
+group by u.name 
+order by value desc
+limit #{offset}, #{limit};
+   </select>
+   
+  <select id="countByOutTotalTradeRecord" resultType="java.lang.Integer">
+select 
+	  count(distinct ud.user_uuid)
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+   </select>
+   
+  <select id="countByOutTotalTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	  count(distinct ud.user_uuid)
+from 
+	  user_wallet_detail ud,user_info u
+
+where
+	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	  and concat(u.name,ud.value) like concat('%',#{searchValue},'%');
    </select>
    
 <select id="selectAllUserBalanceRecord" resultMap="walletTotalTradeRecordMap">
@@ -61,7 +166,39 @@ from
 where
 	uw.user_uuid=u.uuid
 order by value desc
+limit #{offset}, #{limit};
    </select>
+   
+<select id="selectAllUserBalanceRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
+select 
+	 u.name,uw.balance as value
+from 
+	 user_wallet uw,user_info u
+where
+	uw.user_uuid=u.uuid
+	and concat(u.name,uw.balance) like concat('%',#{searchValue},'%')
+order by value desc
+limit #{offset}, #{limit};
+   </select>
+   
+   <select id="countByUserBalanceRecord" resultType="java.lang.Integer">
+select 
+	 count(*)
+from 
+	 user_wallet uw,user_info u
+where
+	uw.user_uuid=u.uuid;
+   </select>
+  
+    <select id="countByUserBalanceRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	 count(*)
+from 
+	 user_wallet uw,user_info u
+where
+	uw.user_uuid=u.uuid
+	and concat(u.name,uw.balance) like concat('%',#{searchValue},'%');
+   </select> 
   
 <select id="selectUserPointToOas" resultMap="walletTotalTradeRecordMap">
 select 
@@ -69,7 +206,7 @@ select
 from 
 	 user_wallet_detail
 where
-     user_uuid= # {userUuid} and title='积分兑换OAS代币'  and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
+     user_uuid= # {userUuid} and title='积分兑换OAS代币' and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
    </select> 
    
 </mapper>

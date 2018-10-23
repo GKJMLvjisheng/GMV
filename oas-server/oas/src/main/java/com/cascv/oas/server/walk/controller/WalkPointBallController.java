@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
@@ -42,7 +43,7 @@ public class WalkPointBallController {
 		 String userUuid = ShiroUtils.getUserUuid();
 		 log.info("userUuid={}",userUuid);
 		 List<WalkBallReturn> walkBallReturnList = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());
-		 
+		 log.info("walklist={}",JSON.toJSONString(walkBallReturnList));
 		return new ResponseEntity.Builder<List<WalkBallReturn>>()
 				.setData(walkBallReturnList)
 				.setErrorCode(ErrorCode.SUCCESS)

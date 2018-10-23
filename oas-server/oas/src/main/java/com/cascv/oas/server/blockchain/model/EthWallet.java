@@ -15,8 +15,8 @@ public class EthWallet implements Serializable {
   @Getter @Setter private String mnemonicList;
   @Getter @Setter private String mnemonicPath;
   @Getter @Setter private String address;
-  @Getter @Setter private String preferNetwork;
   @Getter @Setter private Integer crypto;
+  @Getter @Setter private Integer backup;
   @Getter @Setter private String created;
   @Getter @Setter private String updated;
   @Getter @Setter private BigDecimal unconfirmedBalance;//待确认交易

@@ -18,6 +18,7 @@ import com.oases.user.injection.component.DaggerUserComponent
 import com.oases.user.injection.module.UserModule
 import com.oases.user.presenter.LoginPresenter
 import com.oases.user.presenter.view.LoginView
+import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -35,7 +36,9 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     private fun initView() {
-        mLoginBtn.setOnClickListener { attemptLogin() }
+        mLoginBtn.setOnClickListener {
+            attemptLogin()
+        }
         mRegisterBtn.setOnClickListener { startActivity<RegisterActivity>() }
       //  mUserName.onRightDrawableClickListener{mUserName.text.clear()}
 
@@ -111,7 +114,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mPresenter.login(mUserName.text.toString(), mPwd.text.toString())
+            mPresenter.login(mUserName.text.toString(), mPwd.text.toString(), getDeviceId(this))
         }
     }
 

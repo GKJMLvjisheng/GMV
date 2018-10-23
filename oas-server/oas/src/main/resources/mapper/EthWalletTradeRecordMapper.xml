@@ -18,9 +18,18 @@ from
 	eth_wallet_detail ed,user_info u,eth_wallet e
 where
 	ed.address=e.address and e.user_uuid=u.uuid
-order by ed.created desc;
+order by ed.created desc
+limit #{offset}, #{limit};
 </select>
 
+<select id="countByTradeRecord" resultType="java.lang.Integer">
+  select 
+	count(*)
+from 	
+	eth_wallet_detail ed,user_info u,eth_wallet e
+where
+	ed.address=e.address and e.user_uuid=u.uuid;
+</select>
 
 <resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
     <result column="name" property="name"/>
@@ -35,7 +44,17 @@ from
 where
 		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name 
-order by value desc;
+order by value desc
+limit #{offset}, #{limit};
+   </select>
+   
+      <select id="countByInTotalTradeRecord" resultType="java.lang.Integer">
+   select 
+		count(distinct ed.address)
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
    </select>
    
       <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
@@ -46,6 +65,16 @@ from
 where
 		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name 
-order by value desc;
+order by value desc
+limit #{offset}, #{limit};
+   </select>
+   
+   <select id="countByOutTotalTradeRecord" resultType="java.lang.Integer">
+   select 
+		count(distinct ed.address)
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
    </select>
 </mapper>

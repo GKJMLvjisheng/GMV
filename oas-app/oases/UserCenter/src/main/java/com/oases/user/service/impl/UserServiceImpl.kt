@@ -21,12 +21,12 @@ class UserServiceImpl @Inject constructor():UserService{
     @Inject
     lateinit var  repository:UserRepository
 
-    override fun register(name:String, pwd:String, inviteFrom:String):Observable<RegisterResp>{
-        return repository.register(name, pwd, inviteFrom).convert()
+    override fun register(req:RegisterReq):Observable<RegisterResp>{
+        return repository.register(req).convert()
     }
 
-    override fun login(name: String, pwd: String): Observable<UserInfo> {
-        return repository.login(name, pwd).convert()
+    override fun login(name: String, pwd: String, imei: String): Observable<UserInfo> {
+        return repository.login(name, pwd, imei).convert()
     }
 
     override fun registerConfirm(uuid:String): Observable<Boolean>{
@@ -100,6 +100,11 @@ class UserServiceImpl @Inject constructor():UserService{
 
     override fun resetPwd(name:String,newPwd: String): Observable<Int> {
         return repository.resetPwd(name,newPwd).convert()
+    }
+
+    //账户与安全中的设置密码
+    override fun confirmOldPwd(req: confirmOldPwdReq): Observable<confirmOldPwdResp> {
+        return repository.confirmOldPwd(req).convert()
     }
 
 }

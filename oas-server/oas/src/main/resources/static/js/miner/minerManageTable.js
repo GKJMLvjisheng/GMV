@@ -23,29 +23,26 @@ function initMinerGrid(data) {
 		uniqueId:"minerCode",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
-		sortable: true,//是否启用排序
-		sortName: 'updated', // 要排序的字段
-	    sortOrder: 'desc', // 排序规则
-		data:data,
-		
+		sortable: false,//是否启用排序
+		sortName: 'orderNum', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+		data:data,				
+			 
 		columns : [{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle', 
-		width:  '60px', 
-		formatter: function (value, row, index) {  
-			return index+1;  
-			}  
-		}  ,
-			{
+			title: '序号',  
+			field: 'orderNum',
+			align: 'center',
+			valign: 'middle', 
+			width:  '60px', 
+			visible: false,
+
+			} ,{
 
 			title : "矿机名",
 			field : "minerName",
 			align: 'center',
 			valign: 'middle',
-			width:  '120px',
-
+			width:  '110px',
 		},
 			{
 
@@ -53,7 +50,7 @@ function initMinerGrid(data) {
 			field : "minerPrice",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		}, 
 			{
@@ -62,7 +59,7 @@ function initMinerGrid(data) {
 			field : "minerGrade",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		},{
 
@@ -70,7 +67,7 @@ function initMinerGrid(data) {
 			field : "minerPower",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		},
 		{
@@ -79,7 +76,7 @@ function initMinerGrid(data) {
 			field : "minerPeriod",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '80px',
 
 		},
 		{
@@ -88,7 +85,7 @@ function initMinerGrid(data) {
 			field : "minerDescription",
 			align: 'center',
 			valign: 'middle',
-			width:  '170px',
+			//width:  '150px',
 		}, 
 		{
 
@@ -97,7 +94,16 @@ function initMinerGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '160px',
-		}, 
+		},
+		{
+
+			title : " 排序",			
+			field : "minerCode",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
+			formatter: actionFormatter1
+		},
 		{
 
 			title : " 操作",			
@@ -105,16 +111,31 @@ function initMinerGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
-			formatter: actionFormatter
+			formatter: actionFormatter2
 		}],
 		
 		search : true,//搜索
         searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false, 
 	});
 }
+		
+//当拖拽结束后，整个表格的数据            
+//		onReorderRow: function (newData) { 
+//			alert(JSON.stringify(newData));			
+//		}
 
-function actionFormatter(value, row, index) {
+function actionFormatter1(value, row, index) {
+    var minerCode = value;
+    var result = "";
+
+    result += "<a href='javascript:;' title='上移' class='btn btn-xs blue' onclick=\"up('" + minerCode + "')\"><span class='glyphicon glyphicon-upload' style='font-size:15px;'></span> </a>";
+    result += "<a href='javascript:;' title='下移' class='btn btn-xs blue' onclick=\"down('" + minerCode + "')\"><span class='glyphicon glyphicon-download' style='font-size:15px;'></span></a>";
+
+    return result;
+}
+
+function actionFormatter2(value, row, index) {
     var id = value;
     var result = "";
 
@@ -124,6 +145,63 @@ function actionFormatter(value, row, index) {
     return result;
 }
  
+function up(minerCode){
+	var data = {
+		"minerCode" : minerCode,
+	};
+	
+	$.ajax({
+		url: "/api/v1/miner/upMiner",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(data),
+		processData : false,
+		async : false,
+		
+		success : function(res) {
+			if (res.message == "已是第一个，不能上移") {
+				alert("已是第一个，不能上移！")
+			} else if(res.message == "成功"){
+				minerReady();
+			}
+		},
+		error : function() {		
+			alert("上移过程发生错误！");
+		}
+	});	
+}
+
+function down(minerCode){
+
+	var data = {
+		"minerCode" : minerCode,
+	};
+	
+	$.ajax({
+		url: "/api/v1/miner/downMiner",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(data),
+		processData : false,
+		async : false,
+		
+		success : function(res) {
+			if (res.message == "已是最后一个，不能下移"){
+				alert("已是最后一个，不能下移！")
+			}else if(res.message == "成功"){
+				minerReady();
+			}
+		},
+		error : function() {		
+			alert("下移过程发生错误！");
+		}
+	});	
+}
+
 function EditMinerById(id){
     
     //获取选中行的数据

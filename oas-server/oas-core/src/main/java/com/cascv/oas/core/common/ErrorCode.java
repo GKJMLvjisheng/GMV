@@ -60,8 +60,13 @@ public enum ErrorCode {
   No_TRANSFER_PERMISSION(10043,"在当前时间段，转账功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
   No_REVERSEWITHDRAW_PERMISSION(10043,"在当前时间段，充币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
   No_WITHDRAW_PERMISSION(10043,"在当前时间段，提币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
-  SYSTEM_ETH_BALANCE_LOWER_THAN_WARING(10044,"用于提充币的系统交易钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动"),
-  SYSTEM_USER_BALANCE_LOWER_THAN_WARING(10045,"用于提充币的系统在线钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动");
+
+  THE_FIRST_ONE(10044, "已是第一个，不能上移"),
+  THE_LAST_ONE(10045, "已是最后一个，不能下移"),
+  LOGIN_FAILED(10046, "登录失败"),
+  SYSTEM_ETH_BALANCE_LOWER_THAN_WARING(10047,"用于提充币的系统交易钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动"),
+  SYSTEM_USER_BALANCE_LOWER_THAN_WARING(10048,"用于提充币的系统在线钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动");
+
 	
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;

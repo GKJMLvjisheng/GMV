@@ -29,4 +29,5 @@ interface UserComponent {
     fun inject(activity: ForgetPwdOneActivity)
     fun inject(activity: ForgetPwdTwoActivity)
     fun inject(activity: ResetPwdActivity)
+    fun inject(activity: SetPasswordActivity)
 }

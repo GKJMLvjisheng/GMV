@@ -11,8 +11,6 @@
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/wallet/energyWallet.js}"></script>
-	<script type="text/javascript" th:src="@{/js/wallet/energyWalletTable.js}"></script>
 	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	
 	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>
 	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">				   	   
@@ -29,6 +27,12 @@
     width: 9.33333333%;
 	padding-left: 5px;
 	margin-top:20px;
+   }
+   .form{
+    width: 16.33333333%;
+	padding-right: 5px;
+	margin-top:20px;
+	height: 33px;
    }
    .input-group	{ 
     vertical-align:middle;
@@ -59,7 +63,8 @@
 	</div> 
 
 	<div class = "container" id="page1">
-			<table id="energyWalletGrid"></table>
+		<input class="form" id="energy1" required="required" placeholder="搜索" onblur="initEnergyWalletGrid()"/>
+		<table id="energyWalletGrid"></table>
 	</div> 
 	
 	<div class = "container" style="display:none" id="page2">		
@@ -72,7 +77,7 @@
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd2">
 			
-					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control" onblur="FundInReady()"/>
+					<input type="text" name="startTime2" id="startTime2" value="" class=" form-control" onblur="initFundInGrid()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -80,7 +85,7 @@
 		<label for="datetimepicker1" class="col-sm-2">结束时间：</label>
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd3">				
-					<input type="text"  name="endTime2" id="endTime2" value="" class=" form-control " onblur="FundInReady()"/>
+					<input type="text"  name="endTime2" id="endTime2" value="" class=" form-control " onblur="initFundInGrid()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -93,7 +98,7 @@
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd4">
 			
-					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control" onblur="FundOutReady()"/>
+					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control" onblur="initFundOutGrid()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -101,7 +106,7 @@
 		<label for="datetimepicker1" class="col-sm-2">结束时间：</label>
 			<div class="col-sm-3">
 				<div class="input-group  date" id="userEd5">				
-					<input type="text"  name="endTime3" id="endTime3" value="" class=" form-control " onblur="FundOutReady()"/>
+					<input type="text"  name="endTime3" id="endTime3" value="" class=" form-control " onblur="initFundOutGrid()"/>
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
@@ -180,6 +185,8 @@
 			</div>					
 		</div>
 	</div>
+	<script type="text/javascript" th:src="@{/js/wallet/energyWallet.js}"></script>
+	<script type="text/javascript" th:src="@{/js/wallet/energyWalletTable.js}"></script>
 </body>
 <script type="text/javascript">
 	function getNowFormatDate() {
@@ -207,9 +214,10 @@
 		var todayTime = getNowFormatDate();
 		var mydate1 = (year.toString()+"-"+ month.toString()+"-01");
 		var mydate2 = todayTime;
+		//alert(mydate1);
 		document.getElementById("startTime2").value=mydate1;
-		document.getElementById("endTime2").value=mydate2; 
 		document.getElementById("startTime3").value=mydate1;
+		document.getElementById("endTime2").value=mydate2; 
 		document.getElementById("endTime3").value=mydate2;                  
 	});
 </script>

@@ -99,4 +99,14 @@ public class RootController {
 	  public String reward() {
 	  	    return "miner/reward";  
 	  	    }
+	//矿机参数配置
+	  @GetMapping("/miner/minerParameter")
+	  public String minerParam() {
+	  	    return "miner/minerParameter";  
+	  	    }
+	//用户账号管理
+	  @GetMapping("/userAccountManage")
+	  public String userAccountManage() {
+	  	    return "userAccountManage"; 
+	  	    }
 }

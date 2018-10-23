@@ -1,28 +1,49 @@
+var pageSize;
+var pageNum;
 
-function initUserWalletGrid(data) {	
+//请求服务数据时所传参数
+function queryParams(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
+    return{
+        //每页多少条数据
+        pageSize: pageSize,
+        //当前页码
+        pageNum: pageNum,
+    }
+}
 
+function initUserWalletGrid() {	
+	$("#userWalletGrid").bootstrapTable('destroy');
 	$("#userWalletGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/userWallet/inqureUserWalletTradeRecord',
+		contentType : "application/json",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
+		method: 'post',
 		striped:true,//隔行变色
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams,//请求服务器时所传的参数
+		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,	
 			
 		columns : [{  
 		title: '序号',  
 		field: '',
 		align: 'center',
-		valign: 'middle',  
+		valign: 'middle',
+		width:  '70px',
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1;  
 			}  
 		}  ,{
 			title : "用户名",
@@ -43,7 +64,7 @@ function initUserWalletGrid(data) {
 			field : "title",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '150px',
 		},
 		{
 			title : "交易细节",
@@ -57,7 +78,7 @@ function initUserWalletGrid(data) {
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '170px',
 		}, {
 			title : "交易备注",
 			field : "remark",
@@ -69,6 +90,7 @@ function initUserWalletGrid(data) {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
+			width:  '60px',
 			formatter: actionFormatter
 		}],		
 		search : true,//搜索
@@ -77,21 +99,42 @@ function initUserWalletGrid(data) {
 	});
 }
 
-function initFundBigGrid(data) {	
+//请求成功方法
+function responseHandler1(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("用户钱包回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
+function initFundBigGrid() {
+	$("#fundBigGrid").bootstrapTable('destroy');//解决bootstraptable多次请求只触发一次的问题
 	$("#fundBigGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/userWallet/inqureUserWalletBalanceRecord',
+		contentType : "application/json",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
+		method: 'post',
 		striped:true,//隔行变色
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams,//请求服务器时所传的参数
+		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,	
 
 		columns : [{  
 		title: '序号',  
@@ -99,7 +142,7 @@ function initFundBigGrid(data) {
 		align: 'center',
 		valign: 'middle',  
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1;
 			}  
 		}  ,{
 			title : "用户名",
@@ -126,22 +169,43 @@ function initFundBigGrid(data) {
 		clickToSelect: false,         
 	});
 }
-	
-function initFundInGrid(data) {	
+
+//请求成功方法
+function responseHandler2(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("资金大户Top榜回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
+function initFundInGrid() {	
+	$("#fundInGrid").bootstrapTable('destroy');
 	$("#fundInGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/userWallet/inqureUserWalletInTotalTradeRecord',
+		contentType : "application/json",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
+		method: 'post',
 		striped:true,//隔行变色
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams3,//请求服务器时所传的参数
+		responseHandler:responseHandler3,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-		data:data,	
 
 		columns : [{  
 		title: '序号',  
@@ -149,7 +213,7 @@ function initFundInGrid(data) {
 		align: 'center',
 		valign: 'middle',  
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1;  
 			}  
 		}  ,{
 			title : "用户名",
@@ -179,21 +243,59 @@ function initFundInGrid(data) {
 	});
 }
 
-function initFundOutGrid(data) {	
+//请求服务数据时所传参数
+function queryParams3(params){
+	var startTime = $("#startTime6").val();
+	var endTime = $("#endTime6").val();
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
+	 return{
+	        //每页多少条数据
+	        pageSize: pageSize,
+	        //当前页码
+	        pageNum: pageNum,
+	        startTime: startTime,
+	        endTime: endTime,	        
+	    }
+}
+
+//请求成功方法
+function responseHandler3(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("资金流入Top榜回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
+function initFundOutGrid() {	
+	$("#fundOutGrid").bootstrapTable('destroy');
 	$("#fundOutGrid").bootstrapTable({
-		contentType : "application/x-www-form-urlencoded",
+		url: '/api/v1/userWallet/inqureUserWalletOutTotalTradeRecord',
+		contentType : "application/json",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
+		method: 'post',
 		striped:true,//隔行变色
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams4,//请求服务器时所传的参数
+		responseHandler:responseHandler4,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		//sortName: 'topicId', // 要排序的字段
-	    sortOrder: 'asc', // 排序规则
-		data:data,	
+	    sortOrder: 'asc', // 排序规则	
 
 		columns : [{  
 		title: '序号',  
@@ -201,7 +303,7 @@ function initFundOutGrid(data) {
 		align: 'center', 
 		valign: 'middle', 
 		formatter: function (value, row, index) {  
-			return index+1;  
+			return pageSize * (pageNum - 1) + index + 1; 
 			}  
 		}  ,{
 			title : "用户名",
@@ -230,6 +332,36 @@ function initFundOutGrid(data) {
 	});
 }
 
+//请求服务数据时所传参数
+function queryParams4(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
+    return{
+    	startTime: $("#startTime7").val(),
+        endTime: $("#endTime7").val(),
+        //每页多少条数据
+        pageSize: pageSize,
+        //当前页码
+        pageNum: pageNum,
+       
+    }
+}
+
+//请求成功方法
+function responseHandler4(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("资金流出Top榜回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
 function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
@@ -237,41 +369,41 @@ function actionFormatter(value, row, index) {
         return result;
 	}
 	
-	function ViewViewById(id){	
-		var formData = new FormData();
-		$('#Qname').val(id);	
-		formData.append("name", $("#Qname").val());
-		$.ajax({
-		url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
-		data:formData,
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		type: 'post',
-		cache: false,		
-		processData : false,
-		contentType : false,
-		async:false,
+function ViewViewById(id){	
+	var formData = new FormData();
+	$('#Qname').val(id);	
+	formData.append("name", $("#Qname").val());
+	$.ajax({
+	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	data:formData,
+	contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	type: 'post',
+	cache: false,		
+	processData : false,
+	contentType : false,
+	async:false,
 
-		success:function(res){				
-			if(res.code==0){
-			//alert(JSON.stringify(res));			
-			rows = res.data;			
-			$('#Qname').val(rows.name);
-			$('#Qnickname').val(rows.nickname);
-			$('#Qgender').val(rows.gender);
-			$('#Qbirthday').val(rows.birthday);
-			$('#Qmobile').val(rows.mobile);
-			$('#Qemail').val(rows.email);
-			$('#Qaddress').val(rows.address);
-			$('#QinviteCode').val(rows.inviteCode);
-			$("#queryUserModal").modal("show");
-			}
-			else{
-				alert("查询失败1");
-				}						
-		},
-		error:function(){
-			alert("查询失败2");
-		},
-		});					
-	}
+	success:function(res){				
+		if(res.code==0){
+		//alert(JSON.stringify(res));			
+		rows = res.data;			
+		$('#Qname').val(rows.name);
+		$('#Qnickname').val(rows.nickname);
+		$('#Qgender').val(rows.gender);
+		$('#Qbirthday').val(rows.birthday);
+		$('#Qmobile').val(rows.mobile);
+		$('#Qemail').val(rows.email);
+		$('#Qaddress').val(rows.address);
+		$('#QinviteCode').val(rows.inviteCode);
+		$("#queryUserModal").modal("show");
+		}
+		else{
+			alert("查询失败1");
+			}						
+	},
+	error:function(){
+		alert("查询失败2");
+	},
+	});					
+}

@@ -19,6 +19,7 @@ import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
 import com.oases.presenter.MainPresenter
 import com.oases.presenter.view.MainView
+import com.oases.user.ui.activity.PasswordInSecurityActivity
 import com.oases.user.ui.activity.UserInfoActivity
 import com.oases.user.ui.activity.UserInfoQrCodeActivity
 import com.squareup.picasso.Picasso
@@ -77,7 +78,7 @@ class MeFragment : BaseMvpFragment<MainPresenter>(), MainView, View.OnClickListe
             mUserIconIv -> startActivity<UserInfoActivity>()
             mQrCode -> startActivity<UserInfoQrCodeActivity>()
             mUpdateAppTv -> mPresenter.onGetAppUpdate()
-            mAddressTv -> readyTip()
+            mAddressTv -> startActivity<PasswordInSecurityActivity>()
             mShareTv -> readyTip()
             mSwitchLanguageTv -> readyTip()
             mHelpTv -> readyTip()

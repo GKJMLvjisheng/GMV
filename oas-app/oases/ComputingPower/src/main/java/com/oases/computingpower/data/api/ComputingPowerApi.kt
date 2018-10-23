@@ -57,5 +57,4 @@ interface ComputingPowerApi {
     fun getBuyingMinerHistory(@Body req:BuyingMinerHistoryReq):Observable<BaseResp<BuyingMinerHistoryResp>>
 
 
-
 }

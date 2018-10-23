@@ -73,7 +73,7 @@ public class PermService {
     /**
      * @category 行走/推广奖励的权限控制
      * @author lvjisheng
-     * @param 
+     * @param null
      * @return
      */
     public Boolean getWalkPerm(){

@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class SelectContractSymbolName {
-	private static final long serialVersionUID = 1L;
-	  @Getter @Setter private String name;
+	@Getter @Setter private String name;
 
 }

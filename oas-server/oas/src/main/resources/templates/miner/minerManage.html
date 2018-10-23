@@ -11,7 +11,10 @@
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>   
-   
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/extensions/reorder-rows/bootstrap-table-reorder-rows.css}"> 
+    <script type="text/javascript" th:src="@{/js/jquery.tablednd.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/extensions/reorder-rows/bootstrap-table-reorder-rows.js}"></script>
+    
    <style>
 	.form-group span.required {
 	color: red;
@@ -44,6 +47,7 @@
 		
 		<div class = "container">
 			<table id="minerGrid"></table>
+<!-- 			data-use-row-attr-func="true" data-reorderable-rows="true" -->
 		</div>
 
 	</section>

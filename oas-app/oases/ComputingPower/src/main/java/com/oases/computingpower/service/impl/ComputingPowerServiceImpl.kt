@@ -68,5 +68,4 @@ class ComputingPowerServiceImpl @Inject constructor(): ComputingPowerService {
     }
 
 
-
 }

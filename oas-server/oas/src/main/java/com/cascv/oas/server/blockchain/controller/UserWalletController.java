@@ -34,7 +34,6 @@ import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletDetailService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
-import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
@@ -323,20 +322,66 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/inqureUserWalletTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureUserWalletTradeRecord(){
-	  List<UserWalletTradeRecordInfo> userWalletTradeRecords=userWalletTradeRecordMapper.selectAllTradeRecord();
-	  for (UserWalletTradeRecordInfo userWalletTradeRecordInfo : userWalletTradeRecords) {
-			String srcFormater="yyyy-MM-dd HH:mm:ss";
-			String dstFormater="yyyy-MM-dd HH:mm:ss";
-			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-			String created=DateUtils.string2Timezone(srcFormater, userWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
-			userWalletTradeRecordInfo.setCreated(created);
-			log.info("newCreated={}",created);
-		  }
-		return new ResponseEntity.Builder<List<UserWalletTradeRecordInfo>>()
-		        .setData(userWalletTradeRecords)
-		        .setErrorCode(ErrorCode.SUCCESS)
-		        .build();
+  public ResponseEntity<?> inqureUserWalletTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
+	  
+  	Integer pageNum = pageInfo.getPageNum();
+    Integer pageSize = pageInfo.getPageSize();
+    Integer limit = pageSize;
+    Integer offset;
+
+    if (pageSize == 0) {
+      limit = 10;
+    }
+    if (pageNum != null && pageNum > 0)
+    	offset = (pageNum - 1) * limit;
+    else 
+    	offset = 0;
+    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+    if(searchValue != null) {
+    	List<UserWalletTradeRecordInfo> userWalletTradeRecordList=userWalletTradeRecordMapper.selectAllTradeRecordBySearchValue(offset, limit, searchValue);
+  	  for (UserWalletTradeRecordInfo userWalletTradeRecordInfo : userWalletTradeRecordList) {
+  			String srcFormater="yyyy-MM-dd HH:mm:ss";
+  			String dstFormater="yyyy-MM-dd HH:mm:ss";
+  			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+  			String created=DateUtils.string2Timezone(srcFormater, userWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+  			userWalletTradeRecordInfo.setCreated(created);
+  			log.info("newCreated={}",created);
+  		  }
+  	  PageDomain<UserWalletTradeRecordInfo> userWalletTradeRecordInfo = new PageDomain<>();
+  	  Integer count=userWalletTradeRecordMapper.countByTradeRecordBySearchValue(searchValue);
+  	      userWalletTradeRecordInfo.setTotal(count);
+  		  userWalletTradeRecordInfo.setAsc("desc");
+  		  userWalletTradeRecordInfo.setOffset(offset);
+  		  userWalletTradeRecordInfo.setPageNum(pageNum);
+  		  userWalletTradeRecordInfo.setPageSize(pageSize);
+  		  userWalletTradeRecordInfo.setRows(userWalletTradeRecordList);
+  		return new ResponseEntity.Builder<PageDomain<UserWalletTradeRecordInfo>>()
+  		        .setData(userWalletTradeRecordInfo)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
+    }else {
+    	List<UserWalletTradeRecordInfo> userWalletTradeRecordList=userWalletTradeRecordMapper.selectAllTradeRecord(offset, limit);
+  	  for (UserWalletTradeRecordInfo userWalletTradeRecordInfo : userWalletTradeRecordList) {
+  			String srcFormater="yyyy-MM-dd HH:mm:ss";
+  			String dstFormater="yyyy-MM-dd HH:mm:ss";
+  			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+  			String created=DateUtils.string2Timezone(srcFormater, userWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+  			userWalletTradeRecordInfo.setCreated(created);
+  			log.info("newCreated={}",created);
+  		  }
+  	  PageDomain<UserWalletTradeRecordInfo> userWalletTradeRecordInfo = new PageDomain<>();
+  	  Integer count=userWalletTradeRecordMapper.countByTradeRecord();
+  	      userWalletTradeRecordInfo.setTotal(count);
+  		  userWalletTradeRecordInfo.setAsc("desc");
+  		  userWalletTradeRecordInfo.setOffset(offset);
+  		  userWalletTradeRecordInfo.setPageNum(pageNum);
+  		  userWalletTradeRecordInfo.setPageSize(pageSize);
+  		  userWalletTradeRecordInfo.setRows(userWalletTradeRecordList);
+  		return new ResponseEntity.Builder<PageDomain<UserWalletTradeRecordInfo>>()
+  		        .setData(userWalletTradeRecordInfo)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
+    }
   }
   /**
    * @author Ming Yang
@@ -345,7 +390,20 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/inqureUserWalletInTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureUserWalletInTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+  public ResponseEntity<?> inqureUserWalletInTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
+	  
+	  	Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
 	  
 	  //获取当月第一天
 	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -359,26 +417,43 @@ public class UserWalletController extends BaseShiroController {
       Date d = new Date();
       String nowDate = format.format(d);
       log.info("nowDate:{}",nowDate);
-      
-	  String startTime=timeLimitInfo.getStartTime();
-	  String endTime=timeLimitInfo.getEndTime();
 	  
-	  if(startTime=="") {
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
+	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
-	  }else {
-		  startTime=timeLimitInfo.getStartTime();
-	  }
-	  if(endTime=="") {
+	  if(endTime=="")
 		  endTime=nowDate;
+	  String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	  if(searchValue != null) {
+		  List<WalletTotalTradeRecordInfo> userWalletInTotalTradeRecordList=userWalletTradeRecordMapper.selectAllInTotalTradeRecordBySearchValue(startTime, endTime, offset, limit, searchValue);
+		  PageDomain<WalletTotalTradeRecordInfo> walletInTotalTradeRecordInfo = new PageDomain<>();
+		  Integer count=userWalletTradeRecordMapper.countByInTotalTradeRecordBySearchValue(startTime, endTime, searchValue);
+			  walletInTotalTradeRecordInfo.setTotal(count);
+			  walletInTotalTradeRecordInfo.setAsc("desc");
+			  walletInTotalTradeRecordInfo.setOffset(offset);
+			  walletInTotalTradeRecordInfo.setPageNum(pageNum);
+			  walletInTotalTradeRecordInfo.setPageSize(pageSize);
+			  walletInTotalTradeRecordInfo.setRows(userWalletInTotalTradeRecordList);
+			return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+			        .setData(walletInTotalTradeRecordInfo)
+			        .setErrorCode(ErrorCode.SUCCESS)
+			        .build();
 	  }else {
-		  endTime=timeLimitInfo.getEndTime();
+		  List<WalletTotalTradeRecordInfo> userWalletInTotalTradeRecordList=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime,offset, limit);
+		  PageDomain<WalletTotalTradeRecordInfo> walletInTotalTradeRecordInfo = new PageDomain<>();
+		  Integer count=userWalletTradeRecordMapper.countByInTotalTradeRecord(startTime, endTime);
+			  walletInTotalTradeRecordInfo.setTotal(count);
+			  walletInTotalTradeRecordInfo.setAsc("desc");
+			  walletInTotalTradeRecordInfo.setOffset(offset);
+			  walletInTotalTradeRecordInfo.setPageNum(pageNum);
+			  walletInTotalTradeRecordInfo.setPageSize(pageSize);
+			  walletInTotalTradeRecordInfo.setRows(userWalletInTotalTradeRecordList);
+			return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+			        .setData(walletInTotalTradeRecordInfo)
+			        .setErrorCode(ErrorCode.SUCCESS)
+			        .build();
 	  }
-	  
-	  List<WalletTotalTradeRecordInfo> userWalletInTotalTradeRecords=userWalletTradeRecordMapper.selectAllInTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
-		        .setData(userWalletInTotalTradeRecords)
-		        .setErrorCode(ErrorCode.SUCCESS)
-		        .build();
   }
   /**
    * @author Ming Yang
@@ -387,7 +462,20 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/inqureUserWalletOutTotalTradeRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureUserWalletOutTotalTradeRecord(@RequestBody TimeLimitInfo timeLimitInfo){
+  public ResponseEntity<?> inqureUserWalletOutTotalTradeRecord(@RequestBody PageDomain<Integer> pageInfo){
+	  
+	  	Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
 	  
 	  //获取当月第一天
 	  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -401,26 +489,43 @@ public class UserWalletController extends BaseShiroController {
       Date d = new Date();
       String nowDate = format.format(d);
       log.info("nowDate={}",nowDate);
-      
-	  String startTime=timeLimitInfo.getStartTime();
-	  String endTime=timeLimitInfo.getEndTime();
 	  
-	  if(startTime=="") {
+      String startTime=pageInfo.getStartTime();
+      String endTime=pageInfo.getEndTime();
+	  if(startTime=="")
 		  startTime=nowMonthOfFirstDay;
-	  }else {
-		  startTime=timeLimitInfo.getStartTime();
-	  }
-	  if(endTime=="") {
+	  if(endTime=="")
 		  endTime=nowDate;
+	  String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	  if(searchValue != null) {
+		  List<WalletTotalTradeRecordInfo> userWalletOutTotalTradeRecordList=userWalletTradeRecordMapper.selectAllOutTotalTradeRecordBySearchValue(startTime, endTime, offset, limit, searchValue);
+		  PageDomain<WalletTotalTradeRecordInfo> walletOutTotalTradeRecordInfo = new PageDomain<>();
+		  Integer count=userWalletTradeRecordMapper.countByOutTotalTradeRecordBySearchValue(startTime, endTime, searchValue);
+			  walletOutTotalTradeRecordInfo.setTotal(count);
+			  walletOutTotalTradeRecordInfo.setAsc("desc");
+			  walletOutTotalTradeRecordInfo.setOffset(offset);
+			  walletOutTotalTradeRecordInfo.setPageNum(pageNum);
+			  walletOutTotalTradeRecordInfo.setPageSize(pageSize);
+			  walletOutTotalTradeRecordInfo.setRows(userWalletOutTotalTradeRecordList);
+			return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+			        .setData(walletOutTotalTradeRecordInfo)
+			        .setErrorCode(ErrorCode.SUCCESS)
+			        .build();
 	  }else {
-		  endTime=timeLimitInfo.getEndTime();
+		  List<WalletTotalTradeRecordInfo> userWalletOutTotalTradeRecordList=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime,offset, limit);
+		  PageDomain<WalletTotalTradeRecordInfo> walletOutTotalTradeRecordInfo = new PageDomain<>();
+		  Integer count=userWalletTradeRecordMapper.countByOutTotalTradeRecord(startTime, endTime);
+			  walletOutTotalTradeRecordInfo.setTotal(count);
+			  walletOutTotalTradeRecordInfo.setAsc("desc");
+			  walletOutTotalTradeRecordInfo.setOffset(offset);
+			  walletOutTotalTradeRecordInfo.setPageNum(pageNum);
+			  walletOutTotalTradeRecordInfo.setPageSize(pageSize);
+			  walletOutTotalTradeRecordInfo.setRows(userWalletOutTotalTradeRecordList);
+			return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+			        .setData(walletOutTotalTradeRecordInfo)
+			        .setErrorCode(ErrorCode.SUCCESS)
+			        .build();
 	  }
-	  
-	  List<WalletTotalTradeRecordInfo> userWalletOutTotalTradeRecords=userWalletTradeRecordMapper.selectAllOutTotalTradeRecord(startTime, endTime);
-		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
-		        .setData(userWalletOutTotalTradeRecords)
-		        .setErrorCode(ErrorCode.SUCCESS)
-		        .build();
   }
   
   /**
@@ -430,13 +535,50 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/inqureUserWalletBalanceRecord")
   @ResponseBody
   @Transactional
-  public ResponseEntity<?> inqureUserWalletBalanceRecord(){
+  public ResponseEntity<?> inqureUserWalletBalanceRecord(@RequestBody PageDomain<Integer> pageInfo){
 	  
-	  List<WalletTotalTradeRecordInfo> userWalletBalanceRecords=userWalletTradeRecordMapper.selectAllUserBalanceRecord();
-		return new ResponseEntity.Builder<List<WalletTotalTradeRecordInfo>>()
-		        .setData(userWalletBalanceRecords)
-		        .setErrorCode(ErrorCode.SUCCESS)
-		        .build();
+	  	Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	 if(searchValue != null) {
+		 List<WalletTotalTradeRecordInfo> userWalletBalanceRecordList=userWalletTradeRecordMapper.selectAllUserBalanceRecordBySearchValue(offset, limit, searchValue);
+		  PageDomain<WalletTotalTradeRecordInfo> userWalletBalanceRecordInfo = new PageDomain<>();
+		  Integer count=userWalletTradeRecordMapper.countByUserBalanceRecordBySearchValue(searchValue);
+		  userWalletBalanceRecordInfo.setTotal(count);
+		  userWalletBalanceRecordInfo.setAsc("desc");
+		  userWalletBalanceRecordInfo.setOffset(offset);
+		  userWalletBalanceRecordInfo.setPageNum(pageNum);
+		  userWalletBalanceRecordInfo.setPageSize(pageSize);
+		  userWalletBalanceRecordInfo.setRows(userWalletBalanceRecordList);
+			return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+			        .setData(userWalletBalanceRecordInfo)
+			        .setErrorCode(ErrorCode.SUCCESS)
+			        .build();
+	 }else {
+		 List<WalletTotalTradeRecordInfo> userWalletBalanceRecordList=userWalletTradeRecordMapper.selectAllUserBalanceRecord(offset, limit);
+		  PageDomain<WalletTotalTradeRecordInfo> userWalletBalanceRecordInfo = new PageDomain<>();
+		  Integer count=userWalletTradeRecordMapper.countByUserBalanceRecord();
+		  userWalletBalanceRecordInfo.setTotal(count);
+		  userWalletBalanceRecordInfo.setAsc("desc");
+		  userWalletBalanceRecordInfo.setOffset(offset);
+		  userWalletBalanceRecordInfo.setPageNum(pageNum);
+		  userWalletBalanceRecordInfo.setPageSize(pageSize);
+		  userWalletBalanceRecordInfo.setRows(userWalletBalanceRecordList);
+			return new ResponseEntity.Builder<PageDomain<WalletTotalTradeRecordInfo>>()
+			        .setData(userWalletBalanceRecordInfo)
+			        .setErrorCode(ErrorCode.SUCCESS)
+			        .build();
+	 }
   }
   /**
    * @author Ming Yang

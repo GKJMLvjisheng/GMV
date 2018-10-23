@@ -13,6 +13,7 @@
 	<result column="tx_result" property="txResult"/>
 	<result column="tx_network" property="txNetwork"/>
 	<result column="remark" property="remark"/>
+	<result column="prior" property="prior"/>
 <!-- 	<result column="change_address" property="changeAddress"/> -->
 	<result column="created" property="created"/>
 	<result column="rest_balance" property="restBalance"/>
@@ -20,7 +21,7 @@
   
   
   <sql id="Base_Column_List">
-    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, created,rest_balance
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, prior,created,rest_balance
 <!--     , change_address -->
   </sql>
   
@@ -99,8 +100,9 @@
 		<if test = "txResult != 0">
 			tx_result = #{txResult},
 		</if>
+		prior = prior + 1,
 	</trim>
-	where uuid = #{uuid} 
+	where uuid = #{uuid}  
   </update>
 
   <!-- delete by id -->
@@ -122,7 +124,7 @@
   <select id="selectEthTransactionJob" resultMap="ethWalletDetailMap">
   	select 
       <include refid="Base_Column_List" />
-    from eth_wallet_detail where tx_hash &lt;&gt; '' and tx_result = 0 and tx_network = #{network} order by created desc limit 0,#{limit};
+    from eth_wallet_detail where tx_hash &lt;&gt; '' and tx_result = 0 and tx_network = #{network} order by prior limit 0,#{limit};
   </select>
   
   <select id="selectByPage" resultMap="ethWalletDetailMap">
@@ -237,5 +239,4 @@
 
 
 
-  
   

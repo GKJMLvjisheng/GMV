@@ -10,15 +10,15 @@
 	<result column="mnemonic" property="mnemonicList"/>
 	<result column="mnemonic_path" property="mnemonicPath"/>
 	<result column="address" property="address"/>
-	<result column="prefer_network" property="preferNetwork"/>
 	<result column="crypto" property="crypto"/>
+	<result column="backup" property="backup"/>
 	<result column="created" property="created"/>
 	<result column="updated" property="updated"/>
 	<result column="unconfirmed_balance" property="unconfirmedBalance"/>
   </resultMap>
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, prefer_network, crypto, created,updated,unconfirmed_balance
+    uuid, user_uuid, private_key, public_key, mnemonic, mnemonic_path, address, crypto,backup,created,updated,unconfirmed_balance
   </sql>
   
   
@@ -58,17 +58,14 @@
     		<if test="publicKey != null">
     			public_key = #{publicKey},
     		</if>
-			<if test="address != null">
+				<if test="address != null">
     			address = #{address},
     		</if>
     		<if test="crypto != null">
     			crypto = #{crypto}
     		</if>
-			<if test="updated != null">
+				<if test="updated != null">
     			updated = #{updated},
-    		</if>
-			<if test="preferNetwork != null">
-    			prefer_network = #{preferNetwork},
     		</if>
     		<if test="unconfirmedBalance != null">
     			unconfirmed_balance = #{unconfirmedBalance},
@@ -77,6 +74,11 @@
     	where user_uuid = #{userUuid}
   </update>
   
+	<update id="backup" parameterType="java.lang.String">
+		update eth_wallet 	
+			set backup = backup + 1
+		where user_uuid = #{userUuid}
+	</update>
   <!-- delete by uuid -->
   <delete id="deleteByUuid">
     delete from eth_wallet where uuid = #{uuid}
@@ -104,5 +106,5 @@
   left join user_info b on a.user_uuid=b.uuid
   where a.address = #{address}
   </select>
-  
+
 </mapper>

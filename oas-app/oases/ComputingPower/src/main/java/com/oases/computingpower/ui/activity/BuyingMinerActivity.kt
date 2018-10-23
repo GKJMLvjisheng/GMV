@@ -128,7 +128,6 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
                         }else {
                             alertView()
                         }
-
                     }
                 })
 
@@ -150,7 +149,7 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
                             mBottomShow.setVisible(true)
                             mPageCount++
                             mPageSum+=totalItemCount
-                            if(loadFlag){ //小于总条数加载加载更多
+                            if(loadFlag){ //小于总条数加载更多
                                 mPresenter.getMinerInfo(mPageCount,BaseConstant.PAGE_SIZE)
                             }
                         }
@@ -181,11 +180,6 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
         }else{
             toast("购买失败")
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initView()
     }
 
 
