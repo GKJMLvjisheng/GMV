@@ -173,11 +173,15 @@ public class PromotedRewardService {
 	   * @return
 	   *             返回代币奖励冻结比例
 	   */ 
-	  public BigDecimal getOasFrozenRewardRatio() {
+	  public String getOasFrozenRewardRatio() {
 		  String rewardCoinName="代币";
 		  PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
 		  BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();
-		  return frozenRatio;
+		  BigDecimal n=new BigDecimal(100);
+		  frozenRatio=frozenRatio.multiply(n);
+		  String frozenRatio2String=frozenRatio.toString();
+		  frozenRatio2String=frozenRatio2String+"%";
+		  return frozenRatio2String;
 	  }
 	  
 	  /**
@@ -185,13 +189,17 @@ public class PromotedRewardService {
 	   * @return
 	   *             返回代币奖励比例
 	   */ 
-	  public BigDecimal getOasRewardRatio() {
+	  public String getOasRewardRatio() {
 		  String rewardCoinName="代币";
 		  PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
 		  BigDecimal frozenRatio=promotedRewardModel.getFrozenRatio();
 		  BigDecimal a=new BigDecimal(1);
 		  BigDecimal rewardRatio=a.subtract(frozenRatio);
-		  return rewardRatio;
+		  BigDecimal n=new BigDecimal(100);
+		  rewardRatio=rewardRatio.multiply(n);
+		  String rewardRatio2String=rewardRatio.toString();
+		  rewardRatio2String=rewardRatio2String+"%";
+		  return rewardRatio2String;
 	  }
 	  
 	  
