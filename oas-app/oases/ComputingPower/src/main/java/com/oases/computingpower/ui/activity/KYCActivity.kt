@@ -117,17 +117,18 @@ class KYCActivity : BaseMvpActivity<KYCPresenter>(), KYCView,TakePhoto.TakeResul
         //看三张照片是否都已存在，存在进行更改状态
         mSubmitKYC.onClick {
             if (KYCVerifyStatus==0||KYCVerifyStatus==3) {
-                if (frontOfId != serverAddress && backOfId != serverAddress && handOfId != serverAddress){
+               // if (frontOfId != serverAddress && backOfId != serverAddress && handOfId != serverAddress){
                     if (frontChangeUri == "" && backChangeUri=="" && handChangeUri=="") {
                         Log.d("qqqqq", frontOfId.length.toString())
-                        toast("您未重新上传照片，请上传后提交")
-                    }else{
-                        var frontIdUri = frontOfId.substring(serverAddress.length-3, frontOfId.length)
-                        var backIdUri = backOfId.substring(serverAddress.length-3, backOfId.length)
-                        var handIdUri = handOfId.substring(serverAddress.length-3, handOfId.length)
+                        toast("请上传图片后再提交")
+                    }else if (frontOfId != serverAddress && backOfId != serverAddress && handOfId != serverAddress){
+                        var frontIdUri = frontOfId.substring(serverAddress.length-4, frontOfId.length)
+                        var backIdUri = backOfId.substring(serverAddress.length-4, backOfId.length)
+                        var handIdUri = handOfId.substring(serverAddress.length-4, handOfId.length)
                         mPresenter.changeKYCStatus(frontIdUri, backIdUri, handIdUri)
                     }
-                }else{
+                //}
+                else{
                     toast("您上传的照片不全")
                 }
             }else if(KYCVerifyStatus==1){
@@ -268,6 +269,7 @@ class KYCActivity : BaseMvpActivity<KYCPresenter>(), KYCView,TakePhoto.TakeResul
         if (mIDPosition ==1){
             var frontId = result.frontOfPhoto
             frontChangeUri = frontId
+            frontOfId = frontId
             Picasso.get().load(result.frontOfPhoto)
                     .into(mFrontID)
             toast("上传成功")
@@ -276,8 +278,9 @@ class KYCActivity : BaseMvpActivity<KYCPresenter>(), KYCView,TakePhoto.TakeResul
                     .setBadgeBackgroundColor(-0x14c5)   //黄色
         }
         if (mIDPosition ==2){
-            var backId = result.frontOfPhoto
+            var backId = result.backOfPhoto
             backChangeUri = backId
+            backOfId = backId
             Picasso.get().load(result.backOfPhoto)
                     .into(mBackID)
             toast("上传成功")
@@ -286,8 +289,9 @@ class KYCActivity : BaseMvpActivity<KYCPresenter>(), KYCView,TakePhoto.TakeResul
                     .setBadgeBackgroundColor(-0x14c5)   //黄色
         }
         if (mIDPosition ==3){
-            var handId = result.frontOfPhoto
+            var handId = result.holdInHand
             handChangeUri = handId
+            handOfId = handId
             Picasso.get().load(result.holdInHand)
                     .into(mHandIDCounter)
             toast("上传成功")

@@ -24,16 +24,16 @@ class WalletFragment : BaseFragment(){
     private val mFragments  by lazy {arrayOf(MyPointsFragment(), WalletOnLineFragment(), TransitWalletFragment())}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        super.onCreateView(inflater, container, savedInstanceState)
-        Log.d("zbb", "WalletFragment, create view")
+                                  savedInstanceState: Bundle?): View? {
+            // Inflate the layout for this fragment
+            super.onCreateView(inflater, container, savedInstanceState)
+            Log.d("zbb", "WalletFragment, create view")
 
-        var rootFragment = inflater.inflate(R.layout.fragment_wallet, null)
-        mTabLayout = rootFragment.findViewById(R.id.mTabLayout)
-        mViewPager = rootFragment.findViewById(R.id.mViewPager)
-        setupViewPager()
-        //mPresenter.transactionDetail(1,BaseConstant.PAGE_SIZE)
+            var rootFragment = inflater.inflate(R.layout.fragment_wallet, null)
+            mTabLayout = rootFragment.findViewById(R.id.mTabLayout)
+            mViewPager = rootFragment.findViewById(R.id.mViewPager)
+            setupViewPager()
+            //mPresenter.transactionDetail(1,BaseConstant.PAGE_SIZE)
         return rootFragment
     }
 

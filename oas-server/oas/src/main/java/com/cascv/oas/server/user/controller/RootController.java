@@ -104,4 +104,9 @@ public class RootController {
 	  public String minerParam() {
 	  	    return "miner/minerParameter";  
 	  	    }
+	//用户账号管理
+	  @GetMapping("/userAccountManage")
+	  public String userAccountManage() {
+	  	    return "userAccountManage"; 
+	  	    }
 }

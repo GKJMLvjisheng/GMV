@@ -65,5 +65,4 @@ class ComputingPowerRepository @Inject constructor() {
     }
 
 
-
 }

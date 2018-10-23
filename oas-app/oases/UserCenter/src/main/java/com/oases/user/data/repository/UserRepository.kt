@@ -89,4 +89,9 @@ class UserRepository @Inject constructor() {
     fun resetPwd(name:String,newPwd:String): Observable<BaseResp<Int>> {
         return RetrofitFactory.instance.create(UserApi::class.java).resetPwd(ResetPwdReq(name,newPwd))
     }
+
+    fun confirmOldPwd(req: confirmOldPwdReq): Observable<BaseResp<confirmOldPwdResp>> {
+        return RetrofitFactory.instance.create(UserApi::class.java).confirmOldPwd(req)
+    }
+
 }
