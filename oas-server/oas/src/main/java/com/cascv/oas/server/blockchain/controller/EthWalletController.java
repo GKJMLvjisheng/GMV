@@ -34,6 +34,7 @@ import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserCoinResp;
+import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletMultiTransfer;
@@ -443,21 +444,25 @@ public class EthWalletController extends BaseShiroController {
       info.setGasLimit(gasLimit);
 	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.reverseWithdraw(info,user)).build();
   }
-  
   /**
-      *  点击交易钱包记录查看区块链上转账记录，并标记状态
-   * @param detail
+   * 获取system在线钱包交易记录
+   * @param pageInfo
    * @return
    */
- /* @PostMapping(value="/getExchangeResult")
-  @ResponseBody
-  @Transactional
-  public ResponseEntity<?> getExchangeResult(@RequestBody EthWalletDetail detail){
-	  if(detail.getUuid() == null) {
-		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.SELECT_EMPTY).build();
+  @PostMapping(value="/systemTransactionDetail")
+  @ResponseBody()
+  public ResponseEntity<?> systemTransactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+	  Integer pageNum = 1;
+	  Integer pageSize = 10;
+	  if(pageInfo != null) {
+		  pageNum = (pageInfo.getPageNum() == null || pageInfo.getPageNum()<=0? pageNum:pageInfo.getPageNum());
+		  pageSize = (pageInfo.getPageSize() == null || pageInfo.getPageSize()<=0? pageSize:pageInfo.getPageSize());
 	  }
-	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ethWalletService.getExchangeResult(detail)).build();
-	  
+
+	  return new ResponseEntity.Builder<PageDomain<EthWalletDetail>>()
+	            .setData(ethWalletDetailService.systemTransactionDetail(pageNum,pageSize))
+	            .setErrorCode(ErrorCode.SUCCESS)
+	            .build();
   }
-  */
+  
 }

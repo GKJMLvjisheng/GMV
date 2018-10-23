@@ -7,14 +7,17 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cascv.oas.server.user.model.UserIdentityCardModel;
-import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
+import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
+import com.cascv.oas.server.user.model.UserIdentityCardModel;
+import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.model.UserRole;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -29,7 +32,7 @@ public class UserService {
   private TimeZoneService timeZoneService;
   @Autowired
   private MediaServer mediaServer;
-	
+
   public UserModel findUserByName(String name){
     UserModel userModel = userModelMapper.selectByName(name);
     return userModel;
@@ -233,6 +236,7 @@ public class UserService {
 	public List<String> selectIdentityNumber(String mobile){
 		return userModelMapper.selectUserMobile(mobile);
 	}
+
 }
 
 

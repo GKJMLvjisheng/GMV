@@ -47,6 +47,8 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
@@ -224,7 +226,7 @@ public class UserWalletController extends BaseShiroController {
 		  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(ErrorCode.VALUE_CAN_NOT_BE_NULL).build();
 	  }
 	  oasDetail.setUserUuid(user.getUuid());
-	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(userWalletService.withdraw(oasDetail)).build();
+	  return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(userWalletService.withdraw(oasDetail,user)).build();
   }
   
   /**
@@ -291,6 +293,27 @@ public class UserWalletController extends BaseShiroController {
 	  return new ResponseEntity.Builder<Integer>()
 		        .setData(1)
 		        .setErrorCode(userWalletService.updateOasExtra(value)).build();
+  }
+  
+  /**
+   * 获取system在线钱包交易记录
+   * @param pageInfo
+   * @return
+   */
+  @PostMapping(value="/systemTransactionDetail")
+  @ResponseBody()
+  public ResponseEntity<?> systemTransactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+	  Integer pageNum = 1;
+	  Integer pageSize = 10;
+	  if(pageInfo != null) {
+		  pageNum = (pageInfo.getPageNum() == null || pageInfo.getPageNum()<=0? pageNum:pageInfo.getPageNum());
+		  pageSize = (pageInfo.getPageSize() == null || pageInfo.getPageSize()<=0? pageSize:pageInfo.getPageSize());
+	  }
+
+	  return new ResponseEntity.Builder<PageDomain<UserWalletDetail>>()
+	            .setData(userWalletDetailService.systemTransactionDetail(pageNum,pageSize))
+	            .setErrorCode(ErrorCode.SUCCESS)
+	            .build();
   }
   
   /**

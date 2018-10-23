@@ -20,5 +20,7 @@ public class UserWalletDetail {
  // @Getter @Setter private String txNetwork;
   //@Getter @Setter private String changeUserName;
   @Getter @Setter private String oasDetailUuid;
+  @Getter @Setter private BigDecimal extra;
+  @Getter @Setter private BigDecimal restBalance;
   
 }

@@ -59,7 +59,9 @@ public enum ErrorCode {
   NO_WALK_PERMISSION(10042,"在当前时间段，计步奖励功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
   No_TRANSFER_PERMISSION(10043,"在当前时间段，转账功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
   No_REVERSEWITHDRAW_PERMISSION(10043,"在当前时间段，充币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
-  No_WITHDRAW_PERMISSION(10043,"在当前时间段，提币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");
+  No_WITHDRAW_PERMISSION(10043,"在当前时间段，提币功能暂时无法使用。欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
+  SYSTEM_ETH_BALANCE_LOWER_THAN_WARING(10044,"用于提充币的系统交易钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动"),
+  SYSTEM_USER_BALANCE_LOWER_THAN_WARING(10045,"用于提充币的系统在线钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动");
 	
   @Getter @Setter private Integer code;
   @Getter @Setter private String message;

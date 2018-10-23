@@ -1,5 +1,6 @@
 package com.cascv.oas.server.blockchain.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -22,5 +23,36 @@ public interface EthWalletDetailMapper {
   UserModel selectUserByAddress(String address);
 
   List<EthWalletDetail> selectEthTransactionJob(@Param("network") String network, @Param("limit") Integer limit); 
+  
+  /**
+   * 根据hash值返回记录
+   * @param hash
+   * @return
+   */
+  List<EthWalletDetail> getEthRecordByHash(String hash);
+  /**
+   * 根据hash值更新restbalance
+   * @param hash
+   * @param restBalance
+   * @return
+   */
+  Integer updateRestBalanceByHash(@Param("uuid") String uuid,@Param("restBalance") BigDecimal restBalance);
+  
+  /**
+   * 获取system的交易记录分页
+   * @return
+   */
+  List<EthWalletDetail> getSystemDetailByPage(@Param("offset") Integer offset,@Param("limit") Integer limit);
+  
+  /**
+   * 获取system记录总数
+   * @return
+   */
+  Integer getSystemDetailCount();
+  /**
+   * 获取system的交易钱包address
+   * @return
+   */
+  String getSystemAddress();
 
 }

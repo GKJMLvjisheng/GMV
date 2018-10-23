@@ -311,6 +311,7 @@ public class EnergyService {
         EnergyTradeRecord energyTradeRecord = this.getEnergyRecord(userUuid, energyBallUuid, now);
         energyTradeRecord.setPointChange(energyBallMapper.selectByUuid(energyBallUuid).getPoint());
         energyTradeRecord.setPowerChange(energyBallMapper.selectByUuid(energyBallUuid).getPower());
+        energyTradeRecord.setRestPoint(getPointWalletPoint(energyTradeRecord.getUserUuid(),energyTradeRecord.getInOrOut(),energyTradeRecord.getPointChange()));
         energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
         // 改变账户余额
         EnergyBall energyBall = energyBallMapper.selectByUuid(energyBallUuid);
@@ -391,7 +392,22 @@ public class EnergyService {
         energyTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
         energyTradeRecord.setPointChange(this.getCheckinEnergy().getNewEnergyPoint());
         energyTradeRecord.setPowerChange(this.getCheckinEnergy().getNewPower());
+        energyTradeRecord.setRestPoint(getPointWalletPoint(userId,ENEGY_IN,this.getCheckinEnergy().getNewEnergyPoint()));
         return energyTradeRecord;
+    }
+    /**
+     * 根据用户id获取用户的能量钱包point值
+     * @param userId
+     * @return
+     */
+    public BigDecimal getPointWalletPoint(String userId,Integer flag,BigDecimal changePoint) {
+    	BigDecimal result = null;
+    	if(userId == null) return result;
+    	EnergyWallet ewallet = energyWalletMapper.selectByUserUuid(userId);
+    	if(ewallet!=null) {
+    		result = (flag>0?ewallet.getPoint().add(changePoint):ewallet.getPoint().subtract(changePoint));
+    	}
+    	return result;
     }
 
     /**
@@ -463,6 +479,7 @@ public class EnergyService {
     	energyTradeRecord.setUpdated(now);
     	energyTradeRecord.setUserUuid(userUuid);
     	energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+    	energyTradeRecord.setRestPoint(getPointWalletPoint(userUuid,0,total).add(total));
     	energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
     }
     /*

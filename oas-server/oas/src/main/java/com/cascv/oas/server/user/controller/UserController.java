@@ -2,6 +2,7 @@ package com.cascv.oas.server.user.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,7 +14,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
+
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -32,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
@@ -59,9 +64,10 @@ import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
+import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
-import com.cascv.oas.server.user.wrapper.updateUserInfo;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -158,7 +164,7 @@ public class UserController extends BaseShiroController{
 		  String now =DateUtils.getTime();
 		  userRole.setRolePriority(1);
 		  userRole.setCreated(now);
-		  userRoleModelMapper.insertUserRole(userRole);  
+		  userRoleModelMapper.insertUserRole(userRole);
 					
 		ErrorCode ret = userService.addUser(uuid, userModel);
 //		log.info("inviteCode {}", userModel.getInviteCode());
@@ -1165,5 +1171,31 @@ public class UserController extends BaseShiroController{
 		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
+	}
+	/**
+	 * 增加system用户及三个钱包账号
+	 */
+	@PostConstruct
+	private void registerSystem() {
+		UserModel userModel = new UserModel();
+		userModel.setName("SYSTEM2222");
+		userModel.setPassword("123456");
+		String password = userModel.getPassword();
+		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+		ErrorCode code = userService.addUser(uuid, userModel);
+		if(code.getCode() == 0) { // 用户不存在
+			ethWalletService.create(uuid, password);
+			userWalletService.createAccountByMoney(uuid,new BigDecimal("10000000"));
+			energyPointService.create(uuid);
+			
+			//给用户赋予默认角色（普通用户roleId为2)
+			UserRole userRole=new UserRole();
+		    userRole.setUuid(uuid);
+		    userRole.setRoleId(2);
+		    String now =DateUtils.getTime();
+		    userRole.setRolePriority(1);
+		    userRole.setCreated(now);
+		    userRoleModelMapper.insertUserRole(userRole);
+		}
 	}
 }

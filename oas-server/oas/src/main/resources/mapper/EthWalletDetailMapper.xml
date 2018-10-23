@@ -15,11 +15,12 @@
 	<result column="remark" property="remark"/>
 <!-- 	<result column="change_address" property="changeAddress"/> -->
 	<result column="created" property="created"/>
+	<result column="rest_balance" property="restBalance"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, created
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, created,rest_balance
 <!--     , change_address -->
   </sql>
   
@@ -52,6 +53,9 @@
     	<if test="remark != null">
     		remark,
     	</if>
+    	<if test="restBalance != null">
+    		rest_balance,
+    	</if>
 <!--     	<if test="changeAddress != null"> -->
 <!--     		change_address, -->
 <!--     	</if> -->
@@ -81,6 +85,9 @@
     	</if>
     	<if test="remark != null">
     		#{remark,jdbcType=VARCHAR},
+    	</if>
+    	<if test="restBalance != null">
+    		#{restBalance,jdbcType=DECIMAL},
     	</if>
     		#{created,jdbcType=VARCHAR}
     </trim>
@@ -168,6 +175,9 @@
     	<if test="txResult != null">
     		tx_result = #{txResult,jdbcType=INTEGER},
     	</if>
+    	<if test="restBalance != null">
+	   		rest_balance = #{restBalance,jdbcType=DECIMAL},
+	   	</if>
     </set>
     where uuid = #{uuid,jdbcType=VARCHAR}
   </update>
@@ -181,6 +191,47 @@
   select b.* from eth_wallet a
   left join user_info b on a.user_uuid = b.uuid
   where a.address = #{address,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getEthRecordByHash" resultMap="ethWalletDetailMap">
+  	select <include refid="Base_Column_List" />
+  	from eth_wallet_detail
+  	where tx_hash = #{hash,jdbcType=VARCHAR}
+  </select>
+  
+  <update id="updateRestBalanceByHash">
+  update eth_wallet_detail
+  <set>
+   	<if test="restBalance != null">
+   		rest_balance = #{restBalance,jdbcType=DECIMAL},
+   	</if>
+  </set>
+  where uuid = #{uuid,jdbcType=VARCHAR}
+  </update>
+  
+    <select id="getSystemDetailByPage" resultMap="ethWalletDetailMap">
+  select <include refid="Base_Column_List" /> 
+  from eth_wallet_detail where address =(
+	select address from eth_wallet where user_uuid in(
+  	select uuid from user_info where name='SYSTEM'
+  )limit 1)
+  order by created desc limit #{offset},#{limit}   
+  </select>
+  
+  <select id="getSystemDetailCount" resultType="java.lang.Integer">
+  select count(*)
+  from eth_wallet_detail where address =(
+	select address from eth_wallet where user_uuid in(
+  	select uuid from user_info where name='SYSTEM'
+  )limit 1)
+  </select>
+  
+  <select id="getSystemAddress" resultType="java.lang.String">
+  	select address from eth_wallet 
+  	where user_uuid in(
+  		select uuid from user_info where name='SYSTEM'
+    )
+    limit 1
   </select>
 </mapper>
 

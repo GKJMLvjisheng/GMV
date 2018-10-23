@@ -440,7 +440,7 @@ public class PromotedRewardService {
 		log.info("buyUser增加余额:{}",userName);
 		userWalletMapper.increaseBalance(buyUserWallet.getUuid(), value);
 		log.info("buyUser增加记录:{}",userName);
-		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
+		UserWalletDetail userWalletDetail = UserWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null,buyUserWallet.getBalance().add(value));
 		userWalletDetailMapper.insertSelective(userWalletDetail);
 		Integer userMaxMinerGrade=this.getUserMaxMinerGrade(userUuid);
 		log.info("buyUser最大矿机级别:{}",userMaxMinerGrade);
@@ -468,7 +468,7 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				UserWalletDetail superiorsUserWalletDetail = UserWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null,superiorsUserWallet.getBalance().add(superiorsValue));
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {
@@ -514,7 +514,7 @@ public class PromotedRewardService {
 		log.info("buyUser增加余额:{}",userName);
 		userWalletMapper.increaseBalance(buyUserWallet.getUuid(), value);
 		log.info("buyUser增加记录:{}",userName);
-		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
+		UserWalletDetail userWalletDetail = UserWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,value,null,"测试下线购买矿机奖励",null,buyUserWallet.getBalance().add(value));
 		userWalletDetailMapper.insertSelective(userWalletDetail);
 		Integer userMaxMinerGrade=this.getUserMaxMinerGrade(userUuid);
 		log.info("buyUser最大矿机级别:{}",userMaxMinerGrade);
@@ -541,7 +541,7 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null);
+				UserWalletDetail superiorsUserWalletDetail = UserWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,"测试下线购买矿机奖励",null,superiorsUserWallet.getBalance().add(superiorsValue));
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {

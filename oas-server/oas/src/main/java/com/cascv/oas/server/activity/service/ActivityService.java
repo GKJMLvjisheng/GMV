@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
@@ -18,6 +19,7 @@ import com.cascv.oas.server.activity.wrapper.EnergyResultPower;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
+import com.cascv.oas.server.energy.service.EnergyService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +29,8 @@ public class ActivityService {
 	
 	@Autowired
 	private ActivityMapper activityMapper;
+	@Autowired
+	private EnergyService energyService;
 	
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;       // 能量球活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
@@ -252,8 +256,10 @@ public class ActivityService {
      */
 	public Integer addPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
 		log.info("addPointTradeRecord={}",addPointTradeRecord.getEnergyBallUuid());
-		if (this.getPointTradeRecord(userUuid, sourceCode, rewardCode) != null) 
+		if (this.getPointTradeRecord(userUuid, sourceCode, rewardCode) != null) {
+			addPointTradeRecord.setRestPoint(energyService.getPointWalletPoint(addPointTradeRecord.getUserUuid(),addPointTradeRecord.getInOrOut(),addPointTradeRecord.getPointChange()));
 			return activityMapper.insertPointTradeRecord(addPointTradeRecord);
+		}
 		else 
 			return null;
 	}
