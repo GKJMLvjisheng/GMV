@@ -28,6 +28,12 @@
 	padding-left: 5px;
 	margin-top:20px;
    }
+   .form{
+    width: 16.33333333%;
+	padding-right: 5px;
+	margin-top:20px;
+	height: 33px;
+   }
    .input-group	{ 
     vertical-align:middle;
 	margin-top:11px;
@@ -57,7 +63,8 @@
 	</div> 
 
 	<div class = "container" id="page1">
-			<table id="energyWalletGrid"></table>
+		<input class="form" id="energy1" required="required" placeholder="搜索" onblur="initEnergyWalletGrid()"/>
+		<table id="energyWalletGrid"></table>
 	</div> 
 	
 	<div class = "container" style="display:none" id="page2">		
