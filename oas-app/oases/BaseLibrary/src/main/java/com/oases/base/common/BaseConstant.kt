@@ -13,7 +13,7 @@ class BaseConstant{
         //本地服务器地址
        // const val SERVER_ADDRESS = "http://10.0.0.20:8080"
         //远程服务器地址
-        const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"
+        const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"/"http://10.0.0.13:8080"//
 
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
@@ -34,6 +34,7 @@ class BaseConstant{
 
         const val MY_OAS_ADDRESS = "my_oas_address"
         const val MY_OAS_AMOUNT = "my_oas_amount"
+        const val MY_OAS_AMOUNT_UNCONFIRMED = "my_oas_amount_unconfirmed"
         const val MY_POINTS = "MY_POINTS"
         const val MY_OAS_PROTOCOL = "my_oas_protocol"
         //const val ON_GOING_TRANSACTION="on_going_Transaction"

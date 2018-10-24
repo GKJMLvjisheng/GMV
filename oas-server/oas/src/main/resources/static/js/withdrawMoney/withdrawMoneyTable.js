@@ -1,29 +1,44 @@
 
 //提币请求审核创建bootstrapTable
 
-function initRequestAuditGrid(data) {	
+function initRequestAuditGrid() {	
 
 	$("#requestAuditGrid").bootstrapTable({
-
-		contentType : "application/x-www-form-urlencoded",
-
+		url: "/api/v1/userWallet/getWithdrawList",
+		contentType : "application/json",
 		dataType:"json",
-
+		method:"post",
 		pagination:true,//显示分页条：页码，条数等
 
 		striped:true,//隔行变色
 
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
-
+		sidePagination:"server",//在服务器分页
+		dataField: "withdrawData",
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		
+		queryParams:function(params){
+			return {
+				pageSize : params.limit,
+				pageNum : params.offset / params.limit + 1,
+			}
+		},//请求服务器时所传的参数
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-
-		data:data,
+	    responseHandler:function(res){
+	    	if(res.code != 0 ){
+	    		alert("提币请求审核回显失败！"+res.message)
+	    		return{
+	    			total:0,
+	    			withdrawData : null
+	    		}
+	    	}
+	    	return {
+	    		 total : res.data.total, //总页数,前面的key必须为"total"
+	    		 withdrawData : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+	    	}
+	    },
 		columns : [{  
 		title: 'uuid',  
 		field: 'uuid',
@@ -83,8 +98,8 @@ function initRequestAuditGrid(data) {
 			valign: 'middle',
 			formatter: actionFormatter		
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+		//search : true,//搜索
+       // searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }

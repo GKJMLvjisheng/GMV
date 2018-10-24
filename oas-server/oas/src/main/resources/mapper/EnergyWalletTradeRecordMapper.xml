@@ -8,10 +8,11 @@
 	<result column="point_change" property="pointChange"/>
 	<result column="status" property="status"/>
 	<result column="created" property="created"/>
+	<result column="rest_point" property="restPoint"/>
   </resultMap>
   <select id="selectAllTradeRecord" resultMap="EnergyWalletTradeRecordMap">
 select 
-	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created 
+	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
 from 
 	  point_trade_record etr,user_info u
 where
@@ -22,12 +23,15 @@ limit #{offset}, #{limit};
 
 <select id="selectAllTradeRecordBySearchValue" resultMap="EnergyWalletTradeRecordMap">
 select 
-	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created 
+	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
 from 
 	  point_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid and 
 	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%')
+	   <if test="searchValue != null and searchValue !='' ">
+    		or etr.rest_point like concat('%',#{searchValue},'%')
+       </if>
 order by etr.created desc
 limit #{offset}, #{limit};
 </select>
@@ -48,7 +52,10 @@ from
 	  point_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid and
-	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%');
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%')
+	   <if test="searchValue != null and searchValue !='' ">
+    		or etr.rest_point like concat('%',#{searchValue},'%')
+       </if>
 </select>
 
 <resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">

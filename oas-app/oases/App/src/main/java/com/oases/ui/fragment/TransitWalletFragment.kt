@@ -20,7 +20,9 @@ import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
 import com.oases.presenter.TransitWalletPresenter
 import com.oases.presenter.view.TransitWalletView
+import com.oases.ui.activity.ExchangeCoinActivity
 import kotlinx.android.synthetic.main.fragment_transit_wallet.*
+import org.jetbrains.anko.support.v4.startActivity
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -89,8 +91,9 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
 /*        mPresenter.listCoin()
         mPresenter.summary()*/
         mOas.onClick {
+            startActivity<ExchangeCoinActivity>()
             // startActivity(intentFor<ExchangeCoinActivity>().singleTop().clearTop())
-              ARouter.getInstance().build("/app/ExchangeCoinActivity").navigation()
+             // ARouter.getInstance().build("/app/ExchangeCoinActivity").navigation()
                      /*  .withString("balance", mOas.getValue())
                        .withString("value",mOas.getEqualsValue())*/
         }

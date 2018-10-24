@@ -284,17 +284,17 @@ public class MinerController {
 				.build();
 		
 	}
-	
-	//目前矿机总数
-	@PostMapping(value = "/countMiner")  
-	@ResponseBody
-	public ResponseEntity<?> countMiner(){
-		Integer count = minerMapper.selectAllWebMiner().size();
-		return new ResponseEntity.Builder<Integer>()
-				.setData(count)
-				.setErrorCode(ErrorCode.SUCCESS)
-				.build();
-	}
+//	
+//	//目前矿机总数
+//	@PostMapping(value = "/countMiner")  
+//	@ResponseBody
+//	public ResponseEntity<?> countMiner(){
+//		Integer count = minerMapper.selectAllWebMiner().size();
+//		return new ResponseEntity.Builder<Integer>()
+//				.setData(count)
+//				.setErrorCode(ErrorCode.SUCCESS)
+//				.build();
+//	}
 	
 	//购买矿机
 	@PostMapping(value = "/buyMiner")  

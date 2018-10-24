@@ -13,12 +13,23 @@
   </resultMap>
   <select id="selectAllTradeRecord" resultMap="ethWalletTradeRecordMap">
   select 
-	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance
-	,ed.sub_title
+	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title
 from 	
 	eth_wallet_detail ed,user_info u,eth_wallet e
 where
 	ed.address=e.address and e.user_uuid=u.uuid
+order by ed.created desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="selectAllTradeRecordBySearchValue" resultMap="ethWalletTradeRecordMap">
+  select 
+	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title
+from 	
+	eth_wallet_detail ed,user_info u,eth_wallet e
+where
+	ed.address=e.address and e.user_uuid=u.uuid and
+	concat(u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title) like concat('%',#{searchValue},'%')
 order by ed.created desc
 limit #{offset}, #{limit};
 </select>
@@ -30,6 +41,16 @@ from
 	eth_wallet_detail ed,user_info u,eth_wallet e
 where
 	ed.address=e.address and e.user_uuid=u.uuid;
+</select>
+
+<select id="countByTradeRecordBySearchValue" resultType="java.lang.Integer">
+  select 
+	count(*)
+from 	
+	eth_wallet_detail ed,user_info u,eth_wallet e
+where
+	ed.address=e.address and e.user_uuid=u.uuid and
+	concat(u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title) like concat('%',#{searchValue},'%');
 </select>
 
 <resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
@@ -49,6 +70,19 @@ order by value desc
 limit #{offset}, #{limit};
    </select>
    
+ <select id="selectAllInTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
+   select 
+		u.name,SUM(ed.value) as value
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		and concat(u.name,ed.value) like concat('%',#{searchValue},'%')
+group by u.name 
+order by value desc
+limit #{offset}, #{limit};
+   </select>
+   
       <select id="countByInTotalTradeRecord" resultType="java.lang.Integer">
    select 
 		count(distinct ed.address)
@@ -56,6 +90,16 @@ from
 		eth_wallet e,eth_wallet_detail ed,user_info u
 where
 		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+   </select>
+   
+         <select id="countByInTotalTradeRecordBySearchValue" resultType="java.lang.Integer">
+   select 
+		count(distinct ed.address)
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		and concat(u.name,ed.value) like concat('%',#{searchValue},'%');
    </select>
    
       <select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
@@ -70,6 +114,19 @@ order by value desc
 limit #{offset}, #{limit};
    </select>
    
+  <select id="selectAllOutTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
+   select 
+		u.name,SUM(ed.value) as value
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		and concat(u.name,ed.value) like concat('%',#{searchValue},'%')
+group by u.name 
+order by value desc
+limit #{offset}, #{limit};
+   </select>
+   
    <select id="countByOutTotalTradeRecord" resultType="java.lang.Integer">
    select 
 		count(distinct ed.address)
@@ -77,5 +134,15 @@ from
 		eth_wallet e,eth_wallet_detail ed,user_info u
 where
 		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+   </select>
+   
+      <select id="countByOutTotalTradeRecordBySearchValue" resultType="java.lang.Integer">
+   select 
+		count(distinct ed.address)
+from 
+		eth_wallet e,eth_wallet_detail ed,user_info u
+where
+		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+        and concat(u.name,ed.value) like concat('%',#{searchValue},'%');
    </select>
 </mapper>
