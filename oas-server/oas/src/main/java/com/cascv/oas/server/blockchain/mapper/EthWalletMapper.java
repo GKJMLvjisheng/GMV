@@ -10,4 +10,10 @@ public interface EthWalletMapper {
   EthWallet selectByUserUuid(String userUuid);
   Integer deleteByUuid(String uuid);
   Integer deleteByUserUuid(String userUuid);
+  /**
+   * 根据eth钱包地址获取当前用户的useruuid
+   * @param address
+   * @return
+   */
+  String getUserUuidByAddress(String address);
 }

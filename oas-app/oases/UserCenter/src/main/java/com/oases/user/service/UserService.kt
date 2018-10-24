@@ -12,8 +12,8 @@ import java.io.File
  * 2018/8/14
  */
 interface UserService {
-    fun register(name:String, pwd:String,inviteFrom:String): Observable<RegisterResp>
-    fun login(name:String, pwd:String):Observable<UserInfo>
+    fun register(req:RegisterReq): Observable<RegisterResp>
+    fun login(name:String, pwd:String, imei: String):Observable<UserInfo>
     fun registerConfirm(uuid:String):Observable<Boolean>
     fun updateUserIcon(UserIcon: MultipartBody.Part):Observable<uploadImgResp>
     fun updateNickName(NickName:String):Observable<UserInfo>

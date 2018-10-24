@@ -100,4 +100,11 @@
       <include refid="Base_Column_List" />
     from eth_wallet where user_uuid = #{userUuid}
   </select>
+  
+  <select id="getUserUuidByAddress" resultType="java.lang.String">
+  select b.uuid from eth_wallet a
+  left join user_info b on a.user_uuid=b.uuid
+  where a.address = #{address}
+  </select>
+
 </mapper>

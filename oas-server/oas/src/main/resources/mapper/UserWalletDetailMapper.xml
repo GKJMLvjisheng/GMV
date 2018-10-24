@@ -17,11 +17,12 @@
 	<result column="tx_result" property="txResult"/>
 	<!-- <result column="tx_network" property="txNetwork"/> -->
 	<result column="oas_detail_uuid" property="oasDetailUuid"/>
+	<result column="rest_balance" property="restBalance"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created, tx_result, oas_detail_uuid
+    uuid, user_uuid, value, title, sub_title,in_or_out, remark, created, tx_result, oas_detail_uuid,rest_balance
 <!--     ,comment, change_user_name -->
   </sql>
   
@@ -56,6 +57,9 @@
     	</if>
     	<if test="oasDetailUuid != null">
     		oas_detail_uuid,
+    	</if>
+    	<if test="restBalance != null">
+    		rest_balance,
     	</if>
     	<!-- <if test="txNetwork != null">
     		tx_network,
@@ -93,6 +97,9 @@
     	<if test="oasDetailUuid != null">
     		#{oasDetailUuid,jdbcType=VARCHAR},
     	</if>
+    	<if test="restBalance != null">
+    		#{restBalance,jdbcType=DECIMAL},
+    	</if>
     	<!-- <if test="txNetwork != null">
     		#{txNetwork,jdbcType=VARCHAR},
     	</if> -->
@@ -117,10 +124,12 @@
   	select count(*) from user_wallet_detail where user_uuid = #{userUuid};
   </select>
   
-  <select id="selectByPage" resultMap="userWalletDetailMap">
-  	select 
-      <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid} order by created desc limit #{offset},#{limit};
+  <select id="selectByPage" resultType="com.cascv.oas.server.blockchain.model.UserWalletDetail">
+  	select  a.uuid, a.user_uuid as userUuid, a.value, a.title, a.sub_title as subTitle,a.in_or_out as inOrOut, a.remark, a.created,
+  	b.status as txResult, a.oas_detail_uuid as oasDetailUuid,a.rest_balance as restBalance,b.extra
+    from user_wallet_detail a
+	left join oas_detail b on a.oas_detail_uuid = b.uuid
+    where a.user_uuid = #{userUuid} order by a.created desc limit #{offset},#{limit};
   </select>
 
   <select id="selectByUserUuid" parameterType="java.lang.String" resultMap="userWalletDetailMap">
@@ -129,10 +138,12 @@
     from user_wallet_detail where user_uuid = #{userUuid};
   </select>
   
-   <select id="selectByInOrOut" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultMap="userWalletDetailMap">
-  	select 
-      <include refid="Base_Column_List" />
-    from user_wallet_detail where user_uuid = #{userUuid} and in_or_out = #{inOrOut} order by created desc limit #{offset},#{limit};
+   <select id="selectByInOrOut" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultType="com.cascv.oas.server.blockchain.model.UserWalletDetail">
+  	select  a.uuid, a.user_uuid as userUuid, a.value, a.title, a.sub_title as subTitle,a.in_or_out as inOrOut, a.remark, a.created,
+  	b.status as txResult, a.oas_detail_uuid as oasDetailUuid,a.rest_balance as restBalance,b.extra
+    from user_wallet_detail a
+	left join oas_detail b on a.oas_detail_uuid = b.uuid
+    where a.user_uuid = #{userUuid} and a.in_or_out = #{inOrOut} order by a.created desc limit #{offset},#{limit};
   </select>
   
   <select id="selectUserDailyTotalAmount" parameterType="com.cascv.oas.server.blockchain.model.UserWalletDetail" resultType="java.math.BigDecimal">
@@ -160,9 +171,27 @@
   	<if	test="txResult != 0 ">
   		tx_result = #{txResult,jdbcType=INTEGER},
   	</if>
+  	<if test="restBalance !=null ">
+  	    rest_balance = #{restBalance,jdbcType=DECIMAL},
+  	</if>
   </set>
-  where oas_detail_uuid = #{oasDetailUuid,jdbcType=VARCHAR} 
+  where oas_detail_uuid = #{oasDetailUuid,jdbcType=VARCHAR} and in_or_out = #{inOrOut,jdbcType=INTEGER}
   </update>
+  
+  <select id="getSystemDetailByPage" resultMap="userWalletDetailMap">
+  select <include refid="Base_Column_List" /> 
+  from user_wallet_detail where user_uuid in(
+  	select uuid from user_info where name='SYSTEM'
+  )
+  order by created desc limit #{offset},#{limit}   
+  </select>
+  
+  <select id="getSystemDetailCount" resultType="java.lang.Integer">
+  select count(*)
+  from user_wallet_detail where user_uuid in(
+  	select uuid from user_info where name='SYSTEM'
+  )
+  </select>
   
 </mapper>
 

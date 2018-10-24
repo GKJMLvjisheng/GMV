@@ -498,6 +498,7 @@ public class PromotedRewardService {
 		UserModel userModel=userModelMapper.selectByUuid(userUuid);
 		String userName=userModel.getName();
 		log.info("userName:{}",userName);
+
 		userName=this.getEncryptionUserName(userName);
 //		double n=Math.pow(2,0);
 //		BigDecimal N=new BigDecimal(n);
@@ -508,8 +509,9 @@ public class PromotedRewardService {
 //		log.info("buyUser增加余额:{}",userName);
 //		userWalletMapper.increaseBalance(buyUserWallet.getUuid(), value);
 //		log.info("buyUser增加记录:{}",userName);
-//		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
+//		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,value,null,"测试下线购买矿机奖励",null,buyUserWallet.getBalance().add(value));
 //		userWalletDetailMapper.insertSelective(userWalletDetail);
+
 		Integer userMaxMinerGrade=this.getUserMaxMinerGrade(userUuid);
 		log.info("buyUser最大矿机级别:{}",userMaxMinerGrade);
 		//根据注册用户找到他的注册邀请码
@@ -536,8 +538,10 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
+
 				String remark="您推广下线购买矿机立即奖励总奖励的"+this.getOasRewardRatio()+",冻结总奖励的"+this.getOasFrozenRewardRatio()+",待下线矿机回本后一次性返还";
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,remark,null);
+				UserWalletDetail superiorsUserWalletDetail = UserWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.MINER_ADD_COIN,superiorsValue,null,remark,null,superiorsUserWallet.getBalance().add(superiorsValue));
+
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {
@@ -576,6 +580,7 @@ public class PromotedRewardService {
 		//最大反奖励等级用户
 		Integer maxN=promotedRewardModel.getMaxPromotedGrade();
 		log.info("maxN:{}",maxN);
+
 //		//购买矿机用户奖励代币
 //		UserWallet buyUserWallet=userWalletMapper.selectByUserUuid(userUuid);
 //	    BigDecimal value=getSingleFrozenRewardCoinCount(purchaseRecord,N);
@@ -583,8 +588,9 @@ public class PromotedRewardService {
 //		log.info("buyUser增加余额:{}",userName);
 //		userWalletMapper.increaseBalance(buyUserWallet.getUuid(), value);
 //		log.info("buyUser增加记录:{}",userName);
-//		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,value,null,"测试下线购买矿机奖励",null);
+//		UserWalletDetail userWalletDetail = userWalletService.setDetail(buyUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,value,null,"测试下线购买矿机奖励",null,buyUserWallet.getBalance().add(value));
 //		userWalletDetailMapper.insertSelective(userWalletDetail);
+
 		Integer userMaxMinerGrade=this.getUserMaxMinerGrade(userUuid);
 		log.info("buyUser最大矿机级别:{}",userMaxMinerGrade);
 		//根据注册用户找到他的注册邀请码
@@ -610,8 +616,10 @@ public class PromotedRewardService {
 				log.info("superiorsUser增加余额:{}",superiorsName);
 				userWalletMapper.increaseBalance(superiorsUserWallet.getUuid(),superiorsValue);
 				log.info("superiorsUser增加记录:{}",superiorsName);
+
 				String remark="返还您推广下线购买矿机奖励冻结的"+this.getOasFrozenRewardRatio();
-				UserWalletDetail superiorsUserWalletDetail = userWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,remark,null);
+				UserWalletDetail superiorsUserWalletDetail = UserWalletService.setDetail(superiorsUserWallet,userName,UserWalletDetailScope.FROZEN_ADD_COIN,superiorsValue,null,remark,null,superiorsUserWallet.getBalance().add(superiorsValue));
+
 				userWalletDetailMapper.insertSelective(superiorsUserWalletDetail);
 				inviteFrom=superiorsUserModel.getInviteFrom();
 				}else {

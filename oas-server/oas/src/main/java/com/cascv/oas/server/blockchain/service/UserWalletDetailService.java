@@ -1,5 +1,7 @@
 package com.cascv.oas.server.blockchain.service;
 import java.util.List;
+
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 /**
@@ -50,4 +52,29 @@ public class UserWalletDetailService {
 		
 		return userWalletDetailList;
 	}
+	
+	 public PageDomain<UserWalletDetail> systemTransactionDetail(Integer pageNum,Integer pageSize) {
+		  PageDomain<UserWalletDetail> result = new PageDomain<UserWalletDetail>();
+		  result.setPageNum(pageNum);
+		  result.setPageSize(pageSize);
+		  result.setOffset((pageNum - 1)*pageSize);
+		  List<UserWalletDetail> list = userWalletDetailMapper.getSystemDetailByPage((pageNum - 1)*pageSize, pageSize);
+		  if(list!=null) {
+			  for(UserWalletDetail ud:list) {
+				  ud.setCreated(getTimeAfterExchange(ud.getCreated()));
+			  }
+		  }
+		  result.setRows(list);
+		  result.setTotal(userWalletDetailMapper.getSystemDetailCount());
+		  return result;
+	  }
+	 
+	 public String getTimeAfterExchange(String beforeCreated) {
+		String srcFormater="yyyy-MM-dd HH:mm:ss";
+	    String dstFormater="yyyy-MM-dd HH:mm:ss";
+	    String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+		String created=DateUtils.string2Timezone(srcFormater, beforeCreated , dstFormater, dstTimeZoneId);
+		return created;
+	}
+		  
 }

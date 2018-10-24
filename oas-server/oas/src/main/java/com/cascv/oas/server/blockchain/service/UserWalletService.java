@@ -10,6 +10,7 @@ import org.web3j.utils.Convert;
 
 import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
+import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
@@ -66,7 +67,7 @@ public class UserWalletService {
   }
 
   
-  public static UserWalletDetail setDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark,String oasDetailUuid) {
+  public static UserWalletDetail setDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark,String oasDetailUuid,BigDecimal restBalance) {
 	  UserWalletDetail userWalletDetail = new UserWalletDetail();
 	  userWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
 	  userWalletDetail.setUserUuid(userWallet.getUserUuid());
@@ -78,6 +79,7 @@ public class UserWalletService {
 	  switch(scope){
 	  case 1:
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+		  userWalletDetail.setTxResult(1);
 	      break;
 	  case 2:
 		  log.info("提币");
@@ -86,9 +88,12 @@ public class UserWalletService {
 	      break;
 	  case 3:
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+changeUserName);
+		  userWalletDetail.setTxResult(1);
 	      break;
 	  case 4:
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+changeUserName);
+		  userWalletDetail.setOasDetailUuid(oasDetailUuid);
+		  userWalletDetail.setTxResult(1);
 	      break;
 	  case 5:
 		  log.info("充币");
@@ -101,14 +106,17 @@ public class UserWalletService {
 		  log.info("comment={}", comment);
 		  log.info("subtitle={}", userWalletDetailScope.getSubTitle()+comment);
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
+		  userWalletDetail.setTxResult(1);
 		  break;
 	  case 7:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+		  userWalletDetail.setTxResult(1);
 		  break;
 	  case 8:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+		  userWalletDetail.setTxResult(1);
 		  break;
 	  default:
 		  log.info("swicth-case-end");
@@ -120,12 +128,13 @@ public class UserWalletService {
 //	  userWalletDetail.setComment(comment);
 	  userWalletDetail.setRemark(remark);
 	  //userWalletDetail.setChangeUserName(changeUserName);
+	  userWalletDetail.setRestBalance(restBalance==null?userWallet.getBalance():restBalance);
 	  return userWalletDetail;
   }
   
-  public void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark) {
+  public void addDetail(UserWallet userWallet, String changeUserName, UserWalletDetailScope userWalletDetailScope, BigDecimal value, String comment, String remark,BigDecimal restBalance) {
+	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null,restBalance);
 	  log.info("comment={}", comment);
-	  UserWalletDetail userWalletDetail = setDetail(userWallet,  changeUserName,  userWalletDetailScope,  value,  comment, remark,null);
 	  userWalletDetailMapper.insertSelective(userWalletDetail);
   }
   
@@ -142,6 +151,19 @@ public class UserWalletService {
     userWalletMapper.insertSelective(userWallet);
     return userWallet;
   }
+  
+  public UserWallet createAccountByMoney(String userUuid,BigDecimal balance){
+	    UserWallet userWallet = new UserWallet();
+	    userWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
+	    userWallet.setUserUuid(userUuid);
+	    userWallet.setBalance(balance);
+	    String now = DateUtils.dateTimeNow();
+	    userWallet.setCreated(now);
+	    userWallet.setUpdated(now);
+	    userWalletMapper.deleteByUserUuid(userUuid);
+	    userWalletMapper.insertSelective(userWallet);
+	    return userWallet;
+	  }
 
   public Integer destroy(String userUuid){
     userWalletMapper.deleteByUserUuid(userUuid);
@@ -162,10 +184,10 @@ public class UserWalletService {
     String fromUserName = userModelMapper.selectByUuid(fromUserUuid).getName();
     
     userWalletMapper.decreaseBalance(fromUserWallet.getUuid(), value);
-    this.addDetail(fromUserWallet, toUserName, UserWalletDetailScope.TRANSFER_OUT, value, comment, remark);
+    this.addDetail(fromUserWallet, toUserName, UserWalletDetailScope.TRANSFER_OUT, value, comment, remark,fromUserWallet.getBalance().subtract(value));
     
     userWalletMapper.increaseBalance(toUserWallet.getUuid(), value);
-    this.addDetail(toUserWallet, fromUserName, UserWalletDetailScope.TRANSFER_IN, value,comment, remark);
+    this.addDetail(toUserWallet, fromUserName, UserWalletDetailScope.TRANSFER_IN, value,comment, remark,toUserWallet.getBalance().add(value));
     return ErrorCode.SUCCESS;
   }
   
@@ -181,10 +203,10 @@ public class UserWalletService {
 	   * 接口优化
 	   */
 	  //this.addDetail(userWallet, changeUserName, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "");
-	  this.addDetail(userWallet, changeUserName, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "");
+	  this.addDetail(userWallet, changeUserName, UserWalletDetailScope.ENERGY_TO_COIN, token, point.toString(), "",userWallet.getBalance().add(token));
   }
 
-  public ErrorCode withdraw(OasDetail oasDetail){
+  public ErrorCode withdraw(OasDetail oasDetail,UserModel user){
 	  oasDetail.setExtra(new BigDecimal(oasDetailMapper.getOasExtra()));
 	//用户的在线钱包代币变化
 	  UserWallet userWallet = userWalletMapper.selectByUserUuid(oasDetail.getUserUuid());
@@ -217,6 +239,8 @@ public class UserWalletService {
 		  if(sResult == 0) {
 			  return ErrorCode.UPDATE_FAILED;
 		  }
+		  //system手续费记录
+		  userWalletDetailMapper.insertSelective(setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_IN, oasDetail.getExtra(), oasDetail.getRemark(), oasDetail.getRemark(),oasUuid,systemWallet.getBalance().add(oasDetail.getExtra())));
 	  }else {
 		  return ErrorCode.SYSTEM_NOT_EXIST;
 	  }
@@ -225,7 +249,7 @@ public class UserWalletService {
 		  return ErrorCode.UPDATE_FAILED;
 	  }
 	  //TODO 提币插入在线钱包交易记录，将oasId插入在线钱包明细表
-	  userWalletDetailMapper.insertSelective(setDetail(userWallet, "", UserWalletDetailScope.COIN_TO_ETH, oasDetail.getValue(), oasDetail.getRemark(), oasDetail.getRemark(),oasUuid));
+	  userWalletDetailMapper.insertSelective(setDetail(userWallet, "", UserWalletDetailScope.COIN_TO_ETH, oasDetail.getValue(), oasDetail.getRemark(), oasDetail.getRemark(),oasUuid,value));
 	  
 	  UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
 	  if(adminInfo!=null && adminInfo.getMobile()!=null) {
@@ -323,7 +347,7 @@ public class UserWalletService {
 			 }*/
 			//增加在线钱包记录换到提币请求时
 			 //userWalletDetailMapper.insertSelective(setDetail(userWallet, tokenCoin.getAddress(), UserWalletDetailScope.COIN_TO_ETH, value, detail.getRemark(), detail.getRemark(),hash,coinClient.getNetName()));
-			 userWalletDetailMapper.insertSelective(setDetail(systemWallet, myName, UserWalletDetailScope.TRANSFER_IN, value, detail.getRemark(), detail.getRemark(),null));//system转入
+			// userWalletDetailMapper.insertSelective(setDetail(systemWallet, myName, UserWalletDetailScope.TRANSFER_IN, value, detail.getRemark(), detail.getRemark(),null));//system转入
 		  }
 		  return oasDetailMapper.setWithdrawResultByUuid(uuid,result,now,hash)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
 	  }else {
@@ -346,10 +370,13 @@ public class UserWalletService {
 		  return ErrorCode.UPDATE_FAILED;
 	  }
 	  //提币失败更新在线钱包detail状态
-	  Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(2,detail.getUuid());
+	  Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(2,detail.getUuid(),userWallet.getBalance().add(value).add(extra),0);
 	  if(uwdResult == null) {
   		 return ErrorCode.UPDATE_FAILED;
   	  }
+	  //更新system的手续费记录
+	  userWalletDetailMapper.updateByOasDetailUuid(2,detail.getUuid(),systemWallet.getBalance().subtract(extra),1);
+	  
 	  return ErrorCode.SUCCESS;
   }
   
@@ -360,6 +387,5 @@ public class UserWalletService {
 	  String now = DateUtils.dateTimeNow();
 	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
   }
-  
   
 }

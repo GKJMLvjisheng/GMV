@@ -192,7 +192,7 @@ public class WalkService {
 			
 			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			pointTradeRecord.setCreated(now);
-			
+			pointTradeRecord.setRestPoint(energyService.getPointWalletPoint(userUuid,ENERGY_IN,point));
 			activityMapper.insertPointTradeRecord(pointTradeRecord);
 	}
 	

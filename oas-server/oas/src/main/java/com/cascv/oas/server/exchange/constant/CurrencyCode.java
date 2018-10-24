@@ -33,6 +33,7 @@ public enum CurrencyCode {
   PWRC(269, "PWRC", ""),
   ZZEX(270, "ZZEX", ""),
   HRC(271, "HRC", ""),
+  LTC(272,"LTC",""),
   
   NOT_FIND(0,"NOTFIND","");
 	
