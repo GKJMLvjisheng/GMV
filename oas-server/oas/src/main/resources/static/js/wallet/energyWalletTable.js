@@ -72,7 +72,7 @@ function initEnergyWalletGrid() {
 		},
 			{
 			title : "交易时间",
-			field : "timeCreated",
+			field : "created",
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
