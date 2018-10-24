@@ -320,8 +320,8 @@ public class EnergyService {
         //energyBallMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
         // 增加记录
         PointTradeRecord pointTradeRecord = this.getEnergyRecord(userUuid, energyBallUuid, now);
-//        pointTradeRecord.setPointChange(activityMapper.selectByUuid(energyBallUuid).getPoint());
-//        pointTradeRecord.setRestPoint(getPointWalletPoint(pointTradeRecord.getUserUuid(),pointTradeRecord.getInOrOut(),pointTradeRecord.getPointChange()));
+        pointTradeRecord.setPointChange(activityMapper.selectByUuid(energyBallUuid).getPoint());
+        pointTradeRecord.setRestPoint(getPointWalletPoint(pointTradeRecord.getUserUuid(),pointTradeRecord.getInOrOut(),pointTradeRecord.getPointChange()));
         activityMapper.insertPointTradeRecord(pointTradeRecord);
         //energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
         // 改变账户余额
@@ -404,6 +404,7 @@ public class EnergyService {
     	pointTradeRecord.setCreated(now);
     	pointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
     	pointTradeRecord.setPointChange(activityService.getNewPoint(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT).getNewPoint());
+    	log.info("point={}", pointTradeRecord.getPointChange());
     	pointTradeRecord.setRestPoint(getPointWalletPoint(userId,ENEGY_IN,activityService.getNewPoint(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT).getNewPoint()));
         return pointTradeRecord;
     }
