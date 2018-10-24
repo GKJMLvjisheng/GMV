@@ -19,7 +19,12 @@ public interface OasDetailMapper {
    * 获取提币记录，用于返回前台显示
    * @return
    */
-  List<OasDetailResp> getAllWithdrawRecord();
+  List<OasDetailResp> getAllWithdrawRecord(@Param("offset") Integer offset,@Param("limit") Integer limit);
+  /**
+   * 返回提币总条数
+   * @return
+   */
+  Integer getAllWithdrawRecordCount();
   /**
    * 获取提币手续费
    * @return

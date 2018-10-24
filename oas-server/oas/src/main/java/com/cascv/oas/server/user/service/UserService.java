@@ -279,7 +279,7 @@ public class UserService {
     public Integer countUsers(Integer roleId) {
     	return userModelMapper.countUsers(roleId);
     }
-
+   
 }
 
 

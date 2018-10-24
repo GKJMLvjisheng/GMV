@@ -42,6 +42,8 @@ import com.today.step.lib.TodayStepService
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.support.v4.startService
 
+
+
 @Route(path = RouterPath.App.PATH_MAIN)
 class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
         WalletFragment.OnFragmentInteractionListener,
@@ -234,9 +236,9 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
                     //builder.setDownloadAPKPath("/storage/emulated/0/oases_download")
                     builder .excuteMission(this)
                     builder.setForceRedownload(true) //本地有安装包缓存仍重新下载apk
-
-
-
+                    if(value.upGradeStatus == 1){
+                        builder.setForceUpdateListener { }
+                    }
                 }
            // }
 
