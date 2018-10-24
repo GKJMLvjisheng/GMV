@@ -17,6 +17,7 @@ import com.oases.user.injection.component.DaggerUserComponent
 import com.oases.user.injection.module.UserModule
 import com.oases.user.presenter.LoginPresenter
 import com.oases.user.presenter.view.LoginView
+import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_register_succeed.*
 import org.jetbrains.anko.*
 
@@ -42,7 +43,7 @@ class RegisterSucceedActivity : BaseMvpActivity<LoginPresenter>(), View.OnClickL
         mPresenter.mView = this
     }
     override fun onClick(view: View?) {
-        mPresenter.login(AppPrefsUtils.getString(BaseConstant.USER_NAME), AppPrefsUtils.getString(BaseConstant.USER_PASSWORD))
+        mPresenter.login(AppPrefsUtils.getString(BaseConstant.USER_NAME), AppPrefsUtils.getString(BaseConstant.USER_PASSWORD), getDeviceId(this))
 
     }
 

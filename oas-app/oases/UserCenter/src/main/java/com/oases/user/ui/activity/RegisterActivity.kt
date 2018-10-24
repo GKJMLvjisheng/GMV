@@ -16,6 +16,7 @@ import com.oases.user.injection.component.DaggerUserComponent
 import com.oases.user.injection.module.UserModule
 import com.oases.user.presenter.RegisterPresenter
 import com.oases.user.presenter.view.RegisterView
+import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_register.*
 import org.jetbrains.anko.startActivity
 
@@ -26,7 +27,6 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
         setContentView(R.layout.activity_register)
         initView()
     }
-
 
     private fun initView() {
         mRegisterBtn.onClick(this)
@@ -62,7 +62,7 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
             R.id.mRegisterBtn -> {
                 if (isInputOk())
                 {
-                    mPresenter.register(mNameEt.text.toString(), mPwdEt.text.toString(),mInviteFrom.text.toString())
+                    mPresenter.register(mNameEt.text.toString(), mPwdEt.text.toString(), mInviteFrom.text.toString(), getDeviceId(this))
                 }
             }
         }

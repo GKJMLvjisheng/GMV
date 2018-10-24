@@ -5,15 +5,16 @@
         <id column="uuid" jdbcType="VARCHAR" property="uuid" />
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
         <result column="energy_ball_uuid" jdbcType="VARCHAR" property="energyBallUuid" />
-        <result column="in_or_out" javaType="INTEGER" property="inOrOut" />
+        <result column="in_or_out" jdbcType="INTEGER" property="inOrOut" />
         <result column="point_change" jdbcType="DECIMAL" property="pointChange"/>
         <result column="power_change" jdbcType="DECIMAL" property="powerChange"/>
-        <result column="status" javaType="INTEGER" property="status" />
+        <result column="status" jdbcType="INTEGER" property="status" />
         <result column="created" jdbcType="VARCHAR" property="created"/>
+        <result column="rest_point" jdbcType="DECIMAL" property="restPoint"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created
+        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created,rest_point
     </sql>
 
     <!-- 插入记录 -->
@@ -25,7 +26,11 @@
         in_or_out,
         point_change,
         status,
-        created)
+        <if test="restPoint != null">
+    		rest_point,
+    	</if>
+        created
+        )
         values (
         #{uuid},
         #{userUuid},
@@ -33,6 +38,9 @@
         #{inOrOut},
         #{pointChange},
         #{status},
+        <if test="restPoint != null">
+    		#{restPoint,jdbcType=DECIMAL},
+    	</if>
         #{created})
     </insert>
     

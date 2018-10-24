@@ -292,28 +292,47 @@
         <id column="uuid" jdbcType="VARCHAR" property="uuid" />
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
         <result column="energy_ball_uuid" jdbcType="VARCHAR" property="energyBallUuid" />
-        <result column="in_or_out" javaType="INTEGER" property="inOrOut" />
+        <result column="in_or_out" jdbcType="INTEGER" property="inOrOut" />
         <result column="point_change" jdbcType="DECIMAL" property="pointChange"/>
-        <result column="status" javaType="INTEGER" property="status" />
+        <result column="status" jdbcType="INTEGER" property="status" />
         <result column="created" jdbcType="VARCHAR" property="created"/>
+        <result column="rest_point" jdbcType="DECIMAL" property="restPoint"/>
     </resultMap>
 
     <!-- 插入积分记录 -->
     <insert id="insertPointTradeRecord" parameterType="com.cascv.oas.server.activity.model.PointTradeRecord">
-        insert into point_trade_record (
-        uuid, user_uuid, energy_ball_uuid, in_or_out, point_change, status, created)
+       insert into point_trade_record (
+        uuid,
+        user_uuid,
+        energy_ball_uuid,
+        in_or_out,
+        point_change,
+        status,
+        <if test="restPoint != null">
+    		rest_point,
+    	</if>
+        created
+        )
         values (
-        #{uuid}, #{userUuid}, #{energyBallUuid}, #{inOrOut}, #{pointChange},
-        #{status}, #{created})
+        #{uuid},
+        #{userUuid},
+        #{energyBallUuid},
+        #{inOrOut},
+        #{pointChange},
+        #{status},
+        <if test="restPoint != null">
+    		#{restPoint,jdbcType=DECIMAL},
+    	</if>
+        #{created})
     </insert>
     
     <resultMap id="PowerTradeRecord" type="com.cascv.oas.server.activity.model.PowerTradeRecord">
         <id column="uuid" jdbcType="VARCHAR" property="uuid" />
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
         <result column="energy_ball_uuid" jdbcType="VARCHAR" property="energyBallUuid" />
-        <result column="in_or_out" javaType="INTEGER" property="inOrOut" />
+        <result column="in_or_out" jdbcType="INTEGER" property="inOrOut" />
         <result column="power_change" jdbcType="DECIMAL" property="powerChange"/>
-        <result column="status" javaType="INTEGER" property="status" />
+        <result column="status" jdbcType="INTEGER" property="status" />
         <result column="created" jdbcType="VARCHAR" property="created"/>
     </resultMap>
 

@@ -21,3 +21,4 @@ yarn-error.log*
 *.sw*
 /.gradle
 /bin
+oas-server/.vs

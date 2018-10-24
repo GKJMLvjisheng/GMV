@@ -477,7 +477,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 		log.info("newCreated={}",created);
 	  }
   	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
- 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
+ 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecordBySearchValue(searchValue);
  	 	energyWalletTradeRecordInfo.setTotal(count);
 	  	energyWalletTradeRecordInfo.setAsc("desc");
 	  	energyWalletTradeRecordInfo.setOffset(offset);
@@ -533,19 +533,36 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         	offset = (pageNum - 1) * limit;
         else 
         	offset = 0;
-  	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
-  	  Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecord();
-  	    PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
-  	    energyWalletBalanceRecordInfo.setTotal(count);
-  	    energyWalletBalanceRecordInfo.setAsc("desc");
-  	    energyWalletBalanceRecordInfo.setOffset(offset);
-  	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
-  	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
-  	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
-  		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
-  		        .setData(energyWalletBalanceRecordInfo)
-  		        .setErrorCode(ErrorCode.SUCCESS)
-  		        .build();
+       String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+       if(searchValue != null) {
+    	   List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecordBySearchValue(offset, limit, searchValue);
+    	   Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecordBySearchValue(searchValue);
+    	   PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
+     	    energyWalletBalanceRecordInfo.setTotal(count);
+     	    energyWalletBalanceRecordInfo.setAsc("desc");
+     	    energyWalletBalanceRecordInfo.setOffset(offset);
+     	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
+     	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
+     	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
+     		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
+     		        .setData(energyWalletBalanceRecordInfo)
+     		        .setErrorCode(ErrorCode.SUCCESS)
+     		        .build();
+       }else {
+    	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
+    	  Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecord();
+    	  PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
+    	    energyWalletBalanceRecordInfo.setTotal(count);
+    	    energyWalletBalanceRecordInfo.setAsc("desc");
+    	    energyWalletBalanceRecordInfo.setOffset(offset);
+    	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
+    	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
+    	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
+    		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
+    		        .setData(energyWalletBalanceRecordInfo)
+    		        .setErrorCode(ErrorCode.SUCCESS)
+    		        .build();
+       }
     }
     /**
      * @author Ming Yang
@@ -588,20 +605,36 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   		  startTime=nowMonthOfFirstDay;
   	  if(endTime=="")
   		  endTime=nowDate;
-  	  
-  	  List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecord(startTime, endTime,offset, limit);
-  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletInTotalPointRecordInfo = new PageDomain<>();
-  	  Integer count=energyWalletTradeRecordMapper.countByInTotalPointTradeRecord(startTime, endTime);
-	  	energyWalletInTotalPointRecordInfo.setTotal(count);
-	  	energyWalletInTotalPointRecordInfo.setAsc("desc");
-	  	energyWalletInTotalPointRecordInfo.setOffset(offset);
-	  	energyWalletInTotalPointRecordInfo.setPageNum(pageNum);
-	  	energyWalletInTotalPointRecordInfo.setPageSize(pageSize);
-	  	energyWalletInTotalPointRecordInfo.setRows(energyWalletInTotalPointTradeRecordList);
-  		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
-  		        .setData(energyWalletInTotalPointRecordInfo)
-  		        .setErrorCode(ErrorCode.SUCCESS)
-  		        .build();
+  	  String searchValue=pageInfo.getSearchValue();
+  	  if(searchValue != null) {
+  		List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecordBySearchValue(startTime, endTime, offset, limit, searchValue);
+  		Integer count=energyWalletTradeRecordMapper.countByInTotalPointTradeRecordBySearchValue(startTime, endTime, searchValue);
+  		PageDomain<EnergyWalletPointRecordInfo> energyWalletInTotalPointRecordInfo = new PageDomain<>();
+	  		energyWalletInTotalPointRecordInfo.setTotal(count);
+	  	  	energyWalletInTotalPointRecordInfo.setAsc("desc");
+	  	  	energyWalletInTotalPointRecordInfo.setOffset(offset);
+	  	  	energyWalletInTotalPointRecordInfo.setPageNum(pageNum);
+	  	  	energyWalletInTotalPointRecordInfo.setPageSize(pageSize);
+	  	  	energyWalletInTotalPointRecordInfo.setRows(energyWalletInTotalPointTradeRecordList);
+    		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
+    		        .setData(energyWalletInTotalPointRecordInfo)
+    		        .setErrorCode(ErrorCode.SUCCESS)
+    		        .build();
+  	  }else {
+  		List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecord(startTime, endTime,offset, limit);
+    	PageDomain<EnergyWalletPointRecordInfo> energyWalletInTotalPointRecordInfo = new PageDomain<>();
+    	Integer count=energyWalletTradeRecordMapper.countByInTotalPointTradeRecord(startTime, endTime);
+	  	  	energyWalletInTotalPointRecordInfo.setTotal(count);
+	  	  	energyWalletInTotalPointRecordInfo.setAsc("desc");
+	  	  	energyWalletInTotalPointRecordInfo.setOffset(offset);
+	  	  	energyWalletInTotalPointRecordInfo.setPageNum(pageNum);
+	  	  	energyWalletInTotalPointRecordInfo.setPageSize(pageSize);
+	  	  	energyWalletInTotalPointRecordInfo.setRows(energyWalletInTotalPointTradeRecordList);
+    		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
+    		        .setData(energyWalletInTotalPointRecordInfo)
+    		        .setErrorCode(ErrorCode.SUCCESS)
+    		        .build();
+  	  }
     }
     /**
      * @author Ming Yang
@@ -645,19 +678,35 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   		  startTime=nowMonthOfFirstDay;
   	  if(endTime=="")
   		  endTime=nowDate;
-  	  
-  	  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecord(startTime, endTime,offset, limit);
-  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletOutTotalPointRecordInfo = new PageDomain<>();
-  	  Integer count=energyWalletTradeRecordMapper.countByOutTotalPointTradeRecord(startTime, endTime);
-	  	energyWalletOutTotalPointRecordInfo.setTotal(count);
-	  	energyWalletOutTotalPointRecordInfo.setAsc("desc");
-	  	energyWalletOutTotalPointRecordInfo.setOffset(offset);
-	  	energyWalletOutTotalPointRecordInfo.setPageNum(pageNum);
-	  	energyWalletOutTotalPointRecordInfo.setPageSize(pageSize);
-	  	energyWalletOutTotalPointRecordInfo.setRows(energyWalletOutTotalPointTradeRecordList);
-  		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
-  		        .setData(energyWalletOutTotalPointRecordInfo)
-  		        .setErrorCode(ErrorCode.SUCCESS)
-  		        .build();
+  	  String searchValue=pageInfo.getSearchValue();
+	  if(searchValue != null) {
+		  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecordBySearchValue(startTime, endTime, offset, limit, searchValue);
+	  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletOutTotalPointRecordInfo = new PageDomain<>();
+	  	  Integer count=energyWalletTradeRecordMapper.countByOutTotalPointTradeRecordBySearchValue(startTime, endTime, searchValue);
+		  	energyWalletOutTotalPointRecordInfo.setTotal(count);
+		  	energyWalletOutTotalPointRecordInfo.setAsc("desc");
+		  	energyWalletOutTotalPointRecordInfo.setOffset(offset);
+		  	energyWalletOutTotalPointRecordInfo.setPageNum(pageNum);
+		  	energyWalletOutTotalPointRecordInfo.setPageSize(pageSize);
+		  	energyWalletOutTotalPointRecordInfo.setRows(energyWalletOutTotalPointTradeRecordList);
+	  		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
+	  		        .setData(energyWalletOutTotalPointRecordInfo)
+	  		        .setErrorCode(ErrorCode.SUCCESS)
+	  		        .build();
+	  }else {
+		  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecord(startTime, endTime,offset, limit);
+	  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletOutTotalPointRecordInfo = new PageDomain<>();
+	  	  Integer count=energyWalletTradeRecordMapper.countByOutTotalPointTradeRecord(startTime, endTime);
+		  	energyWalletOutTotalPointRecordInfo.setTotal(count);
+		  	energyWalletOutTotalPointRecordInfo.setAsc("desc");
+		  	energyWalletOutTotalPointRecordInfo.setOffset(offset);
+		  	energyWalletOutTotalPointRecordInfo.setPageNum(pageNum);
+		  	energyWalletOutTotalPointRecordInfo.setPageSize(pageSize);
+		  	energyWalletOutTotalPointRecordInfo.setRows(energyWalletOutTotalPointTradeRecordList);
+	  		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
+	  		        .setData(energyWalletOutTotalPointRecordInfo)
+	  		        .setErrorCode(ErrorCode.SUCCESS)
+	  		        .build();
+	  }
     }
 }

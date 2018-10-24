@@ -37,7 +37,6 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
 
     private fun initView() {
         mLoginBtn.setOnClickListener {
-            toast(getDeviceId(this))
             attemptLogin()
         }
         mRegisterBtn.setOnClickListener { startActivity<RegisterActivity>() }
@@ -115,7 +114,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mPresenter.login(mUserName.text.toString(), mPwd.text.toString())
+            mPresenter.login(mUserName.text.toString(), mPwd.text.toString(), getDeviceId(this))
         }
     }
 

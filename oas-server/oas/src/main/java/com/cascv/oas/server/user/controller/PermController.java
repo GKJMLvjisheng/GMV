@@ -174,8 +174,8 @@ public class PermController {
 	       Integer roleId=userRoles.get(0).getRoleId();
 	       log.info("roleId{}=",roleId);
 	       **/
-	 	   //暂时只针对用户角色
-	       
+	 	   //除了系统账号外其他的都是一致的,因此取一个角色代表就阔以       
+    	   
 	 	   List<RoleMenuViewModel> rmList =roleMenuMapper.selectAllRoleMenus(2);
 	 	   
  	       Map<String,Object> info =new HashMap<>();	       	       
@@ -213,9 +213,14 @@ public class PermController {
 	           log.info("roleId={}",roleId);
 	           *
 	           */
-	           //暂时只针对用户角色
-	           roleMenu.setRoleId(2);
-	           roleMenuMapper.insertRoleMenu(roleMenu);
+	           //暂时只针对用户角色(对测试账号和正常账号统一操作)
+	           Integer roleSize=3;
+	           for(int i=1;i<roleSize+1;i++){
+	        	   if(i!=1)
+	        		   roleMenu.setRoleId(i);
+	        	   roleMenuMapper.insertRoleMenu(roleMenu);
+	           }
+	           
 		       info.put("state","success");
            }catch(Exception e){
 	           log.info(e.getMessage());
@@ -246,9 +251,14 @@ public class PermController {
 		           //暂时只针对用户角色
 		            * 
 		            */
-		           rm.setRoleId(2);
-		           
-    	           roleMenuMapper.deleteRoleMenu(rm);
+            	
+ 	           Integer roleSize=3;
+ 	           for(int k=1;k<roleSize+1;k++){
+ 	        	   if(k!=1)
+	 	        	   rm.setRoleId(k);	
+	 	           roleMenuMapper.deleteRoleMenu(rm);  
+ 	           }            	
+    	              	           
     	 	       info.put("state","success");	            
             }catch(Exception e){
 	         	    log.info(e.getMessage());

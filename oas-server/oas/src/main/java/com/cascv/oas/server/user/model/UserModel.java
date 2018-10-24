@@ -41,4 +41,5 @@ public class UserModel implements Serializable {
 	 */
 	@Getter @Setter private String profile;
 	@Getter @Setter private String IMEI;
+	@Getter @Setter private Integer status;
 }

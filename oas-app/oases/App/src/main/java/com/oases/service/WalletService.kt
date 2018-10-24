@@ -1,8 +1,9 @@
 package com.oases.service
 
-import com.oases.base.data.protocol.BaseResp
 import com.oases.computingpower.data.protocol.KYCVerifyStatusResp
 import com.oases.data.protocol.*
+import com.oases.user.data.protocol.confirmOldPwdReq
+import com.oases.user.data.protocol.confirmOldPwdResp
 import io.reactivex.Observable
 import retrofit2.http.Body
 import java.math.BigDecimal
@@ -75,6 +76,7 @@ interface WalletService {
   * 获取用户的日总额
   */
  fun getDayMoneyTotal():Observable<BigDecimal>
+
 
 
 

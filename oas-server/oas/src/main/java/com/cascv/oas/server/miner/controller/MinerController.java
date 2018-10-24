@@ -292,10 +292,11 @@ public class MinerController {
 		if(balance.compareTo(priceSum) != -1) {
 			//更新用户钱包
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
-			userWalletMapper.decreaseBalance(userWalletMapper.selectByUserUuid(userUuid).getUuid(), priceSum);
+			UserWallet tuserWallet = userWalletMapper.selectByUserUuid(userUuid);
+			userWalletMapper.decreaseBalance(tuserWallet.getUuid(), priceSum);
 			//增加在线钱包的消费记录
 			log.info("commet={}", minerNum+"台"+minerName);
-			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "");
+			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "",tuserWallet.getBalance().subtract(priceSum));
 			//增加算力球
 			minerService.addMinerPowerBall(userUuid, powerSum);
 			//增加算力提升记录(有效期)

@@ -18,6 +18,7 @@ object RouterPath{
 
     class ComputingPower{
         companion object {
+            const val PATH_ComputingPower ="/computingPower/main"
            // const val PATH_MAIN ="computingPower/main"
         }
     }

@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/mMinerImage"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="一级矿机"
             android:textColor="@color/common_black"
@@ -30,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/mMinerName"
+
             android:paddingLeft="20dp"
             android:gravity="center"
             android:text="5,000,000"
@@ -40,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mMinerName"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_toRightOf="@+id/mMinerImage"
             android:text="5000000"
             android:textSize="13dp" />
@@ -49,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mMinerName"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:layout_toRightOf="@+id/mCpomutingPowerValue"
             android:text="200"
             android:textSize="13dp" />
@@ -77,7 +79,7 @@
             android:layout_alignBottom="@+id/mMinerImage"
             android:layout_toRightOf="@+id/mReduce1"
             android:padding="5dp"
-            android:text="5"
+            android:text="1"
             android:textColor="@color/common_black"
             android:background="@null"
             android:cursorVisible="false"

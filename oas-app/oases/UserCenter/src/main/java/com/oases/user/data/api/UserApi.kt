@@ -72,4 +72,7 @@ interface UserApi {
 
     @POST("/api/v1/userCenter/resetPassword")
     fun resetPwd(@Body req: ResetPwdReq):Observable<BaseResp<Int>>
+
+    @POST("/api/v1/userCenter/checkPassword")
+    fun confirmOldPwd(@Body req: confirmOldPwdReq):Observable<BaseResp<confirmOldPwdResp>>
 }
