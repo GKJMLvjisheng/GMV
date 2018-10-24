@@ -218,6 +218,7 @@ public class MinerController {
 	@ResponseBody
 	public ResponseEntity<?> addMiner(@RequestBody MinerRequest minerRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		Integer count = minerMapper.selectAllWebMiner().size();
 		MinerModel minerModel = new MinerModel();
 		minerModel.setMinerCode(UuidUtils.getPrefixUUID(UuidPrefix.MINER_MODEL));
 		log.info(minerModel.getMinerCode());
@@ -227,7 +228,7 @@ public class MinerController {
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPower(minerRequest.getMinerPower());
-		minerModel.setOrderNum(minerRequest.getOrderNum());
+		minerModel.setOrderNum(count+1);
 		minerModel.setCreated(now);
 		minerModel.setUpdated(now);
 		minerMapper.insertMiner(minerModel);
@@ -245,13 +246,14 @@ public class MinerController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
 		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
-		log.info(minerCode);
+		Integer count = minerMapper.selectAllWebMiner().size();
+		log.info("orderNum={}",orderNum);
+		log.info("minerMapper.selectAllWebMiner().size()={}",minerMapper.selectAllWebMiner().size());
 		minerMapper.deleteMiner(minerCode);
-		if(orderNum < minerMapper.selectAllWebMiner().size()) {
+		for(;orderNum < count; orderNum++) {
 			Integer newOrderNum = orderNum + 1;
 			String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
 			minerMapper.updateOrderNum(newMinerCode, orderNum, now);
-			orderNum = orderNum + 1;
 		}
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)

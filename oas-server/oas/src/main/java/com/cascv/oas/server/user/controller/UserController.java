@@ -153,19 +153,21 @@ public class UserController extends BaseShiroController{
           Set<String> roles=roleService.getRolesByUserUuid(uuid);
           List<String>  roleList =new ArrayList<>(roles);
           log.info("roles={}",roles);
-          log.info("name={}",loginVo.getName());
-         Integer status=userService.findUserByName(loginVo.getName()).getStatus(); 
-         log.info("status={}",status);
+          
+         Integer status=userService.findUserByName(loginVo.getName()).getStatus();
+         log.info("if android={}",userAgent.indexOf("Windows")==-1);
          if(status==0)
         	 throw new AuthenticationException();
          //判断是否是移动端登录
-         if(userAgent.indexOf("android")!=-1){
+         if(userAgent.indexOf("Windows")==-1){
         	 log.info("this is android!");
         	 log.info(roleList.get(0));
         	 switch(roleList.get(0)){
 	        	 case "系统账号":
+	        		 log.info("this is 系统账号");
 	        		 throw new AuthenticationException();
 	        	 case "正常账号":
+	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
 	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
 	  	        	   userModelMapper.updateIMEI(userModel);
@@ -174,6 +176,7 @@ public class UserController extends BaseShiroController{
 	  	        	   throw new AuthenticationException();
 	        	     break;
 	        	 case "测试账号":
+	        		 log.info("this is 测试账号");
 		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
 		        	   userModelMapper.updateIMEI(userModel);
 	        	     break;
@@ -184,9 +187,10 @@ public class UserController extends BaseShiroController{
          } 
          
           //普通用户无法在web端登录
-          else if(!roles.contains("系统账号"))
-        	       throw new AuthenticationException();    
-                 
+          else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
+        	       throw new AuthenticationException();
+         
+          log.info("this is PC!");       
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
