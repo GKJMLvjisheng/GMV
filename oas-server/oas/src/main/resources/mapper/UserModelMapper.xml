@@ -320,7 +320,6 @@
     	or IMEI like concat('%',#{searchValue},'%')
     	or status like concat('%',#{searchValue},'%')
     	or U.created like concat('%',#{searchValue},'%')
-<!--     	or UR.role_id like concat('%',#{searchValue},'%') -->
        </if>
        	order by U.created desc 
 	    limit #{offset}, #{limit}
