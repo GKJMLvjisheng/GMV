@@ -9,6 +9,7 @@ function initNormalGrid() {
 		dataType:"json",
 		method: 'post',
 		striped:true,//隔行变色
+		uniqueId:"name",
 		
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
@@ -47,6 +48,13 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '80px',
 				
+			},{
+				title : "性别",
+				field : "gender",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				
 			},
 			{
 				title : "手机",
@@ -75,8 +83,8 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '200px',
-				visible: false,
+				width:  '180px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -99,7 +107,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				//width:  '90px',
+				width:  '80px',
 				formatter: actionFormatter3
 			},{
 
@@ -107,7 +115,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '80px',
 				formatter: actionFormatter4
 			}],		
 //		search : true,//搜索
@@ -131,6 +139,7 @@ function queryParams1(params){
 }
 //请求成功方法
 function responseHandler1(res){
+	//alert(JSON.stringify(res));
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
         alert("正常账号回显失败，错误代码:" + code);
@@ -154,6 +163,7 @@ function initTestGrid() {
 		dataType:"json",
 		method: 'post',
 		striped:true,//隔行变色
+		uniqueId:"name",
 		
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
@@ -192,6 +202,13 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '80px',
 				
+			},{
+				title : "性别",
+				field : "gender",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				
 			},
 			{
 				title : "手机",
@@ -220,8 +237,8 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '200px',
-				visible: false,
+				width:  '180px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -244,7 +261,7 @@ function initTestGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				//width:  '90px',
+				width:  '80px',
 				formatter: actionFormatter3
 			},{
 
@@ -252,7 +269,7 @@ function initTestGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '80px',
 				formatter: actionFormatter4
 			}],		
 //		search : true,//搜索
@@ -298,6 +315,7 @@ function initSystemGrid() {
 		dataType:"json",
 		method: 'post',
 		striped:true,//隔行变色
+		uniqueId:"name",
 		
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
@@ -336,6 +354,13 @@ function initSystemGrid() {
 				valign: 'middle',
 				width:  '80px',
 				
+			},{
+				title : "性别",
+				field : "gender",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				
 			},
 			{
 				title : "手机",
@@ -364,8 +389,8 @@ function initSystemGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '200px',
-				visible: false,
+				width:  '170px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -388,7 +413,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				//width:  '90px',
+				width:  '70px',
 				formatter: actionFormatter3
 			},{
 
@@ -396,7 +421,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '70px',
 				formatter: actionFormatter4
 			}],		
 //		  search : true,//搜索
@@ -449,20 +474,20 @@ function actionFormatter2(value, row, index) {
 
 function actionFormatter3(value, row, index) {
 	 var name = value;
-	var result = "";	
-
-	result += "<input type='radio' onclick=\"normal('" + name + "')\"' name='radio' id='normal' value='2'>正常账号  ";
-	result += "<input type='radio' onclick=\"test('" + name + "')\"' name='radio' id='test' value='3'>测试账号  ";
-	result += "<input type='radio' onclick=\"system('" + name + "')\"' name='radio' id='system' value='1'>系统账号";
+	 var roleId = row.roleId;
+	 var result = "";	
+	
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"role('" + name + "', '" + roleId + "')\">角色授权</a>";
 	return result;	
 }
 
 function actionFormatter4(value, row, index) {
 	var name = value;
+	var roleId = row.roleId;
 	var result = "";
-	
-	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
-	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">权限控制</a>";
+//	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
+//	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
 	return result;	
 }
 

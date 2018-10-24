@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,8 +45,6 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
@@ -234,12 +231,19 @@ public class UserWalletController extends BaseShiroController {
    */
   @PostMapping(value="/getWithdrawList")
   @ResponseBody
-  @RequiresRoles("admin")
-  public ResponseEntity<?> getWithdrawList(){  
-	  return new ResponseEntity.Builder<List<OasDetailResp>>()
-		        .setData(userWalletService.getWithdrawList())
+  //@RequiresRoles("admin")
+  public ResponseEntity<?> getWithdrawList(@RequestBody PageDomain<Integer> pageInfo){  
+	  Integer pageNum = 1;
+	  Integer pageSize = 10;
+	  if(pageInfo != null) {
+		  pageNum = (pageInfo.getPageNum() == null || pageInfo.getPageNum()<=0? pageNum:pageInfo.getPageNum());
+		  pageSize = (pageInfo.getPageSize() == null || pageInfo.getPageSize()<=0? pageSize:pageInfo.getPageSize());
+	  }
+	  return new ResponseEntity.Builder<PageDomain<OasDetailResp>>()
+		        .setData(userWalletService.getWithdrawList(pageNum,pageSize))
 		        .setErrorCode(ErrorCode.SUCCESS).build();
   }
+
   /**
    * 管理员操作提币请求
    * @param uuid
@@ -248,7 +252,7 @@ public class UserWalletController extends BaseShiroController {
    */
   @PostMapping(value="/setWithdrawResult")
   @ResponseBody
-  @RequiresRoles("admin")
+//  @RequiresRoles("admin")
   @Transactional
   public ResponseEntity<?> setWithdrawResult(@RequestBody OasDetailResp req){ 
 	  String id = req.getUuid();
@@ -281,7 +285,7 @@ public class UserWalletController extends BaseShiroController {
    */
   @PostMapping(value="/updateOasExtra")
   @ResponseBody
-  @RequiresRoles("admin")
+//  @RequiresRoles("admin")
   public ResponseEntity<?> updateOasExtra(@RequestBody OasReq oasDetail){
 	  String value = oasDetail.getValue().toString();
 	  if(value == null || !NumberUtils.isNumber(value)) {

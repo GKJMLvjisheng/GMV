@@ -20,6 +20,7 @@ import com.cascv.oas.server.blockchain.mapper.OasDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
+import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
 import com.cascv.oas.server.blockchain.model.UserCoin;
@@ -266,19 +267,26 @@ public class UserWalletService {
 	  return ErrorCode.SUCCESS;
   }
   
-  public List<OasDetailResp> getWithdrawList(){
-	  
-	  List<OasDetailResp> OasDetailRespList=oasDetailMapper.getAllWithdrawRecord();
-	  for(OasDetailResp OasDetailResp : OasDetailRespList)
-		{
-			String srcFormater="yyyy-MM-dd HH:mm:ss";
-			String dstFormater="yyyy-MM-dd HH:mm:ss";
-			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-			String created=DateUtils.string2Timezone(srcFormater, OasDetailResp.getCreated(), dstFormater, dstTimeZoneId);
-			OasDetailResp.setCreated(created);
-			log.info("newCreated={}",created);
-		}
-	  return OasDetailRespList;
+  public PageDomain<OasDetailResp> getWithdrawList(Integer pageNum, Integer pageSize){
+	  PageDomain<OasDetailResp> result = new PageDomain<OasDetailResp>();
+	  result.setPageNum(pageNum);
+	  result.setPageSize(pageSize);
+	  result.setOffset((pageNum - 1)*pageSize);
+	  List<OasDetailResp> list = oasDetailMapper.getAllWithdrawRecord((pageNum - 1)*pageSize, pageSize);
+	  if(list != null) {
+		  for(OasDetailResp oasDetailResp : list)
+			{
+				String srcFormater="yyyy-MM-dd HH:mm:ss";
+				String dstFormater="yyyy-MM-dd HH:mm:ss";
+				String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+				String created=DateUtils.string2Timezone(srcFormater, oasDetailResp.getCreated(), dstFormater, dstTimeZoneId);
+				oasDetailResp.setCreated(created);
+				log.info("newCreated={}",created);
+			}
+	  }
+	  result.setRows(list);
+	  result.setTotal(oasDetailMapper.getAllWithdrawRecordCount());
+	  return result;
   }
   
   public ErrorCode setWithdrawResult(String uuid,Integer result) {
@@ -357,9 +365,9 @@ public class UserWalletService {
   //提币失败，待交易金额退回代币，手续费从system退回
   private ErrorCode errorOperate(UserWallet userWallet,UserWallet systemWallet,BigDecimal value,BigDecimal extra,OasDetail detail,String now) {
 	  //待交易记录减去value，代币加value
-	  if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
+	  /*if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 		  return ErrorCode.UNCONFIRMED_BALANCE;
-	  }
+	  }*/
 /*	  if(systemWallet.getBalance().compareTo(extra) == -1) {
 		  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
 	  }*/

@@ -6,30 +6,33 @@
 	<result column="name" property="name"/>
 	<result column="in_or_out" property="inOrOut"/>
 	<result column="point_change" property="pointChange"/>
-	<result column="power_change" property="powerChange"/>
 	<result column="status" property="status"/>
-	<result column="time_created" property="timeCreated"/>
+	<result column="created" property="created"/>
+	<result column="rest_point" property="restPoint"/>
   </resultMap>
   <select id="selectAllTradeRecord" resultMap="EnergyWalletTradeRecordMap">
 select 
-	  u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created 
+	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
 from 
-	  energy_trade_record etr,user_info u
+	  point_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid
-order by etr.time_created desc
+order by etr.created desc
 limit #{offset}, #{limit};
 </select>
 
 <select id="selectAllTradeRecordBySearchValue" resultMap="EnergyWalletTradeRecordMap">
 select 
-	  u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created 
+	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
 from 
-	  energy_trade_record etr,user_info u
+	  point_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid and 
-	  concat(u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created) like concat('%',#{searchValue},'%')
-order by etr.time_created desc
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%')
+	   <if test="searchValue != null and searchValue !='' ">
+    		or etr.rest_point like concat('%',#{searchValue},'%')
+       </if>
+order by etr.created desc
 limit #{offset}, #{limit};
 </select>
 
@@ -37,7 +40,7 @@ limit #{offset}, #{limit};
 select 
 	  count(*) 
 from 
-	  energy_trade_record etr,user_info u
+	  point_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid;
 </select>
@@ -46,10 +49,13 @@ where
 select 
 	  count(*) 
 from 
-	  energy_trade_record etr,user_info u
+	  point_trade_record etr,user_info u
 where
 	  etr.user_uuid=u.uuid and
-	  concat(u.name,etr.in_or_out,etr.point_change,etr.power_change,etr.status,etr.time_created) like concat('%',#{searchValue},'%');
+	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%')
+	   <if test="searchValue != null and searchValue !='' ">
+    		or etr.rest_point like concat('%',#{searchValue},'%')
+       </if>
 </select>
 
 <resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">
@@ -111,9 +117,9 @@ where
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name
 order by point desc
 limit #{offset}, #{limit};
@@ -123,9 +129,9 @@ limit #{offset}, #{limit};
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
 group by u.name
 order by point desc
@@ -136,18 +142,18 @@ limit #{offset}, #{limit};
 select 
 	count(distinct etr.user_uuid)
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
 </select> 
 
 <select id="countByInTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
 select 
 	count(distinct etr.user_uuid)
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
 </select> 
    
@@ -155,9 +161,9 @@ where
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 group by u.name
 order by point desc
 limit #{offset}, #{limit};
@@ -167,9 +173,9 @@ limit #{offset}, #{limit};
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
 group by u.name
 order by point desc
@@ -180,18 +186,18 @@ limit #{offset}, #{limit};
 select 
 	count(distinct etr.user_uuid)
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
 </select>
 
 <select id="countByOutTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
 select 
 	count(distinct etr.user_uuid)
 from 	
-	energy_trade_record etr,user_info u
+	point_trade_record etr,user_info u
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.time_created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
 </select>
    

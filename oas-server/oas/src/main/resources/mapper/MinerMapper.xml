@@ -91,7 +91,8 @@
     <update id="updateOrderNum" parameterType="com.cascv.oas.server.miner.model.MinerModel">
         update miner_source
         set
-          order_num = #{orderNum}
+          order_num = #{orderNum},
+          updated = #{updated}
         where
           miner_code = #{minerCode}
     </update>
