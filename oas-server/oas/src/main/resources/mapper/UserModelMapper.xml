@@ -308,9 +308,25 @@
 		UR.role_id as roleId
 		from user_info U 
 		join user_role UR on U.uuid = UR.uuid 
-		where UR.role_id=#{roleId}
-		order by U.created desc 
+		where UR.role_id=#{roleId} 
+	   <if test="searchValue != null and searchValue !='' ">
+    	and name like concat('%',#{searchValue},'%')
+    	or nickname like concat('%',#{searchValue},'%')
+    	or gender like concat('%',#{searchValue},'%')
+    	or birthday like concat('%',#{searchValue},'%')
+    	or address like concat('%',#{searchValue},'%')
+    	or mobile like concat('%',#{searchValue},'%')
+    	or email like concat('%',#{searchValue},'%')
+    	or IMEI like concat('%',#{searchValue},'%')
+    	or status like concat('%',#{searchValue},'%')
+    	or U.created like concat('%',#{searchValue},'%')
+    	or UR.role_id like concat('%',#{searchValue},'%')
+       </if>
+       	order by U.created desc 
 	    limit #{offset}, #{limit}
+		
+<!--         concat(u.name,ed.value) like concat('%',#{searchValue},'%') -->
+                  
   </select>
   <select id="countUsers" resultType="java.lang.Integer">
   	select count(*) from user_role where role_id = #{roleId};
