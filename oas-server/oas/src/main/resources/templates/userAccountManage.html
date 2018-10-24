@@ -60,18 +60,18 @@
 	</div> 
 
 	<div id="page1">
-		<input class="form" id="user1" required="required" placeholder="搜索" />
+		<input class="form" id="user1" required="required" placeholder="搜索" oninput="initNormalGrid(event)"/>
 		<table id="normalGrid"></table>
 	</div> 
 	
 
 	<div style="display:none" id="page3">
-		<input class="form" id="user2" required="required" placeholder="搜索" />		 		  
+		<input class="form" id="user2" required="required" placeholder="搜索" oninput="initTestGrid(event)"/>		 		  
 		<table id="testGrid"></table>
 	</div>
 
 	<div style="display:none" id="page4">
-		<input class="form" id="user3" required="required" placeholder="搜索" />			
+		<input class="form" id="user3" required="required" placeholder="搜索" oninput="initSystemGrid(event)"/>			
 		<table id="systemGrid"></table>
 	</div>
 

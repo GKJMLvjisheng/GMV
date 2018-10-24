@@ -1,11 +1,11 @@
-
-document.write("<script language=javascript src='js/news/newsManageTable.js'></script>");
+/*
+document.write("<script language=javascript src='/js/news/newsManageTable.js'></script>");*/
 
 //主界面用户表格回显
 $(function() {
 
 	//初始加载	
-	newsReady()
+	newsReady();
 });
 
 function newsReady(){

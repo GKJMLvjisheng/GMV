@@ -135,8 +135,15 @@ public class PromotedRewardService {
 		  }
 		  }else {
 			  log.info("无奖励");
+			  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
+			  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+				  for(PurchaseRecord purchaseRecord:purchaseRecordList) { 
+					  minerMapper.updateByMinerPurchaseStatus(purchaseRecord);
+				  }
+			  }
 		  }
 	  }
+	  
 	  public synchronized void giveUserPowerRewardBuyMiner() {
 		  if(permService.getPromotionPerm() == true) {
 		  log.info(" check give user power reward...");
@@ -151,6 +158,12 @@ public class PromotedRewardService {
 		  }
 		  }else {
 			  log.info("无奖励");
+			  List<PurchaseRecord> purchaseRecordList =minerMapper.selectByMinerStatusPowerRewardStatus();
+			  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+				  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+					  minerMapper.updateByPowerRewardStatus(purchaseRecord);
+				  }
+			  }
 		  }
 	  }
 	  public synchronized void decreaseUserPowerRewardBuyMiner() {
@@ -167,6 +180,12 @@ public class PromotedRewardService {
 		  }
 		  }else {
 			  log.info("无奖励");
+			  List<PurchaseRecord> purchaseRecordList = minerMapper.selectByMinerStatusPowerRewardStatusToDecrease();
+			  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+				  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+					  minerMapper.updateByPowerRewardStatusToDecrease(purchaseRecord);
+				  }
+			  }
 		  }
 	  }
 	  
@@ -182,6 +201,17 @@ public class PromotedRewardService {
 		  }
 		  }else {
 			  log.info("无奖励");
+			  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
+			  if(userUuidList!=null && userUuidList.size()>0) {
+				  for(String userUuid:userUuidList) {
+					  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerStatus(userUuid);
+					  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+						  Integer minerNum=purchaseRecord.getMinerNum();
+						  purchaseRecord.setFinishRewardNumber(minerNum);
+						  minerMapper.updateByMinerNumFinishRewardNumber(purchaseRecord);
+					  }
+				  }
+			  }
 		  }
 	  	}
 	  
