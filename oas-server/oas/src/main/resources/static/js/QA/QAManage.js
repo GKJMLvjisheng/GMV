@@ -7,7 +7,6 @@ document.write("<script language=javascript src='/js/QA/QAManageTable.js'></scri
 $(function() {
 	//初始加载	
 	questionReady();
-	// question.setAttribute("maxlength",40);
 });
 
 //修改环保题目-检查标题

@@ -7,7 +7,6 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">	
 	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>	
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-	<script type="text/javascript" th:src="@{js/news/newsManage.js}"></script>
 	<link rel="stylesheet" href="css/index1.css"> 
 	
 	<style>	
@@ -39,7 +38,44 @@
 
 $(function(){
 	newsIndexReady();
-	});
+});
+	
+function newsIndexReady() {
+	//alert(1);
+	   $.ajax({
+	    url: "/api/v1/userCenter/selectAllNews",
+	    contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+	    success: function(res) {
+	    	var len=res.data.list.length;
+	    	//alert(JSON.stringify(res.data.list));
+	      if (len>0) {
+	        list="";
+	        for(i=0;i<len;i++){
+	        
+	          list+=
+	            "<div class='new-list-item clearfix'>"+
+	            "<div class='col-xs-1'></div>"+
+	            "<div class='col-xs-6'>"+
+	            "<a href="+res.data.list[i].newsUrl+ " class='title'>"+res.data.list[i].newsTitle+"</a>"+
+	              "<div class='abstract'>"+res.data.list[i].newsAbstract+"</div>"+
+	              "</div>"+
+	              "<div class='col-xs-4'>"+
+	              						"<img  src="+res.data.list[i].newsPicturePath+ ">"+
+	                                "</div></div>";
+	        }
+	      } 
+	      else {
+	        alert("数据库中没有新闻数据");
+	      }
+	      document.getElementById("Grid").innerHTML=list;
+	    }, 
+	    error: function(){
+	    	alert("新闻首页回显失败！");
+	    }}); 
+	}
 	
 </script>
 </html>
