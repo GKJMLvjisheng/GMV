@@ -6,6 +6,9 @@ import com.cascv.oas.core.utils.StringUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.ActivityRewardConfig;
+import com.cascv.oas.server.activity.model.EnergyPointBall;
+import com.cascv.oas.server.activity.model.PointTradeRecord;
+import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.*;
@@ -36,6 +39,8 @@ public class EnergyService {
     @Autowired
     private UserWalletService userWalletService;
     @Autowired
+    ActivityService activityService;
+    @Autowired
     private ActivityMapper activityMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
@@ -46,7 +51,6 @@ public class EnergyService {
     private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;          // 能量球死亡状态，不可被获取
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，不可被获取
-    private static final Integer SOURCE_CODE_OF_NONE = 0;               // 能量球来源，无
     private static final Integer SOURCE_CODE_OF_CHECKIN = 1;            // 能量球来源：签到为1
     private static final Integer REWARD_CODE_OF_CHECKIN_POINT = 1;            //能量球奖励来源：积分为1
     private static final Integer REWARD_CODE_OF_CHECKIN_POWER = 2;            //能量球奖励来源：算力为1
@@ -88,11 +92,11 @@ public class EnergyService {
      * @param userUuid
      * @return
      */
-    public int saveCheckinEnergyRecord(String userUuid) {
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-        EnergyTradeRecord energyTradeRecord = getEnergyRecord(userUuid, checkinEnergyBall.getUuid(), now);
-        return energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
-    }
+//    public int saveCheckinEnergyRecord(String userUuid) {
+//        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+//        EnergyTradeRecord energyTradeRecord = getEnergyRecord(userUuid, checkinEnergyBall.getUuid(), now);
+//        return energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
+//    }
 
     /**
      * Checkin the 4th function
@@ -146,39 +150,42 @@ public class EnergyService {
 
     public BigDecimal miningGenerator(String userUuid, ActivityRewardConfig activityRewardConfig) {
         BigDecimal ongoingEnergySummary = new BigDecimal(0);
-        List<EnergyBall> energyBalls = energyBallMapper
-                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        List<EnergyPointBall> energyPointBalls = activityMapper
+        		.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         // 最近创建的球，以下称为“最近球”
-        EnergyBall latestEnergyBall = energyBallMapper
-                .selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        EnergyPointBall latestEnergyPointBall = activityMapper
+        		.selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+//        EnergyBall latestEnergyBall = energyBallMapper
+//                .selectLatestOneByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
 
         BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
         BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();      // 挖矿球最大容量
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
                 0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);          // 当前时间
-        if (CollectionUtils.isEmpty(energyBalls)) {
+        if (CollectionUtils.isEmpty(energyPointBalls)) {
             // 首次登陆初始化
-            EnergyBall energyBall = getMiningEnergyBall(userUuid, now);
-            energyBallMapper.insertEnergyBall(energyBall);
-            energyBalls.add(energyBall);
+            EnergyPointBall energyBall = getMiningEnergyBall(userUuid, now);
+            activityMapper.insertEnergyPointBall(energyBall);
+            //energyBallMapper.insertEnergyBall(energyBall);
+            energyPointBalls.add(energyBall);
             ongoingEnergySummary = pointCapacityEachBall;
         } else {
-            String latestUuid = latestEnergyBall.getUuid();                 // 最近球id
-            BigDecimal latestPoint = latestEnergyBall.getPoint();           // 最近球积分
+            String latestUuid = latestEnergyPointBall.getUuid();                 // 最近球id
+            BigDecimal latestPoint = latestEnergyPointBall.getPoint();           // 最近球积分
             SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
             long currentTime = 0;                    // 现在的时间，声明、初始化
             try {
-                latestTimeCreated = sdf.parse(latestEnergyBall.getCreated());// 最近球创建时间
+                latestTimeCreated = sdf.parse(latestEnergyPointBall.getCreated());// 最近球创建时间
                 currentTime = sdf.parse(now).getTime();                          // 当前时间
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             // 已有的球积分总和
-            int ballAmountPrevious = energyBalls.size();
-            BigDecimal pointPrevious = this.calculatePreviousPoints(energyBalls);
-            energyBalls.clear();
+            int ballAmountPrevious = energyPointBalls.size();
+            BigDecimal pointPrevious = this.calculatePreviousPoints(energyPointBalls);
+            energyPointBalls.clear();
             // 计算与最近球创建的时间差，即需要增加的积分+ 最近球已有积分
             long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND;
             BigDecimal leadPoint = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
@@ -196,11 +203,11 @@ public class EnergyService {
                 System.out.println("amount:" + amount);
                 BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)));
                 ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
-                energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
+                energyPointBalls.add(activityMapper.selectByUuid(latestUuid));
                 if (amount > 1) {
                     energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
                     for (int i = 1; i < amount; i++) {
-                        EnergyBall energyBall = getMiningEnergyBall(userUuid, now);
+                        EnergyPointBall energyBall = getMiningEnergyBall(userUuid, now);
                         if (i != amount - 1) {
                             energyBall.setPoint(pointCapacityEachBall);
                         } else {
@@ -210,8 +217,9 @@ public class EnergyService {
                         BigDecimal deltaTime = timeGap.multiply(BigDecimal.valueOf(i)); // 时间差
                         Date timeCreated = timeCalculator(deltaTime, latestTimeCreated);
                         energyBall.setCreated(DateUtils.parseDateToStr(FORMAT_OF_TIME, timeCreated));
-                        energyBallMapper.insertEnergyBall(energyBall);
-                        energyBalls.add(energyBall);
+                        activityMapper.insertEnergyPointBall(energyBall);
+                        //energyBallMapper.insertEnergyBall(energyBall);
+                        energyPointBalls.add(energyBall);
                     }
                 }else {
                     energyBallMapper.updatePointByUuid(latestUuid, balance, now);
@@ -220,15 +228,15 @@ public class EnergyService {
                 // 挖满情况
                 int ballAmountNeeded = MAX_COUNT_OF_MINING_ENERGYBALL - ballAmountPrevious;
                 energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
-                energyBalls.add(energyBallMapper.selectByUuid(latestUuid));
+                energyPointBalls.add(activityMapper.selectByUuid(latestUuid));
                 for (int i = 1; i <= ballAmountNeeded; i++) {
                     BigDecimal deltaTime = timeGap.multiply(BigDecimal.valueOf(i)); // 时间差
-                    EnergyBall energyBall = getMiningEnergyBall(userUuid, now);
+                    EnergyPointBall energyBall = getMiningEnergyBall(userUuid, now);
                     energyBall.setPoint(pointCapacityEachBall);
                     Date timeCreated = timeCalculator(deltaTime, latestTimeCreated);
                     energyBall.setCreated(DateUtils.parseDateToStr(FORMAT_OF_TIME, timeCreated));
-                    energyBallMapper.insertEnergyBall(energyBall);
-                    energyBalls.add(energyBall);
+                    activityMapper.insertEnergyPointBall(energyBall);
+                    energyPointBalls.add(energyBall);
                     ongoingEnergySummary = BigDecimal.ZERO;
                 }
             }
@@ -242,12 +250,12 @@ public class EnergyService {
      * @param energyBalls
      * @return
      */
-    public BigDecimal calculatePreviousPoints(List<EnergyBall> energyBalls) {
-        Iterator<EnergyBall> iterator = energyBalls.iterator();
+    public BigDecimal calculatePreviousPoints(List<EnergyPointBall> energyPointBall) {
+        Iterator<EnergyPointBall> iterator = energyPointBall.iterator();
         BigDecimal pointPrevious = new BigDecimal("0");
         while (iterator.hasNext()) {
-            EnergyBall energyBall = (EnergyBall) iterator.next();
-            pointPrevious = pointPrevious.add(energyBall.getPoint());
+        	EnergyPointBall energyPointBalls = (EnergyPointBall) iterator.next();
+            pointPrevious = pointPrevious.add(energyPointBalls.getPoint());
         }
         return pointPrevious;
     }
@@ -290,56 +298,62 @@ public class EnergyService {
             log.info("userUuid or energyBallUuid is null");
             return null;
         }
-        if (energyBallMapper.selectByUuid(energyBallUuid)
+        if (activityMapper.selectByUuid(energyBallUuid)
                 .getStatus().equals(STATUS_OF_DIE_ENERGYBALL)) {
             log.info("该能量球已经被获取！");
             return null;
         }
-        if (!energyBallMapper.selectByUuid(energyBallUuid).getPoint()
+        if (!activityMapper.selectByUuid(energyBallUuid).getPoint()
                 .equals(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT)
                         .getMaxValue())) {
             log.info("该能量球尚未满！");
             return null;
         }
-        List<EnergyBall> energyBallsBefore = energyBallMapper
-                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        List<EnergyPointBall> energyPointBallList = activityMapper
+        		.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+//        List<EnergyBall> energyBallsBefore = energyBallMapper
+//                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         // 改变被取走能量的球的状态
-        energyBallMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
+        activityMapper.updatePointStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
+        //energyBallMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
         // 增加记录
-        EnergyTradeRecord energyTradeRecord = this.getEnergyRecord(userUuid, energyBallUuid, now);
-        energyTradeRecord.setPointChange(energyBallMapper.selectByUuid(energyBallUuid).getPoint());
-        energyTradeRecord.setPowerChange(energyBallMapper.selectByUuid(energyBallUuid).getPower());
-        energyTradeRecord.setRestPoint(getPointWalletPoint(energyTradeRecord.getUserUuid(),energyTradeRecord.getInOrOut(),energyTradeRecord.getPointChange()));
-        energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
+        PointTradeRecord pointTradeRecord = this.getEnergyRecord(userUuid, energyBallUuid, now);
+//        pointTradeRecord.setPointChange(activityMapper.selectByUuid(energyBallUuid).getPoint());
+//        pointTradeRecord.setRestPoint(getPointWalletPoint(pointTradeRecord.getUserUuid(),pointTradeRecord.getInOrOut(),pointTradeRecord.getPointChange()));
+        activityMapper.insertPointTradeRecord(pointTradeRecord);
+        //energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
         // 改变账户余额
-        EnergyBall energyBall = energyBallMapper.selectByUuid(energyBallUuid);
-        BigDecimal increasePoint = energyBall.getPoint();
-        if (increasePoint == null)
+        EnergyPointBall energyPointBall = activityMapper.selectByUuid(energyBallUuid);
+        //EnergyBall energyBall = energyBallMapper.selectByUuid(energyBallUuid);
+        BigDecimal increasePoint;
+        if (energyPointBall == null)
         	increasePoint = BigDecimal.ZERO;
-        BigDecimal increasePower = energyBall.getPower();
-        if (increasePower == null)
-        	increasePower = BigDecimal.ZERO;
-        String uuid = new String();
-        if (energyWalletMapper.selectByUserUuid(userUuid) == null) {
-            EnergyWallet energyWallet = this.getEnergyWallet(userUuid, now);
-            uuid = energyWallet.getUuid();
-            energyWalletMapper.insertSelective(energyWallet);
-        }else {
-            uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
-        }
-        energyWalletMapper.increasePoint(uuid, increasePoint);
-        energyWalletMapper.increasePower(uuid, increasePower);
+        else
+        	increasePoint = energyPointBall.getPoint();
+        activityMapper.increasePoint(userUuid, increasePoint, now);
+//        String uuid = new String();
+//        if (energyWalletMapper.selectByUserUuid(userUuid) == null) {
+//            EnergyWallet energyWallet = this.getEnergyWallet(userUuid, now);
+//            uuid = energyWallet.getUuid();
+//            energyWalletMapper.insertSelective(energyWallet);
+//        }else {
+//            uuid = energyWalletMapper.selectByUserUuid(userUuid).getUuid();
+//        }
+//        energyWalletMapper.increasePoint(uuid, increasePoint);
+//        energyWalletMapper.increasePower(uuid, increasePower);
         energyBallTakenResult.setNewEnergyPonit(increasePoint);
-        energyBallTakenResult.setNewPower(increasePower);
-        // 判断能量球有没有被拿光，如果是，要产生一个新的
+        energyBallTakenResult.setNewPower(BigDecimal.ZERO);
         // 判断采摘前球是否已经满了，如果满了，摘掉一个球马上生成一个新的
-        List<EnergyBall> energyBallsAfter = energyBallMapper
-                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+        List<EnergyPointBall> energyBallsAfter = activityMapper
+        		.selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
+//        List<EnergyBall> energyBallsAfter = energyBallMapper
+//                .selectByPointSourceCode(userUuid, SOURCE_CODE_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         if (CollectionUtils.isEmpty(energyBallsAfter) ||
-                this.calculatePreviousPoints(energyBallsBefore).compareTo(this.calculateFullEnergyBallPoints()) ==0 ) {
-            energyBallMapper.insertEnergyBall(getMiningEnergyBall(userUuid, now));
+                this.calculatePreviousPoints(energyPointBallList).compareTo(this.calculateFullEnergyBallPoints()) ==0 ) {
+            activityMapper.insertEnergyPointBall(getMiningEnergyBall(userUuid, now));
+        	//energyBallMapper.insertEnergyBall(getMiningEnergyBall(userUuid, now));
             energyBallsAfter.add(getMiningEnergyBall(userUuid, now));
         }
         return energyBallTakenResult;
@@ -381,19 +395,17 @@ public class EnergyService {
      * @param userId
      * @return
      */
-    public EnergyTradeRecord getEnergyRecord(String userId, String energyBallUuid, String now) {
-        EnergyTradeRecord energyTradeRecord = new EnergyTradeRecord();
-        energyTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
-        energyTradeRecord.setUserUuid(userId);
-        energyTradeRecord.setEnergyBallUuid(energyBallUuid);
-        energyTradeRecord.setInOrOut(ENEGY_IN);
-        energyTradeRecord.setCreated(now);
-        energyTradeRecord.setUpdated(now);
-        energyTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
-        energyTradeRecord.setPointChange(this.getCheckinEnergy().getNewEnergyPoint());
-        energyTradeRecord.setPowerChange(this.getCheckinEnergy().getNewPower());
-        energyTradeRecord.setRestPoint(getPointWalletPoint(userId,ENEGY_IN,this.getCheckinEnergy().getNewEnergyPoint()));
-        return energyTradeRecord;
+    public PointTradeRecord getEnergyRecord(String userId, String energyBallUuid, String now) {
+    	PointTradeRecord pointTradeRecord = new PointTradeRecord();
+    	pointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
+    	pointTradeRecord.setUserUuid(userId);
+    	pointTradeRecord.setEnergyBallUuid(energyBallUuid);
+    	pointTradeRecord.setInOrOut(ENEGY_IN);
+    	pointTradeRecord.setCreated(now);
+    	pointTradeRecord.setStatus(STATUS_OF_ACTIVE_ENERGYRECORD);
+    	pointTradeRecord.setPointChange(activityService.getNewPoint(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT).getNewPoint());
+    	pointTradeRecord.setRestPoint(getPointWalletPoint(userId,ENEGY_IN,activityService.getNewPoint(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT).getNewPoint()));
+        return pointTradeRecord;
     }
     /**
      * 根据用户id获取用户的能量钱包point值
@@ -436,14 +448,12 @@ public class EnergyService {
      * @param userUuid
      * @return
      */
-    public EnergyBall getMiningEnergyBall(String userUuid, String now) {
-        EnergyBall energyBall = new EnergyBall();
+    public EnergyPointBall getMiningEnergyBall(String userUuid, String now) {
+    	EnergyPointBall energyBall = new EnergyPointBall();
         energyBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
         energyBall.setUserUuid(userUuid);
         energyBall.setPoint(BigDecimal.ZERO);
         energyBall.setSourceCode(SOURCE_CODE_OF_MINING);
-        energyBall.setPower(BigDecimal.ZERO);
-        energyBall.setPowerSource(SOURCE_CODE_OF_NONE);
         energyBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
         energyBall.setCreated(now);
         energyBall.setUpdated(now);

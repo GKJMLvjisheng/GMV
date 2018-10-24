@@ -176,7 +176,7 @@ public class EnergyPointController extends BaseController{
     	}
     	BigDecimal stepNum = walkMapper.selectTodayWalkBall(userUuid, now).getStepNum();
     	
-    	
+    	BigDecimal maxPoint = BigDecimal.ZERO;
     	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
