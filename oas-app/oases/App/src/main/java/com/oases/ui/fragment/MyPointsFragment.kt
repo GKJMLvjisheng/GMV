@@ -6,7 +6,9 @@ import android.content.Intent
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +69,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
     lateinit var exAdapter:MyPointsGroupAdapter
     var groupData:MutableList<String>?=null
     var itemData :MutableList<MutableList<EnergyItem>>?=null
+    lateinit var swipeLayout:SwipeRefreshLayout
 
     override fun injectComponent() {
         DaggerMainComponent
@@ -113,57 +116,18 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                 return true
             }
         })
-
-        expandableListView.setOnScrollListener(object:AbsListView.OnScrollListener{
-            var position:Int = 0
-            var lastScrollY:Int = 0
-            var slideY:Int = 0
-            override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
-                when(p1){
-                    //滑动停止
-                    AbsListView.OnScrollListener.SCROLL_STATE_IDLE ->{
-                        position = getPosition(expandableListView)
-                        lastScrollY = getFirstViewScrollY(expandableListView)
-                       // Log.d("zzz",position.toString().plus("***").plus(lastScrollY))
-                        if(slideY>=lastScrollY && position ==0){
-                            Log.d("zzz","刷新...")
-                            getDetail()
-                        }
+        swipeLayout = rootFragment.findViewById(R.id.mSwipeLayout) as SwipeRefreshLayout
+        swipeLayout.setOnRefreshListener(object: SwipeRefreshLayout.OnRefreshListener{
+            override fun onRefresh() {
+                var mHandler:Handler  = Handler()
+                mHandler.postDelayed(object :Runnable{
+                    override fun run() {
+                        getDetail()
                     }
-                    AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL->{
-                        slideY = getFirstViewScrollY(expandableListView)
-                       // Log.d("zzz",slideY.toString())
-                    }
-                }
+                },1000)
             }
         })
-
         return rootFragment
-    }
-    private fun getFirstViewScrollY(expandableListView:ExpandableListView):Int{
-        var c:View = expandableListView.getChildAt(0)
-        if(c == null) return 0
-       // Log.d("zzz",c.top.toString().plus("!!").plus(expandableListView.paddingTop.toString()))
-        return -(c.top+expandableListView.paddingTop)
-    }
-    private fun getPosition(expandableListView:ExpandableListView):Int
-    {
-        //Log.d("zzz",expandableListView.getChildAt(0).getTop().toString().plus("%%").plus(expandableListView.getPaddingTop().toString()))
-        //滑动到底部，最后可见的item为list最后一个数据，且自后一个item已完全显示，底部padding也完全显示
-        if (expandableListView.getLastVisiblePosition() == expandableListView.getCount() - 1 && expandableListView.getChildAt(expandableListView.getChildCount() - 1).getBottom() + expandableListView.getPaddingBottom() == expandableListView.getBottom()) {
-            return -1
-        }
-        //滑动到顶部
-        else if (expandableListView.getFirstVisiblePosition() == 0 ) {//&& expandableListView.getChildAt(0).getTop() == expandableListView.getPaddingTop()
-            return 0
-        }
-        //其他
-        else {
-            return 1
-        }
     }
 
     override fun onGetPoints(points: Int) {
@@ -260,7 +224,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                     item?.add(map[key]!!)
                 }
                exAdapter.pushData(map)
-
+                swipeLayout.setRefreshing(false)
               //  exAdapter.notifyDataSetChanged()
             }
        // }

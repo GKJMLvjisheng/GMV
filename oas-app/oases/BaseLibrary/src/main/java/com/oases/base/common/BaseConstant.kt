@@ -41,13 +41,13 @@ class BaseConstant{
         const val USER_OWN_ETH ="user_own_eth"
         //const val MY_OAS_REDRAW = 2000 //提币默认的邮费
         const val TRANSFER_NET = "transfer_net" //流通的网络ropsten.
-        const val TRANSFER_CHECK_ADDRESS = ".etherscan.io/tx/" //流通的网络地址
+        const val TRANSFER_CHECK_ADDRESS = "etherscan.io/tx/" //流通的网络地址
 
         const val TOTAL_ITEM = "total_item"
         const val OUT_ITEM = "out_item"
         const val IN_ITEM = "in_item"
 
-        const val PAGE_SIZE = 50 //100
+        const val PAGE_SIZE = 20 //100
         const val GAS_LIMIT = 60000
         const val GAS_AMOUNT = 37247
         const val GAS_PRICE_LOW = 1 //seekbar显示的最小值

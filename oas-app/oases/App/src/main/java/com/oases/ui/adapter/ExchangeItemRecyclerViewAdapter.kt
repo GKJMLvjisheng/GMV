@@ -117,7 +117,7 @@ class ExchangeItemRecyclerViewAdapter(
         //获取默认网络,目前默认ropsten
         if(!txHash.isNullOrBlank()){
             //AppPrefsUtils.putString(BaseConstant.TRANSFER_NET,"ropsten")
-            var netType = if(txNetwork.isNullOrBlank()) "ropsten" else txNetwork
+            var netType = if(!txNetwork.isNullOrBlank() && txNetwork == "mainnet") "" else "ropsten."
             val intent = Intent()
             intent.setAction(Intent.ACTION_VIEW)
             intent.addCategory(Intent.CATEGORY_BROWSABLE)

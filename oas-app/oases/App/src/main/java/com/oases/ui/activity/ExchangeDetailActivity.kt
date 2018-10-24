@@ -1,9 +1,11 @@
 package com.oases.ui.activity
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.SwipeRefreshLayout
 import android.util.Log
 import android.view.View
 import com.oases.R
@@ -32,6 +34,7 @@ class ExchangeDetailActivity : BaseActivity(), ExchangeItemFragment.OnListFragme
     private  var  inItem2: ArrayList<EnergyItem> =ArrayList<EnergyItem>()
     //private var  type :String= AppPrefsUtils.getString(BaseConstant.MORE_TYPE)
     private lateinit var type:String
+    //private var swipeLayout:SwipeRefreshLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +53,9 @@ class ExchangeDetailActivity : BaseActivity(), ExchangeItemFragment.OnListFragme
             outItem2 = intent.getParcelableArrayListExtra<EnergyItem>(OUT_ITEM)
             inItem2 = intent.getParcelableArrayListExtra<EnergyItem>(IN_ITEM)
         }
+
         setContentView(R.layout.activity_exchange_detail)
+       // swipeLayout = this.mSwipeLayout as SwipeRefreshLayout
         setupViewPager()
 
 
@@ -66,8 +71,20 @@ class ExchangeDetailActivity : BaseActivity(), ExchangeItemFragment.OnListFragme
            }
 
         })
+
+
+        /*swipeLayout.setOnRefreshListener(object: SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                var mHandler: Handler = Handler()
+                mHandler.postDelayed(object : Runnable {
+                    override fun run() {
+
+                    }
+                }, 1000)
+            }
+        })*/
     }
-    //根據下標獲取第幾個fragment
+    //根据下标获取第几个fragment
     fun getFragmentIndex(index:Int):String{
       return when(index){
             0-> "ALL"
@@ -83,7 +100,7 @@ class ExchangeDetailActivity : BaseActivity(), ExchangeItemFragment.OnListFragme
         mTabLayout.addTab(mTabLayout.newTab().setText(titles[1]))
         mTabLayout.addTab(mTabLayout.newTab().setText(titles[2]))
 
-        val fragments = arrayOf(
+       val fragments = arrayOf(
                 ExchangeItemFragment.newInstance(totalItems,totalItem2,type),
                 ExchangeItemFragment.newInstance(outItems,outItem2,type),
                 ExchangeItemFragment.newInstance(inItems,inItem2,type))
@@ -95,5 +112,6 @@ class ExchangeDetailActivity : BaseActivity(), ExchangeItemFragment.OnListFragme
     override fun onListFragmentInteraction(item: PointItem?,item2:EnergyItem?) {
         //Todo to communication
     }
+
 }
 
