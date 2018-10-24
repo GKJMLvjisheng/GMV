@@ -176,13 +176,18 @@ public class EnergyPointController extends BaseController{
     	}
     	BigDecimal stepNum = walkMapper.selectTodayWalkBall(userUuid, now).getStepNum();
     	
-    	BigDecimal maxPoint = BigDecimal.ZERO;
+    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(1, 1).getMaxValue();
+    	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(2, 1).getMaxValue().multiply(BigDecimal.valueOf((int)12));
+    	BigDecimal maxPoint = checkInPoint.add(freePoint);
+    	
+    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(9, 1).getMaxValue()
+    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(9, 1).getIncreaseSpeed());
     	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
         String[] nameArray = {"手机", "计步", "手表", "家电"};
         Integer[] valueArray = {point.intValue(), stepNum.intValue(), 0, 0};
-        Integer[] maxValueArray = {10000, 10000, 20000, 20000};
+        Integer[] maxValueArray = {maxPoint.intValue(), maxStepNum.intValue(), 20000, 20000};
 
         for (Integer i = 0; i < 4; i++) {
             EnergyPointCategory energyPointCategory = new EnergyPointCategory();
