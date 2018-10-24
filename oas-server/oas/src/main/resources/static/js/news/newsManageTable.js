@@ -1,5 +1,5 @@
 //新闻管理界面创建bootstrapTable
-document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
+document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 
 function initNewsGrid(data) {	
 

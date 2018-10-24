@@ -136,7 +136,7 @@ function queryParams1(params){
         //当前页码
         pageNum: pageNum,      
         roleId: 2,
-        //searchValue: searchValue,
+        searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -290,7 +290,7 @@ function queryParams2(params){
         pageNum: pageNum,  
         //测试账号
         roleId: 3,  
-        //searchValue: searchValue,
+        searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -444,7 +444,7 @@ function queryParams3(params){
         pageNum: pageNum,
         //系统账号
         roleId: 1,
-        //searchValue: searchValue,
+        searchValue: searchValue,
     }
 }
 //请求成功方法
