@@ -126,6 +126,7 @@ function initNormalGrid() {
 	
 //请求服务数据时所传参数
 function queryParams1(params){
+	var searchValue = $("#user1").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -135,6 +136,7 @@ function queryParams1(params){
         //当前页码
         pageNum: pageNum,      
         roleId: 2,
+        //searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -146,13 +148,10 @@ function responseHandler1(res){
         return;
     }
     //如果没有错误则返回数据，渲染表格
-//    debugger;
-//    $(":radio[name='radio'][value='2']").prop("checked", "checked");
     return {
         total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
         data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
     };
-    debugger;
 };
 
 function initTestGrid() {	
@@ -280,6 +279,7 @@ function initTestGrid() {
 
 //请求服务数据时所传参数
 function queryParams2(params){
+	var searchValue = $("#user2").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -290,6 +290,7 @@ function queryParams2(params){
         pageNum: pageNum,  
         //测试账号
         roleId: 3,  
+        //searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -432,6 +433,7 @@ function initSystemGrid() {
 
 //请求服务数据时所传参数
 function queryParams3(params){
+	var searchValue = $("#user3").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -442,6 +444,7 @@ function queryParams3(params){
         pageNum: pageNum,
         //系统账号
         roleId: 1,
+        //searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -493,10 +496,10 @@ function actionFormatter4(value, row, index) {
 
 function ViewViewById(name){	
 	var data = {
-		"name": name
+		"userName": name
 	};
 	$.ajax({
-	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	url:"/api/v1/userCenter/inquireUserKYCInfo",
 	contentType : 'application/json;charset=utf8',
 	dataType: 'json',
 	cache: false,
@@ -512,28 +515,28 @@ function ViewViewById(name){
 		var verifyStatus = rows.verifyStatus;
 		if(verifyStatus==0){
 			var status = "未认证";
-			document.getElementById("userIdentityName").style.display="none";
-			document.getElementById("userIdentityNumber").style.display="none";
-			document.getElementById("remark").style.display="none";
+			document.getElementById("userIdentityName1").style.display="none";
+			document.getElementById("userIdentityNumber1").style.display="none";
+			document.getElementById("remark1").style.display="none";
 		}else if(verifyStatus==1){
 			var status = "未审核";
-			document.getElementById("userIdentityName").style.display="none";
-			document.getElementById("userIdentityNumber").style.display="none";
-			document.getElementById("remark").style.display="none";
+			document.getElementById("userIdentityName1").style.display="none";
+			document.getElementById("userIdentityNumber1").style.display="none";
+			document.getElementById("remark1").style.display="none";
 		}else if(verifyStatus==2){
 			var status = "已通过";
-			document.getElementById("userIdentityName").style.display="block";
-			document.getElementById("userIdentityNumber").style.display="block";
-			document.getElementById("remark").style.display="none";
+			document.getElementById("userIdentityName1").style.display="block";
+			document.getElementById("userIdentityNumber1").style.display="block";
+			document.getElementById("remark1").style.display="none";
 		}else {
 			var status = "未通过";
-			document.getElementById("userIdentityName").style.display="none";
-			document.getElementById("userIdentityNumber").style.display="none";
-			document.getElementById("remark").style.display="block";
+			document.getElementById("userIdentityName1").style.display="none";
+			document.getElementById("userIdentityNumber1").style.display="none";
+			document.getElementById("remark1").style.display="block";
 		}
 		
 		$('#verifyStatus').val(status);	
-		$('#IMEI').val(rows.IMEI);
+		//$('#IMEI').val(rows.IMEI);
 		
 		$('#userIdentityName').val(rows.userIdentityName);
 		$('#userIdentityNumber').val(rows.userIdentityNumber);
@@ -543,12 +546,12 @@ function ViewViewById(name){
 		}
 
 		else{
-			alert("查询失败1");
+			alert("查询内容为空！");
 			}						
 	},
 
 	error:function(){
-		alert("查询失败2");
+		alert("查询过程发生错误！");
 	},
 	});					
 }
