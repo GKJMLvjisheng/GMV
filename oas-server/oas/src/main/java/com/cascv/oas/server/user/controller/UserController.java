@@ -159,34 +159,38 @@ public class UserController extends BaseShiroController{
          if(status==0)
         	 throw new AuthenticationException();
          //判断是否是移动端登录
-//         if(userAgent.indexOf("Windows")==-1){
-//        	 log.info("this is android!");
-//        	 log.info(roleList.get(0));
-//        	 switch(roleList.get(0)){
-//	        	 case "系统账号":
-//	        		 throw new AuthenticationException();
-//	        	 case "正常账号":
-//	        		 if(IMEIOri==null) {
-//	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-//	  	        	   userModelMapper.updateIMEI(userModel);
-//	  	        	   }
-//	        		 else if(!IMEIOri.equals(IMEINew))
-//	  	        	   throw new AuthenticationException();
-//	        	     break;
-//	        	 case "测试账号":
-//		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-//		        	   userModelMapper.updateIMEI(userModel);
-//	        	     break;
-//	        	 default:
-//	        		 log.info("default");
-//	        		 break;
-//        	 }
-//         } 
+         if(userAgent.indexOf("Windows")==-1){
+        	 log.info("this is android!");
+        	 log.info(roleList.get(0));
+        	 switch(roleList.get(0)){
+	        	 case "系统账号":
+	        		 log.info("this is 系统账号");
+	        		 throw new AuthenticationException();
+	        	 case "正常账号":
+	        		 log.info("this is 正常账号");
+	        		 if(IMEIOri==null) {
+	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+	  	        	   userModelMapper.updateIMEI(userModel);
+	  	        	   }
+	        		 else if(!IMEIOri.equals(IMEINew))
+	  	        	   throw new AuthenticationException();
+	        	     break;
+	        	 case "测试账号":
+	        		 log.info("this is 测试账号");
+		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+		        	   userModelMapper.updateIMEI(userModel);
+	        	     break;
+	        	 default:
+	        		 log.info("default");
+	        		 break;
+        	 }
+         } 
          
           //普通用户无法在web端登录
-          else if(!roles.contains("系统账号"))
-        	       throw new AuthenticationException();    
-                 
+          else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
+        	       throw new AuthenticationException();
+         
+          log.info("this is PC!");       
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
