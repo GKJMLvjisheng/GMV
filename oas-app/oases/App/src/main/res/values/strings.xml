@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">oases</string>
+    <string name="app_name">OASES</string>
 
     <string name="title_activity_first_page">Welcome</string>
     <string name="dummy_button">Dummy Button</string>
