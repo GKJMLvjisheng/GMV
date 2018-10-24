@@ -4,6 +4,8 @@ import com.oases.base.injection.PerComponentScope
 import com.oases.base.injection.component.ActivityComponent
 import com.oases.user.injection.module.UserModule
 import com.oases.user.ui.activity.*
+import com.oases.user.ui.fragment.EncryptedMnemonicFragment
+import com.oases.user.ui.fragment.PrivateKeyMnemonicFragment
 import dagger.Component
 
 /**
@@ -29,5 +31,7 @@ interface UserComponent {
     fun inject(activity: ForgetPwdOneActivity)
     fun inject(activity: ForgetPwdTwoActivity)
     fun inject(activity: ResetPwdActivity)
+    fun inject(activity: PasswordInSecurityActivity)
     fun inject(activity: SetPasswordActivity)
+    fun inject(fragment: PrivateKeyMnemonicFragment)
 }

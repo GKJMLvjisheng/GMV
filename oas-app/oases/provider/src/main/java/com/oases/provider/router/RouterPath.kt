@@ -13,6 +13,7 @@ object RouterPath{
     class UserCenter{
         companion object {
             const val PATH_LOGIN = "/userCenter/login"
+            const val PATH_BACKUP_WALLET="/userCenter/backup_wallet"
         }
     }
 

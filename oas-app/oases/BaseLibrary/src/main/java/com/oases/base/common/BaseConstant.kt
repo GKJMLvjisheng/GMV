@@ -11,7 +11,7 @@ class BaseConstant{
         const val IMAGE_SERVER_ADDRESS = "http://osea2fxp7.bkt.clouddn.com/"
 
         //本地服务器地址
-       // const val SERVER_ADDRESS = "http://10.0.0.20:8080"
+        //const val SERVER_ADDRESS = "https://10.0.0.20"
         //远程服务器地址
         const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"
 
@@ -31,6 +31,7 @@ class BaseConstant{
         const val USER_MAIL_ADDRESS = "user_mail_address"
         const val USER_INVITE_CODE = "user_invite_code"
         const val USER_UUID = "uuid"
+        const val WALLET_BACKUP = "wallet_backup"
 
         const val MY_OAS_ADDRESS = "my_oas_address"
         const val MY_OAS_AMOUNT = "my_oas_amount"
