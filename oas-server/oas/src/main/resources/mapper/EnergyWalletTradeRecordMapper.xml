@@ -47,6 +47,7 @@ where
     		or etr.created like concat('%',#{searchValue},'%')
     		or etr.rest_point like concat('%',#{searchValue},'%')
        </if>
+       ;
 </select>
 
 
@@ -84,7 +85,7 @@ where
     		or ew.point like concat('%',#{searchValue},'%')
     		or ew.power like concat('%',#{searchValue},'%')
        </if>
-		
+       ;	
 </select> 
 
 
