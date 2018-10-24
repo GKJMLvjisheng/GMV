@@ -1243,7 +1243,7 @@ public class UserController extends BaseShiroController{
 	private void registerSystem() {
 		UserModel userModel = new UserModel();
 		userModel.setName("SYSTEM");
-		userModel.setPassword("123456");
+		userModel.setPassword(generatePassword(30));
 		String password = userModel.getPassword();
 		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
 		ErrorCode code = userService.addUser(uuid, userModel);
@@ -1371,5 +1371,16 @@ public class UserController extends BaseShiroController{
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
 
+	}
+	
+	private String generatePassword(int length) {
+		String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	     Random random=new Random();
+	     StringBuffer sb=new StringBuffer();
+	     for(int i=0;i<length;i++){
+	       int number=random.nextInt(62);
+	       sb.append(str.charAt(number));
+	     }
+	     return sb.toString();
 	}
 }
