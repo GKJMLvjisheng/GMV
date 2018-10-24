@@ -9,10 +9,11 @@
 	<result column="sub_title" property="subTitle"/>
 	<result column="created" property="created"/>
 	<result column="remark" property="remark"/>
+	<result column="rest_balance" property="restBalance"/>
   </resultMap>
   <select id="selectAllTradeRecord" resultMap="ethWalletTradeRecordMap">
   select 
-	u.name,ed.value,ed.title,ed.created,ed.remark
+	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance
 	,ed.sub_title
 from 	
 	eth_wallet_detail ed,user_info u,eth_wallet e
