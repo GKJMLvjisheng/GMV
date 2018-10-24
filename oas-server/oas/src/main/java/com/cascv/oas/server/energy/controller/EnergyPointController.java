@@ -174,6 +174,9 @@ public class EnergyPointController extends BaseController{
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
     	BigDecimal stepNum = walkMapper.selectTodayWalkBall(userUuid, now).getStepNum();
+    	
+    	
+    	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
         String[] nameArray = {"手机", "计步", "手表", "家电"};
