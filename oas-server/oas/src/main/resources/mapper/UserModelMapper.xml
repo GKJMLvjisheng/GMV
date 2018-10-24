@@ -32,7 +32,7 @@
 		gender, birthday,
 		address, mobile, mobile_checked, email,
 		email_checked, confirmed,
-		salt,created,updated,profile,identify_code,IMEI
+		salt,created,updated,profile,identify_code,IMEI,status
 	</sql>
 
 	<!-- insert user -->

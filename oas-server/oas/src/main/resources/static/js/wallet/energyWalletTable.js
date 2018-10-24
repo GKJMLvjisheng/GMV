@@ -76,6 +76,12 @@ function initEnergyWalletGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
+		}, {
+			title : "积分余额",
+			field : "restPoint",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
 		},{
 
 			title : "操作",
