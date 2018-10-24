@@ -111,7 +111,7 @@ function initNormalGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "操作",
+				title : "账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -240,14 +240,6 @@ function initTestGrid() {
 				//visible: false,
 			},{
 
-				title : "重置IMEI",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter1
-			},{
-
 				title : "查看",
 				field : "name",
 				align: 'center',
@@ -264,7 +256,7 @@ function initTestGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "操作",
+				title : "账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -394,14 +386,6 @@ function initSystemGrid() {
 				//visible: false,
 			},{
 
-				title : "重置IMEI",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter1
-			},{
-
 				title : "查看",
 				field : "name",
 				align: 'center',
@@ -418,7 +402,7 @@ function initSystemGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "操作",
+				title : "账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -488,7 +472,7 @@ function actionFormatter4(value, row, index) {
 	var name = value;
 	var roleId = row.roleId;
 	var result = "";
-	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">权限控制</a>";
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">账号状态</a>";
 //	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
 //	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
 	return result;	
