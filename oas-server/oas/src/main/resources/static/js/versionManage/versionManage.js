@@ -19,6 +19,7 @@ $(function() {
 function showVersionModal(){
 	
 	$("#addBtn").attr("onclick","showVersionModal()");
+		resetAddModal();
 		$("#versionStatus1").prop("checked",true);
 		$("#addVersionModal").modal('show');
 

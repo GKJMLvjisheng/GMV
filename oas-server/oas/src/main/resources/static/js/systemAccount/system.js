@@ -18,11 +18,11 @@ function queryParams(params){
         pageNum: params.offset / params.limit + 1,
     }
 }
-	
+//在线钱包	
 function initonlineWalletGrid() {
 	$("#onlineWalletGrid").bootstrapTable('destroy');
 	$("#onlineWalletGrid").bootstrapTable({
-		url: '/api/v1/energyPoint/inqureEnergyWalletTradeRecord',
+		url: '/api/v1/userWallet/systemTransactionDetail',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -39,9 +39,9 @@ function initonlineWalletGrid() {
 		
 		toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
-		//sortName: 'topicId', // 要排序的字段
+		sortName: 'created', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则	
-			
+	    uniqueId:"uuid",	
 		columns : [{  
 		title: '序号',  
 		field: 'ID',
@@ -86,7 +86,7 @@ function initonlineWalletGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '130px',
-			formatter: actionFormatter2
+			//formatter: actionFormatter2
 		},
 			{
 			title : "交易时间",
@@ -97,14 +97,15 @@ function initonlineWalletGrid() {
 		},{
 
 			title : "操作",
-			field : "name",
+			field : "uuid",
 			align: 'center',
 			valign: 'middle',
 			width:  '60px',
+			visible: false,
 			formatter: actionFormatter
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+		//search : true,//搜索
+       // searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
@@ -138,6 +139,7 @@ function responseHandler1(res){
         alert("能量钱包回显失败，错误代码:" + code);
         return;
     }
+    console.log(JSON.stringify(res))
     //如果没有错误则返回数据，渲染表格
     return {
         total : res.data.total, //总页数,前面的key必须为"total"
@@ -145,11 +147,11 @@ function responseHandler1(res){
     };
 };
 
-	
+//交易钱包	
 function tradeWalletGrid() {	
 	$("#tradeWalletGrid").bootstrapTable('destroy'); 
 	$("#tradeWalletGrid").bootstrapTable({
-		url: '/api/v1/energyPoint/inqureEnergyWalletBalanceRecord',
+		url: '/api/v1/ethWallet/systemTransactionDetail',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -180,35 +182,62 @@ function tradeWalletGrid() {
 			return pageSize * (pageNum - 1) + index + 1;  
 			}  
 		}  ,{
-			title : "用户名",
-			field : "name",
+			title : "交易类型",
+			field : "title",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '100px',
+		},
+//		{
+//			title : "交易类型",
+//			field : "inOrOut",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '130px',
+//			formatter: actionFormatter1
+//		},
+		{
+			title : "交易细节",
+			field : "subTitle",
+			align: 'center',
+			valign: 'middle',
+			//width:  '130px',
+		},{
+			title : "交易金额",
+			field : "value",
+			align: 'center',
+			valign: 'middle',
+			width:  '130px',
+		},
+		
+		{
+			title : "账户余额",
+			field : "restBalance",
+			align: 'center',
+			valign: 'middle',
+			width:  '130px',
+			//formatter: actionFormatter2
 		},
 			{
-			title : "积分",
-			field : "point",
+			title : "交易时间",
+			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
-		},
-		{
-			title : "算力",
-			field : "power",
-			align: 'center',
-			valign: 'middle',
-			width:  '200px',
-		},
-		{
+			width:  '170px',
+		},{
+
 			title : "操作",
 			field : "name",
 			align: 'center',
 			valign: 'middle',
-			formatter: actionFormatter
-		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+			width:  '60px',
+			visible: false,
+			formatter: actionFormatter,
+			
+		}
+		],	
+		//search : true,//搜索
+        //searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
