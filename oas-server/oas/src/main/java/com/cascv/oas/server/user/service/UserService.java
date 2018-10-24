@@ -68,7 +68,7 @@ public class UserService {
 //  }
    
   public ErrorCode addUser(String uuid, UserModel userModel) {
-	  log.info("111");
+//	  log.info("111");
 //	  log.info("userModel.getInviteCode()={}",userModel.getInviteCode());
 //	  log.info("userModel.getInviteFrom()={}",userModel.getInviteFrom());
 	  String s = userModel.getName();

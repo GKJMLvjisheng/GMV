@@ -62,7 +62,7 @@
 	</div> 
 
 	<div class = "container" id="page1">
-		<input class="form" id="eth1" required="required" placeholder="搜索" onblur="initEthWalletGrid()"/>	
+		<input class="form" id="eth1" required="required" placeholder="搜索" oninput="initEthWalletGrid(event)"/>	
 		<table id="ethWalletGrid"></table>
 	</div> 
 	
@@ -85,7 +85,7 @@
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
-		<input class="form" id="eth2" required="required" placeholder="搜索" onblur="initFundInGrid()"/>	
+		<input class="form" id="eth2" required="required" placeholder="搜索" oninput="initFundInGrid(event)"/>	
 		<table id="fundInGrid"></table>
 	</div>
 
@@ -107,7 +107,7 @@
 					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 				</div>	
 			</div>
-		<input class="form" id="eth3" required="required" placeholder="搜索" onblur="initFundOutGrid()"/>	
+		<input class="form" id="eth3" required="required" placeholder="搜索" oninput="initFundOutGrid(event)"/>	
 		<table id="fundOutGrid"></table>
 	</div>
 
