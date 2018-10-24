@@ -277,7 +277,7 @@ public class EthWalletController extends BaseShiroController {
   @PostMapping(value="/setPreferNetwork")
   @ResponseBody
   @Transactional
-  @RequiresRoles("admin")
+  //@RequiresRoles("admin")
   public ResponseEntity<?> setPreferNetwork(@RequestBody PreferNetworkReq req){
     ErrorCode errorCode=ethWalletService.setPreferNetwork(req.getPreferNetwork());
     return new ResponseEntity.Builder<Integer>()
