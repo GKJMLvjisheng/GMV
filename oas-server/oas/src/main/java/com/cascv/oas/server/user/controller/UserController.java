@@ -1372,4 +1372,21 @@ public class UserController extends BaseShiroController{
 		  	      .build();
 
 	}
+	
+	/**
+	 * @author lvjisheng
+	 * @param offset,limit,roleId
+	 * @category 根据角色名称查找相应的用户
+	 * @return
+	 */
+	@PostMapping(value="/inquireUserKYCInfo")
+    @ResponseBody
+    @WriteLog(value="inquireUserKYCInfo")
+    public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserIdentityCardModel kycModel){
+		    UserIdentityCardModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getUserName());
+	        return new ResponseEntity.Builder<UserIdentityCardModel>()
+	                .setData(newKYCModel)
+	                .setErrorCode(ErrorCode.SUCCESS)
+	                .build();
+	}
 }

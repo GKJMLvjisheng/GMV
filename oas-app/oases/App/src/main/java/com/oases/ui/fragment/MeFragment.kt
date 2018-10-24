@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.allenliu.versionchecklib.v2.AllenVersionChecker
+import com.allenliu.versionchecklib.v2.builder.DownloadBuilder
 import com.allenliu.versionchecklib.v2.builder.UIData
 import com.oases.R
 import com.oases.base.common.BaseConstant
@@ -115,9 +116,15 @@ class MeFragment : BaseMvpFragment<MainPresenter>(), MainView, View.OnClickListe
             if("${versionInfo?.versionCode}".toInt() < versionFromServer){
                 val uiData: UIData = UIData.create().setDownloadUrl(addressFromServer).setTitle("新版本提醒").setContent("发现新版本，是否升级？")
                 AppPrefsUtils.putString(BaseConstant.PACKAGE_URL, addressFromServer)
-                AllenVersionChecker
+                val builder: DownloadBuilder = AllenVersionChecker
                         .getInstance()
-                        .downloadOnly(uiData).excuteMission(context)
+                        .downloadOnly(uiData)as DownloadBuilder
+                //builder.setDownloadAPKPath("/storage/emulated/0/oases_download")
+                builder .excuteMission(context)
+                builder.setForceRedownload(true) //本地有安装包缓存仍重新下载apk
+                if(value.upGradeStatus == 1){
+                    builder.setForceUpdateListener { }
+                }
             }else{
                 Toast.makeText(context, "当前处于最新版本", Toast.LENGTH_SHORT).show()
             }

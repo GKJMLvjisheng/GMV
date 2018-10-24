@@ -25,6 +25,7 @@
 		<result column="updated" property="updated" />
 		<result column="profile" property="profile" />
 		<result column="identify_code" property="identifyCode" />
+		<result column="status" property="status" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -48,6 +49,7 @@
 			name,
 			password,
 			salt,
+			status,
 			<if test="nickname != null">
 				nickname,
 			</if>
@@ -83,11 +85,10 @@
 			</if>
 			<if test="created != null">
 				created,
+			</if>			
+			<if test="IMEI != null">
+			    IMEI
 			</if>
-
-			<!-- <if test="IMEI != null"> -->
-			<!-- IMEI -->
-			<!-- </if> -->
 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -95,6 +96,7 @@
 			#{name,jdbcType=VARCHAR},
 			#{password,jdbcType=VARCHAR},
 			#{salt,jdbcType=VARCHAR},
+			'1',
 			<if test="nickname != null">
 				#{nickname,jdbcType=VARCHAR},
 			</if>
@@ -132,12 +134,11 @@
 				#{updated,jdbcType=VARCHAR},
 			</if>
 			<if test="created != null">
-				#{created,jdbcType=VARCHAR}
+				#{created,jdbcType=VARCHAR},
 			</if>
-
-			<!-- <if test="IMEI != null"> -->
-			<!-- #{IMEI,jdbcType=VARCHAR} -->
-			<!-- </if> -->
+			<if test="IMEI != null">
+			#{IMEI,jdbcType=VARCHAR}
+			</if>
 
 		</trim>
 	</insert>
@@ -321,6 +322,6 @@
 	status = #{status}
 	where name = #{name}
   </update>
-  
+ 
 </mapper>
 

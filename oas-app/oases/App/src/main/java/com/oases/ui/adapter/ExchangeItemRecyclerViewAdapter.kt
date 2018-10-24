@@ -53,25 +53,16 @@ class ExchangeItemRecyclerViewAdapter(
             }else if(type.equals("WALLET") || type.equals("EXCHANGE")){
                 item2 = v.tag as PointItem
 
-                /*var network:String = " //网络
-                var info:String = if(item2.txHash.isNullOrBlank()) "" else network.plus(item2.txHash)*/
                 if(type.equals("WALLET")){
+
+                    var extra = if(item2.extra==null || (item2.title?:"").indexOf("充币")!= -1)"" else "\n手续费：".plus( item2.extra!!.toBigDecimal().setScale(2,BigDecimal.ROUND_HALF_UP).toString())
                     if(item2.remark.isNullOrBlank()){
-                       /* if(item2.txNetwork.isNullOrBlank() || item2.txHash.isNullOrBlank()){*/
-                            alertWindow("无备注",1,null,null)
-                       /* }else{
-                            alertWindow("无备注".plus("\n").plus("hash:").plus(item2.txHash?:""),2,item2.txHash,item2.txNetwork)
-                        }*/
+                        alertWindow("无备注".plus(extra),1,null,null)
                     }else{
-                     /*   if(item2.txNetwork.isNullOrBlank() ||  item2.txHash.isNullOrBlank()){*/
-                            alertWindow("备注：".plus(item2.remark),1,null,null)
-                        /*}else{
-                            alertWindow("备注：".plus(item2.remark).plus("\n").plus("hash:").plus(item2.txHash?:""),2,item2.txHash,item2.txNetwork)
-                        }*/
+                        alertWindow("备注：".plus(item2.remark).plus(extra),1,null,null)
 
                     }
                 }else{
-
                     if(item2.remark.isNullOrBlank()){
                         alertWindow("无备注".plus("\n").plus("hash:").plus(item2.txHash?:""),2,item2.txHash,item2.txNetwork)
                     }else{
@@ -164,13 +155,7 @@ class ExchangeItemRecyclerViewAdapter(
             var item: PointItem? = null
             if (mValues.size > 0) {
                 item = mValues[position]
-                var status :String
-                when(item.txResult){
-                    0-> status = "(进行中)"
-                    1-> status = ""
-                    else ->status = "(失败)"
-                }
-                Log.d("zht",status)
+
                 val title = item.title?:""
                 //holder.mExchangeItemView.setLeftTopText(title.plus(if(item.title.equals("提币") || item.title.equals("充币")) status else "" ))
                 holder.mExchangeItemView.setLeftBottomText(item.created?:"")
@@ -179,13 +164,24 @@ class ExchangeItemRecyclerViewAdapter(
                 holder.mExchangeItemView.setRightTopTextColor()
                // var changeUserName: String?
                 if (type.equals("WALLET")) {
+                    var status :String
+                    when(item.txResult){
+                        0-> status = "(待审核)"
+                        1-> status = "(进行中)"
+                        2-> status ="(失败)"
+                        3-> status=""
+                        else ->status = "(失败)"
+                    }
                     //changeUserName = item.changeUserName
                     holder.mExchangeItemView.setRightBottomText(item.subTitle?:"")
                     holder.mExchangeItemView.setLeftTopText(title.plus(if(item.title.equals("提币") || item.title.equals("充币")) status else "" ))
                 } else {
-                    //changeUserName = item.changeAddress
-                    //val showChangeUserName = if (changeUserName.isNullOrEmpty()) "" else if (changeUserName!!.length > 7) changeUserName.substring(0, 3).plus("...").plus(changeUserName.substring(changeUserName.length - 3, changeUserName.length)) else changeUserName
-                    //holder.mExchangeItemView.setRightBottomText(if (item.inOrOut==0) if (showChangeUserName.length==0) "" else "转给".plus(showChangeUserName) else if (showChangeUserName.length==0) "" else "来自".plus(showChangeUserName))
+                    var status :String
+                    when(item.txResult){
+                        0-> status = "(进行中)"
+                        1-> status = ""
+                        else ->status = "(失败)"
+                    }
                     var subT = item.subTitle?:""
                     if(subT.length == 2){
                         subT =""

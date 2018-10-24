@@ -243,4 +243,20 @@
   		user_identity_number = #{userIdentityNumber} and verify_status = 2;
 </select>
 
+<!--   <resultMap id="kycResultMap" type="com.cascv.oas.server.user.model.UserIdentityCardModel"> -->
+<!--     <id column="user_identity_name" property="userIdentityName"/> -->
+<!--     <result column="user_identity_number" property="userIdentityNumber"/> -->
+<!--     <result column="remark" property="remark"/> -->
+<!--     <result column="verify_status" property="verifyStatus"/> -->
+<!--   </resultMap> -->
+  <select id="inquireUserKYCInfo" resultMap="userIdentityCardModelMap">
+  	select 
+  	user_identity_name,
+  	user_identity_number,
+  	remark,
+  	verify_status
+    from identity_card_info where user_name = #{userName}
+    order by created desc 
+    limit 1;   
+  </select>
 </mapper>

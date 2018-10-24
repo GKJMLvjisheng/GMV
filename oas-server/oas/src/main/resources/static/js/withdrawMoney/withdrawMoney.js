@@ -9,7 +9,8 @@ $(function() {
 function requestAuditReady(){
 	
     $('#requestAuditGrid').bootstrapTable('destroy');
-	var data1;
+    initRequestAuditGrid();
+    /*var data1;
 	 $.ajax({
 		
 		url: "/api/v1/userWallet/getWithdrawList",
@@ -26,7 +27,7 @@ function requestAuditReady(){
 		error: function(){
 			alert("提币请求审核回显失败！")
 		}
-		}); 
+		}); */
 }
 
 function audit(){

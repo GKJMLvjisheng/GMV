@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.ExpandableListView
 
 import com.oases.R
@@ -112,7 +113,57 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                 return true
             }
         })
+
+        expandableListView.setOnScrollListener(object:AbsListView.OnScrollListener{
+            var position:Int = 0
+            var lastScrollY:Int = 0
+            var slideY:Int = 0
+            override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
+                when(p1){
+                    //滑动停止
+                    AbsListView.OnScrollListener.SCROLL_STATE_IDLE ->{
+                        position = getPosition(expandableListView)
+                        lastScrollY = getFirstViewScrollY(expandableListView)
+                       // Log.d("zzz",position.toString().plus("***").plus(lastScrollY))
+                        if(slideY>=lastScrollY && position ==0){
+                            Log.d("zzz","刷新...")
+                            getDetail()
+                        }
+                    }
+                    AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL->{
+                        slideY = getFirstViewScrollY(expandableListView)
+                       // Log.d("zzz",slideY.toString())
+                    }
+                }
+            }
+        })
+
         return rootFragment
+    }
+    private fun getFirstViewScrollY(expandableListView:ExpandableListView):Int{
+        var c:View = expandableListView.getChildAt(0)
+        if(c == null) return 0
+       // Log.d("zzz",c.top.toString().plus("!!").plus(expandableListView.paddingTop.toString()))
+        return -(c.top+expandableListView.paddingTop)
+    }
+    private fun getPosition(expandableListView:ExpandableListView):Int
+    {
+        //Log.d("zzz",expandableListView.getChildAt(0).getTop().toString().plus("%%").plus(expandableListView.getPaddingTop().toString()))
+        //滑动到底部，最后可见的item为list最后一个数据，且自后一个item已完全显示，底部padding也完全显示
+        if (expandableListView.getLastVisiblePosition() == expandableListView.getCount() - 1 && expandableListView.getChildAt(expandableListView.getChildCount() - 1).getBottom() + expandableListView.getPaddingBottom() == expandableListView.getBottom()) {
+            return -1
+        }
+        //滑动到顶部
+        else if (expandableListView.getFirstVisiblePosition() == 0 ) {//&& expandableListView.getChildAt(0).getTop() == expandableListView.getPaddingTop()
+            return 0
+        }
+        //其他
+        else {
+            return 1
+        }
     }
 
     override fun onGetPoints(points: Int) {
