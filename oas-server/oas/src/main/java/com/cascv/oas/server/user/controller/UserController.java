@@ -1384,9 +1384,12 @@ public class UserController extends BaseShiroController{
     @WriteLog(value="inquireUserKYCInfo")
     public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserIdentityCardModel kycModel){
 		    UserIdentityCardModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getUserName());
+		    ErrorCode errorCode=ErrorCode.SUCCESS;
+		    if(newKYCModel==null)
+		    errorCode=ErrorCode.GENERAL_ERROR;
 	        return new ResponseEntity.Builder<UserIdentityCardModel>()
 	                .setData(newKYCModel)
-	                .setErrorCode(ErrorCode.SUCCESS)
+	                .setErrorCode(errorCode)
 	                .build();
 	}
 }
