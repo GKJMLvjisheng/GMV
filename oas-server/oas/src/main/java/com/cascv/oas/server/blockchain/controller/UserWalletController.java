@@ -39,6 +39,7 @@ import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
@@ -213,6 +214,7 @@ public class UserWalletController extends BaseShiroController {
   @RequiresPermissions("提币")
   @ResponseBody
   @Transactional
+  @WriteLog(value="withdraw")
   public ResponseEntity<?> withdraw(@RequestBody OasDetail oasDetail){
 	  UserModel user = ShiroUtils.getUser();
 	  if(user == null) {
