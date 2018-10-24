@@ -153,13 +153,13 @@ public class UserController extends BaseShiroController{
           Set<String> roles=roleService.getRolesByUserUuid(uuid);
           List<String>  roleList =new ArrayList<>(roles);
           log.info("roles={}",roles);
-          log.info("name={}",loginVo.getName());
-         Integer status=userService.findUserByName(loginVo.getName()).getStatus(); 
-         log.info("status={}",status);
+          
+         Integer status=userService.findUserByName(loginVo.getName()).getStatus();
+         log.info("if android={}",userAgent.indexOf("Windows")==-1);
          if(status==0)
         	 throw new AuthenticationException();
          //判断是否是移动端登录
-         if(userAgent.indexOf("android")!=-1){
+         if(userAgent.indexOf("Windows")==-1){
         	 log.info("this is android!");
         	 log.info(roleList.get(0));
         	 switch(roleList.get(0)){
