@@ -310,17 +310,16 @@
 		join user_role UR on U.uuid = UR.uuid 
 		where UR.role_id=#{roleId} 
 	   <if test="searchValue != null and searchValue !='' ">
-    	and name like concat('%',#{searchValue},'%')
-    	or nickname like concat('%',#{searchValue},'%')
-    	or gender like concat('%',#{searchValue},'%')
-    	or birthday like concat('%',#{searchValue},'%')
-    	or address like concat('%',#{searchValue},'%')
-    	or mobile like concat('%',#{searchValue},'%')
-    	or email like concat('%',#{searchValue},'%')
-    	or IMEI like concat('%',#{searchValue},'%')
-    	or status like concat('%',#{searchValue},'%')
-    	or U.created like concat('%',#{searchValue},'%')
-    	or UR.role_id like concat('%',#{searchValue},'%')
+    	    and (name like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (nickname like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (gender like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (birthday like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (address like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (mobile like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (email like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (IMEI like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (status like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
+	    	or (U.created like concat('%',#{searchValue},'%') and UR.role_id=#{roleId} )
        </if>
        	order by U.created desc 
 	    limit #{offset}, #{limit}
