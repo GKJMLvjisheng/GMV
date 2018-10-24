@@ -1315,7 +1315,10 @@ public class UserController extends BaseShiroController{
 	        else 
 	        	offset = 0;
 		    
-	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit, pageInfo.getRoleId());
+	  	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	  	    
+	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit,pageInfo.getRoleId(),searchValue);
+	        
 	        Integer count = userService.countUsers(pageInfo.getRoleId());			        			     
 	        
 	        PageDomain<UserDetailModel> pageUserDetail = new PageDomain<>();
