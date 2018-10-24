@@ -11,11 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 public class DelayRewardJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		//log.info("job delay reward running\n");
+		log.info("job delay reward running\n");
 		PromotedRewardService promotedRewardService = (PromotedRewardService) context.getJobDetail().getJobDataMap().get("promotedRewardService");
 		if (promotedRewardService != null) {
-			//promotedRewardService.decreaseUserPowerRewardBuyMiner();
-			//promotedRewardService.checkBuyUserMinerRedeem();
+			promotedRewardService.decreaseUserPowerRewardBuyMiner();
+			promotedRewardService.checkBuyUserMinerRedeem();
 		}
 	}
 }

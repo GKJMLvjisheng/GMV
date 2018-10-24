@@ -10,12 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ImmediatelyRewardJob implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		//log.info("job immediately reward running\n");
+		log.info("job immediately reward running\n");
 		PromotedRewardService promotedRewardService = (PromotedRewardService) context.getJobDetail().getJobDataMap().get("promotedRewardService");
 
 		if (promotedRewardService != null) {
-			//promotedRewardService.checkUserWhetherBuyMiner();
-			//promotedRewardService.giveUserPowerRewardBuyMiner();
+			promotedRewardService.checkUserWhetherBuyMiner();
+			promotedRewardService.giveUserPowerRewardBuyMiner();
 		}
 	}
 }
