@@ -153,8 +153,9 @@ public class UserController extends BaseShiroController{
           Set<String> roles=roleService.getRolesByUserUuid(uuid);
           List<String>  roleList =new ArrayList<>(roles);
           log.info("roles={}",roles);
-          
-         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
+          log.info("name={}",loginVo.getName());
+         Integer status=userService.findUserByName(loginVo.getName()).getStatus(); 
+         log.info("status={}",status);
          if(status==0)
         	 throw new AuthenticationException();
          //判断是否是移动端登录
