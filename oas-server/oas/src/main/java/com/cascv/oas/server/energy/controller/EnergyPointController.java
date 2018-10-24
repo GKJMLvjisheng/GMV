@@ -176,7 +176,7 @@ public class EnergyPointController extends BaseController{
     	}
     	BigDecimal stepNum = walkMapper.selectTodayWalkBall(userUuid, now).getStepNum();
     	
-    	
+    	BigDecimal maxPoint = BigDecimal.ZERO;
     	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
@@ -468,9 +468,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         	offset = (pageNum - 1) * limit;
         else 
         	offset = 0;
-    
-    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
-    if(searchValue !=null) {
+    String searchValue=pageInfo.getSearchValue();//搜索支持模糊查询词语
     List<EnergyWalletTradeRecordInfo> energyWalletTradeRecordList=energyWalletTradeRecordMapper.selectAllTradeRecordBySearchValue(offset, limit, searchValue);
   	for (EnergyWalletTradeRecordInfo energyWalletTradeRecordInfo : energyWalletTradeRecordList) {
 		String srcFormater="yyyy-MM-dd HH:mm:ss";
@@ -492,29 +490,6 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
  		        .setData(energyWalletTradeRecordInfo)
  		        .setErrorCode(ErrorCode.SUCCESS)
  		        .build();
-    }else {
-  	List<EnergyWalletTradeRecordInfo> energyWalletTradeRecordList=energyWalletTradeRecordMapper.selectAllTradeRecord(offset, limit);
-  	for (EnergyWalletTradeRecordInfo energyWalletTradeRecordInfo : energyWalletTradeRecordList) {
-		String srcFormater="yyyy-MM-dd HH:mm:ss";
-		String dstFormater="yyyy-MM-dd HH:mm:ss";
-		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
-		energyWalletTradeRecordInfo.setCreated(created);
-		log.info("newCreated={}",created);
-	  }
-  	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
- 	 Integer count=energyWalletTradeRecordMapper.countByEnergyWalletTradeRecord();
- 	 	energyWalletTradeRecordInfo.setTotal(count);
-	  	energyWalletTradeRecordInfo.setAsc("desc");
-	  	energyWalletTradeRecordInfo.setOffset(offset);
-	  	energyWalletTradeRecordInfo.setPageNum(pageNum);
-	  	energyWalletTradeRecordInfo.setPageSize(pageSize);
-	  	energyWalletTradeRecordInfo.setRows(energyWalletTradeRecordList);
- 		return new ResponseEntity.Builder<PageDomain<EnergyWalletTradeRecordInfo>>()
- 		        .setData(energyWalletTradeRecordInfo)
- 		        .setErrorCode(ErrorCode.SUCCESS)
- 		        .build();
-    }
     }
     
     /**
@@ -538,7 +513,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         else 
         	offset = 0;
        String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
-       if(searchValue != null) {
+       
     	   List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecordBySearchValue(offset, limit, searchValue);
     	   Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecordBySearchValue(searchValue);
     	   PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
@@ -552,21 +527,6 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
      		        .setData(energyWalletBalanceRecordInfo)
      		        .setErrorCode(ErrorCode.SUCCESS)
      		        .build();
-       }else {
-    	  List<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordList=energyWalletTradeRecordMapper.selectAllEnergyWalletBalanceRecord(offset, limit);
-    	  Integer count=energyWalletTradeRecordMapper.countByEnergyWalletBalanceRecord();
-    	  PageDomain<EnergyWalletBalanceRecordInfo> energyWalletBalanceRecordInfo = new PageDomain<>();
-    	    energyWalletBalanceRecordInfo.setTotal(count);
-    	    energyWalletBalanceRecordInfo.setAsc("desc");
-    	    energyWalletBalanceRecordInfo.setOffset(offset);
-    	    energyWalletBalanceRecordInfo.setPageNum(pageNum);
-    	    energyWalletBalanceRecordInfo.setPageSize(pageSize);
-    	    energyWalletBalanceRecordInfo.setRows(energyWalletBalanceRecordList);
-    		return new ResponseEntity.Builder<PageDomain<EnergyWalletBalanceRecordInfo>>()
-    		        .setData(energyWalletBalanceRecordInfo)
-    		        .setErrorCode(ErrorCode.SUCCESS)
-    		        .build();
-       }
     }
     /**
      * @author Ming Yang
@@ -610,7 +570,6 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   	  if(endTime=="")
   		  endTime=nowDate;
   	  String searchValue=pageInfo.getSearchValue();
-  	  if(searchValue != null) {
   		List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecordBySearchValue(startTime, endTime, offset, limit, searchValue);
   		Integer count=energyWalletTradeRecordMapper.countByInTotalPointTradeRecordBySearchValue(startTime, endTime, searchValue);
   		PageDomain<EnergyWalletPointRecordInfo> energyWalletInTotalPointRecordInfo = new PageDomain<>();
@@ -624,21 +583,6 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
     		        .setData(energyWalletInTotalPointRecordInfo)
     		        .setErrorCode(ErrorCode.SUCCESS)
     		        .build();
-  	  }else {
-  		List<EnergyWalletPointRecordInfo> energyWalletInTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllInTotalPointTradeRecord(startTime, endTime,offset, limit);
-    	PageDomain<EnergyWalletPointRecordInfo> energyWalletInTotalPointRecordInfo = new PageDomain<>();
-    	Integer count=energyWalletTradeRecordMapper.countByInTotalPointTradeRecord(startTime, endTime);
-	  	  	energyWalletInTotalPointRecordInfo.setTotal(count);
-	  	  	energyWalletInTotalPointRecordInfo.setAsc("desc");
-	  	  	energyWalletInTotalPointRecordInfo.setOffset(offset);
-	  	  	energyWalletInTotalPointRecordInfo.setPageNum(pageNum);
-	  	  	energyWalletInTotalPointRecordInfo.setPageSize(pageSize);
-	  	  	energyWalletInTotalPointRecordInfo.setRows(energyWalletInTotalPointTradeRecordList);
-    		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
-    		        .setData(energyWalletInTotalPointRecordInfo)
-    		        .setErrorCode(ErrorCode.SUCCESS)
-    		        .build();
-  	  }
     }
     /**
      * @author Ming Yang
@@ -683,7 +627,6 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
   	  if(endTime=="")
   		  endTime=nowDate;
   	  String searchValue=pageInfo.getSearchValue();
-	  if(searchValue != null) {
 		  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecordBySearchValue(startTime, endTime, offset, limit, searchValue);
 	  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletOutTotalPointRecordInfo = new PageDomain<>();
 	  	  Integer count=energyWalletTradeRecordMapper.countByOutTotalPointTradeRecordBySearchValue(startTime, endTime, searchValue);
@@ -697,20 +640,5 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 	  		        .setData(energyWalletOutTotalPointRecordInfo)
 	  		        .setErrorCode(ErrorCode.SUCCESS)
 	  		        .build();
-	  }else {
-		  List<EnergyWalletPointRecordInfo> energyWalletOutTotalPointTradeRecordList=energyWalletTradeRecordMapper.selectAllOutTotalPointTradeRecord(startTime, endTime,offset, limit);
-	  	  PageDomain<EnergyWalletPointRecordInfo> energyWalletOutTotalPointRecordInfo = new PageDomain<>();
-	  	  Integer count=energyWalletTradeRecordMapper.countByOutTotalPointTradeRecord(startTime, endTime);
-		  	energyWalletOutTotalPointRecordInfo.setTotal(count);
-		  	energyWalletOutTotalPointRecordInfo.setAsc("desc");
-		  	energyWalletOutTotalPointRecordInfo.setOffset(offset);
-		  	energyWalletOutTotalPointRecordInfo.setPageNum(pageNum);
-		  	energyWalletOutTotalPointRecordInfo.setPageSize(pageSize);
-		  	energyWalletOutTotalPointRecordInfo.setRows(energyWalletOutTotalPointTradeRecordList);
-	  		return new ResponseEntity.Builder<PageDomain<EnergyWalletPointRecordInfo>>()
-	  		        .setData(energyWalletOutTotalPointRecordInfo)
-	  		        .setErrorCode(ErrorCode.SUCCESS)
-	  		        .build();
-	  }
     }
 }

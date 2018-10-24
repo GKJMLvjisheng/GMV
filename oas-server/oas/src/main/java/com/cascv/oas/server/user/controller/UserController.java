@@ -19,6 +19,8 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -71,6 +73,7 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -830,6 +833,7 @@ public class UserController extends BaseShiroController{
         PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
         log.info(publishResult.toString());
 		info.put("state",true);
+		log.info("code={}",vcode);
         log.info("****end****");
         return new ResponseEntity.Builder<Map<String,Boolean>>()
 		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
@@ -1316,6 +1320,7 @@ public class UserController extends BaseShiroController{
 	        	offset = 0;
 		    
 	  	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	  	    
 	  	    
 	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit,pageInfo.getRoleId(),searchValue);
 	        
