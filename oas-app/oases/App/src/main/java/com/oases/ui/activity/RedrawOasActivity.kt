@@ -19,6 +19,7 @@ import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.jetbrains.anko.toast
+import java.math.BigDecimal
 
 class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
 
@@ -47,7 +48,10 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
                     .plus(ToolUtil.modifyAddressInfo(address_2)).plus(address.substring(37,42))
         }
         mMyAddress.setRightTopText(address)
-        mAvailableAmount.text = intent.getStringExtra(BaseConstant.MY_OAS_AMOUNT)
+        var balance = intent.getStringExtra(BaseConstant.MY_OAS_AMOUNT)
+        var unconfirmed = intent.getStringExtra(BaseConstant.MY_OAS_AMOUNT_UNCONFIRMED)
+        mAvailableAmount.text =  (balance.toBigDecimal().subtract(unconfirmed.toBigDecimal())).setScale(4, BigDecimal.ROUND_HALF_UP).toString()
+
         mPresenter.getOasExtra()
 
         //金额监听事件
