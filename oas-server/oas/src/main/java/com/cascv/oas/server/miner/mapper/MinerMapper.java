@@ -55,6 +55,7 @@ public interface MinerMapper {
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatusToDecrease(PurchaseRecord purchaseRecord);
+	Integer updateByMinerNumFinishRewardNumber(PurchaseRecord purchaseRecord);//无奖励时候假装已经完成奖励
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 
 			@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer insertPurchaseRecord(PurchaseRecord purchaseRecord);
