@@ -63,7 +63,7 @@ public class MessageService {
         };
         AmazonSNS amazonSNS = null;
         try {
-            amazonSNS = AmazonSNSClientBuilder.standard().withCredentials(provider).withRegion("us-east-1").build();
+            amazonSNS = AmazonSNSClientBuilder.standard().withCredentials(provider).withRegion("ap-northeast-1").build();
         } catch (Exception e) {
 
         }

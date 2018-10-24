@@ -75,7 +75,7 @@ function initNormalGrid() {
 				field : "imei",
 				align: 'center',
 				valign: 'middle',
-				width:  '90px',
+				width:  '93px',
 				
 			},
 				{
@@ -83,23 +83,23 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '180px',
+				width:  '165px',
 				//visible: false,
-			},{
-
-				title : "查看",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '45px',
-				formatter: actionFormatter1
 			},{
 
 				title : "重置IMEI",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '70px',
+				width:  '80px',
+				formatter: actionFormatter1
+			},{
+
+				title : "查看",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '50px',
 				formatter: actionFormatter2
 			},{
 
@@ -136,7 +136,7 @@ function queryParams1(params){
         //当前页码
         pageNum: pageNum,      
         roleId: 2,
-        //searchValue: searchValue,
+        searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -228,7 +228,7 @@ function initTestGrid() {
 				field : "imei",
 				align: 'center',
 				valign: 'middle',
-				width:  '90px',
+				width:  '93px',
 				
 			},
 				{
@@ -236,23 +236,23 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '180px',
+				width:  '165px',
 				//visible: false,
-			},{
-
-				title : "查看",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '45px',
-				formatter: actionFormatter1
 			},{
 
 				title : "重置IMEI",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '70px',
+				width:  '80px',
+				formatter: actionFormatter1
+			},{
+
+				title : "查看",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '50px',
 				formatter: actionFormatter2
 			},{
 
@@ -290,7 +290,7 @@ function queryParams2(params){
         pageNum: pageNum,  
         //测试账号
         roleId: 3,  
-        //searchValue: searchValue,
+        searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -382,7 +382,7 @@ function initSystemGrid() {
 				field : "imei",
 				align: 'center',
 				valign: 'middle',
-				width:  '90px',
+				width:  '93px',
 				
 			},
 				{
@@ -390,23 +390,23 @@ function initSystemGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '170px',
+				width:  '165px',
 				//visible: false,
-			},{
-
-				title : "查看",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '45px',
-				formatter: actionFormatter1
 			},{
 
 				title : "重置IMEI",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '70px',
+				width:  '80px',
+				formatter: actionFormatter1
+			},{
+
+				title : "查看",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '50px',
 				formatter: actionFormatter2
 			},{
 
@@ -414,7 +414,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '70px',
+				width:  '80px',
 				formatter: actionFormatter3
 			},{
 
@@ -422,7 +422,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '70px',
+				width:  '80px',
 				formatter: actionFormatter4
 			}],		
 //		  search : true,//搜索
@@ -444,7 +444,7 @@ function queryParams3(params){
         pageNum: pageNum,
         //系统账号
         roleId: 1,
-        //searchValue: searchValue,
+        searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -462,17 +462,17 @@ function responseHandler3(res){
 };
 
 function actionFormatter1(value, row, index) {
-    var name = value;
-    var result = "";
-    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
-    return result;
-}
-
-function actionFormatter2(value, row, index) {
 	 var name = value;
 	var result = "";	
 	result += "<input type='radio' onclick=\"reset('" + name + "')\"' name='radio' id='reset' value='1'>重置  ";
 	return result;	
+}
+
+function actionFormatter2(value, row, index) {
+    var name = value;
+    var result = "";
+    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
+    return result;
 }
 
 function actionFormatter3(value, row, index) {
