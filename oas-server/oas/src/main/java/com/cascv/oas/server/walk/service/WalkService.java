@@ -73,8 +73,13 @@ public class WalkService {
 			BigDecimal pointBefore = activityRewardConfig.getIncreaseSpeed().multiply(stepNum);
 			EnergyWallet energyWallet = energyService.findByUserUuid(userUuid);
 			BigDecimal powerSum = energyWallet.getPower();
+			if(powerSum.compareTo(BigDecimal.ZERO) == 0) {
+				powerSum = BigDecimal.ONE;
+			}
+			log.info("powerSum={}", powerSum);
 			BigDecimal β = minerMapper.selectSystemParameterByUuid(SYSTEM_PARAMETER_UUID).getParameterValue();
-			BigDecimal point = β.multiply(pointBefore.multiply(powerSum));			
+			BigDecimal point = β.multiply(pointBefore.multiply(powerSum));	
+			log.info("point={}", point);
 			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
 			BigDecimal newPoint;
 			if(point.compareTo(maxValue) == -1)
