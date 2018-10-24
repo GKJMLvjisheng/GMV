@@ -60,16 +60,18 @@
 	</div> 
 
 	<div id="page1">
-		<input class="form" id="normal" required="required" placeholder="搜索" />
+		<input class="form" id="user1" required="required" placeholder="搜索" />
 		<table id="normalGrid"></table>
 	</div> 
 	
 
-	<div style="display:none" id="page3">		 		  
+	<div style="display:none" id="page3">
+		<input class="form" id="user2" required="required" placeholder="搜索" />		 		  
 		<table id="testGrid"></table>
 	</div>
 
-	<div style="display:none" id="page4">			
+	<div style="display:none" id="page4">
+		<input class="form" id="user3" required="required" placeholder="搜索" />			
 		<table id="systemGrid"></table>
 	</div>
 
@@ -192,7 +194,7 @@
 				
 					<form id="activeForm" action="active" method="post" class="form-horizontal">						
 						<input style="display:none" type="hidden"  name="controlName" id="controlName">
-						<input style="display:none" type="hidden"  name="status" id="status">
+						<input style="display:none" type="hidden" name="status" id="status">
 						
 <!-- 							style="display:none" type="hidden" -->
 
@@ -238,31 +240,31 @@
 							</div>						
 						</div>
 
-						<div class="form-group">
+						<div class="form-group" id="userIdentityName1">
 							<label for="newsTitle" class="col-sm-3 control-label">姓名：</label>
 							<div class="col-sm-7">
 								<input name="userIdentityName" class="form-control" id="userIdentityName" readonly="readonly" required="required"/>
 							</div>						
 						</div>
-						<div class="form-group">
+						<div class="form-group" id="userIdentityNumber1">
 							<label for="newsTitle" class="col-sm-3 control-label">身份证号：</label>
 							<div class="col-sm-7">
 								<input name="userIdentityNumber" class="form-control" id="userIdentityNumber" readonly="readonly" required="required"/>
 							</div>						
 						</div>
 
-						<div class="form-group">
+						<div class="form-group" id="remark1">
 							<label for="newsTitle" class="col-sm-3 control-label">批注：</label>
 							<div class="col-sm-7">
 								<input name="remark" class="form-control" id="remark" readonly="readonly" required="required"/>
 							</div>						
 						</div>
-						<div class="form-group">
-							<label for="newsTitle" class="col-sm-3 control-label">IMEI：</label>
-							<div class="col-sm-7">
-								<input name="IMEI" class="form-control" id="IMEI" readonly="readonly" required="required"/>
-							</div>						
-						</div>
+<!-- 						<div class="form-group"> -->
+<!-- 							<label for="newsTitle" class="col-sm-3 control-label">IMEI：</label> -->
+<!-- 							<div class="col-sm-7"> -->
+<!-- 								<input name="IMEI" class="form-control" id="IMEI" readonly="readonly" required="required"/> -->
+<!-- 							</div>						 -->
+<!-- 						</div> -->
 																									
 					</form>
 				</div>					
