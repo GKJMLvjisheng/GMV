@@ -258,7 +258,7 @@ public class UserWalletService {
 		  String SIGNNAME = "国科云景";
 		  String content = "【"+SIGNNAME+"】"+"报告管理员：有一条新的提币记录！";
 	      PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
-	      log.info(publishResult.toString());
+	      log.info("提币短信发送成功"+publishResult.toString());
 	      if(publishResult.getMessageId() == null) {
 	    	  return ErrorCode.SEND_SMS_ERROR;
 		  }
