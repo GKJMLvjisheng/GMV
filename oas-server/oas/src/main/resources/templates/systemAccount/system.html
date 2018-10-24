@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
-	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	
+	 <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	
 	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>
 	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">				   	   
    
@@ -24,14 +24,23 @@
     border-bottom: solid 1px #d8dbde;
 	}	
 	.col-sm-2 {
-    width: 9.33333333%;
+    width: 15%;
 	padding-left: 5px;
-	margin-top:20px;
+/* 	margin-top:20px; */
+	margin-right:0%;
    }
    .input-group	{ 
     vertical-align:middle;
 	margin-top:11px;
 	}
+	 .form{
+    width: 50.33333333%;
+	margin-bottom:13px;
+	margin-top:13px;
+	height: 35px;
+	float:right;
+	margin-right: -135px;
+   }
     </style>
 </head>
 
@@ -51,10 +60,38 @@
 	</div> 
 
 	<div class = "container" id="page1">
+<!-- 	<form id="addVersionForm" action="/version" method="post" class="form-horizontal form"> -->
+
+<!-- 						<div class="form-group "> -->
+<!-- 							<label for="versionCode" class="col-sm-2 control-label"></label> -->
+<!-- 							<div class="col-sm-5"> -->
+<!-- 								<input  id="energy1" required="required" class="form-control" placeholder="搜索" onblur="initEnergyWalletGrid()"/> -->
+<!-- 								<span id='msg_versionCode'></span> -->
+								
+<!-- 							</div> -->
+<!-- 							<div class="col-sm-2"> -->
+<!-- 								<button id="but" class="btn btn-default form-control"onclick="search()">搜索</button> -->
+<!-- 							</div>						 -->
+<!-- 						</div> -->
+<!-- 	</form> -->
 			<table id="onlineWalletGrid"></table>
 	</div> 
 	
-	<div class = "container" style="display:none" id="page2">		
+	<div class = "container" style="display:none" id="page2">	
+<!-- 	<form id="addVersionForm" action="/version" method="post" class="form-horizontal form">  -->
+
+<!-- 						<div class="form-group "> -->
+<!-- 							<label for="versionCode" class="col-sm-2 control-label"></label> -->
+<!-- 							<div class="col-sm-5"> -->
+<!-- 								<input  id="energy1" required="required" class="form-control" placeholder="搜索" onblur="initEnergyWalletGrid()"/> -->
+<!-- 								<span id='msg_versionCode'></span> -->
+								
+<!-- 							</div> -->
+<!-- 							<div class="col-sm-2"> -->
+<!-- 								<button id="but" class="btn btn-default form-control"onclick="search()">搜索</button> -->
+<!-- 							</div>						 -->
+<!-- 						</div> -->
+<!-- 	</form> -->	
 		<table id="tradeWalletGrid"></table>
 	</div>
 

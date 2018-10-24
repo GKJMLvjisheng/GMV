@@ -116,6 +116,7 @@ public class EnergyPointController extends BaseController{
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
+        log.info("energylist={}",JSON.toJSONString(energyBallResult));
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
                 .setData(energyBallResult)
