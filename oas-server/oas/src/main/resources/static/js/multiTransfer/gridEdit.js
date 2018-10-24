@@ -804,7 +804,7 @@ function initsymbol(){
     	{	alert("金额请输入大于0的正数");
     		return;}
        if(flag2)
-   	{	alert("地址且以0x开头的42位字母数字组成");
+   	{	alert("地址由以0x开头的42位字母数字组成");
    		return;}
       
        if($("#money").text()<sunmary){

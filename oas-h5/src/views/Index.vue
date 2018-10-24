@@ -64,7 +64,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: formatWalkAnalysis(analysis[0].value,analysis[0].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}} 积分</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span><span class="count1">积分</span>
         </li>
          <li>
           <i></i>
@@ -73,7 +73,7 @@
             <div></div>
             <div v-if="analysis[1]" :style="{width: formatWalkAnalysis(analysis[1].value,analysis[1].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[1]" class="count">{{analysis[1].value}} 步</span>
+          <span  v-if="analysis[1]" class="count">{{analysis[1].value}}</span><span class="count1">步</span>
         </li>
         <li>
           <i></i>
@@ -82,7 +82,7 @@
             <div></div>
             <div v-if="analysis[2]" :style="{width: formatWalkAnalysis(analysis[2].value,analysis[2].maxValue)}"></div>
           </div>
-          <span v-if="analysis[2]" class="count">(即将上线)</span>
+          <span v-if="analysis[2]" class="count">（即将上线）</span>
         </li>
         <li>
           <i></i>
@@ -91,7 +91,7 @@
             <div></div>
             <div v-if="analysis[3]" :style="{width: formatWalkAnalysis(analysis[3].value,analysis[3].maxValue)}"></div>
           </div>
-          <span v-if="analysis[3]" class="count">(即将上线)</span>
+          <span v-if="analysis[3]" class="count">（即将上线）</span>
         </li>
       </ul>
     </div>
@@ -1012,6 +1012,12 @@ header {
   .count {
     flex: 1;
     text-align: center;
+  }
+  .count1 {
+    flex: 1;
+    text-align: center;
+    margin-right: -30px;
+    margin-left: -35px;
   }
 }
 

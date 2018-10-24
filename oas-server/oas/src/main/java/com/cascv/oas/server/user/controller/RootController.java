@@ -114,4 +114,9 @@ public class RootController {
 	  public String system() {
 	  	    return "systemAccount/system"; 
 	  	    }
+	//算力记录查询
+	  @GetMapping("/miner/powerRecord")
+	  public String powerRecord() {
+	  	    return "miner/powerRecord"; 
+	  	    }
 }
