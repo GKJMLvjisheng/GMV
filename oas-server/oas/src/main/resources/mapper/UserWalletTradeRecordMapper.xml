@@ -11,18 +11,6 @@
 	<result column="remark" property="remark"/>
 	<result column="rest_balance" property="restBalance"/>
   </resultMap>
-  
-  <select id="selectAllTradeRecord" resultMap="UserWalletTradeRecordMap">
-select 
-	  u.name,ud.value,ud.title,ud.created,ud.remark 
-	  ,ud.sub_title,ud.rest_balance
-from 
-	  user_wallet_detail ud,user_info u
-where
-	  ud.user_uuid=u.uuid
-order by ud.created desc
-limit #{offset}, #{limit};
-</select>
 
   <select id="selectAllTradeRecordBySearchValue" resultMap="UserWalletTradeRecordMap">
 select 
@@ -31,22 +19,18 @@ select
 from 
 	  user_wallet_detail ud,user_info u
 where
-	  ud.user_uuid=u.uuid and
-	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%')
-	  <if test="searchValue != null and searchValue !='' ">
+	  ud.user_uuid=u.uuid
+       	   <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or ud.value like concat('%',#{searchValue},'%')
+    		or ud.title like concat('%',#{searchValue},'%')
+    		or ud.created like concat('%',#{searchValue},'%')
+    		or ud.remark like concat('%',#{searchValue},'%')
+    		or ud.sub_title like concat('%',#{searchValue},'%')
     		or ud.rest_balance like concat('%',#{searchValue},'%')
        </if>
 order by ud.created desc
 limit #{offset}, #{limit};
-</select>
-
-  <select id="countByTradeRecord" resultType="java.lang.Integer">
-select 
-	  count(*)
-from 
-	  user_wallet_detail ud,user_info u
-where
-	  ud.user_uuid=u.uuid;
 </select>
 
 <select id="countByTradeRecordBySearchValue" resultType="java.lang.Integer">
@@ -55,9 +39,14 @@ select
 from 
 	  user_wallet_detail ud,user_info u
 where
-	  ud.user_uuid=u.uuid and
-	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%')
-	   <if test="searchValue != null and searchValue !='' ">
+	  ud.user_uuid=u.uuid
+	  <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or ud.value like concat('%',#{searchValue},'%')
+    		or ud.title like concat('%',#{searchValue},'%')
+    		or ud.created like concat('%',#{searchValue},'%')
+    		or ud.remark like concat('%',#{searchValue},'%')
+    		or ud.sub_title like concat('%',#{searchValue},'%')
     		or ud.rest_balance like concat('%',#{searchValue},'%')
        </if>
 </select>
@@ -66,21 +55,7 @@ where
     <result column="name" property="name"/>
 	<result column="value" property="value"/>
 </resultMap> 
-  
-<select id="selectAllInTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
-select 
-	  u.name,SUM(ud.value) as value
-from 
-	  user_wallet_detail ud,user_info u
-
-where
-	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-
-group by u.name 
-order by value desc
-limit #{offset}, #{limit};
-</select>
-
+ 
 <select id="selectAllInTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
 select 
 	  u.name,SUM(ud.value) as value
@@ -89,20 +64,13 @@ from
 
 where
 	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-      and concat(u.name,ud.value) like concat('%',#{searchValue},'%')
+      <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or ud.value like concat('%',#{searchValue},'%')
+       </if>
 group by u.name 
 order by value desc
 limit #{offset}, #{limit};
-</select>
-
-<select id="countByInTotalTradeRecord" resultType="java.lang.Integer">
-select 
-	  count(distinct ud.user_uuid)
-from 
-	  user_wallet_detail ud,user_info u
-
-where
-	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
 </select>
 
 <select id="countByInTotalTradeRecordBySearchValue" resultType="java.lang.Integer">
@@ -113,22 +81,12 @@ from
 
 where
 	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-	  and concat(u.name,ud.value) like concat('%',#{searchValue},'%');
+	   <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or ud.value like concat('%',#{searchValue},'%')
+       </if>
+       ;
 </select>
-   
-<select id="selectAllOutTotalTradeRecord" resultMap="walletTotalTradeRecordMap">
-select 
-	  u.name,SUM(ud.value) as value
-from 
-	  user_wallet_detail ud,user_info u
-
-where
-	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-
-group by u.name 
-order by value desc
-limit #{offset}, #{limit};
-   </select>
 
 <select id="selectAllOutTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
 select 
@@ -138,20 +96,13 @@ from
 
 where
 	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-      and concat(u.name,ud.value) like concat('%',#{searchValue},'%')
+       <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or ud.value like concat('%',#{searchValue},'%')
+       </if>
 group by u.name 
 order by value desc
 limit #{offset}, #{limit};
-   </select>
-   
-  <select id="countByOutTotalTradeRecord" resultType="java.lang.Integer">
-select 
-	  count(distinct ud.user_uuid)
-from 
-	  user_wallet_detail ud,user_info u
-
-where
-	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
    </select>
    
   <select id="countByOutTotalTradeRecordBySearchValue" resultType="java.lang.Integer">
@@ -162,18 +113,11 @@ from
 
 where
 	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-	  and concat(u.name,ud.value) like concat('%',#{searchValue},'%');
-   </select>
-   
-<select id="selectAllUserBalanceRecord" resultMap="walletTotalTradeRecordMap">
-select 
-	 u.name,uw.balance as value
-from 
-	 user_wallet uw,user_info u
-where
-	uw.user_uuid=u.uuid
-order by value desc
-limit #{offset}, #{limit};
+	   <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or ud.value like concat('%',#{searchValue},'%')
+       </if>
+       ;
    </select>
    
 <select id="selectAllUserBalanceRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
@@ -183,18 +127,12 @@ from
 	 user_wallet uw,user_info u
 where
 	uw.user_uuid=u.uuid
-	and concat(u.name,uw.balance) like concat('%',#{searchValue},'%')
+	 <if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or uw.balance like concat('%',#{searchValue},'%')
+       </if>
 order by value desc
 limit #{offset}, #{limit};
-   </select>
-   
-   <select id="countByUserBalanceRecord" resultType="java.lang.Integer">
-select 
-	 count(*)
-from 
-	 user_wallet uw,user_info u
-where
-	uw.user_uuid=u.uuid;
    </select>
   
     <select id="countByUserBalanceRecordBySearchValue" resultType="java.lang.Integer">
@@ -204,7 +142,11 @@ from
 	 user_wallet uw,user_info u
 where
 	uw.user_uuid=u.uuid
-	and concat(u.name,uw.balance) like concat('%',#{searchValue},'%');
+	<if test="searchValue != null and searchValue !='' ">
+    		and u.name like concat('%',#{searchValue},'%')
+    		or uw.balance like concat('%',#{searchValue},'%')
+       </if>
+       ;
    </select> 
   
 <select id="selectUserPointToOas" resultMap="walletTotalTradeRecordMap">
