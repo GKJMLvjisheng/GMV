@@ -14,14 +14,11 @@
 
   <select id="selectAllTradeRecordBySearchValue" resultMap="UserWalletTradeRecordMap">
 select 
-	  u.name,ud.value,ud.title,ud.created,ud.remark,ud.rest_balance
-	  ,ud.sub_title
+	  u.name,ud.value,ud.title,ud.created,ud.remark,ud.rest_balance,ud.sub_title
 from 
-	  user_wallet_detail ud,user_info u
-where
-	  ud.user_uuid=u.uuid
+	  user_wallet_detail ud left join user_info u on ud.user_uuid=u.uuid
        	   <if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    		where u.name like concat('%',#{searchValue},'%')
     		or ud.value like concat('%',#{searchValue},'%')
     		or ud.title like concat('%',#{searchValue},'%')
     		or ud.created like concat('%',#{searchValue},'%')
@@ -37,11 +34,9 @@ limit #{offset}, #{limit};
 select 
 	  count(*)
 from 
-	  user_wallet_detail ud,user_info u
-where
-	  ud.user_uuid=u.uuid
+	  user_wallet_detail ud left join user_info u on ud.user_uuid=u.uuid
 	  <if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    		where u.name like concat('%',#{searchValue},'%')
     		or ud.value like concat('%',#{searchValue},'%')
     		or ud.title like concat('%',#{searchValue},'%')
     		or ud.created like concat('%',#{searchValue},'%')
@@ -60,10 +55,9 @@ where
 select 
 	  u.name,SUM(ud.value) as value
 from 
-	  user_wallet_detail ud,user_info u
-
+	  user_wallet_detail ud left join user_info u on ud.in_or_out=1 and ud.user_uuid=u.uuid
 where
-	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	  DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
       <if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ud.value like concat('%',#{searchValue},'%')
@@ -77,10 +71,9 @@ limit #{offset}, #{limit};
 select 
 	  count(distinct ud.user_uuid)
 from 
-	  user_wallet_detail ud,user_info u
-
+	  user_wallet_detail ud left join user_info u on ud.in_or_out=1 and ud.user_uuid=u.uuid
 where
-	  ud.user_uuid=u.uuid and ud.in_or_out=1 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	  DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	   <if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ud.value like concat('%',#{searchValue},'%')
@@ -92,10 +85,9 @@ where
 select 
 	  u.name,SUM(ud.value) as value
 from 
-	  user_wallet_detail ud,user_info u
-
+	 user_wallet_detail ud left join user_info u on ud.in_or_out=0 and ud.user_uuid=u.uuid
 where
-	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	  DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
        <if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ud.value like concat('%',#{searchValue},'%')
@@ -109,10 +101,9 @@ limit #{offset}, #{limit};
 select 
 	  count(distinct ud.user_uuid)
 from 
-	  user_wallet_detail ud,user_info u
-
+	   user_wallet_detail ud left join user_info u on ud.in_or_out=0 and ud.user_uuid=u.uuid
 where
-	  ud.user_uuid=u.uuid and ud.in_or_out=0 and DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	  DATE_FORMAT(ud.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	   <if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ud.value like concat('%',#{searchValue},'%')
@@ -124,11 +115,9 @@ where
 select 
 	 u.name,uw.balance as value
 from 
-	 user_wallet uw,user_info u
-where
-	uw.user_uuid=u.uuid
+	 user_wallet uw left join user_info u on uw.user_uuid=u.uuid
 	 <if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    		where u.name like concat('%',#{searchValue},'%')
     		or uw.balance like concat('%',#{searchValue},'%')
        </if>
 order by value desc
@@ -139,11 +128,9 @@ limit #{offset}, #{limit};
 select 
 	 count(*)
 from 
-	 user_wallet uw,user_info u
-where
-	uw.user_uuid=u.uuid
+	 user_wallet uw left join user_info u on uw.user_uuid=u.uuid
 	<if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    		where u.name like concat('%',#{searchValue},'%')
     		or uw.balance like concat('%',#{searchValue},'%')
        </if>
        ;
