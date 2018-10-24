@@ -859,6 +859,10 @@ public class EthWalletService {
 	  return ErrorCode.SUCCESS;
   }
   
+  public String getSystemAddress() {
+	 return ethWalletDetailMapper.getSystemAddress();
+  }
+  
 }
 
 

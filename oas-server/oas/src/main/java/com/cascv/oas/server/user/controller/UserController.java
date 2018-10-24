@@ -1264,6 +1264,9 @@ public class UserController extends BaseShiroController{
 		    userRole.setRolePriority(1);
 		    userRole.setCreated(now);
 		    userRoleModelMapper.insertUserRole(userRole);
+		    log.info("system用户创建成功，其交易钱包地址为"+ethWalletService.getSystemAddress());
+		}else {
+			log.info("system用户已存在，其交易钱包地址为"+ethWalletService.getSystemAddress());
 		}
 	}
 	

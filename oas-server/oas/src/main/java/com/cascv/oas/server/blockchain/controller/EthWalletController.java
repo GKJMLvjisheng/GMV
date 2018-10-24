@@ -454,6 +454,7 @@ public class EthWalletController extends BaseShiroController {
   @RequiresPermissions("充币")
   @ResponseBody
   @Transactional
+  @WriteLog(value="reverseWithdraw")
   public ResponseEntity<?> reverseWithdraw(@RequestBody EthWalletTransfer info){
 	  UserModel user = ShiroUtils.getUser();
 	  if(user == null) {
