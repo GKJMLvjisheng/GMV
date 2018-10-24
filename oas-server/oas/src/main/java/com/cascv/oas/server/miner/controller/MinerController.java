@@ -245,13 +245,14 @@ public class MinerController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
 		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
-		log.info(minerCode);
+		Integer count = minerMapper.selectAllWebMiner().size();
+		log.info("orderNum={}",orderNum);
+		log.info("minerMapper.selectAllWebMiner().size()={}",minerMapper.selectAllWebMiner().size());
 		minerMapper.deleteMiner(minerCode);
-		if(orderNum < minerMapper.selectAllWebMiner().size()) {
+		for(;orderNum < count; orderNum++) {
 			Integer newOrderNum = orderNum + 1;
 			String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
 			minerMapper.updateOrderNum(newMinerCode, orderNum, now);
-			orderNum = orderNum + 1;
 		}
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
