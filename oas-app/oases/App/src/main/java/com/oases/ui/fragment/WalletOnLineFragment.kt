@@ -169,7 +169,7 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         super.onViewCreated(view, savedInstanceState)
         mRedrawOas.onClick {
             //lh修改   添加KYC认证后的操作  认证后才可提币
-            //mPresenter.inquireAddress()
+            mPresenter.inquireAddress()
             //mPresenter.getKYCVerifyStatus()
             if (KYCVerifyStatus==0){
                 toast("您还未进行KYC认证，请先进行KYC认证")
@@ -244,7 +244,8 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
 
     override fun onInquireAddress(address: InquireAddressResp) {
         startActivity<RedrawOasActivity>(
-                MY_OAS_AMOUNT to mCurrentPoints.text
+                MY_OAS_AMOUNT to mCurrentPoints.text,
+                BaseConstant.MY_OAS_AMOUNT_UNCONFIRMED to mOngoingTransaction.text
         )
     }
     // TODO: Rename method, update argument and hook method into UI event

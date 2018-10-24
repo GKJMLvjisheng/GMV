@@ -14,4 +14,5 @@ public class UserWalletTradeRecordInfo implements Serializable {
     @Getter @Setter private String subTitle;
     @Getter @Setter private String remark;
     @Getter @Setter private String created;
+    @Getter @Setter private BigDecimal restBalance;
 }

@@ -4,7 +4,7 @@ import java.math.BigDecimal
 import android.os.Parcel
 import android.os.Parcelable
 
-data class PointItem(val title:String?, val value:BigDecimal?, val created:String?, val subTitle:String?,val inOrOut:Int,val comment:String?,val uuid:String?,val address:String?,val remark:String?,val txHash:String?,val txResult:Int,val txNetwork:String?): Parcelable{
+data class PointItem(val title:String?, val value:BigDecimal?, val created:String?, val subTitle:String?,val inOrOut:Int,val comment:String?,val uuid:String?,val address:String?,val remark:String?,val txHash:String?,val txResult:Int,val txNetwork:String?,val extra: String?): Parcelable{
 //data class PointItem(val source:String, val value:Int, val created:String, val activity:String) : Parcelable{
     override fun writeToParcel(p0: Parcel?, p1: Int) {
        /* p0?.writeString(if(title == null) "" else title)
@@ -29,12 +29,13 @@ data class PointItem(val title:String?, val value:BigDecimal?, val created:Strin
         p0?.writeString(txHash)
         p0?.writeInt(txResult)
         p0?.writeString(txNetwork)
+        p0?.writeString(extra)
     }
     override fun describeContents(): Int {
         return 0
     }
 
-    constructor(source: Parcel) : this(source.readString(), source.readString().toBigDecimal(), source.readString(), source.readString(),source.readInt(),source.readString(),source.readString(),source.readString(),source.readString(),source.readString(),source.readInt(),source.readString())
+    constructor(source: Parcel) : this(source.readString(), source.readString().toBigDecimal(), source.readString(), source.readString(),source.readInt(),source.readString(),source.readString(),source.readString(),source.readString(),source.readString(),source.readInt(),source.readString(),source.readString())
 
    // constructor(title:String, value:BigDecimal,  created:String,  subTitle:String, inOrOut:Int, comment:String):this(title,value,created,subTitle,inOrOut,comment)
 

@@ -9,6 +9,7 @@ function initNormalGrid() {
 		dataType:"json",
 		method: 'post',
 		striped:true,//隔行变色
+		uniqueId:"name",
 		
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
@@ -47,6 +48,13 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '80px',
 				
+			},{
+				title : "性别",
+				field : "gender",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				
 			},
 			{
 				title : "手机",
@@ -75,8 +83,8 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '200px',
-				visible: false,
+				width:  '180px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -99,7 +107,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				//width:  '90px',
+				width:  '80px',
 				formatter: actionFormatter3
 			},{
 
@@ -107,7 +115,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '80px',
 				formatter: actionFormatter4
 			}],		
 //		search : true,//搜索
@@ -118,6 +126,7 @@ function initNormalGrid() {
 	
 //请求服务数据时所传参数
 function queryParams1(params){
+	var searchValue = $("#user1").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -127,23 +136,22 @@ function queryParams1(params){
         //当前页码
         pageNum: pageNum,      
         roleId: 2,
+        //searchValue: searchValue,
     }
 }
 //请求成功方法
 function responseHandler1(res){
+	//alert(JSON.stringify(res));
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
         alert("正常账号回显失败，错误代码:" + code);
         return;
     }
     //如果没有错误则返回数据，渲染表格
-//    debugger;
-//    $(":radio[name='radio'][value='2']").prop("checked", "checked");
     return {
         total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
         data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
     };
-    debugger;
 };
 
 function initTestGrid() {	
@@ -154,6 +162,7 @@ function initTestGrid() {
 		dataType:"json",
 		method: 'post',
 		striped:true,//隔行变色
+		uniqueId:"name",
 		
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
@@ -192,6 +201,13 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '80px',
 				
+			},{
+				title : "性别",
+				field : "gender",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				
 			},
 			{
 				title : "手机",
@@ -220,8 +236,8 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '200px',
-				visible: false,
+				width:  '180px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -244,7 +260,7 @@ function initTestGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				//width:  '90px',
+				width:  '80px',
 				formatter: actionFormatter3
 			},{
 
@@ -252,7 +268,7 @@ function initTestGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '80px',
 				formatter: actionFormatter4
 			}],		
 //		search : true,//搜索
@@ -263,6 +279,7 @@ function initTestGrid() {
 
 //请求服务数据时所传参数
 function queryParams2(params){
+	var searchValue = $("#user2").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -273,6 +290,7 @@ function queryParams2(params){
         pageNum: pageNum,  
         //测试账号
         roleId: 3,  
+        //searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -298,6 +316,7 @@ function initSystemGrid() {
 		dataType:"json",
 		method: 'post',
 		striped:true,//隔行变色
+		uniqueId:"name",
 		
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
@@ -336,6 +355,13 @@ function initSystemGrid() {
 				valign: 'middle',
 				width:  '80px',
 				
+			},{
+				title : "性别",
+				field : "gender",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				
 			},
 			{
 				title : "手机",
@@ -364,8 +390,8 @@ function initSystemGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '200px',
-				visible: false,
+				width:  '170px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -388,7 +414,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				//width:  '90px',
+				width:  '70px',
 				formatter: actionFormatter3
 			},{
 
@@ -396,7 +422,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '70px',
 				formatter: actionFormatter4
 			}],		
 //		  search : true,//搜索
@@ -407,6 +433,7 @@ function initSystemGrid() {
 
 //请求服务数据时所传参数
 function queryParams3(params){
+	var searchValue = $("#user3").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -417,6 +444,7 @@ function queryParams3(params){
         pageNum: pageNum,
         //系统账号
         roleId: 1,
+        //searchValue: searchValue,
     }
 }
 //请求成功方法
@@ -449,29 +477,29 @@ function actionFormatter2(value, row, index) {
 
 function actionFormatter3(value, row, index) {
 	 var name = value;
-	var result = "";	
-
-	result += "<input type='radio' onclick=\"normal('" + name + "')\"' name='radio' id='normal' value='2'>正常账号  ";
-	result += "<input type='radio' onclick=\"test('" + name + "')\"' name='radio' id='test' value='3'>测试账号  ";
-	result += "<input type='radio' onclick=\"system('" + name + "')\"' name='radio' id='system' value='1'>系统账号";
+	 var roleId = row.roleId;
+	 var result = "";	
+	
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"role('" + name + "', '" + roleId + "')\">角色授权</a>";
 	return result;	
 }
 
 function actionFormatter4(value, row, index) {
 	var name = value;
+	var roleId = row.roleId;
 	var result = "";
-	
-	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
-	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">权限控制</a>";
+//	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
+//	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
 	return result;	
 }
 
 function ViewViewById(name){	
 	var data = {
-		"name": name
+		"userName": name
 	};
 	$.ajax({
-	url:"/api/v1/userCenter/inquireTradeRecordUserInfo",
+	url:"/api/v1/userCenter/inquireUserKYCInfo",
 	contentType : 'application/json;charset=utf8',
 	dataType: 'json',
 	cache: false,
@@ -487,28 +515,28 @@ function ViewViewById(name){
 		var verifyStatus = rows.verifyStatus;
 		if(verifyStatus==0){
 			var status = "未认证";
-			document.getElementById("userIdentityName").style.display="none";
-			document.getElementById("userIdentityNumber").style.display="none";
-			document.getElementById("remark").style.display="none";
+			document.getElementById("userIdentityName1").style.display="none";
+			document.getElementById("userIdentityNumber1").style.display="none";
+			document.getElementById("remark1").style.display="none";
 		}else if(verifyStatus==1){
 			var status = "未审核";
-			document.getElementById("userIdentityName").style.display="none";
-			document.getElementById("userIdentityNumber").style.display="none";
-			document.getElementById("remark").style.display="none";
+			document.getElementById("userIdentityName1").style.display="none";
+			document.getElementById("userIdentityNumber1").style.display="none";
+			document.getElementById("remark1").style.display="none";
 		}else if(verifyStatus==2){
 			var status = "已通过";
-			document.getElementById("userIdentityName").style.display="block";
-			document.getElementById("userIdentityNumber").style.display="block";
-			document.getElementById("remark").style.display="none";
+			document.getElementById("userIdentityName1").style.display="block";
+			document.getElementById("userIdentityNumber1").style.display="block";
+			document.getElementById("remark1").style.display="none";
 		}else {
 			var status = "未通过";
-			document.getElementById("userIdentityName").style.display="none";
-			document.getElementById("userIdentityNumber").style.display="none";
-			document.getElementById("remark").style.display="block";
+			document.getElementById("userIdentityName1").style.display="none";
+			document.getElementById("userIdentityNumber1").style.display="none";
+			document.getElementById("remark1").style.display="block";
 		}
 		
 		$('#verifyStatus').val(status);	
-		$('#IMEI').val(rows.IMEI);
+		//$('#IMEI').val(rows.IMEI);
 		
 		$('#userIdentityName').val(rows.userIdentityName);
 		$('#userIdentityNumber').val(rows.userIdentityNumber);
@@ -518,12 +546,12 @@ function ViewViewById(name){
 		}
 
 		else{
-			alert("查询失败1");
+			alert("查询内容为空！");
 			}						
 	},
 
 	error:function(){
-		alert("查询失败2");
+		alert("查询过程发生错误！");
 	},
 	});					
 }

@@ -73,6 +73,15 @@ function initUserWalletGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '120px',
+		}, {
+			title : "账户余额",
+			field : "restBalance",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
+			formatter:function(value){
+				return value == null?0:value
+			}
 		},{
 			title : "操作",
 			field : "name",

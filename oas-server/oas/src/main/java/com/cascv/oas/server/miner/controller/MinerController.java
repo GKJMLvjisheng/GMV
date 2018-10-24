@@ -218,6 +218,7 @@ public class MinerController {
 	@ResponseBody
 	public ResponseEntity<?> addMiner(@RequestBody MinerRequest minerRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+		Integer count = minerMapper.selectAllWebMiner().size();
 		MinerModel minerModel = new MinerModel();
 		minerModel.setMinerCode(UuidUtils.getPrefixUUID(UuidPrefix.MINER_MODEL));
 		log.info(minerModel.getMinerCode());
@@ -227,7 +228,7 @@ public class MinerController {
 		minerModel.setMinerPrice(minerRequest.getMinerPrice());
 		minerModel.setMinerGrade(minerRequest.getMinerGrade());
 		minerModel.setMinerPower(minerRequest.getMinerPower());
-		minerModel.setOrderNum(minerRequest.getOrderNum());
+		minerModel.setOrderNum(count+1);
 		minerModel.setCreated(now);
 		minerModel.setUpdated(now);
 		minerMapper.insertMiner(minerModel);
@@ -242,9 +243,18 @@ public class MinerController {
 	@PostMapping(value = "/deleteMiner")  
 	@ResponseBody
 	public ResponseEntity<?> deleteMiner(@RequestBody MinerDelete minerDelete){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
-		log.info(minerCode);
+		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
+		Integer count = minerMapper.selectAllWebMiner().size();
+		log.info("orderNum={}",orderNum);
+		log.info("minerMapper.selectAllWebMiner().size()={}",minerMapper.selectAllWebMiner().size());
 		minerMapper.deleteMiner(minerCode);
+		for(;orderNum < count; orderNum++) {
+			Integer newOrderNum = orderNum + 1;
+			String newMinerCode = minerMapper.inquireByOrderNum(newOrderNum).getMinerCode();
+			minerMapper.updateOrderNum(newMinerCode, orderNum, now);
+		}
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -274,6 +284,17 @@ public class MinerController {
 				.build();
 		
 	}
+//	
+//	//目前矿机总数
+//	@PostMapping(value = "/countMiner")  
+//	@ResponseBody
+//	public ResponseEntity<?> countMiner(){
+//		Integer count = minerMapper.selectAllWebMiner().size();
+//		return new ResponseEntity.Builder<Integer>()
+//				.setData(count)
+//				.setErrorCode(ErrorCode.SUCCESS)
+//				.build();
+//	}
 	
 	//购买矿机
 	@PostMapping(value = "/buyMiner")  
@@ -322,6 +343,7 @@ public class MinerController {
 	@PostMapping(value = "/upMiner")  
 	@ResponseBody
 	public ResponseEntity<?> upMiner(@RequestBody MinerDelete minerDelete){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
 		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
 		if(orderNum == 1) {
@@ -337,8 +359,8 @@ public class MinerController {
 		newOrderNum = newOrderNum + 1;
 		log.info("orderNum={}",orderNum);
 		log.info("newOrderNum={}",newOrderNum);
-		minerMapper.updateOrderNum(minerCode, orderNum);
-		minerMapper.updateOrderNum(newMinerCode, newOrderNum);
+		minerMapper.updateOrderNum(minerCode, orderNum, now);
+		minerMapper.updateOrderNum(newMinerCode, newOrderNum, now);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -349,6 +371,7 @@ public class MinerController {
 	@PostMapping(value = "/downMiner")  
 	@ResponseBody
 	public ResponseEntity<?> downMiner(@RequestBody MinerDelete minerDelete){
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
 		Integer orderNum = minerMapper.inquireByUuid(minerCode).getOrderNum();
 		if(orderNum == minerMapper.selectAllWebMiner().size()) {
@@ -364,8 +387,8 @@ public class MinerController {
 		newOrderNum = newOrderNum - 1;
 		log.info("orderNum={}",orderNum);
 		log.info("newOrderNum={}",newOrderNum);
-		minerMapper.updateOrderNum(minerCode, orderNum);
-		minerMapper.updateOrderNum(newMinerCode, newOrderNum);
+		minerMapper.updateOrderNum(minerCode, orderNum, now);
+		minerMapper.updateOrderNum(newMinerCode, newOrderNum, now);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)

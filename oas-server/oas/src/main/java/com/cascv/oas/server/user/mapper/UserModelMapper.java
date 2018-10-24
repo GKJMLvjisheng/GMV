@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
+import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 
@@ -16,6 +17,7 @@ public interface UserModelMapper {
 	 List<UserDetailModel> selectUsersByPage( @Param("offset") Integer offset, @Param("limit") Integer limit,@Param("roleId")Integer roleId); 
 	 Integer countUsers( @Param("roleId") Integer roleId);
 	 Integer updateUserStatus(@Param("status") Integer status,@Param("name") String name);
+	 //UserIdentityCardModel inquireUserKYCInfo(@Param("userName") String userName);
 	 Integer insertUser(UserModel userModel);
 	 UserModel selectByName(@Param("name") String name);
 	 UserModel selectByUuid(@Param("uuid") String uuid);

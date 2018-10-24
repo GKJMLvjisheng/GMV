@@ -11,7 +11,7 @@ public class EnergyWalletTradeRecordInfo implements Serializable {
 	@Getter @Setter private String name;
     @Getter @Setter private Integer inOrOut;
     @Getter @Setter private BigDecimal pointChange;
-    @Getter @Setter private BigDecimal powerChange;
     @Getter @Setter private Integer status;
-    @Getter @Setter private String timeCreated;
+    @Getter @Setter private String created;
+    @Getter @Setter private BigDecimal restPoint;
 }

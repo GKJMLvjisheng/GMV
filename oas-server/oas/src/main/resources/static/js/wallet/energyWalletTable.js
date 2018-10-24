@@ -55,13 +55,13 @@ function initEnergyWalletGrid() {
 			valign: 'middle',
 			width:  '130px',
 		},
-		{
+		/*{
 			title : "获得算力",
 			field : "powerChange",
 			align: 'center',
 			valign: 'middle',
 			width:  '130px',
-		},
+		},*/
 		{
 			title : "兑换状态",
 			field : "status",
@@ -72,10 +72,19 @@ function initEnergyWalletGrid() {
 		},
 			{
 			title : "交易时间",
-			field : "timeCreated",
+			field : "created",
 			align: 'center',
 			valign: 'middle',
 			width:  '200px',
+		}, {
+			title : "积分余额",
+			field : "restPoint",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
+			formatter:function(value){
+				return value == null?0:value
+			}
 		},{
 
 			title : "操作",

@@ -473,8 +473,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 		String srcFormater="yyyy-MM-dd HH:mm:ss";
 		String dstFormater="yyyy-MM-dd HH:mm:ss";
 		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getTimeCreated(), dstFormater, dstTimeZoneId);
-		energyWalletTradeRecordInfo.setTimeCreated(created);
+		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+		energyWalletTradeRecordInfo.setCreated(created);
 		log.info("newCreated={}",created);
 	  }
   	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();
@@ -495,8 +495,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
 		String srcFormater="yyyy-MM-dd HH:mm:ss";
 		String dstFormater="yyyy-MM-dd HH:mm:ss";
 		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getTimeCreated(), dstFormater, dstTimeZoneId);
-		energyWalletTradeRecordInfo.setTimeCreated(created);
+		String created=DateUtils.string2Timezone(srcFormater, energyWalletTradeRecordInfo.getCreated(), dstFormater, dstTimeZoneId);
+		energyWalletTradeRecordInfo.setCreated(created);
 		log.info("newCreated={}",created);
 	  }
   	PageDomain<EnergyWalletTradeRecordInfo> energyWalletTradeRecordInfo = new PageDomain<>();

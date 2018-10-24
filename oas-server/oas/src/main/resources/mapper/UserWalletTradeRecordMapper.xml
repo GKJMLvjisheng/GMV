@@ -9,12 +9,13 @@
 	<result column="sub_title" property="subTitle"/>
 	<result column="created" property="created"/>
 	<result column="remark" property="remark"/>
+	<result column="rest_balance" property="restBalance"/>
   </resultMap>
   
   <select id="selectAllTradeRecord" resultMap="UserWalletTradeRecordMap">
 select 
 	  u.name,ud.value,ud.title,ud.created,ud.remark 
-	  ,ud.sub_title
+	  ,ud.sub_title,ud.rest_balance
 from 
 	  user_wallet_detail ud,user_info u
 where
@@ -25,13 +26,16 @@ limit #{offset}, #{limit};
 
   <select id="selectAllTradeRecordBySearchValue" resultMap="UserWalletTradeRecordMap">
 select 
-	  u.name,ud.value,ud.title,ud.created,ud.remark 
+	  u.name,ud.value,ud.title,ud.created,ud.remark,ud.rest_balance
 	  ,ud.sub_title
 from 
 	  user_wallet_detail ud,user_info u
 where
 	  ud.user_uuid=u.uuid and
 	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%')
+	  <if test="searchValue != null and searchValue !='' ">
+    		or ud.rest_balance like concat('%',#{searchValue},'%')
+       </if>
 order by ud.created desc
 limit #{offset}, #{limit};
 </select>
@@ -52,7 +56,10 @@ from
 	  user_wallet_detail ud,user_info u
 where
 	  ud.user_uuid=u.uuid and
-	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%');
+	  concat(u.name,ud.value,ud.title,ud.created,ud.remark,ud.sub_title) like concat('%',#{searchValue},'%')
+	   <if test="searchValue != null and searchValue !='' ">
+    		or ud.rest_balance like concat('%',#{searchValue},'%')
+       </if>
 </select>
 
 <resultMap id="walletTotalTradeRecordMap" type="com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo">
