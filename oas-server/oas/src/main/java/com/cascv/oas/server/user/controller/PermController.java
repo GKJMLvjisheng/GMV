@@ -215,12 +215,11 @@ public class PermController {
 	           */
 	           //暂时只针对用户角色(对测试账号和正常账号统一操作)
 	           Integer roleSize=3;
-	           for(int i=1;i<roleSize+1;i++){
-	        	   if(i!=1)
-	        		   roleMenu.setRoleId(i);
-	        	   roleMenuMapper.insertRoleMenu(roleMenu);
-	           }
-	           
+ 	           for(int i=2;i<roleSize+1;i++){
+        		  roleMenu.setRoleId(i);
+        	      roleMenuMapper.insertRoleMenu(roleMenu); 
+ 	           }
+	        	            
 		       info.put("state","success");
            }catch(Exception e){
 	           log.info(e.getMessage());
@@ -253,10 +252,9 @@ public class PermController {
 		            */
             	
  	           Integer roleSize=3;
- 	           for(int k=1;k<roleSize+1;k++){
- 	        	   if(k!=1)
+ 	           for(int k=2;k<roleSize+1;k++){
 	 	        	   rm.setRoleId(k);	
-	 	           roleMenuMapper.deleteRoleMenu(rm);  
+	 	               roleMenuMapper.deleteRoleMenu(rm);  
  	           }            	
     	              	           
     	 	       info.put("state","success");	            

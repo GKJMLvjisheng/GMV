@@ -39,6 +39,7 @@ import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.service.PermService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,12 +56,12 @@ public class PromotedRewardService {
 	private UserWalletMapper userWalletMapper;
 	@Autowired 
 	private MinerMapper minerMapper;
-	@Autowired 
-	private UserWalletService userWalletService;
 	@Autowired
 	private SchedulerService schedulerService;
 	@Autowired
 	private ExchangeRateService exchangeRateService;
+	@Autowired
+	private PermService permService;
 	@Autowired 
 	private UserWalletDetailMapper userWalletDetailMapper;
 	@Autowired 
@@ -121,6 +122,7 @@ public class PromotedRewardService {
 	   *           定是查询是否有用户购买矿机
 	   */
 	  public synchronized void checkUserWhetherBuyMiner() {
+		  if(permService.getPromotionPerm() == true) {
 		  log.info(" check all users whether buy miner give them immediately oas reward ...");
 		  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
 		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
@@ -131,8 +133,19 @@ public class PromotedRewardService {
 				  log.info("end reward oas job ...");
 			  }
 		  }
+		  }else {
+			  log.info("无奖励");
+			  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerPurchaseStatus();
+			  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+				  for(PurchaseRecord purchaseRecord:purchaseRecordList) { 
+					  minerMapper.updateByMinerPurchaseStatus(purchaseRecord);
+				  }
+			  }
+		  }
 	  }
+	  
 	  public synchronized void giveUserPowerRewardBuyMiner() {
+		  if(permService.getPromotionPerm() == true) {
 		  log.info(" check give user power reward...");
 		  List<PurchaseRecord> purchaseRecordList =minerMapper.selectByMinerStatusPowerRewardStatus();
 		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
@@ -143,8 +156,18 @@ public class PromotedRewardService {
 				  log.info("end reward power job ...");
 			  }
 		  }
+		  }else {
+			  log.info("无奖励");
+			  List<PurchaseRecord> purchaseRecordList =minerMapper.selectByMinerStatusPowerRewardStatus();
+			  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+				  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+					  minerMapper.updateByPowerRewardStatus(purchaseRecord);
+				  }
+			  }
+		  }
 	  }
 	  public synchronized void decreaseUserPowerRewardBuyMiner() {
+		  if(permService.getPromotionPerm() == true) {
 		  log.info(" check decrease user power reward...");
 		  List<PurchaseRecord> purchaseRecordList = minerMapper.selectByMinerStatusPowerRewardStatusToDecrease();
 		  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
@@ -155,17 +178,41 @@ public class PromotedRewardService {
 				  log.info("end decrease power job ...");
 			  }
 		  }
+		  }else {
+			  log.info("无奖励");
+			  List<PurchaseRecord> purchaseRecordList = minerMapper.selectByMinerStatusPowerRewardStatusToDecrease();
+			  if (purchaseRecordList != null && purchaseRecordList.size() > 0) {
+				  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+					  minerMapper.updateByPowerRewardStatusToDecrease(purchaseRecord);
+				  }
+			  }
+		  }
 	  }
 	  
 	  public synchronized void checkBuyUserMinerRedeem() {
+		  if(permService.getPromotionPerm() == true) {
 		  log.info("check all buy users whether buy miner redeem ...");
 		  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
 		  if(userUuidList!=null && userUuidList.size()>0) {
 			  for(String userUuid:userUuidList) {
 				  	this.doUserMinerRedeem(userUuid);
 			  }
+			  log.info("end reward buy miner redeem job ...");
 		  }
-		  log.info("end reward buy miner redeem job ...");
+		  }else {
+			  log.info("无奖励");
+			  List<String> userUuidList=minerMapper.selectUserUuidByMinerStatus();//所有符合条件的用户
+			  if(userUuidList!=null && userUuidList.size()>0) {
+				  for(String userUuid:userUuidList) {
+					  List<PurchaseRecord> purchaseRecordList=minerMapper.selectByMinerStatus(userUuid);
+					  for(PurchaseRecord purchaseRecord:purchaseRecordList) {
+						  Integer minerNum=purchaseRecord.getMinerNum();
+						  purchaseRecord.setFinishRewardNumber(minerNum);
+						  minerMapper.updateByMinerNumFinishRewardNumber(purchaseRecord);
+					  }
+				  }
+			  }
+		  }
 	  	}
 	  
 	  /**

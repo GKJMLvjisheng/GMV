@@ -64,7 +64,7 @@
             <div></div>
             <div v-if="analysis[0]" :style="{width: formatWalkAnalysis(analysis[0].value,analysis[0].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[0]" class="count">{{analysis[0].value}} 积分</span>
+          <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span><span class="count1">积分</span>
         </li>
          <li>
           <i></i>
@@ -73,7 +73,7 @@
             <div></div>
             <div v-if="analysis[1]" :style="{width: formatWalkAnalysis(analysis[1].value,analysis[1].maxValue)}"></div>
           </div>
-          <span  v-if="analysis[1]" class="count">{{analysis[1].value}} 步</span>
+          <span  v-if="analysis[1]" class="count">{{analysis[1].value}}</span><span class="count1">步</span>
         </li>
         <li>
           <i></i>
@@ -82,7 +82,7 @@
             <div></div>
             <div v-if="analysis[2]" :style="{width: formatWalkAnalysis(analysis[2].value,analysis[2].maxValue)}"></div>
           </div>
-          <span v-if="analysis[2]" class="count">(即将上线)</span>
+          <span v-if="analysis[2]" class="count">（即将上线）</span>
         </li>
         <li>
           <i></i>
@@ -91,7 +91,7 @@
             <div></div>
             <div v-if="analysis[3]" :style="{width: formatWalkAnalysis(analysis[3].value,analysis[3].maxValue)}"></div>
           </div>
-          <span v-if="analysis[3]" class="count">(即将上线)</span>
+          <span v-if="analysis[3]" class="count">（即将上线）</span>
         </li>
       </ul>
     </div>
@@ -188,7 +188,7 @@ export default {
      // tempArrWalk:[],
       //input1:'',
       //input2:'',
-      todayStep:0,
+      //todayStep:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -205,28 +205,27 @@ export default {
   beforeMount() {
          //设置定时器，每3秒刷新一次
          var self = this;
-         setInterval(getTotelNumber,10000)
-         function getTotelNumber() {
-            //this.getStep()
-            let list={}
-            list=self.getWalkEnergyBall() 
-            console.log(JSON.stringify(list))
+         setInterval(getTotelNumber,300000)
+        async function getTotelNumber() {
+          
+             await self.getWalkEnergyBall() 
+            //console.log(JSON.stringify(list))
             self.getEnergyAnalysis()
            
          }
          //getTotelNumber();      
     },
   created() {
-    //this.getStep()
+    
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
-    this.getBall()
+    this.getBallAndAnalysis()
     
     this.getCurrentEnergy()
     this.getCurrentPower()
     
-    this.getEnergyAnalysis()
+   // this.getEnergyAnalysis()
     this.getArticleList()
     this.getUserInfo()
     
@@ -242,7 +241,9 @@ export default {
     
     
    getStep(){
-      this.todayStep=window.Android.getTodaySteps()
+     //let todayStep=100
+      let todayStep=window.Android.getTodaySteps()
+      return todayStep
    },
     //预先加载3条新闻
     getArticleList () {
@@ -340,7 +341,7 @@ export default {
     window.Android.startLiftComputingPower()
     
     },
-    async getBall() {
+    async getBallAndAnalysis() {
             try {
                 let dataBall={}
                 let dataWalkBall={}
@@ -370,7 +371,7 @@ export default {
                   }
                 }
                 dataWalkBall=await this.getWalkEnergyBall();
-                //console.log("data1"+JSON.stringify(dataWalkBall))
+               this.getEnergyAnalysis()
                 let time=currentTime(true)
                 if(dataWalkBall.data.code==0)
               { walkEnergyBallListtBackup= dataWalkBall.data.data.map(el => {
@@ -405,6 +406,7 @@ export default {
               console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
               this.walkEnergyBallList=walkEnergyBallListtBackup
               console.log("222"+JSON.stringify(this.walkEnergyBallList))
+              
               } 
               catch(err) {
                     console.log(err);
@@ -441,15 +443,12 @@ export default {
                  
     },
      getWalkEnergyBall() {
-     
-      
-    this.todayStep="100"
-    
+    let stepNum=this.getStep()
      //let time="2018-10-15"
     
      var data={}
      data['date']=this.datetime
-     data['stepNum']=this.todayStep
+     data['stepNum']=stepNum
      let params = new Array();
      params.push(data)  
      return this.$axios.post('/walkPoint/inquireWalkPointBall',{quota:params})
@@ -639,13 +638,13 @@ export default {
       this.energyBallList=[]
       this.walkEnergyBallList=[]
 
-      this.getBall()
+      this.getBallAndAnalysis()
      // this.getWalkEnergyBall()
       //this.getEnergyBall()
       
       this.getCurrentEnergy()
       this.getCurrentPower()
-      this.getEnergyAnalysis()
+      //this.getEnergyAnalysis()
       this.getUserInfo()
      
      //location.reload()
@@ -664,18 +663,18 @@ export default {
     },
    
  skipRefresh() {
-      this.getStep()
+      //this.getStep()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
       
-      this.getBall()
+      this.getBallAndAnalysis()
      // this.getEnergyBall()
       //this.getWalkEnergyBall()
       this.getCurrentEnergy()
       this.getCurrentPower()
-      this.getEnergyAnalysis()
+      //this.getEnergyAnalysis()
       this.getUserInfo()
   
     },
@@ -1013,6 +1012,12 @@ header {
   .count {
     flex: 1;
     text-align: center;
+  }
+  .count1 {
+    flex: 1;
+    text-align: center;
+    margin-right: -30px;
+    margin-left: -35px;
   }
 }
 

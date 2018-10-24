@@ -251,6 +251,12 @@
       where uuid = #{uuid}
     </update>
     
+     <update id="updateByMinerNumFinishRewardNumber" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+     set finish_reward_number = #{finishRewardNumber} 
+      where uuid = #{uuid}
+    </update>
+    
     <select id="selectByUuid" resultMap="purchaseRecordMap">
         select <include refid="purchase_record_List" /> from purchase_record 
         where uuid = #{uuid}

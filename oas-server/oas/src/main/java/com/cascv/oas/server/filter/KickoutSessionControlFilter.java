@@ -63,6 +63,7 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
       userModel = JSON.parseObject(temp, UserModel.class);
       log.info("principal was from JSON parser");
     }
+    
     String username = userModel.getName();
     Serializable sessionId = session.getId();
     log.info("user session {}", sessionId.toString());

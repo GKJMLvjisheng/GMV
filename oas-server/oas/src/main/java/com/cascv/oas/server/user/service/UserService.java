@@ -260,11 +260,11 @@ public class UserService {
         return isRightIMEI;
      }
 	
-    public List<UserDetailModel> selectUsersByPage(Integer offset, Integer limit,Integer roleId){
+    public List<UserDetailModel> selectUsersByPage(Integer offset, Integer limit,Integer roleId,String searchValue){
     	String srcFormater="yyyy-MM-dd HH:mm:ss";
 	    String dstFormater="yyyy-MM-dd HH:mm:ss";
 		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		List<UserDetailModel> userModel=userModelMapper.selectUsersByPage(offset,limit,roleId);
+		List<UserDetailModel> userModel=userModelMapper.selectUsersByPage(offset,limit,roleId,searchValue);
 		List<UserDetailModel>  userList=new ArrayList<>();
 		for(UserDetailModel userNewModel:userModel){
 			log.info("created={}",userNewModel.getCreated());
@@ -279,7 +279,7 @@ public class UserService {
     public Integer countUsers(Integer roleId) {
     	return userModelMapper.countUsers(roleId);
     }
-
+   
 }
 
 

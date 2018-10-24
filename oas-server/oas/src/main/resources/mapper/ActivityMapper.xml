@@ -238,6 +238,23 @@
         from energy_point_ball where uuid = #{uuid}
     </select>
     
+    <select id="selectByPointSourceCode" resultMap="EnergyPointBall">
+        select <include refid="Energy_Point_Ball_List" />
+        from energy_point_ball where
+        user_uuid = #{userUuid} and
+        source_code = #{sourceCode} and 
+        status = #{status}
+    </select>
+    
+    <select id="selectLatestOneByPointSourceCode" resultMap="EnergyPointBall">
+        select <include refid="Energy_Point_Ball_List" />
+        from energy_point_ball where
+        user_uuid = #{userUuid} and
+        source_code = #{sourceCode} and 
+        status = #{status}
+        order by created desc limit 1
+    </select>
+    
     <select id="selectAllByUserUuid" resultMap="EnergyPointBall">
         select * from energy_point_ball A
          left join activity B on A.source_code = B.source_code

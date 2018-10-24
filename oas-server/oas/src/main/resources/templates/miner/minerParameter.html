@@ -45,7 +45,7 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
-					<input type="button" value="参数配置" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addParameterModal"></input>
+					<input type="button" value="参数配置" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" onclick="showParamModal()"></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
 		</form>
@@ -96,7 +96,7 @@
 		<div class="form-group">
 						 <label for="datetimepicker1" class="col-sm-4 control-label">有效时间：</label>
 			       		 <div class="col-sm-7">
-			                <div class="input-group date" id="time">
+			                <div class="input-group date" id="timePicker">
 			       				 <input type="text"  name="time" id="time" class=" form-control "/>
 			       		 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 			        		</div>				

@@ -1,11 +1,9 @@
 
-document.write("<script language=javascript src='js/news/newsManageTable.js'></script>");
-
 //主界面用户表格回显
 $(function() {
 
 	//初始加载	
-	newsReady()
+	newsReady();
 });
 
 function newsReady(){
@@ -193,45 +191,5 @@ function updateNews(){
 		},
 	});
 	
-	}
-
-
-function newsIndexReady() {
-	//alert(1);
-	   $.ajax({
-	    url: "/api/v1/userCenter/selectAllNews",
-	    contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-	    success: function(res) {
-	    	var len=res.data.list.length;
-	    	//alert(JSON.stringify(res.data.list));
-	      if (len>0) {
-	        list="";
-	        for(i=0;i<len;i++){
-	        
-	          list+=
-	            "<div class='new-list-item clearfix'>"+
-	            "<div class='col-xs-1'></div>"+
-	            "<div class='col-xs-6'>"+
-	            "<a href="+res.data.list[i].newsUrl+ " class='title'>"+res.data.list[i].newsTitle+"</a>"+
-	              "<div class='abstract'>"+res.data.list[i].newsAbstract+"</div>"+
-	              "</div>"+
-	              "<div class='col-xs-4'>"+
-	              						"<img  src="+res.data.list[i].newsPicturePath+ ">"+
-	                                "</div></div>";
-	        }
-	      } 
-	      else {
-	        alert("数据库中没有新闻数据");
-	      }
-	      document.getElementById("Grid").innerHTML=list;
-	    }, 
-	    error: function(){
-	    	alert("新闻首页回显失败！");
-	    }}); 
-	}
-	  
-
+	}	  
 

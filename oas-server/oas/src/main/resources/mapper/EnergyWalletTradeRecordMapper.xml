@@ -10,53 +10,40 @@
 	<result column="created" property="created"/>
 	<result column="rest_point" property="restPoint"/>
   </resultMap>
-  <select id="selectAllTradeRecord" resultMap="EnergyWalletTradeRecordMap">
-select 
-	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
-from 
-	  point_trade_record etr,user_info u
-where
-	  etr.user_uuid=u.uuid
-order by etr.created desc
-limit #{offset}, #{limit};
-</select>
-
 <select id="selectAllTradeRecordBySearchValue" resultMap="EnergyWalletTradeRecordMap">
 select 
 	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
 from 
-	  point_trade_record etr,user_info u
-where
-	  etr.user_uuid=u.uuid and 
-	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%')
-	   <if test="searchValue != null and searchValue !='' ">
+	  point_trade_record etr left join user_info u on etr.user_uuid=u.uuid 
+	   <if test="searchValue != null and searchValue != null ">
+    	    where u.name like concat('%',#{searchValue},'%')
+    		or etr.in_or_out like concat('%',#{searchValue},'%')
+    		or etr.point_change like concat('%',#{searchValue},'%')
+    		or etr.status like concat('%',#{searchValue},'%')
+    		or etr.created like concat('%',#{searchValue},'%')
     		or etr.rest_point like concat('%',#{searchValue},'%')
        </if>
+       
 order by etr.created desc
 limit #{offset}, #{limit};
-</select>
-
-  <select id="countByEnergyWalletTradeRecord" resultType="java.lang.Integer">
-select 
-	  count(*) 
-from 
-	  point_trade_record etr,user_info u
-where
-	  etr.user_uuid=u.uuid;
 </select>
 
  <select id="countByEnergyWalletTradeRecordBySearchValue" resultType="java.lang.Integer">
 select 
 	  count(*) 
 from 
-	  point_trade_record etr,user_info u
-where
-	  etr.user_uuid=u.uuid and
-	  concat(u.name,etr.in_or_out,etr.point_change,etr.status,etr.created) like concat('%',#{searchValue},'%')
-	   <if test="searchValue != null and searchValue !='' ">
+	 point_trade_record etr left join user_info u on etr.user_uuid=u.uuid 
+	   <if test="searchValue != null and searchValue != null ">
+    	    where u.name like concat('%',#{searchValue},'%')
+    		or etr.in_or_out like concat('%',#{searchValue},'%')
+    		or etr.point_change like concat('%',#{searchValue},'%')
+    		or etr.status like concat('%',#{searchValue},'%')
+    		or etr.created like concat('%',#{searchValue},'%')
     		or etr.rest_point like concat('%',#{searchValue},'%')
        </if>
+       ;
 </select>
+
 
 <resultMap id="energyWalletBalanceRecordMap" type="com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo">
     <result column="name" property="name"/>
@@ -64,47 +51,31 @@ where
 	<result column="power" property="power"/>
 </resultMap>
   
-<select id="selectAllEnergyWalletBalanceRecord" resultMap="energyWalletBalanceRecordMap">
-select 
-	u.name,ew.point,ew.power
-from 	
-	energy_wallet ew,user_info u
-where
-	ew.user_uuid=u.uuid
-order by ew.point desc
-limit #{offset}, #{limit};
-</select> 
-
 <select id="selectAllEnergyWalletBalanceRecordBySearchValue" resultMap="energyWalletBalanceRecordMap">
 select 
 	u.name,ew.point,ew.power
 from 	
-	energy_wallet ew,user_info u
-where
-	ew.user_uuid=u.uuid and
-	concat(u.name,ew.point,ew.power) like concat('%',#{searchValue},'%')
+	energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
+	<if test="searchValue != null and searchValue !='' ">
+    		where u.name like concat('%',#{searchValue},'%')
+    		or ew.point like concat('%',#{searchValue},'%')
+    		or ew.power like concat('%',#{searchValue},'%')
+       </if>
 order by ew.point desc
 limit #{offset}, #{limit};
-</select>
-
-<select id="countByEnergyWalletBalanceRecord" resultType="java.lang.Integer">
-select  
-		count(*) 
-from 
-		energy_wallet ew,user_info u
-where
-		ew.user_uuid=u.uuid
 </select>
 
 <select id="countByEnergyWalletBalanceRecordBySearchValue" resultType="java.lang.Integer">
 select  
 		count(*) 
 from 
-		energy_wallet ew,user_info u
-where
-		ew.user_uuid=u.uuid and
-		concat(u.name,ew.point,ew.power) like concat('%',#{searchValue},'%')
-		
+		energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
+	<if test="searchValue != null and searchValue !='' ">
+    		where u.name like concat('%',#{searchValue},'%')
+    		or ew.point like concat('%',#{searchValue},'%')
+    		or ew.power like concat('%',#{searchValue},'%')
+       </if>
+       ;	
 </select> 
 
 
@@ -113,92 +84,64 @@ where
 	<result column="point" property="point"/>
 </resultMap>
 
-<select id="selectAllInTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
-select 
-	u.name,SUM(etr.point_change) as point
-from 	
-	point_trade_record etr,user_info u
-where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-group by u.name
-order by point desc
-limit #{offset}, #{limit};
-</select>   
-
 <select id="selectAllInTotalPointTradeRecordBySearchValue" resultMap="energyWalletPointRecordMap">
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=1 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
+    DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+    <if test="searchValue != null and searchValue !='' ">
+    and u.name like concat('%',#{searchValue},'%')
+    or etr.point_change like concat('%',#{searchValue},'%')
+    </if>
 group by u.name
 order by point desc
 limit #{offset}, #{limit};
 </select>
-
-<select id="countByInTotalPointTradeRecord" resultType="java.lang.Integer">
-select 
-	count(distinct etr.user_uuid)
-from 	
-	point_trade_record etr,user_info u
-where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
-</select> 
 
 <select id="countByInTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
 select 
 	count(distinct etr.user_uuid)
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=1 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
+	DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	 <if test="searchValue != null and searchValue !='' ">
+    and u.name like concat('%',#{searchValue},'%')
+    or etr.point_change like concat('%',#{searchValue},'%')
+    </if>
+    ;
 </select> 
    
-<select id="selectAllOutTotalPointTradeRecord" resultMap="energyWalletPointRecordMap">
-select 
-	u.name,SUM(etr.point_change) as point
-from 	
-	point_trade_record etr,user_info u
-where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-group by u.name
-order by point desc
-limit #{offset}, #{limit};
-</select>
-
 <select id="selectAllOutTotalPointTradeRecordBySearchValue" resultMap="energyWalletPointRecordMap">
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=0 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%')
+	DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+   <if test="searchValue != null and searchValue !='' ">
+    and u.name like concat('%',#{searchValue},'%')
+    or etr.point_change like concat('%',#{searchValue},'%')
+    </if>
 group by u.name
 order by point desc
 limit #{offset}, #{limit};
-</select>
-
-<select id="countByOutTotalPointTradeRecord" resultType="java.lang.Integer">
-select 
-	count(distinct etr.user_uuid)
-from 	
-	point_trade_record etr,user_info u
-where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime};
 </select>
 
 <select id="countByOutTotalPointTradeRecordBySearchValue" resultType="java.lang.Integer">
 select 
 	count(distinct etr.user_uuid)
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=0 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
-	and concat(u.name,etr.point_change) like concat('%',#{searchValue},'%');
+	DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+    <if test="searchValue != null and searchValue !='' ">
+    and u.name like concat('%',#{searchValue},'%')
+    or etr.point_change like concat('%',#{searchValue},'%')
+    </if>
+    ;
 </select>
    
 </mapper>

@@ -124,6 +124,7 @@ function control(name,roleId){
     //$('#roleId').val(rows.roleId);
 	$('#controlName').val(rows.name);
 	$('#status').val(rows.status);
+
 	
 	$(":radio[name='radio2'][value='" + rows.status + "']").prop("checked", "checked");			
 	$("#controlModal").modal("show");
