@@ -52,28 +52,27 @@ function Confirm(){
 	}); 
 }
 
-function normal(name){
-	var roleId = 2;
-	$('#roleId').val(roleId);
-	$('#roleName').val(name);
-	document.getElementById("role").innerText="确认授权为正常账号吗？";
-	$("#roleModal").modal("show");
-}
-
-function test(name){
-	var roleId = 3;
-	$('#roleId').val(roleId);
-	$('#roleName').val(name);
-	document.getElementById("role").innerText="确认授权为测试账号吗？";
-	$("#roleModal").modal("show");
-}
-
-function system(name){
-	var roleId = 1;
-	$('#roleId').val(roleId);
-	$('#roleName').val(name);
-	document.getElementById("role").innerText="确认授权为系统账号吗？";
-	$("#roleModal").modal("show");
+function role(name,roleId){
+	if(roleId==2){
+		var rows=$("#normalGrid").bootstrapTable('getRowByUniqueId', name);
+	}else if(roleId==3){
+		var rows=$("#testGrid").bootstrapTable('getRowByUniqueId', name);
+	}else if(roleId==1){
+		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);
+	}
+    
+    //alert(JSON.stringify(rows))
+    $('#roleId').val(rows.roleId);
+	$('#roleName').val(rows.name);
+	$('#status').val(rows.status);
+	
+	$(":radio[name='radio1'][value='" + rows.roleId + "']").prop("checked", "checked");			
+	$("#roleModal").modal("show");  
+	
+	$(":radio").click(function(){
+		var choice=$(this).val();
+		$('#roleId').val(choice);
+	});
 }
 
 function roleConfirm(){
@@ -113,25 +112,31 @@ function roleConfirm(){
 	}); 
 }
 
-function active(name){
-	var status = 1;
-	$('#status').val(status);
-	$('#activeName').val(name);
-	document.getElementById("active").innerText="确认激活该账号吗？";
-	$("#activeModal").modal("show");
+function control(name,roleId){
+	if(roleId==2){
+		var rows=$("#normalGrid").bootstrapTable('getRowByUniqueId', name);
+	}else if(roleId==3){
+		var rows=$("#testGrid").bootstrapTable('getRowByUniqueId', name);
+	}else if(roleId==1){
+		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);
+	}
+    //alert(JSON.stringify(rows));
+    //$('#roleId').val(rows.roleId);
+	$('#controlName').val(rows.name);
+	$('#status').val(rows.status);
+	
+	$(":radio[name='radio2'][value='" + rows.status + "']").prop("checked", "checked");			
+	$("#controlModal").modal("show");
+	
+	$(":radio").click(function(){
+		var choice=$(this).val();
+		$('#status').val(choice);
+	});
 }
 
-function ban(name){
-	var status = 0;
-	$('#status').val(status);
-	$('#activeName').val(name);
-	document.getElementById("active").innerText="确认禁用该账号吗？";
-	$("#activeModal").modal("show");
-}
-
-function activeConfirm(){
+function controlConfirm(){
 	var status = $("#status").val();
-	var name = $("#activeName").val();	
+	var name = $("#controlName").val();	
 	var data={		
 		"name":name,
 		"status":status,
@@ -164,6 +169,12 @@ function activeConfirm(){
 			$("#Tip").modal('show');
 		}
 	}); 
+}
+
+//点击取消后清空表单中已写信息
+function resetModal(){
+	//document.getElementById("addNewsForm").reset();
+	location.reload();
 }
 
 function display1(){

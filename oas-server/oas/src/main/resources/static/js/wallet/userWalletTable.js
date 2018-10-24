@@ -79,6 +79,9 @@ function initUserWalletGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '90px',
+			formatter:function(value){
+				return value == null?0:value
+			}
 		},{
 			title : "操作",
 			field : "name",
