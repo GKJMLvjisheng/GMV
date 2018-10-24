@@ -16,11 +16,11 @@
   select 
 	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title
 from 	
-	eth_wallet_detail ed,user_info u,eth_wallet e
-where
-	ed.address=e.address and e.user_uuid=u.uuid
+	eth_wallet_detail ed left join eth_wallet e on ed.address=e.address
+	left join user_info u on e.user_uuid=u.uuid
+
 		   <if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    		where u.name like concat('%',#{searchValue},'%')
     		or ed.value like concat('%',#{searchValue},'%')
     		or ed.title like concat('%',#{searchValue},'%')
     		or ed.created like concat('%',#{searchValue},'%')
@@ -36,11 +36,11 @@ limit #{offset}, #{limit};
   select 
 	count(*)
 from 	
-	eth_wallet_detail ed,user_info u,eth_wallet e
-where
-	ed.address=e.address and e.user_uuid=u.uuid
+	eth_wallet_detail ed left join eth_wallet e on ed.address=e.address
+	left join user_info u on e.user_uuid=u.uuid
+
 	<if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    	where u.name like concat('%',#{searchValue},'%')
     		or ed.value like concat('%',#{searchValue},'%')
     		or ed.title like concat('%',#{searchValue},'%')
     		or ed.created like concat('%',#{searchValue},'%')
@@ -58,10 +58,11 @@ where
  <select id="selectAllInTotalTradeRecordBySearchValue" resultMap="walletTotalTradeRecordMap">
    select 
 		u.name,SUM(ed.value) as value
-from 
-		eth_wallet e,eth_wallet_detail ed,user_info u
+from
+        eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=1 and ed.address=e.address left
+        join user_info u on e.user_uuid=u.uuid    
 where
-		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 		<if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ed.value like concat('%',#{searchValue},'%')
@@ -75,9 +76,10 @@ limit #{offset}, #{limit};
    select 
 		count(distinct ed.address)
 from 
-		eth_wallet e,eth_wallet_detail ed,user_info u
+		 eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=1 and ed.address=e.address left
+        join user_info u on e.user_uuid=u.uuid    
 where
-		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=1 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 		<if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ed.value like concat('%',#{searchValue},'%')
@@ -89,9 +91,10 @@ where
    select 
 		u.name,SUM(ed.value) as value
 from 
-		eth_wallet e,eth_wallet_detail ed,user_info u
+		 eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=0 and ed.address=e.address left
+        join user_info u on e.user_uuid=u.uuid    
 where
-		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 		<if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ed.value like concat('%',#{searchValue},'%')
@@ -105,9 +108,10 @@ limit #{offset}, #{limit};
    select 
 		count(distinct ed.address)
 from 
-		eth_wallet e,eth_wallet_detail ed,user_info u
+		 eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=0 and ed.address=e.address left
+        join user_info u on e.user_uuid=u.uuid    
 where
-		ed.address=e.address and e.user_uuid=u.uuid and ed.in_or_out=0 and DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
         <if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
     		or ed.value like concat('%',#{searchValue},'%')

@@ -14,12 +14,9 @@
 select 
 	  u.name,etr.in_or_out,etr.point_change,etr.status,etr.created,etr.rest_point 
 from 
-	  point_trade_record etr,user_info u
-where
-	  etr.user_uuid=u.uuid 
-	  
+	  point_trade_record etr left join user_info u on etr.user_uuid=u.uuid 
 	   <if test="searchValue != null and searchValue != null ">
-    	    and u.name like concat('%',#{searchValue},'%')
+    	    where u.name like concat('%',#{searchValue},'%')
     		or etr.in_or_out like concat('%',#{searchValue},'%')
     		or etr.point_change like concat('%',#{searchValue},'%')
     		or etr.status like concat('%',#{searchValue},'%')
@@ -35,12 +32,9 @@ limit #{offset}, #{limit};
 select 
 	  count(*) 
 from 
-	  point_trade_record etr,user_info u
-where
-	  etr.user_uuid=u.uuid 
-	  
-	   <if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+	 point_trade_record etr left join user_info u on etr.user_uuid=u.uuid 
+	   <if test="searchValue != null and searchValue != null ">
+    	    where u.name like concat('%',#{searchValue},'%')
     		or etr.in_or_out like concat('%',#{searchValue},'%')
     		or etr.point_change like concat('%',#{searchValue},'%')
     		or etr.status like concat('%',#{searchValue},'%')
@@ -61,11 +55,9 @@ where
 select 
 	u.name,ew.point,ew.power
 from 	
-	energy_wallet ew,user_info u
-where
-	ew.user_uuid=u.uuid
+	energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
 	<if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+    		where u.name like concat('%',#{searchValue},'%')
     		or ew.point like concat('%',#{searchValue},'%')
     		or ew.power like concat('%',#{searchValue},'%')
        </if>
@@ -77,11 +69,9 @@ limit #{offset}, #{limit};
 select  
 		count(*) 
 from 
-		energy_wallet ew,user_info u
-where
-		ew.user_uuid=u.uuid
-	   <if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
+		energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
+	<if test="searchValue != null and searchValue !='' ">
+    		where u.name like concat('%',#{searchValue},'%')
     		or ew.point like concat('%',#{searchValue},'%')
     		or ew.power like concat('%',#{searchValue},'%')
        </if>
@@ -98,9 +88,9 @@ where
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=1 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+    DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
     <if test="searchValue != null and searchValue !='' ">
     and u.name like concat('%',#{searchValue},'%')
     or etr.point_change like concat('%',#{searchValue},'%')
@@ -114,9 +104,9 @@ limit #{offset}, #{limit};
 select 
 	count(distinct etr.user_uuid)
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=1 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=1 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 	 <if test="searchValue != null and searchValue !='' ">
     and u.name like concat('%',#{searchValue},'%')
     or etr.point_change like concat('%',#{searchValue},'%')
@@ -128,9 +118,9 @@ where
 select 
 	u.name,SUM(etr.point_change) as point
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=0 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
    <if test="searchValue != null and searchValue !='' ">
     and u.name like concat('%',#{searchValue},'%')
     or etr.point_change like concat('%',#{searchValue},'%')
@@ -144,9 +134,9 @@ limit #{offset}, #{limit};
 select 
 	count(distinct etr.user_uuid)
 from 	
-	point_trade_record etr,user_info u
+	point_trade_record etr left join user_info u on etr.in_or_out=0 and etr.user_uuid=u.uuid
 where
-	etr.user_uuid=u.uuid and etr.in_or_out=0 and DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
+	DATE_FORMAT(etr.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
     <if test="searchValue != null and searchValue !='' ">
     and u.name like concat('%',#{searchValue},'%')
     or etr.point_change like concat('%',#{searchValue},'%')
