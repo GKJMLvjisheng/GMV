@@ -19,7 +19,7 @@ function newsReady(){
 		type: 'post',
 		success: function(res) {
 			//alert(JSON.stringify(res));
-			data2=res.data.list;
+			data2=res.data;
 			//alert(JSON.stringify(data2));
 			initNewsGrid(data2);
 			
