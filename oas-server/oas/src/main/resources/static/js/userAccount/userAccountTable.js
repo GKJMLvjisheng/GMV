@@ -77,14 +77,6 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '93px',
 				
-			},
-				{
-				title : "创建时间",
-				field : "created",
-				align: 'center',
-				valign: 'middle',
-				width:  '165px',
-				//visible: false,
 			},{
 
 				title : "重置IMEI",
@@ -93,6 +85,14 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '80px',
 				formatter: actionFormatter1
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '165px',
+				//visible: false,
 			},{
 
 				title : "查看",
