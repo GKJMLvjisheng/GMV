@@ -68,4 +68,12 @@
     limit 1
   </select>
   
+  <select id="selectAll" resultMap="exchangeRateMap">
+      select 
+      <include refid="Base_Column_List"/>
+    from exchange_rate 
+    where currency = #{currency}
+    order by time desc
+  </select>
+  
 </mapper>

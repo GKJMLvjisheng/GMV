@@ -59,14 +59,6 @@ function initPowerGrid() {
 			valign: 'middle',
 			width:  '130px',
 		},
-		{
-			title : "兑换状态",
-			field : "status",
-			align: 'center',
-			valign: 'middle',
-			width:  '130px',
-			formatter: actionFormatter2
-		},
 			{
 			title : "交易时间",
 			field : "created",
@@ -98,17 +90,6 @@ function actionFormatter1(value, row, index) {
     return result;
 	}        
 }
-
-function actionFormatter2(value, row, index) {
-    var result = "";
-    if(value==1){
-	result += "<span>未兑换</span>";      
-    return result;
-	}else if(value==0){
-	result += "<span>已兑换</span>";      
-    return result;
-	}    
-}	
 
 //请求服务数据时所传参数
 function queryParams(params){
