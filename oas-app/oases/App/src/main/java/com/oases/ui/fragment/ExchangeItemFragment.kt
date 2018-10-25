@@ -1,6 +1,8 @@
 package com.oases.ui.fragment
 
 import android.os.Bundle
+import android.os.Handler
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -17,7 +19,7 @@ import com.oases.injection.module.WalletModule
 import com.oases.presenter.ExchangeDetailPresenter
 import com.oases.presenter.view.ExchangeDetailView
 import com.oases.ui.adapter.ExchangeItemRecyclerViewAdapter
-
+import kotlinx.android.synthetic.main.activity_exchange_detail.*
 
 private const val ARG_ITEMS = "items"
 private const val AEG_ITEMS2 = "item2"
@@ -41,6 +43,7 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
     private var flag:String = ""
     private lateinit var type:String //= AppPrefsUtils.getString(BaseConstant.MORE_TYPE)
     //private lateinit var mBottomShow:TextView
+   // private var swipeLayout:SwipeRefreshLayout? = null
 
     override fun injectComponent() {
         Log.d("zbb", "init exchange fragment")
@@ -109,11 +112,11 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
                         mPageCount++
                         mPageSum += totalItemCount
                         if(loadFlag){ //小于总条数加载加载更多
-                            var req:InquirePointsDetailReq = InquirePointsDetailReq(mPageCount,10)
-                            var req2:InquireTransactionDetailReq = InquireTransactionDetailReq(mPageCount,10,0)
-                            var req3:InquireTransactionDetailReq = InquireTransactionDetailReq(mPageCount,10,1)
-
-                            flag = type.plus("_").plus(AppPrefsUtils.getString(BaseConstant.FRAGMENT_INDEX))
+                            var req:InquirePointsDetailReq = InquirePointsDetailReq(mPageCount,BaseConstant.PAGE_SIZE)
+                            var req2:InquireTransactionDetailReq = InquireTransactionDetailReq(mPageCount,BaseConstant.PAGE_SIZE,0)
+                            var req3:InquireTransactionDetailReq = InquireTransactionDetailReq(mPageCount,BaseConstant.PAGE_SIZE,1)
+                            operate(req,req2,req3)
+                           /* flag = type.plus("_").plus(AppPrefsUtils.getString(BaseConstant.FRAGMENT_INDEX))
                             when(flag){
                                 "ENERGY_ALL"->  mPresenter.onEnergyTransactionAll(req,req2)//EnumList.ENEYGE_ALL
                                 "ENERGY_OUT"->  mPresenter.onEnergyTransactionOut(req,req2)
@@ -125,7 +128,7 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
                                 "EXCHANGE_OUT"-> mPresenter.onExchangeTransactionOut(req,req2)
                                 "EXCHANGE_IN"->    mPresenter.onExchangeTransactionIn(req,req3)
                                 //else -> ""
-                            }
+                            }*/
                         }
                     }
                 }
@@ -147,6 +150,39 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
                 }
             })*/
+/*            swipeLayout!!.setOnRefreshListener(object: SwipeRefreshLayout.OnRefreshListener {
+                override fun onRefresh() {
+                    var mHandler: Handler = Handler()
+                    mHandler.postDelayed(object : Runnable {
+                        override fun run() {
+                            var req:InquirePointsDetailReq = InquirePointsDetailReq(1,BaseConstant.PAGE_SIZE)
+                            var req2:InquireTransactionDetailReq = InquireTransactionDetailReq(1,BaseConstant.PAGE_SIZE,0)
+                            var req3:InquireTransactionDetailReq = InquireTransactionDetailReq(1,BaseConstant.PAGE_SIZE,1)
+                            mItems.clear()
+                            eItems.clear()
+                            cItems.clear()
+                            mRecycleView.adapter.notifyDataSetChanged()
+                            operate(req,req2,req3)
+                        }
+                    }, 1000)
+                }
+            })*/
+        }
+    }
+
+    fun operate(req:InquirePointsDetailReq,req2:InquireTransactionDetailReq,req3:InquireTransactionDetailReq){
+        flag = type.plus("_").plus(AppPrefsUtils.getString(BaseConstant.FRAGMENT_INDEX))
+        when(flag){
+            "ENERGY_ALL"->  mPresenter.onEnergyTransactionAll(req,req2)//EnumList.ENEYGE_ALL
+            "ENERGY_OUT"->  mPresenter.onEnergyTransactionOut(req,req2)
+            "ENERGY_IN"->   mPresenter.onEnergyTransactionIn(req,req3)
+            "WALLET_ALL"-> mPresenter.onWalletTransactionAll(req,req2)
+            "WALLET_OUT"-> mPresenter.onWalletTransactionOut(req,req2)
+            "WALLET_IN"->  mPresenter.onWalletTransactionIn(req,req3)
+            "EXCHANGE_ALL"-> mPresenter.onExchangeTransactionAll(req,req2)
+            "EXCHANGE_OUT"-> mPresenter.onExchangeTransactionOut(req,req2)
+            "EXCHANGE_IN"->    mPresenter.onExchangeTransactionIn(req,req3)
+            //else -> ""
         }
     }
 /*     fun alertWindow(str:String){
@@ -166,7 +202,6 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
         // TODO: Update argument type and name
         fun onListFragmentInteraction(item: PointItem?,item2:EnergyItem?)
     }
-
 
     companion object {
         /**
@@ -189,6 +224,7 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
                             "EXCHANGE"-> putParcelableArrayList(ARG_ITEMS, items)
                             else -> putParcelableArrayList(ARG_ITEMS, item2)
                         }
+                       //swipeLayout = swipeLayout1
                         //putParcelableArrayList(ARG_ITEMS, items)
                         //putParcelableArrayList(AEG_ITEMS2, item2)
                     }
@@ -197,6 +233,8 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
     }
 
     fun handleResult(list: InquirePointsDetailResp){
+       // flag = type.plus("_").plus(AppPrefsUtils.getString(BaseConstant.FRAGMENT_INDEX))
+        Log.d("zzz1",flag)
         if(list.rows !=null && !list.rows.isEmpty()){
             when(type){
                 "WALLET"->  mItems.addAll(list.rows)
@@ -209,6 +247,7 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
             //mBottomShow.setVisible(true)
             loadFlag = false;
         }
+       // swipeLayout?.setRefreshing(false)
     }
 
     override fun onGetTransactionMoreDeails(list: InquirePointsDetailResp) {
@@ -223,6 +262,7 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
         handleResult(list)
     }
     override fun onGetEnergyMoreDeails(list: InquireEnergyDetailResp){
+      //  flag = type.plus("_").plus(AppPrefsUtils.getString(BaseConstant.FRAGMENT_INDEX))
         if(!list.rows.isEmpty()){
             eItems.addAll(list.rows)
             mRecycleView.adapter.notifyDataSetChanged()
@@ -233,12 +273,12 @@ class ExchangeItemFragment: BaseMvpFragment<ExchangeDetailPresenter>(), Exchange
            // mBottomShow.setVisible(true)
             loadFlag = false;
         }
+       // swipeLayout?.setRefreshing(false)
     }
     override fun onGetOasAllDeails(list: InquirePointsDetailResp) {
     }
     override fun setCoin(coins: ListCoinResp) {
     }
-
     override fun getExchangeResult(t: Int) {
 
     }

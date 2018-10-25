@@ -1241,31 +1241,17 @@ public class UserController extends BaseShiroController{
 	}
 
 	/**
-	 * 增加system用户及三个钱包账号
+	 * 增加system用户,admin用户及三个钱包账号
 	 */
 	@PostConstruct
-	private void registerSystem() {
-		UserModel userModel = new UserModel();
-		userModel.setName("SYSTEM");
-		userModel.setPassword("123456");
-		String password = userModel.getPassword();
-		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-		ErrorCode code = userService.addUser(uuid, userModel);
-		if(code.getCode() == 0) { // 用户不存在
-			ethWalletService.create(uuid, password);
-			userWalletService.createAccountByMoney(uuid,new BigDecimal("10000000"));
-			energyPointService.create(uuid);
-			
-			//给用户赋予默认角色（普通用户roleId为2)
-			UserRole userRole=new UserRole();
-		    userRole.setUuid(uuid);
-		    userRole.setRoleId(2);
-		    String now =DateUtils.getTime();
-		    userRole.setRolePriority(1);
-		    userRole.setCreated(now);
-		    userRoleModelMapper.insertUserRole(userRole);
-		}
+	private void registerSystemAndAdmin() {
+		createUserAfterStart("admin","123456");
+		createUserAfterStart("SYSTEM",generatePassword(30));
+		log.info("system交易钱包地址为"+ethWalletService.getSystemAddress());
 	}
+	
+	
+	
 	
 	/**
 	 * @author lvjisheng
@@ -1381,6 +1367,7 @@ public class UserController extends BaseShiroController{
 
 	}
 	
+
 	/**
 	 * @author lvjisheng
 	 * @param offset,limit,roleId
@@ -1399,5 +1386,54 @@ public class UserController extends BaseShiroController{
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();
+
+	}
+	/**
+	 * 生成随即字串
+	 * @param length
+	 * @return
+	 */
+	private String generatePassword(int length) {
+		String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	     Random random=new Random();
+	     StringBuffer sb=new StringBuffer();
+	     for(int i=0;i<length;i++){
+	       int number=random.nextInt(62);
+	       sb.append(str.charAt(number));
+	     }
+	     return sb.toString();
+	}
+	
+	private void createUserAfterStart(String name,String password) {
+		UserModel userModel = new UserModel();
+		userModel.setName(name);
+		userModel.setStatus(1);
+		userModel.setPassword(password);
+		
+		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+		ErrorCode code = userService.addUser(uuid, userModel);
+		if(code.getCode() == 0) { // 用户不存在
+			ethWalletService.create(uuid, password);
+			if(name.equals("SYSTEM")) {
+				userWalletService.createAccountByMoney(uuid,new BigDecimal("10000000"));
+			}else {
+				userWalletService.createAccountByMoney(uuid,BigDecimal.ZERO);
+			}
+			energyPointService.create(uuid);
+			
+			//给用户赋予默认角色1
+			UserRole userRole=new UserRole();
+		    userRole.setUuid(uuid);
+		    userRole.setRoleId(1);
+		    String now =DateUtils.getTime();
+		    userRole.setRolePriority(1);
+		    userRole.setCreated(now);
+		    userRoleModelMapper.insertUserRole(userRole);
+		    
+		    log.info(name+"用户创建成功");
+		}else {
+			log.info(name+"用户已存在");
+		}
+		
 	}
 }

@@ -263,16 +263,17 @@ function initRewardGrid(data) {
 			//width:  '90px',
 
 		},
-		{
-
-			title : " 操作",
-			
-			field : "rewardCode",
-			align: 'center',
-			valign: 'middle',
-			//width:  '90px',
-			formatter: actionFormatter
-		}],
+//		{
+//
+//			title : " 操作",
+//			
+//			field : "rewardCode",
+//			align: 'center',
+//			valign: 'middle',
+//			//width:  '90px',
+//			formatter: actionFormatter
+//		}
+		],
 		
 		search : true,//搜索
         searchOnEnterKey : true,
