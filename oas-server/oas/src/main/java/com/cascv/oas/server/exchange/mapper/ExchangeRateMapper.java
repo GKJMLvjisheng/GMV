@@ -1,5 +1,7 @@
 package com.cascv.oas.server.exchange.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.cascv.oas.server.exchange.model.ExchangeRateModel;
@@ -9,5 +11,6 @@ public interface ExchangeRateMapper {
   Integer updateSelective(ExchangeRateModel exchangeRate);
   ExchangeRateModel selectOne(@Param("time") String time, @Param("currency") Integer currency);
   ExchangeRateModel selectNear(@Param("time") String time, @Param("currency") Integer currency);
+  List<ExchangeRateModel> selectAll(@Param("currency") Integer currency);
   
 }

@@ -149,8 +149,6 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                     mTodaySteps = iSportStepInterface!!.getCurrentTimeSportStep()
 
                         uploadHistorySteps()
-
-                    mSteps.text = mTodaySteps.toString()
                 } catch (e: RemoteException) {
                     e.printStackTrace()
                 }
@@ -190,7 +188,6 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                         } catch (e: RemoteException) {
                             e.printStackTrace()
                         }
-                        mSteps.text = mTodaySteps.toString()
                     }
                     mDelayHandler.sendEmptyMessageDelayed(REFRESH_STEP_WHAT, TIME_INTERVAL_REFRESH)
                 }

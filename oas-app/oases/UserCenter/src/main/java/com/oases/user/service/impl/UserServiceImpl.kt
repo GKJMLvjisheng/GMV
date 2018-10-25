@@ -107,4 +107,12 @@ class UserServiceImpl @Inject constructor():UserService{
         return repository.confirmOldPwd(req).convert()
     }
 
+    override fun getBackupWalletStatus(): Observable<BackupWalletStatusResp> {
+        return repository.getBackupWalletStatus().convert()
+    }
+
+    override fun getPrivateKeyMnemonic(): Observable<PrivateKeyMnemonicResp> {
+        return repository.getPrivateKeyMnemonic().convert()
+    }
+
 }

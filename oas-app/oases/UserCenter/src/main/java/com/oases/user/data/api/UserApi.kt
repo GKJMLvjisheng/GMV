@@ -75,4 +75,12 @@ interface UserApi {
 
     @POST("/api/v1/userCenter/checkPassword")
     fun confirmOldPwd(@Body req: confirmOldPwdReq):Observable<BaseResp<confirmOldPwdResp>>
+
+    @POST("/api/v1/ethWallet/status")
+    fun getBackupWalletStatus():Observable<BaseResp<BackupWalletStatusResp>>
+
+    @POST("/api/v1/ethWallet/backup")
+    fun getPrivateKeyMnemonic():Observable<BaseResp<PrivateKeyMnemonicResp>>
+
+
 }

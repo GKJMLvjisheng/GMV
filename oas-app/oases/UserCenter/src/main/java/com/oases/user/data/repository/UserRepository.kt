@@ -94,4 +94,17 @@ class UserRepository @Inject constructor() {
         return RetrofitFactory.instance.create(UserApi::class.java).confirmOldPwd(req)
     }
 
+    //获得用户备份钱包的状态
+    fun getBackupWalletStatus(): Observable<BaseResp<BackupWalletStatusResp>> {
+        return RetrofitFactory.instance.create(UserApi::class.java).getBackupWalletStatus()
+    }
+
+    //获得备份钱包中用户的私钥
+    fun getPrivateKeyMnemonic(): Observable<BaseResp<PrivateKeyMnemonicResp>> {
+        return RetrofitFactory.instance.create(UserApi::class.java).getPrivateKeyMnemonic()
+    }
+
+
+
+
 }

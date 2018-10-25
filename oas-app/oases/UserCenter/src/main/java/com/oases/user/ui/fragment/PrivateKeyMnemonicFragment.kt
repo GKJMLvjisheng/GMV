@@ -4,11 +4,23 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import com.oases.base.common.BaseConstant.Companion.WALLET_BACKUP
+import com.oases.base.ext.onClick
+import com.oases.base.ui.fragment.BaseMvpFragment
+import com.oases.base.utils.AppPrefsUtils
 
 import com.oases.user.R
+import com.oases.user.data.protocol.PrivateKeyMnemonicResp
+import com.oases.user.injection.component.DaggerUserComponent
+import com.oases.user.injection.module.UserModule
+import com.oases.user.presenter.PrivateKeyMnemonicPresenter
+import com.oases.user.presenter.view.PrivateKeyMnemonicView
+import kotlinx.android.synthetic.main.fragment_private_key_mnemonic.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,11 +36,13 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class PrivateKeyMnemonicFragment : Fragment() {
+class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(), PrivateKeyMnemonicView {
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
+    private lateinit var saveWalletBackup:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +55,49 @@ class PrivateKeyMnemonicFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_private_key_mnemonic, container, false)
+        super.onCreateView(inflater, container, savedInstanceState)
+        val view= inflater.inflate(R.layout.fragment_private_key_mnemonic, container, false)
+       // initView()
+        saveWalletBackup = view.findViewById(R.id.mSaveWalletBackup)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("lihui", "on view created")
+        initView()
+    }
+    private fun initView(){
+        mPresenter.getPrivateKeyMnemonic()
+        saveWalletBackup.onClick {
+            AppPrefsUtils.putBoolean(WALLET_BACKUP, true)
+        }
+    }
+
+    override fun injectComponent() {
+        DaggerUserComponent
+                .builder()
+                .activityComponent(mActivityComponent)
+                .userModule(UserModule())
+                .build()
+                .inject(this)
+        mPresenter.mView = this
+        Log.d("lihui", "injection")
+    }
+
+    /*override fun onResume() {
+        super.onResume()
+        initView()
+    }*/
+
+    override fun onGetPrivateKeyMnemonicResult(result: PrivateKeyMnemonicResp) {
+        var mlist:String=""
+        for (i in result.mnemonicList ){
+            var mnemonicList = mlist.plus(i).plus(" ")
+            mlist=mnemonicList
+        }
+        mPrivateKeyMnemonic.text=mlist
+        mPrivateKey.text=result.privateKey
     }
 
     // TODO: Rename method, update argument and hook method into UI event

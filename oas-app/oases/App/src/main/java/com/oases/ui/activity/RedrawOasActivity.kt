@@ -50,7 +50,7 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
         mMyAddress.setRightTopText(address)
         var balance = intent.getStringExtra(BaseConstant.MY_OAS_AMOUNT)
         var unconfirmed = intent.getStringExtra(BaseConstant.MY_OAS_AMOUNT_UNCONFIRMED)
-        mAvailableAmount.text =  (balance.toBigDecimal().subtract(unconfirmed.toBigDecimal())).setScale(4, BigDecimal.ROUND_HALF_UP).toString()
+        mAvailableAmount.text =  (balance.toBigDecimal()).setScale(4, BigDecimal.ROUND_HALF_UP).toString()//.subtract(unconfirmed.toBigDecimal())
 
         mPresenter.getOasExtra()
 
