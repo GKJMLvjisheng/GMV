@@ -41,10 +41,11 @@ public class VersionService {
 	
 	public List<VersionModel> selectAppByStableVersion(){
 		
-		List<VersionModel> versionModel = versionModelMapper.selectAllAppsByStableVersion();		  
+		List<VersionModel> versionModel = versionModelMapper.selectAllAppsByStableVersion();
+		if(versionModel != null && versionModel.size() != 0) {
 		    String fullLink = mediaServer.getImageHost() + versionModel.get(0).getAppUrl();
 		    versionModel.get(0).setAppUrl(fullLink);
-		  
+		}
 		  return versionModel;
 	}
 }
