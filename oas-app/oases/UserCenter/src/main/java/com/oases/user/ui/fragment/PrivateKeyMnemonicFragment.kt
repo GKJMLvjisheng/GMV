@@ -21,6 +21,7 @@ import com.oases.user.injection.module.UserModule
 import com.oases.user.presenter.PrivateKeyMnemonicPresenter
 import com.oases.user.presenter.view.PrivateKeyMnemonicView
 import kotlinx.android.synthetic.main.fragment_private_key_mnemonic.*
+import org.jetbrains.anko.support.v4.toast
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,7 +58,6 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
         // Inflate the layout for this fragment
         super.onCreateView(inflater, container, savedInstanceState)
         val view= inflater.inflate(R.layout.fragment_private_key_mnemonic, container, false)
-       // initView()
         saveWalletBackup = view.findViewById(R.id.mSaveWalletBackup)
         return view
     }
@@ -71,6 +71,7 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
         mPresenter.getPrivateKeyMnemonic()
         saveWalletBackup.onClick {
             AppPrefsUtils.putBoolean(WALLET_BACKUP, true)
+            toast("已确定您已保存")
         }
     }
 

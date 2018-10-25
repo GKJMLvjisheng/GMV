@@ -84,15 +84,17 @@ class EncryptedMnemonicFragment : Fragment(),ActivityCompat.OnRequestPermissions
             val saveUri = (file.path).substring(19,(file.path).length)
             if (!file.exists())
             {
-                mEncryptUri.text=saveUri
+                mEncryptUri.text=""
             }else{
                 //createTempFile()
-                mEncryptUri.text=""
+                mEncryptUri.text=saveUri
+
             }
-        mExportFile.onClick {
-            createTempFile()
-            toast("导出成功")
-        }
+             mExportFile.onClick {
+                 createTempFile()
+                 AppPrefsUtils.putBoolean(BaseConstant.WALLET_BACKUP, true)
+                 toast("导出成功，已保存到手机内部存储下的OASES目录")
+            }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -167,7 +169,8 @@ class EncryptedMnemonicFragment : Fragment(),ActivityCompat.OnRequestPermissions
         }
         val saveUri = (file.path).substring(19,(file.path).length)
         Log.d("lihui", "$file, ${file.isFile}, ${file.path}")
-        file.writeText("hello world")
+        var key = "hello world"
+        file.writeText(key)
         mEncryptUri.text=saveUri
     }
 
@@ -181,7 +184,7 @@ class EncryptedMnemonicFragment : Fragment(),ActivityCompat.OnRequestPermissions
         } else {
             //requset permission
            // ActivityCompat.requestPermissions(context!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.REQUEST_CODE)
-            //this.requestPermission(context!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.REQUEST_CODE)
+            this.requestPermission(context!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), Constants.REQUEST_CODE)
         }
     }
 
