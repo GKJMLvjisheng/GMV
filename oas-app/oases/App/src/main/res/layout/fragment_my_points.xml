@@ -119,12 +119,19 @@
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
         android:background="@color/common_white">
-        <ExpandableListView
-            android:id="@+id/mPointGroupLayout"
-            android:layout_width="wrap_content"
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layoutDirection="rtl">
-        </ExpandableListView>
+            android:orientation="vertical"
+            android:id="@+id/mSwipeLayout">
+            <ExpandableListView
+                android:id="@+id/mPointGroupLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layoutDirection="rtl">
+            </ExpandableListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
 </FrameLayout>

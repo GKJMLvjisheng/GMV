@@ -1,18 +1,6 @@
 var pageSize;
 var pageNum;
 
-//请求服务数据时所传参数
-function queryParams(params){
-	pageSize = params.limit;
-	pageNum = params.offset / params.limit + 1;
-    return{
-        //每页多少条数据
-        pageSize: pageSize,
-        //当前页码
-        pageNum: pageNum,
-    }
-}
-
 function initEthWalletGrid() {	
 	$("#ethWalletGrid").bootstrapTable('destroy');
 	$("#ethWalletGrid").bootstrapTable({
@@ -27,7 +15,7 @@ function initEthWalletGrid() {
 		pageNumber:1,//首页页码
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		queryParams:queryParams,//请求服务器时所传的参数
+		queryParams:queryParams1,//请求服务器时所传的参数
 		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
@@ -85,6 +73,15 @@ function initEthWalletGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '100px',
+		}, {
+			title : "账户余额",
+			field : "restBalance",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
+			formatter:function(value){
+				return value == null?0:value
+			}
 		},{
 			title : "操作",
 			field : "name",
@@ -93,12 +90,27 @@ function initEthWalletGrid() {
 			width:  '60px',
 			formatter: actionFormatter
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+//		search : true,//搜索
+//        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
-	
+
+//请求服务数据时所传参数
+function queryParams1(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
+	var searchValue = $("#eth1").val();
+	//alert(JSON.stringify(searchValue));
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+        searchValue: searchValue,
+    }
+}
+
 //请求成功方法
 function responseHandler1(res){
     var code = res.code;//在此做了错误代码的判断
@@ -164,14 +176,15 @@ function initFundInGrid() {
 			valign: 'middle',
 			formatter: actionFormatter
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+//		search : true,//搜索
+//        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
 
 //请求服务数据时所传参数
 function queryParams3(params){
+	var searchValue = $("#eth2").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;
     return{
@@ -179,6 +192,7 @@ function queryParams3(params){
         pageSize: pageSize,
         //当前页码
         pageNum: pageNum,
+        searchValue: searchValue,
         startTime: $("#startTime4").val(),
         endTime: $("#endTime4").val(),
     }
@@ -250,14 +264,15 @@ function initFundOutGrid() {
 			valign: 'middle',
 			formatter: actionFormatter
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
+//		search : true,//搜索
+//        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
 
 //请求服务数据时所传参数
 function queryParams4(params){
+	var searchValue = $("#eth2").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;
     return{
@@ -265,6 +280,7 @@ function queryParams4(params){
         pageSize: pageSize,
         //当前页码
         pageNum: pageNum,
+        searchValue: searchValue,
         startTime: $("#startTime5").val(),
         endTime: $("#endTime5").val(),
     }

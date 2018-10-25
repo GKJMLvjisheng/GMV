@@ -91,7 +91,8 @@
     <update id="updateOrderNum" parameterType="com.cascv.oas.server.miner.model.MinerModel">
         update miner_source
         set
-          order_num = #{orderNum}
+          order_num = #{orderNum},
+          updated = #{updated}
         where
           miner_code = #{minerCode}
     </update>
@@ -247,6 +248,12 @@
     <update id="updateByPowerRewardStatusRewardEnergyBallUuid" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
      update purchase_record
      set reward_energy_ball_uuid = #{rewardEnergyBallUuid},power_reward_status=2 
+      where uuid = #{uuid}
+    </update>
+    
+     <update id="updateByMinerNumFinishRewardNumber" parameterType="com.cascv.oas.server.miner.model.PurchaseRecord">
+     update purchase_record
+     set finish_reward_number = #{finishRewardNumber} 
       where uuid = #{uuid}
     </update>
     

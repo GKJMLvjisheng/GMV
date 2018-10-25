@@ -17,7 +17,8 @@ public interface MinerMapper {
 	Integer deleteMiner(@Param("minerCode") String minerCode);
 	Integer updateMiner(MinerModel minerModel);
 	Integer updateOrderNum(@Param("minerCode") String minerCode,
-			@Param("orderNum") Integer orderNum);
+			@Param("orderNum") Integer orderNum,
+			@Param("updated") String updated);
 	
 	MinerModel inquireByUuid(@Param("minerCode") String minerCode);
 	MinerModel inquireByMinerName(@Param("minerName") String minerName);
@@ -54,6 +55,7 @@ public interface MinerMapper {
 	Integer updateByMinerPurchaseStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatus(PurchaseRecord purchaseRecord);
 	Integer updateByPowerRewardStatusToDecrease(PurchaseRecord purchaseRecord);
+	Integer updateByMinerNumFinishRewardNumber(PurchaseRecord purchaseRecord);//无奖励时候假装已经完成奖励
 	List<PurchaseRecord> inquerePurchaseRecord(@Param("userUuid") String userUuid, 
 			@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer insertPurchaseRecord(PurchaseRecord purchaseRecord);

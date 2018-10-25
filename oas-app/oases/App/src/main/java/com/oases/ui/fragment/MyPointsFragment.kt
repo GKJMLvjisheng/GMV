@@ -6,11 +6,14 @@ import android.content.Intent
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.ExpandableListView
 
 import com.oases.R
@@ -66,6 +69,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
     lateinit var exAdapter:MyPointsGroupAdapter
     var groupData:MutableList<String>?=null
     var itemData :MutableList<MutableList<EnergyItem>>?=null
+    lateinit var swipeLayout:SwipeRefreshLayout
 
     override fun injectComponent() {
         DaggerMainComponent
@@ -110,6 +114,17 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                 // TODO Auto-generated method stub
                 exAdapter.setChildSelection(groupPosition, childPosition)
                 return true
+            }
+        })
+        swipeLayout = rootFragment.findViewById(R.id.mSwipeLayout) as SwipeRefreshLayout
+        swipeLayout.setOnRefreshListener(object: SwipeRefreshLayout.OnRefreshListener{
+            override fun onRefresh() {
+                var mHandler:Handler  = Handler()
+                mHandler.postDelayed(object :Runnable{
+                    override fun run() {
+                        getDetail()
+                    }
+                },1000)
             }
         })
         return rootFragment
@@ -209,7 +224,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                     item?.add(map[key]!!)
                 }
                exAdapter.pushData(map)
-
+                swipeLayout.setRefreshing(false)
               //  exAdapter.notifyDataSetChanged()
             }
        // }

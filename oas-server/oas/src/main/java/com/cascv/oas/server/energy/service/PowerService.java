@@ -16,6 +16,7 @@ import com.cascv.oas.server.energy.mapper.EnergyTradeRecordMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.energy.model.EnergyBall;
 import com.cascv.oas.server.energy.model.EnergyTradeRecord;
+import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.ActivityResult;
 import com.cascv.oas.server.energy.vo.EnergyFriendsSharedResult;
 import com.cascv.oas.server.energy.vo.EnergyOfficialAccountResult;
@@ -134,6 +135,7 @@ public class PowerService {
         energyTradeRecord.setStatus(STATUS_OF_DIE_ENERGYRECORD);
         energyTradeRecord.setPointChange(this.getFsEnergy().getNewEnergyPoint());
         energyTradeRecord.setPowerChange(this.getFsEnergy().getNewPower());
+        energyTradeRecord.setRestPoint(getPointWalletPoint(userUuid,ENEGY_IN,this.getFsEnergy().getNewEnergyPoint()));
         return energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
     }
     /**
@@ -154,6 +156,7 @@ public class PowerService {
         energyTradeRecord.setStatus(STATUS_OF_DIE_ENERGYRECORD);
         energyTradeRecord.setPointChange(this.getOAEnergy().getNewEnergyPoint());
         energyTradeRecord.setPowerChange(this.getOAEnergy().getNewPower());
+        energyTradeRecord.setRestPoint(getPointWalletPoint(userUuid,ENEGY_IN,this.getOAEnergy().getNewEnergyPoint()));
         return energyTradeRecordMapper.insertEnergyTradeRecord(energyTradeRecord);
     }
 
@@ -237,6 +240,21 @@ public class PowerService {
     	}
     	
 		return powerList;
+    }
+    
+    /**
+     * 根据用户id获取用户的能量钱包point值
+     * @param userId
+     * @return
+     */
+    private BigDecimal getPointWalletPoint(String userId,Integer flag,BigDecimal changePoint) {
+    	BigDecimal result = null;
+    	if(userId == null) return result;
+    	EnergyWallet ewallet = energyWalletMapper.selectByUserUuid(userId);
+    	if(ewallet!=null) {
+    		result = (flag>0?ewallet.getPoint().add(changePoint):ewallet.getPoint().subtract(changePoint));
+    	}
+    	return result;
     }
     
     /**

@@ -109,4 +109,14 @@ public class RootController {
 	  public String userAccountManage() {
 	  	    return "userAccountManage"; 
 	  	    }
+	//系统账号管理
+	  @GetMapping("/systemAccount/system")
+	  public String system() {
+	  	    return "systemAccount/system"; 
+	  	    }
+	//算力记录查询
+	  @GetMapping("/miner/powerRecord")
+	  public String powerRecord() {
+	  	    return "miner/powerRecord"; 
+	  	    }
 }

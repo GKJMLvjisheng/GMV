@@ -8,10 +8,12 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
+
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.energy.vo.EnergyChangeDetail;
@@ -19,6 +21,11 @@ import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
+import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
+import com.cascv.oas.server.user.model.UserIdentityCardModel;
+import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.model.UserRole;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -33,7 +40,7 @@ public class UserService {
   private TimeZoneService timeZoneService;
   @Autowired
   private MediaServer mediaServer;
-	
+
   public UserModel findUserByName(String name){
     UserModel userModel = userModelMapper.selectByName(name);
     return userModel;
@@ -61,7 +68,7 @@ public class UserService {
 //  }
    
   public ErrorCode addUser(String uuid, UserModel userModel) {
-	  log.info("111");
+//	  log.info("111");
 //	  log.info("userModel.getInviteCode()={}",userModel.getInviteCode());
 //	  log.info("userModel.getInviteFrom()={}",userModel.getInviteFrom());
 	  String s = userModel.getName();
@@ -253,11 +260,11 @@ public class UserService {
         return isRightIMEI;
      }
 	
-    public List<UserDetailModel> selectUsersByPage(Integer offset, Integer limit,Integer roleId){
+    public List<UserDetailModel> selectUsersByPage(Integer offset, Integer limit,Integer roleId,String searchValue){
     	String srcFormater="yyyy-MM-dd HH:mm:ss";
 	    String dstFormater="yyyy-MM-dd HH:mm:ss";
 		String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
-		List<UserDetailModel> userModel=userModelMapper.selectUsersByPage(offset,limit,roleId);
+		List<UserDetailModel> userModel=userModelMapper.selectUsersByPage(offset,limit,roleId,searchValue);
 		List<UserDetailModel>  userList=new ArrayList<>();
 		for(UserDetailModel userNewModel:userModel){
 			log.info("created={}",userNewModel.getCreated());
@@ -272,6 +279,7 @@ public class UserService {
     public Integer countUsers(Integer roleId) {
     	return userModelMapper.countUsers(roleId);
     }
+   
 }
 
 

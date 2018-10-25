@@ -98,6 +98,15 @@
   	on a.user_uuid = b.uuid
   	where a.type = '1'
   	order by a.created desc
+  	limit #{offset},#{limit}
+  </select>
+  
+  <select id="getAllWithdrawRecordCount" resultType="java.lang.Integer">
+    select count(*)
+  	from oas_detail a 
+  	left join user_info b 
+  	on a.user_uuid = b.uuid
+  	where a.type = '1'
   </select>
   
   <select id="getOasExtra" resultType="java.lang.String">

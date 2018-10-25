@@ -16,6 +16,5 @@ public class MinerRequest implements Serializable {
 	@Getter @Setter private BigDecimal minerPower;
 	@Getter @Setter private Integer minerGrade;
 	@Getter @Setter private Integer minerPeriod;
-	@Getter @Setter private Integer orderNum;
 
 }

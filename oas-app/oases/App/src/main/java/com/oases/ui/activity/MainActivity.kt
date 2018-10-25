@@ -42,6 +42,10 @@ import com.today.step.lib.TodayStepService
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.support.v4.startService
 
+
+
+
+
 @Route(path = RouterPath.App.PATH_MAIN)
 class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
         WalletFragment.OnFragmentInteractionListener,
@@ -226,17 +230,22 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
                 //todo add version check
                // val url:String = "http://18.219.19.160:8080/image/news/App-release.apk"
                 if(packageInfo.versionCode.toInt() < versionFromServer){
-
-                    val uiData:UIData = UIData.create().setDownloadUrl(addressFromServer).setTitle("新版本提醒").setContent("发现新版本，是否升级？")
+                    var str = "发现新版本，是否升级？"
+                    if(value.upGradeStatus == 1){
+                        str = "发现新版本，请先升级后使用！"
+                    }
+                    val uiData:UIData = UIData.create().setDownloadUrl(addressFromServer).setTitle("新版本提醒").setContent(str)
                     val builder:DownloadBuilder = AllenVersionChecker
                             .getInstance()
                             .downloadOnly(uiData)as DownloadBuilder
                     //builder.setDownloadAPKPath("/storage/emulated/0/oases_download")
                     builder .excuteMission(this)
                     builder.setForceRedownload(true) //本地有安装包缓存仍重新下载apk
-
-
-
+                    if(value.upGradeStatus == 1){
+                        builder.setForceUpdateListener {
+                            System.exit(0)
+                        }
+                    }
                 }
            // }
 

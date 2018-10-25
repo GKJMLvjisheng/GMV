@@ -13,7 +13,7 @@ class BaseConstant{
         //本地服务器地址
         //const val SERVER_ADDRESS = "https://10.0.0.20"
         //远程服务器地址
-        const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"
+        const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"/"http://10.0.0.13:8080"//
 
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
@@ -35,19 +35,20 @@ class BaseConstant{
 
         const val MY_OAS_ADDRESS = "my_oas_address"
         const val MY_OAS_AMOUNT = "my_oas_amount"
+        const val MY_OAS_AMOUNT_UNCONFIRMED = "my_oas_amount_unconfirmed"
         const val MY_POINTS = "MY_POINTS"
         const val MY_OAS_PROTOCOL = "my_oas_protocol"
         //const val ON_GOING_TRANSACTION="on_going_Transaction"
         const val USER_OWN_ETH ="user_own_eth"
         //const val MY_OAS_REDRAW = 2000 //提币默认的邮费
         const val TRANSFER_NET = "transfer_net" //流通的网络ropsten.
-        const val TRANSFER_CHECK_ADDRESS = ".etherscan.io/tx/" //流通的网络地址
+        const val TRANSFER_CHECK_ADDRESS = "etherscan.io/tx/" //流通的网络地址
 
         const val TOTAL_ITEM = "total_item"
         const val OUT_ITEM = "out_item"
         const val IN_ITEM = "in_item"
 
-        const val PAGE_SIZE = 50 //100
+        const val PAGE_SIZE = 20 //100
         const val GAS_LIMIT = 60000
         const val GAS_AMOUNT = 37247
         const val GAS_PRICE_LOW = 1 //seekbar显示的最小值

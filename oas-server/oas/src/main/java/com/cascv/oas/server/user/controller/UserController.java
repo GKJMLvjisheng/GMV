@@ -2,6 +2,7 @@ package com.cascv.oas.server.user.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,8 +16,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.FutureTask;
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -66,11 +70,12 @@ import com.cascv.oas.server.user.wrapper.LoginVo;
 import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
+import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
-import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -145,45 +150,50 @@ public class UserController extends BaseShiroController{
           /**
            * 判断IMEI是否相匹配
            */
-//          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
-//          String IMEINew=loginVo.getIMEI();
-//          String uuid=ShiroUtils.getUser().getUuid();
-//          Set<String> roles=roleService.getRolesByUserUuid(uuid);
-//          List<String>  roleList =new ArrayList<>(roles);
-//          log.info("roles={}",roles);
-//          
-//         Integer status=userService.findUserByName(loginVo.getName()).getStatus();       
-//         if(status==0)
-//        	 throw new AuthenticationException();
-//         //判断是否是移动端登录
-//         if(userAgent.indexOf("android")!=-1){
-//        	 log.info("this is android!");
-//        	 log.info(roleList.get(0));
-//        	 switch(roleList.get(0)){
-//	        	 case "系统账号":
-//	        		 throw new AuthenticationException();
-//	        	 case "正常账号":
-//	        		 if(IMEIOri==null) {
-//	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-//	  	        	   userModelMapper.updateIMEI(userModel);
-//	  	        	   }
-//	        		 else if(!IMEIOri.equals(IMEINew))
-//	  	        	   throw new AuthenticationException();
-//	        	     break;
-//	        	 case "测试账号":
-//		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-//		        	   userModelMapper.updateIMEI(userModel);
-//	        	     break;
-//	        	 default:
-//	        		 log.info("default");
-//	        		 break;
-//        	 }
-//         } 
-//         
-//          //普通用户无法在web端登录
-//          else if(!roles.contains("系统账号"))
-//        	       throw new AuthenticationException();    
-                 
+          String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
+          String IMEINew=loginVo.getIMEI();
+          String uuid=ShiroUtils.getUser().getUuid();
+          Set<String> roles=roleService.getRolesByUserUuid(uuid);
+          List<String>  roleList =new ArrayList<>(roles);
+          log.info("roles={}",roles);
+          
+         Integer status=userService.findUserByName(loginVo.getName()).getStatus();
+         log.info("if android={}",userAgent.indexOf("Windows")==-1);
+         if(status==0)
+        	 throw new AuthenticationException();
+         //判断是否是移动端登录
+         if(userAgent.indexOf("Windows")==-1){
+        	 log.info("this is android!");
+        	 log.info(roleList.get(0));
+        	 switch(roleList.get(0)){
+	        	 case "系统账号":
+	        		 log.info("this is 系统账号");
+	        		 throw new AuthenticationException();
+	        	 case "正常账号":
+	        		 log.info("this is 正常账号");
+	        		 if(IMEIOri==null) {
+	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+	  	        	   userModelMapper.updateIMEI(userModel);
+	  	        	   }
+	        		 else if(!IMEIOri.equals(IMEINew))
+	  	        	   throw new AuthenticationException();
+	        	     break;
+	        	 case "测试账号":
+	        		 log.info("this is 测试账号");
+		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
+		        	   userModelMapper.updateIMEI(userModel);
+	        	     break;
+	        	 default:
+	        		 log.info("default");
+	        		 break;
+        	 }
+         } 
+         
+          //普通用户无法在web端登录
+          else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
+        	       throw new AuthenticationException();
+         
+          log.info("this is PC!");       
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -216,6 +226,7 @@ public class UserController extends BaseShiroController{
 		  userRole.setRoleId(2);
 		  String now =DateUtils.getTime();
 		  userRole.setRolePriority(1);
+
 		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);  
 					
@@ -822,6 +833,7 @@ public class UserController extends BaseShiroController{
         PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
         log.info(publishResult.toString());
 		info.put("state",true);
+		log.info("code={}",vcode);
         log.info("****end****");
         return new ResponseEntity.Builder<Map<String,Boolean>>()
 		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
@@ -1227,6 +1239,19 @@ public class UserController extends BaseShiroController{
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
 	}
+
+	/**
+	 * 增加system用户,admin用户及三个钱包账号
+	 */
+	@PostConstruct
+	private void registerSystemAndAdmin() {
+		createUserAfterStart("admin","123456");
+		createUserAfterStart("SYSTEM",generatePassword(30));
+		log.info("system交易钱包地址为"+ethWalletService.getSystemAddress());
+	}
+	
+	
+	
 	
 	/**
 	 * @author lvjisheng
@@ -1280,7 +1305,11 @@ public class UserController extends BaseShiroController{
 	        else 
 	        	offset = 0;
 		    
-	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit, pageInfo.getRoleId());
+	  	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	  	    
+	  	    
+	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit,pageInfo.getRoleId(),searchValue);
+	        
 	        Integer count = userService.countUsers(pageInfo.getRoleId());			        			     
 	        
 	        PageDomain<UserDetailModel> pageUserDetail = new PageDomain<>();
@@ -1335,5 +1364,76 @@ public class UserController extends BaseShiroController{
 		  	      .setData(info)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
+
+	}
+	
+
+	/**
+	 * @author lvjisheng
+	 * @param offset,limit,roleId
+	 * @category 根据角色名称查找相应的用户
+	 * @return
+	 */
+	@PostMapping(value="/inquireUserKYCInfo")
+    @ResponseBody
+    @WriteLog(value="inquireUserKYCInfo")
+    public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserIdentityCardModel kycModel){
+		    UserIdentityCardModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getUserName());
+		    ErrorCode errorCode=ErrorCode.SUCCESS;
+		    if(newKYCModel==null)
+		    errorCode=ErrorCode.GENERAL_ERROR;
+	        return new ResponseEntity.Builder<UserIdentityCardModel>()
+	                .setData(newKYCModel)
+	                .setErrorCode(errorCode)
+	                .build();
+
+	}
+	/**
+	 * 生成随即字串
+	 * @param length
+	 * @return
+	 */
+	private String generatePassword(int length) {
+		String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	     Random random=new Random();
+	     StringBuffer sb=new StringBuffer();
+	     for(int i=0;i<length;i++){
+	       int number=random.nextInt(62);
+	       sb.append(str.charAt(number));
+	     }
+	     return sb.toString();
+	}
+	
+	private void createUserAfterStart(String name,String password) {
+		UserModel userModel = new UserModel();
+		userModel.setName(name);
+		userModel.setStatus(1);
+		userModel.setPassword(password);
+		
+		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+		ErrorCode code = userService.addUser(uuid, userModel);
+		if(code.getCode() == 0) { // 用户不存在
+			ethWalletService.create(uuid, password);
+			if(name.equals("SYSTEM")) {
+				userWalletService.createAccountByMoney(uuid,new BigDecimal("10000000"));
+			}else {
+				userWalletService.createAccountByMoney(uuid,BigDecimal.ZERO);
+			}
+			energyPointService.create(uuid);
+			
+			//给用户赋予默认角色1
+			UserRole userRole=new UserRole();
+		    userRole.setUuid(uuid);
+		    userRole.setRoleId(1);
+		    String now =DateUtils.getTime();
+		    userRole.setRolePriority(1);
+		    userRole.setCreated(now);
+		    userRoleModelMapper.insertUserRole(userRole);
+		    
+		    log.info(name+"用户创建成功");
+		}else {
+			log.info(name+"用户已存在");
+		}
+		
 	}
 }

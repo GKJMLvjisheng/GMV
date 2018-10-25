@@ -30,7 +30,9 @@ import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.utils.Numeric;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.CryptoUtils;
@@ -55,6 +57,7 @@ import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.wrapper.BackupEthWallet;
 import com.cascv.oas.server.blockchain.wrapper.ContractSymbol;
+import com.cascv.oas.server.blockchain.wrapper.EthWalletStatus;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.common.EthWalletDetailScope;
 import com.cascv.oas.server.common.UserWalletDetailScope;
@@ -64,9 +67,9 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.cascv.oas.server.blockchain.wrapper.EthWalletStatus;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,6 +110,9 @@ public class EthWalletService {
  
   @Autowired
   private UserWalletDetailMapper userWalletDetailMapper;
+  
+  @Autowired
+  private MessageService messageService;
 
 
   public synchronized void updateJob() {
@@ -122,10 +128,10 @@ public class EthWalletService {
             //userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
             ErrorCode result = getExchangeResult(ethWalletDetail);
             log.info("update Result:",result.getMessage());
-        } else {
-          if (ethWalletDetail.getPrior() > 2880) {
-            ethWalletDetail.setTxResult(0x4);
-          }
+        }else {
+            if (ethWalletDetail.getPrior() > 2880) {
+                ethWalletDetail.setTxResult(0x4);
+            }
         }
         ethWalletDetailMapper.update(ethWalletDetail);
       }
@@ -387,6 +393,12 @@ public class EthWalletService {
     ethWalletDetail.setTxResult(0);
     ethWalletDetail.setTxHash(txHash);
     ethWalletDetail.setTxNetwork(coinClient.getNetName());
+    String targetUuid = ethWalletMapper.getUserUuidByAddress(address);
+    if(!StringUtils.isEmpty(targetUuid)) {
+    	UserCoin uCoin = this.getUserCoin(targetUuid);
+    	if(uCoin!=null)
+    		ethWalletDetail.setRestBalance(uCoin.getBalance());
+    }
     //ethWalletDetail.setChangeAddress(changeAddress);
     ethWalletDetailMapper.insertSelective(ethWalletDetail);
   }
@@ -525,7 +537,7 @@ public class EthWalletService {
 	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, q.getAmount(), txHash, "", q.getToUserAddress());
     	}
 	      for (TransferQuota q: quota) {
-	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "", ethWallet.getAddress()	);  
+	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "", ethWallet.getAddress());  
 	      }
 	      returnValue.setErrorCode(ErrorCode.SUCCESS);
 	      returnValue.setData(txHash);
@@ -651,6 +663,10 @@ public class EthWalletService {
 			  EthWalletDetail updateDetail = new EthWalletDetail();
 			  updateDetail.setUuid(detail.getUuid());
 			  updateDetail.setTxResult(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
+			  UserCoin uCoin = this.getUserCoin(user.getUuid());
+		      if(uCoin!=null) {
+		    	  updateDetail.setRestBalance(uCoin.getBalance());
+		      }
 			  Integer upResult = ethWalletDetailMapper.updateByPrimaryKeySelective(updateDetail);
 			  if(upResult == 0) {
 				return ErrorCode.UPDATE_FAILED;
@@ -699,19 +715,23 @@ public class EthWalletService {
   		/* if(systemWallet.getBalance().compareTo(value) == -1) {
   			 return ErrorCode.BALANCE_NOT_ENOUGH;
   		 }*/
+  		 BigDecimal systemAccountBalance = new BigDecimal(0);
 	  	 //提币
 	  	 if(oasD.getType().equals(OasEventEnum.OAS_OUT.getCode())) {
+
 	  		 if(flag.equals("success")) {
+	  			systemAccountBalance = systemWallet.getBalance().add(value);
 	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),null,myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
 	  			Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
 	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
-	  		 }else {
+	  			
+	  		  }else {
 	  			/* if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
 	  				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
 	  			  }*/
-	  			 
+	  			systemAccountBalance = systemWallet.getBalance().subtract(oasD.getExtra());
 	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
 	  			Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), oasD.getExtra());
 	  			if(tResult == 0 || sResult == 0) {
@@ -719,10 +739,12 @@ public class EthWalletService {
 	  		  	}
 	  		 }
 	  		//更新在线钱包记录中的状态
-	  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid());
+	  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid(),myWallet.getBalance(),0);
 	  		if(uwdResult == 0) {
  		  		 return ErrorCode.UPDATE_FAILED;
  		  	}
+	  	  //system转入记录
+  			userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_IN, value, detail.getRemark(), detail.getRemark(),null,systemAccountBalance));
 
 	  	 }else {
 	  		 //充币
@@ -733,8 +755,8 @@ public class EthWalletService {
 		  			 return ErrorCode.UPDATE_FAILED;
 		  		 }
 		  		 //在线钱包中显示记录
-		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(myWallet, "", UserWalletDetailScope.ETH_TO_COIN, value, detail.getRemark(), detail.getRemark(),oasD.getUuid()));//detail.getTxHash(),coinClient.getNetName()
-		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_OUT, value, detail.getRemark(), detail.getRemark(),null));//system转出
+		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(myWallet, "", UserWalletDetailScope.ETH_TO_COIN, value, detail.getRemark(), detail.getRemark(),oasD.getUuid(),myWallet.getBalance().add(value)));//detail.getTxHash(),coinClient.getNetName()
+		  		 userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_OUT, value, detail.getRemark(), detail.getRemark(),null,systemWallet.getBalance().subtract(value)));//system转出
 				 
 		  	 }
 		  	 	//修改待确认交易
@@ -750,13 +772,37 @@ public class EthWalletService {
 				}
 				
 	  	 }
-	  /*	EthWalletDetail updateDetail = new EthWalletDetail();
-		updateDetail.setUuid(detail.getUuid());
-		updateDetail.setStatus(flag.equals("success")?OasEventEnum.EXCHANGE_SUCCESS.getCode():OasEventEnum.EXCHANGE_FAILED.getCode());
-		Integer upResult = ethWalletDetailMapper.updateByPrimaryKeySelective(updateDetail);
-		if(upResult == 0) {
-			return ErrorCode.UPDATE_FAILED;
-		}*/
+	  	//更新记录中的restBalance
+		List<EthWalletDetail> details = ethWalletDetailMapper.getEthRecordByHash(oasD.getTxHash());
+		if(detail!=null) {
+			for(EthWalletDetail de:details) {
+				String targetUuid = ethWalletMapper.getUserUuidByAddress(de.getAddress());
+			    if(!StringUtils.isEmpty(targetUuid)) {
+			    	UserCoin uCoin = this.getUserCoin(targetUuid);
+			    	if(uCoin!=null) {
+			    		ethWalletDetailMapper.updateRestBalanceByHash(de.getUuid(),uCoin.getBalance());
+			    	}
+			    	//查询system交易钱包账号的余额
+			    	String systemAddress = ethWalletDetailMapper.getSystemAddress();
+			    	if(de.getAddress().equals(systemAddress)) {
+			    		log.info("system ethwallet 余额：",uCoin.getBalance());
+			    		if(uCoin.getBalance().compareTo(new BigDecimal("1000000")) == -1) {
+			    			reportAdminWarning(ErrorCode.SYSTEM_ETH_BALANCE_LOWER_THAN_WARING.getMessage());
+			    		}
+			    	}
+			    }
+				
+			}
+		}
+			
+		//检查system账号是否需要报警
+		UserWallet systemWalletNow = userWalletMapper.selectByUserUuid(systemInfo.getUuid());
+		if(systemWalletNow!=null) {
+			log.info("system userwallet 余额：",systemWalletNow.getBalance());
+			if(systemWalletNow.getBalance().compareTo(BigDecimal.ZERO) == -1) {
+				reportAdminWarning(ErrorCode.SYSTEM_USER_BALANCE_LOWER_THAN_WARING.getMessage());
+			}
+		}
 	  
 	  }
   	  return ErrorCode.SUCCESS;
@@ -775,6 +821,20 @@ public class EthWalletService {
   	  return flag;
   }
   
+  public ErrorCode reportAdminWarning(String msg) {
+	  UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
+	  if(adminInfo!=null && adminInfo.getMobile()!=null) {
+		  String mobile = "+86".concat(adminInfo.getMobile());
+		  String SIGNNAME = "国科云景";
+		  String content = "【"+SIGNNAME+"】"+msg;
+	      PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
+	      log.info(publishResult.toString());
+	      if(publishResult.getMessageId() == null) {
+	    	  return ErrorCode.SEND_SMS_ERROR;
+		  }
+	  }
+	  return ErrorCode.SUCCESS;
+  }
   public ErrorCode backupEthWallet(String userUuid, BackupEthWallet backupEthWallet){
 	  EthWallet ethWallet = getEthWalletByUserUuid(userUuid);
 	  if (ethWallet == null)
@@ -798,6 +858,11 @@ public class EthWalletService {
     ethWalletStatus.setBackup(ethWallet.getBackup());
 	  return ErrorCode.SUCCESS;
   }
+  
+  public String getSystemAddress() {
+	 return ethWalletDetailMapper.getSystemAddress();
+  }
+  
 }
 
 

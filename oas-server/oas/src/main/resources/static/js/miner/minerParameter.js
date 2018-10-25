@@ -8,14 +8,49 @@ var check3=1;
 var check2=1;
 $(function () {
 	
-    $('#time').datetimepicker({
+    $('#timePicker').datetimepicker({
 
         format: 'YYYY-MM',
         locale: moment.locale('zh-cn'),
-        //autoclose: true,
-       // todayBtn: true,
+        minDate:todayDate()
     });
+   
+	//时间控件默认显示本月时间
+		
+		
+		
+		              
+
 });
+function todayDate(){
+	var day = new Date();
+ 	day.setTime(day.getTime());
+  	var s = day.getFullYear()+"-" + (day.getMonth()+1) + "-" + day.getDate();
+  	return s;
+}
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+//    if (strDate >= 0 && strDate <= 9) {
+//        strDate = "0" + strDate;
+//    }
+    var currentdate = year + seperator1 + month ;
+    return currentdate;
+}
+function showParamModal(){
+	
+	$("#addBtn").attr("onclick","showParamModal()");
+	resetAddModal();
+	document.getElementById("time").value=getNowFormatDate(); 
+	$("#addParameterModal").modal('show');
+
+}
 //主界面用户表格回显
 $(function() {
 
@@ -77,7 +112,7 @@ function checkEparameterValue(){
 function checkParameterValue(){
 	var parameterValue=$("#parameterValue").val();
 	var num=parameterValue.split('.');
-	console.log(JSON.stringify(num))
+	//console.log(JSON.stringify(num))
 	if(validate(parameterValue)&&0<parameterValue&&parameterValue<=1){
 		
 		check3=1;
@@ -142,6 +177,7 @@ function addParameter(){
 	alert("有效时间不能为空");
 	return;
 	}
+	
 	var data={"parameterValue":$("#parameterValue").val(),
 				"parameterName":$("#parameterName").val(),
 				"period": $("input[name='time']").val()	
@@ -190,7 +226,7 @@ function resetAddModal(){
         		$(this).val('');
         		$(this).html('');
     });
-	
+	$("span[id='msg_parameterValue']").html("");
 	
  }
 //	 $("input[type=radio]").prop("checked",false);

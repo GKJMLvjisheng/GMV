@@ -2,6 +2,8 @@ package com.oases.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -48,6 +50,7 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     private var balance:String? = "0"
     private var unconfirmedBalance:String? = "0"
     private var eth:String? = "0"
+    lateinit var swipeLayout:SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +109,18 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
         })
         recycleView.adapter = adapter
 
+        swipeLayout = findViewById(R.id.mSwipeLayout) as SwipeRefreshLayout
+        swipeLayout.setOnRefreshListener(object: SwipeRefreshLayout.OnRefreshListener {
+            override fun onRefresh() {
+                var mHandler: Handler = Handler()
+                mHandler.postDelayed(object : Runnable {
+                    override fun run() {
+                        getData(1)
+                    }
+                }, 1000)
+            }
+        })
+
     }
 
     override fun onResume() {
@@ -143,6 +158,7 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
                 mBottomShow.setVisible(true)
                 loadFlag = false;
             }
+        swipeLayout.setRefreshing(false)
        // }
     }
     private fun checkAndStartDetialActivity()

@@ -196,7 +196,7 @@ $(function() {
       //alert("111"+dataUrl);
       //alert("dataIndex"+dataIndex);
       //alert("menuname"+menuName);
-        console.log(dataUrl);
+        //console.log(dataUrl);
         if (dataUrl == undefined || $.trim(dataUrl).length == 0) return false;
 
         // 选项卡菜单已存在

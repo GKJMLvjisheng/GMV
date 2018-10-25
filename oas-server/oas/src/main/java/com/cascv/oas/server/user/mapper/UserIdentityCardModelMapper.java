@@ -10,6 +10,7 @@ import com.cascv.oas.server.user.model.UserIdentityCardModel;
 
 @Component
 public interface UserIdentityCardModelMapper {
+	UserIdentityCardModel inquireUserKYCInfo(@Param("userName") String userName);
 	
 	Integer insertUserIdentityCard(UserIdentityCardModel userIdentityCardModel);
 	

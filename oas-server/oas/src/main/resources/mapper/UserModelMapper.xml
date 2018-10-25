@@ -25,6 +25,7 @@
 		<result column="updated" property="updated" />
 		<result column="profile" property="profile" />
 		<result column="identify_code" property="identifyCode" />
+		<result column="status" property="status" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
@@ -32,7 +33,7 @@
 		gender, birthday,
 		address, mobile, mobile_checked, email,
 		email_checked, confirmed,
-		salt,created,updated,profile,identify_code,IMEI
+		salt,created,updated,profile,identify_code,IMEI,status
 	</sql>
 
 	<!-- insert user -->
@@ -48,6 +49,7 @@
 			name,
 			password,
 			salt,
+			status,
 			<if test="nickname != null">
 				nickname,
 			</if>
@@ -83,11 +85,10 @@
 			</if>
 			<if test="created != null">
 				created,
+			</if>			
+			<if test="IMEI != null">
+			    IMEI
 			</if>
-
-			<!-- <if test="IMEI != null"> -->
-			<!-- IMEI -->
-			<!-- </if> -->
 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -95,6 +96,7 @@
 			#{name,jdbcType=VARCHAR},
 			#{password,jdbcType=VARCHAR},
 			#{salt,jdbcType=VARCHAR},
+			'1',
 			<if test="nickname != null">
 				#{nickname,jdbcType=VARCHAR},
 			</if>
@@ -132,12 +134,11 @@
 				#{updated,jdbcType=VARCHAR},
 			</if>
 			<if test="created != null">
-				#{created,jdbcType=VARCHAR}
+				#{created,jdbcType=VARCHAR},
 			</if>
-
-			<!-- <if test="IMEI != null"> -->
-			<!-- #{IMEI,jdbcType=VARCHAR} -->
-			<!-- </if> -->
+			<if test="IMEI != null">
+			#{IMEI,jdbcType=VARCHAR}
+			</if>
 
 		</trim>
 	</insert>
@@ -307,9 +308,26 @@
 		UR.role_id as roleId
 		from user_info U 
 		join user_role UR on U.uuid = UR.uuid 
-		where UR.role_id=#{roleId}
-		order by U.created desc 
+		where UR.role_id=#{roleId} 
+	   <if test="searchValue != null and searchValue !='' ">
+    	    and (
+    	    name like concat('%',#{searchValue},'%') 
+	    	or nickname like concat('%',#{searchValue},'%') 
+	    	or gender like concat('%',#{searchValue},'%')  
+	    	or birthday like concat('%',#{searchValue},'%')  
+	    	or address like concat('%',#{searchValue},'%') 
+	    	or mobile like concat('%',#{searchValue},'%') 
+	    	or email like concat('%',#{searchValue},'%') 
+	    	or IMEI like concat('%',#{searchValue},'%')
+	    	or status like concat('%',#{searchValue},'%') 
+	    	or U.created like concat('%',#{searchValue},'%')
+	    	)
+       </if>
+       	order by U.created desc 
 	    limit #{offset}, #{limit}
+		
+<!--         concat(u.name,ed.value) like concat('%',#{searchValue},'%') -->
+                  
   </select>
   <select id="countUsers" resultType="java.lang.Integer">
   	select count(*) from user_role where role_id = #{roleId};
@@ -321,6 +339,6 @@
 	status = #{status}
 	where name = #{name}
   </update>
-  
+ 
 </mapper>
 
