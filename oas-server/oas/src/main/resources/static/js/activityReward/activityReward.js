@@ -377,7 +377,7 @@ function initActivityRewardGrid(data) {
 		},
 		{
 
-			title : "奖励满值",
+			title : "奖励最大值",
 
 			field : "maxValue",
 			align: 'center',
@@ -782,9 +782,9 @@ function formatterIndex(value, row, index){
 function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"viewActivityById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-zoom-in'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"viewActivityById('" + id + "')\" title='配置'><span class='glyphicon glyphicon-zoom-in'></span></a>";
 //        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editActivityById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteActivityById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+       // result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteActivityById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
 
         return result;
 }
