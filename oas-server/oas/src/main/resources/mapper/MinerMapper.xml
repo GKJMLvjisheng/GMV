@@ -305,7 +305,7 @@
 <!--     </delete> -->
     
     <select id="selectSystemParameter" resultMap="SystemParameterMap">
-        select * from exchange_rate where currency = 1 or currency = 11
+        select * from exchange_rate where currency = 1 or currency = 11 order by currency desc
     </select>
     
     <select id="selectSystemParameterByCurrency" resultMap="SystemParameterMap">

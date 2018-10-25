@@ -72,9 +72,9 @@
 					<form id="addQuestionForm" action="/Question/addQuestion" method="post" class="form-horizontal">
 
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">问题内容</label>
+							<label for="question" class="col-sm-3 control-label">问题内容</label><span class="required">*</span>
 							<div class="col-sm-8">
-								<textarea name="question" class="form-control" id="question" required="required"  maxlength="40" placeholder="问题长度为1~40个字符" /></textarea>
+								<textarea name="question" class="form-control" id="question" required="required"  maxlength="40" placeholder="问题长度为1~40个字符"/></textarea>
 								<span id="msg_question"></span>
 							</div>						
 						</div>
@@ -82,8 +82,8 @@
 						
 						<div class="form-group">
 							<label for="choiceA" class="col-sm-3 control-label">选项A 
-								<input type="radio" name="radio" id="A" value="A">
-							</label>
+								<input type="radio" name="radio" id="A" value="A" onclick="clickAddRadio()">
+							</label><span class="required">*</span>
 
 							<div class="col-sm-8">
  								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" maxlength="20" placeholder="选项A长度为1~20个字符"/></textarea>
@@ -93,8 +93,8 @@
 						
 						<div class="form-group">
 							<label for="choiceB" class="col-sm-3 control-label">选项B 
-								<input type="radio" name="radio" id="B"  value="B">
-							</label>
+								<input type="radio" name="radio" id="B"  value="B" onclick="clickAddRadio()">
+							</label><span class="required">*</span>
 							<div class="col-sm-8">
 								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" maxlength="20" placeholder="选项B长度为1~20个字符"/></textarea>
 								<span id="msg_choiceB"></span>
@@ -103,8 +103,8 @@
 						
 						<div class="form-group">
 							<label for="choiceC" class="col-sm-3 control-label">选项C 
-								<input type="radio" name="radio" id="C"  value="C">
-							</label>
+								<input type="radio" name="radio" id="C"  value="C" onclick="clickAddRadio()">
+							</label><span class="required">*</span>
 							<div class="col-sm-8">
 								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" maxlength="20" placeholder="选项C长度为1~20个字符"/></textarea>
 								<span id="msg_choiceC"></span>
@@ -166,7 +166,7 @@
 					<form id="updateQuestionForm" action="/question/updatedQuestion" method="post" class="form-horizontal">
 						<input  style="display:none" type="hidden" name="EtopicId" id="EtopicId">
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">问题内容：</label>
+							<label for="question" class="col-sm-3 control-label">问题内容：</label><span class="required">*</span>
 							<div class="col-sm-8">
 								<textarea name="Equestion" class="form-control" id="Equestion" required="required"  maxlength="40" onblur="EcheckQuestion()" /></textarea>
 								<span id="msg_Equestion"></span> 
@@ -176,7 +176,7 @@
 						<div class="form-group">
 							<label for="choiceContent1" class="col-sm-3 control-label">选项A 
 								<input type="radio" name="radio1" id="A1"  value="A">
-							</label>
+							</label><span class="required">*</span>
 							<div class="col-sm-8">
 								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" maxlength="20" onblur="EcheckChoiceA()"/></textarea>
 								<span id="msg_EchoiceA"></span> 
@@ -186,7 +186,7 @@
 						<div class="form-group">
 							<label for="choiceB" class="col-sm-3 control-label">选项B 
 								<input type="radio" name="radio1" id="B1"  value="B">
-							</label>
+							</label><span class="required">*</span>
 							<div class="col-sm-8">
 								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required" maxlength="20" onblur="EcheckChoiceB()"/></textarea>
 								<span id="msg_EchoiceB"></span> 
@@ -196,7 +196,7 @@
 						<div class="form-group">
 							<label for="choiceC" class="col-sm-3 control-label">选项C 
 								<input type="radio" name="radio1" id="C1"  value="C">
-							</label>
+							</label><span class="required">*</span>
 							<div class="col-sm-8">
 								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required" maxlength="20" onblur="EcheckChoiceC()"/></textarea>
 								<span id="msg_EchoiceC"></span>  
@@ -218,13 +218,12 @@
 	</div>
 
 <script type="text/javascript">	
-
-	$(":radio").click(function(){
-		var choiceRight=$(this).val();
-		$('#choiceRight').val(choiceRight);
-		$('#EchoiceRight').val(choiceRight);
-	});
-
+$(":radio").click(function(){
+	var choiceRight=$(this).val();
+	$('#choiceRight').val(choiceRight);
+	$('#EchoiceRight').val(choiceRight);
+});
+	
 </script>			
 </body>
 </html>

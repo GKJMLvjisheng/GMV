@@ -91,7 +91,7 @@ function questionReady(){
 }
 
 //新增问题
-function addQuestion(){	
+function addQuestion(){		
 	var formData = new FormData();
 	var question=$("#question").val();
 	var choiceA=$("#choiceA").val();
@@ -109,7 +109,7 @@ function addQuestion(){
 		$.ajax({
 		url:"/api/v1/computingPower/addTopic",
 		data:formData,
-		contentType : 'application/json;charset=utf8',
+		//contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		type: 'post',
 		cache: false,		
@@ -153,7 +153,7 @@ function updateQuestion(){
 	$.ajax({
 		url:"/api/v1/computingPower/updateTopic",
 		data:formData,
-		contentType : 'application/json;charset=utf8',
+		//contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		type: 'post',
 		cache: false,

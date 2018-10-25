@@ -74,7 +74,6 @@ public class PromotedRewardService {
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
 	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
-	private static final Integer REWARD_CODE_OF_DIE_MINER = 12;  //矿机推广奖励到期
 	
 	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
 	private EnergyPowerBall decreaseRewardEnergyPowerBall = new EnergyPowerBall();
@@ -346,7 +345,7 @@ public class PromotedRewardService {
 		public void addDecreaseRewardPowerBall(PurchaseRecord purchaseRecord,String userUuid, BigDecimal powerSum) {
 			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			decreaseRewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-			decreaseRewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_DIE_MINER);
+			decreaseRewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_MINER);
 			decreaseRewardEnergyPowerBall.setUserUuid(userUuid);
 			decreaseRewardEnergyPowerBall.setStatus(STATUS_DIE_OF_MINER);
 			decreaseRewardEnergyPowerBall.setPower(powerSum);
