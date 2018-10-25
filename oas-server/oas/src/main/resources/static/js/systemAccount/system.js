@@ -140,7 +140,7 @@ function systemTransactionDetailHandle(res){
         return;
     }
     $("#systemUserWallet").text(res.data.rows.value);
-    console.log(JSON.stringify(res))
+    //console.log(JSON.stringify(res))
     //如果没有错误则返回数据，渲染表格
     return {
         total : res.data.total, //总页数,前面的key必须为"total"
