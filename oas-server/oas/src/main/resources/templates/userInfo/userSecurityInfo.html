@@ -172,6 +172,13 @@ section{                       /*调整头像和保存按钮的位置*/
 									<button style="left: 300px; position: absolute; top: 0px;" class="btn btn-warning" id="modifyMailBtn" type="button" onclick="modifyMailLink()">修改邮箱</button>
 								</div>
 							</div>
+							<div class="form-group" >
+								<label for="userEmail" class="col-sm-3 control-label">密码：</label>
+								<div class="col-sm-4">    <!-- 文本输入框的长度 -->
+									<input type="text" name="userPasswordOld" class="form-control" id="userPasswordOld" readonly="readonly"/>
+									<button style="left: 300px; position: absolute; top: 0px;" class="btn btn-warning" id="modifyMailBtn" type="button" onclick="modifyPasswordLink()">修改密码</button>
+								</div>
+							</div>
 
 					</div>
 
@@ -184,22 +191,22 @@ section{                       /*调整头像和保存按钮的位置*/
 </body>
 <script type="text/javascript">
 
-$(function(){
-	var url = window.location.href;
-	var strInfo=getInfoAndAnalysis(url);
-	//console.log(JSON.stringify(strInfo));
-	var len=strInfo.length;
-	if(len>0)
-	{
-	var userName=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
-	var userMobile=decodeURI(decodeURI(strInfo[1]));
-	var userEmail=decodeURI(decodeURI(strInfo[2]));
+// $(function(){
+// 	var url = window.location.href;
+// 	var strInfo=getInfoAndAnalysis(url);
+// 	//console.log(JSON.stringify(strInfo));
+// 	var len=strInfo.length;
+// 	if(len>0)
+// 	{
+// 	var userName=decodeURI(decodeURI(strInfo[0]));//获取第一个参数的值
+// 	var userMobile=decodeURI(decodeURI(strInfo[1]));
+// 	var userEmail=decodeURI(decodeURI(strInfo[2]));
 
-	$("#userName").val(userName);
-	$("#userMobile").val(userMobile);
-	$("#userEmail").val(userEmail);
-	}
-});
+// 	$("#userName").val(userName);
+// 	$("#userMobile").val(userMobile);
+// 	$("#userEmail").val(userEmail);
+// 	}
+// });
 
 //跳转1 修改邮箱
 function modifyMailLink() {
@@ -243,7 +250,25 @@ function modifyMobileLink() {
   
   window.location.href = href;
 }
+//修改密码
+function modifyPasswordLink(){
+	 var string1 = "安全设置：修改密码";
+	  
+	  var strProgress = "修改密码";
+	  
+	  var str = $("#userPasswordOld").val();
 
+	  var string2 = "原密码:";
+
+	  var userName = $("#userName").val();
+
+	  var href = encodeURI(encodeURI("/userInfo/SecurityStep1?string1=" + string1
+	      + "&strProgress=" + strProgress + "&str=" + str + "&string2="
+	      + string2 + "&userName=" + userName));
+
+	  
+	  window.location.href = href;
+}
 //刷新从数据库更新数据
 $(function () {
 	 refreshUserInfo();

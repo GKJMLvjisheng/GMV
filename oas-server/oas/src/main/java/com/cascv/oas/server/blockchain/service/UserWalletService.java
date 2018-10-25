@@ -20,7 +20,6 @@ import com.cascv.oas.server.blockchain.mapper.OasDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
-import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
 import com.cascv.oas.server.blockchain.model.UserCoin;
@@ -30,7 +29,6 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
-import com.cascv.oas.server.reward.service.PromotedRewardService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
@@ -262,8 +260,9 @@ public class UserWalletService {
 	      if(publishResult.getMessageId() == null) {
 	    	  return ErrorCode.SEND_SMS_ERROR;
 		  }
+	  }else {
+		  log.info("管理员用户不存在或未设置电话");
 	  }
-	 
 	  return ErrorCode.SUCCESS;
   }
   
@@ -312,9 +311,10 @@ public class UserWalletService {
 		  if(systemWallet == null || userWallet == null) {
 			  return ErrorCode.NO_ONLINE_ACCOUNT;
 		  }
+		  UserModel user = userModelMapper.selectByUuid(detail.getUserUuid());
 		  //管理员拒绝该提币请求
 		  if(result == 2) {
-			  ErrorCode resultErrorReturn = errorOperate(userWallet,systemWallet,value,extra,detail,now);
+			  ErrorCode resultErrorReturn = errorOperate(userWallet,systemWallet,value,extra,detail,now,user);
 			  if(resultErrorReturn.getCode()!=0) {
 				  return resultErrorReturn;
 			  }
@@ -342,7 +342,7 @@ public class UserWalletService {
 			 ReturnValue<String> ethInfo = ethWalletService.systemTransfer(true,systemInfo.getUuid(),ethWallet.getAddress(),myName,tokenCoin,value,gasPrice,gasLimit,detail.getRemark());
 			 if(ethInfo == null || ethInfo.getData()==null) {
 				 oasDetailMapper.updateStatusByUuid(detail.getUuid(),OasEventEnum.FAILED.getCode());
-				 errorOperate(userWallet,systemWallet,value,extra,detail,now);
+				 errorOperate(userWallet,systemWallet,value,extra,detail,now,user);
 				 return ErrorCode.ETH_RETURN_HASH;
 			 }
 			 hash = ethInfo.getData();
@@ -363,7 +363,7 @@ public class UserWalletService {
 	  }
   }
   //提币失败，待交易金额退回代币，手续费从system退回
-  private ErrorCode errorOperate(UserWallet userWallet,UserWallet systemWallet,BigDecimal value,BigDecimal extra,OasDetail detail,String now) {
+  private ErrorCode errorOperate(UserWallet userWallet,UserWallet systemWallet,BigDecimal value,BigDecimal extra,OasDetail detail,String now,UserModel user) {
 	  //待交易记录减去value，代币加value
 	  /*if(userWallet.getUnconfirmedBalance().compareTo(value) == -1) {
 		  return ErrorCode.UNCONFIRMED_BALANCE;
@@ -382,8 +382,9 @@ public class UserWalletService {
 	  if(uwdResult == null) {
   		 return ErrorCode.UPDATE_FAILED;
   	  }
-	  //更新system的手续费记录
-	  userWalletDetailMapper.updateByOasDetailUuid(2,detail.getUuid(),systemWallet.getBalance().subtract(extra),1);
+	  //插入system的手续费转出记录
+	  //userWalletDetailMapper.updateByOasDetailUuid(2,detail.getUuid(),systemWallet.getBalance().subtract(extra),1);
+	  userWalletDetailMapper.insertSelective(setDetail(systemWallet, (user==null?"":user.getName()), UserWalletDetailScope.TRANSFER_OUT, extra, detail.getRemark(), detail.getRemark(),detail.getUuid(),systemWallet.getBalance().subtract(extra)));
 	  
 	  return ErrorCode.SUCCESS;
   }

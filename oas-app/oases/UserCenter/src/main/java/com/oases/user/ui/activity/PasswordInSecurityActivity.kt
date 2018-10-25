@@ -26,9 +26,9 @@ class PasswordInSecurityActivity : BaseMvpActivity<PasswordInSecurityPresenter>(
 
     fun setBackupState(){
         if (AppPrefsUtils.getBoolean(WALLET_BACKUP)){
-            mBackupWallet.setValue("未设置")
-        }else{
             mBackupWallet.setValue("已设置")
+        }else{
+            mBackupWallet.setValue("未设置")
         }
     }
     private fun initView(){
@@ -59,6 +59,11 @@ class PasswordInSecurityActivity : BaseMvpActivity<PasswordInSecurityPresenter>(
         }else{
             mBackupWallet.setValue("已设置")
         }*/
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBackupState()
     }
 
 }

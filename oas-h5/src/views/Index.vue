@@ -136,7 +136,7 @@
       <div class="content">
         <img :src="attendanceSuccess" alt="">
         <p class="tips">{{attendanceMsg.msg}}</p>
-        <p v-if="isShowSuccessMsg" class="info">恭喜您获得{{attendanceMsg.energy}}点能量,{{attendanceMsg.power}}点算力</p>
+        <p v-if="isShowSuccessMsg" class="info " >恭喜您获得{{attendanceMsg.msgall}}</p>
         <button @click="handleAttendanceConfirm">确认</button>
       </div>
     </div>
@@ -153,7 +153,7 @@ const promote = require("@/assets/images/promote_btn.png");
 const bottom = require("@/assets/images/bottom_logo@2x.png");
 const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
-const info = require("@/assets/images/icon_default_user.png");
+const infoIamge = require("@/assets/images/icon_default_user.png");
 import { randomNum } from '@/utils/utils.js'
 import $ from 'jquery'
 export default {
@@ -168,10 +168,13 @@ export default {
       promote: promote,
       bottom: bottom,
       energyBall: energyBall,
-      info: info,
+      infoIamge: infoIamge,
       width: "80%",
       isShowMask: false,
       isShowSuccessMsg: false,
+      isShowEnergyMsg:false,
+      isShowCommaMsg:false,
+      isShowPowerMsg:false,
       isShowToast: false,
       isShowNewsTip: false,
       energyBallList:[],
@@ -192,8 +195,9 @@ export default {
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
-        energy:0,
-        power:0
+        //energy:0,
+        //power:0
+        msgall:''
       },
       userInfo:{
         avatar:'',
@@ -301,16 +305,36 @@ export default {
     handleAttendance () {
      
       this.$axios.post('/energyPoint/checkin').then(({data}) => {
-        console.log(data)
+        console.log(JSON.stringify(data))
         if (data.code == 0) {
-          this.currentEnergy += data.data.newEnergyPoint
+          if(data.data.newEnergyPoint==0){
           this.currentPower += data.data.newPower
-          this.attendanceMsg.energy = data.data.newEnergyPoint
-          this.attendanceMsg.power = data.data.newPower
+          this.currentEnergy += data.data.newEnergyPoint
+          
+          this.attendanceMsg.msgall = data.data.newPower+"点算力"
+          
           this.isShowSuccessMsg = true
+         
+          }else if(data.data.newPower==0){
+          this.currentPower += data.data.newPower
+          this.currentEnergy += data.data.newEnergyPoint
+          //this.attendanceMsg.energy = data.data.newEnergyPoint
+          //this.attendanceMsg.power = data.data.newPower
+          this.attendanceMsg.msgall = data.data.newEnergyPoint+"点能量"
+          this.isShowSuccessMsg = true
+         
+          }else{
+          this.currentPower += data.data.newPower
+          this.currentEnergy += data.data.newEnergyPoint
+          //this.attendanceMsg.energy = data.data.newEnergyPoint
+          //this.attendanceMsg.power = data.data.newPower
+           this.attendanceMsg.msgall = data.data.newEnergyPoint+"点能量"+","+data.data.newPower+"点算力"
+          this.isShowSuccessMsg = true
+          }
         }
         else if(data.code==10012)
-        {this.isShowSuccessMsg = false}
+        { this.isShowSuccessMsg = false
+          }
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
         this.getEnergyAnalysis()
@@ -328,7 +352,7 @@ export default {
           let profile=data.profile.split('.')
            console.log(profile)
         if(profile[profile.length-1]=="comnull"){
-        this.userInfo.avatar=info
+        this.userInfo.avatar=infoIamge
         }else{
         this.userInfo.avatar=data.profile
         }
@@ -602,7 +626,7 @@ export default {
       this.$axios.post('/walkPoint/takeWalkPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
-          this.Toast(data.message)
+          //this.Toast(data.message)
           return
         }
       ele.classList.add('fadeOutUp')

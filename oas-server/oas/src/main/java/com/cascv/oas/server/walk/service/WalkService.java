@@ -52,7 +52,7 @@ public class WalkService {
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;         //能量球活跃状态，可被获取
 	private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;            //能量球死亡状态，不可被获取
 	private static final Integer ENERGY_IN = 1;                            //表示能量球的进账
-	private static final Integer SYSTEM_PARAMETER_UUID = 1;                //表示系统变量β的编号
+	private static final Integer SYSTEM_PARAMETER_CURRENCY = 11;                //表示系统变量β的编号
 	
 	private EnergyPointBall energyPointBall = new EnergyPointBall();
 	private PointTradeRecord pointTradeRecord = new PointTradeRecord();
@@ -77,7 +77,7 @@ public class WalkService {
 				powerSum = BigDecimal.ONE;
 			}
 			log.info("powerSum={}", powerSum);
-			BigDecimal β = minerMapper.selectSystemParameterByUuid(SYSTEM_PARAMETER_UUID).getParameterValue();
+			BigDecimal β = minerMapper.selectSystemParameterByCurrency(SYSTEM_PARAMETER_CURRENCY).getParameterValue();
 			BigDecimal point = β.multiply(pointBefore.multiply(powerSum));	
 			log.info("point={}", point);
 			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);

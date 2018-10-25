@@ -77,14 +77,6 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '93px',
 				
-			},
-				{
-				title : "创建时间",
-				field : "created",
-				align: 'center',
-				valign: 'middle',
-				width:  '165px',
-				//visible: false,
 			},{
 
 				title : "重置IMEI",
@@ -93,6 +85,14 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '80px',
 				formatter: actionFormatter1
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '165px',
+				//visible: false,
 			},{
 
 				title : "查看",
@@ -360,21 +360,21 @@ function initSystemGrid() {
 				field : "mobile",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '120px',
 			},
 			{
 				title : "邮箱",
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '120px',
 			},
 			{
 				title : "IMEI",
 				field : "imei",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '120px',
 				
 			},
 				{
@@ -392,23 +392,25 @@ function initSystemGrid() {
 				valign: 'middle',
 				width:  '50px',
 				formatter: actionFormatter2
-			},{
-
-				title : "角色授权",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter3
-			},{
-
-				title : "账号状态",
-				field : "name",
-				align: 'center',
-				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter4
-			}],		
+			}
+//			,{
+//
+//				title : "角色授权",
+//				field : "name",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '80px',
+//				formatter: actionFormatter3
+//			},{
+//
+//				title : "账号状态",
+//				field : "name",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '80px',
+//				formatter: actionFormatter4
+//			}
+			],		
 //		  search : true,//搜索
 //        searchOnEnterKey : true,
 		clickToSelect: false,         

@@ -169,8 +169,8 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         super.onViewCreated(view, savedInstanceState)
         mRedrawOas.onClick {
             //lh修改   添加KYC认证后的操作  认证后才可提币
-            mPresenter.inquireAddress()
-            //mPresenter.getKYCVerifyStatus()
+            //mPresenter.inquireAddress()
+            mPresenter.getKYCVerifyStatus()
             if (KYCVerifyStatus==0){
                 toast("您还未进行KYC认证，请先进行KYC认证")
                 //弹窗
@@ -208,6 +208,7 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         var bundle = Bundle()
         bundle.putString("KYCVerifyStatus",KYCVerifyStatus.toString())
         bundle.putString("KYCVerifyInfo",KYCVerifyInfo)
+        bundle.putString(MY_OAS_AMOUNT , mCurrentPoints.text.toString())
         intent.putExtras(bundle)
         startActivity(intent)
     }
@@ -223,7 +224,7 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         var dialogBuilder = AlertDialog.Builder(this.context!!)
 
          dialogBuilder?.setMessage("进行提现、转账操作时需要通过KYC认证审核")?.setPositiveButton("前往认证", DialogInterface.OnClickListener{
-                dialog, id ->
+                _,_ ->
             ARouter.getInstance().build("/computingPower/KYCActivity").navigation()
             })?.setNegativeButton("取消", null)
 
@@ -308,8 +309,8 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
     }
 
     override fun setBalance(balance: BalanceDetailResp) {
-        mCurrentPoints.text = balance.availableBalance.toString()
-        mOngoingTransaction.text = balance.ongoingBalance.toString()
+        mCurrentPoints.text = balance.availableBalance.toBigDecimal().setScale(4,BigDecimal.ROUND_HALF_UP).toString()
+        mOngoingTransaction.text = balance.ongoingBalance.toBigDecimal().setScale(2,BigDecimal.ROUND_HALF_UP).toString()
         //AppPrefsUtils.putString(BaseConstant.ON_GOING_TRANSACTION,balance.ongoingBalance.toString())
         mOasValue.text = "≈ ¥ " + (balance.availableBalanceValue.toBigDecimal()).setScale(2,BigDecimal.ROUND_HALF_UP)
     }

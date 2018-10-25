@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="120dp"
+        android:textSize="15dp"
         android:text="请复制粘贴加密助记词文件到安全、离线的地方保存。切勿保存至邮箱、记事本、网盘、聊天工具等，非常危险。"/>
 
     <TextView
@@ -43,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="220dp"
+        android:textSize="15dp"
         android:text="请勿通过网络工具传输加密助记词，一旦被黑客获取将造成不可挽回的资产损失。" />
 
     <TextView
@@ -58,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="300dp"
+        android:textSize="15dp"
         android:text="请牢记加密助记词使用的账号密码，使用加密助记词文件恢复账号时必须使用该密码。" />
 
     <RelativeLayout
