@@ -123,8 +123,13 @@ public class MinerController {
 		for(int i=0; i<systemParameterModel.size(); i++) {
 			SystemParameterResponse systemParameterResponse = new SystemParameterResponse();
 			systemParameterResponse.setComment(systemParameterModel.get(i).getComment());
-			systemParameterResponse.setCreated(systemParameterModel.get(i).getCreated());
-			systemParameterResponse.setUpdated(systemParameterModel.get(i).getUpdated());
+			String srcFormater="yyyy-MM-dd HH:mm:ss";
+		    String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, systemParameterModel.get(i).getCreated(), dstFormater, dstTimeZoneId);
+			String updated=DateUtils.string2Timezone(srcFormater, systemParameterModel.get(i).getUpdated(), dstFormater, dstTimeZoneId);
+			systemParameterResponse.setCreated(created);
+			systemParameterResponse.setUpdated(updated);
 			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());
 			systemParameterResponse.setParameterValue(systemParameterModel.get(i).getParameterValue());
 			systemParameterResponse.setPeriod(systemParameterModel.get(i).getPeriod());
