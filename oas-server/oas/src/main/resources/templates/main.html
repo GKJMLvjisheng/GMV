@@ -225,7 +225,17 @@
             type: 'post',
             async : false,
             success : function(res) {
-            var userproPath=res.data.profile;
+            //var userproPath=res.data.profile;
+            console.log(res.data.profile)
+            var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp';
+            var userproPathList=res.data.profile.split('.')
+            if(image.indexOf(userproPathList[userproPathList.length-1])!=-1){
+            	var userproPath=res.data.profile;
+            }else{
+            	var userproPath="../img/icon_default_user.png";
+            	
+            }
+            console.log(userproPath)
             var sex=res.data.gender;
             var name=res.data.name;            
             var obj = document.getElementById("userNickname");
