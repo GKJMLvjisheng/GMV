@@ -34,7 +34,7 @@ public interface MinerMapper {
 	Integer insertSystemParameter(SystemParameterModel systemParameterModel);
 	Integer deleteSystemParameterByUuid(@Param("uuid") Integer uuid);
 	List<SystemParameterModel> selectSystemParameter();
-	SystemParameterModel selectSystemParameterByUuid(@Param("uuid") Integer uuid);
+	SystemParameterModel selectSystemParameterByCurrency(@Param("currency") Integer currency);
 	Integer updateSystemParameterByUuid(SystemParameterModel systemParameterModel);
 	
 	List<PurchaseRecord> selectAllRecord();

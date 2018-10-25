@@ -60,6 +60,8 @@ public class NewsService {
 			String created=DateUtils.string2Timezone(srcFormater, newsModel.getCreated(), dstFormater, dstTimeZoneId);
 			newsModel.setCreated(created);
 			log.info("newCreated={}",created);
+			String fullLink = mediaServer.getImageHost() + newsModel.getNewsPicturePath();
+			newsModel.setNewsPicturePath(fullLink);
 		  }
 		return newsModelList;
 

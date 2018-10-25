@@ -29,16 +29,16 @@ function initNewsGrid(data) {
 	    sortOrder: 'asc', // 排序规则
 
 		data:data,
-		columns : [{
-
-			title : "创建时间",
-
-			field : "created",
+		columns : [{  
+			title: '序号',  
+			field: '',
 			align: 'center',
-			valign: 'middle',
-			width:  '90px',
-
-		},
+			valign: 'middle', 
+			width:  '60px', 
+			formatter: function (value, row, index) {  
+				return index+1;  
+				}  
+			}  ,
 			{
 
 			title : "标题",
@@ -77,6 +77,15 @@ function initNewsGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			formatter: actionFormatter		
+
+		},{
+
+			title : "创建时间",
+
+			field : "created",
+			align: 'center',
+			valign: 'middle',
+			width:  '90px',
 
 		},
 		{

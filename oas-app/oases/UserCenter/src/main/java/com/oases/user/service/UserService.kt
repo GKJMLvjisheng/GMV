@@ -42,4 +42,7 @@ interface UserService {
      */
     fun confirmOldPwd(req: confirmOldPwdReq):Observable<confirmOldPwdResp>
 
+    fun getBackupWalletStatus():Observable<BackupWalletStatusResp>
+    fun getPrivateKeyMnemonic():Observable<PrivateKeyMnemonicResp>
+
 }

@@ -69,7 +69,8 @@ function checkName() {
 				alert('检查矿机名是否存在发生错误');
 			}
 		});
-    }else{
+    }
+    else{
     	 $("#msg_minerName").html("请填写矿机名！");
          $("#msg_minerName").css("color", "red");
     }
@@ -261,6 +262,7 @@ function addMiner(){
 	if(minerName==""||minerPrice==""||minerGrade=="请选择"||minerGrade==""||minerPower==""||minerPeriod==""){
 		alert("请输入必填项");
 	}else{
+				
 		if(check1==1 && check2==1 && check3==1 && check4==1){
 			var data={
 				"minerName": minerName,
@@ -282,10 +284,9 @@ function addMiner(){
 				async : false,
 
 				success:function(res){					
+					document.getElementById("tipContent").innerText="新增成功";
 					$("#Tip").modal('show');
-					$("#addMinerModal").modal('hide');
-					minerReady();
-					$("#minerGrid").bootstrapTable('refresh');							
+					location.reload();					
 				},
 				error:function(){
 					document.getElementById("tipContent").innerText="新增失败";
