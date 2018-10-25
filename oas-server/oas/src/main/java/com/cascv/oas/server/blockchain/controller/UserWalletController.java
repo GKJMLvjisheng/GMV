@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageDomainObject;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
@@ -29,6 +31,7 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
 import com.cascv.oas.server.blockchain.model.OasReq;
+import com.cascv.oas.server.blockchain.model.SystemResq;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletDetailService;
@@ -315,7 +318,7 @@ public class UserWalletController extends BaseShiroController {
 		  pageSize = (pageInfo.getPageSize() == null || pageInfo.getPageSize()<=0? pageSize:pageInfo.getPageSize());
 	  }
 
-	  return new ResponseEntity.Builder<PageDomain<UserWalletDetail>>()
+	  return new ResponseEntity.Builder<PageDomainObject<SystemResq<UserWalletDetail>>>()
 	            .setData(userWalletDetailService.systemTransactionDetail(pageNum,pageSize))
 	            .setErrorCode(ErrorCode.SUCCESS)
 	            .build();
