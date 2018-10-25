@@ -832,6 +832,8 @@ public class EthWalletService {
 	      if(publishResult.getMessageId() == null) {
 	    	  return ErrorCode.SEND_SMS_ERROR;
 		  }
+	  }else {
+		  log.info("管理员用户不存在或未设置电话,无法发送报警信息");
 	  }
 	  return ErrorCode.SUCCESS;
   }
