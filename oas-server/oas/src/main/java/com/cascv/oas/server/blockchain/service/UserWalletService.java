@@ -265,7 +265,6 @@ public class UserWalletService {
 	  }else {
 		  log.info("管理员用户不存在或未设置电话");
 	  }
-	 
 	  return ErrorCode.SUCCESS;
   }
   
