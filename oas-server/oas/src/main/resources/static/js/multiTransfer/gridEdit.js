@@ -849,9 +849,9 @@ function initsymbol(){
 				
 				console.log(activeNetwork);
 				if(strTest.indexOf(activeNetwork)!=-1)
-						{console.log(11);
+						{
 						str=strTest;}
-					else{console.log(22);
+					else{
 						str=strMain;}
 					
 					$("#Tip").modal('show');
