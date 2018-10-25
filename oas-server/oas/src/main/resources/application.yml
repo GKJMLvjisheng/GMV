@@ -69,12 +69,12 @@ server:
   ssl:
     key-store-type: PKCS12
     key-store: classpath:215096020960791.pfx
-    key-store-password: 215096020960791
-    key-alias: alias
+    key-store-password:215096020960791
+    key-alias:alias
 
 media:
   server:
-    imageHost : https://13.114.34.77
+    imageHost : https://dapp.oases.pro
 
 mail:
   mailBean:
