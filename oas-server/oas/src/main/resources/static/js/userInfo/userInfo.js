@@ -244,6 +244,9 @@ function refreshUserInfo(){
 	      	 
 	      	 $("#userMobile").val(userMobile);
 	      	 $("#userEmail").val(userEmail);
+	      	 str="12345678"
+	      	
+	      	$("#userPasswordOld").val(str.replace(/(.{0}).*(.{0})/, "$1********$2"));
 	        },
 	        error : function() {
 	          alert('检查用户是否存在发生错误');
@@ -293,8 +296,69 @@ function checkPasswordIn(){
 			}
 		});
 }
+var check1=0
+function checkUserPassword(){
+	var userPassword = $("#userPassword").val(); // 密码
+	var passwordRegex = /^[a-zA-Z0-9_]{4,15}$/;
+	if (!passwordRegex.test(userPassword)) {
+		document.getElementById("userPassword_span").style.color = "red";
+		document.getElementById("userPassword_span").innerHTML = "密码长度4-12个字符之间 ";
+	    check1 = 0;
+	    //return check1;
+	  }else{
+		  document.getElementById("userPassword_span").innerHTML=""
+		  check1 = 1;
+	  }
+}
+function modifyPassword(){
+	var userName = $("#userName").val(); // 登录名
+	var userPassword = $("#userPassword").val(); // 密码
+	
+	var data = {
+			"name" : userName,
+			"password" : userPassword,
+		};
+	console.log(JSON.stringify(data))
+	$.ajax({
+			url : "/api/v1/userCenter/resetPassword",
+			type : "POST",
+			dataType : 'json',
+			async : false,
+			data : JSON.stringify(data),
+			contentType : 'application/json;charset=utf8',
+			success : function(res) {
+				console.log(JSON.stringify(res))
+				if (res.code==0) {
+					var string1 = $("#labelPwd2").val();//标题
+				      var strProgress = $("#labelProgressTwo2").val();// 修改邮箱 或者 修改手机
+				      var str = $("#userMobileIn").val();// mobile
+				      var userName = $("#userName").val();// 登录名
+				      var result = "成功！";
 
+				      var href = encodeURI(encodeURI("/userInfo/resetMMSuccess?string1=" + string1
+						+ "&strProgress=" + strProgress + "&str=" + str + "&userName="
+						+ userName + "&result="+ result));
+				      window.location.href = href;	
+				      alert("reset Mobile successfully!");	
+				      //document.getElementById("tipContent").innerText="修改密码成功";
+						//$("#Tip").modal('show');
+					
 
+				}
+
+				else {
+					document.getElementById("tipContent").innerText="修改密码失败";
+					$("#Tip").modal('show');
+					
+				}
+			},
+			error : function(res) {
+				
+				alert('检查密码存在发生错误');
+				checkPassowrdFlag = 0 ;
+			}
+		});
+}
 // 功能： checkPassowrdFlag = 1 + 页面跳转到 resetMail 或者resetMobile
 function checkLink1() {
 	checkPasswordIn();
@@ -303,7 +367,7 @@ function checkLink1() {
 
 	var str = $("#mobileAddMailHiden").val();// mobileAddMailHiden mail\mobile
 	
-    var string2 = $("#labelMobileMail").val(); // labelMobileMail 原手机号或者邮箱
+    var string2 = $("#labelMobileMail").val(); // labelMobileMail 原手机号或者邮箱或密码
   
 	var userName = $("#userName").val();// 登录名
 	
@@ -321,8 +385,13 @@ function checkLink1() {
 				+ string2 + "&userName=" + userName));
 		window.location.href = href;
 		
-	} else {
+	} else if((checkPassowrdFlag == 1) && ($("#labelProgress2").val() == "修改密码")){
+		var href = encodeURI(encodeURI("/userInfo/resetPassword/resetPassword?string1=" + string1
+				+ "&strProgress=" + strProgress + "&str=" + str + "&string2="
+				+ string2 + "&userName=" + userName));
+		window.location.href = href;
 		
+	}else{
 		alert("Error: no link! 请先输入正确用户登录密码");
 	}
 

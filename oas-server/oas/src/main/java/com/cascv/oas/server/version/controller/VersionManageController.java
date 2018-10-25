@@ -197,11 +197,9 @@ public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="f
 @PostMapping(value="/downloadApp")
 @ResponseBody
 public ResponseEntity<?> downloadApp(){
-	if(versionService.selectAppByStableVersion().size()!=0) {
-		
 	List<VersionModel> stableVersionModel=versionService.selectAppByStableVersion();
 	DownloadVersionInfo downloadVersionInfo=new DownloadVersionInfo();
-
+	if(stableVersionModel != null && stableVersionModel.size() != 0) {
 	Integer versionCode=stableVersionModel.get(0).getVersionCode();
 	downloadVersionInfo.setVersionCode(versionCode);
 	String appUrl=stableVersionModel.get(0).getAppUrl();
@@ -214,10 +212,13 @@ public ResponseEntity<?> downloadApp(){
 			.build();
 	
 	}else {
-		
-		return new ResponseEntity.Builder<Integer>()
-				.setData(1)
-				.setErrorCode(ErrorCode.GENERAL_ERROR)
+		downloadVersionInfo.setVersionCode(0);
+		downloadVersionInfo.setAppUrl("");
+		downloadVersionInfo.setUpGradeStatus(0);
+		log.info("not exit");
+		return new ResponseEntity.Builder<DownloadVersionInfo>()
+				.setData(downloadVersionInfo)
+				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		}
 
