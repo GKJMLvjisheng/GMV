@@ -109,7 +109,6 @@
 	}
 	
 	function checkUser(){
-
 		var data={
 			"name": $('#nameId').val(),
 			"password": $('#passwordId').val(),
@@ -126,7 +125,6 @@
 		success: function (res) {
 			if (res.code == 0) {
 				check1=1;
-				
 			} else {
 				//alert("1"+res.message);
 				check1=0;
@@ -166,7 +164,7 @@
 					
 					$("#msgFirst").html("输入的验证码正确！");
 					$("#msgFirst").css("color", "#00ff00");					
-					
+					debugger;
 					checkUser()
 					//alert(JSON.stringify(check1));
 					if(check1==1){
