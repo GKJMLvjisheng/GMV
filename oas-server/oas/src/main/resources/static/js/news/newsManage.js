@@ -22,6 +22,7 @@ function newsReady(){
 			data2=res.data.list;
 			//alert(JSON.stringify(data2));
 			initNewsGrid(data2);
+			
 		}, 
 		error: function(){
 			alert("新闻回显失败！")
