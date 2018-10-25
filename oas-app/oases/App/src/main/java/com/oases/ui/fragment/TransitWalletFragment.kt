@@ -23,6 +23,7 @@ import com.oases.presenter.view.TransitWalletView
 import com.oases.ui.activity.ExchangeCoinActivity
 import kotlinx.android.synthetic.main.fragment_transit_wallet.*
 import org.jetbrains.anko.support.v4.startActivity
+import java.math.BigDecimal
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -116,7 +117,7 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
 
     override fun setSummary(summary: TransitWalletSummary) {
         Log.d("zbb", "summary called")
-        mSummary.text = summary.totalValue.toString()
+        mSummary.text = summary.totalValue.toBigDecimal().setScale(2, BigDecimal.ROUND_HALF_UP).toString()
     }
 
     override fun onAttach(context: Context) {
