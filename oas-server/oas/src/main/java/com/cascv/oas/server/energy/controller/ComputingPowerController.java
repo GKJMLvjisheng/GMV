@@ -61,7 +61,7 @@ public class ComputingPowerController {
 	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
-	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 3;
+	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 4;
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   	
 	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
@@ -83,7 +83,7 @@ public class ComputingPowerController {
 		Integer SumUserInvited,SumPowerPromoted;
 		String userUuid=userModel.getUuid();//算力提升用户Uuid
 		Integer powerSource=4;//好友分享方式为4
-		SumUserInvited=10;
+		SumUserInvited=0;
 		SumPowerPromoted=energyBallMapper.countByUserUuidAndPowerSource(userUuid, powerSource);
 		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
 		if(SumPowerPromoted!=null) {
