@@ -63,10 +63,14 @@ function checkName() {
 				} else{
 					$("#msg_minerName").html("矿机名已存在");
 					$("#msg_minerName").css("color", "red");
+					check1 = 0;
+					return check1;
 				}
 			},
 			error : function() {
 				alert('检查矿机名是否存在发生错误');
+				check1 = 0;
+				return check1;
 			}
 		});
     }
@@ -93,10 +97,14 @@ function checkPrice() {
 	    	
 	         $("#msg_minerPrice").html("请填写大于0的数字！");
 	         $("#msg_minerPrice").css("color", "red");
+	         check2 = 0;
+			 return check2;
 	    }			 
 	}else{
 	   	 $("#msg_minerPrice").html("矿机单价不能为空！");
-	     $("#msg_minerPrice").css("color", "red");		   
+	     $("#msg_minerPrice").css("color", "red");	
+	     check2 = 0;
+		 return check2;
 	}   
 }
 //新增矿机--算力奖励的判断
@@ -115,12 +123,16 @@ function checkPower() {
 	    }else{
 	    	
 	         $("#msg_minerPower").html("请填写大于0的数字！");
-	         $("#msg_minerPower").css("color", "red");		       
+	         $("#msg_minerPower").css("color", "red");
+	         check3 = 0;
+			 return check3;	
 	    }
 	 
 	}else{
 	   	 $("#msg_minerPower").html("算力奖励不能为空！");
-	     $("#msg_minerPower").css("color", "red");	     
+	     $("#msg_minerPower").css("color", "red");
+	     check3 = 0;
+		 return check3;
 	}   
 }
 //新增矿机--矿机周期的判断
@@ -137,11 +149,15 @@ function checkPeriod() {
 			 return check4;			
 	    }else{
 	    	 $("#msg_minerPeriod").html("请填写正整数");
-	         $("#msg_minerPeriod").css("color", "red");	       
+	         $("#msg_minerPeriod").css("color", "red");	
+	         check4 = 0;
+			 return check4;	
 	    }
 	}else{
 		$("#msg_minerPeriod").html("矿机寿命不能为空！");
-        $("#msg_minerPeriod").css("color", "red");      
+        $("#msg_minerPeriod").css("color", "red");  
+        check4 = 0;
+		return check4;	
 	}	
 }
 //修改矿机--矿机名的判断
@@ -173,15 +189,21 @@ function EcheckName() {
 				} else{
 					$("#msg_EminerName").html("矿机名已存在");
 					$("#msg_EminerName").css("color", "red");
+					check5 = 0;
+					return check5;
 				}
 			},
 			error : function() {		
 				alert("检查矿机名是否存在发生错误！");
+				check5 = 0;
+				return check5;
 			}
 		});
 	}else{
 		$("#msg_EminerName").html("请填写矿机名！");
         $("#msg_EminerName").css("color", "red");
+        check5 = 0;
+		return check5;
 	}
 }
 
@@ -199,11 +221,15 @@ function EcheckPrice() {
 			 return check6;					
 	    }else{			    	
 	         $("#msg_EminerPrice").html("请填写大于0的数字！");
-	         $("#msg_EminerPrice").css("color", "red");			 
+	         $("#msg_EminerPrice").css("color", "red");	
+	         check6 = 0;
+			 return check6;
 	    }				 
 	}else{
 	   	 $("#msg_EminerPrice").html("矿机单价不能为空！");
 	     $("#msg_EminerPrice").css("color", "red");
+	     check6 = 0;
+		 return check6;
 	}   
 }
 //修改矿机--算力奖励的判断
@@ -222,10 +248,14 @@ function EcheckPower() {
 	    }else{		    	
 	         $("#msg_EminerPower").html("请填写大于0的数字！");
 	         $("#msg_EminerPower").css("color", "red");
+	         check7 = 0;
+			 return check7;
 	    }			 
 	}else{
 	   	 $("#msg_EminerPower").html("算力奖励不能为空！");
 	     $("#msg_EminerPower").css("color", "red");
+	     check7 = 0;
+		 return check7;
 	}   
 }
 //修改矿机--矿机周期的判断
@@ -243,10 +273,14 @@ function EcheckPeriod() {
 	    }else{
 	    	 $("#msg_EminerPeriod").html("请填写正整数");
 	         $("#msg_EminerPeriod").css("color", "red");
+	         check8 = 0;
+			 return check8;
 	    }
 	}else{
 		$("#msg_EminerPeriod").html("矿机寿命不能为空！");
         $("#msg_EminerPeriod").css("color", "red");
+        check8 = 0;
+		return check8;
 	}	
 }
 
