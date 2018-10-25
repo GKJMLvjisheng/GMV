@@ -169,8 +169,8 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         super.onViewCreated(view, savedInstanceState)
         mRedrawOas.onClick {
             //lh修改   添加KYC认证后的操作  认证后才可提币
-            mPresenter.inquireAddress()
-            //mPresenter.getKYCVerifyStatus()
+            //mPresenter.inquireAddress()
+            mPresenter.getKYCVerifyStatus()
             if (KYCVerifyStatus==0){
                 toast("您还未进行KYC认证，请先进行KYC认证")
                 //弹窗
