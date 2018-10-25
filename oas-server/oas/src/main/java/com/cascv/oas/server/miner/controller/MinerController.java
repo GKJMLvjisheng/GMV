@@ -1,6 +1,7 @@
 package com.cascv.oas.server.miner.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,13 @@ import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.SystemParameterModel;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.AddSystemParameter;
-import com.cascv.oas.server.miner.wrapper.DeleteSystemParameter;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
 import com.cascv.oas.server.miner.wrapper.MinerRequest;
 import com.cascv.oas.server.miner.wrapper.MinerUpdate;
 import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.miner.wrapper.SystemParameterModelRequest;
+import com.cascv.oas.server.miner.wrapper.SystemParameterResponse;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -69,9 +70,10 @@ public class MinerController {
 	public ResponseEntity<?> addSystemParameter(@RequestBody AddSystemParameter systemParameterModelRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
-		systemParameterModel.setParameterName(systemParameterModelRequest.getParameterName());
 		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
 		systemParameterModel.setPeriod(systemParameterModelRequest.getPeriod());
+		systemParameterModel.setComment("inherit");
+		systemParameterModel.setCurrency(1);
 		systemParameterModel.setCreated(now);
 		systemParameterModel.setUpdated(now);
 		minerMapper.insertSystemParameter(systemParameterModel);
@@ -81,18 +83,18 @@ public class MinerController {
 				.build();		
 	}
 	
-	//
-	@PostMapping(value = "/deleteSystemParameter")  
-	@ResponseBody
-	public ResponseEntity<?> deleteSystemParameter(@RequestBody DeleteSystemParameter deleteSystemParameter){
-		log.info("uuid={}", deleteSystemParameter.getUuid());
-		minerMapper.deleteSystemParameterByUuid(deleteSystemParameter.getUuid());
-		return new ResponseEntity.Builder<Integer>()
-				.setData(0)
-				.setErrorCode(ErrorCode.SUCCESS)
-				.build();
-		
-	}
+//	//
+//	@PostMapping(value = "/deleteSystemParameter")  
+//	@ResponseBody
+//	public ResponseEntity<?> deleteSystemParameter(@RequestBody DeleteSystemParameter deleteSystemParameter){
+//		log.info("uuid={}", deleteSystemParameter.getUuid());
+//		minerMapper.deleteSystemParameterByUuid(deleteSystemParameter.getUuid());
+//		return new ResponseEntity.Builder<Integer>()
+//				.setData(0)
+//				.setErrorCode(ErrorCode.SUCCESS)
+//				.build();
+//		
+//	}
 	
 	//修改系统变量值
 	@PostMapping(value = "/updatedSystemParameter")  
@@ -100,7 +102,8 @@ public class MinerController {
 	public ResponseEntity<?> updatedSystemParameter(@RequestBody SystemParameterModelRequest systemParameterModelRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
-		systemParameterModel.setUuid(systemParameterModelRequest.getUuid());
+		systemParameterModel.setCurrency(systemParameterModelRequest.getCurrency());
+		systemParameterModel.setPeriod(systemParameterModelRequest.getTime());
 		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
 		systemParameterModel.setUpdated(now);
         minerMapper.updateSystemParameterByUuid(systemParameterModel);
@@ -116,8 +119,23 @@ public class MinerController {
 	@ResponseBody
 	public ResponseEntity<?> selectSystemParameter(){
 		List<SystemParameterModel> systemParameterModel = minerMapper.selectSystemParameter();
-		return new ResponseEntity.Builder<List<SystemParameterModel>>()
-				.setData(systemParameterModel)
+		List<SystemParameterResponse> systemParameterResponseList = new ArrayList<>();
+		for(int i=0; i<systemParameterModel.size(); i++) {
+			SystemParameterResponse systemParameterResponse = new SystemParameterResponse();
+			systemParameterResponse.setComment(systemParameterModel.get(i).getComment());
+			systemParameterResponse.setCreated(systemParameterModel.get(i).getCreated());
+			systemParameterResponse.setUpdated(systemParameterModel.get(i).getUpdated());
+			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());
+			systemParameterResponse.setParameterValue(systemParameterModel.get(i).getParameterValue());
+			systemParameterResponse.setPeriod(systemParameterModel.get(i).getPeriod());
+			if(systemParameterModel.get(i).getCurrency() == 11)
+				systemParameterResponse.setParameterName("β");
+			else
+				systemParameterResponse.setParameterName("γ");
+			systemParameterResponseList.add(systemParameterResponse);
+		}
+		return new ResponseEntity.Builder<List<SystemParameterResponse>>()
+				.setData(systemParameterResponseList)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}

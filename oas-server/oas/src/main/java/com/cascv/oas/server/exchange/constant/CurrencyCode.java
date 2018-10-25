@@ -15,6 +15,7 @@ public enum CurrencyCode {
   CAD(8, "CAD", ""),
   AUD(9, "AUD", ""),
   HKD(10, "HKD", ""),
+  β(11, "β", ""),
   
   OAS(255, "OAS", ""),
   BTC(256, "BTC", ""),
