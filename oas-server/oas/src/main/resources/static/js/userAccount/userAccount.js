@@ -58,7 +58,7 @@ function role(name,roleId){
 	}else if(roleId==3){
 		var rows=$("#testGrid").bootstrapTable('getRowByUniqueId', name);
 	}else if(roleId==1){
-		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);
+		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);  //系统账号
 	}
     
     //alert(JSON.stringify(rows))

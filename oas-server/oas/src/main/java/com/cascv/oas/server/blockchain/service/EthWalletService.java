@@ -113,6 +113,7 @@ public class EthWalletService {
   
   @Autowired
   private MessageService messageService;
+  
 
 
   public synchronized void updateJob() {
