@@ -78,10 +78,10 @@ media:
 
 mail:
   mailBean:
-    rootMail: "3602745100@qq.com"
-    password: "hgmwayjbwmomcjdd"
-    name: "3602745100@qq.com"
-    subject: "密码重置"
+    rootMail: "oases@oases.pro"
+    password: "Epc588"
+    name: "oases@oases.pro"
+    subject: "邮箱验证"
 
 quartz:
   properties:
