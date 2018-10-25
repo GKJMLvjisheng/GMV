@@ -119,6 +119,10 @@ public class UserWalletService {
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
 		  userWalletDetail.setTxResult(1);
 		  break;
+	  case 9:
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
+		  userWalletDetail.setTxResult(1);
+		  break;
 	  default:
 		  log.info("swicth-case-end");
 	      break;
@@ -397,6 +401,15 @@ public class UserWalletService {
   public ErrorCode updateOasExtra(String value) {
 	  String now = DateUtils.dateTimeNow();
 	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
+  }
+  
+  public void insertSystemInit(BigDecimal value) {
+	//system的在线钱包
+	  UserWallet systemWallet = userWalletMapper.getSystemWallet();
+	  if(systemWallet!=null) {
+		  userWalletDetailMapper.insertSelective(setDetail(systemWallet, "", UserWalletDetailScope.SYSTEM_INIT, value, UserWalletDetailScope.SYSTEM_INIT.getSubTitle(), UserWalletDetailScope.SYSTEM_INIT.getSubTitle(),null,systemWallet.getBalance()));
+	  }  
+	  
   }
   
 }

@@ -49,6 +49,7 @@ import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
+import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
@@ -1415,7 +1416,11 @@ public class UserController extends BaseShiroController{
 		if(code.getCode() == 0) { // 用户不存在
 			ethWalletService.create(uuid, password);
 			if(name.equals("SYSTEM")) {
-				userWalletService.createAccountByMoney(uuid,new BigDecimal("10000000"));
+				BigDecimal value = new BigDecimal("10000000");
+				userWalletService.createAccountByMoney(uuid,value);
+				 //system手续费记录
+				userWalletService.insertSystemInit(value);
+			  
 			}else {
 				userWalletService.createAccountByMoney(uuid,BigDecimal.ZERO);
 			}

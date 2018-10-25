@@ -24,6 +24,7 @@ import org.web3j.utils.Convert;
 
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
+import com.cascv.oas.core.common.PageDomainObject;
 import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
@@ -32,6 +33,7 @@ import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.EthWalletDetail;
+import com.cascv.oas.server.blockchain.model.SystemResq;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserCoinResp;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
@@ -531,7 +533,7 @@ public class EthWalletController extends BaseShiroController {
 		  pageSize = (pageInfo.getPageSize() == null || pageInfo.getPageSize()<=0? pageSize:pageInfo.getPageSize());
 	  }
 
-	  return new ResponseEntity.Builder<PageDomain<EthWalletDetail>>()
+	  return new ResponseEntity.Builder<PageDomainObject<SystemResq<EthWalletDetail>>>()
 	            .setData(ethWalletDetailService.systemTransactionDetail(pageNum,pageSize))
 	            .setErrorCode(ErrorCode.SUCCESS)
 	            .build();
