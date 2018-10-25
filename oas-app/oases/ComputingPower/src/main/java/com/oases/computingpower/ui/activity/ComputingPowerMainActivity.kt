@@ -130,6 +130,7 @@ class ComputingPowerMainActivity :
         var name = v?.mName?.text?:""
         when (name){
             mBackupWallet ->ARouter.getInstance().build(RouterPath.UserCenter.PATH_BACKUP_WALLET).navigation()
+            //mBackupWallet->toast("即将上线")
             mWatchWeChat -> startActivity<WatchingWeChatPublicAccountActivity>()
             mInviteFriends ->startActivity<InviteFriendsActivity>()
             mEnvironmentalmProtectionAnswer->toast("即将上线")

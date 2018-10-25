@@ -41,17 +41,17 @@ $(function(){
 });
 	
 function newsIndexReady() {
-	//alert(1);
-	   $.ajax({
-	    url: "/api/v1/userCenter/selectAllNews",
-	    contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-	    success: function(res) {
-	    	var len=res.data.list.length;
-	    	//alert(JSON.stringify(res.data.list));
-	      if (len>0) {
+   $.ajax({
+    url: "/api/v1/userCenter/selectAllNews",
+    contentType : 'application/json;charset=utf8',
+	dataType: 'json',
+	cache: false,
+	type: 'post',
+    success: function(res) {
+    	alert(JSON.stringify(res));
+    	if(res.code==0){
+    		
+    		var len=res.data.length;		     
 	        list="";
 	        for(i=0;i<len;i++){
 	        
@@ -59,23 +59,22 @@ function newsIndexReady() {
 	            "<div class='new-list-item clearfix'>"+
 	            "<div class='col-xs-1'></div>"+
 	            "<div class='col-xs-6'>"+
-	            "<a href="+res.data.list[i].newsUrl+ " class='title'>"+res.data.list[i].newsTitle+"</a>"+
-	              "<div class='abstract'>"+res.data.list[i].newsAbstract+"</div>"+
+	            "<a href="+res.data[i].newsUrl+ " class='title'>"+res.data[i].newsTitle+"</a>"+
+	              "<div class='abstract'>"+res.data[i].newsAbstract+"</div>"+
 	              "</div>"+
 	              "<div class='col-xs-4'>"+
-	              						"<img  src="+res.data.list[i].newsPicturePath+ ">"+
+	              						"<img  src="+res.data[i].newsPicturePath+ ">"+
 	                                "</div></div>";
-	        }
-	      } 
-	      else {
-	        alert("数据库中没有新闻数据");
-	      }
-	      document.getElementById("Grid").innerHTML=list;
-	    }, 
-	    error: function(){
-	    	alert("新闻首页回显失败！");
-	    }}); 
-	}
+	    }		     		      
+	    document.getElementById("Grid").innerHTML=list;
+    	}else{
+    		alert("数据库中无更多新闻！");  //数据库为空返回code:10001
+    	}	    	
+    }, 
+    error: function(){
+    	alert("新闻首页回显失败！");
+    }}); 
+}
 	
 </script>
 </html>

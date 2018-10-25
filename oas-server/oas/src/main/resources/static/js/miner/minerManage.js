@@ -87,7 +87,7 @@ function checkPrice() {
 	
 	if(minerPrice!=""){
 	
-		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
+		if (/^[1-9]\d*(\.{0,1}\d+$|$)/.test(minerPrice)) {
 			 $("#msg_minerPrice").html("填写矿机单价符合要求");
 	         $("#msg_minerPrice").css("color", "green");
 	         check2 = 1;
@@ -115,7 +115,7 @@ function checkPower() {
 	//alert(JSON.stringify(minerPower1));
 	
 	if(minerPower!=""){				
-		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPower)) {
+		if (/^[1-9]\d*(?=\.{0,1}\d+$|$)/.test(minerPower)) {
 			 $("#msg_minerPower").html("填写算力奖励符合要求");
 	         $("#msg_minerPower").css("color", "green");
 	         check3 = 1;
@@ -214,7 +214,7 @@ function EcheckPrice() {
 	var minerPrice1 = parseFloat(minerPrice);
 	
 	if(minerPrice!=""){						
-		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
+		if (/^[1-9]\d*(?=\.{0,1}\d+$|$)/.test(minerPrice)) {
 			 $("#msg_EminerPrice").html("填写矿机单价符合要求");
 	         $("#msg_EminerPrice").css("color", "green");
 	         check6 = 1;
@@ -240,7 +240,7 @@ function EcheckPower() {
 	//alert(JSON.stringify(minerPower1));
 	
 	if(minerPower!=""){				
-		if (/^[1-9]+(?=\.{0,1}\d+$|$)/.test(minerPower)) {
+		if (/^[1-9]\d*(?=\.{0,1}\d+$|$)/.test(minerPower)) {
 			 $("#msg_EminerPower").html("填写算力奖励符合要求");
 	         $("#msg_EminerPower").css("color", "green");
 	         check7 = 1;

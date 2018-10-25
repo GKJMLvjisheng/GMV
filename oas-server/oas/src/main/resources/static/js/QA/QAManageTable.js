@@ -120,7 +120,13 @@ function EditQuestionById(id){
 		$('#EchoiceC').val(rows.choiceC);
 		$('#EchoiceRight').val(rows.choiceRight);
 		$(":radio[name='radio1'][value='" + rows.choiceRight + "']").prop("checked", "checked");			
-		$("#updateQuestionModal").modal("show");           
+		$("#updateQuestionModal").modal("show");
+		
+		$(":radio").click(function(){
+			var choiceRight2=$(this).val();
+			//$('#choiceRight').val(choiceRight);
+			$('#EchoiceRight').val(choiceRight2);
+		});
   }
 
 

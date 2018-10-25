@@ -182,19 +182,21 @@ public ResponseEntity<?> updateNews(NewsModel newsInfo,@RequestParam(name="file"
 @PostMapping(value="/selectAllNews")
 @ResponseBody
 public ResponseEntity<?> selectAllNews(){
-  Map<String,Object> info=new HashMap<>();
-  List<NewsModel> list=newsService.selectAllNews();
-  int length=list.size();
-  if(length>0) {
-     info.put("list", list);
-  }else
-  {
-    log.info("no news in mysql");
-  }
-    return new ResponseEntity.Builder<Map<String, Object>>()
-              .setData(info).
+	
+  List<NewsModel> newsModelList=newsService.selectAllNews();
+  
+  if(newsModelList != null && newsModelList.size()>0) {
+	  return new ResponseEntity.Builder<List<NewsModel>>()
+              .setData(newsModelList).
               setErrorCode(ErrorCode.SUCCESS)
               .build();
+  }else{
+    log.info("no news in mysql");
+    return new ResponseEntity.Builder<Integer>()
+            .setData(0)
+            .setErrorCode(ErrorCode.GENERAL_ERROR)
+            .build();
+  	   }
   }
 
 @PostMapping(value="/deleteNews")

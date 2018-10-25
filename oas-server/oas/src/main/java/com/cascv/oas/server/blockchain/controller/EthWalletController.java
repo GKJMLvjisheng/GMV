@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +28,8 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.activity.service.ActivityService;
+import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
@@ -36,7 +37,6 @@ import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.SystemResq;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserCoinResp;
-import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.EthWalletDetailService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.wrapper.BackupEthWallet;
@@ -48,9 +48,7 @@ import com.cascv.oas.server.blockchain.wrapper.EthWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.EthWalletTransferResp;
 import com.cascv.oas.server.blockchain.wrapper.PreferNetworkReq;
-import com.cascv.oas.server.blockchain.wrapper.TimeLimitInfo;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
-import com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
@@ -73,6 +71,8 @@ public class EthWalletController extends BaseShiroController {
   private TimeZoneService timeZoneService;
   @Autowired
   private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
+  @Autowired
+  private ActivityService activityService;
   
   @PostMapping(value="/transfer")
   @RequiresPermissions("交易钱包-转账")
@@ -452,7 +452,7 @@ public class EthWalletController extends BaseShiroController {
    * @param info
    * @return
    */
-  @PostMapping(value="/reverseWithdraw")
+  @PostMapping(value="/reverseWithdraw") 
   @RequiresPermissions("充币")
   @ResponseBody
   @Transactional
@@ -498,6 +498,18 @@ public class EthWalletController extends BaseShiroController {
 	  return new ResponseEntity.Builder<BackupEthWallet>()
 			  .setData(ethWallet)
 			  .setErrorCode(errorCode)
+			  .build();
+  }
+  
+  @PostMapping(value="/backupWallet")
+  @ResponseBody
+  public ResponseEntity<?> backupWallet(@RequestBody RewardSourceCode rewardSourceCode){
+	  String userUuid = ShiroUtils.getUserUuid();
+	  Integer sourceCode = rewardSourceCode.getSourceCode();
+	  activityService.getReward(sourceCode, userUuid);
+	  return new ResponseEntity.Builder<Integer>()
+			  .setData(0)
+			  .setErrorCode(ErrorCode.SUCCESS)
 			  .build();
   }
 

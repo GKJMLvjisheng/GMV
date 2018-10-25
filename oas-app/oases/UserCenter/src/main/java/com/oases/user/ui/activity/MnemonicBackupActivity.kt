@@ -22,9 +22,7 @@ class MnemonicBackupActivity : FragmentActivity(), PrivateKeyMnemonicFragment.On
 
     private var listener: PrivateKeyMnemonicFragment.OnFragmentInteractionListener? = null
     private var mListener: EncryptedMnemonicFragment.OnFragmentInteractionListener? = null
-    /*private lateinit var mTabLayout: TabLayout
-    private lateinit var mViewPager: ViewPager
-    private val mFragments  by lazy {arrayOf(EncryptedMnemonicFragment(), PrivateKeyMnemonicFragment())}*/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mnemonic_backup)

@@ -38,6 +38,9 @@ public class SendMailUtils implements Callable<String> {
             else
             {host=host163;}
             
+            //用QQ企业邮箱（海外版服务器）
+            host="hwsmtp.exmail.qq.com";
+            
             prop.setProperty("mail.host", host);
             prop.setProperty("mail.transport.protocol", "smtp");
             prop.setProperty("mail.smtp.auth", "true");
