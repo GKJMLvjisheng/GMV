@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.cascv.oas.core.common.PermEntity;
 import com.cascv.oas.server.user.mapper.RoleMenuMapper;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.UserRole;
@@ -60,9 +62,9 @@ public class PermService {
     		@SuppressWarnings("unused")
 			String perm=rmList.get(i).getMenuName();
         	if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==5){
-        		perm="在线钱包-转账";
+        		perm=PermEntity.USER_WALLET_TRANSFER.getPermName();
         	}else if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==8){
-        		perm="交易钱包-转账";
+        		perm=PermEntity.USER_WALLET_WITHDRAW.getPermName();
         	}       	
         	perms.add(perm);
         	log.info("perm={}",perm);
@@ -80,7 +82,7 @@ public class PermService {
     	//针对用户角色
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
     	for(RoleMenuViewModel rm:rmList) {
-    		getRewardByWalk=(rm.getMenuName().equals("计步"))? true:false;
+    		getRewardByWalk=(rm.getMenuName().equals(PermEntity.STEP_COUNT_PERMISSION.getPermName()))? true:false;
     		if(getRewardByWalk)
     	    break;   		
     	}
@@ -91,7 +93,7 @@ public class PermService {
     	//针对用户角色
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
     	for(RoleMenuViewModel rm:rmList) {	
-    		getRewardByPromotion=(rm.getMenuName().equals("获得推广奖励"))? true:false;
+    		getRewardByPromotion=(rm.getMenuName().equals(PermEntity.MINER_PROMOTION_REWARD.getPermName()))? true:false;
     		if(getRewardByPromotion)
     		break;
     	}  
