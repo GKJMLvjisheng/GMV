@@ -57,7 +57,7 @@ class RecycleMinerViewAdapter(
             holder.mExchangeItemView.mMinerName.setText(mData.minerName)
 
         val minerPrice = mData.minerPrice.toString()
-        var decimalPrice  =    minerPrice.substring(minerPrice.indexOf("."),minerPrice.length)
+        var decimalPrice = minerPrice.substring(minerPrice.indexOf("."),minerPrice.length)
         decimalPrice = decimalPrice.substring(1,decimalPrice.length)
         if (decimalPrice.substring(decimalPrice.length-1,decimalPrice.length)=="0"){
          val viewMinerPrice =minerPrice.substring(0,minerPrice.length-1)
