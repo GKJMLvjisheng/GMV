@@ -72,7 +72,7 @@ public class SendMailUtils implements Callable<String> {
         message.addHeader("X-Mailer","Microsoft Outlook Express 6.00.2900.2869");
         
         message.setFrom(new InternetAddress(mailInfo.getfromAddress(),mailInfo.getmailUsername(), "UTF-8"));
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(mailInfo.gettoAddress()));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(mailInfo.gettoAddress(),"oases-user","UTF-8"));
         message.setSubject(mailInfo.getmailSubject());
         
         String info = mailInfo.getmailSubject();
@@ -93,7 +93,7 @@ public class SendMailUtils implements Callable<String> {
     	
         message.setFrom(new InternetAddress(mailInfo.getfromAddress(),mailInfo.getmailUsername(), "UTF-8"));
 
-        message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(mailInfo.gettoAddress(), "youyouyu", "UTF-8"));
+        message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(mailInfo.gettoAddress(),"UTF-8"));
 
         message.setSubject(mailInfo.getmailSubject());
       //不被当作垃圾邮件的关键代码--Begin            
