@@ -487,6 +487,7 @@ public class UserController extends BaseShiroController{
 	    //生成唯一的文件名
 	    log.info("oriNmae="+file.getOriginalFilename());
 	    String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
+	    
 	    try {
         byte[] bytes = file.getBytes();
         Path path = Paths.get(UPLOADED_FOLDER + fileName);
@@ -502,6 +503,7 @@ public class UserController extends BaseShiroController{
 	        //获取用户名
 	        String name=ShiroUtils.getUser().getName();
 	        log.info("---userName-->{}" +name);
+	        log.info("proUrl->{}",proUrl);
 	        userNewModel.setName(name);
 	        userNewModel.setProfile(proUrl);
 	        userService.updateUserProfile(userNewModel);
@@ -512,7 +514,7 @@ public class UserController extends BaseShiroController{
 	        //图片存储的相对路径
 	    	String fullLink = mediaServer.getImageHost() + proUrl;
 	    	info.put("profile",fullLink);
-	    	log.info("UpLoadSuccuss-->");
+	    	log.info("UpLoadSuccuss-->",fullLink);
 	        return new ResponseEntity.Builder<Map<String, String>>()
 		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 	    } catch (Exception e){
@@ -1264,8 +1266,9 @@ public class UserController extends BaseShiroController{
 	 */
 	@PostConstruct
 	private void registerSystemAndAdmin() {
-		createUserAfterStart("admin","123456");
+		createUserAfterStart("ADMIN","Dapp000OAS");
 		createUserAfterStart("SYSTEM",generatePassword(30));
+		createUserAfterStart("FIRSTONE","Dapp880OAS");
 		log.info("system交易钱包地址为"+ethWalletService.getSystemAddress());
 	}
 	
@@ -1439,7 +1442,12 @@ public class UserController extends BaseShiroController{
 				 //system手续费记录
 				userWalletService.insertSystemInit(value);
 			  
-			}else {
+			}else if(name.equals("FIRSTONE")) {
+				BigDecimal value = new BigDecimal("8800000");
+				userWalletService.createAccountByMoney(uuid,value);
+				userWalletService.insertFirstOneInit(value);
+			}
+			else {
 				userWalletService.createAccountByMoney(uuid,BigDecimal.ZERO);
 			}
 			energyPointService.create(uuid);
@@ -1447,7 +1455,11 @@ public class UserController extends BaseShiroController{
 			//给用户赋予默认角色1
 			UserRole userRole=new UserRole();
 		    userRole.setUuid(uuid);
-		    userRole.setRoleId(1);
+			if(name.equals("FIRSTONE")) {
+				userRole.setRoleId(2);
+			}else {
+				userRole.setRoleId(1);
+			}
 		    String now =DateUtils.getTime();
 		    userRole.setRolePriority(1);
 		    userRole.setCreated(now);

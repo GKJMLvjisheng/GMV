@@ -75,13 +75,13 @@ function initEnergyWalletGrid() {
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '170px',
 		}, {
 			title : "积分余额",
 			field : "restPoint",
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '120px',
 			formatter:function(value){
 				return value == null?0:value
 			}
