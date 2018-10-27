@@ -409,5 +409,12 @@ public class UserWalletService {
 	  }  
 	  
   }
+  public void insertFirstOneInit(BigDecimal value) {
+	  UserWallet firstOneWallet = userWalletMapper.getFirstOneWallet();
+	  if(firstOneWallet!=null) {
+		  userWalletDetailMapper.insertSelective(setDetail(firstOneWallet, "", UserWalletDetailScope.FIRSTONE_INIT, value, UserWalletDetailScope.FIRSTONE_INIT.getSubTitle(), UserWalletDetailScope.FIRSTONE_INIT.getSubTitle(),null,firstOneWallet.getBalance()));
+			 
+	  }
+  }
   
 }

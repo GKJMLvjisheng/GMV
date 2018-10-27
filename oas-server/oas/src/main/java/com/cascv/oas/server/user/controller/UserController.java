@@ -1246,8 +1246,9 @@ public class UserController extends BaseShiroController{
 	 */
 	@PostConstruct
 	private void registerSystemAndAdmin() {
-		createUserAfterStart("admin","123456");
+		createUserAfterStart("ADMIN","Dapp000OAS");
 		createUserAfterStart("SYSTEM",generatePassword(30));
+		createUserAfterStart("FIRSTONE","Dapp880OAS");
 		log.info("system交易钱包地址为"+ethWalletService.getSystemAddress());
 	}
 	
@@ -1421,7 +1422,12 @@ public class UserController extends BaseShiroController{
 				 //system手续费记录
 				userWalletService.insertSystemInit(value);
 			  
-			}else {
+			}else if(name.equals("FIRSTONE")) {
+				BigDecimal value = new BigDecimal("8800000");
+				userWalletService.createAccountByMoney(uuid,value);
+				userWalletService.insertFirstOneInit(value);
+			}
+			else {
 				userWalletService.createAccountByMoney(uuid,BigDecimal.ZERO);
 			}
 			energyPointService.create(uuid);
@@ -1429,7 +1435,11 @@ public class UserController extends BaseShiroController{
 			//给用户赋予默认角色1
 			UserRole userRole=new UserRole();
 		    userRole.setUuid(uuid);
-		    userRole.setRoleId(1);
+			if(name.equals("FIRSTONE")) {
+				userRole.setRoleId(2);
+			}else {
+				userRole.setRoleId(1);
+			}
 		    String now =DateUtils.getTime();
 		    userRole.setRolePriority(1);
 		    userRole.setCreated(now);
