@@ -72,7 +72,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     override fun onLoginResult(result:UserInfo) {
-       toast("login success")
+       toast("登录成功")
         setResult(Activity.RESULT_OK)
         checkLogined()
     }
