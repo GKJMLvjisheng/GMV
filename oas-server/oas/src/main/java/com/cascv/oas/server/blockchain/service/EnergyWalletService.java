@@ -24,7 +24,7 @@ public class EnergyWalletService {
     energyWallet.setUserUuid(userUuid);
     energyWallet.setPoint(BigDecimal.ZERO);
     energyWallet.setPower(BigDecimal.ZERO);
-    String now = DateUtils.dateTimeNow();
+    String now = DateUtils.getTime();
     energyWallet.setCreated(now);
     energyWallet.setUpdated(now);
     energyWalletMapper.deleteByUserUuid(userUuid);

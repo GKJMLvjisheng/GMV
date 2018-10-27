@@ -19,10 +19,6 @@ from
 	  left join activity a on epb.source_code=a.source_code
 	   <if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
-    		or ptr.power_change like concat('%',#{searchValue},'%')
-    		or ptr.in_or_out like concat('%',#{searchValue},'%')
-    		or ptr.created like concat('%',#{searchValue},'%')
-    		or a.source_name like concat('%',#{searchValue},'%')
        </if>
 order by ptr.created desc
 limit #{offset}, #{limit};
@@ -37,10 +33,6 @@ from
 	  left join activity a on epb.source_code=a.source_code
        	   <if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
-    		or ptr.power_change like concat('%',#{searchValue},'%')
-    		or ptr.in_or_out like concat('%',#{searchValue},'%')
-    		or ptr.created like concat('%',#{searchValue},'%')
-    		or a.source_name like concat('%',#{searchValue},'%')
        </if>
 </select>
    

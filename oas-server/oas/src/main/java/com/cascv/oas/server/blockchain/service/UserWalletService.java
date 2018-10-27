@@ -147,7 +147,7 @@ public class UserWalletService {
     userWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
     userWallet.setUserUuid(userUuid);
     userWallet.setBalance(BigDecimal.ZERO);
-    String now = DateUtils.dateTimeNow();
+    String now = DateUtils.getTime();
     userWallet.setCreated(now);
     userWallet.setUpdated(now);
     userWalletMapper.deleteByUserUuid(userUuid);
@@ -160,7 +160,7 @@ public class UserWalletService {
 	    userWallet.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET));
 	    userWallet.setUserUuid(userUuid);
 	    userWallet.setBalance(balance);
-	    String now = DateUtils.dateTimeNow();
+	    String now = DateUtils.getTime();
 	    userWallet.setCreated(now);
 	    userWallet.setUpdated(now);
 	    userWalletMapper.deleteByUserUuid(userUuid);
@@ -226,7 +226,7 @@ public class UserWalletService {
 	  }
 	  String oasUuid = UuidUtils.getPrefixUUID(UuidPrefix.OAS_DETAIL);
 	  oasDetail.setUuid(oasUuid);
-	  String now = DateUtils.dateTimeNow();
+	  String now = DateUtils.getTime();
 	  oasDetail.setCreated(now);
 	  oasDetail.setUpdated(now);
 	  oasDetail.setStatus(OasEventEnum.FORSURE.getCode());
@@ -307,7 +307,7 @@ public class UserWalletService {
 	  UserModel systemInfo = oasDetailMapper.getSystemUserInfo();
 	  if(systemInfo!=null) {
 		  String hash = null;
-		  String now = DateUtils.dateTimeNow();
+		  String now = DateUtils.getTime();
 		  //system的在线钱包
 		  UserWallet systemWallet = userWalletMapper.selectByUserUuid(systemInfo.getUuid());
 		  //用户的钱包
@@ -397,7 +397,7 @@ public class UserWalletService {
 	  return oasDetailMapper.getOasExtra();
   }
   public ErrorCode updateOasExtra(String value) {
-	  String now = DateUtils.dateTimeNow();
+	  String now = DateUtils.getTime();
 	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
   }
   
