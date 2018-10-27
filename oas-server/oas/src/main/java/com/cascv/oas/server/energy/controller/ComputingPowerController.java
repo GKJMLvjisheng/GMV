@@ -86,7 +86,7 @@ public class ComputingPowerController {
 		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
 		Integer SumUserInvited,SumPowerPromoted;
 		String userUuid=userModel.getUuid();//算力提升用户Uuid
-		Integer powerSource=9;//好友分享方式为4
+		Integer powerSource=9;//好友分享方式为9
 		SumUserInvited=0;
 		SumPowerPromoted=energyBallMapper.countByUserUuidAndPowerSource(userUuid, powerSource);
 		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
