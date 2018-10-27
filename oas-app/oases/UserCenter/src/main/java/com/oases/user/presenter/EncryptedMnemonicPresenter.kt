@@ -9,6 +9,7 @@ import com.oases.base.utils.AppPrefsUtils
 import com.oases.user.data.protocol.BackupWalletStatusResp
 import com.oases.user.data.protocol.PrivateKeyMnemonicResp
 import com.oases.user.data.protocol.UserInfo
+import com.oases.user.presenter.view.EncryptedMnemonicView
 import com.oases.user.presenter.view.NickNameView
 import com.oases.user.presenter.view.PasswordInSecurityView
 import com.oases.user.presenter.view.PrivateKeyMnemonicView
@@ -16,25 +17,12 @@ import com.oases.user.service.UserService
 import com.oases.user.utils.putUserInfo
 import javax.inject.Inject
 
-class PrivateKeyMnemonicPresenter @Inject constructor() : BasePresenter<PrivateKeyMnemonicView>() {
+class EncryptedMnemonicPresenter @Inject constructor() : BasePresenter<EncryptedMnemonicView>() {
 
     @Inject
     lateinit var userService: UserService
 
-    /*
-        得到用户备份钱包的中的私钥和私钥助记词
-     */
-    fun  getPrivateKeyMnemonic() {
-        if (!checkNetWork()) {
-            return
-        }
-        mView.showLoading()
-        userService.getPrivateKeyMnemonic().execute(object : BaseSubscriber<PrivateKeyMnemonicResp>(mView) {
-            override fun onNext(t: PrivateKeyMnemonicResp) {
-                mView.onGetPrivateKeyMnemonicResult(t)
-            }
-        }, lifecycleProvider)
-    }
+
 
     fun getReward(sourceCode: Int) {
         if (!checkNetWork()) {

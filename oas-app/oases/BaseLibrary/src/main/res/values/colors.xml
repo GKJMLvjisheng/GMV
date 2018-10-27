@@ -6,6 +6,7 @@
     <color name="common_bg">#f6f6f6</color>
     <color name="common_black">#000000</color>
     <color name="common_green">#00944b</color>
+    <color name="common_bgreen">#16982b</color>
     <color name="help_word_back">#7d7d7d</color>
     <color name="help_word_back_pending">#adadad</color>
     <color name="help_word_back_clicked">#dddddd</color>

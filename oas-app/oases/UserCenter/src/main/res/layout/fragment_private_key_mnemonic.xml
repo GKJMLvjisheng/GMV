@@ -21,7 +21,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="100dp"
         android:textSize="15dp"
-        android:text="以上15个私钥助记词极其重要：\n一旦泄密，将丢失钱包内所有数字资产；\n一旦丢失，将无法找回钱包内所有数字资产！"/>
+        android:text="以上12个私钥助记词极其重要：\n一旦泄密，将丢失钱包内所有数字资产；\n一旦丢失，将无法找回钱包内所有数字资产！"/>
 
     <TextView
         android:layout_width="330dp"
