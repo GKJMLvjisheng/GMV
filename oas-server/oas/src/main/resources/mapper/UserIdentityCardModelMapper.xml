@@ -260,7 +260,7 @@
 	    U.email as email,
 	    U.IMEI as IMEI,
 	    U.status as status,
-	    U.invite_code as inviteCode
+	    U.invite_code as inviteCode,
 		ICI.created as created,
 		ICI.user_identity_name as userIdentityName,
 		ICI.user_identity_number as userIdentityNumber,
