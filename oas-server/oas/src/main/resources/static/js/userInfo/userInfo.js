@@ -219,7 +219,7 @@ function refreshUserInfo(){
 	          //获取数据库中用户信息
 	    	  
 	          var userName=res.data.name;
-	          var userProfile=res.data.profile;
+	          //var userProfile=res.data.profile;
 	         //alert(userProfile);
 	          var userNickname=res.data.nickname;
 	          var userGender=res.data.gender;
@@ -229,6 +229,14 @@ function refreshUserInfo(){
 	          var userEmail=res.data.email;
 
 	        $("#userName").val(userName);
+	        var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp';
+            var userproPathList=res.data.profile.split('.')
+            if(image.indexOf(userproPathList[userproPathList.length-1])!=-1){
+            	var userProfile=res.data.profile;
+            }else{
+            	var userProfile="../img/icon_default_user.png";
+            	
+            }
 	      	$("#userProfile").attr("src", userProfile);
 	      	$("#userNickname").val(userNickname);
 	      	if(userGender=='女'){

@@ -432,23 +432,8 @@ public class PromotedRewardService {
 	  public BigDecimal getNowRate() {
 		  String time=DateUtils.getYearMonth();
 		  ExchangeRateModel exchangeRateModel=exchangeRateService.getRate(time, CurrencyCode.POINT);
-		  Integer currency=exchangeRateModel.getCurrency();
 		  BigDecimal rate=exchangeRateModel.getRate();
-		  BigDecimal bigCurrency=new BigDecimal(currency);
-		  BigDecimal toRate=bigCurrency.divide(rate,6,BigDecimal.ROUND_HALF_UP);
-		  
-		  
-//		  BigDecimal a=new BigDecimal(13.1235);
-//		  BigDecimal b=new BigDecimal(21.234665);
-//		  BigDecimal c=new BigDecimal(38.22345334);
-//		  BigDecimal d=new BigDecimal(244.233456431);
-//		  BigDecimal trade1=d.divideToIntegralValue(c);
-//		  BigDecimal trade2=a.divideToIntegralValue(b);
-//	      BigDecimal trade3=c.divideToIntegralValue(a);
-//	      log.info("trade1:{}",trade1);
-//	      log.info("trade2:{}",trade2);
-//	      log.info("trade3:{}",trade3);
-		  return toRate;
+		  return rate;
 	  }
   
 	/**
