@@ -144,11 +144,11 @@
   
   <select id="getSystemUserInfo" resultType="com.cascv.oas.server.user.model.UserModel">
    select * from user_info
-   where name = 'SYSTEM'
+   where name = 'SYSTEM' limit 1
   </select>
   <select id="getAdminUserInfo" resultType="com.cascv.oas.server.user.model.UserModel">
    select * from user_info
-   where name = 'admin'
+   where name = 'ADMIN' limit 1
   </select>
 
    <update id="updateRecordByHash" parameterType="com.cascv.oas.server.blockchain.model.OasDetail" >

@@ -23,4 +23,9 @@ public interface UserWalletMapper {
    * @return
    */
   UserWallet getSystemWallet();
+  /**
+   * 获取firstone钱包
+   * @return
+   */
+  UserWallet getFirstOneWallet();
 }

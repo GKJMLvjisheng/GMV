@@ -78,6 +78,10 @@
   
   <select id="getSystemWallet" resultMap="userWalletMap">
   	select  <include refid="Base_Column_List" />
-  	from user_wallet where user_uuid = (select uuid from user_info where name='SYSTEM')
+  	from user_wallet where user_uuid = (select uuid from user_info where name='SYSTEM' limit 1)
+  </select>
+  <select id="getFirstOneWallet" resultMap="userWalletMap">
+    select  <include refid="Base_Column_List" />
+  	from user_wallet where user_uuid = (select uuid from user_info where name='FIRSTONE' limit 1)
   </select>
 </mapper>
