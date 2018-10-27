@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -346,6 +347,14 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
             mBottomShow.text = tip
             mBottomShow.setVisible(true)
             loadFlag = false;
+
+            var mHandler: Handler = Handler()
+            mHandler.postDelayed(object :Runnable{
+                override fun run() {
+                    mBottomShow.setVisible(false)
+                }
+            },BaseConstant.LOADING_STAY_TIME.toLong())
+
         }
 
     }

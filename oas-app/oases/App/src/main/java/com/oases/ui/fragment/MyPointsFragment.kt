@@ -198,6 +198,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
 
     override fun onGetPointsDeails(list:InquireEnergyDetailResp) {
        // if(list!=null){
+            swipeLayout.setRefreshing(false)
             if(list.rows.size>0){
                 val items = list.rows
                 var map:Map<String,ArrayList<EnergyItem>> = mapOf<String,ArrayList<EnergyItem>>()
@@ -225,7 +226,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                     item?.add(map[key]!!)
                 }
                 exAdapter.pushData(map)
-                swipeLayout.setRefreshing(false)
+
                 var groupNumber = exAdapter.getGroupCount()
                 for( i in 1..groupNumber){
                     expandableListView.collapseGroup(i-1)
