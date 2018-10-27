@@ -71,7 +71,7 @@ public class MinerController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
 		BigDecimal parameterValue = systemParameterModelRequest.getParameterValue();
-		BigDecimal rate = BigDecimal.ONE.divide(parameterValue).setScale(6, BigDecimal.ROUND_HALF_UP);
+		BigDecimal rate = BigDecimal.ONE.divide(parameterValue, 6, BigDecimal.ROUND_HALF_UP);
 		log.info("rate={}",rate);
 		systemParameterModel.setParameterValue(rate);
 		systemParameterModel.setPeriod(systemParameterModelRequest.getPeriod());
@@ -108,7 +108,7 @@ public class MinerController {
 		systemParameterModel.setCurrency(systemParameterModelRequest.getCurrency());
 		systemParameterModel.setPeriod(systemParameterModelRequest.getTime());
 		BigDecimal parameterValue = systemParameterModelRequest.getParameterValue();
-		BigDecimal rate = BigDecimal.ONE.divide(parameterValue).setScale(6, BigDecimal.ROUND_HALF_UP);
+		BigDecimal rate = BigDecimal.ONE.divide(parameterValue, 6, BigDecimal.ROUND_HALF_UP);
 		log.info("rate={}",rate);
 		systemParameterModel.setParameterValue(rate);
 		systemParameterModel.setUpdated(now);
@@ -146,7 +146,7 @@ public class MinerController {
 				systemParameterResponse.setParameterName("γ");
 				BigDecimal rate = systemParameterModel.get(i).getParameterValue();
 				log.info("rate={}",rate);
-				BigDecimal parameterValue = BigDecimal.ONE.divide(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
+				BigDecimal parameterValue = BigDecimal.ONE.divide(rate, 2, BigDecimal.ROUND_HALF_UP);
 				log.info("parameterValue={}",parameterValue);
 				systemParameterResponse.setParameterValue(parameterValue);
 			}
