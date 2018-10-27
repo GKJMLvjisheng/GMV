@@ -289,25 +289,35 @@
     <result column="email" property="email"/>
     <result column="IMEI" property="IMEI"/>
     <result column="created" property="created"/>
-     <result column="status" property="status"/>
-     <result column="roleId" property="roleId"/>
+    <result column="status" property="status"/>
+    <result column="roleId" property="roleId"/>
+    <result column="user_identity_name" property="userIdentityName"/>
+    <result column="user_identity_number" property="userIdentityNumber"/>
+    <result column="remark" property="remark"/>
+    <result column="verify_status" property="verifyStatus"/>
+    
   </resultMap>
-  
+   
   <select id="selectUsersByPage" resultMap="userResultMap">
 	 select 
-		name,
-	    nickname,
-	    gender,
-	    birthday,
-	    address,
-	    mobile,
-	    email,
-	    IMEI,
-	    status,
+		U.name as name,
+	    U.nickname as nickname, 
+	    U.gender as gender,
+	    U.birthday as birthday,
+	    U.address as address,
+	    U.mobile as mobile,
+	    U.email as email,
+	    U.IMEI as IMEI,
+	    U.status as status,
 		U.created as created,
+		ICI.user_identity_name as user_identity_name,
+		ICI.user_identity_number as user_identity_number,
+		ICI.remark as remark,
+		ICI.verify_status as verify_status,
 		UR.role_id as roleId
 		from user_info U 
-		join user_role UR on U.uuid = UR.uuid 
+		left join user_role UR on U.uuid = UR.uuid 
+		left join identity_card_info ICI on U.name=ICI.user_name
 		where UR.role_id=#{roleId} 
 	   <if test="searchValue != null and searchValue !='' ">
     	    and (

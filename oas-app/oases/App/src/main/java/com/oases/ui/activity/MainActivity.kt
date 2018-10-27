@@ -71,7 +71,7 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
         initFragment()
         initBottomNav()
         //todo getLatestVesionInfo
-        Log.d("zbb","app update create")
+       // Log.d("zbb","app update create")
         onGetLatestVersion()//todo add to presenter callback
         changeFragment(0)
     }

@@ -17,4 +17,8 @@ public class UserDetailModel implements Serializable {
 	@Getter @Setter private String IMEI;
 	@Getter @Setter private Integer status;
 	@Getter @Setter private Integer roleId;
+	@Getter @Setter private String userIdentityName;
+	@Getter @Setter private String userIdentityNumber;
+	@Getter @Setter private String remark;
+	@Getter @Setter private Integer verifyStatus;
 }

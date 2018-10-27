@@ -257,7 +257,7 @@ public class UserWalletService {
 	  UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
 	  if(adminInfo!=null && adminInfo.getMobile()!=null) {
 		  String mobile = "+86".concat(adminInfo.getMobile());
-		  String SIGNNAME = "国科云景";
+		  String SIGNNAME = "OASESCHAIN";
 		  String content = "【"+SIGNNAME+"】"+"报告管理员：有一条新的提币记录！";
 	      PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
 	      log.info("提币短信发送成功"+publishResult.toString());
@@ -327,7 +327,7 @@ public class UserWalletService {
 			  UserCoin tokenCoin = ethWalletService.getUserCoin(systemInfo.getUuid()); //system的usercoin
 			  
 			  //操作交易钱包
-			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
+			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(5), Convert.Unit.GWEI).toBigInteger();
 			  BigInteger gasLimit = BigInteger.valueOf(60000);
 			  //获取当前用户的eth wallet
 			  EthWallet ethWallet = ethWalletMapper.selectByUserUuid(detail.getUserUuid());

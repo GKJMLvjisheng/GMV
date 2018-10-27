@@ -12,7 +12,6 @@ import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.wrapper.*;
 import com.cascv.oas.server.common.BaseController;
-import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
@@ -60,8 +59,6 @@ public class EnergyPointController extends BaseController{
     private ActivityService activityService;
     @Autowired
     private ActivityMapper activityMapper;
-    @Autowired
-    private EnergyWalletMapper energyWalletMapper;
     @Autowired
     private WalkMapper walkMapper;
 	@Autowired 
@@ -173,8 +170,9 @@ public class EnergyPointController extends BaseController{
     public ResponseEntity<?> inquireEnergyPoint() {
         EnergyWallet energyPoint = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
-            return new ResponseEntity.Builder<Integer>()
-                    .setData(energyPoint.getPoint().intValue())
+        	BigDecimal point = energyPoint.getPoint();
+            return new ResponseEntity.Builder<BigDecimal>()
+                    .setData(point)
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
@@ -207,10 +205,7 @@ public class EnergyPointController extends BaseController{
     	
     	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_CHECKIN, REWARD_CODE_OF_POINT).getMaxValue();
     	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue().multiply(BigDecimal.valueOf((int)12));
-    	BigDecimal power = energyWalletMapper.selectByUserUuid(userUuid).getPower();
-    	if(power.compareTo(BigDecimal.ZERO) == 0)
-    		power = BigDecimal.ONE;
-    	BigDecimal maxPoint = power.multiply(checkInPoint.add(freePoint));
+    	BigDecimal maxPoint = checkInPoint.add(freePoint);
     	
     	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALK, REWARD_CODE_OF_POINT).getMaxValue()
     			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALK, REWARD_CODE_OF_POINT).getIncreaseSpeed());
@@ -465,6 +460,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
             .build();
       }
+      log.info("inquirePointFactor date {}", date);
       energyPointFactor.setDate(date);
       ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(date, CurrencyCode.POINT);
       if (exchangeRateModel == null) {

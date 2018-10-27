@@ -468,7 +468,7 @@ public class EthWalletController extends BaseShiroController {
 	  info.setToUserAddress(user.getName());
 	  BigInteger gasPrice = info.getGasPrice();
 	  if (gasPrice == null) {
-		  gasPrice=Convert.toWei(BigDecimal.valueOf(3), Convert.Unit.GWEI).toBigInteger();
+		  gasPrice=Convert.toWei(BigDecimal.valueOf(5), Convert.Unit.GWEI).toBigInteger();
 	  }else {
 		//前端传的值单位从wei改为Gwei，差额为10的9次方
 		  BigInteger k = new BigInteger("10");
