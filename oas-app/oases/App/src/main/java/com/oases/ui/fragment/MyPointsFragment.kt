@@ -70,6 +70,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
     var groupData:MutableList<String>?=null
     var itemData :MutableList<MutableList<EnergyItem>>?=null
     lateinit var swipeLayout:SwipeRefreshLayout
+    lateinit var expandableListView:ExpandableListView
 
     override fun injectComponent() {
         DaggerMainComponent
@@ -102,7 +103,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
         Log.d("zbb", "pointsfragment gpu ${rootFragment.layerType}")
         exAdapter = MyPointsGroupAdapter(this.context!!)
 
-        val expandableListView = rootFragment.findViewById(R.id.mPointGroupLayout) as ExpandableListView
+        expandableListView = rootFragment.findViewById(R.id.mPointGroupLayout) as ExpandableListView
         expandableListView.setAdapter(exAdapter)
         //expandableListView.expandGroup(0);//设置第一组张开
         //expandableListView.collapseGroup(0); 将第group组收起
@@ -197,6 +198,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
 
     override fun onGetPointsDeails(list:InquireEnergyDetailResp) {
        // if(list!=null){
+            swipeLayout.setRefreshing(false)
             if(list.rows.size>0){
                 val items = list.rows
                 var map:Map<String,ArrayList<EnergyItem>> = mapOf<String,ArrayList<EnergyItem>>()
@@ -223,8 +225,13 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
                     group?.add(key)
                     item?.add(map[key]!!)
                 }
-               exAdapter.pushData(map)
-                swipeLayout.setRefreshing(false)
+                exAdapter.pushData(map)
+
+                var groupNumber = exAdapter.getGroupCount()
+                for( i in 1..groupNumber){
+                    expandableListView.collapseGroup(i-1)
+                }
+
               //  exAdapter.notifyDataSetChanged()
             }
        // }

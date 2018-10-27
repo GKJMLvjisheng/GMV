@@ -91,7 +91,7 @@ function questionReady(){
 }
 
 //新增问题
-function addQuestion(){	
+function addQuestion(){		
 	var formData = new FormData();
 	var question=$("#question").val();
 	var choiceA=$("#choiceA").val();
@@ -109,7 +109,7 @@ function addQuestion(){
 		$.ajax({
 		url:"/api/v1/computingPower/addTopic",
 		data:formData,
-		contentType : 'application/json;charset=utf8',
+		//contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		type: 'post',
 		cache: false,		
@@ -118,10 +118,9 @@ function addQuestion(){
 		async : false,
 
 		success:function(res){					
+			document.getElementById("tipContent").innerText="新增成功";
 			$("#Tip").modal('show');
-			$("#addQuestionModal").modal('hide');
-			questionReady();
-			$("#questionGrid").bootstrapTable('refresh');							
+			location.reload();							
 		},
 		error:function(){
 			document.getElementById("tipContent").innerText="新增失败";
@@ -153,7 +152,7 @@ function updateQuestion(){
 	$.ajax({
 		url:"/api/v1/computingPower/updateTopic",
 		data:formData,
-		contentType : 'application/json;charset=utf8',
+		//contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		type: 'post',
 		cache: false,

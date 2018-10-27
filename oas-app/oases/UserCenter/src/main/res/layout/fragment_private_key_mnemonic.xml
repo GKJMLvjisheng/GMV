@@ -8,34 +8,37 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/mPrivateKeyMnemonic"
-        android:layout_width="350dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:text="angel angel angel angel angel\nangel angel angel angel angel\nangel angel angel angel angel"
+        android:text="angelffff angel angel angel angel\nangelff angel angel angel angel\nangelffffffffff angel angel angel angel"
         android:textColor="@color/common_green"
-        android:textSize="18dp"/>
+        android:textSize="18dp" />
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="100dp"
+        android:textSize="15dp"
         android:text="以上15个私钥助记词极其重要：\n一旦泄密，将丢失钱包内所有数字资产；\n一旦丢失，将无法找回钱包内所有数字资产！"/>
 
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="200dp"
-        android:text="请讲单词手写，备份多份，放在不同的安全区域；\n请不要在被拍照、摄像、偷看的情况下进行创建；\n严禁将单词在网络传输、放在网盘等不安全环境！" />
+        android:layout_marginTop="180dp"
+        android:textSize="15dp"
+        android:text="请将单词手写，备份多份，放在不同的安全区域；\n请不要在被拍照、摄像、偷看的情况下进行创建；\n严禁将单词在网络传输、放在网盘等不安全环境！" />
 
     <RelativeLayout
-        android:layout_width="350dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="300dp">
+        android:layout_marginTop="280dp">
 
         <TextView
+            android:id="@+id/mOAS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -47,17 +50,20 @@
             android:textSize="15dp" />
 
         <TextView
-            android:id="@+id/mMoreDetail"
+            android:id="@+id/mPrivateKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="64dp"
+            android:layout_toRightOf="@+id/mOAS"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="10dp"
             android:text="OAS OAS OAS OAS OAS \nOAS OAS OAS OAS OAS"
             android:textColor="@color/common_green"
             android:textSize="15dp" />
     </RelativeLayout>
     <Button
+        android:id="@+id/mSaveWalletBackup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

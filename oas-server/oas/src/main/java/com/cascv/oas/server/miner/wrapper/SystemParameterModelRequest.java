@@ -9,7 +9,8 @@ import lombok.Setter;
 public class SystemParameterModelRequest implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	@Getter @Setter private Integer uuid;
+	@Getter @Setter private Integer currency;
 	@Getter @Setter private BigDecimal parameterValue;
+	@Getter @Setter private String time;
 
 }

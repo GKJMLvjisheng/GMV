@@ -8,7 +8,7 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/mEncryptedMnemonic"
-        android:layout_width="350dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
@@ -16,7 +16,7 @@
         android:textColor="@color/common_green"
         android:textSize="18dp"/>
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="100dp"
@@ -24,14 +24,15 @@
         android:textSize="15dp"
         android:textColor="@color/common_red"/>
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="120dp"
+        android:textSize="15dp"
         android:text="请复制粘贴加密助记词文件到安全、离线的地方保存。切勿保存至邮箱、记事本、网盘、聊天工具等，非常危险。"/>
 
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="200dp"
@@ -39,53 +40,57 @@
         android:textSize="15dp"
         android:textColor="@color/common_red"/>
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="220dp"
+        android:textSize="15dp"
         android:text="请勿通过网络工具传输加密助记词，一旦被黑客获取将造成不可挽回的资产损失。" />
 
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="280dp"
         android:text="请牢记加密助记词使用的账号密码"
         android:textSize="15dp"
         android:textColor="@color/common_red"/>
     <TextView
-        android:layout_width="350dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="330dp"
-        android:text="请牢记到处加密助记词使用的账号密码，使用加密助记词文件恢复账号时必须使用该密码。" />
+        android:layout_marginTop="300dp"
+        android:textSize="15dp"
+        android:text="请牢记加密助记词使用的账号密码，使用加密助记词文件恢复账号时必须使用该密码。" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="150dp"
+        android:layout_gravity="center"
         android:gravity="center_horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginTop="380dp"
-            android:layout_marginLeft="20dp"
-            android:text="/OASDapp/eee_encrypt_seed.text"
-            android:textSize="15dp" />
         <ImageView
-            android:layout_width="350dp"
-            android:layout_height="100dp"
-            android:layout_alignParentTop="true"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_alignBottom="@+id/mEncryptUri"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="380dp"
             android:background="@drawable/bg_uriborder"
             android:scaleType="fitCenter" />
+        <TextView
+            android:id="@+id/mEncryptUri"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:text="/OASDapp/eee_encrypt_seed.text"
+            android:textSize="15dp" />
     </RelativeLayout>
     <Button
+        android:id="@+id/mExportFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="220dp"
         android:background="@drawable/qb2"
         android:text="导出加密助记词到该地址"
         android:textColor="@color/common_white"

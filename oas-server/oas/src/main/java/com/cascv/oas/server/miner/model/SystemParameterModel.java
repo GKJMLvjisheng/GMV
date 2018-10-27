@@ -7,11 +7,11 @@ import lombok.Setter;
 
 public class SystemParameterModel {
 	
-	@Getter @Setter private Integer uuid;
 	@Getter @Setter private BigDecimal parameterValue;
-	@Getter @Setter private String parameterName;
 	@Getter @Setter private String period;
 	@Getter @Setter private String created;
 	@Getter @Setter private String updated;
+	@Getter @Setter private String comment;
+	@Getter @Setter private Integer currency;
 
 }

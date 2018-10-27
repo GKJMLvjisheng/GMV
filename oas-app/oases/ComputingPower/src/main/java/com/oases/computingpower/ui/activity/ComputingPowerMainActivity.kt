@@ -129,7 +129,8 @@ class ComputingPowerMainActivity :
     override fun onClick(v: View?) {
         var name = v?.mName?.text?:""
         when (name){
-            mBackupWallet ->toast("即将上线")
+            mBackupWallet ->ARouter.getInstance().build(RouterPath.UserCenter.PATH_BACKUP_WALLET).navigation()
+            //mBackupWallet->toast("即将上线")
             mWatchWeChat -> startActivity<WatchingWeChatPublicAccountActivity>()
             mInviteFriends ->startActivity<InviteFriendsActivity>()
             mEnvironmentalmProtectionAnswer->toast("即将上线")

@@ -71,8 +71,15 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
         initFragment()
         initBottomNav()
         //todo getLatestVesionInfo
+        Log.d("zbb","app update create")
         onGetLatestVersion()//todo add to presenter callback
         changeFragment(0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("zbb","app update resume")
+        onGetLatestVersion()
     }
 
     private fun changeFragment(position: Int) {
@@ -243,7 +250,7 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
                     builder.setForceRedownload(true) //本地有安装包缓存仍重新下载apk
                     if(value.upGradeStatus == 1){
                         builder.setForceUpdateListener {
-                            System.exit(0)
+                            //System.exit(0)
                         }
                     }
                 }
@@ -253,4 +260,5 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
             e.printStackTrace()
         }
     }
+
 }

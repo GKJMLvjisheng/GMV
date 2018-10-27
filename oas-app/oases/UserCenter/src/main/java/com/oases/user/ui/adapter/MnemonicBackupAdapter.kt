@@ -17,9 +17,9 @@ class MnemonicBackupAdapter(fm:FragmentManager): FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return if (position == 0){
-            EncryptedMnemonicFragment()
-        }else{
             PrivateKeyMnemonicFragment()
+        }else{
+            EncryptedMnemonicFragment()
         }
     }
 

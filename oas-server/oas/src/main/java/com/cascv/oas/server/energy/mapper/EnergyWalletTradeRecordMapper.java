@@ -2,11 +2,12 @@ package com.cascv.oas.server.energy.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import com.cascv.oas.server.energy.vo.EnergyWalletBalanceRecordInfo;
 import com.cascv.oas.server.energy.vo.EnergyWalletPointRecordInfo;
 import com.cascv.oas.server.energy.vo.EnergyWalletTradeRecordInfo;;
-
+@Component
 public interface EnergyWalletTradeRecordMapper {
 	
 	List<EnergyWalletTradeRecordInfo> selectAllTradeRecordBySearchValue(@Param("offset") Integer offset, @Param("limit") Integer limit,@Param("searchValue") String searchValue);

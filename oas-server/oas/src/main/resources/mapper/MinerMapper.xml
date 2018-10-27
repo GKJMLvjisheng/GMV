@@ -285,52 +285,38 @@
     </update>
     
     <resultMap id="SystemParameterMap" type="com.cascv.oas.server.miner.model.SystemParameterModel">
-		<id column="uuid" property="uuid" />
-		<result column="parameter_value" property="parameterValue"/>
-	  	<result column="parameter_name" property="parameterName"/>
-	  	<result column="period" property="period"/>
+		<result column="rate" property="parameterValue"/>
+		<result column="currency" property="currency"/>
+	  	<result column="comment" property="comment"/>
+	  	<result column="time" property="period"/>
 	  	<result column="created" property="created"/>
 	  	<result column="updated" property="updated"/>
     </resultMap>
     
     <insert id="insertSystemParameter" parameterType="com.cascv.oas.server.miner.model.SystemParameterModel">
-        <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
-	      SELECT LAST_INSERT_ID()
-	    </selectKey>
-        insert into system_parameter 
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-	        parameter_value, parameter_name,
-	        <if test="period != null">
-	          period,
-	        </if>
-	        created, updated
-	    </trim>
-	    <trim prefix="values (" suffix=")" suffixOverrides=",">
-	        #{parameterValue}, #{parameterName},
-	         <if test="period != null">
-	           #{period},
-	        </if>
-	        #{created}, #{updated}
-	    </trim>      
+        insert into exchange_rate 
+	        (rate, currency, comment, time, created, updated)
+	    values
+	        (#{parameterValue}, #{currency}, #{comment}, #{period}, #{created}, #{updated})
     </insert>
     
-    <delete id="deleteSystemParameterByUuid">
-        delete from system_parameter where uuid = #{uuid}
-    </delete>
+<!--     <delete id="deleteSystemParameterByUuid"> -->
+<!--         delete from system_parameter where uuid = #{uuid} -->
+<!--     </delete> -->
     
     <select id="selectSystemParameter" resultMap="SystemParameterMap">
-        select * from system_parameter
+        select * from exchange_rate where currency = 1 or currency = 11 order by currency desc
     </select>
     
-    <select id="selectSystemParameterByUuid" resultMap="SystemParameterMap">
-        select * from system_parameter where uuid = #{uuid}
+    <select id="selectSystemParameterByCurrency" resultMap="SystemParameterMap">
+        select * from exchange_rate where currency = #{currency}
     </select>
     
     <update id="updateSystemParameterByUuid" parameterType="com.cascv.oas.server.miner.model.SystemParameterModel">
-        update system_parameter
-         set parameter_value = #{parameterValue},
+        update exchange_rate
+         set rate = #{parameterValue},
              updated = #{updated}
-         where uuid = #{uuid}
+         where time = #{period} and currency = #{currency}
     </update>
     
 </mapper>

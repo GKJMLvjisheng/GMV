@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"> 
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewsManager</title>
+    <title>userAccount</title>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
@@ -154,17 +154,17 @@
 						
 <!-- 							style="display:none" type="hidden" -->
 
-							<label for="normal" class="col-sm-3 control-label"> 
+							<label for="normal" class="col-sm-4 control-label"> 
 								<input type="radio" name="radio1" id="A1"  value="2"> 正常账号
 							</label>
 												
-							<label for="test" class="col-sm-3 control-label">
+							<label for="test" class="col-sm-4 control-label">
 								<input type="radio" name="radio1" id="B1"  value="3"> 测试账号 
 							</label>
 												
-							<label for="system" class="col-sm-3 control-label">
-								<input type="radio" name="radio1" id="C1"  value="1"> 系统账号
-							</label>
+<!-- 							<label for="system" class="col-sm-3 control-label"> -->
+<!-- 								<input type="radio" name="radio1" id="C1"  value="1"> 系统账号 -->
+<!-- 							</label> -->
 												
 					</br>	
 					</form>
@@ -178,7 +178,7 @@
 		</div>
 	</div>	 
 	
-	<!-- 权限控制 -->
+	<!-- 账号状态 -->
     <div class="modal fade" id="controlModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
@@ -187,7 +187,7 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">权限控制</h3>			
+					<h3 class="modal-title" id="myModalLabel">账号状态</h3>			
 				</div>
 
 				<div class="modal-body">
@@ -219,7 +219,7 @@
 		</div>
 	</div>	 
 	
-	<!-- 查看信息的模态框 -->
+	<!-- 查看KYC认证信息的模态框 -->
     <div class="modal fade" id="queryModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
@@ -228,7 +228,7 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">详细信息</h3>			
+					<h3 class="modal-title" id="myModalLabel">KYC认证信息</h3>			
 				</div>
 
 				<div class="modal-body">

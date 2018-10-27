@@ -8,8 +8,10 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.oases.base.common.BaseConstant
 import com.oases.base.ext.onClick
 import com.oases.base.ui.activity.BaseMvpActivity
+import com.oases.base.utils.AppPrefsUtils
 import com.oases.provider.common.isLogined
 import com.oases.provider.router.RouterPath
 import com.oases.user.R
@@ -36,6 +38,11 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     private fun initView() {
+
+        if (AppPrefsUtils.getString(BaseConstant.USER_NAME) != ""){
+            mUserName.setText(AppPrefsUtils.getString(BaseConstant.USER_NAME))
+        }
+
         mLoginBtn.setOnClickListener {
             attemptLogin()
         }

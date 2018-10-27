@@ -64,6 +64,11 @@ public class RootController {
     public String resetMobile() {
       return "userInfo/resetMobile/resetMobile";
     }
+  //修改密码
+    @GetMapping(value="/userInfo/resetPassword/resetPassword")
+    public String resetPassword() {
+      return "userInfo/resetPassword/resetPassword";
+    }
 
     // Login 
 	  @GetMapping("/login")

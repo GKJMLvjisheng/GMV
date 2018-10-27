@@ -8,7 +8,7 @@ $(function() {
 function initPowerGrid() {
 	$("#powerGrid").bootstrapTable('destroy');
 	$("#powerGrid").bootstrapTable({
-		//url: '/api/v1/energyPoint/inqureEnergyWalletTradeRecord',
+		url: '/api/v1/energyPoint/inqureEnergyWalletTradeRecord',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -59,14 +59,6 @@ function initPowerGrid() {
 			valign: 'middle',
 			width:  '130px',
 		},
-		{
-			title : "兑换状态",
-			field : "status",
-			align: 'center',
-			valign: 'middle',
-			width:  '130px',
-			formatter: actionFormatter2
-		},
 			{
 			title : "交易时间",
 			field : "created",
@@ -99,17 +91,6 @@ function actionFormatter1(value, row, index) {
 	}        
 }
 
-function actionFormatter2(value, row, index) {
-    var result = "";
-    if(value==1){
-	result += "<span>未兑换</span>";      
-    return result;
-	}else if(value==0){
-	result += "<span>已兑换</span>";      
-    return result;
-	}    
-}	
-
 //请求服务数据时所传参数
 function queryParams(params){
 	var pageSize = params.limit;
@@ -129,7 +110,7 @@ function queryParams(params){
 function responseHandler(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
-        alert("能量钱包回显失败，错误代码:" + code);
+        alert("算力记录查询回显失败，错误代码:" + code);
         return;
     }
     //如果没有错误则返回数据，渲染表格

@@ -113,6 +113,7 @@ public class EthWalletService {
   
   @Autowired
   private MessageService messageService;
+  
 
 
   public synchronized void updateJob() {
@@ -127,7 +128,7 @@ public class EthWalletService {
             ethWalletDetail.setTxResult(status);
             //userWalletDetailMapper.updateByHash(ethWalletDetail.getTxHash(),status);
             ErrorCode result = getExchangeResult(ethWalletDetail);
-            log.info("update Result:",result.getMessage());
+            log.info("eth job update Result:",result.getMessage());
         }else {
             if (ethWalletDetail.getPrior() > 2880) {
                 ethWalletDetail.setTxResult(0x4);
@@ -657,6 +658,7 @@ public class EthWalletService {
 	   case 1:  flag = "success";break;
 	   default: flag = "fail"; break;
 	  }
+	  log.info("get withdraw or reverse result flagInt:{}",flagInt);
 	  //String flag = EthWalletService.getTransferResult("ropsten",hash);//"0xed8df5635ba8999bc547970b843a3ee87d8282032616637e983127f9f083fa5c"
 	  if(flag.equals("success") || flag.equals("fail")) {
 		  if(detail.getTitle().indexOf("转出")!=-1 || detail.getTitle().indexOf("转入")!=-1) {
@@ -698,6 +700,7 @@ public class EthWalletService {
 	  	 if(oasD == null) {
 	  		 return ErrorCode.SELECT_EMPTY;
 	  	 }
+	  	 log.info("oas detail id is:{}",oasD.getUuid());
 	  	 UserWallet myWallet = userWalletMapper.selectByUserUuid(user.getUuid());
 	  	 if(myWallet == null) {
 	  		 return ErrorCode.NO_ONLINE_ACCOUNT;
@@ -720,13 +723,21 @@ public class EthWalletService {
 	  	 if(oasD.getType().equals(OasEventEnum.OAS_OUT.getCode())) {
 
 	  		 if(flag.equals("success")) {
+	  			
 	  			systemAccountBalance = systemWallet.getBalance().add(value);
 	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),null,myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
 	  			Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
 	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
-	  			
+	  		    //更新在线钱包记录中的状态
+		  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid(),myWallet.getBalance(),0);
+		  		if(uwdResult == 0) {
+	 		  		 return ErrorCode.UPDATE_FAILED;
+	 		  	}
+		  	  //system转入记录
+	  			userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_IN, value, detail.getRemark(), detail.getRemark(),null,systemAccountBalance));
+
 	  		  }else {
 	  			/* if(systemWallet.getBalance().compareTo(oasD.getExtra()) == -1) {
 	  				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
@@ -737,15 +748,16 @@ public class EthWalletService {
 	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
-	  		 }
-	  		//更新在线钱包记录中的状态
-	  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid(),myWallet.getBalance(),0);
-	  		if(uwdResult == 0) {
- 		  		 return ErrorCode.UPDATE_FAILED;
- 		  	}
-	  	  //system转入记录
-  			userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_IN, value, detail.getRemark(), detail.getRemark(),null,systemAccountBalance));
+	  		    //更新在线钱包记录中的状态
+		  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),0);
+		  		if(uwdResult == 0) {
+	 		  		 return ErrorCode.UPDATE_FAILED;
+	 		  	}
+		  	  //system转出手续费记录
+	  			userWalletDetailMapper.insertSelective(UserWalletService.setDetail(systemWallet, user.getName(), UserWalletDetailScope.TRANSFER_OUT, oasD.getExtra(), detail.getRemark(), detail.getRemark(),null,systemAccountBalance));
 
+	  		 }
+	  		
 	  	 }else {
 	  		 //充币
 		  	 if(flag.equals("success")) {
@@ -832,6 +844,8 @@ public class EthWalletService {
 	      if(publishResult.getMessageId() == null) {
 	    	  return ErrorCode.SEND_SMS_ERROR;
 		  }
+	  }else {
+		  log.info("管理员用户不存在或未设置电话,无法发送报警信息");
 	  }
 	  return ErrorCode.SUCCESS;
   }
