@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         app:leftTop="能量积分周期"
         app:rightTop="2018-08"
-        app:rightBottom="287125">
+        app:rightBottom="0.00">
     </com.oases.base.widgets.ExchangeItem>
 
     <com.oases.base.widgets.ExchangeItem
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         app:leftTop="档期兑换因子"
         app:leftBottom="兑换比率，根据不同时间的环境状况，动态调整"
-        app:rightTop="0.000001"
+        app:rightTop="0.00"
         app:notShowRight ="true">
     </com.oases.base.widgets.ExchangeItem>
 
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         app:leftTop="兑换积分数量"
         app:leftBottom="仅支持档期全部兑换"
-        app:rightTop="2871215"
+        app:rightTop="0"
         app:notShowRight ="true"
         app:rightTopTextColor="@color/common_green">
     </com.oases.base.widgets.ExchangeItem>

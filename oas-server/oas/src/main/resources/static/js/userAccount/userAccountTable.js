@@ -465,8 +465,9 @@ function responseHandler3(res){
 
 function actionFormatter1(value, row, index) {
 	 var name = value;
+	 var roleId = row.roleId;
 	var result = "";	
-	result += "<input type='radio' onclick=\"reset('" + name + "')\"' name='radio' id='reset' value='1'>重置  ";
+	result += "<input type='radio' onclick=\"reset('" + name + "', '" + roleId + "')\"' name='radio' id='reset' value='1'>重置  ";
 	return result;	
 }
 
@@ -501,7 +502,7 @@ function ViewViewById(name){
 		"userName": name
 	};
 	$.ajax({
-	url:"/api/v1/userCenter/inquireUserKYCInfo",
+	url:"/api/v1/userCenter/selectAllUsers",
 	contentType : 'application/json;charset=utf8',
 	dataType: 'json',
 	cache: false,
@@ -512,7 +513,7 @@ function ViewViewById(name){
 
 	success:function(res){				
 		if(res.code==0){
-		//alert(JSON.stringify(res));			
+		alert(JSON.stringify(res));			
 		var rows = res.data;
 		var verifyStatus = rows.verifyStatus;
 		if(verifyStatus==0){
@@ -536,6 +537,16 @@ function ViewViewById(name){
 			document.getElementById("userIdentityNumber1").style.display="none";
 			document.getElementById("remark1").style.display="block";
 		}
+		
+		
+		$('#Qname').val(rows.name);
+		$('#Qnickname').val(rows.nickname);
+		$('#Qgender').val(rows.gender);
+		$('#Qbirthday').val(rows.birthday);
+		$('#Qmobile').val(rows.mobile);
+		$('#Qemail').val(rows.email);
+		$('#Qaddress').val(rows.address);
+		$('#QinviteCode').val(rows.inviteCode);
 		
 		$('#verifyStatus').val(status);	
 		//$('#IMEI').val(rows.IMEI);

@@ -173,8 +173,9 @@ public class EnergyPointController extends BaseController{
     public ResponseEntity<?> inquireEnergyPoint() {
         EnergyWallet energyPoint = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
-            return new ResponseEntity.Builder<Integer>()
-                    .setData(energyPoint.getPoint().intValue())
+        	BigDecimal point = energyPoint.getPoint();
+            return new ResponseEntity.Builder<BigDecimal>()
+                    .setData(point)
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
@@ -465,6 +466,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
             .build();
       }
+      log.info("inquirePointFactor date {}", date);
       energyPointFactor.setDate(date);
       ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(date, CurrencyCode.POINT);
       if (exchangeRateModel == null) {
