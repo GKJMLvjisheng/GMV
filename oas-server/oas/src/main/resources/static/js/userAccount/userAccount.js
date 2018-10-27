@@ -9,15 +9,16 @@ $(function() {
 	
 });
 
-function reset(name){
+function reset(name,roleId){
 	
 	$('#name').val(name);
+	$('#roleId3').val(roleId);
 	document.getElementById("confirm").innerText="确认重置IMEI吗？";
 	$("#IMEIModal").modal("show");
 }
 
 function Confirm(){
-	
+	var roleId3 = $("#roleId3").val();	
 	var name = $("#name").val();	
 	var data={		
 		"name":name,		
@@ -36,10 +37,21 @@ function Confirm(){
 		success: function(res) {
 			if(res.code==0){
 				document.getElementById("tipContent").innerText="重置过程完成";
-				$("#Tip").modal('show');				
-					initNormalGrid();			
-					initTestGrid();				
-					initSystemGrid();								
+				$("#Tip").modal('show');	
+				if(roleId3==2){
+					var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+					$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+					
+				}else if(roleId3==3){
+					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+					
+				}else if(roleId3==1){
+					var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
+					$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
+					
+				}		
+				
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
 				$("#Tip").modal('show');
@@ -63,6 +75,7 @@ function role(name,roleId){
     
     //alert(JSON.stringify(rows))
     $('#roleId').val(rows.roleId);
+    $('#roleId1').val(rows.roleId);
 	$('#roleName').val(rows.name);
 	$('#status').val(rows.status);
 	
@@ -77,6 +90,7 @@ function role(name,roleId){
 
 function roleConfirm(){
 	var roleId = $("#roleId").val();
+	var roleId1 = $("#roleId1").val();
 	var name = $("#roleName").val();	
 	var data={		
 		"name":name,
@@ -96,10 +110,24 @@ function roleConfirm(){
 		success: function(res) {
 			if(res.code==0){
 				document.getElementById("tipContent").innerText="授权过程完成";
-				$("#Tip").modal('show');				
-					initNormalGrid();			
+				$("#Tip").modal('show');
+				if(roleId1==2){
+					var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+					$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
 					initTestGrid();				
-					initSystemGrid();								
+					initSystemGrid();
+				}else if(roleId1==3){
+					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+					initNormalGrid();			
+					initSystemGrid();
+				}else if(roleId1==1){
+					var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
+					$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
+					initNormalGrid();			
+					initTestGrid();
+				}
+											
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
 				$("#Tip").modal('show');
@@ -121,7 +149,7 @@ function control(name,roleId){
 		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);
 	}
     //alert(JSON.stringify(rows));
-    //$('#roleId').val(rows.roleId);
+    $('#roleId2').val(rows.roleId);
 	$('#controlName').val(rows.name);
 	$('#status').val(rows.status);
 
@@ -136,6 +164,7 @@ function control(name,roleId){
 }
 
 function controlConfirm(){
+	var roleId2 = $("#roleId2").val();
 	var status = $("#status").val();
 	var name = $("#controlName").val();	
 	var data={		
@@ -156,10 +185,21 @@ function controlConfirm(){
 		success: function(res) {
 			if(res.code==0){
 				document.getElementById("tipContent").innerText="操作过程完成";
-				$("#Tip").modal('show');				
-					initNormalGrid();			
-					initTestGrid();				
-					initSystemGrid();								
+				$("#Tip").modal('show');
+				
+				if(roleId2==2){
+					var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+					$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+					
+				}else if(roleId2==3){
+					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+					
+				}else if(roleId2==1){
+					var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
+					$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
+					
+				}							
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
 				$("#Tip").modal('show');
@@ -173,9 +213,60 @@ function controlConfirm(){
 }
 
 //点击取消后清空表单中已写信息
-function resetModal(){
-	//document.getElementById("addNewsForm").reset();
-	location.reload();
+function resetModal1(){
+	var roleId3 = $("#roleId3").val();
+	if(roleId3==2){
+		var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+		$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+		
+	}else if(roleId3==3){
+		var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+		$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+		
+	}else if(roleId3==1){
+		var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
+		$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
+		
+	}
+	//location.reload();
+}
+
+//点击取消后清空表单中已写信息
+function resetModal2(){
+	var roleId1 = $("#roleId1").val();
+	if(roleId1==2){
+		var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+		$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+		
+	}else if(roleId1==3){
+		var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+		$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+		
+	}else if(roleId1==1){
+		var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
+		$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
+		
+	}
+	//location.reload();
+}
+
+//点击取消后清空表单中已写信息
+function resetModal3(){
+	var roleId2 = $("#roleId2").val();
+	if(roleId2==2){
+		var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+		$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+		
+	}else if(roleId2==3){
+		var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+		$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+		
+	}else if(roleId2==1){
+		var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
+		$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
+		
+	}
+	//location.reload();
 }
 
 function display1(){

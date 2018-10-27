@@ -208,11 +208,14 @@ export default {
   },
   beforeMount() {
          //设置定时器，每3秒刷新一次
-         //var self = this;
+         var self = this;
          setInterval(getTotelNumber,300000)
          function getTotelNumber() {
-          this.maxValue()
-          this.getBallAndAnalysis()
+          self.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+          self.energyBallList=[]
+          self.walkEnergyBallList=[]
+          self.getMaxValue()
+          self.getBallAndAnalysis()
              //await self.getWalkEnergyBall() 
             //console.log(JSON.stringify(list))
             //self.getEnergyAnalysis()
@@ -247,6 +250,7 @@ export default {
     this.$axios.post('/energyPoint/pointBallMaxValue').then(({data}) => {
       if(data.code==0){
         this.maxValue=data.data
+        console.log(this.maxValue)
       }
     })
     },
@@ -663,7 +667,7 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.maxValue()
+      this.getMaxValue()
       this.getCurrenttime()
       
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
@@ -696,7 +700,7 @@ export default {
    
  skipRefresh() {
       //this.getStep()
-      this.maxValue()
+      this.getMaxValue()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
