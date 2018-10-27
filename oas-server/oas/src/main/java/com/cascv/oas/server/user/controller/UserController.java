@@ -487,6 +487,7 @@ public class UserController extends BaseShiroController{
 	    //生成唯一的文件名
 	    log.info("oriNmae="+file.getOriginalFilename());
 	    String fileName = UUID.randomUUID().toString().replaceAll("-", "")+"-"+file.getOriginalFilename();
+	    
 	    try {
         byte[] bytes = file.getBytes();
         Path path = Paths.get(UPLOADED_FOLDER + fileName);
@@ -502,6 +503,7 @@ public class UserController extends BaseShiroController{
 	        //获取用户名
 	        String name=ShiroUtils.getUser().getName();
 	        log.info("---userName-->{}" +name);
+	        log.info("proUrl->{}",proUrl);
 	        userNewModel.setName(name);
 	        userNewModel.setProfile(proUrl);
 	        userService.updateUserProfile(userNewModel);
@@ -512,7 +514,7 @@ public class UserController extends BaseShiroController{
 	        //图片存储的相对路径
 	    	String fullLink = mediaServer.getImageHost() + proUrl;
 	    	info.put("profile",fullLink);
-	    	log.info("UpLoadSuccuss-->");
+	    	log.info("UpLoadSuccuss-->",fullLink);
 	        return new ResponseEntity.Builder<Map<String, String>>()
 		      	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();
 	    } catch (Exception e){
