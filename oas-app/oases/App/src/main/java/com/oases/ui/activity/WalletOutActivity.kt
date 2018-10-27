@@ -45,7 +45,7 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
     var rank: String = ""
     var KYCVerifyStatus: String = ""
     var KYCVerifyInfo: String = ""
-
+    var totalBalance:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +56,7 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
         Log.d("KYC",KYCVerifyStatus)
         permission = RxPermissions(this)
         mWalletOutSend.setRightTopText(AppPrefsUtils.getString(BaseConstant.USER_NAME))
+        totalBalance=bundle.get(BaseConstant.MY_OAS_AMOUNT).toString()
 
         qrImg.onClick {
             useCamera()
@@ -112,6 +113,10 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
             }
             if (TextUtils.isEmpty(money)) {
                 Toast.makeText(this, "金额不能为空", Toast.LENGTH_SHORT).show()
+                return@onClick
+            }
+            if(money.toBigDecimal().compareTo(totalBalance.toBigDecimal())>0){
+                Toast.makeText(this, "转出金额超过拥有的代币", Toast.LENGTH_SHORT).show()
                 return@onClick
             }
             if (rank.length > 100) {

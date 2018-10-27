@@ -8,7 +8,7 @@ $(function() {
 function initPowerGrid() {
 	$("#powerGrid").bootstrapTable('destroy');
 	$("#powerGrid").bootstrapTable({
-		//url: '/api/v1/energyPoint/inqureEnergyWalletTradeRecord',
+		url: '/api/v1/energyPoint/inqureEnergyWalletTradeRecord',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -110,7 +110,7 @@ function queryParams(params){
 function responseHandler(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
-        alert("能量钱包回显失败，错误代码:" + code);
+        alert("算力记录查询回显失败，错误代码:" + code);
         return;
     }
     //如果没有错误则返回数据，渲染表格

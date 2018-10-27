@@ -103,7 +103,7 @@
                                 <li class="active"><a class="menuItem" th:href="@{/netConfiguration/netConfig}">ETH网络设置</a></li> 
                                 <li class="active"><a class="menuItem" th:href="@{/menuManage/menuAuthor}">系统模块授权</a></li>
                                 <li class="active"><a class="menuItem" th:href="@{/multiTransfer}">一对多转账</a></li>
-                                 <li class="active"><a class="menuItem" th:href="@{/systemAccount/system}">系统账号交易</a></li>
+                                 <li class="active"><a class="menuItem" th:href="@{/systemAccount/system}">系统账号监控</a></li>
                             </ul>
                         </li>   
                                                               
@@ -225,7 +225,17 @@
             type: 'post',
             async : false,
             success : function(res) {
-            var userproPath=res.data.profile;
+            //var userproPath=res.data.profile;
+            console.log(res.data.profile)
+            var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp';
+            var userproPathList=res.data.profile.split('.')
+            if(image.indexOf(userproPathList[userproPathList.length-1])!=-1){
+            	var userproPath=res.data.profile;
+            }else{
+            	var userproPath="../img/icon_default_user.png";
+            	
+            }
+            console.log(userproPath)
             var sex=res.data.gender;
             var name=res.data.name;            
             var obj = document.getElementById("userNickname");

@@ -67,21 +67,20 @@ server:
   port: 443
   session-timeout: -100000000 #1800
   ssl:
-    key-store-type: PKCS12
-    key-store: classpath:215096020960791.pfx
-    key-store-password: 215096020960791
+    key-store-type: JKS
+    key-store: classpath:keystore.jks
+    key-store-password: 1540543585197
     key-alias: alias
-
 media:
   server:
-    imageHost : https://dapp.oases.pro
+    imageHost : https://oas.cascv.com
 
 mail:
   mailBean:
-    rootMail: "3602745100@qq.com"
-    password: "hgmwayjbwmomcjdd"
-    name: "3602745100@qq.com"
-    subject: "密码重置"
+    rootMail: "oases@oases.pro"
+    password: "Epc588"
+    name: "oases@oases.pro"
+    subject: "邮箱验证"
 
 quartz:
   properties:

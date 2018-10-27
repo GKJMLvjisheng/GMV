@@ -20,7 +20,6 @@ import com.cascv.oas.server.blockchain.mapper.OasDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
-import com.cascv.oas.server.blockchain.model.EthWalletDetail;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
 import com.cascv.oas.server.blockchain.model.UserCoin;
@@ -30,7 +29,6 @@ import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
-import com.cascv.oas.server.reward.service.PromotedRewardService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
@@ -117,6 +115,10 @@ public class UserWalletService {
 	  case 8:
 		  log.info("矿机推广奖励");
 		  userWalletDetail.setSubTitle(changeUserName+userWalletDetailScope.getSubTitle());
+		  userWalletDetail.setTxResult(1);
+		  break;
+	  case 9:
+		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle());
 		  userWalletDetail.setTxResult(1);
 		  break;
 	  default:
@@ -397,6 +399,15 @@ public class UserWalletService {
   public ErrorCode updateOasExtra(String value) {
 	  String now = DateUtils.dateTimeNow();
 	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
+  }
+  
+  public void insertSystemInit(BigDecimal value) {
+	//system的在线钱包
+	  UserWallet systemWallet = userWalletMapper.getSystemWallet();
+	  if(systemWallet!=null) {
+		  userWalletDetailMapper.insertSelective(setDetail(systemWallet, "", UserWalletDetailScope.SYSTEM_INIT, value, UserWalletDetailScope.SYSTEM_INIT.getSubTitle(), UserWalletDetailScope.SYSTEM_INIT.getSubTitle(),null,systemWallet.getBalance()));
+	  }  
+	  
   }
   
 }

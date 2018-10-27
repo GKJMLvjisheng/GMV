@@ -80,7 +80,8 @@ public class WechatService {
 						            activityCompletionStatus.setStatus(0);
 						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS);
 						            activityCompletionStatus.setUuid(uuid);
-						            activityCompletionStatus.setCreated(now);;
+						            activityCompletionStatus.setCreated(now);
+						            activityCompletionStatus.setUpdated(now);
 						            activityMapper.insertActivityCompletionStatus(activityCompletionStatus);
 						            userModel.setName(map.get("Content"));
 						            userModel.setIdentifyCode(Integer.valueOf(result));

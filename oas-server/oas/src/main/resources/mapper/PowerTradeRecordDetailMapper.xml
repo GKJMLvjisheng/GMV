@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cascv.oas.server.energy.mapper.PowerTradeRecordDetailMapper">
+
+  <resultMap id="PowerTradeRecordDetailMap" type="com.cascv.oas.server.energy.vo.PowerTradeRecordDetail">
+	<result column="name" property="name"/>
+	<result column="power_change" property="powerChange"/>
+	<result column="source_name" property="sourceName"/>
+	<result column="in_or_out" property="inOrOut"/>
+	<result column="created" property="created"/>
+  </resultMap>
+
+  <select id="selectPowerTradeRecordBySearchValue" resultMap="PowerTradeRecordDetailMap">
+select 
+	  u.name,ptr.power_change,ptr.in_or_out,ptr.created,a.source_name
+from 
+	  user_info u left join power_trade_record ptr on u.uuid=ptr.user_uuid
+	  left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
+	  left join activity a on epb.source_code=a.source_code
+	   <if test="searchValue != null and searchValue !='' ">
+    		where u.name like concat('%',#{searchValue},'%')
+    		or ptr.power_change like concat('%',#{searchValue},'%')
+    		or ptr.in_or_out like concat('%',#{searchValue},'%')
+    		or ptr.created like concat('%',#{searchValue},'%')
+    		or a.source_name like concat('%',#{searchValue},'%')
+       </if>
+order by ptr.created desc
+limit #{offset}, #{limit};
+</select>
+
+<select id="countPowerTradeRecordBySearchValue" resultType="java.lang.Integer">
+select 
+	  count(*)
+from 
+	  user_info u left join power_trade_record ptr on u.uuid=ptr.user_uuid
+	  left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
+	  left join activity a on epb.source_code=a.source_code
+       	   <if test="searchValue != null and searchValue !='' ">
+    		where u.name like concat('%',#{searchValue},'%')
+    		or ptr.power_change like concat('%',#{searchValue},'%')
+    		or ptr.in_or_out like concat('%',#{searchValue},'%')
+    		or ptr.created like concat('%',#{searchValue},'%')
+    		or a.source_name like concat('%',#{searchValue},'%')
+       </if>
+</select>
+   
+</mapper>

@@ -13,8 +13,9 @@ class BaseConstant{
         //本地服务器地址
         //const val SERVER_ADDRESS = "https://10.0.0.20"
         //远程服务器地址
-       // const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"/"http://10.0.0.13:8080"//
+        // const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"/"http://10.0.0.13:8080"//
         const val SERVER_ADDRESS = "https://dapp.oases.pro"
+
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
         //Token Key
@@ -71,6 +72,7 @@ class BaseConstant{
         //const val APP_VERSION_NAME="app_version_name"
 
         const val LAST_STEP_UPLOAD_DATE = "last_step_upload_date"
+        const val LOADING_STAY_TIME = 2000
 
     }
 }

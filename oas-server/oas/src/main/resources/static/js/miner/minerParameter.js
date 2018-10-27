@@ -92,35 +92,37 @@ function checkEparameterValue(){
 	
 	var parameterValue=$("#EparameterValue").val();
 	var num=parameterValue.split('.');
-	if(validate(parameterValue)&&0<parameterValue&&parameterValue<=1){
+	if(validate(parameterValue)&&0<parameterValue){
 		
 		check2=1;
 		$("#msg_EparameterValue").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		
-		 $("#msg_EparameterValue").html("请输入大于0小于等于1的数值");
+		 $("#msg_EparameterValue").html("请输入大于0的数值");
 		 $("#msg_EparameterValue").css("color", "red");
 		check2=0;
 	}
+	if(num[1]){
 	if(num[1].length>6){
 		$("#msg_EparameterValue").html("矿机参数值精度为6");
 		 $("#msg_EparameterValue").css("color", "red");
 		 check2=0;
+	}
 	}
 }
 function checkParameterValue(){
 	var parameterValue=$("#parameterValue").val();
 	var num=parameterValue.split('.');
 	//console.log(JSON.stringify(num))
-	if(validate(parameterValue)&&0<parameterValue&&parameterValue<=1){
+	if(validate(parameterValue)&&0<parameterValue){
 		
 		check3=1;
 		$("#msg_parameterValue").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		
-		 $("#msg_parameterValue").html("请输入大于0小于等于1的数值");
+		 $("#msg_parameterValue").html("请输入大于0的数值");
 		 $("#msg_parameterValue").css("color", "red");
 		check3=0;
 	}
@@ -197,7 +199,7 @@ function addParameter(){
 				$("#Tip").modal('show');
 				$("#addParameterModal").modal('hide');}
 				else{
-				document.getElementById("tipContent").innerText="新增失败";
+				document.getElementById("tipContent").innerHTML="新增失败";
 				$("#Tip").modal('show');
 				$("#addParameterModal").modal('hide');
 				
@@ -206,7 +208,7 @@ function addParameter(){
 				 }						
 		},
 		error:function(){
-			document.getElementById("tipContent").innerText="新增失败";
+			document.getElementById("tipContent").innerHTML="新增失败"+"</br>"+"</br>"+"<p style='font-size:15px'>"+"提示：所选能量积分周期已存在"+"</p>";
 			$("#Tip").modal('show');
 			$("#addParameterModal").modal('hide');
 
@@ -272,7 +274,7 @@ function initParameterGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"uuid",//Indicate an unique identifier for each row
+		uniqueId:"period",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
@@ -305,10 +307,20 @@ function initParameterGrid(data) {
 			valign: 'middle',
 			//width:  '120px',
 
+		},{
+
+			title : "参数值",
+
+			field : "currency",
+			align: 'center',
+			valign: 'middle',
+			visible:false,
+
 		},
+		
 		{
 
-			title : "有效期",
+			title : "能量积分周期",
 
 			field : "period",
 			align: 'center',
@@ -331,7 +343,7 @@ function initParameterGrid(data) {
 
 			title : " 操作",
 			
-			field : "uuid",
+			field : "period",
 			align: 'center',
 			valign: 'middle',
 			//width:  '90px',
@@ -399,11 +411,12 @@ function deleteParameterById(id){
 }
 function editParameterById(id){
 	 var rows=$("#parameterGrid").bootstrapTable('getRowByUniqueId', id); 
-	    $("#EparameterId").val(rows.uuid);
+	    //$("#EparameterId").val(rows.uuid);
 	    $("#EparameterName").val(rows.parameterName); 
 	    
 		$("#EparameterValue").val(rows.parameterValue);
 		$("#Etime").val(rows.period);
+		$("#Ecurrency").val(rows.currency);
 		$("#updateParameterModal").modal("show");
 }
 function updateparameter(){
@@ -415,13 +428,15 @@ function updateparameter(){
 		alert("请给参数值配置正确参数!");
 		return;
 	}
-	var uuid=$("#EparameterId").val();  
+	var time=$("#Etime").val();  
 	
     var parameterValue=$("#EparameterValue").val();
-	
+    var currency=$("#Ecurrency").val();
+	alert(currency);
 	var data={
-			  "uuid":uuid,
-			  "parameterValue":parameterValue
+			  "time":time,
+			  "parameterValue":parameterValue,
+			  "currency":currency
 			};
 		$.ajax({
 			url:"/api/v1/miner/updatedSystemParameter",

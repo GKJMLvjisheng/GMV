@@ -245,8 +245,8 @@ export default {
     
     
    getStep(){
-     let todayStep=100
-     // let todayStep=window.Android.getTodaySteps()
+     //let todayStep=100
+      let todayStep=window.Android.getTodaySteps()
       return todayStep
    },
     //预先加载3条新闻
@@ -312,7 +312,7 @@ export default {
           this.currentEnergy += data.data.newEnergyPoint
           
           this.attendanceMsg.msgall = data.data.newPower+"点算力"
-          ,点算力
+          
           this.isShowSuccessMsg = true
          
           }else if(data.data.newPower==0){
@@ -349,13 +349,13 @@ export default {
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
         console.log("用户信息"+JSON.stringify(data));
+        let image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp'
           let profile=data.profile.split('.')
-           console.log(profile)
-        if(profile[profile.length-1]=="comnull"){
-        this.userInfo.avatar=infoIamge
-        }else{
-        this.userInfo.avatar=data.profile
-        }
+           if(image.indexOf(profile[profile.length-1])!=-1){
+            this.userInfo.avatar=data.profile
+            }else{	
+              this.userInfo.avatar=infoIamge
+            }
         this.userInfo.nickname = data.nickname
         
       })

@@ -34,7 +34,7 @@ function initonlineWalletGrid() {
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		queryParams:queryParams,//请求服务器时所传的参数
-		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法	 	
+		responseHandler:systemTransactionDetailHandle,//请求数据成功后，渲染表格前的方法	 	
 		dataField: "data",
 		
 		toolbar:"#toolbar",//工具栏
@@ -133,17 +133,18 @@ function actionFormatter2(value, row, index) {
 }	
 
 //请求成功方法
-function responseHandler1(res){
+function systemTransactionDetailHandle(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
         alert("能量钱包回显失败，错误代码:" + code);
         return;
     }
-    console.log(JSON.stringify(res))
+    $("#systemUserWallet").text(res.data.rows.value);
+    //console.log(JSON.stringify(res))
     //如果没有错误则返回数据，渲染表格
     return {
         total : res.data.total, //总页数,前面的key必须为"total"
-        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+        data : res.data.rows.list //行数据，前面的key要与之前设置的dataField的值一致.
     };
 };
 
@@ -163,7 +164,7 @@ function tradeWalletGrid() {
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
 		queryParams:queryParams,//请求服务器时所传的参数
-		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
+		responseHandler:systemTransactionDetailHandle2,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 
 		
@@ -243,16 +244,17 @@ function tradeWalletGrid() {
 }
 
 //请求成功方法
-function responseHandler2(res){
+function systemTransactionDetailHandle2(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
         alert("积分大户Top榜回显失败，错误代码:" + code);
         return;
     }
+    $("#systemEthWallet").text(res.data.rows.value);
     //如果没有错误则返回数据，渲染表格
     return {
         total : res.data.total, //总页数,前面的key必须为"total"
-        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+        data : res.data.rows.list //行数据，前面的key要与之前设置的dataField的值一致.
     };
 };
 
