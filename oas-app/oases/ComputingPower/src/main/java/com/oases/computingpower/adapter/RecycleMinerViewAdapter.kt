@@ -46,14 +46,14 @@ class RecycleMinerViewAdapter(
        // if (list!=null) {
             val mData = list.get(position)
             if (mData.minerGrade == 1) {
-                holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.onelevel)
+                holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.fixedstar)
             } else if (mData.minerGrade == 2) {
-                holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.twolevel)
+                holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.galaxy)
             } else if (mData.minerGrade == 3) {
-                holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.treelevel)
-            } else if (mData.minerGrade == 4) {
+                holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.universe)
+            } /*else if (mData.minerGrade == 4) {
                 holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.fourlevel)
-            }
+            }*/
             holder.mExchangeItemView.mMinerName.setText(mData.minerName)
 
         val minerPrice = mData.minerPrice.toString()

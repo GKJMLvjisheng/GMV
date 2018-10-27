@@ -18,9 +18,14 @@ import android.widget.Toast
 import com.darsh.multipleimageselect.helpers.Constants
 import com.oases.base.common.BaseConstant
 import com.oases.base.ext.onClick
+import com.oases.base.ui.fragment.BaseMvpFragment
 import com.oases.base.utils.AppPrefsUtils
 
 import com.oases.user.R
+import com.oases.user.injection.component.DaggerUserComponent
+import com.oases.user.injection.module.UserModule
+import com.oases.user.presenter.EncryptedMnemonicPresenter
+import com.oases.user.presenter.view.EncryptedMnemonicView
 import kotlinx.android.synthetic.main.fragment_encrypted_mnemonic.*
 import org.jetbrains.anko.support.v4.toast
 import java.io.File
@@ -39,13 +44,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class EncryptedMnemonicFragment : Fragment(),ActivityCompat.OnRequestPermissionsResultCallback {
+class EncryptedMnemonicFragment : BaseMvpFragment<EncryptedMnemonicPresenter>(), EncryptedMnemonicView {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var mListener: OnFragmentInteractionListener? = null
     private lateinit var mEncryptUri:TextView
     private lateinit var mExportFile:Button
+    private val sourceCode:Int = 3
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +100,28 @@ class EncryptedMnemonicFragment : Fragment(),ActivityCompat.OnRequestPermissions
                  createTempFile()
                  AppPrefsUtils.putBoolean(BaseConstant.WALLET_BACKUP, true)
                  toast("导出成功，已保存到手机内部存储下的OASES目录")
+                 mPresenter.getReward(sourceCode)
             }
+    }
+
+
+    override fun injectComponent() {
+        DaggerUserComponent
+                .builder()
+                .activityComponent(mActivityComponent)
+                .userModule(UserModule())
+                .build()
+                .inject(this)
+        mPresenter.mView = this
+        Log.d("lihui", "injection")
+    }
+
+    override fun onGetRewardResult(result: Int) {
+        if (result ==0) {
+            toast("活动参与成功,奖励只在第一次参与时获得哦！")
+        }else{
+            toast("活动参与失败")
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
