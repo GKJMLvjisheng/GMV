@@ -22,6 +22,7 @@ import android.widget.Toast
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.oases.base.ui.activity.BaseMvpActivity
+import com.oases.computingpower.data.protocol.KYCVerifyStatusResp
 import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
 import com.oases.presenter.WalletOutPresenter
@@ -51,13 +52,13 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallet_out)
         var bundle = this.intent.extras
-        KYCVerifyStatus=bundle.get("KYCVerifyStatus").toString()
-        KYCVerifyInfo=bundle.get("KYCVerifyInfo").toString()
-        Log.d("KYC",KYCVerifyStatus)
+      //  KYCVerifyStatus=bundle.get("KYCVerifyStatus").toString()
+      //  KYCVerifyInfo=bundle.get("KYCVerifyInfo").toString()
+      //  Log.d("KYC",KYCVerifyStatus)
         permission = RxPermissions(this)
         mWalletOutSend.setRightTopText(AppPrefsUtils.getString(BaseConstant.USER_NAME))
         totalBalance=bundle.get(BaseConstant.MY_OAS_AMOUNT).toString()
-
+        mPresenter.getKYCVerifyStatus()
         qrImg.onClick {
             useCamera()
         }
@@ -144,7 +145,7 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
                     //获取用户的日总额
                     mPresenter.getDayMoneyTotal()
                 }else {
-                    toast("您已超过每次转账的最大额度"+everyTimeLimitMoney.toInt()+",且您的KYC认证正在审核中,审核通过后无限制")
+                    toast("您已超过每次转账的最大额度"+everyTimeLimitMoney.toInt()+",且您的KYC认证正在审核中,待审核通过后无限制")
                 }
             }else if (KYCVerifyStatus=="3") {
                 var everyTimeLimitMoney = BigDecimal(100)
@@ -157,30 +158,6 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
                     alertView()
                 }
             }
-
-            /*if (KYCVerifyStatus == "2") {
-                mPresenter.walletOutEvent(toReceive, money, rank)  //进行转账
-            } else {
-                var everyTimeLimitMoney = "100"
-                if (money <= everyTimeLimitMoney) {      //此处设置次限额  前短固定死
-                    //获取用户的日总额
-                     mPresenter.getDayMoneyTotal()
-                } else {
-                    if (KYCVerifyStatus=="0"){
-                        toast("您已超过每次转账的最大额度"+everyTimeLimitMoney)
-                        //弹窗让用户进行KYC认证
-                        alertView()
-                    }
-                    if (KYCVerifyStatus=="1"){
-                        toast("您已超过每次转账的最大额度"+everyTimeLimitMoney+",您的KYC认证正在审核中，暂不能转账")
-                    }
-                    if (KYCVerifyStatus=="3"){
-                        toast("您已超过每次转账的最大额度"+everyTimeLimitMoney+",您的KYC认证审核未通过："+KYCVerifyInfo)
-                        //弹窗让用户进行KYC认证
-                        alertView()
-                    }
-                }
-            }*/
         }
 
         walletOutHead!!.onClickRightTv({
@@ -215,6 +192,7 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
                 .inject(this)
         mPresenter.mView = this
     }
+
 
     //弹框，提醒用户去KYC认证
     private fun alertView(){
@@ -259,15 +237,14 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
         var dayLimitMoney = BigDecimal(200)  //此处设置日限额
         if (totalMoney<=dayLimitMoney){
             mPresenter.walletOutEvent(toReceive, money, rank)  //进行转账
-             }
-        else{
+             } else{
             if (KYCVerifyStatus=="0"){
             toast("您已超过每日转账的最大额度"+dayLimitMoney.toInt())
             //弹窗让用户进行KYC认证
             alertView()
             }
             if (KYCVerifyStatus=="1"){
-                toast("您已超过每日转账的最大额度"+dayLimitMoney.toInt()+",您的KYC认证正在审核中,审核通过后无限制")
+                toast("您已超过每日转账的最大额度"+dayLimitMoney.toInt()+",您的KYC认证正在审核中,审核通过后转账无限制")
 
             }
             if (KYCVerifyStatus=="3"){
@@ -289,6 +266,17 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
                 mReceiveAccount.setText("$content")
             }
         }
+    }
+
+    //KYC审核状态显示
+    override fun onGetKYCVerifyStatus(result: KYCVerifyStatusResp) {
+        KYCVerifyStatus = result.verifyStatus.toString()
+        KYCVerifyInfo = result.remark
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.getKYCVerifyStatus()
     }
 
 }

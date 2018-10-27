@@ -275,7 +275,7 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
                 var cropOptions: CropOptions = CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create()
                 mTakePhoto.onPickFromGalleryWithCrop(Uri.fromFile(mTempFile), cropOptions)
             }
-            } else {
+        } else {
             //requset permission
             ActivityCompat.requestPermissions(this@UserInfoActivity, arrayOf(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE)
         }
