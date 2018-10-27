@@ -73,7 +73,7 @@ public class MinerService {
 		BigDecimal powerSum = BigDecimal.ZERO;
 		Integer minerNum = purchaseRecord.getMinerNum();
 		BigDecimal minerPower = purchaseRecord.getMinerPower();
-		powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum)).setScale(2, BigDecimal.ROUND_HALF_UP);			
+		powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum)).setScale(2, BigDecimal.ROUND_HALF_UP);
 		return powerSum;
 	}
 	
