@@ -81,37 +81,9 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
         var num = view.findViewById(R.id.mSelectMinerNum) as TextView
         num.text=mMinerNum.toString()
         var sum = view.findViewById(R.id.mSelectMinerSum) as TextView
-
         //去掉小数部分后面为0的显示
-        val mSum = mMinerSum.toString()
-        var decimalSum = mSum.substring(mSum.indexOf("."),mSum.length)
-        decimalSum = decimalSum.substring(1,decimalSum.length)
-        if (decimalSum.substring(decimalSum.length-1,decimalSum.length)=="0"){
-            val viewMinerSun =mSum.substring(0,mSum.length-1)
-            sum.text= viewMinerSun
-        }
-        if (decimalSum.substring(decimalSum.length-2,decimalSum.length)=="00"){
-            val viewMinerSun =mSum.substring(0,mSum.length-2)
-            sum.text= viewMinerSun
-        }
-        if (decimalSum.substring(decimalSum.length-3,decimalSum.length)=="000"){
-            val viewMinerSun =mSum.substring(0,mSum.length-3)
-            sum.text= viewMinerSun
-        }
-        if (decimalSum.substring(decimalSum.length-4,decimalSum.length)=="0000"){
-            val viewMinerSun =mSum.substring(0,mSum.length-4)
-            sum.text= viewMinerSun
-        }
-        if (decimalSum.substring(decimalSum.length-5,decimalSum.length)=="00000"){
-            val viewMinerSun =mSum.substring(0,mSum.length-5)
-            sum.text= viewMinerSun
-        }
-        if (decimalSum.substring(0,decimalSum.length)=="000000"){
-            val viewMinerSun =mSum.substring(0,mSum.length-7)
-            sum.text= viewMinerSun
-        }else{
-            sum.text= mMinerSum.toString()
-        }
+        sum.text= mMinerSum.stripTrailingZeros().toPlainString()
+
         dialogBuilder.setView(view)
         dialogBuilder.setCancelable(true)
         val dialog = dialogBuilder?.create() as AlertDialog
