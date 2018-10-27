@@ -837,7 +837,7 @@ public class EthWalletService {
 	  UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
 	  if(adminInfo!=null && adminInfo.getMobile()!=null) {
 		  String mobile = "+86".concat(adminInfo.getMobile());
-		  String SIGNNAME = "国科云景";
+		  String SIGNNAME = "OASESCHAIN";
 		  String content = "【"+SIGNNAME+"】"+msg;
 	      PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
 	      log.info(publishResult.toString());
