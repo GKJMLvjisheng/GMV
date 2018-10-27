@@ -28,7 +28,7 @@ select
 	<!-- delete user facility -->
 	<delete id="deleteUserFacility">
 		delete from user_facility
-		where IMEI = #{IMEI}
+		where uuid = #{uuid}
 	</delete>
 	
 </mapper>

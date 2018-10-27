@@ -9,6 +9,6 @@ public interface UserFacilityMapper {
 	
 	UserFacility inquireUserFacilityByIMEI(@Param("IMEI") String IMEI);
 	int insertUserFacility(UserFacility userFacility); 
-	int deleteUserFacility(@Param("IMEI") String IMEI); 
+	int deleteUserFacility(@Param("uuid") String uuid); 
 }
 

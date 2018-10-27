@@ -355,9 +355,10 @@ export default {
     getUserInfo () {
       this.$axios.post('/userCenter/inquireUserInfo').then(({data:{data}}) => {
         console.log("用户信息"+JSON.stringify(data));
-        let image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp'
+        let image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp,blob'
           let profile=data.profile.split('.')
-           if(image.indexOf(profile[profile.length-1])!=-1){
+          let profile2=data.profile.split('-')
+           if(image.indexOf(profile[profile.length-1])!=-1||image.indexOf(profile2[profile2.length-1])!=-1){
             this.userInfo.avatar=data.profile
             }else{	
               this.userInfo.avatar=infoIamge
