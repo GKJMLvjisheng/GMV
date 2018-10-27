@@ -25,6 +25,7 @@ import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
+import com.cascv.oas.server.walk.model.WalkBall;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,6 +66,13 @@ public class EnergyPointController extends BaseController{
     private WalkMapper walkMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
+	
+	public static final Integer SOURCE_CODE_OF_CHECKIN = 1;
+	public static final Integer SOURCE_CODE_OF_FREE = 2;
+	public static final Integer SOURCE_CODE_OF_WALK = 3;
+	public static final Integer REWARD_CODE_OF_POINT = 1;
+	
+	
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
@@ -131,7 +139,7 @@ public class EnergyPointController extends BaseController{
     @PostMapping(value = "/pointBallMaxValue")  
     @ResponseBody
     public ResponseEntity<?> pointBallMaxValue(){
-    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(2, 1).getMaxValue();
+    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue();
     	return new ResponseEntity.Builder<BigDecimal>()
     			.setData(maxValue)
     			.setErrorCode(ErrorCode.SUCCESS)
@@ -180,7 +188,7 @@ public class EnergyPointController extends BaseController{
 
     @PostMapping(value = "/inquireEnergyPointByCategory")
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPointByCategory(String periodType) {
+    public ResponseEntity<?> inquireEnergyPointByCategory() {
     	String userUuid = ShiroUtils.getUserUuid();
     	Integer status = 0;
     	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
@@ -189,17 +197,23 @@ public class EnergyPointController extends BaseController{
     	for(int i=0; i<energyPointBallList.size(); i++) {
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
-    	BigDecimal stepNum = walkMapper.selectTodayWalkBall(userUuid, now).getStepNum();
+    	BigDecimal stepNum;
+    	WalkBall walkBall = walkMapper.selectTodayWalkBall(userUuid, now);
+    	if (walkBall == null) {
+    		stepNum = BigDecimal.ZERO;
+    	}else {
+    		stepNum = walkBall.getStepNum();
+    	}
     	
-    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(1, 1).getMaxValue();
-    	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(2, 1).getMaxValue().multiply(BigDecimal.valueOf((int)12));
+    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_CHECKIN, REWARD_CODE_OF_POINT).getMaxValue();
+    	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue().multiply(BigDecimal.valueOf((int)12));
     	BigDecimal power = energyWalletMapper.selectByUserUuid(userUuid).getPower();
     	if(power.compareTo(BigDecimal.ZERO) == 0)
     		power = BigDecimal.ONE;
     	BigDecimal maxPoint = power.multiply(checkInPoint.add(freePoint));
     	
-    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(9, 1).getMaxValue()
-    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(9, 1).getIncreaseSpeed());
+    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALK, REWARD_CODE_OF_POINT).getMaxValue()
+    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALK, REWARD_CODE_OF_POINT).getIncreaseSpeed());
     	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 

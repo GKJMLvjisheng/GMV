@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.grid_item.view.*
 import org.jetbrains.anko.*
 import q.rorbin.badgeview.Badge
 import q.rorbin.badgeview.QBadgeView
+import java.math.BigDecimal
 
 @Route(path = "/computingPower/ComputingPowerMainActivity")
 class ComputingPowerMainActivity :
@@ -97,8 +98,8 @@ class ComputingPowerMainActivity :
 
     }
 
-    override fun onGetPower(power: Int) {
-        mCurrentComputingPower.text = power.toString()
+    override fun onGetPower(power: BigDecimal) {
+        mCurrentComputingPower.text = power.setScale(2,BigDecimal.ROUND_HALF_UP).toString()
     }
 
     private fun initView() {

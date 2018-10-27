@@ -473,7 +473,7 @@ function ViewViewById(id){
 	},
 
 	error:function(){
-		alert("查询失败2");
+		alert("查询用户信息过程出现错误！");
 	},
 	});					
 }
