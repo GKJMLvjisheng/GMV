@@ -432,7 +432,7 @@ function updateparameter(){
 	
     var parameterValue=$("#EparameterValue").val();
     var currency=$("#Ecurrency").val();
-	alert(currency);
+	
 	var data={
 			  "time":time,
 			  "parameterValue":parameterValue,
