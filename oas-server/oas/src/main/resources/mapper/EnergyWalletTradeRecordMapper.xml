@@ -53,13 +53,12 @@ from
   
 <select id="selectAllEnergyWalletBalanceRecordBySearchValue" resultMap="energyWalletBalanceRecordMap">
 select 
-	u.name,ew.point,ew.power
+	u.name,ew.point
 from 	
 	energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
 	<if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
     		or ew.point like concat('%',#{searchValue},'%')
-    		or ew.power like concat('%',#{searchValue},'%')
        </if>
 order by ew.point desc
 limit #{offset}, #{limit};
@@ -73,7 +72,6 @@ from
 	<if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
     		or ew.point like concat('%',#{searchValue},'%')
-    		or ew.power like concat('%',#{searchValue},'%')
        </if>
        ;	
 </select> 
