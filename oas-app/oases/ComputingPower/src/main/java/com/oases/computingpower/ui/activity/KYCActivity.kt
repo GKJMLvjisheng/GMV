@@ -356,6 +356,7 @@ class KYCActivity : BaseMvpActivity<KYCPresenter>(), KYCView,TakePhoto.TakeResul
     override fun onChangeKYCStatus(result: Int) {
         if (result == 0){
             toast("提交成功")
+            mPresenter.getKYCVerifyStatus()
         }
     }
 
