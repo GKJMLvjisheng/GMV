@@ -193,7 +193,7 @@ public class UserController extends BaseShiroController{
 		        			 {    
 		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null)
 		        					  throw new AuthenticationException();
-		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
+		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null){
 			        				 UserFacility userNewFacility=new UserFacility();
 			    				     userNewFacility.setIMEI(loginVo.getIMEI());
 			    				     userNewFacility.setUuid(uuid);
