@@ -143,7 +143,9 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
             val receiveAccount:String = mReceiveAccount.text.toString().replace("\n","").replace(" ","")
             val receiveMoney:String = mMoney.text.toString().replace(" ","")
             val receiveComment:String = mRemark.text.toString()
-            if(receiveAccount.length!=42 || !receiveAccount.startsWith("Ox")|| !ToolUtil.regularExpressionValidate(receiveAccount,BaseConstant.ENGLISH_NUMBER)){
+            Log.d("zzz",receiveAccount)
+            Log.d("zzz",receiveAccount.startsWith("Ox").toString())
+            if(receiveAccount.length!=42 || !ToolUtil.regularExpressionValidate(receiveAccount,BaseConstant.ENGLISH_NUMBER)){
                 toast("接收地址格式有误！")
                 return@onClick
             }
