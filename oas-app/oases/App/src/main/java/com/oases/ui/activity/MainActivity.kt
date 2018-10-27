@@ -79,7 +79,7 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
     override fun onResume() {
         super.onResume()
         Log.d("zbb","app update resume")
-        onGetLatestVersion()
+        //onGetLatestVersion()
     }
 
     private fun changeFragment(position: Int) {
