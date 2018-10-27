@@ -7,15 +7,21 @@
             android:name=".ui.activity.ComputingPowerMainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.ComputingPowerHistoryActivity" />
-        <activity android:name=".ui.activity.WatchingWeChatPublicAccountActivity" />
+        <activity android:name=".ui.activity.ComputingPowerHistoryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.WatchingWeChatPublicAccountActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.activity.InviteFriendsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.AnswerQuestionsActivity" />
-        <activity android:name=".ui.activity.KYCActivity" />
-        <activity android:name=".ui.activity.BuyingMinerActivity" />
-        <activity android:name=".ui.activity.BuyingMinerHistoryActivity"></activity>
+        <activity android:name=".ui.activity.AnswerQuestionsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.KYCActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.BuyingMinerActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.activity.BuyingMinerHistoryActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

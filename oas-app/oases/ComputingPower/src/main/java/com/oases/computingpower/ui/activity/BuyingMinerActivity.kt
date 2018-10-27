@@ -43,6 +43,7 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
     private var mMinerName:String =""
     private var mMinerNum:Int =0
     private lateinit var mMinerSum:BigDecimal
+    //private val sourceCode:Int = 10  //购买的活动序号为10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,11 +206,21 @@ class BuyingMinerActivity : BaseMvpActivity<BuyingMinerPresenter>(), BuyingMiner
 
     override fun onConfirmBuyMinerResult(result: Int) {
         if (result==0){
+            //mPresenter.getReward(sourceCode)
             startActivity<BuyingMinerHistoryActivity>()
         }else{
             toast("购买失败")
         }
     }
+
+    /*override fun onGetRewardResult(result: Int) {
+        if (result ==0) {
+            toast("活动参与成功,奖励只在第一次参与时获得哦！")
+            startActivity<BuyingMinerHistoryActivity>()
+        }else{
+            toast("活动参与失败")
+        }
+    }*/
 
 
 }

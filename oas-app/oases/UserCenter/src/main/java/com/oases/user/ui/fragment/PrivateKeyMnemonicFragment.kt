@@ -44,6 +44,7 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
     private var param2: String? = null
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var saveWalletBackup:Button
+    private val sourceCode:Int = 4     //备份钱包代码为4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,7 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
         saveWalletBackup.onClick {
             AppPrefsUtils.putBoolean(WALLET_BACKUP, true)
             toast("已确定您已保存")
+            mPresenter.getReward(sourceCode)
         }
     }
 
@@ -86,11 +88,6 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
         Log.d("lihui", "injection")
     }
 
-    /*override fun onResume() {
-        super.onResume()
-        initView()
-    }*/
-
     override fun onGetPrivateKeyMnemonicResult(result: PrivateKeyMnemonicResp) {
         var mlist:String=""
         for (i in result.mnemonicList ){
@@ -99,6 +96,14 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
         }
         mPrivateKeyMnemonic.text=mlist
         mPrivateKey.text=result.privateKey
+    }
+
+    override fun onGetRewardResult(result: Int) {
+        if (result ==0) {
+            toast("活动参与成功,奖励只在第一次参与时获得哦！")
+        }else{
+            toast("活动参与失败")
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

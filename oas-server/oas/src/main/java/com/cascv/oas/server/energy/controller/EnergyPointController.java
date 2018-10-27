@@ -126,7 +126,19 @@ public class EnergyPointController extends BaseController{
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
     }
+    
+    //得到免费球的最大值
+    @PostMapping(value = "/pointBallMaxValue")  
+    @ResponseBody
+    public ResponseEntity<?> pointBallMaxValue(){
+    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(2, 1).getMaxValue();
+    	return new ResponseEntity.Builder<BigDecimal>()
+    			.setData(maxValue)
+    			.setErrorCode(ErrorCode.SUCCESS)
+    			.build();
+    }
 
+    //采集免费球
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional

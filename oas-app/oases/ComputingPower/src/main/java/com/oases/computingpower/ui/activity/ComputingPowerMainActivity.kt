@@ -129,8 +129,8 @@ class ComputingPowerMainActivity :
     override fun onClick(v: View?) {
         var name = v?.mName?.text?:""
         when (name){
-            mBackupWallet ->ARouter.getInstance().build(RouterPath.UserCenter.PATH_BACKUP_WALLET).navigation()
-            //mBackupWallet->toast("即将上线")
+            //mBackupWallet ->ARouter.getInstance().build(RouterPath.UserCenter.PATH_BACKUP_WALLET).navigation()
+            mBackupWallet->toast("即将上线")
             mWatchWeChat -> startActivity<WatchingWeChatPublicAccountActivity>()
             mInviteFriends ->startActivity<InviteFriendsActivity>()
             mEnvironmentalmProtectionAnswer->toast("即将上线")
@@ -264,7 +264,7 @@ class ComputingPowerMainActivity :
         var list=result.activityResultList
         var selectList:MutableList<Int> = mutableListOf()
         for(item in list) {
-            if (item.sourceCode >2 && item.sourceCode < 9) {
+            if (item.sourceCode >2 && item.sourceCode < 12) {
                 if (!selectList.contains(item.sourceCode-3)) {
                     selectList.add(item.sourceCode - 3)
                 }
@@ -285,6 +285,9 @@ class ComputingPowerMainActivity :
 
     override fun onResume() {
         super.onResume()
+        //finish()
+        //startActivity<ComputingPowerMainActivity>()
         mPresenter.inquireCurrentPeriodPoints()
+        //mPresenter.inquirePowerActivityStatus()
     }
 }
