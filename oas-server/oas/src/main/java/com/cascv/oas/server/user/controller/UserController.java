@@ -193,7 +193,7 @@ public class UserController extends BaseShiroController{
 		        			 {    
 		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null)
 		        					  throw new AuthenticationException();
-		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null){
+		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
 			        				 UserFacility userNewFacility=new UserFacility();
 			    				     userNewFacility.setIMEI(loginVo.getIMEI());
 			    				     userNewFacility.setUuid(uuid);
@@ -1416,8 +1416,8 @@ public class UserController extends BaseShiroController{
 	@PostMapping(value="/inquireUserKYCInfo")
     @ResponseBody
     @WriteLog(value="inquireUserKYCInfo")
-    public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserIdentityCardModel kycModel){
-		    UserDetailModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getUserName());
+    public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserDetailModel kycModel){
+		    UserDetailModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getName());
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
 		    errorCode=ErrorCode.GENERAL_ERROR;

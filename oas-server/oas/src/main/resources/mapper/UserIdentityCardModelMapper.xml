@@ -260,15 +260,15 @@
 	    U.email as email,
 	    U.IMEI as IMEI,
 	    U.status as status,
-		U.created as created,
-		ICI.user_identity_name as user_identity_name,
-		ICI.user_identity_number as user_identity_number,
+		ICI.created as created,
+		ICI.user_identity_name as userIdentityName,
+		ICI.user_identity_number as userIdentityNumber,
 		ICI.remark as remark,
-		ICI.verify_status as verify_status
+		ICI.verify_status as verifyStatus
     	from user_info U 
 		left join identity_card_info ICI on U.name=ICI.user_name
 		where U.name=#{name} 
-		order by U.created desc 
-	    limit '1'
+		order by ICI.created desc 
+	    limit 1
   </select>
 </mapper>
