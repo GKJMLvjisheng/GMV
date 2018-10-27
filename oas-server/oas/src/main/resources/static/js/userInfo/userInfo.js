@@ -229,9 +229,10 @@ function refreshUserInfo(){
 	          var userEmail=res.data.email;
 
 	        $("#userName").val(userName);
-	        var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp';
-            var userproPathList=res.data.profile.split('.')
-            if(image.indexOf(userproPathList[userproPathList.length-1])!=-1){
+	        var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp,blob';
+            var imageList=res.data.profile.split('.');
+            var imageList2=res.data.profile.split('-');
+            if(image.indexOf(imageList[imageList.length-1])!=-1||image.indexOf(imageList2[imageList2.length-1])!=-1){
             	var userProfile=res.data.profile;
             }else{
             	var userProfile="../img/icon_default_user.png";

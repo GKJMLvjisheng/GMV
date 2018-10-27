@@ -405,9 +405,9 @@ public class PromotedRewardService {
 	   */
 	  public BigDecimal getUserTimePointToOas(String userUuid,String startTime,String endTime) {
 		  BigDecimal totalPoint = energyBallMapper.selectUserPointByTime(userUuid, startTime, endTime);
-		  BigDecimal nowRate=this.getNowRate();
+		  BigDecimal nowRate=this.getNowRate();//汇率分之一
 		  if(totalPoint !=null) {
-		  BigDecimal userTimePointToOas=totalPoint.multiply(nowRate);
+		  BigDecimal userTimePointToOas=totalPoint.divide(nowRate,6,BigDecimal.ROUND_HALF_UP);
 		  return userTimePointToOas;
 		  }else {
 		  BigDecimal  userTimePointToOas=BigDecimal.ZERO;
