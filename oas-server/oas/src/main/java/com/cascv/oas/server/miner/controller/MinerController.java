@@ -72,6 +72,7 @@ public class MinerController {
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
 		BigDecimal parameterValue = systemParameterModelRequest.getParameterValue();
 		BigDecimal rate = BigDecimal.ONE.divide(parameterValue).setScale(6, BigDecimal.ROUND_HALF_UP);
+		log.info("rate={}",rate);
 		systemParameterModel.setParameterValue(rate);
 		systemParameterModel.setPeriod(systemParameterModelRequest.getPeriod());
 		systemParameterModel.setComment("inherit");
@@ -108,6 +109,7 @@ public class MinerController {
 		systemParameterModel.setPeriod(systemParameterModelRequest.getTime());
 		BigDecimal parameterValue = systemParameterModelRequest.getParameterValue();
 		BigDecimal rate = BigDecimal.ONE.divide(parameterValue).setScale(6, BigDecimal.ROUND_HALF_UP);
+		log.info("rate={}",rate);
 		systemParameterModel.setParameterValue(rate);
 		systemParameterModel.setUpdated(now);
         minerMapper.updateSystemParameterByUuid(systemParameterModel);
@@ -137,6 +139,7 @@ public class MinerController {
 			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());
 			BigDecimal rate = systemParameterModel.get(i).getParameterValue();
 			BigDecimal parameterValue = BigDecimal.ONE.divide(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
+			log.info("parameterValue={}",parameterValue);
 			systemParameterResponse.setParameterValue(parameterValue);
 			systemParameterResponse.setPeriod(systemParameterModel.get(i).getPeriod());
 			if(systemParameterModel.get(i).getCurrency() == 11)
