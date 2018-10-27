@@ -89,6 +89,8 @@ function addPostil(){
 
 				success: function(res) {
 					alert("批注添加成功");
+//					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+//					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 					location.reload();
 				}, 
 				error: function(){
@@ -130,6 +132,8 @@ function addNC(){
 
 				success: function(res) {
 					alert("信息添加成功");
+//					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+//					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 					location.reload();
 				}, 
 				error: function(){

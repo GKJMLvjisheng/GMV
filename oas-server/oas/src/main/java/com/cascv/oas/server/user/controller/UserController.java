@@ -160,6 +160,9 @@ public class UserController extends BaseShiroController{
           
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
+		 UserFacility userFacility=new UserFacility();
+		 userFacility.setUuid(ShiroUtils.getUser().getUuid());
+		 userFacility.setIMEI(IMEINew);
          if(status==0)
         	 throw new AuthenticationException();
          //判断是否是移动端登录
@@ -173,30 +176,30 @@ public class UserController extends BaseShiroController{
 	        	 case "正常账号":
 	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
-                         if(userFacilityMapper.inquireUserFacilityByIMEI(loginVo.getIMEI())==null){
-	        				 UserFacility userFacility=new UserFacility();
-	    				     userFacility.setIMEI(loginVo.getIMEI());
-	    				     userFacility.setUuid(uuid);
-	    				     userFacility.setCreated(DateUtils.getTime());
+                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null)
+                        	 throw new AuthenticationException();
+                         else{
+	        				 UserFacility userNewFacility=new UserFacility();
+	    				     userNewFacility.setIMEI(loginVo.getIMEI());
+	    				     userNewFacility.setUuid(uuid);
+	    				     userNewFacility.setCreated(DateUtils.getTime());
 	                         userFacilityMapper.insertUserFacility(userFacility);
 		  	  	        	 userModel.setIMEI(loginVo.getIMEI());	        	 
 			  	        	 userModelMapper.updateIMEI(userModel);
        			          }
-                         else	
-                        	 throw new AuthenticationException();
 	  	        	 }	        		
 	        		 else{
 		        			 if(IMEIOri.equals(IMEINew))
-		        			 {
-	                              if(userFacilityMapper.inquireUserFacilityByIMEI(loginVo.getIMEI())==null){
-			        				 UserFacility userFacility=new UserFacility();
-			    				     userFacility.setIMEI(loginVo.getIMEI());
-			    				     userFacility.setUuid(uuid);
-			    				     userFacility.setCreated(DateUtils.getTime());
+		        			 {    
+		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null)
+		        					  throw new AuthenticationException();
+		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null){
+			        				 UserFacility userNewFacility=new UserFacility();
+			    				     userNewFacility.setIMEI(loginVo.getIMEI());
+			    				     userNewFacility.setUuid(uuid);
+			    				     userNewFacility.setCreated(DateUtils.getTime());
 			                         userFacilityMapper.insertUserFacility(userFacility);
-		        			      }
-                              else
-	        			    	 throw new AuthenticationException();//一个手机只能绑定一个账号 
+		        			      }          
 	        			     }
 	        			 else 
 	        				 throw new AuthenticationException();	        			 
@@ -1302,7 +1305,10 @@ public class UserController extends BaseShiroController{
 		userModelMapper.updateIMEI(userNeWModel);		
 		String uuid=userModelMapper.selectByName(imeiModel.getName()).getUuid();
 		//删除账号和手机的绑定
-		if(userFacilityMapper.inquireUserFacilityByIMEI(IMEIOri)!=null)
+		UserFacility userFacility=new UserFacility();
+		userFacility.setUuid(uuid);
+		userFacility.setIMEI(IMEIOri);
+		if(userFacilityMapper.inquireUserFacilityByModel(userFacility)!=null)
 		       userFacilityMapper.deleteUserFacility(uuid);		
 		//删除旧角色,添加新角色
 //		String uuid =userService.findUserByName(imeiModel.getName()).getUuid();
@@ -1411,11 +1417,11 @@ public class UserController extends BaseShiroController{
     @ResponseBody
     @WriteLog(value="inquireUserKYCInfo")
     public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserIdentityCardModel kycModel){
-		    UserIdentityCardModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getUserName());
+		    UserDetailModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getUserName());
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
 		    errorCode=ErrorCode.GENERAL_ERROR;
-	        return new ResponseEntity.Builder<UserIdentityCardModel>()
+	        return new ResponseEntity.Builder<UserDetailModel>()
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();

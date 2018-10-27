@@ -28,7 +28,8 @@ function audit(){
 			if(res.code==0){
 				document.getElementById("tipContent").innerText="审核过程完成";
 				$("#Tip").modal('show');
-				initRequestAuditGrid();
+				var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
+				$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 				//location.reload();
 			}else{
 				document.getElementById("tipContent").innerText=res.message;

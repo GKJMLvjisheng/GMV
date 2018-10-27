@@ -3,22 +3,13 @@ package com.oases.computingpower.ui.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.view.get
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
-import com.oases.base.ui.activity.BaseActivity
 import com.oases.base.ui.activity.BaseMvpActivity
 import com.oases.computingpower.R
 import com.oases.computingpower.adapter.FunctionAdapter
@@ -31,14 +22,11 @@ import com.oases.computingpower.injection.module.ComputingPowerModule
 import com.oases.computingpower.presenter.ComputingPowerMainPresenter
 import com.oases.computingpower.presenter.view.ComputingPowerMainView
 import com.oases.computingpower.utils.SpaceItemDecoration
-import com.oases.provider.router.RouterPath
 import com.zhy.view.flowlayout.TagFlowLayout.dip2px
 import kotlinx.android.synthetic.main.activity_computing_power_main.*
-import kotlinx.android.synthetic.main.grid_item.*
 import kotlinx.android.synthetic.main.grid_item.view.*
 import org.jetbrains.anko.*
-import q.rorbin.badgeview.Badge
-import q.rorbin.badgeview.QBadgeView
+import java.math.BigDecimal
 
 @Route(path = "/computingPower/ComputingPowerMainActivity")
 class ComputingPowerMainActivity :
@@ -52,15 +40,15 @@ class ComputingPowerMainActivity :
     private var originalPhoneNumber: String = ""
     private var originalMail: String = ""
     private var allData = mutableListOf(
-        FunctionItem(mBackupWallet,false,"wallet_fill"),
-        FunctionItem(mWatchWeChat,false,"wechat"),
-        FunctionItem(mInviteFriends,false,"shape"),
-        FunctionItem(mEnvironmentalmProtectionAnswer,false,"read"),
-        FunctionItem(mConnectToPhone,false,"mobile"),
-        FunctionItem(mConnectToMail,false,"mail"),
-        FunctionItem(mBuyMiner,false,"sketch_fill"),
-        FunctionItem(mKYC,false,"protect_fill"),
-        FunctionItem(mModuleConstruction,false,"home")
+            FunctionItem(mBackupWallet,false,"wallet_fill"),
+            FunctionItem(mConnectToPhone,false,"mobile"),
+            FunctionItem(mConnectToMail,false,"mail"),
+            FunctionItem(mWatchWeChat,false,"wechat"),
+            FunctionItem(mEnvironmentalmProtectionAnswer,false,"read"),
+            FunctionItem(mInviteFriends,false,"shape"),
+            FunctionItem(mKYC,false,"protect_fill"),
+            FunctionItem(mBuyMiner,false,"sketch_fill"),
+            FunctionItem(mModuleConstruction,false,"home")
     )
     private lateinit var functionAdapter:FunctionAdapter
 
@@ -97,8 +85,8 @@ class ComputingPowerMainActivity :
 
     }
 
-    override fun onGetPower(power: Int) {
-        mCurrentComputingPower.text = power.toString()
+    override fun onGetPower(power: BigDecimal) {
+        mCurrentComputingPower.text = power.setScale(2,BigDecimal.ROUND_HALF_UP).toString()
     }
 
     private fun initView() {
@@ -264,9 +252,9 @@ class ComputingPowerMainActivity :
         var list=result.activityResultList
         var selectList:MutableList<Int> = mutableListOf()
         for(item in list) {
-            if (item.sourceCode >2 && item.sourceCode < 12) {
-                if (!selectList.contains(item.sourceCode-3)) {
-                    selectList.add(item.sourceCode - 3)
+            if (item.sourceCode >3 && item.sourceCode < 10) {
+                if (!selectList.contains(item.sourceCode-4)) {
+                    selectList.add(item.sourceCode - 4)
                 }
             }
         }

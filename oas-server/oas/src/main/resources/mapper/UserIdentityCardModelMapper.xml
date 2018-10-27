@@ -249,14 +249,26 @@
 <!--     <result column="remark" property="remark"/> -->
 <!--     <result column="verify_status" property="verifyStatus"/> -->
 <!--   </resultMap> -->
-  <select id="inquireUserKYCInfo" resultMap="userIdentityCardModelMap">
+  <select id="inquireUserKYCInfo" resultType="com.cascv.oas.server.user.wrapper.UserDetailModel">
   	select 
-  	user_identity_name,
-  	user_identity_number,
-  	remark,
-  	verify_status
-    from identity_card_info where user_name = #{userName}
-    order by created desc 
-    limit 1;   
+		U.name as name,
+	    U.nickname as nickname, 
+	    U.gender as gender,
+	    U.birthday as birthday,
+	    U.address as address,
+	    U.mobile as mobile,
+	    U.email as email,
+	    U.IMEI as IMEI,
+	    U.status as status,
+		U.created as created,
+		ICI.user_identity_name as user_identity_name,
+		ICI.user_identity_number as user_identity_number,
+		ICI.remark as remark,
+		ICI.verify_status as verify_status
+    	from user_info U 
+		left join identity_card_info ICI on U.name=ICI.user_name
+		where U.name=#{name} 
+		order by U.created desc 
+	    limit '1'
   </select>
 </mapper>

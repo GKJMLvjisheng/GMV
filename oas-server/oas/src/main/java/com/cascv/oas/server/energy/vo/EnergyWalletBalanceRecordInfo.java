@@ -11,5 +11,4 @@ import lombok.Setter;
 public class EnergyWalletBalanceRecordInfo {
 	  @Getter @Setter private String name;
 	  @Getter @Setter private BigDecimal point;
-	  @Getter @Setter private BigDecimal power;
 }

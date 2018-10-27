@@ -181,9 +181,10 @@ export default {
       walkEnergyBallList:[],
       currentEnergy:0,
       currentPower:0,
-      page:1,
+        page:1,
       newsTotal:1,
       articleList:[],
+      newsLength:0,
       datetime:'',
       analysis:'',
       //analysisCount:0,
@@ -191,7 +192,6 @@ export default {
      // tempArrWalk:[],
       //input1:'',
       //input2:'',
-      maxValue:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -208,11 +208,14 @@ export default {
   },
   beforeMount() {
          //设置定时器，每3秒刷新一次
-         //var self = this;
+         var self = this;
          setInterval(getTotelNumber,300000)
          function getTotelNumber() {
-          this.maxValue()
-          this.getBallAndAnalysis()
+          self.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
+          self.energyBallList=[]
+          self.walkEnergyBallList=[]
+          //self.getMaxValue()
+          self.getBallAndAnalysis()
              //await self.getWalkEnergyBall() 
             //console.log(JSON.stringify(list))
             //self.getEnergyAnalysis()
@@ -221,7 +224,7 @@ export default {
          //getTotelNumber();      
     },
   created() {
-    this.getMaxValue()
+    
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
@@ -247,6 +250,7 @@ export default {
     this.$axios.post('/energyPoint/pointBallMaxValue').then(({data}) => {
       if(data.code==0){
         this.maxValue=data.data
+        console.log(this.maxValue)
       }
     })
     },
@@ -270,13 +274,18 @@ export default {
       .then(({data:{data}}) =>{
         //console.log(data);
         this.newsTotal=data.data.total;
+        //console.log(this.newsTotal);
         if(data.msg=="无更多数据"){
           this.isShowNewsTip=false;  
           this.articleList=[...this.articleList,...data.data.rows];
+          console.log(JSON.stringify(data.data.rows))
+          this.newsLength=data.data.rows.length
         } 
         else
         {
           this.articleList=[...this.articleList,...data.data.rows]; 
+          console.log(JSON.stringify(data.data.rows))
+          this.newsLength=data.data.rows.length
         }   
       })
       .catch(function (err) {
@@ -287,6 +296,19 @@ export default {
    //上拉加载新闻
    infinite (done) { 
       this.page+=1
+     /*if(this.newsLength!=3){
+      this.page-=1
+      let page2=this.newsTotal%3
+      console.log("page"+this.page)
+      console.log("page2"+page2)
+      //for(let i=0;i<page2;i++)
+     // {
+        this.articleList.splice((this.page-1)*3,page2)
+      //i--
+      //}
+      console.log("this.length"+this.articleList.length)
+     }*/
+     console.log(this.page)
       var page=this.page
       var newsTotal=this.newsTotal     
       var pageTotal=Math.ceil(newsTotal/3)
@@ -378,6 +400,7 @@ export default {
                 let dataWalkBall={}
                 let energyBallListBackup=new Array(); 
                 let walkEnergyBallListtBackup=new Array();
+                this.getMaxValue()
                 dataBall=await this.getEnergyBall();
                 //console.log(JSON.stringify(dataBall))
                 if(dataBall.data.code==0)
@@ -663,7 +686,7 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.maxValue()
+      //this.getMaxValue()
       this.getCurrenttime()
       
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
@@ -696,7 +719,7 @@ export default {
    
  skipRefresh() {
       //this.getStep()
-      this.maxValue()
+      //this.getMaxValue()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]

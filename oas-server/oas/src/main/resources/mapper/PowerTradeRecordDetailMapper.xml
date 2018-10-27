@@ -14,7 +14,7 @@
 select 
 	  u.name,ptr.power_change,ptr.in_or_out,ptr.created,a.source_name
 from 
-	  user_info u left join power_trade_record ptr on u.uuid=ptr.user_uuid
+	  power_trade_record ptr left join user_info u on ptr.user_uuid=u.uuid
 	  left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
 	  left join activity a on epb.source_code=a.source_code
 	   <if test="searchValue != null and searchValue !='' ">
@@ -32,7 +32,7 @@ limit #{offset}, #{limit};
 select 
 	  count(*)
 from 
-	  user_info u left join power_trade_record ptr on u.uuid=ptr.user_uuid
+	  power_trade_record ptr left join user_info u on ptr.user_uuid=u.uuid
 	  left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
 	  left join activity a on epb.source_code=a.source_code
        	   <if test="searchValue != null and searchValue !='' ">
