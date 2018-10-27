@@ -126,12 +126,25 @@ public class EnergyPointController extends BaseController{
                 .setErrorCode(ErrorCode.SUCCESS)
                 .build();
     }
+    
+    //得到免费球的最大值
+    @PostMapping(value = "/pointBallMaxValue")  
+    @ResponseBody
+    public ResponseEntity<?> pointBallMaxValue(){
+    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(2, 1).getMaxValue();
+    	return new ResponseEntity.Builder<BigDecimal>()
+    			.setData(maxValue)
+    			.setErrorCode(ErrorCode.SUCCESS)
+    			.build();
+    }
 
+    //采集免费球
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+    	log.info("ballId={}",energyBallTokenRequest.getBallId());
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
         energyService.miningEnergyBall(userUuid);
@@ -413,7 +426,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .build();
       }
       
-      BigDecimal rate = BigDecimal.ONE.divide(exchangeRateModel.getRate());
+      BigDecimal rate = exchangeRateModel.getRate();
       BigDecimal userRate = energyPointRedeem.getRate();
       if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
         return new ResponseEntity.Builder<Integer>()

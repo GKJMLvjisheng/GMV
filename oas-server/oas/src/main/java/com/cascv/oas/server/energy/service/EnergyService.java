@@ -52,10 +52,10 @@ public class EnergyService {
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
     private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，不可被获取
     private static final Integer SOURCE_CODE_OF_CHECKIN = 1;            // 能量球来源：签到为1
-    private static final Integer REWARD_CODE_OF_CHECKIN_POINT = 1;            //能量球奖励来源：积分为1
-    private static final Integer REWARD_CODE_OF_CHECKIN_POWER = 2;            //能量球奖励来源：算力为1
-    private static final Integer SOURCE_CODE_OF_MINING = 2;             // 能量球来源：挖矿为2
-    private static final Integer REWARD_CODE_OF_MINING_POINT = 1;             //能量球奖励来源：积分为1
+    private static final Integer REWARD_CODE_OF_CHECKIN_POINT = 1;            //签到能量球奖励来源：积分为1
+    private static final Integer REWARD_CODE_OF_CHECKIN_POWER = 2;            //签到能量球奖励来源：算力为2
+    private static final Integer SOURCE_CODE_OF_MINING = 2;             // 能量球来源：空投为2
+    private static final Integer REWARD_CODE_OF_MINING_POINT = 1;             //空投能量球奖励来源：积分为1
     private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 16;
     private static final Integer TRANSFER_OF_SECOND_TO_MILLISECOND = 1000; // 秒与毫秒的转换倍率
     private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0

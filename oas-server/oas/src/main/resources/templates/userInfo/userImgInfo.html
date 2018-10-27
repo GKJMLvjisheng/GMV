@@ -348,7 +348,7 @@ section{                       /*调整头像和保存按钮的位置*/
 			onchange="selectImg(this)">选择图片：本地上传
 		</label>
 		<div class="str">
-			<img id="userProfile" src="/img/1.jpg;" width="100%">
+			<img id="userProfile" src="/img/icon_default_user.png;" width="100%">
 		</div>
 	</div>
  
@@ -532,6 +532,7 @@ $("#sureCut").on("click", function() {
 	// canvas.toDataURL 返回的默认格式就是 image/png  这时候裁剪后的文件就储存在 blob 里了,我们可以把它当作是普通文件一样，加入到 FormData 里，并上传至服务器了。
 
 	var blob=new Blob([ia], {type:"image/png"});
+	console.log(blob);
 	var formData=new FormData();
 	var userName=$("#userName").val();
 	
