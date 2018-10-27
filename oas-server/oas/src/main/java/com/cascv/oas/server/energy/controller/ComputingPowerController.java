@@ -1,6 +1,7 @@
 package com.cascv.oas.server.energy.controller;
 
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +108,9 @@ public class ComputingPowerController {
     public ResponseEntity<?> inquirePower() {
         EnergyWallet energyWallet = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyWallet != null) {
-            return new ResponseEntity.Builder<Integer>()
-                    .setData(energyWallet.getPower().intValue())
+        	BigDecimal power = energyWallet.getPower();
+            return new ResponseEntity.Builder<BigDecimal>()
+                    .setData(power)
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {
