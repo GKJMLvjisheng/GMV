@@ -211,7 +211,7 @@ export default {
          //var self = this;
          setInterval(getTotelNumber,300000)
          function getTotelNumber() {
-          this.maxValue()
+          this.getMaxValue()
           this.getBallAndAnalysis()
              //await self.getWalkEnergyBall() 
             //console.log(JSON.stringify(list))
@@ -663,7 +663,7 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      this.maxValue()
+      this.getMaxValue()
       this.getCurrenttime()
       
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
@@ -696,7 +696,7 @@ export default {
    
  skipRefresh() {
       //this.getStep()
-      this.maxValue()
+      this.getMaxValue()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
