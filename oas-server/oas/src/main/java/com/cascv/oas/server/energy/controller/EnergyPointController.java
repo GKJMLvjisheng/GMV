@@ -132,6 +132,7 @@ public class EnergyPointController extends BaseController{
     @Transactional
     public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
+    	log.info("ballId={}",energyBallTokenRequest.getBallId());
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
         energyService.miningEnergyBall(userUuid);
