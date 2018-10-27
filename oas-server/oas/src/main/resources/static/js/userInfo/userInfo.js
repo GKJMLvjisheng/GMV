@@ -348,7 +348,7 @@ function modifyPassword(){
 						+ "&strProgress=" + strProgress + "&str=" + str + "&userName="
 						+ userName + "&result="+ result));
 				      window.location.href = href;	
-				      alert("reset Mobile successfully!");	
+				      //alert("reset Mobile successfully!");	
 				      //document.getElementById("tipContent").innerText="修改密码成功";
 						//$("#Tip").modal('show');
 					
@@ -591,7 +591,7 @@ function addNewMail() {
 				+ "&strProgress=" + strProgress + "&str=" + str + "&userName="
 				+ userName + "&result="+ result));
 		      window.location.href = href;	
-			  alert("reset Mail successfully!");	
+			  //alert("reset Mail successfully!");	
 					
 			},
 			error:function(){
@@ -795,7 +795,7 @@ function checkUserMobile(userMobile) {
 						+ "&strProgress=" + strProgress + "&str=" + str + "&userName="
 						+ userName + "&result="+ result));
 				      window.location.href = href;	
-				      alert("reset Mobile successfully!");	
+				      //alert("reset Mobile successfully!");	
 						
 				},
 				error:function(){
