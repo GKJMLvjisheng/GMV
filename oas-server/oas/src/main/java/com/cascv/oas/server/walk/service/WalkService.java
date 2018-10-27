@@ -249,7 +249,6 @@ public class WalkService {
      * 采集行走能量球
 	 * @param userUuid 
 	 * @param energyBallUuid 
-	 * @param stepNum 
      * @return
 	 * @throws ParseException 
      */
@@ -266,7 +265,6 @@ public class WalkService {
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
         Date bt = formatter.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
         Date et = formatter.parse(now);
-        System.out.println(et);
         if(!bt.before(et)) {
         	log.info("该能量球不能被采集");
         	return null;

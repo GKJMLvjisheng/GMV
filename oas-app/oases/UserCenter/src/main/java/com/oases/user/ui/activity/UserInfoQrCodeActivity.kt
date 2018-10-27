@@ -28,6 +28,7 @@ import com.darsh.multipleimageselect.helpers.Constants
 
 class UserInfoQrCodeActivity : AppCompatActivity() {
 
+    var serverAddress:String = BaseConstant.SERVER_ADDRESS+"null"
     private lateinit var mTempFile:File
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class UserInfoQrCodeActivity : AppCompatActivity() {
         mUserNameTv.text = AppPrefsUtils.getString(BaseConstant.USER_NICK_NAME)
         mIdTv.text = AppPrefsUtils.getString(BaseConstant.USER_NAME)
         mInviteNumberTv.text = AppPrefsUtils.getString(BaseConstant.USER_INVITE_CODE)
-        if (AppPrefsUtils.getString(BaseConstant.USER_ICON)=="http://18.219.19.160:8080null"|| AppPrefsUtils.getString(BaseConstant.USER_ICON)==""){
+        if (AppPrefsUtils.getString(BaseConstant.USER_ICON)==serverAddress|| AppPrefsUtils.getString(BaseConstant.USER_ICON)==""){
             mUserIconIv.setImageResource(com.oases.user.R.drawable.icon_default_user)
         }else{
             Picasso.get().load(AppPrefsUtils.getString(BaseConstant.USER_ICON))
