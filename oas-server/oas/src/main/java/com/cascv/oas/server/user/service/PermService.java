@@ -62,9 +62,9 @@ public class PermService {
     		@SuppressWarnings("unused")
 			String perm=rmList.get(i).getMenuName();
         	if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==5){
-        		perm=PermEntity.USER_WALLET_TRANSFER.getPermName();
+        		perm="交易钱包-转账";
         	}else if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==8){
-        		perm=PermEntity.USER_WALLET_WITHDRAW.getPermName();
+        		perm="在线钱包-转账";
         	}       	
         	perms.add(perm);
         	log.info("perm={}",perm);
@@ -82,7 +82,7 @@ public class PermService {
     	//针对用户角色
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
     	for(RoleMenuViewModel rm:rmList) {
-    		getRewardByWalk=(rm.getMenuName().equals(PermEntity.STEP_COUNT_PERMISSION.getPermName()))? true:false;
+    		getRewardByWalk=(rm.getMenuName().equals("计步"))? true:false;
     		if(getRewardByWalk)
     	    break;   		
     	}
@@ -93,7 +93,7 @@ public class PermService {
     	//针对用户角色
     	List<RoleMenuViewModel> rmList=roleMenuMapper.selectAllRoleMenus(2);
     	for(RoleMenuViewModel rm:rmList) {	
-    		getRewardByPromotion=(rm.getMenuName().equals(PermEntity.MINER_PROMOTION_REWARD.getPermName()))? true:false;
+    		getRewardByPromotion=(rm.getMenuName().equals("获得推广奖励"))? true:false;
     		if(getRewardByPromotion)
     		break;
     	}  
