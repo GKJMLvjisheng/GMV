@@ -264,7 +264,7 @@ class ComputingPowerMainActivity :
         var list=result.activityResultList
         var selectList:MutableList<Int> = mutableListOf()
         for(item in list) {
-            if (item.sourceCode >2 && item.sourceCode < 9) {
+            if (item.sourceCode >2 && item.sourceCode < 12) {
                 if (!selectList.contains(item.sourceCode-3)) {
                     selectList.add(item.sourceCode - 3)
                 }
@@ -285,6 +285,9 @@ class ComputingPowerMainActivity :
 
     override fun onResume() {
         super.onResume()
+        //finish()
+        //startActivity<ComputingPowerMainActivity>()
         mPresenter.inquireCurrentPeriodPoints()
+        //mPresenter.inquirePowerActivityStatus()
     }
 }

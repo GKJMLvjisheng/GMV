@@ -128,6 +128,38 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
             //根据用户的KYC状态进行进行不同的操作，未审核有限制    0未认证，1是审核中，2是已通过，3是未通过
             if (KYCVerifyStatus == "2") {
                 mPresenter.walletOutEvent(toReceive, money, rank)  //进行转账
+            } else if (KYCVerifyStatus=="0") {
+                var everyTimeLimitMoney = BigDecimal(100)
+                if (money.toBigDecimal() <= everyTimeLimitMoney) {      //此处设置次限额  前短固定死
+                    //获取用户的日总额
+                    mPresenter.getDayMoneyTotal()
+                }else {
+                    toast("您已超过每次转账的最大额度"+everyTimeLimitMoney.toInt())
+                    //弹窗让用户进行KYC认证
+                    alertView()
+                }
+            }else if (KYCVerifyStatus=="1") {
+                var everyTimeLimitMoney = BigDecimal(100)
+                if (money.toBigDecimal() <= everyTimeLimitMoney) {      //此处设置次限额  前短固定死
+                    //获取用户的日总额
+                    mPresenter.getDayMoneyTotal()
+                }else {
+                    toast("您已超过每次转账的最大额度"+everyTimeLimitMoney.toInt()+",且您的KYC认证正在审核中,审核通过后无限制")
+                }
+            }else if (KYCVerifyStatus=="3") {
+                var everyTimeLimitMoney = BigDecimal(100)
+                if (money.toBigDecimal() <= everyTimeLimitMoney) {      //此处设置次限额  前短固定死
+                    //获取用户的日总额
+                    mPresenter.getDayMoneyTotal()
+                }else {
+                    toast("您已超过每次转账的最大额度"+everyTimeLimitMoney.toInt()+",您的KYC认证审核未通过："+KYCVerifyInfo)
+                    //弹窗让用户进行KYC认证
+                    alertView()
+                }
+            }
+
+            /*if (KYCVerifyStatus == "2") {
+                mPresenter.walletOutEvent(toReceive, money, rank)  //进行转账
             } else {
                 var everyTimeLimitMoney = "100"
                 if (money <= everyTimeLimitMoney) {      //此处设置次限额  前短固定死
@@ -148,7 +180,7 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
                         alertView()
                     }
                 }
-            }
+            }*/
         }
 
         walletOutHead!!.onClickRightTv({
@@ -230,16 +262,16 @@ class WalletOutActivity : BaseMvpActivity<WalletOutPresenter>(), WalletOutView {
              }
         else{
             if (KYCVerifyStatus=="0"){
-            toast("您已超过每日转账的最大额度"+dayLimitMoney)
+            toast("您已超过每日转账的最大额度"+dayLimitMoney.toInt())
             //弹窗让用户进行KYC认证
             alertView()
             }
             if (KYCVerifyStatus=="1"){
-                toast("您已超过每日转账的最大额度"+dayLimitMoney+",您的KYC认证正在审核中，暂不能转账")
+                toast("您已超过每日转账的最大额度"+dayLimitMoney.toInt()+",您的KYC认证正在审核中,审核通过后无限制")
 
             }
             if (KYCVerifyStatus=="3"){
-                toast("您已超过每日转账的最大额度"+dayLimitMoney+",您的KYC认证审核未通过："+KYCVerifyInfo)
+                toast("您已超过每日转账的最大额度"+dayLimitMoney.toInt()+",您的KYC认证审核未通过："+KYCVerifyInfo)
                 //弹窗让用户进行KYC认证
                 alertView()
             }
