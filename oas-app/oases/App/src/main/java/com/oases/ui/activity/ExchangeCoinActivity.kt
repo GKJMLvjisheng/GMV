@@ -115,6 +115,7 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
                 var mHandler: Handler = Handler()
                 mHandler.postDelayed(object : Runnable {
                     override fun run() {
+                        adapter.clearData()
                         getData(1)
                     }
                 }, 1000)
