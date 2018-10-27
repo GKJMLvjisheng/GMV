@@ -118,10 +118,9 @@ function addQuestion(){
 		async : false,
 
 		success:function(res){					
+			document.getElementById("tipContent").innerText="新增成功";
 			$("#Tip").modal('show');
-			$("#addQuestionModal").modal('hide');
-			questionReady();
-			$("#questionGrid").bootstrapTable('refresh');							
+			location.reload();							
 		},
 		error:function(){
 			document.getElementById("tipContent").innerText="新增失败";

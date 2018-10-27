@@ -11,7 +11,9 @@ public enum UserWalletDetailScope {
   ETH_TO_COIN(5, "充币","交易钱包转入在线钱包", 1),
   PURCHASE_MINER(6, "购买矿机", "购买", 0),
   MINER_ADD_COIN(7,"矿机推广奖励(立即)","购买矿机",1),
-  FROZEN_ADD_COIN(8,"矿机推广奖励(冻结)","购买矿机",1);
+  FROZEN_ADD_COIN(8,"矿机推广奖励(冻结)","购买矿机",1),
+  SYSTEM_INIT(9,"系统初始化","为SYSTEM设定在线钱包初始金额",1);
+  
 
   @Getter @Setter private Integer scope;
   @Getter @Setter private String title;

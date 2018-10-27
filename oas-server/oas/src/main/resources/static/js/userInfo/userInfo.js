@@ -235,7 +235,7 @@ function refreshUserInfo(){
 	  		  $("#userGender1").prop("checked", true);
 	  	
 	  		  }
-	  	  else{
+	  	  else if(userGender=='男'){
 	  		  $("#userGender2").prop("checked", true);
 	  		  }
 	      	 $("#userAddress").val(userAddress);

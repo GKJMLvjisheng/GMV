@@ -36,4 +36,16 @@ class PrivateKeyMnemonicPresenter @Inject constructor() : BasePresenter<PrivateK
         }, lifecycleProvider)
     }
 
+    fun getReward(sourceCode: Int) {
+        if (!checkNetWork()) {
+            return
+        }
+        mView.showLoading()
+        userService.getReward(sourceCode).execute(object : BaseSubscriber<Int>(mView) {
+            override fun onNext(t: Int) {
+                mView.onGetRewardResult(t)
+            }
+        }, lifecycleProvider)
+    }
+
 }

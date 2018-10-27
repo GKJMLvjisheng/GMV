@@ -13,7 +13,7 @@ interface ComputingPowerApi {
     @POST("/api/v1/computingPower/inquirePower")
     fun inquirePower(): Observable<BaseResp<ComputingPowerResp>>
 
-    @POST("/api/v1/computingPower/promotePowerByWechatAccount")
+    @POST("/api/v1/computingPower/checkIdentifyCode")
     fun verifyWeChat(@Body req: WatchingWeChatCodeVerifyReq): Observable<BaseResp<WatchingWeChatCodeVerifyResp>>
 
     @POST("/api/v1/activityConfig/getReward ")

@@ -1,17 +1,23 @@
 package com.cascv.oas.server.blockchain.service;
+import java.math.BigDecimal;
 import java.util.List;
 
-import com.cascv.oas.core.common.PageDomain;
-import com.cascv.oas.core.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Ming Yang
  * Date:2018-10-09
  */
 import org.springframework.stereotype.Service;
+
+import com.cascv.oas.core.common.PageDomainObject;
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
+import com.cascv.oas.server.blockchain.model.SystemResq;
+import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -19,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserWalletDetailService {
 	@Autowired 
 	private UserWalletDetailMapper userWalletDetailMapper;
+	@Autowired
+	private UserWalletMapper userWalletMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
 	
@@ -53,8 +61,8 @@ public class UserWalletDetailService {
 		return userWalletDetailList;
 	}
 	
-	 public PageDomain<UserWalletDetail> systemTransactionDetail(Integer pageNum,Integer pageSize) {
-		  PageDomain<UserWalletDetail> result = new PageDomain<UserWalletDetail>();
+	 public PageDomainObject<SystemResq<UserWalletDetail>> systemTransactionDetail(Integer pageNum,Integer pageSize) {
+		  PageDomainObject<SystemResq<UserWalletDetail>> result = new PageDomainObject<SystemResq<UserWalletDetail>>();
 		  result.setPageNum(pageNum);
 		  result.setPageSize(pageSize);
 		  result.setOffset((pageNum - 1)*pageSize);
@@ -64,7 +72,11 @@ public class UserWalletDetailService {
 				  ud.setCreated(getTimeAfterExchange(ud.getCreated()));
 			  }
 		  }
-		  result.setRows(list);
+		  SystemResq<UserWalletDetail> resq = new SystemResq<UserWalletDetail>();
+		  resq.setList(list);
+		  UserWallet systemWallet = userWalletMapper.getSystemWallet();
+		  resq.setValue(systemWallet == null?BigDecimal.ZERO:systemWallet.getBalance());
+		  result.setRows(resq);
 		  result.setTotal(userWalletDetailMapper.getSystemDetailCount());
 		  return result;
 	  }

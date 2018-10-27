@@ -5,4 +5,5 @@ import com.oases.user.data.protocol.*
 
 interface PrivateKeyMnemonicView : BaseView{
     fun onGetPrivateKeyMnemonicResult(result: PrivateKeyMnemonicResp)
+    fun onGetRewardResult(result: Int)
 }

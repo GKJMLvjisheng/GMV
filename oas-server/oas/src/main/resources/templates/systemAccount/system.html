@@ -50,10 +50,10 @@
 		<nav class="page-tabs menuTabs"> 
 
 			<div class="page-tabs-content">			
-				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">在线钱包记录</a>
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">在线钱包监控</a>
 			</div>
 			<div class="page-tabs-content">
-				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">交易钱包记录</a>
+				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">交易钱包监控</a>
 			</div>	
 				
 		</nav>	
@@ -74,10 +74,14 @@
 <!-- 							</div>						 -->
 <!-- 						</div> -->
 <!-- 	</form> -->
+		<div style="margin-top:15px;margin-bottom: -10px;text-align: center;">
+			<label>SYSTEM用户在线钱包余额：</label>
+			<span id="systemUserWallet"></span>
+		</div>
 			<table id="onlineWalletGrid"></table>
 	</div> 
 	
-	<div class = "container" style="display:none" id="page2">	
+	<div class = "container" style="display:none" id="page2">
 <!-- 	<form id="addVersionForm" action="/version" method="post" class="form-horizontal form">  -->
 
 <!-- 						<div class="form-group "> -->
@@ -92,6 +96,10 @@
 <!-- 							</div>						 -->
 <!-- 						</div> -->
 <!-- 	</form> -->	
+		<div style="margin-top:15px;margin-bottom: -10px;text-align: center;">
+			<label>SYSTEM用户交易钱包余额：</label>
+			<span id="systemEthWallet"></span>
+		</div>
 		<table id="tradeWalletGrid"></table>
 	</div>
 

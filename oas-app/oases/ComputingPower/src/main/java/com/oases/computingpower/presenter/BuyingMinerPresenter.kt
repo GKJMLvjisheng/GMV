@@ -43,4 +43,17 @@ class BuyingMinerPresenter @Inject constructor() : BasePresenter<BuyingMinerView
         },lifecycleProvider)
     }
 
+    /*fun getReward(sourceCode: Int) {
+        if (!checkNetWork()) {
+            return
+        }
+        mView.showLoading()
+        computingPowerService.getReward(sourceCode).execute(object : BaseSubscriber<Int>(mView) {
+            override fun onNext(t: Int) {
+                mView.onGetRewardResult(t)
+            }
+        }, lifecycleProvider)
+    }*/
+
+
 }

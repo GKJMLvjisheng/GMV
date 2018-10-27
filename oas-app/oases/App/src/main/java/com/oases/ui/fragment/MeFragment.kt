@@ -130,7 +130,7 @@ class MeFragment : BaseMvpFragment<MainPresenter>(), MainView, View.OnClickListe
                 builder.setForceRedownload(true) //本地有安装包缓存仍重新下载apk
                 if(value.upGradeStatus == 1){
                     builder.setForceUpdateListener {
-                        System.exit(0)
+                        //System.exit(0)
 
                     }
                 }

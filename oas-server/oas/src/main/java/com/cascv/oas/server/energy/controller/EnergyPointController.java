@@ -459,7 +459,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
             .build();
       }
-      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate()).doubleValue());
+      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate(),6,BigDecimal.ROUND_HALF_UP).doubleValue());
         
       BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
       if (amount == null)

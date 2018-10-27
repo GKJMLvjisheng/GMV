@@ -20,7 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -49,14 +48,17 @@ import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
+import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
 import com.cascv.oas.server.shiro.BaseShiroController;
+import com.cascv.oas.server.user.mapper.UserFacilityMapper;
 import com.cascv.oas.server.user.mapper.UserIdentityCardModelMapper;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.mapper.UserRoleModelMapper;
 import com.cascv.oas.server.user.model.MailInfo;
+import com.cascv.oas.server.user.model.UserFacility;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.model.UserRole;
@@ -112,6 +114,8 @@ public class UserController extends BaseShiroController{
   private MessageService messageService;
   @Autowired
   private UserRoleModelMapper userRoleModelMapper;
+  @Autowired
+  private UserFacilityMapper userFacilityMapper;
   @Autowired
   private UserModelMapper userModelMapper;
   @Autowired
@@ -173,15 +177,30 @@ public class UserController extends BaseShiroController{
 	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
 	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-	  	        	   userModelMapper.updateIMEI(userModel);
-	  	        	   }
-	        		 else if(!IMEIOri.equals(IMEINew))
-	  	        	   throw new AuthenticationException();
+	  	        	   userModelMapper.updateIMEI(userModel);	  	        	   	  	        	   
+	  	        	   }	        		
+	        		 else{
+		        			 if(IMEIOri.equals(IMEINew))
+		        			 {
+	                              if(userFacilityMapper.inquireUserFacilityByIMEI(loginVo.getIMEI())==null){
+			        				 UserFacility userFacility=new UserFacility();
+			    				     userFacility.setIMEI(loginVo.getIMEI());
+			    				     userFacility.setUuid(uuid);
+			                         userFacilityMapper.insertUserFacility(userFacility);
+		        			      }
+                              else
+	        			    	 throw new AuthenticationException();//一个手机只能绑定一个账号 
+	        			     }
+	        			 else 
+	        				 throw new AuthenticationException();	        			 
+	        		    }
 	        	     break;
 	        	 case "测试账号":
 	        		 log.info("this is 测试账号");
+	        		 /**
 		        	   userModel.setIMEI(loginVo.getIMEI());	        	 
 		        	   userModelMapper.updateIMEI(userModel);
+		        	   **/
 	        	     break;
 	        	 default:
 	        		 log.info("default");
@@ -1415,7 +1434,11 @@ public class UserController extends BaseShiroController{
 		if(code.getCode() == 0) { // 用户不存在
 			ethWalletService.create(uuid, password);
 			if(name.equals("SYSTEM")) {
-				userWalletService.createAccountByMoney(uuid,new BigDecimal("10000000"));
+				BigDecimal value = new BigDecimal("10000000");
+				userWalletService.createAccountByMoney(uuid,value);
+				 //system手续费记录
+				userWalletService.insertSystemInit(value);
+			  
 			}else {
 				userWalletService.createAccountByMoney(uuid,BigDecimal.ZERO);
 			}

@@ -1,5 +1,8 @@
 //算力记录查询表格回显
 
+var pageSize;
+var pageNum;
+
 $(function() {
 	
 	initPowerGrid();
@@ -8,7 +11,7 @@ $(function() {
 function initPowerGrid() {
 	$("#powerGrid").bootstrapTable('destroy');
 	$("#powerGrid").bootstrapTable({
-		//url: '/api/v1/energyPoint/inqureEnergyWalletTradeRecord',
+		url: '/api/v1/computingPower/inquirePowerTradeRecord',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -58,6 +61,12 @@ function initPowerGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '130px',
+		},{
+			title : "交易细节",
+			field : "sourceName",
+			align: 'center',
+			valign: 'middle',
+			width:  '130px',
 		},
 			{
 			title : "交易时间",
@@ -83,18 +92,18 @@ function initPowerGrid() {
 function actionFormatter1(value, row, index) {
 	var result = "";
 	if(value==1){
-	result += "<span>获得</span>";      
+	result += "<span>增加</span>";      
     return result;
 	}else if(value==0){
-	result += "<span>支出</span>";      
+	result += "<span>减少</span>";      
     return result;
 	}        
 }
 
 //请求服务数据时所传参数
 function queryParams(params){
-	var pageSize = params.limit;
-	var pageNum = params.offset / params.limit + 1;
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
 	var searchValue = $("#power").val();
 	//alert(JSON.stringify(searchValue));
     return{
@@ -110,7 +119,7 @@ function queryParams(params){
 function responseHandler(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
-        alert("能量钱包回显失败，错误代码:" + code);
+        alert("算力记录查询回显失败，错误代码:" + code);
         return;
     }
     //如果没有错误则返回数据，渲染表格

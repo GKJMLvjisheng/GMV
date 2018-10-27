@@ -435,7 +435,7 @@ public class PromotedRewardService {
 		  Integer currency=exchangeRateModel.getCurrency();
 		  BigDecimal rate=exchangeRateModel.getRate();
 		  BigDecimal bigCurrency=new BigDecimal(currency);
-		  BigDecimal toRate=bigCurrency.divide(rate);
+		  BigDecimal toRate=bigCurrency.divide(rate,6,BigDecimal.ROUND_HALF_UP);
 		  
 		  
 //		  BigDecimal a=new BigDecimal(13.1235);

@@ -34,4 +34,5 @@ interface UserComponent {
     fun inject(activity: PasswordInSecurityActivity)
     fun inject(activity: SetPasswordActivity)
     fun inject(fragment: PrivateKeyMnemonicFragment)
+    fun inject(fragment: EncryptedMnemonicFragment)
 }

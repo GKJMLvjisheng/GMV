@@ -75,4 +75,9 @@
      </set>
     where user_uuid = #{userUUid,jdbcType=VARCHAR}
   </update>
+  
+  <select id="getSystemWallet" resultMap="userWalletMap">
+  	select  <include refid="Base_Column_List" />
+  	from user_wallet where user_uuid = (select uuid from user_info where name='SYSTEM')
+  </select>
 </mapper>
