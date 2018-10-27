@@ -65,7 +65,7 @@ public class ComputingPowerController {
 	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
-	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 4;
+	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 7;
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   	
 	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
