@@ -186,6 +186,7 @@ public class UserController extends BaseShiroController{
 			        				 UserFacility userFacility=new UserFacility();
 			    				     userFacility.setIMEI(loginVo.getIMEI());
 			    				     userFacility.setUuid(uuid);
+			    				     userFacility.setCreated(DateUtils.getTime());
 			                         userFacilityMapper.insertUserFacility(userFacility);
 		        			      }
                               else
