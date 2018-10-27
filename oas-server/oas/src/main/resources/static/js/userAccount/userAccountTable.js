@@ -375,7 +375,7 @@ function initSystemGrid() {
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '120px',
+				width:  '140px',
 			},
 			{
 				title : "IMEI",
@@ -398,7 +398,7 @@ function initSystemGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '165px',
+				width:  '145px',
 				//visible: false,
 			},{
 
