@@ -21,24 +21,26 @@ public class TimeZoneService {
 		String dstTimeZoneId=null;
 		String name=ShiroUtils.getAddress();
 		log.info("name={}",name);
-		if(name!=null) 
+		if(name!=null && name !="") 
 		{
 			String [] arr = name.split("\\s+");
 			String newName=arr[0];
 			log.info("newName={}",newName);
-			CountryPromaryModel countryPromaryModel=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName);
+			CountryPromaryModel countryPromaryModel=countryPromaryModelMapper.selectTimeZone(newName);
 			if(countryPromaryModel!=null) {
-				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByPromaryName(newName).getTimeZone();
+				dstTimeZoneId=countryPromaryModel.getTimeZone();
 				log.info("dstTimeZoneId={}",dstTimeZoneId);
-			}else {
-				dstTimeZoneId=countryPromaryModelMapper.selectTimeZoneByCountryName(newName).getTimeZone();
-				log.info("dstTimeZoneId={}",dstTimeZoneId);
-			}
+				return dstTimeZoneId;
 		}else
 		{
 			dstTimeZoneId="Asia/Shanghai";
 			log.info("dstTimeZoneId={}",dstTimeZoneId);
+			return dstTimeZoneId;
 		}
+	}else {
+		dstTimeZoneId="Asia/Shanghai";
+		log.info("dstTimeZoneId={}",dstTimeZoneId);
 		return dstTimeZoneId;
+		}
 	}
 }
