@@ -70,7 +70,9 @@ public class MinerController {
 	public ResponseEntity<?> addSystemParameter(@RequestBody AddSystemParameter systemParameterModelRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
-		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
+		BigDecimal parameterValue = systemParameterModelRequest.getParameterValue();
+		BigDecimal rate = BigDecimal.ONE.divide(parameterValue).setScale(6, BigDecimal.ROUND_HALF_UP);
+		systemParameterModel.setParameterValue(rate);
 		systemParameterModel.setPeriod(systemParameterModelRequest.getPeriod());
 		systemParameterModel.setComment("inherit");
 		systemParameterModel.setCurrency(1);
@@ -104,7 +106,9 @@ public class MinerController {
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
 		systemParameterModel.setCurrency(systemParameterModelRequest.getCurrency());
 		systemParameterModel.setPeriod(systemParameterModelRequest.getTime());
-		systemParameterModel.setParameterValue(systemParameterModelRequest.getParameterValue());
+		BigDecimal parameterValue = systemParameterModelRequest.getParameterValue();
+		BigDecimal rate = BigDecimal.ONE.divide(parameterValue).setScale(6, BigDecimal.ROUND_HALF_UP);
+		systemParameterModel.setParameterValue(rate);
 		systemParameterModel.setUpdated(now);
         minerMapper.updateSystemParameterByUuid(systemParameterModel);
 		return new ResponseEntity.Builder<Integer>()
@@ -131,7 +135,9 @@ public class MinerController {
 			systemParameterResponse.setCreated(created);
 			systemParameterResponse.setUpdated(updated);
 			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());
-			systemParameterResponse.setParameterValue(systemParameterModel.get(i).getParameterValue());
+			BigDecimal rate = systemParameterModel.get(i).getParameterValue();
+			BigDecimal parameterValue = BigDecimal.ONE.divide(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
+			systemParameterResponse.setParameterValue(parameterValue);
 			systemParameterResponse.setPeriod(systemParameterModel.get(i).getPeriod());
 			if(systemParameterModel.get(i).getCurrency() == 11)
 				systemParameterResponse.setParameterName("β");
