@@ -348,7 +348,7 @@ section{                       /*调整头像和保存按钮的位置*/
 			onchange="selectImg(this)">选择图片：本地上传
 		</label>
 		<div class="str">
-			<img id="userProfile" src="/img/1.jpg;" width="100%">
+			<img id="userProfile" src="/img/icon_default_user.png;" width="100%">
 		</div>
 	</div>
  
@@ -515,7 +515,7 @@ $("#sureCut").on("click", function() {
 	} else {
 		var cas = $('#tailoringImg').cropper('getCroppedCanvas');// 获取被裁剪后的canvas
 		var base64 = cas.toDataURL('image/png'); // 转换为base64
-
+console.log(base64)
 	        $("#userProfile").prop("src", base64);// 显示图片
 		//uploadFile(encodeURIComponent(base64))//编码后上传服务器
 		
@@ -523,7 +523,9 @@ $("#sureCut").on("click", function() {
   var data=base64;
  // $("#userProfile").prop("src", data);// 显示图片
 	data=data.split(',')[1];
+ console.log("1"+data)
 	data=window.atob(data);
+ console.log("2"+data)
 	var ia = new Uint8Array(data.length);
 	for (var i = 0; i < data.length; i++) {
 	    ia[i] = data.charCodeAt(i);
@@ -532,6 +534,7 @@ $("#sureCut").on("click", function() {
 	// canvas.toDataURL 返回的默认格式就是 image/png  这时候裁剪后的文件就储存在 blob 里了,我们可以把它当作是普通文件一样，加入到 FormData 里，并上传至服务器了。
 
 	var blob=new Blob([ia], {type:"image/png"});
+	
 	var formData=new FormData();
 	var userName=$("#userName").val();
 	

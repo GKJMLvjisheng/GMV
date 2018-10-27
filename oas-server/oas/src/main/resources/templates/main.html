@@ -226,15 +226,16 @@
             success : function(res) {
             //var userproPath=res.data.profile;
             console.log(res.data.profile)
-            var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp';
-            var userproPathList=res.data.profile.split('.')
-            if(image.indexOf(userproPathList[userproPathList.length-1])!=-1){
+            var image='PNG,GIF,JPG,JPEG,BMP,png,gif,jpg,jpeg,bmp,blob';
+            var imageList=res.data.profile.split('.');
+            var imageList2=res.data.profile.split('-');
+            if(image.indexOf(imageList[imageList.length-1])!=-1||image.indexOf(imageList2[imageList2.length-1])!=-1){
             	var userproPath=res.data.profile;
             }else{
             	var userproPath="../img/icon_default_user.png";
             	
             }
-            console.log(userproPath)
+          //console.log(userproPath)
             var sex=res.data.gender;
             var name=res.data.name;            
             var obj = document.getElementById("userNickname");
