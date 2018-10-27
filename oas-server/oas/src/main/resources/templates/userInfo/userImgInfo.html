@@ -515,7 +515,7 @@ $("#sureCut").on("click", function() {
 	} else {
 		var cas = $('#tailoringImg').cropper('getCroppedCanvas');// 获取被裁剪后的canvas
 		var base64 = cas.toDataURL('image/png'); // 转换为base64
-
+console.log(base64)
 	        $("#userProfile").prop("src", base64);// 显示图片
 		//uploadFile(encodeURIComponent(base64))//编码后上传服务器
 		
@@ -523,7 +523,9 @@ $("#sureCut").on("click", function() {
   var data=base64;
  // $("#userProfile").prop("src", data);// 显示图片
 	data=data.split(',')[1];
+ console.log("1"+data)
 	data=window.atob(data);
+ console.log("2"+data)
 	var ia = new Uint8Array(data.length);
 	for (var i = 0; i < data.length; i++) {
 	    ia[i] = data.charCodeAt(i);
@@ -535,7 +537,7 @@ $("#sureCut").on("click", function() {
 	console.log(blob);
 	var formData=new FormData();
 	var userName=$("#userName").val();
-	
+	console.log(userName)
 	formData.append('file',blob);
 	formData.append('name',userName);
 	
