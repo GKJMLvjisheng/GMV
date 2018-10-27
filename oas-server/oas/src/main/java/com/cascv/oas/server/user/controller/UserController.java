@@ -19,7 +19,6 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -48,7 +47,6 @@ import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
-import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.config.MediaServer;
@@ -75,7 +73,6 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
-import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -176,9 +173,18 @@ public class UserController extends BaseShiroController{
 	        	 case "正常账号":
 	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
-	  	        	   userModel.setIMEI(loginVo.getIMEI());	        	 
-	  	        	   userModelMapper.updateIMEI(userModel);	  	        	   	  	        	   
-	  	        	   }	        		
+                         if(userFacilityMapper.inquireUserFacilityByIMEI(loginVo.getIMEI())==null){
+	        				 UserFacility userFacility=new UserFacility();
+	    				     userFacility.setIMEI(loginVo.getIMEI());
+	    				     userFacility.setUuid(uuid);
+	    				     userFacility.setCreated(DateUtils.getTime());
+	                         userFacilityMapper.insertUserFacility(userFacility);
+		  	  	        	 userModel.setIMEI(loginVo.getIMEI());	        	 
+			  	        	 userModelMapper.updateIMEI(userModel);
+       			          }
+                         else	
+                        	 throw new AuthenticationException();
+	  	        	 }	        		
 	        		 else{
 		        			 if(IMEIOri.equals(IMEINew))
 		        			 {
@@ -1288,12 +1294,16 @@ public class UserController extends BaseShiroController{
     public ResponseEntity<?> updateIMEI(@RequestBody IMEIModel imeiModel) {
 		Map<String,Object> info=new HashMap<>(); 
 		UserModel userNeWModel=new UserModel();
-		String IMEI=imeiModel.getIMEI();
-		userNeWModel.setIMEI(IMEI);
+		String IMEINew=imeiModel.getIMEI();
+		String IMEIOri=userModelMapper.selectByName(imeiModel.getName()).getIMEI();
+		userNeWModel.setIMEI(IMEINew);
 		userNeWModel.setName(imeiModel.getName());
 		info.put("state",true);	
-		userModelMapper.updateIMEI(userNeWModel);
-		
+		userModelMapper.updateIMEI(userNeWModel);		
+		String uuid=userModelMapper.selectByName(imeiModel.getName()).getUuid();
+		//删除账号和手机的绑定
+		if(userFacilityMapper.inquireUserFacilityByIMEI(IMEIOri)!=null)
+		       userFacilityMapper.deleteUserFacility(uuid);		
 		//删除旧角色,添加新角色
 //		String uuid =userService.findUserByName(imeiModel.getName()).getUuid();
 //		roleService.updateUerRoles(uuid,imeiModel.getRoleId());
