@@ -6,7 +6,7 @@ import com.oases.data.protocol.InquireEnergyDetailResp
 import com.oases.data.protocol.InquirePointsDetailResp
 
 interface MyPointsView: BaseView {
-    fun onGetPoints(points: Int)
+    fun onGetPoints(points: Float)
     fun onGetCurrentPeriodPoints(currentPeriodPointsResp: CurrentPeriodPointsResp)
     fun onGetPointsDeails(list:InquireEnergyDetailResp)
    /* fun onGetTransactionDeails(list: InquirePointsDetailResp)
