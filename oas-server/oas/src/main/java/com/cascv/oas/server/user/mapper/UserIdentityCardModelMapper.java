@@ -7,10 +7,11 @@ import org.apache.ibatis.annotations.Param;
  */
 import org.springframework.stereotype.Component;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
+import com.cascv.oas.server.user.wrapper.UserDetailModel;
 
 @Component
 public interface UserIdentityCardModelMapper {
-	UserIdentityCardModel inquireUserKYCInfo(@Param("userName") String userName);
+	UserDetailModel inquireUserKYCInfo(@Param("userName") String userName);
 	
 	Integer insertUserIdentityCard(UserIdentityCardModel userIdentityCardModel);
 	
