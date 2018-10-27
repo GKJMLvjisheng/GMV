@@ -173,8 +173,9 @@ public class EnergyPointController extends BaseController{
     public ResponseEntity<?> inquireEnergyPoint() {
         EnergyWallet energyPoint = energyService.findByUserUuid(ShiroUtils.getUserUuid());
         if (energyPoint != null) {
-            return new ResponseEntity.Builder<Integer>()
-                    .setData(energyPoint.getPoint().intValue())
+        	BigDecimal point = energyPoint.getPoint();
+            return new ResponseEntity.Builder<BigDecimal>()
+                    .setData(point)
                     .setErrorCode(ErrorCode.SUCCESS)
                     .build();
         } else {

@@ -68,6 +68,9 @@ public class PowerService {
     
     public List<ActivityResult> searchActivityStatus(String userUuid){
     	List<ActivityResult> activityResultList = energySourcePowerMapper.selectByUserUuid(userUuid);
+    	if(activityResultList == null) {
+    		return null;
+    	}
     	List<ActivityResult> statusList = new ArrayList<>();
     	for(ActivityResult activityResult : activityResultList) {
     		statusList.add(activityResult);

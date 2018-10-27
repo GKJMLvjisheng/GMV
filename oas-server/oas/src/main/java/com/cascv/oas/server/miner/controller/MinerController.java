@@ -136,16 +136,20 @@ public class MinerController {
 			String updated=DateUtils.string2Timezone(srcFormater, systemParameterModel.get(i).getUpdated(), dstFormater, dstTimeZoneId);
 			systemParameterResponse.setCreated(created);
 			systemParameterResponse.setUpdated(updated);
-			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());
-			BigDecimal rate = systemParameterModel.get(i).getParameterValue();
-			BigDecimal parameterValue = BigDecimal.ONE.divide(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
-			log.info("parameterValue={}",parameterValue);
-			systemParameterResponse.setParameterValue(parameterValue);
+			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());			
 			systemParameterResponse.setPeriod(systemParameterModel.get(i).getPeriod());
-			if(systemParameterModel.get(i).getCurrency() == 11)
+			if(systemParameterModel.get(i).getCurrency() == 11) {
+				systemParameterResponse.setParameterValue(systemParameterModel.get(i).getParameterValue());
 				systemParameterResponse.setParameterName("β");
-			else
+			}
+			else {
 				systemParameterResponse.setParameterName("γ");
+				BigDecimal rate = systemParameterModel.get(i).getParameterValue();
+				log.info("rate={}",rate);
+				BigDecimal parameterValue = BigDecimal.ONE.divide(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
+				log.info("parameterValue={}",parameterValue);
+				systemParameterResponse.setParameterValue(parameterValue);
+			}
 			systemParameterResponseList.add(systemParameterResponse);
 		}
 		return new ResponseEntity.Builder<List<SystemParameterResponse>>()
