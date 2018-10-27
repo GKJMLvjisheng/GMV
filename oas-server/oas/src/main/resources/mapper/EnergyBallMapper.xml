@@ -82,7 +82,7 @@
 <select id="selectUserPointByTime" resultType="java.math.BigDecimal">
         select SUM(point) as point
         from energy_point_ball
-        where user_uuid=#{userUuid} and source_code=9 and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
+        where user_uuid=#{userUuid} and source_code=3 and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
     </select>
     
     <!-- 查询某用户某种积分的所有能量球 部分信息 -->

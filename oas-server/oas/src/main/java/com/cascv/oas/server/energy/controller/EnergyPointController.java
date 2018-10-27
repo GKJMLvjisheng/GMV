@@ -138,13 +138,12 @@ public class EnergyPointController extends BaseController{
     			.build();
     }
 
-    //采集免费球
+    //采集免费能量球
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
     public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
-    	log.info("ballId={}",energyBallTokenRequest.getBallId());
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
         energyService.miningEnergyBall(userUuid);
@@ -460,7 +459,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
             .build();
       }
-      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate(),6,BigDecimal.ROUND_HALF_UP).doubleValue());
+      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate()).doubleValue());
         
       BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
       if (amount == null)

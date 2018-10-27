@@ -532,6 +532,7 @@ $("#sureCut").on("click", function() {
 	// canvas.toDataURL 返回的默认格式就是 image/png  这时候裁剪后的文件就储存在 blob 里了,我们可以把它当作是普通文件一样，加入到 FormData 里，并上传至服务器了。
 
 	var blob=new Blob([ia], {type:"image/png"});
+	console.log(blob);
 	var formData=new FormData();
 	var userName=$("#userName").val();
 	

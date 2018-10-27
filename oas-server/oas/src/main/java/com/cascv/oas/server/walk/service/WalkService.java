@@ -47,7 +47,7 @@ public class WalkService {
 	@Autowired
 	private EnergyService energyService;
 	
-	private static final Integer SOURCE_CODE_OF_WALKING = 9;             // 能量球来源：计步为9
+	private static final Integer SOURCE_CODE_OF_WALKING = 3;             // 能量球来源：计步为3
 	private static final Integer REWARD_CODE_OF_WALKING_POINT = 1;             //能量球奖励：计步奖励积分，为1
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;         //能量球活跃状态，可被获取
 	private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;            //能量球死亡状态，不可被获取

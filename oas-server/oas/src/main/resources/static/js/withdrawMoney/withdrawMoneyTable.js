@@ -1,15 +1,16 @@
 
 //提币请求审核创建bootstrapTable
+var pageSize;
+var pageNum;
 
 function initRequestAuditGrid() {	
-
+	$('#requestAuditGrid').bootstrapTable('destroy');
 	$("#requestAuditGrid").bootstrapTable({
 		url: "/api/v1/userWallet/getWithdrawList",
 		contentType : "application/json",
 		dataType:"json",
 		method:"post",
 		pagination:true,//显示分页条：页码，条数等
-
 		striped:true,//隔行变色
 
 		pageNumber:1,//首页页码
@@ -17,47 +18,34 @@ function initRequestAuditGrid() {
 		dataField: "withdrawData",
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		queryParams:function(params){
-			return {
-				pageSize : params.limit,
-				pageNum : params.offset / params.limit + 1,
-			}
-		},//请求服务器时所传的参数
+		
+		queryParams:queryParams,
+		responseHandler:responseHandler,
+		
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
-	    sortOrder: 'asc', // 排序规则
-	    responseHandler:function(res){
-	    	if(res.code != 0 ){
-	    		alert("提币请求审核回显失败！"+res.message)
-	    		return{
-	    			total:0,
-	    			withdrawData : null
-	    		}
-	    	}
-	    	return {
-	    		 total : res.data.total, //总页数,前面的key必须为"total"
-	    		 withdrawData : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
-	    	}
-	    },
+	    sortOrder: 'asc', // 排序规则	    	    
+	    
 		columns : [{  
 		title: 'uuid',  
 		field: 'uuid',
 		align: 'center',
 		valign: 'middle',
-		class:'uu_style', 
-		//visible: false, 
-
+		//class:'uu_style', 
+		visible: false, 
 		},
+		
 		{  
-		title: '序号',  
-		field: '',
-		align: 'center',
-		valign: 'middle', 
-		width:  '60px',
-		formatter: function (value, row, index) {  
-			return index+1;  
-			}  
-		},{
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle',  
+			width:  '80px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1;  
+				}  
+			},
+		{
 			title : "用户名",
 			field : "userName",
 			align: 'center',
@@ -103,6 +91,34 @@ function initRequestAuditGrid() {
 		clickToSelect: false,         
 	});
 }
+
+//请求服务数据时所传参数
+function queryParams(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
+	
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+    }
+}
+
+//请求成功方法
+function responseHandler(res){
+	if(res.code != 0 ){
+		alert("提币请求审核回显失败！"+res.message)
+		return{
+			total:0,
+			withdrawData : null
+		}
+	}
+	return {
+		 total : res.data.total, //总页数,前面的key必须为"total"
+		 withdrawData : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+	}
+};
 
 function actionFormatter(value, row, index) {
 	var id = row.uuid;

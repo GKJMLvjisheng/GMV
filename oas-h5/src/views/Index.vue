@@ -191,7 +191,7 @@ export default {
      // tempArrWalk:[],
       //input1:'',
       //input2:'',
-      //todayStep:0,
+      maxValue:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -208,9 +208,10 @@ export default {
   },
   beforeMount() {
          //设置定时器，每3秒刷新一次
-         var self = this;
+         //var self = this;
          setInterval(getTotelNumber,300000)
          function getTotelNumber() {
+          this.maxValue()
           this.getBallAndAnalysis()
              //await self.getWalkEnergyBall() 
             //console.log(JSON.stringify(list))
@@ -220,7 +221,7 @@ export default {
          //getTotelNumber();      
     },
   created() {
-    
+    this.getMaxValue()
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
@@ -242,8 +243,13 @@ export default {
   filters: {
   },
   methods: {
-    
-    
+    getMaxValue(){
+    this.$axios.post('/energyPoint/pointBallMaxValue').then(({data}) => {
+      if(data.code==0){
+        this.maxValue=data.data
+      }
+    })
+    },
    getStep(){
      //let todayStep=100
       let todayStep=window.Android.getTodaySteps()
@@ -381,7 +387,7 @@ export default {
                     // pArr.splice(randomIdx,1)
                     el.x = p.x / 75 + 'rem'
                     el.y = p.y / 75 + 'rem'
-                    if(el.value<50)
+                    if(el.value<this.maxValue)
                     { el.generate=true}
                     else{el.generate=false}
                     return el
@@ -595,7 +601,7 @@ export default {
         return
       }*/
       let value = data.value
-      if (value <50) {
+      if (value <this.maxValue) {
         this.Toast('能量暂不可收取')
         return
       }
@@ -656,8 +662,9 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      //this.getStep()
+      this.maxValue()
       this.getCurrenttime()
+      
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
@@ -688,6 +695,7 @@ export default {
    
  skipRefresh() {
       //this.getStep()
+      this.maxValue()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
