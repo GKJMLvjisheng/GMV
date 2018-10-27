@@ -156,7 +156,14 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
                 tip = "无更多的数据..."
                 mBottomShow.text = tip
                 mBottomShow.setVisible(true)
-                loadFlag = false;
+                loadFlag = false
+
+                var mHandler: Handler = Handler()
+                mHandler.postDelayed(object :Runnable{
+                    override fun run() {
+                        mBottomShow.setVisible(false)
+                    }
+                },BaseConstant.LOADING_STAY_TIME.toLong())
             }
         swipeLayout.setRefreshing(false)
        // }
