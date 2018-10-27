@@ -96,7 +96,7 @@ public class UserService {
 //        userModel.setInviteFrom(userModel.getInviteFrom());
 //      }
     userModel.setUuid(uuid);
-    userModel.setSalt(DateUtils.dateTimeNow());
+    userModel.setSalt(DateUtils.getTime());
 	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
     //产生邀请码       

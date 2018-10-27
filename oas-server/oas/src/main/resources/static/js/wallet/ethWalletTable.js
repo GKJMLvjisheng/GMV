@@ -59,7 +59,7 @@ function initEthWalletGrid() {
 			field : "subTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '190px',
+			width:  '170px',
 		},
 			{
 			title : "交易时间",
@@ -78,7 +78,7 @@ function initEthWalletGrid() {
 			field : "restBalance",
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '110px',
 			formatter:function(value){
 				return value == null?0:value
 			}
