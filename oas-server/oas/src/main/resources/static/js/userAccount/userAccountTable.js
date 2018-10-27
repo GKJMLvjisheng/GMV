@@ -230,6 +230,14 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '93px',
 				
+			},{
+
+				title : "重置IMEI",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter1
 			},
 				{
 				title : "创建时间",
@@ -367,7 +375,7 @@ function initSystemGrid() {
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '120px',
+				width:  '140px',
 			},
 			{
 				title : "IMEI",
@@ -376,13 +384,21 @@ function initSystemGrid() {
 				valign: 'middle',
 				width:  '120px',
 				
+			},{
+
+				title : "重置IMEI",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter1
 			},
 				{
 				title : "创建时间",
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '165px',
+				width:  '145px',
 				//visible: false,
 			},{
 

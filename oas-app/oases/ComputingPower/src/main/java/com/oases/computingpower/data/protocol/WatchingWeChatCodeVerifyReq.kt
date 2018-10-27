@@ -1,3 +1,3 @@
 package com.oases.computingpower.data.protocol
 
-class WatchingWeChatCodeVerifyReq (val idenCode: String)
+data class WatchingWeChatCodeVerifyReq (val idenCode: String)

@@ -58,11 +58,12 @@ public class WalkPointBallController {
 		 String userUuid = ShiroUtils.getUserUuid();
 		 ErrorCode errorCode = ErrorCode.SUCCESS;
 		 EnergyBallTakenResult energyBallTakenResult=new EnergyBallTakenResult();
-		 
+		 log.info("walkBallId={}",energyBallTokenRequest.getBallId());
 		 //判断是否具有获取奖励得权限
 		 if(permService.getWalkPerm()){
 		     energyBallTakenResult = walkService.takeWalkPointBall(userUuid, energyBallTokenRequest.getBallId());
 		     log.info("you have the permission");
+		     
 		     if(energyBallTakenResult == null)
 			     errorCode= ErrorCode.GENERAL_ERROR;
 		 }else{

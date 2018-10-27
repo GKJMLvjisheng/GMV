@@ -3,6 +3,7 @@ package com.oases.computingpower.ui.activity
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -90,6 +91,13 @@ class ComputingPowerHistoryActivity : BaseMvpActivity<ComputingPowerHistoryPrese
                 mBottomShow.text = tip
                 mBottomShow.setVisible(true)
                 loadFlag = false
+
+                var mHandler: Handler = Handler()
+                mHandler.postDelayed(object :Runnable{
+                    override fun run() {
+                        mBottomShow.setVisible(false)
+                    }
+                },BaseConstant.LOADING_STAY_TIME.toLong())
             }
         }
     }

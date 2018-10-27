@@ -25,7 +25,7 @@
         <div @click="handleClickEnergy($event,item)"  v-for="(item,index) in energyBallList" :key="index" :style="{top:item.y,left:item.x}" class="energy-ball flash infinite animated  ">
           <!-- flash infinite animated永久性-->
           <img :src="energyBall" alt="" :style="{width: formatSize(item.value),height: formatSize(item.value)}">
-          <p >{{item.value}}</p>
+          <p>{{item.value}}</p>
          <div>
          <span v-if="item.generate" :style="{color:'#006600'}"><font size="1px" v-if="item.generate">{{item.name}}</font></span>
          <!--使用display:inner-block显示块居中-->
@@ -191,7 +191,7 @@ export default {
      // tempArrWalk:[],
       //input1:'',
       //input2:'',
-      //todayStep:0,
+      maxValue:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -208,19 +208,20 @@ export default {
   },
   beforeMount() {
          //设置定时器，每3秒刷新一次
-         var self = this;
+         //var self = this;
          setInterval(getTotelNumber,300000)
-        async function getTotelNumber() {
-          
-             await self.getWalkEnergyBall() 
+         function getTotelNumber() {
+          this.maxValue()
+          this.getBallAndAnalysis()
+             //await self.getWalkEnergyBall() 
             //console.log(JSON.stringify(list))
-            self.getEnergyAnalysis()
+            //self.getEnergyAnalysis()
            
          }
          //getTotelNumber();      
     },
   created() {
-    
+    this.getMaxValue()
     this.getCurrenttime()
     //this.getEnergyBall()
     //this.getWalkEnergyBall() 
@@ -242,8 +243,13 @@ export default {
   filters: {
   },
   methods: {
-    
-    
+    getMaxValue(){
+    this.$axios.post('/energyPoint/pointBallMaxValue').then(({data}) => {
+      if(data.code==0){
+        this.maxValue=data.data
+      }
+    })
+    },
    getStep(){
      //let todayStep=100
       let todayStep=window.Android.getTodaySteps()
@@ -381,7 +387,7 @@ export default {
                     // pArr.splice(randomIdx,1)
                     el.x = p.x / 75 + 'rem'
                     el.y = p.y / 75 + 'rem'
-                    if(el.value<50)
+                    if(el.value<this.maxValue)
                     { el.generate=true}
                     else{el.generate=false}
                     return el
@@ -595,7 +601,7 @@ export default {
         return
       }*/
       let value = data.value
-      if (value <50) {
+      if (value <this.maxValue) {
         this.Toast('能量暂不可收取')
         return
       }
@@ -603,7 +609,7 @@ export default {
       this.$axios.post('/energyPoint/takeEnergyPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
-          this.Toast(data.message)
+          //this.Toast(data.message)
           return
         }
       ele.classList.add('fadeOutUp')
@@ -656,8 +662,9 @@ export default {
     },
     // 下拉刷新
     refresh (done) {
-      //this.getStep()
+      this.maxValue()
       this.getCurrenttime()
+      
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
@@ -688,6 +695,7 @@ export default {
    
  skipRefresh() {
       //this.getStep()
+      this.maxValue()
       this.getCurrenttime()
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
@@ -921,7 +929,7 @@ header {
       right: 0.1rem;
       width: 32px;
       height: 32px;
-      background-image: url("../assets/images/watch@2x.png");
+      background-image: url("../assets/images/run@2x.png");
       background-size: 32px 32px;
     }
     
@@ -993,7 +1001,7 @@ header {
       background-size: 48px 48px;
     }
     &:nth-child(2) i {
-      background-image: url("../assets/images/watch@2x.png");
+      background-image: url("../assets/images/run@2x.png");
       background-size: 48px 48px;
     }
     &:nth-child(3) i {

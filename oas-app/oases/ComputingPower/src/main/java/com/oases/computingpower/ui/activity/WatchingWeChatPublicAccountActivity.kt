@@ -21,7 +21,7 @@ import org.jetbrains.anko.toast
 class WatchingWeChatPublicAccountActivity: BaseMvpActivity<WatchingWeChatPresenter>(),
         WatchingWeChatView {
 
-//    private val sourceCode:Int = 3
+   // private val sourceCode:Int = 7   //关注公众号的活动序号为7
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_watching_wechat_public_account)
@@ -43,9 +43,9 @@ class WatchingWeChatPublicAccountActivity: BaseMvpActivity<WatchingWeChatPresent
 
     override fun onVerifyResult(result: Int) {
         if (result == 0){
-            toast("验证成功")
+            toast("验证成功，活动参与成功，且奖励只在第一次参与时获得哦！")
+            //mPresenter.getReward(sourceCode)
             startActivity(intentFor<ComputingPowerMainActivity>().singleTop().clearTop())
-    //        mPresenter.getReward(sourceCode)
         }
         else{
             toast("验证错误")

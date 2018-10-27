@@ -21,6 +21,7 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.energy.mapper.EnergyBallMapper;
 import com.cascv.oas.server.energy.mapper.EnergySourcePowerMapper;
 import com.cascv.oas.server.energy.mapper.EnergyTopicMapper;
+import com.cascv.oas.server.energy.mapper.PowerTradeRecordDetailMapper;
 import com.cascv.oas.server.energy.model.ActivityCompletionStatus;
 import com.cascv.oas.server.energy.model.EnergyTopicModel;
 import com.cascv.oas.server.energy.model.EnergyUserTopicModel;
@@ -31,6 +32,7 @@ import com.cascv.oas.server.energy.vo.ActivityResult;
 import com.cascv.oas.server.energy.vo.ActivityResultList;
 import com.cascv.oas.server.energy.vo.ChoiceResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
+import com.cascv.oas.server.energy.vo.PowerTradeRecordDetail;
 import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
@@ -59,9 +61,11 @@ public class ComputingPowerController {
 	@Autowired
 	private EnergyTopicMapper energyTopicMapper;
 	@Autowired
+	 private PowerTradeRecordDetailMapper powerTradeRecordDetailMapper;
+	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	
-	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 4;
+	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 7;
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   	
 	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
@@ -82,7 +86,7 @@ public class ComputingPowerController {
 		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
 		Integer SumUserInvited,SumPowerPromoted;
 		String userUuid=userModel.getUuid();//算力提升用户Uuid
-		Integer powerSource=4;//好友分享方式为4
+		Integer powerSource=9;//好友分享方式为4
 		SumUserInvited=0;
 		SumPowerPromoted=energyBallMapper.countByUserUuidAndPowerSource(userUuid, powerSource);
 		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
@@ -114,6 +118,48 @@ public class ComputingPowerController {
                     .build();
         }
     }
+	
+	@PostMapping(value = "/inquirePowerTradeRecord")
+    @ResponseBody
+    public ResponseEntity<?> inquirePowerTradeRecord(@RequestBody PageDomain<Integer> pageInfo) {
+		Integer pageNum = pageInfo.getPageNum();
+        Integer pageSize = pageInfo.getPageSize();
+        Integer limit = pageSize;
+        Integer offset;
+ 
+        if (pageSize == 0) {
+          limit = 10;
+        }
+        if (pageNum != null && pageNum > 0)
+        	offset = (pageNum - 1) * limit;
+        else 
+        	offset = 0;
+        String searchValue=pageInfo.getSearchValue();
+        List<PowerTradeRecordDetail> powerTradeRecordDetailList=powerTradeRecordDetailMapper.selectPowerTradeRecordBySearchValue(offset, limit, searchValue);
+        for(PowerTradeRecordDetail powerTradeRecordDetail:powerTradeRecordDetailList) {
+        	String sourceName=powerTradeRecordDetail.getSourceName();
+        	Integer inOrOut=powerTradeRecordDetail.getInOrOut();
+        	if(sourceName != null && sourceName.equals("推广矿机") && inOrOut ==1)
+        		powerTradeRecordDetail.setSourceName("矿机推广奖励");
+        	if(sourceName != null && sourceName.equals("推广矿机") && inOrOut ==0)
+        		powerTradeRecordDetail.setSourceName("矿机推广奖励到期");	
+        	if(sourceName != null && sourceName.equals("购买矿机") && inOrOut ==0)
+        		powerTradeRecordDetail.setSourceName("矿机失效");	
+        }
+        PageDomain<PowerTradeRecordDetail> powerTradeRecordDetail=new PageDomain<>();
+        Integer count=powerTradeRecordDetailMapper.countPowerTradeRecordBySearchValue(searchValue);
+	        powerTradeRecordDetail.setTotal(count);
+	        powerTradeRecordDetail.setAsc("desc");
+	        powerTradeRecordDetail.setOffset(offset);
+	        powerTradeRecordDetail.setPageNum(pageNum);
+	        powerTradeRecordDetail.setPageSize(pageSize);
+	        powerTradeRecordDetail.setRows(powerTradeRecordDetailList);
+        return new ResponseEntity.Builder<PageDomain<PowerTradeRecordDetail>>()
+  		        .setData(powerTradeRecordDetail)
+  		        .setErrorCode(ErrorCode.SUCCESS)
+  		        .build();
+	}
+	
 	/**
 	 * 暂时先用这块的代码
 	 * @param code
