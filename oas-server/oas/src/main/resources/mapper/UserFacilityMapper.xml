@@ -3,10 +3,14 @@
 <mapper namespace="com.cascv.oas.server.user.mapper.UserFacilityMapper">
 
   <select id="inquireUserFacilityByIMEI"  resultType="com.cascv.oas.server.user.model.UserFacility">
-select 
-    uuid
-    from user_facility 
+select * from user_facility 
     where IMEI = #{IMEI}
+  </select>
+  
+  
+  <select id="inquireUserFacilityByModel"  resultType="com.cascv.oas.server.user.model.UserFacility">
+select * from user_facility 
+    where IMEI = #{IMEI} and uuid=#{uuid}
   </select>
   
   <!-- insert user_facility -->

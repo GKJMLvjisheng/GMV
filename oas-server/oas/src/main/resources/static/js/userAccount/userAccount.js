@@ -36,7 +36,9 @@ function Confirm(){
 		success: function(res) {
 			if(res.code==0){
 				document.getElementById("tipContent").innerText="重置过程完成";
-				$("#Tip").modal('show');				
+				$("#Tip").modal('show');	
+//				var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+//				$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 					initNormalGrid();			
 					initTestGrid();				
 					initSystemGrid();								
