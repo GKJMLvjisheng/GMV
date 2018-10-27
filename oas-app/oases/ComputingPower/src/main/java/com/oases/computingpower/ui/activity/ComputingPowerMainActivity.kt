@@ -40,11 +40,11 @@ class ComputingPowerMainActivity :
     private var originalPhoneNumber: String = ""
     private var originalMail: String = ""
     private var allData = mutableListOf(
-            FunctionItem(mBackupWallet,false,"wallet_fill"),
+            FunctionItem(mBackupWallet,false,"wallet"),
             FunctionItem(mConnectToPhone,false,"mobile"),
             FunctionItem(mConnectToMail,false,"mail"),
             FunctionItem(mWatchWeChat,false,"wechat"),
-            FunctionItem(mEnvironmentalmProtectionAnswer,false,"read"),
+            FunctionItem(mEnvironmentalmProtectionAnswer,false,"read_fill"),
             FunctionItem(mInviteFriends,false,"shape"),
             FunctionItem(mKYC,false,"protect_fill"),
             FunctionItem(mBuyMiner,false,"sketch_fill"),
