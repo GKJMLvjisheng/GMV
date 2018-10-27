@@ -466,6 +466,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
             .build();
       }
+      log.info("inquirePointFactor date {}", date);
       energyPointFactor.setDate(date);
       ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(date, CurrencyCode.POINT);
       if (exchangeRateModel == null) {
