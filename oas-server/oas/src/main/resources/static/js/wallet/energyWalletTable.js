@@ -189,21 +189,14 @@ function initFundBigGrid() {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '300px',
 		},
 			{
 			title : "积分",
 			field : "point",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
-		},
-		{
-			title : "算力",
-			field : "power",
-			align: 'center',
-			valign: 'middle',
-			width:  '200px',
+			width:  '300px',
 		},
 		{
 			title : "操作",
@@ -212,8 +205,6 @@ function initFundBigGrid() {
 			valign: 'middle',
 			formatter: actionFormatter
 		}],		
-//		search : true,//搜索
-//        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
