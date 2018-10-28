@@ -44,7 +44,7 @@ from
 select 
 	u.name,ew.point
 from 	
-	energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
+	 user_info u left join energy_wallet ew on u.uuid=ew.user_uuid
 	<if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
        </if>
@@ -56,7 +56,7 @@ limit #{offset}, #{limit};
 select  
 		count(*) 
 from 
-		energy_wallet ew left join user_info u on ew.user_uuid=u.uuid
+	user_info u left join energy_wallet ew on u.uuid=ew.user_uuid
 	<if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
        </if>
