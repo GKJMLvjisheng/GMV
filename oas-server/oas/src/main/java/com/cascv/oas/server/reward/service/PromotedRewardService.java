@@ -455,7 +455,7 @@ public class PromotedRewardService {
 		//立即奖励代币额度 immediatelyRewardSum
 		BigDecimal ImmediatelyRewardSum=(priceSum.multiply(rewardRatio)).multiply(percentRatio);
 		log.info("ImmediatelyRewardSum:{}",ImmediatelyRewardSum);
-		BigDecimal immediatelyRewardSum=ImmediatelyRewardSum.divide(i,18,BigDecimal.ROUND_HALF_UP);
+		BigDecimal immediatelyRewardSum=ImmediatelyRewardSum.divide(i,6,BigDecimal.ROUND_HALF_UP);
 		return immediatelyRewardSum;
 	}
 	
