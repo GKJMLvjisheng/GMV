@@ -22,6 +22,7 @@ import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.common.UserWalletDetailScope;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.SystemParameterModel;
@@ -67,6 +68,7 @@ public class MinerController {
 	//增加系统变量
 	@PostMapping(value = "/addSystemParameter")  
 	@ResponseBody
+	@WriteLog(value="addSystemParameter")
 	public ResponseEntity<?> addSystemParameter(@RequestBody AddSystemParameter systemParameterModelRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
@@ -102,6 +104,7 @@ public class MinerController {
 	//修改系统变量值
 	@PostMapping(value = "/updatedSystemParameter")  
 	@ResponseBody
+	@WriteLog(value="updatedSystemParameter")
 	public ResponseEntity<?> updatedSystemParameter(@RequestBody SystemParameterModelRequest systemParameterModelRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		SystemParameterModel systemParameterModel = new SystemParameterModel();
@@ -252,6 +255,7 @@ public class MinerController {
 	//新增矿机
 	@PostMapping(value = "/addMiner")  
 	@ResponseBody
+	@WriteLog(value="AddMiner")
 	public ResponseEntity<?> addMiner(@RequestBody MinerRequest minerRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		Integer count = minerMapper.selectAllWebMiner().size();
@@ -278,6 +282,7 @@ public class MinerController {
 	//删除矿机
 	@PostMapping(value = "/deleteMiner")  
 	@ResponseBody
+	@WriteLog(value="DeleteMiner")
 	public ResponseEntity<?> deleteMiner(@RequestBody MinerDelete minerDelete){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
@@ -301,6 +306,7 @@ public class MinerController {
 	//更新矿机
 	@PostMapping(value = "/updateMiner")  
 	@ResponseBody
+	@WriteLog(value="updatedMiner")
 	public ResponseEntity<?> updateMiner(@RequestBody MinerUpdate minerUpdate){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		MinerModel minerModel = new MinerModel();
@@ -335,8 +341,10 @@ public class MinerController {
 	//购买矿机
 	@PostMapping(value = "/buyMiner")  
 	@ResponseBody
+	@WriteLog(value="buyMiner")
 	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
 		String userUuid = ShiroUtils.getUserUuid();
+		log.info("userUuid={}", userUuid);
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
 		String minerName = userBuyMinerRequest.getMinerName();
@@ -378,6 +386,7 @@ public class MinerController {
 	//上移(自己的orderNum减1，换位置的对方加1)
 	@PostMapping(value = "/upMiner")  
 	@ResponseBody
+	@WriteLog(value="upMiner")
 	public ResponseEntity<?> upMiner(@RequestBody MinerDelete minerDelete){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
@@ -406,6 +415,7 @@ public class MinerController {
 	//下移(自己的orderNum加1，换位置的对方减1)
 	@PostMapping(value = "/downMiner")  
 	@ResponseBody
+	@WriteLog(value="downMiner")
 	public ResponseEntity<?> downMiner(@RequestBody MinerDelete minerDelete){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		String minerCode = minerDelete.getMinerCode();
