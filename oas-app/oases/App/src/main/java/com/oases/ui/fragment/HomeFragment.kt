@@ -123,6 +123,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     private fun uploadHistorySteps() {
         val lastUpdateDate = getStepUploadDate()
         val daysGap = getDaysBetweenDates(lastUpdateDate, getNow(DATE_FORMAT))
+        Log.d("zbb", "last update date $lastUpdateDate, gaps $daysGap")
 
         if (daysGap >= 1) {
             val steps = iSportStepInterface!!.getTodaySportStepArrayByStartDateAndDays(lastUpdateDate, daysGap)
@@ -166,10 +167,16 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     }
 
     fun getStepUploadDate(): String {
-        return if (AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE) == "")
-            getNow(DATE_FORMAT)
-        else
-            AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE)
+        Log.d("zbb", "getStepUploadDate")
+        return if (AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE) == ""){
+                    Log.d("zbb", "getStepUploadDate, get empty")
+                    val date = getNow(DATE_FORMAT)
+                    AppPrefsUtils.putString(BaseConstant.LAST_STEP_UPLOAD_DATE, date)
+                    return date
+                }
+            else {
+                AppPrefsUtils.getString(BaseConstant.LAST_STEP_UPLOAD_DATE)
+            }
     }
 
 
