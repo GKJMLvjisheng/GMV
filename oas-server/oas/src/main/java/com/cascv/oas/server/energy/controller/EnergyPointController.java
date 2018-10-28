@@ -434,7 +434,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .build();
       }
       
-      BigDecimal rate = BigDecimal.ONE.divide(exchangeRateModel.getRate());
+      BigDecimal rate = BigDecimal.ONE.divide(exchangeRateModel.getRate(), 6, BigDecimal.ROUND_HALF_UP);
       BigDecimal userRate = energyPointRedeem.getRate();
       if (userRate != null && userRate.compareTo(BigDecimal.ZERO) != 0 && userRate.compareTo(rate) > 0){
         return new ResponseEntity.Builder<Integer>()
