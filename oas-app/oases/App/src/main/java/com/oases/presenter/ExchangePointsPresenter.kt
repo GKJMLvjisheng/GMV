@@ -36,7 +36,7 @@ class ExchangePointsPresenter @Inject constructor() : BasePresenter<ExchangePoin
             return
         }
         mView.showLoading()
-        walletService.redeemPoint(RedeemPointReq(period, 0, factor.toDouble(), amount.toDouble())).execute(object : BaseSubscriber<RedeemPointResp>(mView) {
+        walletService.redeemPoint(RedeemPointReq(period, 0, factor.toBigDecimal(), amount.toBigDecimal())).execute(object : BaseSubscriber<RedeemPointResp>(mView) {
             override fun onNext(t: RedeemPointResp) {
                 mView.onRedeemSucceed()
             }

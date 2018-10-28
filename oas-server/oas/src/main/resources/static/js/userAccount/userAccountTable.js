@@ -42,19 +42,11 @@ function initNormalGrid() {
 				width:  '80px',
 			},
 			{
-				title : "账号状态",
-				field : "status",
+				title : "昵称",
+				field : "nickname",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter5
-				
-			},{
-				title : "性别",
-				field : "gender",
-				align: 'center',
-				valign: 'middle',
-				width:  '60px',
+				width:  '90px',
 				
 			},
 			{
@@ -62,7 +54,7 @@ function initNormalGrid() {
 				field : "mobile",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '110px',
 			},
 			{
 				title : "邮箱",
@@ -92,8 +84,16 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '165px',
+				width:  '155px',
 				//visible: false,
+			},{
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+				
 			},{
 
 				title : "查看",
@@ -112,7 +112,7 @@ function initNormalGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "切换状态",
+				title : "切换账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -196,19 +196,11 @@ function initTestGrid() {
 				width:  '80px',
 			},
 			{
-				title : "账号状态",
-				field : "status",
+				title : "昵称",
+				field : "nickname",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter5
-				
-			},{
-				title : "性别",
-				field : "gender",
-				align: 'center',
-				valign: 'middle',
-				width:  '60px',
+				width:  '90px',
 				
 			},
 			{
@@ -216,7 +208,7 @@ function initTestGrid() {
 				field : "mobile",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '110px',
 			},
 			{
 				title : "邮箱",
@@ -246,8 +238,16 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '165px',
+				width:  '155px',
 				//visible: false,
+			},{
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+				
 			},{
 
 				title : "查看",
@@ -266,7 +266,7 @@ function initTestGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "切换状态",
+				title : "切换账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -351,19 +351,11 @@ function initSystemGrid() {
 				width:  '80px',
 			},
 			{
-				title : "账号状态",
-				field : "status",
+				title : "昵称",
+				field : "nickname",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter5
-				
-			},{
-				title : "性别",
-				field : "gender",
-				align: 'center',
-				valign: 'middle',
-				width:  '60px',
+				width:  '90px',
 				
 			},
 			{
