@@ -42,14 +42,6 @@ function initNormalGrid() {
 				width:  '80px',
 			},
 			{
-				title : "账号状态",
-				field : "status",
-				align: 'center',
-				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter5
-				
-			},{
 				title : "昵称",
 				field : "nickname",
 				align: 'center',
@@ -94,6 +86,14 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '155px',
 				//visible: false,
+			},{
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+				
 			},{
 
 				title : "查看",
@@ -196,14 +196,6 @@ function initTestGrid() {
 				width:  '80px',
 			},
 			{
-				title : "账号状态",
-				field : "status",
-				align: 'center',
-				valign: 'middle',
-				width:  '80px',
-				formatter: actionFormatter5
-				
-			},{
 				title : "昵称",
 				field : "nickname",
 				align: 'center',
@@ -248,6 +240,14 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '155px',
 				//visible: false,
+			},{
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+				
 			},{
 
 				title : "查看",
