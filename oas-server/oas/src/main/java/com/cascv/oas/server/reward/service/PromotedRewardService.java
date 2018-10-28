@@ -480,6 +480,7 @@ public class PromotedRewardService {
 		BigDecimal powerSum=this.getPowerSum(purchaseRecord);
 		BigDecimal rewardPowerSum=powerSum.multiply(rewardRatio);
 		BigDecimal toUserPowerReward=rewardPowerSum.divide(i,6,BigDecimal.ROUND_HALF_UP);
+		log.info("value={}", toUserPowerReward);
 		return toUserPowerReward;
 	}
 	
