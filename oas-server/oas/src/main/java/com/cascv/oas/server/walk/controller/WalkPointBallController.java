@@ -15,6 +15,7 @@ import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.user.service.PermService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.service.WalkService;
@@ -34,14 +35,13 @@ public class WalkPointBallController {
 	
 	 @PostMapping(value = "/inquireWalkPointBall")  
 	 @ResponseBody
+	 @WriteLog(value="WalkBall")
 	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){
 		 for(int i=0; i<stepNumWrapper.getQuota().size(); i++) {
-			 log.info("时间"+stepNumWrapper.getQuota().get(i).getDate());
-			 log.info("步数"+stepNumWrapper.getQuota().get(i).getStepNum().toString());
+			 log.info("Time"+stepNumWrapper.getQuota().get(i).getDate(), "stepNum"+stepNumWrapper.getQuota().get(i).getStepNum().toString());
 		 }
 		 
 		 String userUuid = ShiroUtils.getUserUuid();
-		 log.info("userUuid={}",userUuid);
 		 List<WalkBallReturn> walkBallReturnList = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());
 		 log.info("walklist={}",JSON.toJSONString(walkBallReturnList));
 		return new ResponseEntity.Builder<List<WalkBallReturn>>()
