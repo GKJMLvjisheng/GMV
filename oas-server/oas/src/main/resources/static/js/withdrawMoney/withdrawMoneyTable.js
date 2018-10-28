@@ -23,8 +23,10 @@ function initRequestAuditGrid() {
 		responseHandler:responseHandler,
 		
 		toolbar:"#toolbar",//工具栏
-		sortName: 'ID', // 要排序的字段
-	    sortOrder: 'asc', // 排序规则	    	    
+		
+		sortable: true,//是否启用排序
+		sortName: "created", // 要排序的字段
+	    sortOrder: "desc", // 排序规则	    	    
 	    
 		columns : [{  
 		title: 'uuid',  

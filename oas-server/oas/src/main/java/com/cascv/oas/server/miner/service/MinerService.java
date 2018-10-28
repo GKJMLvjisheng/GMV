@@ -215,18 +215,14 @@ public class MinerService {
 		List<PurchaseRecord> purchaseRecordList = minerMapper.selectAllRecord();
 		for(int i=0; i<purchaseRecordList.size(); i++) {
 			String created = purchaseRecordList.get(i).getCreated();
-			log.info("created={}", created);
 			Integer period = purchaseRecordList.get(i).getMinerPeriod();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			log.info("sdf={}",sdf);
 			try {
-				log.info("created={}", created);
 				Date bt = sdf.parse(created);
-				log.info("bt={}",bt);
 				Date et = sdf.parse(now);
-				log.info("et={}",et);
 				Calendar beginTime = Calendar.getInstance();
 				beginTime.setTime(bt);
+				log.info("beginTime={}", beginTime.getTime());
 				beginTime.add(Calendar.DAY_OF_YEAR, period);
 				Date endTime = beginTime.getTime();
 				log.info("endTime={}",endTime);
