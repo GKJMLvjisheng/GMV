@@ -261,6 +261,11 @@ function resetControlModal(){
 	}
 }
 
+function designColor(){
+	var pageSize = $("#normalGrid").bootstrapTable('getOptions').pageSize;
+	$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+}
+
 function display1(){
 	document.getElementById("page3").style.display="none";
 	document.getElementById("page4").style.display="none";
