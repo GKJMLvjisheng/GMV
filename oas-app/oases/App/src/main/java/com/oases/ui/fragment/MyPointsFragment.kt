@@ -131,7 +131,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
         return rootFragment
     }
 
-    override fun onGetPoints(points: Int) {
+    override fun onGetPoints(points: Float) {
         mCurrentPoints.text = points.toString()
         Log.d("zbb", "points ${points}")
     }
