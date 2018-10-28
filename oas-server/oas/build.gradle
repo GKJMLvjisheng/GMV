@@ -88,7 +88,7 @@ dependencies{
 	compile group: 'dom4j', name: 'dom4j', version: '1.6.1'	
 	compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.10'
 	compile group: 'xmlpull', name: 'xmlpull', version: '1.1.3.1'
-  testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
   
    /*亚马逊SNS*/
    compile group: 'com.amazonaws', name: 'aws-java-sdk-core', version: '1.11.229'

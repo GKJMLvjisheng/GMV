@@ -460,7 +460,7 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_DATE_SPECIFIED)
             .build();
       }
-      log.info("inquirePointFactor date {}", date);
+      
       energyPointFactor.setDate(date);
       ExchangeRateModel exchangeRateModel = exchangeRateService.getRate(date, CurrencyCode.POINT);
       if (exchangeRateModel == null) {
@@ -469,7 +469,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
             .setErrorCode(ErrorCode.NO_AVAILABLE_EXCHANGE_RATE)
             .build();
       }
-      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate()).doubleValue());
+      log.info("inquirePointFactor date {},rate {}", date, exchangeRateModel.getRate());
+      energyPointFactor.setFactor(BigDecimal.ONE.divide(exchangeRateModel.getRate(),6,BigDecimal.ROUND_HALF_UP).doubleValue());
         
       BigDecimal amount = energyService.summaryPoint(ShiroUtils.getUserUuid(), date);
       if (amount == null)

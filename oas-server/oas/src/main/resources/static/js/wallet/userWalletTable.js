@@ -52,14 +52,14 @@ function initUserWalletGrid() {
 			field : "title",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '140px',
 		},
 		{
 			title : "交易细节",
 			field : "subTitle",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '140px',
 		},
 			{
 			title : "交易时间",
@@ -78,7 +78,7 @@ function initUserWalletGrid() {
 			field : "restBalance",
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '110px',
 			formatter:function(value){
 				return value == null?0:value
 			}

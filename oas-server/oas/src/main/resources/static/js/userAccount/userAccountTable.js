@@ -499,7 +499,7 @@ function actionFormatter4(value, row, index) {
 
 function ViewViewById(name){	
 	var data = {
-		"userName": name
+		"name": name
 	};
 	$.ajax({
 	url:"/api/v1/userCenter/selectAllUsers",
@@ -513,49 +513,49 @@ function ViewViewById(name){
 
 	success:function(res){				
 		if(res.code==0){
-		alert(JSON.stringify(res));			
-		var rows = res.data;
-		var verifyStatus = rows.verifyStatus;
-		if(verifyStatus==0){
-			var status = "未认证";
-			document.getElementById("userIdentityName1").style.display="none";
-			document.getElementById("userIdentityNumber1").style.display="none";
-			document.getElementById("remark1").style.display="none";
-		}else if(verifyStatus==1){
-			var status = "未审核";
-			document.getElementById("userIdentityName1").style.display="none";
-			document.getElementById("userIdentityNumber1").style.display="none";
-			document.getElementById("remark1").style.display="none";
-		}else if(verifyStatus==2){
-			var status = "已通过";
-			document.getElementById("userIdentityName1").style.display="block";
-			document.getElementById("userIdentityNumber1").style.display="block";
-			document.getElementById("remark1").style.display="none";
-		}else {
-			var status = "未通过";
-			document.getElementById("userIdentityName1").style.display="none";
-			document.getElementById("userIdentityNumber1").style.display="none";
-			document.getElementById("remark1").style.display="block";
-		}
+			//alert(JSON.stringify(res));			
+			var rows = res.data;
+			var verifyStatus = rows.verifyStatus;
+			if(verifyStatus==0){
+				var status = "未认证";
+				document.getElementById("userIdentityName1").style.display="none";
+				document.getElementById("userIdentityNumber1").style.display="none";
+				document.getElementById("remark1").style.display="none";
+			}else if(verifyStatus==1){
+				var status = "未审核";
+				document.getElementById("userIdentityName1").style.display="none";
+				document.getElementById("userIdentityNumber1").style.display="none";
+				document.getElementById("remark1").style.display="none";
+			}else if(verifyStatus==2){
+				var status = "已通过";
+				document.getElementById("userIdentityName1").style.display="block";
+				document.getElementById("userIdentityNumber1").style.display="block";
+				document.getElementById("remark1").style.display="none";
+			}else {
+				var status = "未通过";
+				document.getElementById("userIdentityName1").style.display="none";
+				document.getElementById("userIdentityNumber1").style.display="none";
+				document.getElementById("remark1").style.display="block";
+			}
+			
+			
+			$('#Qname').val(rows.name);
+			$('#Qnickname').val(rows.nickname);
+			$('#Qgender').val(rows.gender);
+			$('#Qbirthday').val(rows.birthday);
+			$('#Qmobile').val(rows.mobile);
+			$('#Qemail').val(rows.email);
+			$('#Qaddress').val(rows.address);
+			$('#QinviteCode').val(rows.inviteCode);
+			
+			$('#QverifyStatus').val(status);	
+			//$('#IMEI').val(rows.IMEI);
+			
+			$('#QuserIdentityName').val(rows.userIdentityName);
+			$('#QuserIdentityNumber').val(rows.userIdentityNumber);
+			$('#Qremark').val(rows.remark);					
 		
-		
-		$('#Qname').val(rows.name);
-		$('#Qnickname').val(rows.nickname);
-		$('#Qgender').val(rows.gender);
-		$('#Qbirthday').val(rows.birthday);
-		$('#Qmobile').val(rows.mobile);
-		$('#Qemail').val(rows.email);
-		$('#Qaddress').val(rows.address);
-		$('#QinviteCode').val(rows.inviteCode);
-		
-		$('#verifyStatus').val(status);	
-		//$('#IMEI').val(rows.IMEI);
-		
-		$('#userIdentityName').val(rows.userIdentityName);
-		$('#userIdentityNumber').val(rows.userIdentityNumber);
-		$('#remark').val(rows.remark);					
-	
-		$("#queryModal").modal("show");
+			$("#queryModal").modal("show");
 		}
 
 		else{

@@ -12,21 +12,12 @@
     uuid, time_zone, country_name,promary_name
   </sql>
   
-  <select id="selectTimeZoneByPromaryName" resultMap="countryPromaryModelMap">
+  <select id="selectTimeZone" resultMap="countryPromaryModelMap">
   select 
   		time_zone 
   from 
   		country_promary 
   where
-  		promary_name=#{name}
-  </select>
-  
-  <select id="selectTimeZoneByCountryName" resultMap="countryPromaryModelMap">
-select 
-  	  time_zone 
- from 
-  	  country_promary 
-where
-  	  country_name=#{name}
+  		promary_name=#{name} or country_name=#{name};
   </select>
 </mapper>

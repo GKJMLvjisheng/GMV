@@ -21,12 +21,6 @@ from
 
 		   <if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
-    		or ed.value like concat('%',#{searchValue},'%')
-    		or ed.title like concat('%',#{searchValue},'%')
-    		or ed.created like concat('%',#{searchValue},'%')
-    		or ed.remark like concat('%',#{searchValue},'%')
-    		or ed.rest_balance like concat('%',#{searchValue},'%')
-    		or ed.sub_title like concat('%',#{searchValue},'%')
        </if>
 order by ed.created desc
 limit #{offset}, #{limit};
@@ -41,12 +35,6 @@ from
 
 	<if test="searchValue != null and searchValue !='' ">
     	where u.name like concat('%',#{searchValue},'%')
-    		or ed.value like concat('%',#{searchValue},'%')
-    		or ed.title like concat('%',#{searchValue},'%')
-    		or ed.created like concat('%',#{searchValue},'%')
-    		or ed.remark like concat('%',#{searchValue},'%')
-    		or ed.rest_balance like concat('%',#{searchValue},'%')
-    		or ed.sub_title like concat('%',#{searchValue},'%')
        </if>
 </select>
 
@@ -59,13 +47,12 @@ from
    select 
 		u.name,SUM(ed.value) as value
 from
-        eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=1 and ed.address=e.address left
+        eth_wallet_detail ed left join eth_wallet e on ed.address=e.address left
         join user_info u on e.user_uuid=u.uuid    
-where
+where   ed.in_or_out=1 and 
 		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 		<if test="searchValue != null and searchValue !='' ">
-    		and u.name like concat('%',#{searchValue},'%')
-    		or ed.value like concat('%',#{searchValue},'%')
+    	and u.name like concat('%',#{searchValue},'%')
        </if>
 group by u.name 
 order by value desc
@@ -76,13 +63,12 @@ limit #{offset}, #{limit};
    select 
 		count(distinct ed.address)
 from 
-		 eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=1 and ed.address=e.address left
+		eth_wallet_detail ed left join eth_wallet e on ed.address=e.address left
         join user_info u on e.user_uuid=u.uuid    
-where
+where   ed.in_or_out=1 and 
 		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 		<if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
-    		or ed.value like concat('%',#{searchValue},'%')
        </if>
        ;
    </select>
@@ -91,13 +77,12 @@ where
    select 
 		u.name,SUM(ed.value) as value
 from 
-		 eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=0 and ed.address=e.address left
+		eth_wallet_detail ed left join eth_wallet e on ed.address=e.address left
         join user_info u on e.user_uuid=u.uuid    
-where
+where   ed.in_or_out=0 and 
 		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
 		<if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
-    		or ed.value like concat('%',#{searchValue},'%')
        </if>
 group by u.name 
 order by value desc
@@ -108,13 +93,12 @@ limit #{offset}, #{limit};
    select 
 		count(distinct ed.address)
 from 
-		 eth_wallet_detail ed left join eth_wallet e on ed.in_or_out=0 and ed.address=e.address left
+		eth_wallet_detail ed left join eth_wallet e on ed.address=e.address left
         join user_info u on e.user_uuid=u.uuid    
-where
+where   ed.in_or_out=0 and 
 		DATE_FORMAT(ed.created,"%Y-%m-%d") BETWEEN #{startTime} and #{endTime}
         <if test="searchValue != null and searchValue !='' ">
     		and u.name like concat('%',#{searchValue},'%')
-    		or ed.value like concat('%',#{searchValue},'%')
        </if>
        ;
    </select>

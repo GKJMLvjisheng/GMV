@@ -266,7 +266,7 @@ public class EthWalletService {
       
       String encryptedWallet = CryptoUtils.encrypt(jsonStr, KEY_SALT);
       keyStoreService.saveKey(userUuid, encryptedWallet);
-      String datetime = DateUtils.dateTimeNow();
+      String datetime = DateUtils.getTime();
       ethWallet.setCrypto(1);
       ethWallet.setCreated(datetime);
       ethWallet.setUpdated(datetime);
@@ -578,7 +578,7 @@ public class EthWalletService {
 	  oasDetail.setValue(info.getAmount());
 	  oasDetail.setUserUuid(user.getUuid());
 	  oasDetail.setRemark(info.getRemark());
-	  String now = DateUtils.dateTimeNow();
+	  String now = DateUtils.getTime();
 	  oasDetail.setCreated(now);
 	  oasDetail.setUpdated(now);
 	  oasDetail.setStatus(OasEventEnum.FORSURE.getCode());
@@ -603,7 +603,7 @@ public class EthWalletService {
 			  return ErrorCode.ETH_RETURN_HASH;
 		  }
 		  //update oasdetail hash值
-		  Integer oasResult = oasDetailMapper.setWithdrawResultByUuid(uuid,null,DateUtils.dateTimeNow(),ethInfo.getData());
+		  Integer oasResult = oasDetailMapper.setWithdrawResultByUuid(uuid,null,DateUtils.getTime(),ethInfo.getData());
 		  if(oasResult == 0) {
 			  return ErrorCode.UPDATE_FAILED;
 		  }
@@ -614,7 +614,7 @@ public class EthWalletService {
 		  }
 		  EthWallet emptyEth = new EthWallet();
 		  emptyEth.setUnconfirmedBalance(userEthWallet.getUnconfirmedBalance().add(info.getAmount()));
-		  emptyEth.setUpdated(DateUtils.dateTimeNow());
+		  emptyEth.setUpdated(DateUtils.getTime());
 		  emptyEth.setUserUuid(userEthWallet.getUserUuid());
 		  Integer eResult = ethWalletMapper.update(emptyEth);
 		  if(eResult == 0) {
@@ -725,7 +725,7 @@ public class EthWalletService {
 	  		 if(flag.equals("success")) {
 	  			
 	  			systemAccountBalance = systemWallet.getBalance().add(value);
-	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),null,myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
+	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),null,myWallet.getUnconfirmedBalance().subtract(value),DateUtils.getTime());
 	  			Integer sResult = userWalletMapper.increaseBalance(systemWallet.getUuid(), value);
 	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;
@@ -743,7 +743,7 @@ public class EthWalletService {
 	  				  return ErrorCode.OAS_EXTRA_MONEY_NOT_ENOUGH;
 	  			  }*/
 	  			systemAccountBalance = systemWallet.getBalance().subtract(oasD.getExtra());
-	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.dateTimeNow());
+	  			Integer tResult = userWalletMapper.changeBalanceAndUnconfimed(oasD.getUserUuid(),myWallet.getBalance().add(value).add(oasD.getExtra()),myWallet.getUnconfirmedBalance().subtract(value),DateUtils.getTime());
 	  			Integer sResult = userWalletMapper.decreaseBalance(systemWallet.getUuid(), oasD.getExtra());
 	  			if(tResult == 0 || sResult == 0) {
 	  		  		 return ErrorCode.UPDATE_FAILED;

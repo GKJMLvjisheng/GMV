@@ -15,6 +15,7 @@ public class UserDetailModel implements Serializable {
 	@Getter @Setter private String email;      //邮箱
 	@Getter @Setter private String created;
 	@Getter @Setter private String IMEI;
+	@Getter @Setter private String inviteCode;
 	@Getter @Setter private Integer status;
 	@Getter @Setter private Integer roleId;
 	@Getter @Setter private String userIdentityName;

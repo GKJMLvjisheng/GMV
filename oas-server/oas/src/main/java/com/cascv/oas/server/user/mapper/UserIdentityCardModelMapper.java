@@ -11,7 +11,7 @@ import com.cascv.oas.server.user.wrapper.UserDetailModel;
 
 @Component
 public interface UserIdentityCardModelMapper {
-	UserDetailModel inquireUserKYCInfo(@Param("userName") String userName);
+	UserDetailModel inquireUserKYCInfo(@Param("name") String name);
 	
 	Integer insertUserIdentityCard(UserIdentityCardModel userIdentityCardModel);
 	
