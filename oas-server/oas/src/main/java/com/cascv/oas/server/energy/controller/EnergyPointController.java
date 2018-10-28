@@ -98,6 +98,8 @@ public class EnergyPointController extends BaseController{
         	EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         	energyCheckinResult.setNewEnergyPoint(activityService.getNewPoint(sourceCode, 1).getNewPoint());
         	energyCheckinResult.setNewPower(activityService.getNewPower(sourceCode, 2).getNewPower());
+        	log.info("{energypoin}",energyCheckinResult.getNewEnergyPoint());
+        	log.info("{energypoin}",energyCheckinResult.getNewPower());
         	// change the Checkin EnergyBall to Die
 //            activityService.updateEnergyPointBallStatusByUuid(userUuid);
 //            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
