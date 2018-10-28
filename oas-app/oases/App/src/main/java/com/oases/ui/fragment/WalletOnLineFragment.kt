@@ -193,9 +193,9 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
         }
         mExchangeBtn.onClick{
             //lh修改携带KYC状态进行转账跳转
-            startActivity<WalletOutActivity>()
+            //startActivity<WalletOutActivity>()
             //alertView()
-            //intentKYCVerifyStatus()
+            intentKYCVerifyStatus()
         }
         mMoreWalletDetail.onClick {
             mPresenter.transactionOnWalletDetail(1, BaseConstant.PAGE_SIZE)
@@ -204,15 +204,15 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
     }
 
     //携带KYC状态跳入转账页面
-    /*private fun intentKYCVerifyStatus (){
+    private fun intentKYCVerifyStatus (){
         var intent = Intent(context,WalletOutActivity::class.java)
         var bundle = Bundle()
-        bundle.putString("KYCVerifyStatus",KYCVerifyStatus.toString())
-        bundle.putString("KYCVerifyInfo",KYCVerifyInfo)
+       // bundle.putString("KYCVerifyStatus",KYCVerifyStatus.toString())
+      //  bundle.putString("KYCVerifyInfo",KYCVerifyInfo)
         bundle.putString(MY_OAS_AMOUNT , mCurrentPoints.text.toString())
         intent.putExtras(bundle)
         startActivity(intent)
-    }*/
+    }
 
     //KYC审核状态显示
     override fun onGetKYCVerifyStatus(result: KYCVerifyStatusResp) {

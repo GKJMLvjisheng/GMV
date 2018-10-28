@@ -1,6 +1,8 @@
 package com.oases.data.protocol
 
+import java.math.BigDecimal
+
 data class RedeemPointReq (val period: String,
                            val type:Int,
-                           val factor:Double,
-                           val amount:Double)
+                           val factor:BigDecimal,
+                           val amount:BigDecimal)
