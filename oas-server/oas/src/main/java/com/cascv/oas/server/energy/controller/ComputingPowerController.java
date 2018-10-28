@@ -35,6 +35,7 @@ import com.cascv.oas.server.energy.vo.ChoiceResult;
 import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.PowerTradeRecordDetail;
 import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
+import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -53,6 +54,8 @@ public class ComputingPowerController {
     private EnergyService energyService;
 	@Autowired
     private ActivityService activityService;
+	@Autowired 
+	private TimeZoneService timeZoneService;
 	@Autowired
 	private ActivityMapper activityMapper;
 	@Autowired
@@ -147,6 +150,11 @@ public class ComputingPowerController {
         		powerTradeRecordDetail.setSourceName("矿机推广奖励到期");	
         	if(sourceName != null && sourceName.equals("购买矿机") && inOrOut ==0)
         		powerTradeRecordDetail.setSourceName("矿机失效");	
+        	String srcFormater="yyyy-MM-dd HH:mm:ss";
+			String dstFormater="yyyy-MM-dd HH:mm:ss";
+			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+			String created=DateUtils.string2Timezone(srcFormater, powerTradeRecordDetail.getCreated(), dstFormater, dstTimeZoneId);
+			powerTradeRecordDetail.setCreated(created);
         }
         PageDomain<PowerTradeRecordDetail> powerTradeRecordDetail=new PageDomain<>();
         Integer count=powerTradeRecordDetailMapper.countPowerTradeRecordBySearchValue(searchValue);
