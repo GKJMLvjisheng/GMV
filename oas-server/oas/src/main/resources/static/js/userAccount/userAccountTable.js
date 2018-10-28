@@ -46,14 +46,7 @@ function initNormalGrid() {
 				field : "nickname",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
-				
-			},{
-				title : "性别",
-				field : "gender",
-				align: 'center',
-				valign: 'middle',
-				width:  '60px',
+				width:  '90px',
 				
 			},
 			{
@@ -61,7 +54,7 @@ function initNormalGrid() {
 				field : "mobile",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '110px',
 			},
 			{
 				title : "邮箱",
@@ -91,8 +84,16 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '165px',
+				width:  '155px',
 				//visible: false,
+			},{
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+				
 			},{
 
 				title : "查看",
@@ -111,7 +112,7 @@ function initNormalGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "账号状态",
+				title : "切换账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -199,14 +200,7 @@ function initTestGrid() {
 				field : "nickname",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
-				
-			},{
-				title : "性别",
-				field : "gender",
-				align: 'center',
-				valign: 'middle',
-				width:  '60px',
+				width:  '90px',
 				
 			},
 			{
@@ -214,7 +208,7 @@ function initTestGrid() {
 				field : "mobile",
 				align: 'center',
 				valign: 'middle',
-				width:  '100px',
+				width:  '110px',
 			},
 			{
 				title : "邮箱",
@@ -244,8 +238,16 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '165px',
+				width:  '155px',
 				//visible: false,
+			},{
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+				
 			},{
 
 				title : "查看",
@@ -264,7 +266,7 @@ function initTestGrid() {
 				formatter: actionFormatter3
 			},{
 
-				title : "账号状态",
+				title : "切换账号状态",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -353,14 +355,7 @@ function initSystemGrid() {
 				field : "nickname",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
-				
-			},{
-				title : "性别",
-				field : "gender",
-				align: 'center',
-				valign: 'middle',
-				width:  '60px',
+				width:  '90px',
 				
 			},
 			{
@@ -391,7 +386,7 @@ function initSystemGrid() {
 				align: 'center',
 				valign: 'middle',
 				width:  '80px',
-				formatter: actionFormatter1
+				formatter: actionFormatter5
 			},
 				{
 				title : "创建时间",
@@ -491,18 +486,30 @@ function actionFormatter4(value, row, index) {
 	var name = value;
 	var roleId = row.roleId;
 	var result = "";
-	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">账号状态</a>";
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">切换状态</a>";
 //	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
 //	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
 	return result;	
 }
+
+function actionFormatter5(value, row, index) {
+    var result = "";
+    //alert(JSON.stringify(value))
+    if(value==1){
+	result += "<span>激活</span>";      
+    return result;
+	}else if(value==0){
+	result += "<span>禁用</span>";      
+    return result;
+	}    
+}	
 
 function ViewViewById(name){	
 	var data = {
 		"name": name
 	};
 	$.ajax({
-	url:"/api/v1/userCenter/selectAllUsers",
+	url:"/api/v1/userCenter/inquireUserKYCInfo",
 	contentType : 'application/json;charset=utf8',
 	dataType: 'json',
 	cache: false,
