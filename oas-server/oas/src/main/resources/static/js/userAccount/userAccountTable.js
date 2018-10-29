@@ -39,7 +39,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
+				width:  '90px',
 			},
 			{
 				title : "昵称",
@@ -61,7 +61,7 @@ function initNormalGrid() {
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '98px',
 			},
 			{
 				title : "IMEI",
@@ -84,7 +84,7 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '155px',
+				width:  '150px',
 				//visible: false,
 			},{
 				title : "账号状态",
@@ -193,7 +193,7 @@ function initTestGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
+				width:  '90px',
 			},
 			{
 				title : "昵称",
@@ -215,7 +215,7 @@ function initTestGrid() {
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '98px',
 			},
 			{
 				title : "IMEI",
@@ -238,7 +238,7 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '155px',
+				width:  '150px',
 				//visible: false,
 			},{
 				title : "账号状态",
@@ -348,7 +348,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
+				width:  '90px',
 			},
 			{
 				title : "昵称",

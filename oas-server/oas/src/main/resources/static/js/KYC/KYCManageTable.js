@@ -172,7 +172,8 @@ function viewUser(id){
 	contentType : false,
 	async:false,
 
-	success:function(res){				
+	success:function(res){		
+		//alert(JSON.stringify(res))
 		if(res.code==0){	
 		var rows = res.data;			
 		$('#Qname').val(rows.name);
@@ -182,7 +183,7 @@ function viewUser(id){
 		$('#Qmobile').val(rows.mobile);
 		$('#Qemail').val(rows.email);
 		$('#Qaddress').val(rows.address);
-		$('#QinviteCode').val(rows.inviteCode);
+		$('#QinviteCode').val(rows.inviteCode);	
 		$("#queryUserModal").modal("show");
 		}
 
