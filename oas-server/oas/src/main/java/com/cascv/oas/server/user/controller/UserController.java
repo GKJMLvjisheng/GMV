@@ -19,6 +19,8 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -73,6 +75,7 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -869,6 +872,7 @@ public class UserController extends BaseShiroController{
         return new ResponseEntity.Builder<Map<String,Boolean>>()
 		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
     }
+	
 	/*
 	 * Name:sendMobile--Aliyun
 	 * Author:lvjisheng
@@ -920,7 +924,7 @@ public class UserController extends BaseShiroController{
 //		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 //	}		
 //}
-	
+//	
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
