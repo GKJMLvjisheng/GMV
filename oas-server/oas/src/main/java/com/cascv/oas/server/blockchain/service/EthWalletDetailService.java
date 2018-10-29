@@ -31,6 +31,7 @@ public class EthWalletDetailService {
 	private EthWalletService ethWalletService;
 	@Autowired
 	private OasDetailMapper oasDetailMapper;
+
 	
 	public List<EthWalletDetail> selectByInOrOut(String userUuid,Integer offset,Integer limit,Integer inOrOut){
 		List<EthWalletDetail> ethWalletDetailList = ethWalletDetailMapper.selectByInOrOut(userUuid,offset,limit, inOrOut);
@@ -94,6 +95,10 @@ public class EthWalletDetailService {
 	    String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
 		String created=DateUtils.string2Timezone(srcFormater, beforeCreated , dstFormater, dstTimeZoneId);
 		return created;
+	}
+	public UserModel getsystemDetail() {
+		UserModel usermodel = oasDetailMapper.getSystemUserInfo();
+		return usermodel;
 	}
 	  
 }

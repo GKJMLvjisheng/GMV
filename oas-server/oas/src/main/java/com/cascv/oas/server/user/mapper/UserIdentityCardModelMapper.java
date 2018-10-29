@@ -23,7 +23,8 @@ public interface UserIdentityCardModelMapper {
 	
 	Integer updateUserIdentityCardByHoldInHand(UserIdentityCardModel userIdentityCardModel);
 	
-	List<UserIdentityCardModel> selectAllUserIdentityCard();
+	List<UserIdentityCardModel> selectAllUserIdentityCardBySearchValue(@Param("offset") Integer offset, @Param("limit") Integer limit,@Param("searchValue") String searchValue);
+	Integer countBySearchValue(@Param("searchValue") String searchValue);
 	
 	List<UserIdentityCardModel> selectUserIdentityByUserName(@Param("userName") String userName);
 	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatus(@Param("userName") String userName);
