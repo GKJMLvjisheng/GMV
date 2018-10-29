@@ -38,7 +38,7 @@ public class WalkPointBallController {
 	 @WriteLog(value="WalkBall")
 	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){
 		 for(int i=0; i<stepNumWrapper.getQuota().size(); i++) {
-			 log.info("Time"+stepNumWrapper.getQuota().get(i).getDate(), "stepNum"+stepNumWrapper.getQuota().get(i).getStepNum().toString());
+			 log.info("Time={}"+stepNumWrapper.getQuota().get(i).getDate(), "stepNum={}"+stepNumWrapper.getQuota().get(i).getStepNum().toString());
 		 }
 		 
 		 String userUuid = ShiroUtils.getUserUuid();
@@ -57,7 +57,7 @@ public class WalkPointBallController {
 	 public ResponseEntity<?> takeWalkPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException{
 		 String userUuid = ShiroUtils.getUserUuid();
 		 ErrorCode errorCode = ErrorCode.SUCCESS;
-		 EnergyBallTakenResult energyBallTakenResult=new EnergyBallTakenResult();
+		 EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
 		 log.info("walkBallId={}",energyBallTokenRequest.getBallId());
 		 //判断是否具有获取奖励得权限
 		 if(permService.getWalkPerm()){
