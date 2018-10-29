@@ -97,7 +97,7 @@ public class EthWalletDetailService {
 		return created;
 	}
 	public UserModel getsystemDetail() {
-		UserModel usermodel=oasDetailMapper.getSystemUserInfo();
+		UserModel usermodel = oasDetailMapper.getSystemUserInfo();
 		return usermodel;
 	}
 	  
