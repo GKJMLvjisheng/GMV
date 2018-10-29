@@ -925,33 +925,33 @@ public class UserController extends BaseShiroController{
 //	}		
 //}
 //	
-//	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
-//	@ResponseBody
-//	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
-//		log.info("--------mobileCheckCode   start--------");
-//		String mobilecode=authCode.getMobileCode();
-//	    log.info(mobilecode);
-//		Map<String,Boolean> info = new HashMap<>();
-//		try{
-//			if (mobilecode.equalsIgnoreCase(vcode)) {
-//				log.info("success");
-//				info.put("state",true);	
-//				return new ResponseEntity.Builder<Map<String, Boolean>>()
-//				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
-//			} else {
-//				info.put("state",false);
-//				log.info("failure");
-//				return new ResponseEntity.Builder<Map<String, Boolean>>()
-//				  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();	
-//			}
-//		}catch(Exception e){
-//			log.info(e.getMessage());
-//			e.getStackTrace();		
-//			info.put("state",false);
-//			return new ResponseEntity.Builder<Map<String, Boolean>>()
-//			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-//		}		
-//	}
+	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
+		log.info("--------mobileCheckCode   start--------");
+		String mobilecode=authCode.getMobileCode();
+	    log.info(mobilecode);
+		Map<String,Boolean> info = new HashMap<>();
+		try{
+			if (mobilecode.equalsIgnoreCase(vcode)) {
+				log.info("success");
+				info.put("state",true);	
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
+			} else {
+				info.put("state",false);
+				log.info("failure");
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+				  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();	
+			}
+		}catch(Exception e){
+			log.info(e.getMessage());
+			e.getStackTrace();		
+			info.put("state",false);
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		}		
+	}
 	
 	@PostMapping(value="/inqureAllUserIdentityInfo")
 	@ResponseBody
