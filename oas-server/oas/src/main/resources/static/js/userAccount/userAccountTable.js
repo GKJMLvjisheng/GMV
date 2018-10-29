@@ -39,7 +39,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
+				width:  '90px',
 			},
 			{
 				title : "昵称",
@@ -61,7 +61,7 @@ function initNormalGrid() {
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '98px',
 			},
 			{
 				title : "IMEI",
@@ -84,7 +84,7 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '155px',
+				width:  '150px',
 				//visible: false,
 			},{
 				title : "账号状态",
@@ -193,7 +193,7 @@ function initTestGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
+				width:  '90px',
 			},
 			{
 				title : "昵称",
@@ -215,7 +215,7 @@ function initTestGrid() {
 				field : "email",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '98px',
 			},
 			{
 				title : "IMEI",
@@ -238,7 +238,7 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '155px',
+				width:  '150px',
 				//visible: false,
 			},{
 				title : "账号状态",
@@ -348,7 +348,7 @@ function initSystemGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '80px',
+				width:  '90px',
 			},
 			{
 				title : "昵称",
@@ -386,7 +386,7 @@ function initSystemGrid() {
 				align: 'center',
 				valign: 'middle',
 				width:  '80px',
-				formatter: actionFormatter5
+				formatter: actionFormatter1
 			},
 				{
 				title : "创建时间",
@@ -486,9 +486,7 @@ function actionFormatter4(value, row, index) {
 	var name = value;
 	var roleId = row.roleId;
 	var result = "";
-	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"control('" + name + "', '" + roleId + "')\">切换状态</a>";
-//	result += "<input type='radio' onclick=\"active('" + name + "')\"' name='radio' id='active' value='4'>激活  ";
-//	result += "<input type='radio' onclick=\"ban('" + name + "')\" name='radio' id='ban' value='5'>禁用";
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"accountStatus('" + name + "', '" + roleId + "')\">切换状态</a>";
 	return result;	
 }
 

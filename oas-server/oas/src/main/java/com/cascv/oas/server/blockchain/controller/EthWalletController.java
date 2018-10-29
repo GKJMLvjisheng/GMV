@@ -559,8 +559,10 @@ public class EthWalletController extends BaseShiroController {
   @PostMapping(value="/systemETHandAddress")
   @ResponseBody()
   public ResponseEntity<?> systemETHandAddress(){
-	  UserModel userModel=ethWalletDetailService.getsystemDetail();   
-	  
+	  UserModel userModel = ethWalletDetailService.getsystemDetail();   
+	  if(userModel == null) {
+		  return new ResponseEntity.Builder<UserCoinResp>().setData(new UserCoinResp()).setErrorCode(ErrorCode.SYSTEM_NOT_EXIST).build();
+	  }
 	  String userUuid = userModel.getUuid();
 	    log.info("{userUuid}={}",userUuid);
 	    List<UserCoin> userCoinList = ethWalletService.listCoin(userUuid);

@@ -181,7 +181,7 @@
   <select id="getSystemDetailByPage" resultMap="userWalletDetailMap">
   select <include refid="Base_Column_List" /> 
   from user_wallet_detail where user_uuid in(
-  	select uuid from user_info where name='SYSTEM'
+  	select uuid from user_info where name= #{name}
   )
   order by created desc limit #{offset},#{limit}   
   </select>
@@ -189,7 +189,7 @@
   <select id="getSystemDetailCount" resultType="java.lang.Integer">
   select count(*)
   from user_wallet_detail where user_uuid in(
-  	select uuid from user_info where name='SYSTEM'
+  	select uuid from user_info where name=#{name}
   )
   </select>
   
