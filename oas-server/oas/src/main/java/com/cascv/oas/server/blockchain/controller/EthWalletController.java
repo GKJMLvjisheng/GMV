@@ -156,6 +156,7 @@ public class EthWalletController extends BaseShiroController {
   @Transactional
   public ResponseEntity<?> listCoin(){
     String userUuid = ShiroUtils.getUserUuid();
+    
     List<UserCoin> userCoinList = ethWalletService.listCoin(userUuid);
 
     UserCoinResp listDouble = new UserCoinResp();
@@ -547,6 +548,32 @@ public class EthWalletController extends BaseShiroController {
 
 	  return new ResponseEntity.Builder<PageDomainObject<SystemResq<EthWalletDetail>>>()
 	            .setData(ethWalletDetailService.systemTransactionDetail(pageNum,pageSize))
+	            .setErrorCode(ErrorCode.SUCCESS)
+	            .build();
+  }
+  /**
+   * 获取system交易钱包的地址与ETH余额
+   * @param pageInfo
+   * @return
+   */
+  @PostMapping(value="/systemETHandAddress")
+  @ResponseBody()
+  public ResponseEntity<?> systemETHandAddress(){
+	  UserModel userModel=ethWalletDetailService.getsystemDetail();   
+	  
+	  String userUuid = userModel.getUuid();
+	    log.info("{userUuid}={}",userUuid);
+	    List<UserCoin> userCoinList = ethWalletService.listCoin(userUuid);
+
+	    UserCoinResp listDouble = new UserCoinResp();
+	    listDouble.setUserCoin(userCoinList);
+	    if(userCoinList!=null && userCoinList.size()>0) {
+	    	List<UserCoin> noUserCoinList = new ArrayList<>();
+	    	noUserCoinList.add(ethWalletService.getEthCoinTemporary(userCoinList.get(0)));
+	    	listDouble.setNoShowCoin(noUserCoinList);
+	    }
+	    return new ResponseEntity.Builder<UserCoinResp>()
+	            .setData(listDouble)
 	            .setErrorCode(ErrorCode.SUCCESS)
 	            .build();
   }

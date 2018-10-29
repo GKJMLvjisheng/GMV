@@ -67,7 +67,7 @@ function saveUserInfo(){
 	     "address":userAddress,
 	     "birthday":userBirthday
 	  }
-	  alert(JSON.stringify(data));
+	  //alert(JSON.stringify(data));
 	  $.ajax({
 	    url:"/api/v1/userCenter/updateUserInfo",
 	    method:"POST",
