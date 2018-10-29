@@ -139,7 +139,9 @@ public class EnergyPointController extends BaseController{
     @ResponseBody
     public ResponseEntity<?> pointBallMaxValue(){
     	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue();
+
     	log.info("{maxvalue}={}",maxValue);
+
     	return new ResponseEntity.Builder<BigDecimal>()
     			.setData(maxValue)
     			.setErrorCode(ErrorCode.SUCCESS)
