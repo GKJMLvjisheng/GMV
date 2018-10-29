@@ -65,7 +65,9 @@ public enum ErrorCode {
   THE_LAST_ONE(10045, "已是最后一个，不能下移"),
   LOGIN_FAILED(10046, "登录失败"),
   SYSTEM_ETH_BALANCE_LOWER_THAN_WARING(10047,"用于提充币的系统交易钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动"),
-  SYSTEM_USER_BALANCE_LOWER_THAN_WARING(10048,"用于提充币的系统在线钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动");
+  SYSTEM_USER_BALANCE_LOWER_THAN_WARING(10048,"用于提充币的系统在线钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动"),
+  FIRSTONE_NO_VALUE(10049,"输入为空"),
+  FIRSTONE_NOT_EXIST(10050,"FIRSTONE用户不存在");
 
 	
   @Getter @Setter private Integer code;

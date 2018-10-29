@@ -256,8 +256,8 @@ export default {
     // })
     },
    getStep(){
-     let todayStep=100
-      //let todayStep=window.Android.getTodaySteps()
+    //let todayStep=100
+      let todayStep=window.Android.getTodaySteps()
       return todayStep
    },
     //预先加载3条新闻

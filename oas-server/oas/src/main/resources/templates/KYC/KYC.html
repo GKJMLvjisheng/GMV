@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewsManager</title>
+    <title>KYCManager</title>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
@@ -17,6 +17,13 @@
 	 color: red;
 	 font-size: 150%;
 	} 
+	.form{
+    width: 20.33333333%;
+	margin-bottom:13px;
+	margin-top:13px;
+	height: 35px;
+	float:right;
+   }
 	table{ 
     word-wrap:break-word;
     word-break:break-all;
@@ -27,9 +34,9 @@
 <body>
 
 	<section class="content table-content">		
-<!-- 		<div class = "container"> -->
-			<table id="KYCGrid"></table>
-<!-- 		</div> -->
+		<input class="form" id="kyc" required="required" placeholder="搜索" oninput="initKYCGrid(event)"/>		
+		<table id="KYCGrid"></table>
+
 	</section>
 		
 	<!-- 提示信息 -->

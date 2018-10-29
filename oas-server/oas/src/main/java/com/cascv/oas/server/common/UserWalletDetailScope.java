@@ -5,15 +5,16 @@ import lombok.Setter;
 
 public enum UserWalletDetailScope {
   ENERGY_TO_COIN(1,"积分兑换OAS代币","积分消费", 1),
-  COIN_TO_ETH(2, "提币","在线钱包转入交易钱包", 0),
-  TRANSFER_OUT(3, "钱包转账-转出","转给", 0),
-  TRANSFER_IN(4, "钱包转账-转入","转自", 1),
-  ETH_TO_COIN(5, "充币","交易钱包转入在线钱包", 1),
+  COIN_TO_ETH(2, "划转","在线钱包-划转", 0),
+  TRANSFER_OUT(3, "闪电转账-转出","转给", 0),
+  TRANSFER_IN(4, "闪电转账-转入","转自", 1),
+  ETH_TO_COIN(5, "划转","交易钱包-划转", 1),
   PURCHASE_MINER(6, "购买矿机", "购买", 0),
   MINER_ADD_COIN(7,"矿机推广奖励(立即)","购买矿机",1),
   FROZEN_ADD_COIN(8,"矿机推广奖励(冻结)","购买矿机",1),
   SYSTEM_INIT(9,"系统初始化","为SYSTEM设定在线钱包初始金额",1),
-  FIRSTONE_INIT(9,"系统初始化","为FIRSTONE设定在线钱包初始金额",1);
+  FIRSTONE_INIT(9,"系统初始化","为FIRSTONE设定在线钱包初始金额",1),
+  FIRSTONE_UPDATE(9,"系统初始化","为FIRSTONE重置金额",2);
   
 
   @Getter @Setter private Integer scope;

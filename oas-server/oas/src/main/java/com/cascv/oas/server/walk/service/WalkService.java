@@ -125,6 +125,15 @@ public class WalkService {
 			 log.info("uuid={}", walkBall.getUuid());
 			 walkBall.setUserUuid(userUuid);
 			 walkBall.setStepNum(quota.get(i).getStepNum());
+			 
+//			 BigDecimal stepNum = quota.get(i).getStepNum();
+//			 if(!(stepNum.compareTo(new BigDecimal(10000)) == 1)) {
+//				 walkBall.setStepNum(stepNum);
+//			 }else {
+//				 walkBall.setStepNum(new BigDecimal(10000));
+//			 }
+			 log.info("stepNum={}", walkBall.getStepNum());
+			 
 			 walkBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 			 walkBall.setCreated(quota.get(i).getDate());
 			 walkBall.setUpdated(now);
@@ -210,8 +219,13 @@ public class WalkService {
 		if (StringUtils.isEmpty(userUuid)) {
             return null;
         }
+		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 		List<WalkBall> walkBallList = walkMapper
 				.selectWalkBall(userUuid, STATUS_OF_ACTIVE_ENERGYBALL);
+		WalkBall todayWalkBall = walkMapper.selectTodayWalkBall(userUuid, now);
+		if(todayWalkBall.getStatus() == 0) {
+			walkBallList.add(todayWalkBall);
+		}
 		//如果没有球，则产生球
 		if(walkBallList.size() == 0) {
 			this.addWalkPointBall(userUuid, quota);
@@ -228,14 +242,15 @@ public class WalkService {
 					WalkBall newWalkBall = walkMapper.selectWalkBallbyUuid(uuid);
 					walkBallMap.put(quota.get(i).getDate(), newWalkBall);
 				}else{
-					String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 					if(quota.get(i).getDate().equals(now)) {
+						if(walkBallMap.get(now).getStatus() != 0) {
 							walkMapper.updateStepNumByCreated(userUuid, quota.get(i).getStepNum(), quota.get(i).getDate());
 							List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
 							stepNumQuotaList.add(quota.get(i));
 							walkMapper.updatePointByuuid(walkBallMap.get(now).getUuid(), this.getPoint(stepNumQuotaList, userUuid).get(0).getPoint());
 							walkBallMap.get(now).setStepNum(quota.get(i).getStepNum());
 							walkBallMap.put(now, walkBallMap.get(now));
+						}						
 					}
 				}
 			}
@@ -253,6 +268,7 @@ public class WalkService {
 	 * @throws ParseException 
      */
 	public EnergyBallTakenResult takeWalkPointBall(String userUuid, String energyBallUuid) throws ParseException {
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 		if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
             log.info("userUuid or energyBallUuid is null");
             return null;
@@ -261,27 +277,47 @@ public class WalkService {
             log.info("该能量球已经被获取！");
             return null;
         }
-        SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
-        Date bt = formatter.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
-        Date et = formatter.parse(now);
-        if(!bt.before(et)) {
-        	log.info("该能量球不能被采集");
-        	return null;
+        BigDecimal maxValue = activityMapper
+        		.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALKING, REWARD_CODE_OF_WALKING_POINT).getMaxValue();
+        BigDecimal point = activityMapper.selectByUuid(energyBallUuid).getPoint();
+        //如果计步球的积分满值，则可以采集计步球，但不生成新的计步球
+        if(point.compareTo(maxValue) == 0) {
+        	//改变被取走的能量球的状态
+            activityMapper.updatePointStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
+            //改变被取走的计步球的状态
+            walkMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
+            //在交易记录表中增加取走的球
+            this.addPointTradeRecord(userUuid, energyBallUuid, activityMapper.selectByUuid(energyBallUuid).getPoint());
+            //更新用户能量钱包
+            activityMapper.increasePoint(userUuid, activityMapper.selectByUuid(energyBallUuid).getPoint(), now);
+            
+            EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
+            energyBallTakenResult.setNewEnergyPonit(activityMapper.selectByUuid(energyBallUuid).getPoint());
+            energyBallTakenResult.setNewPower(BigDecimal.ZERO);
+    		return energyBallTakenResult;
+        }else {
+        	SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
+            Date bt = formatter.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
+            Date et = formatter.parse(now);
+            if(!bt.before(et)) {
+            	log.info("该能量球不能被采集");
+            	return null;
+            }
+            //改变被取走的能量球的状态
+            activityMapper.updatePointStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
+            //改变被取走的计步球的状态
+            walkMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
+            //在交易记录表中增加取走的球
+            this.addPointTradeRecord(userUuid, energyBallUuid, activityMapper.selectByUuid(energyBallUuid).getPoint());
+            //更新用户能量钱包
+            activityMapper.increasePoint(userUuid, activityMapper.selectByUuid(energyBallUuid).getPoint(), now);
+            
+            EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
+            energyBallTakenResult.setNewEnergyPonit(activityMapper.selectByUuid(energyBallUuid).getPoint());
+            energyBallTakenResult.setNewPower(BigDecimal.ZERO);
+    		return energyBallTakenResult;
         }
-        //改变被取走的能量球的状态
-        activityMapper.updatePointStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
-        //改变被取走的计步球的状态
-        walkMapper.updateStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
-        //在交易记录表中增加取走的球
-        this.addPointTradeRecord(userUuid, energyBallUuid, activityMapper.selectByUuid(energyBallUuid).getPoint());
-        //更新用户能量钱包
-        activityMapper.increasePoint(userUuid, activityMapper.selectByUuid(energyBallUuid).getPoint(), now);
         
-        EnergyBallTakenResult energyBallTakenResult = new EnergyBallTakenResult();
-        energyBallTakenResult.setNewEnergyPonit(activityMapper.selectByUuid(energyBallUuid).getPoint());
-        energyBallTakenResult.setNewPower(BigDecimal.ZERO);
-		return energyBallTakenResult;
 		
 	}
 	
