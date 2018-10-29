@@ -74,5 +74,7 @@ class BaseConstant{
         const val LAST_STEP_UPLOAD_DATE = "last_step_upload_date"
         const val LOADING_STAY_TIME = 2000
 
+        const val WITHDRAW_NAME = "划转"
+
     }
 }

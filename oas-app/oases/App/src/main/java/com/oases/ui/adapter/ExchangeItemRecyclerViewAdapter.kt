@@ -174,7 +174,8 @@ class ExchangeItemRecyclerViewAdapter(
                     }
                     //changeUserName = item.changeUserName
                     holder.mExchangeItemView.setRightBottomText(item.subTitle?:"")
-                    holder.mExchangeItemView.setLeftTopText(title.plus(if(item.title.equals("提币") || item.title.equals("充币")) status else "" ))
+                    //holder.mExchangeItemView.setLeftTopText(title.plus(if(item.title.equals("提币") || item.title.equals("充币")) status else "" ))
+                    holder.mExchangeItemView.setLeftTopText(title.plus(if(item.title.equals(BaseConstant.WITHDRAW_NAME)) status else "" ))
                 } else {
                     var status :String
                     when(item.txResult){

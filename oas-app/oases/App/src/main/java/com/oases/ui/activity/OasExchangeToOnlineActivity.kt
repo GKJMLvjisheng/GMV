@@ -219,9 +219,9 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
     }
 
     override fun reverseWithdraw(t: Int) {
-        var text = "充币请求提交失败！"
+        var text = "交易钱包划转请求提交失败！"
         if(t == 1){
-            text ="充币请求提交成功！"
+            text ="交易钱包划转请求提交成功！"
             clearInput()
             toast(text)
             // var pair:Pair<String,String> = Pair<String,String>("balance",tMoney.toString())
