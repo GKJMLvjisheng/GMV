@@ -34,15 +34,20 @@ function audit(){
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
 				$("#Tip").modal('show');
+				var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
+				$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 			}			
 		}, 
 		error: function(){
 			document.getElementById("tipContent").innerText="审核过程发生错误";
 			$("#Tip").modal('show');
+			var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
+			$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 		}
 	}); 
 }
 
 function refresh(){
-	location.reload();
+	var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
+	$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 }

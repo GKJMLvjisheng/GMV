@@ -19,12 +19,37 @@
     uuid, user_name, user_identity_name,user_identity_number,front_of_photo,back_of_photo,hold_in_hand,remark,verify_status,created,updated
   </sql>
   
- <select id="selectAllUserIdentityCard" resultMap="userIdentityCardModelMap">
+ <select id="selectAllUserIdentityCardBySearchValue" resultMap="userIdentityCardModelMap">
  select 
- 
-  	  <include refid="Base_Column_List" />
-  	  
- from identity_card_info where verify_status!=0 order by created desc;
+  	  <include refid="Base_Column_List" /> 	  
+ from 
+ 	  identity_card_info 
+ where
+ 	  verify_status != 0
+ 	  <if test="searchValue != null and searchValue !='' ">
+       and user_name like concat('%',#{searchValue},'%')
+       or user_identity_name like concat('%',#{searchValue},'%')
+       or user_identity_number like concat('%',#{searchValue},'%')
+       or created like concat('%',#{searchValue},'%')
+       </if> 
+ order by created desc
+ limit #{offset}, #{limit};
+  </select>
+  
+   <select id="countBySearchValue" resultType="java.lang.Integer">
+ select 
+  	  count(*)	  
+ from 
+ 	  identity_card_info 
+ where
+ 	  verify_status != 0
+ 	  <if test="searchValue != null and searchValue !='' ">
+       and user_name like concat('%',#{searchValue},'%')
+       or user_identity_name like concat('%',#{searchValue},'%')
+       or user_identity_number like concat('%',#{searchValue},'%')
+       or created like concat('%',#{searchValue},'%')
+       </if> 
+       ;
   </select>
   
  <select id="selectUserIdentityByUserName" resultMap="userIdentityCardModelMap">

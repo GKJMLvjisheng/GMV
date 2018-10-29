@@ -3,28 +3,8 @@ var check1;
 $(function() {
 	
 //初始加载提币审核请求	
-	KYCReady();
+	initKYCGrid();
 });
-
-function KYCReady(){
-	
-    $('#KYCGrid').bootstrapTable('destroy');
-	var data1;
-	$.ajax({		
-		url: "/api/v1/userCenter/inqureAllUserIdentityInfo",
-	    contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		success: function(res) {
-			data1=res.data;
-			initKYCGrid(data1);
-		}, 
-		error: function(){
-			alert("KYC审核回显失败！")
-		}
-		}); 
-}
 
 //发ajax请求到后台判断身份证号是否重复
 function checkCard(card) {
@@ -88,15 +68,17 @@ function addPostil(){
 				async : false,
 
 				success: function(res) {
-					alert("批注添加成功");
-//					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
-//					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
-					location.reload();
+					document.getElementById("tipContent").innerText="批注添加成功";
+					$("#Tip").modal('show');
+					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 				}, 
 				error: function(){
 					document.getElementById("tipContent").innerText="批注添加失败";
 					$("#Tip").modal('show');
-					$("#postilModal").modal('hide');
+					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
+					
 				}
 				}); 
 	}else{
@@ -131,15 +113,16 @@ function addNC(){
 				async : false,
 
 				success: function(res) {
-					alert("信息添加成功");
-//					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
-//					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
-					location.reload();
+					document.getElementById("tipContent").innerText="信息添加成功";
+					$("#Tip").modal('show');
+					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 				}, 
 				error: function(){
 					document.getElementById("tipContent").innerText="信息添加失败";
 					$("#Tip").modal('show');
-					$("#addNCModal").modal('hide');
+					var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+					$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 				}
 				}); 	
 	}		
@@ -148,14 +131,12 @@ function addNC(){
 function agree(id){
 	
 	var rows=$("#KYCGrid").bootstrapTable('getRowByUniqueId', id);
-	var uuid = id;
-	//alert(JSON.stringify(uuid));
+	var uuid = id;	
 	$('#name').val(rows.userIdentityName);
 	$('#card').val(rows.userIdentityNumber);
 	var name=rows.userIdentityName;
 	var card=rows.userIdentityNumber;
-//	alert(JSON.stringify(name));
-//	alert(JSON.stringify(card));
+
 	var data={
 		"verifyStatus":2,
 		"uuid":uuid,
@@ -179,8 +160,11 @@ function agree(id){
 
 				success: function(res) {
 					if(res.code==0){
-						alert("批准成功");
-						location.reload();
+						document.getElementById("tipContent").innerText="批准成功";
+						$("#Tip").modal('show');
+						var pageNumber = $("#KYCGrid").bootstrapTable('getOptions').pageNumber;
+						$("#KYCGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
+						
 					}else{
 						document.getElementById("tipContent").innerText="批准过程发生错误1";
 						$("#Tip").modal('show');
