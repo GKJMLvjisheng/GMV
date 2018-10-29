@@ -3,6 +3,7 @@ $(function() {
 	initonlineWalletGrid();
 	tradeWalletGrid();
 	getSystemDetail();
+	firstOneDetail();
 	
 });
 var pageSize;
@@ -258,10 +259,10 @@ function systemTransactionDetailHandle2(res){
         data : res.data.rows.list //行数据，前面的key要与之前设置的dataField的值一致.
     };
 };
-function tradeWalletGrid() {	
+function firstOneDetail() {	
 	$("#firstoneGrid").bootstrapTable('destroy'); 
 	$("#firstoneGrid").bootstrapTable({
-		url: '/api/v1/ethWallet/systemTransactionDetail',
+		url: '/api/v1/userWallet/firstOneTransactionDetail',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -275,9 +276,7 @@ function tradeWalletGrid() {
 		queryParams:queryParams,//请求服务器时所传的参数
 		responseHandler:firstoneTransactionDetailHandle,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
-
-		
-		toolbar:"#toolbar",//工具栏
+		//toolbar:"#toolbar",//工具栏
 		sortable: true,//是否启用排序
 		sortName: 'topicId', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
@@ -423,14 +422,23 @@ function getSystemDetail(){
   
 }
 function resetMoney(){
-	var remarks=$("remarks").val();
-	var firstMoney=$("firstMoney").val();
-	data={"":firstMoney,
-			"":remarks}
+	
+	var remark=$("#remarks").val();
+	var firstMoney=$("#firstMoney").val();
+	if(firstMoney==0){
+		alert("请输入金额");
+		return;
+	}
+	if(remark===""){
+		alert("请输入备注");
+		return;
+	}
+	data={"value":firstMoney,
+			"remark":remark}
 	console.log(JSON.stringify(data));
 	$.ajax({
 		   type: 'post',
-		   url: '/api/v1/ethWallet/systemETHandAddress',
+		   url: '/api/v1/userWallet/setFirstOneUserBalance',
 		   data: JSON.stringify(data),
 		   contentType : 'application/json;charset=utf8',
 		   dataType: 'json',
@@ -439,9 +447,8 @@ function resetMoney(){
 		   success: function (res) {
 			 
 		     if (res.code == 0) {
-		    	 var data=res.data.userCoin
-		    	 $("#address").text(data[0].address)
-		    	 $("#ETHmoney").text(data[0].ethBalance)
+		    	 alert("重置金额成功！");
+		    	 firstOneDetail();
 		     } else {
 		    	 alert(res.message);
 		     }

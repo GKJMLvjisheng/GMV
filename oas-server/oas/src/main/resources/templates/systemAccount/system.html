@@ -49,6 +49,12 @@
 	float:left;
  	margin-right: -100px; 
    }
+   .btn .btn-primary{
+    border-radius: 3px;
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
    .col-sm-2{
    margin-left: -30px;
    }
@@ -122,7 +128,7 @@
 	<div class = "container" style="display:none" id="page3">
 	<form id="addVersionForm" action="/version" method="post" class="form-horizontal "> 
 
-						<div class="form-group "style="padding-top: 15px;  margin-bottom: 0px;">
+						<div class="form-group "style="padding-top: 15px;  ">
 							<label for="versionCode" class="col-sm-2 control-label">重置金额：</label>
 							<div class="col-sm-3">
 								<input  id="firstMoney" required="required" class="form-control" maxlength="100" placeholder="请输入需要重置的金额" onblur="initEnergyWalletGrid()"/>
@@ -136,7 +142,7 @@
 								
 							</div>
 							<div class="col-sm-1">
-								<button id="but" class="btn btn-default form-control"onclick="resetMoney()" style="background:blue;color:black">确定</button>
+								<button id="but" class="btn btn-primary form-control"onclick="resetMoney()" >确定</button>
 							</div>						
 						</div>
 	</form>	
@@ -242,38 +248,6 @@
 	</div>
 	<script type="text/javascript" th:src="@{/js/systemAccount/system.js}"></script>
 </body>
-<script type="text/javascript">
-	function getNowFormatDate() {
-        var date = new Date();
-        var seperator1 = "-";
-        var year = date.getFullYear();
-        var month = date.getMonth() + 1;
-        var strDate = date.getDate();
-        if (month >= 1 && month <= 9) {
-            month = "0" + month;
-        }
-        if (strDate >= 0 && strDate <= 9) {
-            strDate = "0" + strDate;
-        }
-        var currentdate = year + seperator1 + month + seperator1 + strDate;
-        return currentdate;
-	}
-	
-	//时间控件默认显示本月时间
-	$(function(){			
-		var date=new Date;
-		var year=date.getFullYear(); 
-		var month=date.getMonth()+1;
-		month =(month<10 ? "0"+month:month);
-		var todayTime = getNowFormatDate();
-		var mydate1 = (year.toString()+"-"+ month.toString()+"-01");
-		var mydate2 = todayTime;
-		//alert(mydate1);
-		document.getElementById("startTime2").value=mydate1;
-		document.getElementById("startTime3").value=mydate1;
-		document.getElementById("endTime2").value=mydate2; 
-		document.getElementById("endTime3").value=mydate2;                  
-	});
-</script>
+
 </html>
 
