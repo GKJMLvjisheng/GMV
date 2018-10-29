@@ -66,7 +66,7 @@ public class UserWalletDetailService {
 		  result.setPageNum(pageNum);
 		  result.setPageSize(pageSize);
 		  result.setOffset((pageNum - 1)*pageSize);
-		  List<UserWalletDetail> list = userWalletDetailMapper.getSystemDetailByPage((pageNum - 1)*pageSize, pageSize);
+		  List<UserWalletDetail> list = userWalletDetailMapper.getSystemDetailByPage((pageNum - 1)*pageSize, pageSize,"SYSTEM");
 		  if(list!=null) {
 			  for(UserWalletDetail ud:list) {
 				  ud.setCreated(getTimeAfterExchange(ud.getCreated()));
@@ -77,7 +77,27 @@ public class UserWalletDetailService {
 		  UserWallet systemWallet = userWalletMapper.getSystemWallet();
 		  resq.setValue(systemWallet == null?BigDecimal.ZERO:systemWallet.getBalance());
 		  result.setRows(resq);
-		  result.setTotal(userWalletDetailMapper.getSystemDetailCount());
+		  result.setTotal(userWalletDetailMapper.getSystemDetailCount("SYSTEM"));
+		  return result;
+	  }
+	 
+	 public PageDomainObject<SystemResq<UserWalletDetail>> firstOneTransactionDetail(Integer pageNum,Integer pageSize) {
+		  PageDomainObject<SystemResq<UserWalletDetail>> result = new PageDomainObject<SystemResq<UserWalletDetail>>();
+		  result.setPageNum(pageNum);
+		  result.setPageSize(pageSize);
+		  result.setOffset((pageNum - 1)*pageSize);
+		  List<UserWalletDetail> list = userWalletDetailMapper.getSystemDetailByPage((pageNum - 1)*pageSize, pageSize,"FIRSTONE");
+		  if(list!=null) {
+			  for(UserWalletDetail ud:list) {
+				  ud.setCreated(getTimeAfterExchange(ud.getCreated()));
+			  }
+		  }
+		  SystemResq<UserWalletDetail> resq = new SystemResq<UserWalletDetail>();
+		  resq.setList(list);
+		  UserWallet systemWallet = userWalletMapper.getFirstOneWallet();
+		  resq.setValue(systemWallet == null?BigDecimal.ZERO:systemWallet.getBalance());
+		  result.setRows(resq);
+		  result.setTotal(userWalletDetailMapper.getSystemDetailCount("FIRSTONE"));
 		  return result;
 	  }
 	 
