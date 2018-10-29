@@ -208,8 +208,8 @@ public class UserService {
 	 * Date:20181011
 	 * 选出用户所有身份认证信息
 	 */
-	public List<UserIdentityCardModel> selectAllUserIdentityCard(){
-		List<UserIdentityCardModel> userIdentityCardModelList=userIdentityCardModelMapper.selectAllUserIdentityCard();
+	public List<UserIdentityCardModel> selectAllUserIdentityCard(Integer offset,Integer limit,String searchValue){
+		List<UserIdentityCardModel> userIdentityCardModelList=userIdentityCardModelMapper.selectAllUserIdentityCardBySearchValue(offset, limit, searchValue);
 		  for (UserIdentityCardModel userIdentityCardModel : userIdentityCardModelList) {
 			    String frontOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getFrontOfPhoto();
 			    String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModel.getBackOfPhoto();
