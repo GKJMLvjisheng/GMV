@@ -36,4 +36,22 @@ from
        </if>
 </select>
    
+     <select id="sumInPointByPromoted" resultType="java.math.BigDecimal">
+  	select 
+  	    sum(ptr.power_change) as power 
+	from 
+		power_trade_record ptr left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
+    where 
+        ptr.user_uuid=#{userUuid} and ptr.in_or_out=1 and epb.source_code='11';
+  </select>
+  
+       <select id="sumOutPointByPromoted" resultType="java.math.BigDecimal">
+  	select 
+  	    sum(ptr.power_change) as power 
+	from 
+		power_trade_record ptr left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
+    where 
+        ptr.user_uuid=#{userUuid} and ptr.in_or_out=0 and epb.source_code='11';
+  </select>
+   
 </mapper>
