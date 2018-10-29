@@ -37,7 +37,7 @@
     <select id="selectAllActivity" resultMap="activityMap">
         select
          <include refid="activity_List" />
-        from activity
+        from activity order by source_code asc
     </select>
     
     <delete id="deleteActivity" parameterType="com.cascv.oas.server.activity.model.ActivityModel">
