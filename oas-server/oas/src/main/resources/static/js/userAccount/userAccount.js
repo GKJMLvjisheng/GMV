@@ -69,8 +69,6 @@ function role(name,roleId){
 		var rows=$("#normalGrid").bootstrapTable('getRowByUniqueId', name);
 	}else if(roleId==3){
 		var rows=$("#testGrid").bootstrapTable('getRowByUniqueId', name);
-	}else if(roleId==1){
-		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);  //系统账号
 	}
     
     //alert(JSON.stringify(rows))
@@ -115,19 +113,13 @@ function roleConfirm(){
 					var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
 					$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新正常账号当前页
 					initTestGrid();				
-					initSystemGrid();
+					
 				}else if(roleId1==3){
 					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
 					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新测试账号当前页
 					initNormalGrid();			
-					initSystemGrid();
+					
 				}
-//				else if(roleId1==1){
-//					var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
-//					$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新系统账号当前页
-//					initNormalGrid();			
-//					initTestGrid();
-//				}
 											
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
@@ -141,14 +133,13 @@ function roleConfirm(){
 	}); 
 }
 
-function control(name,roleId){
+function accountStatus(name,roleId){
 	if(roleId==2){
 		var rows=$("#normalGrid").bootstrapTable('getRowByUniqueId', name);
 	}else if(roleId==3){
 		var rows=$("#testGrid").bootstrapTable('getRowByUniqueId', name);
-	}else if(roleId==1){
-		var rows=$("#systemGrid").bootstrapTable('getRowByUniqueId', name);
 	}
+	
     //alert(JSON.stringify(rows));
     $('#roleId2').val(rows.roleId);
 	$('#controlName').val(rows.name);
@@ -164,7 +155,7 @@ function control(name,roleId){
 	});
 }
 
-function controlConfirm(){
+function changeStatus(){
 	var roleId2 = $("#roleId2").val();
 	var status = $("#status").val();
 	var name = $("#controlName").val();	
@@ -194,14 +185,9 @@ function controlConfirm(){
 					
 				}else if(roleId2==3){
 					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
-					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新测试账号当前页
-					
+					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新测试账号当前页					
 				}
-//				else if(roleId2==1){
-//					var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
-//					$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
-//					
-//				}							
+						
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
 				$("#Tip").modal('show');
@@ -259,11 +245,6 @@ function resetControlModal(){
 		$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
 		
 	}
-}
-
-function designColor(){
-	var pageSize = $("#normalGrid").bootstrapTable('getOptions').pageSize;
-	$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
 }
 
 function display1(){
