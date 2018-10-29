@@ -1421,7 +1421,9 @@ public class UserController extends BaseShiroController{
     @ResponseBody
     @WriteLog(value="updateUserStatus")
     public ResponseEntity<?> updateUserStatus(@RequestBody UserStatus userStatus) {
-		Map<String,Object> info=new HashMap<>(); 	
+		Map<String,Object> info=new HashMap<>();
+		String uuid=userModelMapper.selectByName(userStatus.getName()).getUuid();
+		userFacilityMapper.deleteUserFacility(uuid);
 		info.put("state",true);	
 		userModelMapper.updateUserStatus(userStatus.getStatus(), userStatus.getName());
 		return new ResponseEntity.Builder<Map<String,Object>>()
