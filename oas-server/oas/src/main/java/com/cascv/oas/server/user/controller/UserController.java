@@ -951,10 +951,31 @@ public class UserController extends BaseShiroController{
 	
 	@PostMapping(value="/inqureAllUserIdentityInfo")
 	@ResponseBody
-	public ResponseEntity<?> selectAllUserIdentityInfo(){
-		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard();
-		return new ResponseEntity.Builder<List<UserIdentityCardModel>>()
-		  	      .setData(userIdentityCardModelList)
+	public ResponseEntity<?> selectAllUserIdentityInfo(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard(offset, limit, searchValue);
+		PageDomain<UserIdentityCardModel> userIdentityCardModel=new PageDomain<>();
+		Integer count=userIdentityCardModelMapper.countBySearchValue(searchValue);
+			userIdentityCardModel.setTotal(count);
+			userIdentityCardModel.setAsc("desc");
+			userIdentityCardModel.setOffset(offset);
+			userIdentityCardModel.setPageNum(pageNum);
+			userIdentityCardModel.setPageSize(pageSize);
+			userIdentityCardModel.setRows(userIdentityCardModelList);
+		return new ResponseEntity.Builder<PageDomain<UserIdentityCardModel>>()
+		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
 			}
