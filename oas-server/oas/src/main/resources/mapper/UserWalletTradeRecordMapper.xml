@@ -99,7 +99,7 @@ where ud.in_or_out=0 and
 select 
 	 u.name,uw.balance as value
 from 
-	 user_wallet uw left join user_info u on uw.user_uuid=u.uuid
+	  user_info u left join user_wallet uw on u.uuid=uw.user_uuid
 	 <if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
        </if>
@@ -111,7 +111,7 @@ limit #{offset}, #{limit};
 select 
 	 count(*)
 from 
-	 user_wallet uw left join user_info u on uw.user_uuid=u.uuid
+	  user_info u left join user_wallet uw on u.uuid=uw.user_uuid
 	<if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
        </if>

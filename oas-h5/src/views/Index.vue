@@ -100,7 +100,7 @@
     <!-- OASES咨询 Start-->
     <div class="consult">
       <div class="title">
-        <h3>OASES咨询</h3>
+        <h3>OASES资讯</h3>
         <a href="javascript:;">更多</a>
       </div>
       <p class="tips">
@@ -172,9 +172,9 @@ export default {
       width: "80%",
       isShowMask: false,
       isShowSuccessMsg: false,
-      isShowEnergyMsg:false,
-      isShowCommaMsg:false,
-      isShowPowerMsg:false,
+      //isShowEnergyMsg:false,
+      //isShowCommaMsg:false,
+     // isShowPowerMsg:false,
       isShowToast: false,
       isShowNewsTip: false,
       energyBallList:[],
@@ -191,7 +191,7 @@ export default {
       tempArr:[],
      // tempArrWalk:[],
       //input1:'',
-      //input2:'',
+      energyMaxValue:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -247,16 +247,17 @@ export default {
   },
   methods: {
     getMaxValue(){
-    this.$axios.post('/energyPoint/pointBallMaxValue').then(({data}) => {
-      if(data.code==0){
-        this.maxValue=data.data
-        console.log(this.maxValue)
-      }
-    })
+    return this.$axios.post('/energyPoint/pointBallMaxValue')
+    // .then(({data}) => {
+    //   if(data.code==0){
+    //     this.maxValue=data.data
+    //     console.log(this.maxValue)
+    //   }
+    // })
     },
    getStep(){
-     //let todayStep=100
-      let todayStep=window.Android.getTodaySteps()
+     let todayStep=100
+      //let todayStep=window.Android.getTodaySteps()
       return todayStep
    },
     //预先加载3条新闻
@@ -359,13 +360,13 @@ export default {
            this.attendanceMsg.msgall = data.data.newEnergyPoint+"点能量"+","+data.data.newPower+"点算力"
           this.isShowSuccessMsg = true
           }
+          this.getEnergyAnalysis()
         }
         else if(data.code==10012)
         { this.isShowSuccessMsg = false
           }
         this.attendanceMsg.msg = data.message
         this.isShowMask = true
-        this.getEnergyAnalysis()
       })
       
     },
@@ -398,20 +399,24 @@ export default {
             try {
                 let dataBall={}
                 let dataWalkBall={}
-                let energyBallListBackup=new Array(); 
-                let walkEnergyBallListtBackup=new Array();
-                this.getMaxValue()
+                let energyBallListBackup=new Array()
+                let walkEnergyBallListtBackup=new Array()
+                
+                let list = await this.getMaxValue()
+                //console.log(list)
+                console.log("maxvalue"+list.data.data)
+                this.energyMaxValue=list.data.data
                 dataBall=await this.getEnergyBall();
                 //console.log(JSON.stringify(dataBall))
                 if(dataBall.data.code==0)
                 {
-                  console.log("123")
+                
                   energyBallListBackup = dataBall.data.data.energyBallList.map(el => {
                     let p = this.randomPoint()
                     // pArr.splice(randomIdx,1)
                     el.x = p.x / 75 + 'rem'
                     el.y = p.y / 75 + 'rem'
-                    if(el.value<this.maxValue)
+                    if(el.value<this.energyMaxValue)
                     { el.generate=true}
                     else{el.generate=false}
                     return el
@@ -625,7 +630,7 @@ export default {
         return
       }*/
       let value = data.value
-      if (value <this.maxValue) {
+      if (value <this.energyMaxValue) {
         this.Toast('能量暂不可收取')
         return
       }

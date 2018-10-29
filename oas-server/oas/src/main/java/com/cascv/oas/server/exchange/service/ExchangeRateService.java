@@ -135,7 +135,7 @@ public class ExchangeRateService {
       returnValue.setData(BigDecimal.ZERO);
     } else {
       returnValue.setErrorCode(ErrorCode.SUCCESS);
-      returnValue.setData(value.divide(rate.getRate()));
+      returnValue.setData(value.divide(rate.getRate(), 8, BigDecimal.ROUND_HALF_UP));
     }
     return returnValue;
   }

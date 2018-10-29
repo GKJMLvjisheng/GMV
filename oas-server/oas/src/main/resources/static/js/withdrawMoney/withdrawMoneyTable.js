@@ -22,9 +22,13 @@ function initRequestAuditGrid() {
 		queryParams:queryParams,
 		responseHandler:responseHandler,
 		
+		 rowStyle:rowStyle,//通过自定义函数设置行样式
+
 		toolbar:"#toolbar",//工具栏
-		sortName: 'ID', // 要排序的字段
-	    sortOrder: 'asc', // 排序规则	    	    
+		
+		sortable: true,//是否启用排序
+		sortName: "created", // 要排序的字段
+	    sortOrder: "desc", // 排序规则	    	    
 	    
 		columns : [{  
 		title: 'uuid',  
@@ -107,6 +111,7 @@ function queryParams(params){
 
 //请求成功方法
 function responseHandler(res){
+	//alert(JSON.stringify(res.data.rows[0].status))
 	if(res.code != 0 ){
 		alert("提币请求审核回显失败！"+res.message)
 		return{
@@ -114,6 +119,7 @@ function responseHandler(res){
 			withdrawData : null
 		}
 	}
+					
 	return {
 		 total : res.data.total, //总页数,前面的key必须为"total"
 		 withdrawData : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
@@ -128,18 +134,21 @@ function actionFormatter(value, row, index) {
 		result += "<input type='radio' onclick=\"agree('" + id + "')\"' name='radio' id='agree' value='1'>批准 ";
 		result += "<input type='radio' onclick=\"reject('" + id + "')\" name='radio' id='reject' value='2'>拒绝";
 		return result;
+		
 	}else if(status==1){
 		result += "<span>审核已通过</span>";      
 		return result;
+		
 	}else if(status==2){
 		result += "<span>审核未通过</span>";      
 		return result;
+		
 	} 
 	else if(status==3){
 		result += "<span>审核已通过-转账成功</span>";      
 		return result;
 	}else{
-		result += "<span>审核未通过-转账失败</span>";      
+		result += "<span>审核已通过-转账失败</span>";      
 		return result;
 	}
 }
@@ -149,6 +158,33 @@ function actionFormatter1(value, row, index) {
 	var result = "";
 	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"viewUserMessage('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
 	return result;
+}
+
+function rowStyle(row, index) {
+	var classes = ['active', 'success', 'info', 'warning', 'danger']; 
+	var status = row.status;
+	var style = "";    
+	
+	if(status==0){
+		 style='info'; 
+		 return { classes: style };
+		
+	}else if(status==1){
+		 style='success';  
+		 return { classes: style };
+		
+	}else if(status==2){
+		 style='active';
+		 return { classes: style };
+		
+	} 
+	else if(status==3){
+		 style='warning';  
+		 return { classes: style };
+	}else{
+		 style='danger';
+		 return { classes: style };
+	}	                         
 }
 
 function agree(id){

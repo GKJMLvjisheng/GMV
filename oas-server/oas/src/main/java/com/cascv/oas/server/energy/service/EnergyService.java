@@ -56,7 +56,7 @@ public class EnergyService {
     private static final Integer REWARD_CODE_OF_CHECKIN_POWER = 2;            //签到能量球奖励来源：算力为2
     private static final Integer SOURCE_CODE_OF_MINING = 2;             // 能量球来源：空投为2
     private static final Integer REWARD_CODE_OF_MINING_POINT = 1;             //空投能量球奖励来源：积分为1
-    private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 16;
+    private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 8;       //空投球的最大个数
     private static final Integer TRANSFER_OF_SECOND_TO_MILLISECOND = 1000; // 秒与毫秒的转换倍率
     private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
     private static final String FORMAT_OF_TIME = "yyyy-MM-dd HH:mm:ss";
@@ -584,7 +584,7 @@ public class EnergyService {
     	log.info("summary {}", sum);
     	if (!decreaseBalance(userUuid, sum))
     		return ErrorCode.BALANCE_NOT_ENOUGH;
-    	userWalletService.addFromEnergy(userUuid, end.substring(0, 8), sum);
+    	userWalletService.addFromEnergy(userUuid, end.substring(0, 7), sum);
     	saveEnergyOutRecord(userUuid, sum, end);
     	return ErrorCode.SUCCESS;
     } 

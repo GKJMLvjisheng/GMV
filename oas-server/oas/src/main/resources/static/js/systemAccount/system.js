@@ -270,4 +270,33 @@ function display2(){
 	document.getElementById("page1").style.display="none";	
 	$('#btn2').removeClass('active1').addClass('active');
 	$('#btn1').removeClass('active').addClass('active1');
+	getSystemDetail();
+}
+function getSystemDetail(){
+	 $.ajax({
+		   type: 'post',
+		   url: '/api/v1/ethWallet/systemETHandAddress',
+		  // data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   async : false,
+		   success: function (res) {
+			 
+		     if (res.code == 0) {
+		    	 var data=res.data.userCoin
+		    	 $("#address").text(data[0].address)
+		    	 $("#ETHmoney").text(data[0].ethBalance)
+		     } else {
+		    	 alert(res.message);
+		     }
+		   },
+		   error: function (res) {
+			  alert("option错误"+JSON.stringify(res));
+		   },
+		  
+		  });
+   
+	 
+  
 }

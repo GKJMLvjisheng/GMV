@@ -177,10 +177,10 @@ img{
 <nav>
       <ul>
         <li><button class="selected" onclick="userinfo()" disabled="disabled">基本信息 </button> </li>
-        <li><button onclick="userimginfo()">更换头像 </button></li>
+<!--         <li><button onclick="userimginfo()">更换头像 </button></li> -->
         <li><button onclick="usersecurityinfo()">安全设置 </button></li>
-        <li><button style="width:130%; height:100%;" id="QRuserinfocode" onclick="QRcode()">个人信息二维码</button></li>
-        <li><button style="left:630px; position: absolute; width:10%;" id="QRtradecode" onclick="QRtradecode()">交易二维码</button></li>
+<!--         <li><button style="width:130%; height:100%;" id="QRuserinfocode" onclick="QRcode()">个人信息二维码</button></li> -->
+<!--         <li><button style="left:630px; position: absolute; width:10%;" id="QRtradecode" onclick="QRtradecode()">交易二维码</button></li> -->
       </ul>
 </nav> 
 <div id="qrcode">
@@ -196,22 +196,29 @@ img{
                         
 							<div class="form-group">						
 								<label for="EuserImg" class="col-sm-3 control-label">当前头像：</label>
-								 <div class="col-sm-5">
+								 <div class="col-sm-4">
                                 <a class="pf-avatar"><img id ="userProfile" class="img-rounded" ></a>
                                 <a style="color:black;left:60px; top: 120px;position: absolute; width:30%; height:20%;" class="pf-edit-avatar" onclick="userimginfo()" href="#">编辑头像</a>
                                 </div>
+                                <label for="EuserImg" class="col-sm-2 control-label">二维码展示：</label>
+                                 <div class="col-sm-3" style="text-align: left">
+                                 <a href="#" id="QRuserinfocode" onclick="QRcode()"style="position: absolute; top: 30px;">个人信息二维码</a>
+<!--                                  </div> -->
+<!--                                   <div class="col-sm-3" style="text-align: left">  -->
+        						<a href="#"  id="QRtradecode" onclick="QRtradecode()"style="position: absolute; top: 60px;">交易二维码</a>
+        						</div>
 							</div>
 							
 							<div class="form-group">
 								<label for="userNickname" class="col-sm-3 control-label">姓名：</label>
-								<div class="col-sm-5">
+								<div class="col-sm-4">
 									<input type="text" name="userNickname" class="col-sm-4 form-control" id="userNickname"/>
 								</div>
 							</div>
 								
 							<div class="form-group">
 					        	<label for="userGender" class="col-sm-3 control-label">性别：</label>
-					       		 <div class="col-sm-5">
+					       		 <div class="col-sm-4">
 								 <label class="radio-inline control-label">
 						        	<input type="radio"  name="userGender" id="userGender1" value="女"> 女
 						        </label>
@@ -223,14 +230,14 @@ img{
 							
 							<div class="form-group">
 								<label for="userAddress" class="col-sm-3 control-label">地址：</label>
-								<div class="col-sm-5">
+								<div class="col-sm-4">
 									<input type="text" name="userAddress" class="form-control" id="userAddress"/>									
 								</div>
 							</div>
 							
 							<div class="form-group">
 								 <label for="datetimepicker1" class="col-sm-3 control-label">生日：</label>
-					       		 <div class="col-sm-5">
+					       		 <div class="col-sm-4">
 					                <div class="input-group date" id="userBirthday">
 					       				 <input type="text"  name="userBirthday" id="userBirthday" class=" form-control "/>
 					       		 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
@@ -240,14 +247,14 @@ img{
 							
 							<div class="form-group">
 								<label for="userMobile" class="col-sm-3 control-label">手机号码：</label>
-								<div class="col-sm-5">
+								<div class="col-sm-4">
 									<input  type="text" name="userMobile" class="col-sm-4 form-control" id="userMobile" readonly="readonly"/>								
 							    </div>
 						    </div>
 
 							<div class="form-group">
 								<label for="userEmail" class="col-sm-3 control-label">邮箱：</label>
-								<div class="col-sm-5">
+								<div class="col-sm-4">
 									<input  type="text" name="userEmail" class="col-sm-4 form-control" id="userEmail" readonly="readonly"/>									
 								</div>
 							</div>
