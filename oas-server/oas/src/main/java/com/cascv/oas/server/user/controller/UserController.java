@@ -961,7 +961,7 @@ public class UserController extends BaseShiroController{
 	    Integer limit = pageSize;
 	    Integer offset;
 
-	    if (pageSize == 0) {
+	    if (pageSize == null && pageSize == 0) {
 	      limit = 10;
 	    }
 	    if (pageNum != null && pageNum > 0)

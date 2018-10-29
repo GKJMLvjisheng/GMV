@@ -25,7 +25,7 @@
  from 
  	  identity_card_info 
  where
- 	  verify_status!=0
+ 	  verify_status != 0
  	  <if test="searchValue != null and searchValue !='' ">
        and user_name like concat('%',#{searchValue},'%')
        or user_identity_name like concat('%',#{searchValue},'%')
@@ -36,13 +36,13 @@
  limit #{offset}, #{limit};
   </select>
   
-   <select id="countBySearchValue" resultMap="userIdentityCardModelMap">
+   <select id="countBySearchValue" resultType="java.lang.Integer">
  select 
   	  count(*)	  
  from 
  	  identity_card_info 
  where
- 	  verify_status!=0
+ 	  verify_status != 0
  	  <if test="searchValue != null and searchValue !='' ">
        and user_name like concat('%',#{searchValue},'%')
        or user_identity_name like concat('%',#{searchValue},'%')
