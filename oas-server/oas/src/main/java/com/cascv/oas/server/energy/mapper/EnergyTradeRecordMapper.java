@@ -24,4 +24,5 @@ public interface EnergyTradeRecordMapper {
     List<EnergyChangeDetail> selectByAllPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
     
     List<EnergyPowerChangeDetail> selectPowerByPage(@Param("userUuid") String userUuid, @Param("offset") Integer offset, @Param("limit") Integer limit);
+    
 }

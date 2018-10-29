@@ -1,30 +1,32 @@
-//提币请求审核创建bootstrapTable
+var pageSize;
+var pageNum;
 
-function initKYCGrid(data) {	
-
+function initKYCGrid() {	
+	$("#KYCGrid").bootstrapTable('destroy');
 	$("#KYCGrid").bootstrapTable({
 
-		//极为重要，缺失无法执行queryParams，传递page参数
-
-		contentType : "application/x-www-form-urlencoded",
-
+		url: '/api/v1/userCenter/inqureAllUserIdentityInfo',
+		contentType : "application/json",
 		dataType:"json",
-
-		pagination:true,//显示分页条：页码，条数等
-
+		method: 'post',
 		striped:true,//隔行变色
-		uniqueId:"uuid",//Indicate an unique identifier for each row
+		
+		uniqueId:"uuid",
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		sidePagination:"client",//在服务器分页
-
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams,//请求服务器时所传的参数
+		responseHandler:responseHandler,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
 		
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
+	    
+	    rowStyle:rowStyle,//通过自定义函数设置行样式
 
-		data:data,
 		columns : [{  
 			title: '序号',  
 			field: '',
@@ -33,7 +35,7 @@ function initKYCGrid(data) {
 			width:  '50px',
 			hidden:true, 
 			formatter: function (value, row, index) {  
-				return index+1;  
+				return pageSize * (pageNum - 1) + index + 1;   
 				}  
 			},
 		{  
@@ -104,11 +106,39 @@ function initKYCGrid(data) {
 			//width:  '80px',
 			formatter: actionFormatter		
 		}],		
-		search : true,//搜索
-        searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
+
+//请求服务数据时所传参数
+function queryParams(params){
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;
+	var searchValue = $("#kyc").val();
+	//alert(JSON.stringify(searchValue));
+    return{
+        //每页多少条数据
+        pageSize: params.limit,
+        //当前页码
+        pageNum: params.offset / params.limit + 1,
+        searchValue: searchValue,
+    }
+}
+
+//请求成功方法
+function responseHandler(res){
+	//alert(JSON.stringify(res));
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("KYC审核回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //总页数,前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
 
 function picturePath(value, row, index) {
 	var result = "";
@@ -172,7 +202,8 @@ function viewUser(id){
 	contentType : false,
 	async:false,
 
-	success:function(res){				
+	success:function(res){		
+		//alert(JSON.stringify(res))
 		if(res.code==0){	
 		var rows = res.data;			
 		$('#Qname').val(rows.name);
@@ -182,7 +213,7 @@ function viewUser(id){
 		$('#Qmobile').val(rows.mobile);
 		$('#Qemail').val(rows.email);
 		$('#Qaddress').val(rows.address);
-		$('#QinviteCode').val(rows.inviteCode);
+		$('#QinviteCode').val(rows.inviteCode);	
 		$("#queryUserModal").modal("show");
 		}
 

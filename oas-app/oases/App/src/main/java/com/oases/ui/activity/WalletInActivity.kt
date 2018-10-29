@@ -58,6 +58,7 @@ class WalletInActivity: BaseActivity() {
             // 将ClipData内容放到系统剪贴板里。
             if(cm!=null){
                 cm.setPrimaryClip(mClipData)
+                Toast.makeText(this,"已复制到剪贴板",Toast.LENGTH_SHORT)
             }
 
         }

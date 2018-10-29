@@ -98,8 +98,8 @@ public class EnergyPointController extends BaseController{
         	EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
         	energyCheckinResult.setNewEnergyPoint(activityService.getNewPoint(sourceCode, 1).getNewPoint());
         	energyCheckinResult.setNewPower(activityService.getNewPower(sourceCode, 2).getNewPower());
-        	log.info("{energypoin}",energyCheckinResult.getNewEnergyPoint());
-        	log.info("{energypoin}",energyCheckinResult.getNewPower());
+        	log.info("{energypoin}={}",energyCheckinResult.getNewEnergyPoint());
+        	log.info("{energypoin}={}",energyCheckinResult.getNewPower());
         	// change the Checkin EnergyBall to Die
 //            activityService.updateEnergyPointBallStatusByUuid(userUuid);
 //            activityService.updateEnergyPowerBallStatusByUuid(userUuid);
@@ -139,6 +139,9 @@ public class EnergyPointController extends BaseController{
     @ResponseBody
     public ResponseEntity<?> pointBallMaxValue(){
     	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue();
+
+    	log.info("{maxvalue}={}",maxValue);
+
     	return new ResponseEntity.Builder<BigDecimal>()
     			.setData(maxValue)
     			.setErrorCode(ErrorCode.SUCCESS)
@@ -215,8 +218,8 @@ public class EnergyPointController extends BaseController{
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
         String[] nameArray = {"手机", "计步", "手表", "家电"};
-        Integer[] valueArray = {point.intValue(), stepNum.intValue(), 0, 0};
-        Integer[] maxValueArray = {maxPoint.intValue(), maxStepNum.intValue(), 20000, 20000};
+        BigDecimal[] valueArray = {point, stepNum, BigDecimal.ZERO, BigDecimal.ZERO};
+        BigDecimal[] maxValueArray = {maxPoint, maxStepNum, BigDecimal.ONE, BigDecimal.ONE};
 
         for (Integer i = 0; i < 4; i++) {
             EnergyPointCategory energyPointCategory = new EnergyPointCategory();
@@ -226,7 +229,6 @@ public class EnergyPointController extends BaseController{
             energyPointCategory.setMaxValue(maxValueArray[i]);
             energyPointCategoryList.add(energyPointCategory);
         }
-        log.info(JSON.toJSONString(energyPointCategoryList));
         return new ResponseEntity.Builder<List<EnergyPointCategory>>()
                 .setData(energyPointCategoryList)
                 .setErrorCode(ErrorCode.SUCCESS)
@@ -372,8 +374,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         if (produced == null) {
           produced = BigDecimal.ZERO;
         }
-        currentPeriodEnergyPoint.setConsumedEnergyPoint(consumed.intValue());
-        currentPeriodEnergyPoint.setProducedEnergyPoint(produced.intValue());
+        currentPeriodEnergyPoint.setConsumedEnergyPoint(consumed);
+        currentPeriodEnergyPoint.setProducedEnergyPoint(produced);
 
         return new ResponseEntity.Builder<CurrentPeriodEnergyPoint>()
                 .setData(currentPeriodEnergyPoint)

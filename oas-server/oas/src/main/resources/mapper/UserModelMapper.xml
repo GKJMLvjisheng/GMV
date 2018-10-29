@@ -176,7 +176,12 @@
 		<include refid="Base_Column_List" />
 		from user_info where invite_code = #{inviteFrom}
 	</select>
-
+	
+	<select id="userInvitedCountTotal" resultType="java.lang.Integer">
+		select count(*)
+		from user_info where invite_from = #{inviteCode}
+	</select>
+	
 	<!-- Name:upadateUserInfo -->
 	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.03 -->

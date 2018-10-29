@@ -67,7 +67,7 @@ function saveUserInfo(){
 	     "address":userAddress,
 	     "birthday":userBirthday
 	  }
-	  alert(JSON.stringify(data));
+	  //alert(JSON.stringify(data));
 	  $.ajax({
 	    url:"/api/v1/userCenter/updateUserInfo",
 	    method:"POST",
@@ -119,30 +119,32 @@ function userimginfo(){
 
 //安全设置主页数据显示
 function usersecurityinfo(){
-  var userName=$("#userName").val();
-  
-  var data={
-        "name":userName
-    };
-    $.ajax({
-       url : "/api/v1/userCenter/inquireUserInfo",
-       type : "POST",
-       dataType : 'json',
-       async : false,
-       data : data,
-       success : function(res) {
-    	   
-    	   //获取数据库中用户信息
-    	   var userName=res.data.name;
-	       var userMobile=res.data.mobile;
-	       var userEmail=res.data.email;
-           var href=encodeURI(encodeURI("/userInfo/userSecurityInfo?userName="+userName+"&userMobile="+userMobile+"&userEmail="+userEmail));
-           window.location.href=href;
-          },
-          error : function() {
-            alert('检查用户是否存在发生错误');
-          }
-        });
+//  var userName=$("#userName").val();
+//  
+//  var data={
+//        "name":userName
+//    };
+//    $.ajax({
+//       url : "/api/v1/userCenter/inquireUserInfo",
+//       type : "POST",
+//       dataType : 'json',
+//       async : false,
+//       data : data,
+//       success : function(res) {
+//    	   
+//    	   //获取数据库中用户信息
+//    	   var userName=res.data.name;
+//	       var userMobile=res.data.mobile;
+//	       var userEmail=res.data.email;
+//           var href=encodeURI(encodeURI("/userInfo/userSecurityInfo?userName="+userName+"&userMobile="+userMobile+"&userEmail="+userEmail));
+//           window.location.href=href;
+//          },
+//          error : function() {
+//            alert('检查用户是否存在发生错误');
+//          }
+//        });
+	var href="/userInfo/userSecurityInfo";
+	window.location.href=href;
   }
 
 //个人信息二维码
@@ -253,9 +255,9 @@ function refreshUserInfo(){
 	      	 
 	      	 $("#userMobile").val(userMobile);
 	      	 $("#userEmail").val(userEmail);
-	      	 str="12345678"
-	      	
-	      	$("#userPasswordOld").val(str.replace(/(.{0}).*(.{0})/, "$1********$2"));
+//	      	 str="12345678"
+//	      	
+//	      	$("#mobileAddMail").val(str.replace(/(.{0}).*(.{0})/, "$1********$2"));
 	        },
 	        error : function() {
 	          alert('检查用户是否存在发生错误');
@@ -322,7 +324,11 @@ function checkUserPassword(){
 function modifyPassword(){
 	var userName = $("#userName").val(); // 登录名
 	var userPassword = $("#userPassword").val(); // 密码
-	
+	var reUserPassword=$("#reUserPassword").val();
+	if(userPassword!=reUserPassword){
+		alert("密码不一致，请重新输入!");
+		return;
+	}
 	var data = {
 			"name" : userName,
 			"password" : userPassword,

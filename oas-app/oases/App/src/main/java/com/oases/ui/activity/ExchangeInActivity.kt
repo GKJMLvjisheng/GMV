@@ -17,6 +17,7 @@ import com.oases.base.ext.onClick
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.util.Log
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
@@ -54,6 +55,8 @@ class ExchangeInActivity: BaseActivity() {
             // 将ClipData内容放到系统剪贴板里。
             if(cm!=null){
                 cm.setPrimaryClip(mClipData)
+                Log.i("zht","已复制到剪贴板")
+                Toast.makeText(this,"已复制到剪贴板",Toast.LENGTH_SHORT)
             }
         }
 

@@ -42,12 +42,12 @@ public class MessageService {
         AWSCredentials awsCredentials = new AWSCredentials() {
             @Override
             public String getAWSAccessKeyId(){
-                return "AKIAJOW26VQBDT6ZP23Q"; // 带有发短信权限的 IAM的 ACCESS_KEY
+                return "AKIAJK2TKW2TSCIP5TOA"; // 带有发短信权限的 IAM的 ACCESS_KEY
             }
 
             @Override
             public String getAWSSecretKey(){
-                return "ca/G/RtXQR9Sto7AEoKebsiiAb2rTIgl/Hakl0aY"; //带有发短信权限的IAM的 SECRET_KEY
+                return "0bVfU3nrAc8G3b/aDCyWcpCl+x7k5FE+1YTnx8/o"; //带有发短信权限的IAM的 SECRET_KEY
             }
         };
         

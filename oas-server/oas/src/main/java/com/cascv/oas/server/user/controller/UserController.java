@@ -19,6 +19,8 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -73,6 +75,7 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -869,6 +872,7 @@ public class UserController extends BaseShiroController{
         return new ResponseEntity.Builder<Map<String,Boolean>>()
 		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
     }
+	
 	/*
 	 * Name:sendMobile--Aliyun
 	 * Author:lvjisheng
@@ -920,7 +924,7 @@ public class UserController extends BaseShiroController{
 //		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 //	}		
 //}
-	
+//	
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
@@ -951,10 +955,31 @@ public class UserController extends BaseShiroController{
 	
 	@PostMapping(value="/inqureAllUserIdentityInfo")
 	@ResponseBody
-	public ResponseEntity<?> selectAllUserIdentityInfo(){
-		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard();
-		return new ResponseEntity.Builder<List<UserIdentityCardModel>>()
-		  	      .setData(userIdentityCardModelList)
+	public ResponseEntity<?> selectAllUserIdentityInfo(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if(pageSize == 0) {
+	      limit = 10;
+	    }
+	    if(pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectAllUserIdentityCard(offset, limit, searchValue);
+		PageDomain<UserIdentityCardModel> userIdentityCardModel=new PageDomain<>();
+		Integer count=userIdentityCardModelMapper.countBySearchValue(searchValue);
+			userIdentityCardModel.setTotal(count);
+			userIdentityCardModel.setAsc("desc");
+			userIdentityCardModel.setOffset(offset);
+			userIdentityCardModel.setPageNum(pageNum);
+			userIdentityCardModel.setPageSize(pageSize);
+			userIdentityCardModel.setRows(userIdentityCardModelList);
+		return new ResponseEntity.Builder<PageDomain<UserIdentityCardModel>>()
+		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
 		  	      .build();
 			}
@@ -1396,7 +1421,9 @@ public class UserController extends BaseShiroController{
     @ResponseBody
     @WriteLog(value="updateUserStatus")
     public ResponseEntity<?> updateUserStatus(@RequestBody UserStatus userStatus) {
-		Map<String,Object> info=new HashMap<>(); 	
+		Map<String,Object> info=new HashMap<>();
+		String uuid=userModelMapper.selectByName(userStatus.getName()).getUuid();
+		userFacilityMapper.deleteUserFacility(uuid);
 		info.put("state",true);	
 		userModelMapper.updateUserStatus(userStatus.getStatus(), userStatus.getName());
 		return new ResponseEntity.Builder<Map<String,Object>>()

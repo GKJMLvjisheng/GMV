@@ -1,5 +1,6 @@
 package com.cascv.oas.server.energy.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -13,4 +14,6 @@ public interface PowerTradeRecordDetailMapper {
 	List<PowerTradeRecordDetail> selectPowerTradeRecordBySearchValue(@Param("offset") Integer offset, @Param("limit") Integer limit,@Param("searchValue") String searchValue);
 	Integer countPowerTradeRecordBySearchValue(@Param("searchValue") String searchValue);
 	
+	BigDecimal sumInPointByPromoted(@Param("userUuid") String userUuid);
+	BigDecimal sumOutPointByPromoted(@Param("userUuid") String userUuid);
 }

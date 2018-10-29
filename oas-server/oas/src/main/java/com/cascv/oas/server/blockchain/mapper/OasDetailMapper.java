@@ -60,6 +60,11 @@ public interface OasDetailMapper {
    */
   UserModel getAdminUserInfo();
   /**
+   * 获取firstone用户信息
+   * @return
+   */
+  UserModel getFirstOneUserInfo();
+  /**
    * 根据hash值更新记录
    * @param hash
    * @return

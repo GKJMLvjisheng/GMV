@@ -584,7 +584,7 @@ public class EnergyService {
     	log.info("summary {}", sum);
     	if (!decreaseBalance(userUuid, sum))
     		return ErrorCode.BALANCE_NOT_ENOUGH;
-    	userWalletService.addFromEnergy(userUuid, end.substring(0, 8), sum);
+    	userWalletService.addFromEnergy(userUuid, end.substring(0, 7), sum);
     	saveEnergyOutRecord(userUuid, sum, end);
     	return ErrorCode.SUCCESS;
     } 
