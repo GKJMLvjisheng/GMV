@@ -87,8 +87,10 @@ class ExchangeItem @JvmOverloads constructor(context: Context, attrs: AttributeS
         var text=mRightTopTv.text.toString()
         if(text.startsWith("-")){
             mRightTopTv.setTextColor(ContextCompat.getColor(context, R.color.common_red))
-        }else{
+        }else if(text.startsWith("+")){
             mRightTopTv.setTextColor(ContextCompat.getColor(context, R.color.common_green))
+        }else{
+            mRightTopTv.setTextColor(ContextCompat.getColor(context, R.color.common_yellow))
         }
     }
     fun setRightTopMoveDown(){
