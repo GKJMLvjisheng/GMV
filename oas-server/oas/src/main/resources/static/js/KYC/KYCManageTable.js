@@ -24,6 +24,8 @@ function initKYCGrid() {
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
+	    
+	    rowStyle:rowStyle,//通过自定义函数设置行样式
 
 		columns : [{  
 			title: '序号',  

@@ -59,8 +59,7 @@ public interface UserModelMapper {
 	 */	
 	 UserModel selectByInviteFrom(@Param("inviteFrom") Integer InviteFrom);
 	 UserModel selectSuperiorsUserByInviteFrom(@Param("inviteFrom") Integer InviteFrom);
-	 Integer userInvitedCountTotal();
-
+	 Integer userInvitedCountTotal(@Param("inviteCode") Integer inviteCode);
 	 //验证码
 	 Integer updateIdentifyCode(UserModel userModel);
      

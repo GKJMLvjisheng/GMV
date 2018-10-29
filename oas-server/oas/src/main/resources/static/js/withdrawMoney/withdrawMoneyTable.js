@@ -111,7 +111,7 @@ function queryParams(params){
 
 //请求成功方法
 function responseHandler(res){
-	//alert(JSON.stringify(res.data.rows[0].status))
+	//alert(JSON.stringify(res))
 	if(res.code != 0 ){
 		alert("提币请求审核回显失败！"+res.message)
 		return{

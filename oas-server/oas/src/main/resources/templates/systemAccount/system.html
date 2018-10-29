@@ -41,6 +41,17 @@
 	float:right;
 	margin-right: -135px;
    }
+   .form1{
+    width: 50.33333333%;
+	margin-bottom:13px;
+	margin-top:13px;
+	height: 35px;
+	float:left;
+ 	margin-right: -100px; 
+   }
+   .col-sm-2{
+   margin-left: -30px;
+   }
     </style>
 </head>
 
@@ -54,6 +65,9 @@
 			</div>
 			<div class="page-tabs-content">
 				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">交易钱包监控</a>
+			</div>	
+			<div class="page-tabs-content">
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">FIRSTONE页面详情</a>
 			</div>	
 				
 		</nav>	
@@ -105,8 +119,34 @@
 		<div class="pull-right" style="font-size:10px">ETH余额：<span id="ETHmoney"></span></div>
 		<table id="tradeWalletGrid"></table>
 	</div>
-
 	<div class = "container" style="display:none" id="page3">
+	<form id="addVersionForm" action="/version" method="post" class="form-horizontal "> 
+
+						<div class="form-group "style="padding-top: 15px;  margin-bottom: 0px;">
+							<label for="versionCode" class="col-sm-2 control-label">重置金额：</label>
+							<div class="col-sm-3">
+								<input  id="firstMoney" required="required" class="form-control" maxlength="100" placeholder="请输入需要重置的金额" onblur="initEnergyWalletGrid()"/>
+								<span id='msg_versionCode'></span>
+								
+							</div>
+							<label for="versionCode" class="col-sm-2 control-label">重置备注：</label>
+							<div class="col-sm-3">
+								<input  id="remarks" required="required" class="form-control" placeholder="请输入重置备注" onblur="initEnergyWalletGrid()"/>
+								<span id='msg_versionCode'></span>
+								
+							</div>
+							<div class="col-sm-1">
+								<button id="but" class="btn btn-default form-control"onclick="resetMoney()" style="background:blue;color:black">确定</button>
+							</div>						
+						</div>
+	</form>	
+		
+<!-- 		<div class="pull-left" >重置金额：<input  id="address"></input></div> -->
+<!-- 		<div class="pull-left" >重置备注：<input id="ETHmoney"></input></div> -->
+		<table id="firstoneGrid"></table>
+	</div>
+
+	<div class = "container" style="display:none" id="page4">
 		</br>
 		<label for="datetimepicker1" class="col-sm-2">开始时间：</label>
 			<div class="col-sm-3">
@@ -127,27 +167,7 @@
 		<table id="fundInGrid"></table>
 	</div>
 
-	<div class = "container" style="display:none" id="page4">
-		</br>
-		<label for="datetimepicker1" class="col-sm-2">开始时间：</label>
-			<div class="col-sm-3">
-				<div class="input-group  date" id="userEd4">
-			
-					<input type="text" name="startTime3" id="startTime3" value="" class=" form-control" onblur="initFundOutGrid()"/>
-					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-				</div>	
-			</div>
-
-		<label for="datetimepicker1" class="col-sm-2">结束时间：</label>
-			<div class="col-sm-3">
-				<div class="input-group  date" id="userEd5">				
-					<input type="text"  name="endTime3" id="endTime3" value="" class=" form-control " onblur="initFundOutGrid()"/>
-					<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-				</div>	
-			</div>
-		<table id="fundOutGrid"></table>
-			
-	</div>
+	
 
 	<!-- 查看用户信息的模态框 -->
     <div class="modal fade" id="queryEnergyModal" tabindex="-1" role="dialog">
