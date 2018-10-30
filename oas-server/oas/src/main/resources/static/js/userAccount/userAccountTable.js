@@ -462,7 +462,7 @@ function actionFormatter1(value, row, index) {
 	 var name = value;
 	 var roleId = row.roleId;
 	var result = "";	
-	result += "<input type='radio' onclick=\"reset('" + name + "', '" + roleId + "')\"' name='radio' id='reset' value='1'>重置  ";
+	result += "<input type='radio' onclick=\"reset('" + name + "', '" + roleId + "')\"' name='radio' id='reset' value='1'> 重置";
 	return result;	
 }
 

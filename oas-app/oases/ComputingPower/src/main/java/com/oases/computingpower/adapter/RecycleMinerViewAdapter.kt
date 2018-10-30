@@ -55,7 +55,6 @@ class RecycleMinerViewAdapter(
                 holder.mExchangeItemView.mMinerImage.setImageResource(R.drawable.fourlevel)
             }*/
             holder.mExchangeItemView.mMinerName.setText(mData.minerName)
-
         val minerPrice = mData.minerPrice.stripTrailingZeros().toPlainString()
         holder.mExchangeItemView.mMinerPrice.setText(minerPrice.plus("  OAS"))
         holder.mExchangeItemView.mMinerPrice.setTextColor(Color.parseColor("#00944b"))  //绿色
