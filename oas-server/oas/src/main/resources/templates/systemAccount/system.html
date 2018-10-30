@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewsManager</title>
+    <title>systemMonitor</title>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+<!-- 	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script> -->
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
 	 <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	
-	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>
-	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">				   	   
+<!-- 	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script> -->
+<!-- 	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">				   	    -->
    
    <style>
 	table{ 
@@ -49,14 +49,14 @@
 	float:left;
  	margin-right: -100px; 
    }
-   .btn .btn-primary{
-    border-radius: 3px;
-    color: #fff;
-    background-color: #337ab7;
-    border-color: #2e6da4;
-}
+/*    .btn .btn-primary{ */
+/*     border-radius: 3px; */
+/*     color: #fff; */
+/*     background-color: #337ab7; */
+/*     border-color: #2e6da4; */
+/* } */
    .col-sm-2{
-   margin-left: -30px;
+   margin-left: -50px;
    }
     </style>
 </head>
@@ -142,9 +142,11 @@
 								
 							</div>
 							<div class="col-sm-1">
-								<button id="but" class="btn btn-primary form-control"onclick="resetMoney()" >确定</button>
-							</div>						
+								<input id="but" type="button" class="btn btn-primary "onclick="resetMoney()" value="确定"/>
+							</div>		
+							<div class="pull-right" ><label class="control-label">FIRSTONE用户在线钱包余额：</label><span  id="firstValue"></span></div>				
 						</div>
+						
 	</form>	
 		
 <!-- 		<div class="pull-left" >重置金额：<input  id="address"></input></div> -->

@@ -184,7 +184,7 @@
         android:id="@+id/mConfirmRedrawBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="确认提币"
+        android:text="确认划转"
         android:background="@drawable/qb2"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginTop="10dp"

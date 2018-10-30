@@ -1,6 +1,5 @@
 package com.oases.ui.activity
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import com.oases.R
@@ -10,27 +9,18 @@ import com.oases.base.utils.AppPrefsUtils
 import kotlinx.android.synthetic.main.activity_wallet_in.*
 import com.google.zxing.WriterException
 import com.yzq.zxinglibrary.encode.CodeCreator
-import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.text.TextUtils
 import android.widget.Toast
 import android.util.DisplayMetrics
-import android.content.Context.WINDOW_SERVICE
 import android.view.WindowManager
 import com.oases.base.ext.onClick
-import kotlinx.android.synthetic.main.activity_wallet_out.*
-import org.jetbrains.anko.startActivity
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.graphics.Canvas
-import com.alibaba.android.arouter.facade.annotation.Route
-import com.alibaba.android.arouter.launcher.ARouter
-import android.app.ActivityManager
-import com.oases.base.common.BaseApplication.Companion.context
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
-
+import org.jetbrains.anko.toast
 
 
 class WalletInActivity: BaseActivity() {
@@ -58,7 +48,8 @@ class WalletInActivity: BaseActivity() {
             // 将ClipData内容放到系统剪贴板里。
             if(cm!=null){
                 cm.setPrimaryClip(mClipData)
-                Toast.makeText(this,"已复制到剪贴板",Toast.LENGTH_SHORT)
+                //Toast.makeText(this,"已复制到剪贴板",Toast.LENGTH_SHORT)
+                toast("已复制到剪贴板")
             }
 
         }

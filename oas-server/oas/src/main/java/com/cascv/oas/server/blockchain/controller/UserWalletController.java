@@ -179,7 +179,7 @@ public class UserWalletController extends BaseShiroController {
   }
 
   @PostMapping(value="/transfer")
-  @RequiresPermissions("在线钱包-转账")
+  @RequiresPermissions("闪电转账")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
@@ -214,7 +214,7 @@ public class UserWalletController extends BaseShiroController {
    */
   
   @PostMapping(value="/withdraw")
-  @RequiresPermissions("提币")
+  @RequiresPermissions("在线钱包-划转")
   @ResponseBody
   @Transactional
   @WriteLog(value="withdraw")
