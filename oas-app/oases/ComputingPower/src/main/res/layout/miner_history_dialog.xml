@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="矿机名称："
+        android:text="名称："
         android:textColor="@color/common_black"
         android:textSize="15dp" />
     <TextView
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="矿机单价："
+            android:text="单价："
             android:textColor="@color/common_black"
             android:textSize="15dp" />
         <TextView
@@ -118,7 +118,15 @@
             android:layout_toRightOf="@+id/minerPeriod"
             android:paddingLeft="10dp"
             android:gravity="center"
-            android:text="5,000,000"
+            android:text="5"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/mSelectMinerPeriod"
+            android:gravity="center"
+            android:text="（天）"
             android:textColor="@color/common_green"
             android:textSize="15dp" />
         <View
