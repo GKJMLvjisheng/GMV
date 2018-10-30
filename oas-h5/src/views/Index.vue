@@ -992,24 +992,52 @@ header {
   }
   
   
-  .attendance,
-  .promote,
-  .miner{
-    width: 112px;
+  // .attendance,
+  // .promote,
+  // .miner{
+  //   width: 112px;
+  //   height: 112px;
+  //   position: absolute;
+  //   bottom: 18px;
+  //   left: 25px;//36
+  //   &:first-child{
+  //     left: 25px;
+  //   }
+  //    &:nth-child(2) {
+  //      left: 160px;//180
+  //   }
+  //   &:last-child {
+  //     width: 100px;
+  //     height: 100px;
+  //     bottom:28px;
+  //     left: 299px;
+  //   }
+  // }
+
+  .attendance{
+     width: 112px;
     height: 112px;
     position: absolute;
     bottom: 18px;
-    left: 25px;//36
-     &:nth-child(2) {
-       left: 160px;//180
-    }
-    &:last-child {
-      width: 100px;
-      height: 100px;
-      bottom:28px;
-      left: 299px;
-    }
+    left: 25px;
   }
+  .promote{
+     width: 112px;
+    height: 112px;
+    position: absolute;
+    bottom: 18px;
+    left: 25px;
+     left: 160px;
+  }
+  .miner{
+     width: 100px;
+    height: 100px;
+    position: absolute;
+    bottom:28px;
+    left: 25px;
+     left: 299px;
+  }
+
 }
 
 .title {
