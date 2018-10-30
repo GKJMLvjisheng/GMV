@@ -326,6 +326,12 @@ function firstOneDetail() {
 			valign: 'middle',
 			width:  '130px',
 			//formatter: actionFormatter2
+		},{
+			title : "备注",
+			field : "remark",
+			align: 'center',
+			valign: 'middle',
+			width:  '170px',
 		},
 			{
 			title : "交易时间",
@@ -448,7 +454,7 @@ function resetMoney(){
 			 
 		     if (res.code == 0) {
 		    	 alert("重置金额成功！");
-		    	 firstOneDetail();
+		    	 
 		     } else {
 		    	 alert(res.message);
 		     }
