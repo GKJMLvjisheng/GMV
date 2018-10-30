@@ -47,6 +47,7 @@
       </div>
       <img @click="handleAttendance" :src="attendance" class="attendance" />
       <img @click="handlePromote" :src="promote" class="promote" />
+      <img @click="handleMiner" :src="miner" class="miner" />
     </div>
     <!-- 挖矿部分 End -->
     
@@ -154,6 +155,7 @@ const bottom = require("@/assets/images/bottom_logo@2x.png");
 const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
 const infoIamge = require("@/assets/images/icon_default_user.png");
+const miner = require("@/assets/images/kuangji@2x.png");
 import { randomNum } from '@/utils/utils.js'
 import $ from 'jquery'
 export default {
@@ -169,6 +171,7 @@ export default {
       bottom: bottom,
       energyBall: energyBall,
       infoIamge: infoIamge,
+      miner:miner,
       width: "80%",
       isShowMask: false,
       isShowSuccessMsg: false,
@@ -258,6 +261,7 @@ export default {
    getStep(){
     //let todayStep=100
       let todayStep=window.Android.getTodaySteps()
+      console.log(todayStep)
       return todayStep
    },
     //预先加载3条新闻
@@ -394,6 +398,10 @@ export default {
       console.log("调用安卓")
     window.Android.startLiftComputingPower()
     
+    },
+    handleMiner(){
+      console.log("调用安卓")
+    window.Android.startLiftBuyingMiner()
     },
     async getBallAndAnalysis() {
             try {
@@ -985,14 +993,21 @@ header {
   
   
   .attendance,
-  .promote{
+  .promote,
+  .miner{
     width: 112px;
     height: 112px;
     position: absolute;
     bottom: 18px;
-    left: 36px;
+    left: 25px;//36
+     &:nth-child(2) {
+       left: 160px;//180
+    }
     &:last-child {
-      left: 180px;
+      width: 100px;
+      height: 100px;
+      bottom:28px;
+      left: 299px;
     }
   }
 }

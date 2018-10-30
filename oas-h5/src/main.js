@@ -8,15 +8,15 @@ import Axios from 'axios'
 import VueScroller from 'vue-scroller'
 //import router from 'vue-router' 
 Vue.use(VueScroller)
-/*var token = null
+var token = null
 if(window.Android) {
   token = window.Android.getToken()
-}*/
-//Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
+}
+Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 Axios.interceptors.request.use(config => {
   config.headers['Content-type'] = 'application/json;charset=UTF-8'
   //config.headers['dataType']= 'json'
-  //config.headers['token'] = token || '99e04e02-fb5c-4f65-a6cf-a93006c351b6'
+  config.headers['token'] = token || '99e04e02-fb5c-4f65-a6cf-a93006c351b6'
    /*config.headers = {
     
      'Content-Type': 'application/json;charset=utf-8',
@@ -27,16 +27,16 @@ Axios.interceptors.request.use(config => {
 
 Vue.prototype.$axios = Axios
 Vue.config.productionTip = false
-let startApp = function () {
-  Axios.get('../config.json').then((res) => {
-    // 基础地址
-    //Vue.prototype.BASE_URL = res.BASE_URL;
-    console.log(res.BASE_URL)
-    Axios.defaults.baseURL = res.BASE_URL
+// let startApp = function () {
+//   Axios.get('../config.json').then((res) => {
+//     // 基础地址
+//     //Vue.prototype.BASE_URL = res.BASE_URL;
+//     console.log(res.BASE_URL)
+//     Axios.defaults.baseURL = res.BASE_URL
 new Vue({
   //router ,
   render: h => h(App)
 }).$mount('#app')
-  })
-}
-startApp()
+//   })
+// }
+// startApp()
