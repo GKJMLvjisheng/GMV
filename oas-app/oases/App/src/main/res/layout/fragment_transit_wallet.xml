@@ -54,7 +54,7 @@
             app:bitName="ETH"
             app:icon="@drawable/icon_eth">
         </com.oases.base.widgets.BitValue>
-        <com.oases.base.widgets.BitValue
+        <!--<com.oases.base.widgets.BitValue
             android:id="@+id/mBtc"
             android:layout_below="@+id/mEth"
             android:layout_marginTop="10dp"
@@ -64,7 +64,7 @@
             app:icon="@drawable/icon_btc"
             app:bitValue="0"
             app:bitEqualsValue="≈ ¥ 0">
-        </com.oases.base.widgets.BitValue>
+        </com.oases.base.widgets.BitValue>-->
     </RelativeLayout>
 
 </FrameLayout>

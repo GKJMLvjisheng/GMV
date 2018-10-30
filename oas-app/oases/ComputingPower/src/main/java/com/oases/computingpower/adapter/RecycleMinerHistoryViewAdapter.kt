@@ -2,6 +2,7 @@ package com.oases.computingpower.adapter
 
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,15 @@ import com.oases.base.widgets.ExchangeItem
 import com.oases.computingpower.R
 import kotlinx.android.synthetic.main.miner_buyhistory_item.view.*
 import com.oases.computingpower.data.protocol.MinerHistoryItem
+import java.math.BigDecimal
 
 class RecycleMinerHistoryViewAdapter(val mList:MutableList<MinerHistoryItem>)
     : RecyclerView.Adapter<RecycleMinerHistoryViewAdapter.RecyclerHolder>() {
     private var list :MutableList<MinerHistoryItem> = mList
     private var minerStatus:String = ""
+    private var subClickListener: SubClickListener? = null
+
+
     //负责承载每个子项的布局
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecycleMinerHistoryViewAdapter.RecyclerHolder {
        val item:View =  LayoutInflater.from(parent.context).inflate(R.layout.miner_buyhistory_item,null,false)
@@ -43,6 +48,11 @@ class RecycleMinerHistoryViewAdapter(val mList:MutableList<MinerHistoryItem>)
             holder.mExchangeItemView.setRightBottomText("到期：".plus(mData.minerEndTime))
             holder.mExchangeItemView.setTimeTextSize()
             holder.mExchangeItemView.setTimeTextMoveDown()
+            holder.mExchangeItemView.setOnClickListener {
+                if (subClickListener != null) {
+                    subClickListener!!.onTopicClickListener(mData.minerName,mData.minerPrice,mData.minerPower,mData.period)
+                }
+            }
         }
 
     }
@@ -56,5 +66,16 @@ class RecycleMinerHistoryViewAdapter(val mList:MutableList<MinerHistoryItem>)
             this.list.addAll(data)
             notifyDataSetChanged()
         }
+    }
+
+
+    fun setsubClickListener(topicClickListener: SubClickListener) {
+        Log.d("zbb", "set subclick listener")
+        subClickListener = topicClickListener
+    }
+
+    //在Adapter中定义接口，传数据给Activity
+    interface SubClickListener {
+        fun onTopicClickListener(minerName: String, minerPrice: BigDecimal, minerPower: BigDecimal,minerPeriod:Int)
     }
 }

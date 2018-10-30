@@ -174,7 +174,7 @@ class InviteFriendsActivity : BaseMvpActivity<InviteFriendsInfoPresenter>(), Inv
     }
 
     override fun onInviteFriendsInfoResult(result: InviteFriendsInfoResp) {
-        mInviteNumber.setValue(result.sumUserInvited)
+        mInviteNumber.setValue(result.sumUserInvited.toString())
         mTotalLift.setValue(result.sumPowerPromoted)
     }
 }

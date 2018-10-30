@@ -1,8 +1,13 @@
 package com.oases.computingpower.ui.activity
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.view.View
+import android.widget.TextView
+import com.oases.base.common.BaseApplication
 import com.oases.base.common.BaseConstant
 import com.oases.base.ext.setVisible
 import com.oases.base.ui.activity.BaseMvpActivity
@@ -14,6 +19,7 @@ import com.oases.computingpower.injection.module.ComputingPowerModule
 import com.oases.computingpower.presenter.BuyingMinerHistoryPresenter
 import com.oases.computingpower.presenter.view.BuyingMinerHistoryView
 import kotlinx.android.synthetic.main.activity_buying_miner_history.*
+import java.math.BigDecimal
 
 class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(), BuyingMinerHistoryView {
 
@@ -24,6 +30,11 @@ class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(
     private var loadFlag:Boolean =true
     private var tip:String = "正在加载..."
     private var lastVisibleItemPosition:Int = 0
+    private lateinit var mMinerName:String
+    private lateinit var mMinerPrice:BigDecimal
+    private lateinit var mMinerPower: BigDecimal
+    private lateinit var mMinerPeriod: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buying_miner_history)
@@ -41,6 +52,27 @@ class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(
     }
 
 
+    //弹框，用户购买确认信息
+    private  fun alertView(){
+        var dialogBuilder = AlertDialog.Builder(this@BuyingMinerHistoryActivity)
+        var view = View.inflate(BaseApplication.context,R.layout.miner_history_dialog,null)
+        var name = view.findViewById(R.id.mSelectMinerName) as TextView
+        name.text=mMinerName
+        var price = view.findViewById(R.id.mSelectMinerPrice) as TextView
+        //去掉小数部分后面为0的显示
+        price.text=mMinerPrice.stripTrailingZeros().toPlainString()
+        var power = view.findViewById(R.id.mSelectMinerPower) as TextView
+        //去掉小数部分后面为0的显示
+        power.text= mMinerPower.stripTrailingZeros().toPlainString()
+        var period = view.findViewById(R.id.mSelectMinerPeriod) as TextView
+        period.text= mMinerPeriod
+
+        dialogBuilder.setView(view)
+        dialogBuilder.setCancelable(true)
+        val dialog = dialogBuilder?.create() as AlertDialog
+        dialog.show()
+    }
+
     override fun onGetBuyingMinerHistoryResult(result: BuyingMinerHistoryResp) {
         val list = result.rows
         if(mPageCount ==1){
@@ -48,6 +80,20 @@ class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(
                 mRecyclerView = minerBuyHistoryRecyclerView
                 mRecyclerView!!.layoutManager = LinearLayoutManager(this)
                 adapter =  RecycleMinerHistoryViewAdapter(list)
+
+                //此处为弹框，用户进行购买
+                adapter!!.setsubClickListener(object : RecycleMinerHistoryViewAdapter.SubClickListener {
+                    override fun onTopicClickListener(minerName: String, minerPrice: BigDecimal, minerPower: BigDecimal,minerPeriod:Int) {
+                        mMinerName = minerName
+                        mMinerPrice = minerPrice
+                        mMinerPower = minerPower
+                        mMinerPeriod= minerPeriod.toString()
+                        Log.d("sssss","mMinerPeriod：$mMinerPeriod")
+                        alertView()
+                    }
+                })
+
+
                 mRecyclerView!!.adapter =adapter
 
                 mRecyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {

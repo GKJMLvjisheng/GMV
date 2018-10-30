@@ -75,7 +75,7 @@ public class EthWalletController extends BaseShiroController {
   private ActivityService activityService;
   
   @PostMapping(value="/transfer")
-  @RequiresPermissions("交易钱包-转账")
+  @RequiresPermissions("转账")
   @ResponseBody
   @Transactional
   @WriteLog(value="transfer")
@@ -454,7 +454,7 @@ public class EthWalletController extends BaseShiroController {
    * @return
    */
   @PostMapping(value="/reverseWithdraw") 
-  @RequiresPermissions("充币")
+  @RequiresPermissions("交易钱包-划转")
   @ResponseBody
   @Transactional
   @WriteLog(value="reverseWithdraw")

@@ -22,6 +22,7 @@ import com.oases.computingpower.injection.module.ComputingPowerModule
 import com.oases.computingpower.presenter.ComputingPowerMainPresenter
 import com.oases.computingpower.presenter.view.ComputingPowerMainView
 import com.oases.computingpower.utils.SpaceItemDecoration
+import com.oases.provider.router.RouterPath
 import com.zhy.view.flowlayout.TagFlowLayout.dip2px
 import kotlinx.android.synthetic.main.activity_computing_power_main.*
 import kotlinx.android.synthetic.main.grid_item.view.*
@@ -40,7 +41,7 @@ class ComputingPowerMainActivity :
     private var originalPhoneNumber: String = ""
     private var originalMail: String = ""
     private var allData = mutableListOf(
-            FunctionItem(mBackupWallet,false,"wallet"),
+            FunctionItem(mBackupWallet,false,"wallet_fill"),
             FunctionItem(mConnectToPhone,false,"mobile"),
             FunctionItem(mConnectToMail,false,"mail"),
             FunctionItem(mWatchWeChat,false,"wechat"),
@@ -117,8 +118,8 @@ class ComputingPowerMainActivity :
     override fun onClick(v: View?) {
         var name = v?.mName?.text?:""
         when (name){
-            //mBackupWallet ->ARouter.getInstance().build(RouterPath.UserCenter.PATH_BACKUP_WALLET).navigation()
-            mBackupWallet->toast("即将上线")
+            mBackupWallet ->ARouter.getInstance().build(RouterPath.UserCenter.PATH_BACKUP_WALLET).navigation()
+            //mBackupWallet->toast("即将上线")
             mWatchWeChat -> startActivity<WatchingWeChatPublicAccountActivity>()
             mInviteFriends ->startActivity<InviteFriendsActivity>()
             mEnvironmentalmProtectionAnswer->toast("即将上线")

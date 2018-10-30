@@ -124,7 +124,7 @@
                         android:id="@+id/mRedrawOas"
                         android:layout_width="156dp"
                         android:layout_height="wrap_content"
-                        android:text="提币"
+                        android:text="@string/withdraw_name"
                         android:textColor="@color/common_white"
                         android:background="@drawable/button_tb"
                         />
@@ -132,7 +132,7 @@
                         android:id="@+id/mExchangeBtn"
                         android:layout_width="156dp"
                         android:layout_height="wrap_content"
-                        android:text="转账"
+                        android:text="@string/user_wallet_name"
                         android:layout_alignParentRight="true"
                         android:textColor="@color/common_white"
                         android:background="@drawable/button_tb"

@@ -31,7 +31,7 @@
    <select id="selectTodayWalkBall" resultMap="walkBallMap">
        select
         <include refid="walkBall_List" />
-       from walk_ball where user_uuid = #{userUuid} and created = #{created}
+       from walk_ball where user_uuid = #{userUuid} order by created desc limit 1
    </select>
    
    <select id="selectWalkBallbyUuid" resultMap="walkBallMap">

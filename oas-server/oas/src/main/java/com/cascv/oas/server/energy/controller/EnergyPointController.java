@@ -21,6 +21,7 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
+import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
@@ -44,7 +45,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
 @Slf4j
-public class EnergyPointController extends BaseController{
+public class EnergyPointController extends BaseShiroController{
 
   @Autowired
   private ExchangeRateService exchangeRateService;
@@ -201,7 +202,7 @@ public class EnergyPointController extends BaseController{
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
     	BigDecimal stepNum;
-    	WalkBall walkBall = walkMapper.selectTodayWalkBall(userUuid, now);
+    	WalkBall walkBall = walkMapper.selectTodayWalkBall(userUuid);
     	if (walkBall == null) {
     		stepNum = BigDecimal.ZERO;
     	}else {
@@ -218,8 +219,8 @@ public class EnergyPointController extends BaseController{
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
         String[] nameArray = {"手机", "计步", "手表", "家电"};
-        Integer[] valueArray = {point.intValue(), stepNum.intValue(), 0, 0};
-        Integer[] maxValueArray = {maxPoint.intValue(), maxStepNum.intValue(), 20000, 20000};
+        BigDecimal[] valueArray = {point, stepNum, BigDecimal.ZERO, BigDecimal.ZERO};
+        BigDecimal[] maxValueArray = {maxPoint, maxStepNum, BigDecimal.ONE, BigDecimal.ONE};
 
         for (Integer i = 0; i < 4; i++) {
             EnergyPointCategory energyPointCategory = new EnergyPointCategory();
@@ -229,7 +230,6 @@ public class EnergyPointController extends BaseController{
             energyPointCategory.setMaxValue(maxValueArray[i]);
             energyPointCategoryList.add(energyPointCategory);
         }
-        log.info(JSON.toJSONString(energyPointCategoryList));
         return new ResponseEntity.Builder<List<EnergyPointCategory>>()
                 .setData(energyPointCategoryList)
                 .setErrorCode(ErrorCode.SUCCESS)
@@ -375,8 +375,8 @@ public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
         if (produced == null) {
           produced = BigDecimal.ZERO;
         }
-        currentPeriodEnergyPoint.setConsumedEnergyPoint(consumed.intValue());
-        currentPeriodEnergyPoint.setProducedEnergyPoint(produced.intValue());
+        currentPeriodEnergyPoint.setConsumedEnergyPoint(consumed);
+        currentPeriodEnergyPoint.setProducedEnergyPoint(produced);
 
         return new ResponseEntity.Builder<CurrentPeriodEnergyPoint>()
                 .setData(currentPeriodEnergyPoint)

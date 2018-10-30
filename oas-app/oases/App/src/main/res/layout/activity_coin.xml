@@ -74,7 +74,7 @@
             android:id="@+id/mBuyOas"
             android:layout_width="162dp"
             android:layout_height="wrap_content"
-            android:text="充币"
+            android:text="@string/withdraw_name"
             android:textColor="@color/common_white"
             android:background="@drawable/button_tb"
             />

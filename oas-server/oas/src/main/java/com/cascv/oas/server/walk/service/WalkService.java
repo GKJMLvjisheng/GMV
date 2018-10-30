@@ -219,11 +219,10 @@ public class WalkService {
 		if (StringUtils.isEmpty(userUuid)) {
             return null;
         }
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 		List<WalkBall> walkBallList = walkMapper
 				.selectWalkBall(userUuid, STATUS_OF_ACTIVE_ENERGYBALL);
-		WalkBall todayWalkBall = walkMapper.selectTodayWalkBall(userUuid, now);
-		if(todayWalkBall.getStatus() == 0) {
+		WalkBall todayWalkBall = walkMapper.selectTodayWalkBall(userUuid);
+		if(todayWalkBall != null && todayWalkBall.getStatus() == 0) {
 			walkBallList.add(todayWalkBall);
 		}
 		//如果没有球，则产生球
@@ -242,16 +241,15 @@ public class WalkService {
 					WalkBall newWalkBall = walkMapper.selectWalkBallbyUuid(uuid);
 					walkBallMap.put(quota.get(i).getDate(), newWalkBall);
 				}else{
-					if(quota.get(i).getDate().equals(now)) {
-						if(walkBallMap.get(now).getStatus() != 0) {
-							walkMapper.updateStepNumByCreated(userUuid, quota.get(i).getStepNum(), quota.get(i).getDate());
-							List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
-							stepNumQuotaList.add(quota.get(i));
-							walkMapper.updatePointByuuid(walkBallMap.get(now).getUuid(), this.getPoint(stepNumQuotaList, userUuid).get(0).getPoint());
-							walkBallMap.get(now).setStepNum(quota.get(i).getStepNum());
-							walkBallMap.put(now, walkBallMap.get(now));
-						}						
-					}
+					String date = quota.get(i).getDate();
+					if(walkBallMap.get(date).getStatus() != 0) {
+						walkMapper.updateStepNumByCreated(userUuid, quota.get(i).getStepNum(), date);
+						List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
+						stepNumQuotaList.add(quota.get(i));
+						walkMapper.updatePointByuuid(walkBallMap.get(date).getUuid(), this.getPoint(stepNumQuotaList, userUuid).get(0).getPoint());
+						walkBallMap.get(date).setStepNum(quota.get(i).getStepNum());
+						walkBallMap.put(date, walkBallMap.get(date));
+					}	
 				}
 			}
 		}
