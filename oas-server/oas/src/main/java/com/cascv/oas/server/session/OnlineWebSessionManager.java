@@ -84,7 +84,11 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
         String uri = httpRequest.getRequestURI();
         if(StringUtils.isEmpty(id)){
           Serializable ret = super.getSessionId(request, response);
-          log.info("{} has no 'token' and use {}", uri, ret.toString());
+          if (ret != null) {
+             log.info("{} has no 'token' and use {}", uri, ret.toString());
+          } else {
+             log.info("{} has no 'token' and use null", uri);
+          }
           return ret;
         }else{
        	  request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,REFERENCED_SESSION_ID_SOURCE);
