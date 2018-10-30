@@ -55,7 +55,7 @@ class ExchangeItemRecyclerViewAdapter(
 
                 if(type.equals("WALLET")){
 
-                    var extra = if(item2.extra==null || (item2.title?:"").indexOf("充币")!= -1)"" else "\n手续费：".plus( item2.extra!!.toBigDecimal().setScale(2,BigDecimal.ROUND_HALF_UP).toString())
+                    var extra = if(item2.extra==null || (item2.title?:"").indexOf(BaseConstant.WITHDRAW_NAME)!= -1 && item2.inOrOut==1)"" else "\n手续费：".plus( item2.extra!!.toBigDecimal().setScale(2,BigDecimal.ROUND_HALF_UP).toString())
                     if(item2.remark.isNullOrBlank()){
                         alertWindow("无备注".plus(extra),1,null,null)
                     }else{
