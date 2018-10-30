@@ -309,10 +309,10 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/setFirstOneUserBalance")
   @ResponseBody
   public ResponseEntity<?> setFirstOneUserBalance(@RequestBody UserWalletDetail detail) {
-	  if(detail == null || detail.getValue() == null) {
+	  if(detail == null || detail.getValue() == null || detail.getValue().compareTo(new BigDecimal("1000000000")) == 1) {
 		  return new ResponseEntity.Builder<Integer>()
 			        .setData(1)
-			        .setErrorCode(ErrorCode.FIRSTONE_NO_VALUE).build();
+			        .setErrorCode(ErrorCode.FIRSTONE_INPUT_NO_ILLEGAL).build();
 	  }
 	  return new ResponseEntity.Builder<Integer>()
 		        .setData(1)
