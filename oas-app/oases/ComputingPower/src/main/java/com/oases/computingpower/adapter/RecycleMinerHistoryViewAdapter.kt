@@ -50,7 +50,7 @@ class RecycleMinerHistoryViewAdapter(val mList:MutableList<MinerHistoryItem>)
             holder.mExchangeItemView.setTimeTextMoveDown()
             holder.mExchangeItemView.setOnClickListener {
                 if (subClickListener != null) {
-                    subClickListener!!.onTopicClickListener(mData.minerName,mData.minerPrice,mData.minerPower,mData.minerPeriod)
+                    subClickListener!!.onTopicClickListener(mData.minerName,mData.minerPrice,mData.minerPower,mData.period)
                 }
             }
         }
