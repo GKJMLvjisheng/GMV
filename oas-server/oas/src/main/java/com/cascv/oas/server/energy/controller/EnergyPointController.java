@@ -21,6 +21,7 @@ import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
+import com.cascv.oas.server.shiro.BaseShiroController;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 import com.cascv.oas.server.walk.mapper.WalkMapper;
@@ -44,7 +45,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/v1/energyPoint")
 @Slf4j
-public class EnergyPointController extends BaseController{
+public class EnergyPointController extends BaseShiroController{
 
   @Autowired
   private ExchangeRateService exchangeRateService;
