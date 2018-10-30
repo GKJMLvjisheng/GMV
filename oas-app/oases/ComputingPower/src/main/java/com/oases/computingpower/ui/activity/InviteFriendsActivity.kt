@@ -33,7 +33,7 @@ class InviteFriendsActivity : BaseMvpActivity<InviteFriendsInfoPresenter>(), Inv
 
 
     private lateinit var mTempFile:File
-    private var upLoadAppUrl = AppPrefsUtils.getString(BaseConstant.PACKAGE_URL)
+    //private var upLoadAppUrl = AppPrefsUtils.getString(BaseConstant.PACKAGE_URL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,24 +45,24 @@ class InviteFriendsActivity : BaseMvpActivity<InviteFriendsInfoPresenter>(), Inv
 
         mPresenter.getInviteFriendsInfo()
         mInviteNumberTv.text = AppPrefsUtils.getString(BaseConstant.USER_INVITE_CODE)
-        generateQrCode()
+        //generateQrCode()
         mHeadBar.onClickRightTv {
             requestPermission()
         }
     }
 
-    //生成二维码图片
+    /*//生成二维码图片
     private fun generateQrCode(){
         val contentEtString:String = upLoadAppUrl
 
         var bitmap: Bitmap? = null
         try {
-            /*
+            *//*
                     * contentEtString：字符串内容
                     * w：图片的宽
                     * h：图片的高
                     * logo：不需要logo的话直接传null
-                    * */
+                    * *//*
 
             //val logo = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
             val wm = this.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -81,7 +81,7 @@ class InviteFriendsActivity : BaseMvpActivity<InviteFriendsInfoPresenter>(), Inv
         } catch (e: WriterException) {
             e.printStackTrace()
         }
-    }
+    }*/
 
     //创建路径存放图片
     private fun createTempFile(){

@@ -22,7 +22,7 @@
     <string name="error_password_is_not_equal">确认密码和密码不一致</string>
     <string name="error_field_required">不能为空</string>
     <string name="security_reminder">【安全提示】请抄好12个助忆词， 您只可以用这些单词恢复账户！一旦丢失，资产将无法找回！一旦泄露，资产将会被盗！</string>
-    <string name="error_username_incorrect">账户名必须为英文大小写加数字，不允许空字符</string>
+    <string name="error_username_incorrect">账户名必须为小写英文字母或数字</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

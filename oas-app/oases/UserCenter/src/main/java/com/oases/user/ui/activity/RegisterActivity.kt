@@ -78,7 +78,7 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
             mNameEt.requestFocus()
             return false
         }
-        if(!regularExpressionValidate(userName,BaseConstant.ENGLISH_NUMBER)){
+        if(!regularExpressionValidate(userName,BaseConstant.SMALL_ENGLISH_NUMBER)){
             mNameEt.setError(getString(R.string.error_username_incorrect))
             mNameEt.requestFocus()
             return false

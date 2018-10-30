@@ -432,12 +432,16 @@ function resetMoney(){
 	
 	var remark=$("#remarks").val();
 	var firstMoney=$("#firstMoney").val();
-	if(firstMoney==0){
-		alert("请输入金额");
+	if(firstMoney===""||!validate(firstMoney)){
+		alert("请输入正确的金额数");
 		return;
 	}
 	if(remark===""){
 		alert("请输入备注");
+		return;
+	}
+	if(firstMoney>1000000000){
+		alert("金额不能超过10亿");
 		return;
 	}
 	data={"value":firstMoney,
@@ -455,14 +459,37 @@ function resetMoney(){
 			 
 		     if (res.code == 0) {
 		    	 alert("重置金额成功！");
+		    	 resetAddModal();
+		    	 firstOneDetail();
 		    	 
 		     } else {
 		    	 alert(res.message);
 		     }
 		   },
 		   error: function (res) {
-			  alert("option错误"+JSON.stringify(res));
+			  alert(res.message);
 		   },
 		  
 		  });
+}
+function resetAddModal(){
+	document.getElementById("addfirstOneForm").reset();
+	//document.getElementById("updateActivityRewardForm").reset();
+	$("#addfirstOneForm").find('textarea,input[type=text],select').each(function() {
+		alert(1)
+        		$(this).val('');
+        		$(this).html('');
+    });
+	//$("span[id='msg_parameterValue']").html("");
+	
+ }
+function validate(num)
+{
+
+	var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
+  //var reg=/^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/;//不包括0
+  if(reg.test(num)){
+	 
+	  return true;}
+  return false ;  
 }

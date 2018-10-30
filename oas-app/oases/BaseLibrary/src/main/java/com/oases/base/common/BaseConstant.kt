@@ -60,8 +60,10 @@ class BaseConstant{
         /*正则表达式*/
         //大于0的整数小数
         const val  POSITIVE_NUMER = "^([1-9][0-9]*)+(.[0-9]*)?$"
-        //英文和数字
+        //大小寫英文和数字
         const val ENGLISH_NUMBER = "^[A-Za-z0-9]+$"
+        //大小寫英文和数字
+        const val SMALL_ENGLISH_NUMBER = "^[a-z0-9]+$"
         //数字小数点后面最多四位
         const val NUMBER_POINT_FOUR ="^((([1-9][0-9]*)+)|(0{1}))(.[0-9]{0,4})?$"//"^\\d+(\\.\\d{1,4})?$"
 

@@ -110,14 +110,16 @@ function roleConfirm(){
 				document.getElementById("tipContent").innerText="授权过程完成";
 				$("#Tip").modal('show');
 				if(roleId1==2){
-					var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
-					$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新正常账号当前页
-					initTestGrid();				
+					initTestGrid();	
+					var pageNumber4 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+					$("#normalGrid").bootstrapTable('selectPage',pageNumber4);  //刷新正常账号当前页
+								
 					
 				}else if(roleId1==3){
-					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
-					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新测试账号当前页
-					initNormalGrid();			
+					initNormalGrid();	
+					var pageNumber5 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+					$("#testGrid").bootstrapTable('selectPage',pageNumber5);  //刷新测试账号当前页
+							
 					
 				}
 											
@@ -180,12 +182,12 @@ function changeStatus(){
 				$("#Tip").modal('show');
 				
 				if(roleId2==2){
-					var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
-					$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新正常账号当前页
+					var pageNumber6 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+					$("#normalGrid").bootstrapTable('selectPage',pageNumber6);  //刷新正常账号当前页
 					
 				}else if(roleId2==3){
-					var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
-					$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新测试账号当前页					
+					var pageNumber7 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+					$("#testGrid").bootstrapTable('selectPage',pageNumber7);  //刷新测试账号当前页					
 				}
 						
 			}else{
