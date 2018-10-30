@@ -5,7 +5,6 @@ import com.oases.R
 import com.oases.base.common.BaseConstant
 import com.oases.base.ui.activity.BaseActivity
 import com.oases.base.utils.AppPrefsUtils
-import kotlinx.android.synthetic.main.activity_wallet_in.*
 import com.google.zxing.WriterException
 import com.yzq.zxinglibrary.encode.CodeCreator
 import android.graphics.Bitmap
@@ -17,10 +16,11 @@ import com.oases.base.ext.onClick
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import kotlinx.android.synthetic.main.activity_wallet_exchange_in.*
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
-
+import org.jetbrains.anko.toast
 
 
 class ExchangeInActivity: BaseActivity() {
@@ -45,19 +45,21 @@ class ExchangeInActivity: BaseActivity() {
             startActivity(intentFor<ExchangeOutActivity>().singleTop().clearTop())
         })
 
-
-        mCopyBtn.onClick {
+       mCopyBtn.onClick {
+            //Toast.makeText(this,"已复制到剪贴板",Toast.LENGTH_SHORT)
             //获取剪贴板管理器：
             val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             // 创建普通字符型ClipData
             val mClipData = ClipData.newPlainText("Label",address )//mWalletInSend.getRightTopText().toString()
             // 将ClipData内容放到系统剪贴板里。
-            if(cm!=null){
-                cm.setPrimaryClip(mClipData)
-            }
+            cm.setPrimaryClip(mClipData)
+            toast("已复制到剪贴板")
         }
 
+
+
     }
+
 
     fun modifyAddressInfo(str:String):String{
         var result :String= ""
