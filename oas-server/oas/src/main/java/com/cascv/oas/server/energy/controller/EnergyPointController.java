@@ -201,7 +201,7 @@ public class EnergyPointController extends BaseController{
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
     	BigDecimal stepNum;
-    	WalkBall walkBall = walkMapper.selectTodayWalkBall(userUuid, now);
+    	WalkBall walkBall = walkMapper.selectTodayWalkBall(userUuid);
     	if (walkBall == null) {
     		stepNum = BigDecimal.ZERO;
     	}else {
