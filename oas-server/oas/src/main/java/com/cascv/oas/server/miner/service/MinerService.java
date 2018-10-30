@@ -182,6 +182,7 @@ public class MinerService {
 			purchaseRecord.setUserUuid(purchaseRecordList.get(i).getUserUuid());
 			purchaseRecord.setUuid(purchaseRecordList.get(i).getUuid());
 			purchaseRecord.setEnergyBallUuid(purchaseRecordList.get(i).getEnergyBallUuid());
+			purchaseRecord.setPeriod(purchaseRecordList.get(i).getMinerPeriod());
 			String srcFormater="yyyy-MM-dd HH:mm:ss";
 		    String dstFormater="yyyy-MM-dd HH:mm:ss";
 			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();

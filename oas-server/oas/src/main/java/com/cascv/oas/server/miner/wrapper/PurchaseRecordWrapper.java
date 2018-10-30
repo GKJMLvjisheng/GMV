@@ -23,5 +23,6 @@ public class PurchaseRecordWrapper implements Serializable {
 	@Getter @Setter private String minerEndTime;
 	@Getter @Setter private Integer minerNum;
 	@Getter @Setter private BigDecimal priceSum;
+	@Getter @Setter private Integer period;
 
 }
