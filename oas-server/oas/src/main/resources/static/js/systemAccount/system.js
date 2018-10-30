@@ -1,9 +1,7 @@
 document.write("<script language=javascript src='/js/wallet/energyWalletTable.js'></script>");
 $(function() {
 	initonlineWalletGrid();
-	tradeWalletGrid();
-	getSystemDetail();
-	firstOneDetail();
+	
 	
 });
 var pageSize;
@@ -138,7 +136,7 @@ function actionFormatter2(value, row, index) {
 function systemTransactionDetailHandle(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
-        alert("能量钱包回显失败，错误代码:" + code);
+        alert("system账户在线钱包回显失败，错误代码:" + code);
         return;
     }
     $("#systemUserWallet").text(res.data.rows.value);
@@ -249,7 +247,7 @@ function tradeWalletGrid() {
 function systemTransactionDetailHandle2(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
-        alert("积分大户Top榜回显失败，错误代码:" + code);
+        alert("system账户交易钱包回显失败，错误代码:" + code);
         return;
     }
     $("#systemEthWallet").text(res.data.rows.value);
@@ -361,10 +359,10 @@ function firstOneDetail() {
 function firstoneTransactionDetailHandle(res){
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
-        alert("积分大户Top榜回显失败，错误代码:" + code);
+        alert("firstone账户交易回显失败，错误代码:" + code);
         return;
     }
-    //$("#systemEthWallet").text(res.data.rows.value);
+    $("#firstValue").text(res.data.rows.value);
     //如果没有错误则返回数据，渲染表格
     return {
         total : res.data.total, //总页数,前面的key必须为"total"
@@ -388,6 +386,8 @@ function display2(){
 	$('#btn2').removeClass('active1').addClass('active');
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn3').removeClass('active').addClass('active1');
+	tradeWalletGrid();
+	getSystemDetail();
 	
 }
 function display3(){
@@ -397,6 +397,7 @@ function display3(){
 	$('#btn3').removeClass('active1').addClass('active');
 	$('#btn2').removeClass('active').addClass('active1');
 	$('#btn1').removeClass('active').addClass('active1');
+	firstOneDetail();
 	
 }
 function getSystemDetail(){
