@@ -159,7 +159,7 @@ class ExchangeItemRecyclerViewAdapter(
                 val title = item.title?:""
                 //holder.mExchangeItemView.setLeftTopText(title.plus(if(item.title.equals("提币") || item.title.equals("充币")) status else "" ))
                 holder.mExchangeItemView.setLeftBottomText(item.created?:"")
-                holder.mExchangeItemView.setRightTopText((if (item.inOrOut==0) "-" else if(item.inOrOut==3) "" else "+").plus(item.value?.setScale(5,BigDecimal.ROUND_HALF_UP).toString()))
+                holder.mExchangeItemView.setRightTopText((if (item.inOrOut==0) "-" else if(item.inOrOut==2) "" else "+").plus(item.value?.setScale(5,BigDecimal.ROUND_HALF_UP).toString()))
                 // holder.mExchangeItemView.setRightBottomText(item.subTitle.plus(item.comment).toString())
                 holder.mExchangeItemView.setRightTopTextColor()
                // var changeUserName: String?
