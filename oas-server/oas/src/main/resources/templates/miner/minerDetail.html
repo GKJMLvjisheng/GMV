@@ -53,13 +53,18 @@
 	</div> 
 
 	<div id="page1" class="container">
-		<input class="form" id="miner1" required="required" placeholder="搜索" oninput="initPurchaseDetailGrid(event)"/>
+		<input class="form" id="miner" required="required" placeholder="按用户名搜索" oninput="initPurchaseDetailGrid(event)"/>
 		<table id="purchaseDetailGrid"></table>
 	</div> 
 	
 
 	<div id="page2" class="container" style="display:none">
-		<input class="form" id="miner2" required="required" placeholder="搜索" oninput="initMinerSellGrid(event)"/>		 		  
+	
+		<div style="margin-top:15px;margin-bottom:-10px;text-align:center;">
+			<label>矿机销售总数量：</label>
+			<span id="minerAccount"></span>
+		</div>
+			 		  
 		<table id="minerSellGrid"></table>
 	</div>
 	
