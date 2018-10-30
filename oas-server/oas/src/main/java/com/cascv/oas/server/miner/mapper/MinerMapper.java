@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.model.SystemParameterModel;
+import com.cascv.oas.server.miner.wrapper.AccountTypeMiner;
 
 
 @Component
@@ -42,6 +43,13 @@ public interface MinerMapper {
 	List<PurchaseRecord> selectByuserUuidMinerStatus(@Param("userUuid") String userUuid);
 	List<String> selectUserUuidByMinerStatus();
 	List<PurchaseRecord> selectByMinerStatus(@Param("userUuid") String userUuid);
+	
+	Integer inquireSumMinerNum();
+	List<AccountTypeMiner> inquireTypeMinerNum();
+	
+	List<PurchaseRecord> selectUserPurchaseRecord(@Param("searchValue") String searchValue,
+			@Param("offset") Integer offset, @Param("limit") Integer limit);
+	Integer countBySearchValue(@Param("searchValue") String searchValue);
 	
 	PurchaseRecord selectByUuid(@Param("uuid") String uuid);
 	Integer updateStatusByUuid(@Param("uuid") String uuid);

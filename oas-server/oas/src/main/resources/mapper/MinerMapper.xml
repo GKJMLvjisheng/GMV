@@ -175,6 +175,32 @@
         select <include refid="purchase_record_List" /> from purchase_record 
         where user_uuid=#{userUuid}
     </select>
+    
+    <select id="selectUserPurchaseRecord" resultMap="purchaseRecordMap">
+        select
+           u.miner_name, u.miner_num, u.created, p.name
+        from purchase_record u left join user_info p on u.user_uuid = p.uuid
+           <if test="searchValue != null and searchValue !='' ">
+    		where p.name like concat('%',#{searchValue},'%')
+           </if>
+        order by u.created desc
+        limit #{offset}, #{limit}           
+    </select>
+    
+    <select id="countBySearchValue" resultType="java.lang.Integer">
+        select count(*) from purchase_record u left join user_info p on u.user_uuid = p.uuid
+            <if test="searchValue != null and searchValue !='' ">
+    		   where p.name like concat('%',#{searchValue},'%')
+            </if>
+    </select>
+    
+    <select id="inquireSumMinerNum" resultType="java.lang.Integer">
+        select sum(miner_num) from purchase_record
+    </select>
+    
+    <select id="inquireTypeMinerNum" resultType="com.cascv.oas.server.miner.wrapper.AccountTypeMiner">
+        select sum(miner_num) as minerNum ,miner_name as minerName from purchase_record group by miner_name
+    </select>
 
      <select id="selectByMinerPurchaseStatus" resultMap="purchaseRecordMap">
       select <include refid="purchase_record_List" /> from purchase_record 
