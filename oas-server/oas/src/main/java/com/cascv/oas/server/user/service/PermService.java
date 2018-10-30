@@ -61,11 +61,8 @@ public class PermService {
         for(int i=0;i<rmList.size();i++){
     		@SuppressWarnings("unused")
 			String perm=rmList.get(i).getMenuName();
-        	if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==5){
-        		perm="交易钱包-转账";
-        	}else if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==8){
-        		perm="在线钱包-转账";
-        	}       	
+        	if(rmList.get(i).getMenuName().equals("转账")&&rmList.get(i).getMenuParentId()==5)
+        		perm="交易钱包-转账";   	
         	perms.add(perm);
         	log.info("perm={}",perm);
         }
