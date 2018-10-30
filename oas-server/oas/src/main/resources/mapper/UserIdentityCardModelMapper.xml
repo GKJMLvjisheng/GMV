@@ -60,6 +60,16 @@
  where
  		user_name = #{userName} order by created desc;
   </select>
+  
+   <select id="selectFinishUserIdentityByUserName" resultMap="userIdentityCardModelMap">
+ select 
+ 		<include refid="Base_Column_List" /> 	  
+ from 
+ 		identity_card_info 
+ where
+ 		user_name = #{userName} and verify_status=2;
+  </select>
+  
    <select id="selectUserIdentityByUserNameVerifyStatus" resultMap="userIdentityCardModelMap">
  select 
  		<include refid="Base_Column_List" /> 	  

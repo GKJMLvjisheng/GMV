@@ -27,6 +27,7 @@ public interface UserIdentityCardModelMapper {
 	Integer countBySearchValue(@Param("searchValue") String searchValue);
 	
 	List<UserIdentityCardModel> selectUserIdentityByUserName(@Param("userName") String userName);
+	UserIdentityCardModel selectFinishUserIdentityByUserName(@Param("userName") String userName);//选择已经完成认证的用户信息
 	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatus(@Param("userName") String userName);
 	UserIdentityCardModel selectUserByIdentityNumber(@Param("userIdentityNumber") String userIdentityNumber);
 	
