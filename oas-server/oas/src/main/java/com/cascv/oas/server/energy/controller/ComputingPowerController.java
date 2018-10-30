@@ -36,6 +36,7 @@ import com.cascv.oas.server.energy.vo.EnergyPowerChangeDetail;
 import com.cascv.oas.server.energy.vo.PowerTradeRecordDetail;
 import com.cascv.oas.server.energy.vo.QueryInvitePowerInfo;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -68,7 +69,8 @@ public class ComputingPowerController {
 	 private PowerTradeRecordDetailMapper powerTradeRecordDetailMapper;
 	@Autowired
 	private EnergySourcePowerMapper energySourcePowerMapper;
-	
+	@Autowired
+    private UserModelMapper userModelMapper;
 	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 7;
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   	
 	@PostMapping(value = "/inquirePowerActivityStatus")
@@ -88,18 +90,18 @@ public class ComputingPowerController {
     public ResponseEntity<?> inqureInviteStatistical() {
 		UserModel userModel=ShiroUtils.getUser();
 		QueryInvitePowerInfo queryInvitePowerInfo=new QueryInvitePowerInfo();
-		Integer SumUserInvited,SumPowerPromoted;
-		String userUuid=userModel.getUuid();//算力提升用户Uuid
-		Integer powerSource=9;//好友分享方式为9
-		SumUserInvited=0;
-		SumPowerPromoted=energyBallMapper.countByUserUuidAndPowerSource(userUuid, powerSource);
+		String userUuid=userModel.getUuid();//当前登录用户
+		Integer inviteCode=userModel.getInviteCode();
+		Integer SumUserInvited=userModelMapper.userInvitedCountTotal(inviteCode);//邀请好友总数;
+		BigDecimal SumIn=powerTradeRecordDetailMapper.sumInPointByPromoted(userUuid);
+		BigDecimal SumOut=powerTradeRecordDetailMapper.sumOutPointByPromoted(userUuid);
+		if(SumIn == null)
+			SumIn=BigDecimal.ZERO;
+		if(SumOut == null)
+			SumOut=BigDecimal.ZERO;
+		BigDecimal SumPowerPromoted=SumIn.subtract(SumOut);
 		queryInvitePowerInfo.setSumUserInvited(SumUserInvited);
-		if(SumPowerPromoted!=null) {
 		queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
-		}else {
-			SumPowerPromoted=0;
-			queryInvitePowerInfo.setSumPowerPromoted(SumPowerPromoted);
-		}
 		return new ResponseEntity.Builder<QueryInvitePowerInfo>()
                 .setData(queryInvitePowerInfo)
                 .setErrorCode(ErrorCode.SUCCESS)

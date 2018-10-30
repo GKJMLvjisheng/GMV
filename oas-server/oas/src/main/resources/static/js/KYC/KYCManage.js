@@ -183,3 +183,23 @@ function agree(id){
 		alert("请输入姓名、身份证号！")
 	}				
 }
+
+function rowStyle(row, index) {
+	var classes = ['active', 'success', 'info', 'warning', 'danger']; 
+	var status = row.verifyStatus;
+	var style = "";    
+	
+	if(status==1){
+		 style='info'; 
+		 return { classes: style };
+		
+	}else if(status==2){
+		 style='warning';  
+		 return { classes: style };
+		
+	}else if(status==3){
+		 style='active';
+		 return { classes: style };
+		
+	}                          
+}

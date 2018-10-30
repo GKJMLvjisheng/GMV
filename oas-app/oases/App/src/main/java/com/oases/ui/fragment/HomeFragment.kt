@@ -35,6 +35,7 @@ import com.oases.base.ui.fragment.BaseMvpFragment
 import com.oases.base.utils.DateUtils.DATE_FORMAT
 import com.oases.base.utils.DateUtils.getDaysBetweenDates
 import com.oases.base.utils.DateUtils.getNow
+import com.oases.computingpower.ui.activity.BuyingMinerActivity
 import com.oases.data.protocol.WalkPoint.InquireWalkPointReq
 import com.oases.data.protocol.WalkPoint.InquireWalkPointResp
 import com.oases.data.protocol.WalkPoint.StepItem
@@ -261,6 +262,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
             return AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
         }
 
+        //点击首页提升算力图标，进入提升算力界面
         @JavascriptInterface
         fun startLiftComputingPower(){
             mHandler.post{
@@ -268,6 +270,18 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                     context.startActivity<ComputingPowerMainActivity>()
                 } catch (e: Exception) {
                   //  Toast.makeText(this, "对不起，跳转页面出现异常", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        //点击首页购买矿机图标，跳入购买矿机页面
+        @JavascriptInterface
+        fun startLiftBuyingMiner(){
+            mHandler.post{
+                try {
+                    context.startActivity<BuyingMinerActivity>()
+                } catch (e: Exception) {
+                    //  Toast.makeText(this, "对不起，跳转页面出现异常", Toast.LENGTH_SHORT).show()
                 }
             }
         }

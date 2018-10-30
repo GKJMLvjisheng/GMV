@@ -37,13 +37,14 @@ public interface UserWalletDetailMapper {
   Integer updateByOasDetailUuid(@Param("txResult")Integer txResult,@Param("oasDetailUuid") String oasDetailUuid,@Param("restBalance") BigDecimal restBalance,@Param("inOrOut")Integer inOrOut);
 
   /**
-   * 获取system的交易记录分页
+   * 获取name的交易记录分页(system firstone)
    * @return
    */
-  List<UserWalletDetail> getSystemDetailByPage(@Param("offset") Integer offset,@Param("limit") Integer limit);
+  List<UserWalletDetail> getSystemDetailByPage(@Param("offset") Integer offset,@Param("limit") Integer limit,@Param("name")String name);
   /**
-   * 获取system记录总数
+   * 获取name记录总数
    * @return
    */
-  Integer getSystemDetailCount();
+  Integer getSystemDetailCount(@Param("name")String name);
+
 }

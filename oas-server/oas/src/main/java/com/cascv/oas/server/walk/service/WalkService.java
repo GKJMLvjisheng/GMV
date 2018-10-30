@@ -222,8 +222,8 @@ public class WalkService {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 		List<WalkBall> walkBallList = walkMapper
 				.selectWalkBall(userUuid, STATUS_OF_ACTIVE_ENERGYBALL);
-		WalkBall todayWalkBall = walkMapper.selectTodayWalkBall(userUuid, now);
-		if(todayWalkBall.getStatus() == 0) {
+		WalkBall todayWalkBall = walkMapper.selectTodayWalkBall(userUuid);
+		if(todayWalkBall != null && todayWalkBall.getStatus() == 0) {
 			walkBallList.add(todayWalkBall);
 		}
 		//如果没有球，则产生球

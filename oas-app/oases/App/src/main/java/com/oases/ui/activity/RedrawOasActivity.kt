@@ -114,9 +114,9 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
         }
     }
     override fun withdraw(t: Int) {
-        var text = "提币请求提交失败！"
+        var text = "在线钱包划转请求提交失败！"
         if(t==1){
-            text ="提币请求提交成功！"
+            text ="在线钱包划转请求提交成功！"
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
             startActivity(intentFor<MainActivity>().singleTop().clearTop())
             finish()

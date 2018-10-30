@@ -150,6 +150,11 @@
    select * from user_info
    where name = 'ADMIN' limit 1
   </select>
+  
+  <select id="getFirstOneUserInfo" resultType="com.cascv.oas.server.user.model.UserModel">
+   select * from user_info
+   where name = 'FIRSTONE' limit 1
+  </select>
 
    <update id="updateRecordByHash" parameterType="com.cascv.oas.server.blockchain.model.OasDetail" >
     update oas_detail

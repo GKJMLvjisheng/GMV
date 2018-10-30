@@ -102,8 +102,6 @@ public class UserWalletService {
 	      break;
 	  case 6:
 		  log.info("购买矿机");
-		  log.info("comment={}", comment);
-		  log.info("subtitle={}", userWalletDetailScope.getSubTitle()+comment);
 		  userWalletDetail.setSubTitle(userWalletDetailScope.getSubTitle()+comment);
 		  userWalletDetail.setTxResult(1);
 		  break;
@@ -364,7 +362,7 @@ public class UserWalletService {
 		  return oasDetailMapper.setWithdrawResultByUuid(uuid,result,now,hash)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
 	  }else {
 		  return ErrorCode.SYSTEM_NOT_EXIST;
-	  }
+	  } 
   }
   //提币失败，待交易金额退回代币，手续费从system退回
   private ErrorCode errorOperate(UserWallet userWallet,UserWallet systemWallet,BigDecimal value,BigDecimal extra,OasDetail detail,String now,UserModel user) {
@@ -399,6 +397,20 @@ public class UserWalletService {
   public ErrorCode updateOasExtra(String value) {
 	  String now = DateUtils.getTime();
 	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
+  }
+  
+  public ErrorCode setFirstOneUserBalance(UserWalletDetail detail) {
+	  UserModel firstOne = oasDetailMapper.getFirstOneUserInfo();
+	  if(firstOne ==null) {
+		  return ErrorCode.FIRSTONE_NOT_EXIST;
+	  }
+	  userWalletMapper.changeBalanceAndUnconfimed(firstOne.getUuid(), detail.getValue(), null, DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS));
+	  UserWallet firstOneWallet = userWalletMapper.getFirstOneWallet();
+	  if(firstOneWallet == null) {
+		  return ErrorCode.NO_ONLINE_ACCOUNT;
+	  }
+	  userWalletDetailMapper.insertSelective(setDetail(firstOneWallet,"",UserWalletDetailScope.FIRSTONE_UPDATE,detail.getValue(),detail.getRemark(),detail.getRemark(),null,firstOneWallet.getBalance()));
+	  return ErrorCode.SUCCESS;
   }
   
   public void insertSystemInit(BigDecimal value) {

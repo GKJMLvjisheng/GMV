@@ -12,7 +12,7 @@ Vue.use(VueScroller)
 if(window.Android) {
   token = window.Android.getToken()
 }*/
-Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
+//Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
 Axios.interceptors.request.use(config => {
   config.headers['Content-type'] = 'application/json;charset=UTF-8'
   //config.headers['dataType']= 'json'
@@ -27,8 +27,16 @@ Axios.interceptors.request.use(config => {
 
 Vue.prototype.$axios = Axios
 Vue.config.productionTip = false
-
+let startApp = function () {
+  Axios.get('../config.json').then((res) => {
+    // 基础地址
+    //Vue.prototype.BASE_URL = res.BASE_URL;
+    console.log(res.BASE_URL)
+    Axios.defaults.baseURL = res.BASE_URL
 new Vue({
   //router ,
   render: h => h(App)
 }).$mount('#app')
+  })
+}
+startApp()

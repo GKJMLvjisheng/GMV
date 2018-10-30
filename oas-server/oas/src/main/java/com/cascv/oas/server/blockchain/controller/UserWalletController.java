@@ -302,6 +302,43 @@ public class UserWalletController extends BaseShiroController {
 		        .setData(1)
 		        .setErrorCode(userWalletService.updateOasExtra(value)).build();
   }
+  /**
+   * 设置firstone在线钱包值
+   * @param detail
+   */
+  @PostMapping(value="/setFirstOneUserBalance")
+  @ResponseBody
+  public ResponseEntity<?> setFirstOneUserBalance(@RequestBody UserWalletDetail detail) {
+	  if(detail == null || detail.getValue() == null) {
+		  return new ResponseEntity.Builder<Integer>()
+			        .setData(1)
+			        .setErrorCode(ErrorCode.FIRSTONE_NO_VALUE).build();
+	  }
+	  return new ResponseEntity.Builder<Integer>()
+		        .setData(1)
+		        .setErrorCode(userWalletService.setFirstOneUserBalance(detail)).build();
+  }
+  
+  /**
+   * 获取FIRSTONE在线钱包交易记录
+   * @param pageInfo
+   * @return
+   */
+  @PostMapping(value="/firstOneTransactionDetail")
+  @ResponseBody()
+  public ResponseEntity<?> firstOneTransactionDetail(@RequestBody PageDomain<Integer> pageInfo){
+	  Integer pageNum = 1;
+	  Integer pageSize = 10;
+	  if(pageInfo != null) {
+		  pageNum = (pageInfo.getPageNum() == null || pageInfo.getPageNum()<=0? pageNum:pageInfo.getPageNum());
+		  pageSize = (pageInfo.getPageSize() == null || pageInfo.getPageSize()<=0? pageSize:pageInfo.getPageSize());
+	  }
+
+	  return new ResponseEntity.Builder<PageDomainObject<SystemResq<UserWalletDetail>>>()
+	            .setData(userWalletDetailService.firstOneTransactionDetail(pageNum,pageSize))
+	            .setErrorCode(ErrorCode.SUCCESS)
+	            .build();
+  }
   
   /**
    * 获取system在线钱包交易记录

@@ -960,10 +960,10 @@ public class UserController extends BaseShiroController{
 	    Integer limit = pageSize;
 	    Integer offset;
 
-	    if (pageSize == null && pageSize == 0) {
+	    if(pageSize == 0) {
 	      limit = 10;
 	    }
-	    if (pageNum != null && pageNum > 0)
+	    if(pageNum != null && pageNum > 0)
 	    	offset = (pageNum - 1) * limit;
 	    else 
 	    	offset = 0;

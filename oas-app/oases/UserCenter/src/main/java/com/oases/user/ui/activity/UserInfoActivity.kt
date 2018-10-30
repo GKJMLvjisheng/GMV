@@ -7,6 +7,8 @@ import android.app.FragmentManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -57,6 +59,7 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
     private lateinit var mCompressFile:File
     private lateinit var mFinalTempFileName:String
     private var serverAddress:String = ""
+    var bitmap:Bitmap? =null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -257,7 +260,18 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         mTakePhoto.onActivityResult(requestCode,resultCode,data)
+       // bitmap = data!!.getParcelableExtra<Bitmap>("data")
+
     }
+
+  /*  private fun xuanzhuan(){
+        var matrix:Matrix =Matrix() //旋转图片 动作
+        matrix.setRotate(90.toFloat())//旋转角度
+        var width = bitmap!!.getWidth()
+        var height = bitmap!!.getHeight(); // 创建新的图片
+        var resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true)
+        mUserIconIv.setImageBitmap(resizedBitmap)
+    }*/
 
     //获取相机权限
     fun requestPermission() {
