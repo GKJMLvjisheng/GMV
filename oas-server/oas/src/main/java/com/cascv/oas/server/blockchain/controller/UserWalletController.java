@@ -214,7 +214,7 @@ public class UserWalletController extends BaseShiroController {
    */
   
   @PostMapping(value="/withdraw")
-  @RequiresPermissions("划转")
+  @RequiresPermissions("在线钱包-划转")
   @ResponseBody
   @Transactional
   @WriteLog(value="withdraw")
