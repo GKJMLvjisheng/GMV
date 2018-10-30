@@ -109,6 +109,11 @@ public class RootController {
 	  public String minerParam() {
 	  	    return "miner/minerParameter";  
 	  	    }
+	//矿机明细
+	  @GetMapping("/miner/minerDetail")
+	  public String minerDetail() {
+	  	    return "miner/minerDetail"; 
+	  	    }
 	//用户账号管理
 	  @GetMapping("/userAccountManage")
 	  public String userAccountManage() {
