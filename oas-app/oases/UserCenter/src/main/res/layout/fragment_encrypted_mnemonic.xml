@@ -11,10 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:text="angel angel angel angel angel\nangel angel angel angel angel\nangel angel angel angel angel"
+        android:layout_marginTop="40dp"
+        android:text="加密助记词正在发开，敬请期待！"
         android:textColor="@color/common_green"
-        android:textSize="18dp"/>
+        android:textSize="15dp"/>
     <TextView
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="120dp"
         android:textSize="15dp"
-        android:text="请复制粘贴加密助记词文件到安全、离线的地方保存。切勿保存至邮箱、记事本、网盘、聊天工具等，非常危险。"/>
+        android:text="请将加密助记词文件保存到安全、离线的地方。切勿保存至邮箱、记事本、网盘、聊天工具等，非常危险。"/>
 
     <TextView
         android:layout_width="300dp"
@@ -75,14 +75,13 @@
             android:layout_alignBottom="@+id/mEncryptUri"
             android:layout_centerHorizontal="true"
             android:background="@drawable/bg_uriborder"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"/>
         <TextView
             android:id="@+id/mEncryptUri"
             android:layout_width="260dp"
             android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:gravity="center"
-            android:text="/OASDapp/eee_encrypt_seed.text"
             android:textSize="15dp" />
     </RelativeLayout>
     <Button

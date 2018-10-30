@@ -159,7 +159,7 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
             } else {
                 mOasHead.visibility = View.VISIBLE
                 mToolbar.visibility  = View.GONE
-
+                tipHideFun()
             }
         }
         return rootFragment
@@ -348,15 +348,18 @@ class WalletOnLineFragment : BaseMvpFragment<OnLineWalletPresenter>(), OnLineWal
             mBottomShow.setVisible(true)
             loadFlag = false;
 
-            var mHandler: Handler = Handler()
-            mHandler.postDelayed(object :Runnable{
-                override fun run() {
-                    mBottomShow.setVisible(false)
-                }
-            },BaseConstant.LOADING_STAY_TIME.toLong())
+            tipHideFun()
 
         }
 
+    }
+    private fun tipHideFun(){
+        var mHandler: Handler = Handler()
+        mHandler.postDelayed(object :Runnable{
+            override fun run() {
+                mBottomShow.setVisible(false)
+            }
+        },BaseConstant.LOADING_STAY_TIME.toLong())
     }
 
     override fun onGetTransactionMoreDeails(list: InquirePointsDetailResp){

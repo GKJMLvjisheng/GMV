@@ -252,7 +252,7 @@ public class UserWalletService {
 	  //TODO 提币插入在线钱包交易记录，将oasId插入在线钱包明细表
 	  userWalletDetailMapper.insertSelective(setDetail(userWallet, "", UserWalletDetailScope.COIN_TO_ETH, oasDetail.getValue(), oasDetail.getRemark(), oasDetail.getRemark(),oasUuid,value));
 	  
-	  UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
+	 /* UserModel adminInfo = oasDetailMapper.getAdminUserInfo();
 	  if(adminInfo!=null && adminInfo.getMobile()!=null) {
 		  String mobile = "+86".concat(adminInfo.getMobile());
 		  String SIGNNAME = "OASESCHAIN";
@@ -264,7 +264,7 @@ public class UserWalletService {
 		  }
 	  }else {
 		  log.info("管理员用户不存在或未设置电话");
-	  }
+	  }*/
 	  return ErrorCode.SUCCESS;
   }
   

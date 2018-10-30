@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="200dp"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical">
+    <View
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:textSize="10dp" />
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_marginLeft="50dp"
+        android:text="矿机详细信息："
+        android:textColor="@color/common_black"
+        android:textSize="18dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="3dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp">
+    <TextView
+        android:id="@+id/minerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="矿机名称："
+        android:textColor="@color/common_black"
+        android:textSize="15dp" />
+    <TextView
+        android:id="@+id/mSelectMinerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/minerName"
+        android:paddingLeft="10dp"
+        android:gravity="center"
+        android:text="一级矿机"
+        android:textColor="@color/common_green"
+        android:textSize="15dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:padding="3dp">
+        <TextView
+            android:id="@+id/minerPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="矿机单价："
+            android:textColor="@color/common_black"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/mSelectMinerPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/minerPrice"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/mSelectMinerPrice"
+            android:gravity="center"
+            android:text="（OAS）"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:padding="3dp">
+        <TextView
+            android:id="@+id/minerPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="算力："
+            android:textColor="@color/common_black"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/mSelectMinerPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/minerPower"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:text="5,000,000"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:padding="3dp">
+        <TextView
+            android:id="@+id/minerPeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="时效："
+            android:textColor="@color/common_black"
+            android:textSize="15dp" />
+        <TextView
+            android:id="@+id/mSelectMinerPeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/minerPeriod"
+            android:paddingLeft="10dp"
+            android:gravity="center"
+            android:text="5,000,000"
+            android:textColor="@color/common_green"
+            android:textSize="15dp" />
+        <View
+            android:layout_width="100dp"
+            android:layout_height="20dp"
+            android:layout_below="@+id/mSelectMinerPeriod"
+            android:textSize="10dp" />
+    </RelativeLayout>
+</LinearLayout>

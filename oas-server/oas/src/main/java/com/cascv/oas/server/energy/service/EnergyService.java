@@ -303,9 +303,8 @@ public class EnergyService {
             log.info("该能量球已经被获取！");
             return null;
         }
-        if (!activityMapper.selectByUuid(energyBallUuid).getPoint()
-                .equals(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT)
-                        .getMaxValue())) {
+        if (activityMapper.selectByUuid(energyBallUuid).getPoint().compareTo(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_MINING, REWARD_CODE_OF_MINING_POINT)
+                .getMaxValue()) == -1){
             log.info("该能量球尚未满！");
             return null;
         }

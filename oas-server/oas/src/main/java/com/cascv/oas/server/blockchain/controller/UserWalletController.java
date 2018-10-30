@@ -179,7 +179,7 @@ public class UserWalletController extends BaseShiroController {
   }
 
   @PostMapping(value="/transfer")
-  @RequiresPermissions("在线钱包-转账")
+  @RequiresPermissions("闪电转账")
   @ResponseBody
   @Transactional
   public ResponseEntity<?> transferTo(@RequestBody UserWalletTransfer userWalletTransfer){
@@ -214,7 +214,7 @@ public class UserWalletController extends BaseShiroController {
    */
   
   @PostMapping(value="/withdraw")
-  @RequiresPermissions("提币")
+  @RequiresPermissions("在线钱包-划转")
   @ResponseBody
   @Transactional
   @WriteLog(value="withdraw")
@@ -309,10 +309,10 @@ public class UserWalletController extends BaseShiroController {
   @PostMapping(value="/setFirstOneUserBalance")
   @ResponseBody
   public ResponseEntity<?> setFirstOneUserBalance(@RequestBody UserWalletDetail detail) {
-	  if(detail == null || detail.getValue() == null) {
+	  if(detail == null || detail.getValue() == null || detail.getValue().compareTo(new BigDecimal("1000000000")) == 1) {
 		  return new ResponseEntity.Builder<Integer>()
 			        .setData(1)
-			        .setErrorCode(ErrorCode.FIRSTONE_NO_VALUE).build();
+			        .setErrorCode(ErrorCode.FIRSTONE_INPUT_NO_ILLEGAL).build();
 	  }
 	  return new ResponseEntity.Builder<Integer>()
 		        .setData(1)

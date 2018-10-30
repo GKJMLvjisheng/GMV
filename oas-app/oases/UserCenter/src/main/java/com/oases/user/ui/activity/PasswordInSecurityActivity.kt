@@ -39,8 +39,8 @@ class PasswordInSecurityActivity : BaseMvpActivity<PasswordInSecurityPresenter>(
             startActivity<SetPasswordActivity>()
         }
         mBackupWallet.onClick {
-            toast("功能待开发，敬请期待！")
-           // startActivity<MnemonicBackupActivity>()
+           // toast("功能待开发，敬请期待！")
+            startActivity<MnemonicBackupActivity>()
         }
     }
 
