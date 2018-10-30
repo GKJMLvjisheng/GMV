@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.oases.base.common.BaseApplication
@@ -32,7 +33,7 @@ class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(
     private lateinit var mMinerName:String
     private lateinit var mMinerPrice:BigDecimal
     private lateinit var mMinerPower: BigDecimal
-    private var mMinerPeriod: Int =0
+    private lateinit var mMinerPeriod: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,7 @@ class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(
         //去掉小数部分后面为0的显示
         power.text= mMinerPower.stripTrailingZeros().toPlainString()
         var period = view.findViewById(R.id.mSelectMinerPeriod) as TextView
-        period.text= mMinerPeriod.toString()
+        period.text= mMinerPeriod
 
         dialogBuilder.setView(view)
         dialogBuilder.setCancelable(true)
@@ -86,7 +87,8 @@ class BuyingMinerHistoryActivity : BaseMvpActivity<BuyingMinerHistoryPresenter>(
                         mMinerName = minerName
                         mMinerPrice = minerPrice
                         mMinerPower = minerPower
-                        mMinerPeriod= minerPeriod
+                        mMinerPeriod= minerPeriod.toString()
+                        Log.d("sssss","mMinerPeriod：$mMinerPeriod")
                         alertView()
                     }
                 })
