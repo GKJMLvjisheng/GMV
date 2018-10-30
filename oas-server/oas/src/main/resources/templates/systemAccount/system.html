@@ -73,7 +73,7 @@
 				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">交易钱包监控</a>
 			</div>	
 			<div class="page-tabs-content">
-				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">FIRSTONE页面详情</a>
+				<a href="javascript:;" class="active1 menuTab" onclick="display3()"id="btn3">FIRSTONE账户交易监控</a>
 			</div>	
 				
 		</nav>	
@@ -131,20 +131,20 @@
 						<div class="form-group "style="padding-top: 15px;  ">
 							<label for="versionCode" class="col-sm-2 control-label">重置金额：</label>
 							<div class="col-sm-3" style=" width: 22%;padding-right: 0px;padding-left: 0px;">
-								<input  id="firstMoney" required="required" class="form-control" maxlength="100" placeholder="请输入需要重置的金额" onblur="initEnergyWalletGrid()"/>
+								<input  id="firstMoney" required="required" class="form-control" maxlength="100" autocomplete="off" placeholder="请输入需要重置的金额" />
 								<span id='msg_versionCode'></span>
 								
 							</div>
 							<label for="versionCode" class="col-sm-2 control-label">重置备注：</label>
 							<div class="col-sm-3" style="width: 22%;padding-right: 0px;padding-left: 0px;">
-								<input  id="remarks" required="required" class="form-control" placeholder="请输入重置备注" onblur="initEnergyWalletGrid()"/>
+								<input  id="remarks" required="required" class="form-control" placeholder="请输入重置备注" autocomplete="off" />
 								<span id='msg_versionCode'></span>
 								
 							</div>
 							<div class="col-sm-1">
 								<input id="but" type="button" class="btn btn-primary "onclick="resetMoney()" value="确定"/>
 							</div>		
-							<div class="pull-right" ><label class="control-label">FIRSTONE用户在线钱包余额：</label><span  id="firstValue"></span></div>				
+							<label class="control-label">FIRSTONE用户在线钱包余额：</label><span  id="firstValue"></span>				
 						</div>
 						
 	</form>	
