@@ -25,7 +25,6 @@ import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
-import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.model.SystemParameterModel;
 import com.cascv.oas.server.miner.service.MinerService;
 import com.cascv.oas.server.miner.wrapper.AccountMiner;
@@ -39,6 +38,7 @@ import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.miner.wrapper.SystemParameterModelRequest;
 import com.cascv.oas.server.miner.wrapper.SystemParameterResponse;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
+import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -496,23 +496,23 @@ public class MinerController {
 	    else 
 	    	offset = 0;
 	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
-	    List<PurchaseRecord> purchaseRecordList = minerMapper.selectUserPurchaseRecord(searchValue, offset, limit);
-	    for(PurchaseRecord purchaseRecord : purchaseRecordList) {
+	    List<UserPurchaseRecord> userPurchaseRecord = minerMapper.selectUserPurchaseRecord(searchValue, offset, limit);
+	    for(UserPurchaseRecord purchaseRecord : userPurchaseRecord) {
 	    	String srcFormater="yyyy-MM-dd HH:mm:ss";
   			String dstFormater="yyyy-MM-dd HH:mm:ss";
   			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
   			String created=DateUtils.string2Timezone(srcFormater, purchaseRecord.getCreated(), dstFormater, dstTimeZoneId);
   			purchaseRecord.setCreated(created);
 	    }
-	    PageDomain<PurchaseRecord> purchaseRecordPage = new PageDomain<>();
+	    PageDomain<UserPurchaseRecord> purchaseRecordPage = new PageDomain<>();
 	    Integer count = minerMapper.countBySearchValue(searchValue);
 	    purchaseRecordPage.setTotal(count);
 	    purchaseRecordPage.setAsc("desc");
 	    purchaseRecordPage.setOffset(offset);
 	    purchaseRecordPage.setPageNum(pageNum);
 	    purchaseRecordPage.setPageSize(pageSize);
-	    purchaseRecordPage.setRows(purchaseRecordList);
-		return new ResponseEntity.Builder<PageDomain<PurchaseRecord>>()
+	    purchaseRecordPage.setRows(userPurchaseRecord);
+		return new ResponseEntity.Builder<PageDomain<UserPurchaseRecord>>()
 				.setData(purchaseRecordPage)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();

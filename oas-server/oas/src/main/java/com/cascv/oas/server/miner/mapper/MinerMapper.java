@@ -9,6 +9,7 @@ import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.model.SystemParameterModel;
 import com.cascv.oas.server.miner.wrapper.AccountTypeMiner;
+import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 
 
 @Component
@@ -47,7 +48,7 @@ public interface MinerMapper {
 	Integer inquireSumMinerNum();
 	List<AccountTypeMiner> inquireTypeMinerNum();
 	
-	List<PurchaseRecord> selectUserPurchaseRecord(@Param("searchValue") String searchValue,
+	List<UserPurchaseRecord> selectUserPurchaseRecord(@Param("searchValue") String searchValue,
 			@Param("offset") Integer offset, @Param("limit") Integer limit);
 	Integer countBySearchValue(@Param("searchValue") String searchValue);
 	

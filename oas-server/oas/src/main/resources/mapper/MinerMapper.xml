@@ -176,9 +176,9 @@
         where user_uuid=#{userUuid}
     </select>
     
-    <select id="selectUserPurchaseRecord" resultMap="purchaseRecordMap">
+    <select id="selectUserPurchaseRecord" resultType="com.cascv.oas.server.miner.wrapper.UserPurchaseRecord">
         select
-           u.miner_name, u.miner_num, u.created, p.name
+           u.miner_name as minerName, u.miner_num as minerNum, u.created as created, p.name as userName
         from purchase_record u left join user_info p on u.user_uuid = p.uuid
            <if test="searchValue != null and searchValue !='' ">
     		where p.name like concat('%',#{searchValue},'%')
