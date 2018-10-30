@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NewsManager</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>userAccount</title>
     <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
     <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
@@ -11,25 +11,27 @@
     <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
-	<script type="text/javascript" th:src="@{/js/QA/QAManage.js}"></script>
-	<script type="text/javascript" th:src="@{/js/QA/QAManageTable.js}"></script>	
-   
-   
+	<link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>	 
+    
    <style>
-	.input-group .datetimepicker{
-	z-index:100000;
-	}
-	.form-group span.required {
-	color: red;
-	font-size: 150%;
-	} 
 	
 	table{ 
     word-wrap:break-word;
     word-break:break-all;
 	}
-	label{ 
+	.content-tabs {
+    border-bottom: solid 1px #d8dbde;
+	}	
+	 .form{
+    width: 20.33333333%;
+	margin-bottom:13px;
+	margin-top:13px;
+	height: 35px;
+	float:right;
+   }
+   .input-group	{ 
     vertical-align:middle;
+	margin-top:11px;
 	}
 	
     </style>
@@ -37,121 +39,32 @@
 
 <body>
 
-	<section class="content table-content">
+	<div class="row content-tabs">
+		<nav class="page-tabs menuTabs"> 
 
-		<form class="form-inline" >
-			<!-- 工具栏 -->
-			<div id="toolbar">
-
-					<input type="button" value="新增问题" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addQuestionModal"></input>
-<!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active menuTab" onclick="display1()"id="btn1">用户购买明细</a>
 			</div>
-		</form>
-		
-		<div class = "container">
-			<table id="questionGrid"></table>
-		</div>
-
-	</section>
-
-	<!-- 新增问题的模态框-->
-
-	<div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog">
-
-		<div class="modal-dialog" role="document">
-
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">新增问题</h3>
-				</div>
-
-				<div class="modal-body">
-
-					<form id="addQuestionForm" action="/Question/addQuestion" method="post" class="form-horizontal">
-
-						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">问题内容</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="question" class="form-control" id="question" required="required"  maxlength="40" placeholder="问题长度为1~40个字符"/></textarea>
-								<span id="msg_question"></span>
-							</div>						
-						</div>
-
-						
-						<div class="form-group">
-							<label for="choiceA" class="col-sm-3 control-label">选项A 
-								<input type="radio" name="radio" id="A" value="A">
-							</label><span class="required">*</span>
-
-							<div class="col-sm-8">
- 								<textarea name="choiceA" class="col-sm-4 form-control" id="choiceA" required="required" maxlength="20" placeholder="选项A长度为1~20个字符"/></textarea>
- 								<span id="msg_choiceA"></span> 				
-							</div>
-						</div>						
-						
-						<div class="form-group">
-							<label for="choiceB" class="col-sm-3 control-label">选项B 
-								<input type="radio" name="radio" id="B"  value="B" >
-							</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="choiceB" class="col-sm-4 form-control" id="choiceB" required="required" maxlength="20" placeholder="选项B长度为1~20个字符"/></textarea>
-								<span id="msg_choiceB"></span>
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<label for="choiceC" class="col-sm-3 control-label">选项C 
-								<input type="radio" name="radio" id="C"  value="C" >
-							</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="choiceC" class="col-sm-4 form-control" id="choiceC" required="required" maxlength="20" placeholder="选项C长度为1~20个字符"/></textarea>
-								<span id="msg_choiceC"></span>
-							</div>
-						</div>	
-																
-						<input name="choiceRight" class="form-control" id="choiceRight" required="required" type="hidden"/></input>
-													
-					</form>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" id="conf" class="btn btn-default" onclick="addQuestion()">提交</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetAddModal()">取消</button>
-				</div>
-
+			<div class="page-tabs-content">			
+				<a href="javascript:;" class="active1 menuTab" onclick="display2()"id="btn2">矿机销售统计</a>
 			</div>
-		</div>
+			
+		</nav>	
+	</div> 
+
+	<div id="page1" class="container">
+		<input class="form" id="miner1" required="required" placeholder="搜索" oninput="initPurchaseDetailGrid(event)"/>
+		<table id="purchaseDetailGrid"></table>
+	</div> 
+	
+
+	<div id="page2" class="container" style="display:none">
+		<input class="form" id="miner2" required="required" placeholder="搜索" oninput="initMinerSellGrid(event)"/>		 		  
+		<table id="minerSellGrid"></table>
 	</div>
-		
-	<!-- 提示信息 -->
-	<div class="modal fade" id="Tip" role="dialog">
-
-		<div class="modal-dialog" role="document">
-
-			<div class="modal-content">
-
-				<div class="modal-header">
-					<h3>提示</h3>
-				</div>
-
-				<div class="modal-body" align="center">
-					<h4 id="tipContent">新增成功</h4>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
-				</div>
-
-			</div>
-
-		</div>
-
-	</div>
-
-	<!-- 编辑新闻的模态框 -->
-    <div class="modal fade" id="updateQuestionModal" tabindex="-1" role="dialog">
+	
+	<!-- 查看用户信息的模态框 -->
+    <div class="modal fade" id="queryMinerModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
 
@@ -159,72 +72,71 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="ModalLabel">修改问题</h3>			
+					<h3 class="modal-title" id="myModalLabel">用户信息</h3>			
 				</div>
 
 				<div class="modal-body">
-					<form id="updateQuestionForm" action="/question/updatedQuestion" method="post" class="form-horizontal">
-						<input  style="display:none" type="hidden" name="EtopicId" id="EtopicId">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">问题内容：</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="Equestion" class="form-control" id="Equestion" required="required"  maxlength="40" onblur="EcheckQuestion()" /></textarea>
-								<span id="msg_Equestion"></span> 
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="choiceContent1" class="col-sm-3 control-label">选项A 
-								<input type="radio" name="radio1" id="A1"  value="A">
-							</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="EchoiceA" class="form-control" id="EchoiceA" required="required" maxlength="20" onblur="EcheckChoiceA()"/></textarea>
-								<span id="msg_EchoiceA"></span> 
-							</div>						
-						</div>
-						
-						<div class="form-group">
-							<label for="choiceB" class="col-sm-3 control-label">选项B 
-								<input type="radio" name="radio1" id="B1"  value="B">
-							</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="EchoiceB" class="form-control" id="EchoiceB" required="required" maxlength="20" onblur="EcheckChoiceB()"/></textarea>
-								<span id="msg_EchoiceB"></span> 
+							<label for="newsTitle" class="col-sm-3 control-label">用户名：</label>
+							<div class="col-sm-7">
+								<input name="Qname" class="form-control" id="Qname" readonly="readonly" required="required"/>
 							</div>						
 						</div>
 
 						<div class="form-group">
-							<label for="choiceC" class="col-sm-3 control-label">选项C 
-								<input type="radio" name="radio1" id="C1"  value="C">
-							</label><span class="required">*</span>
-							<div class="col-sm-8">
-								<textarea name="EchoiceC" class="form-control" id="EchoiceC" required="required" maxlength="20" onblur="EcheckChoiceC()"/></textarea>
-								<span id="msg_EchoiceC"></span>  
+							<label for="newsTitle" class="col-sm-3 control-label">昵称：</label>
+							<div class="col-sm-7">
+								<input name="Qnickname" class="form-control" id="Qnickname" readonly="readonly" required="required"/>
 							</div>						
-						</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">性别：</label>
+							<div class="col-sm-7">
+								<input name="Qgender" class="form-control" id="Qgender" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">生日：</label>
+							<div class="col-sm-7">
+								<input name="Qbirthday" class="form-control" id="Qbirthday" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">手机：</label>
+							<div class="col-sm-7">
+								<input name="Qmobile" class="form-control" id="Qmobile" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邮箱：</label>
+							<div class="col-sm-7">
+								<input name="Qemail" class="form-control" id="Qemail" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">地址：</label>
+							<div class="col-sm-7">
+								<input name="Qaddress" class="form-control" id="Qaddress" readonly="readonly" required="required"/>
+							</div>						
+						</div>
 						
-						<input name="EchoiceRight" class="form-control" id="EchoiceRight" required="required" type="hidden"/></input>
-																											
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邀请码：</label>
+							<div class="col-sm-7">
+								<input name="QinviteCode" class="form-control" id="QinviteCode" readonly="readonly" required="required"/>
+							</div>						
+						</div>		
+																									
 					</form>
-				</div>
-
-				<div class="modal-footer">
-					<button type="button" data-dismiss="modal" id="saveQuestion" aria-label="Close" class="btn btn-default" onclick="updateQuestion()"><span aria-hidden="true">保存</span></button>
-				</div>
-						
-			</div>
-					
+				</div>					
+			</div>					
 		</div>
 	</div>
-
-<script type="text/javascript">	
-$(":radio").click(function(){
-	var choiceRight=$(this).val();
-	$('#choiceRight').val(choiceRight);
-	$('#EchoiceRight').val(choiceRight);
-});
 	
-</script>			
+	<script type="text/javascript" th:src="@{/js/miner/minerDetail.js}"></script>
+	<script type="text/javascript" th:src="@{/js/miner/minerDetailTable.js}"></script>			
 </body>
 </html>
 
