@@ -799,7 +799,7 @@ public class EthWalletService {
 			    	if(de.getAddress().equals(systemAddress)) {
 			    		log.info("system ethwallet 余额：",uCoin.getBalance());
 			    		if(uCoin.getBalance().compareTo(new BigDecimal("1000000")) == -1) {
-			    			reportAdminWarning(ErrorCode.SYSTEM_ETH_BALANCE_LOWER_THAN_WARING.getMessage());
+			    			//reportAdminWarning(ErrorCode.SYSTEM_ETH_BALANCE_LOWER_THAN_WARING.getMessage());
 			    		}
 			    	}
 			    }
@@ -812,7 +812,7 @@ public class EthWalletService {
 		if(systemWalletNow!=null) {
 			log.info("system userwallet 余额：",systemWalletNow.getBalance());
 			if(systemWalletNow.getBalance().compareTo(BigDecimal.ZERO) == -1) {
-				reportAdminWarning(ErrorCode.SYSTEM_USER_BALANCE_LOWER_THAN_WARING.getMessage());
+				//reportAdminWarning(ErrorCode.SYSTEM_USER_BALANCE_LOWER_THAN_WARING.getMessage());
 			}
 		}
 	  
