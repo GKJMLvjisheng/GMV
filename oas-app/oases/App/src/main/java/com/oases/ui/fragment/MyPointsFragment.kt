@@ -273,6 +273,7 @@ class MyPointsFragment : BaseMvpFragment<MyPointsPresenter>(), MyPointsView {
     fun getWeekInfo(date:String):Int{
         var result:Int = 1
         val cal:Calendar = Calendar.getInstance()
+        cal.firstDayOfWeek = Calendar.MONDAY
         val format:SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         try{
             cal.time= format.parse(date)
