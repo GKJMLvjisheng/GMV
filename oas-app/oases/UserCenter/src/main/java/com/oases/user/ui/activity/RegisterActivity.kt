@@ -19,6 +19,7 @@ import com.oases.user.presenter.view.RegisterView
 import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_register.*
 import org.jetbrains.anko.startActivity
+import java.util.regex.Pattern
 
 class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View.OnClickListener {
 
@@ -77,6 +78,11 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
             mNameEt.requestFocus()
             return false
         }
+        if(!regularExpressionValidate(userName,BaseConstant.ENGLISH_NUMBER)){
+            mNameEt.setError(getString(R.string.error_username_incorrect))
+            mNameEt.requestFocus()
+            return false
+        }
 
        if (TextUtils.isEmpty(password))
         {
@@ -101,6 +107,11 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
 
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 4
+    }
+
+    private  fun regularExpressionValidate(value:String,exp:String):Boolean{
+        val pattern: Pattern = Pattern.compile(exp)
+        return pattern.matcher(value.toString()).matches()
     }
 
 }
