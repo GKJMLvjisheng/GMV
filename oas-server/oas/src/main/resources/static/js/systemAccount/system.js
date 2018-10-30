@@ -455,6 +455,7 @@ function resetMoney(){
 			 
 		     if (res.code == 0) {
 		    	 alert("重置金额成功！");
+		    	 firstOneDetail();
 		    	 
 		     } else {
 		    	 alert(res.message);
