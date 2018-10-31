@@ -8,6 +8,8 @@ public class UserDetailModel implements Serializable {
 	private static final long serialVersionUID = 1L;         
 	@Getter @Setter private String name;   
 	@Getter @Setter private String nickname;
+	@Getter @Setter private String supriorUserName;
+	@Getter @Setter private Integer supriorUserInviteCode;
 	@Getter @Setter private String gender;     //性别
 	@Getter @Setter private String birthday;   //生日
 	@Getter @Setter private String address;    //地址
@@ -15,7 +17,8 @@ public class UserDetailModel implements Serializable {
 	@Getter @Setter private String email;      //邮箱
 	@Getter @Setter private String created;
 	@Getter @Setter private String IMEI;
-	@Getter @Setter private String inviteCode;
+	@Getter @Setter private Integer inviteFrom;
+	@Getter @Setter private Integer inviteCode;
 	@Getter @Setter private Integer status;
 	@Getter @Setter private Integer roleId;
 	@Getter @Setter private String userIdentityName;

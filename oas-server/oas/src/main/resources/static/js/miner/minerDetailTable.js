@@ -4,7 +4,7 @@ var pageNum;
 function initPurchaseDetailGrid() {	
 	$("#purchaseDetailGrid").bootstrapTable('destroy');
 	$("#purchaseDetailGrid").bootstrapTable({
-		url: '/api/v1/userCenter/selectAllUsers',
+		url: '/api/v1/miner/inquireUserPurchaseRecord',
 		contentType : "application/json",
 		dataType:"json",
 		method: 'post',
@@ -36,43 +36,22 @@ function initPurchaseDetailGrid() {
 				}  
 			}  ,{
 				title : "用户名",
-				field : "name",
+				field : "userName",
 				align: 'center',
 				valign: 'middle',
 				width:  '90px',
 			},
 			{
 
-				title : "矿机名",
+				title : "矿机类型",
 				field : "minerName",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},{
-
-				title : "矿机单价",
-				field : "minerPrice",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},{
-
-				title : "矿机等级",
-				field : "minerGrade",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},{
-
-				title : "矿机寿命",
-				field : "minerPeriod",
 				align: 'center',
 				valign: 'middle',
 				width:  '110px',
 			},
 			{
-				title : "矿机数量",
-				field : "mobile",
+				title : "矿机台数",
+				field : "minerNum",
 				align: 'center',
 				valign: 'middle',
 				width:  '110px',
@@ -84,10 +63,10 @@ function initPurchaseDetailGrid() {
 				valign: 'middle',
 				width:  '150px',
 				//visible: false,
-			}{
+			},{
 
 				title : "操作",
-				field : "name",
+				field : "userName",
 				align: 'center',
 				valign: 'middle',
 				width:  '50px',
@@ -99,7 +78,7 @@ function initPurchaseDetailGrid() {
 	
 //请求服务数据时所传参数
 function queryParams1(params){
-	var searchValue = $("#miner1").val();
+	var searchValue = $("#miner").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -115,7 +94,7 @@ function queryParams1(params){
 //请求成功方法
 function responseHandler1(res){
 	//alert(JSON.stringify(res));
-    if(code != 0){
+    if(res.code != 0){
         alert("用户购买明细回显失败，错误代码:" + res.code);
         return;
     }
@@ -158,45 +137,24 @@ function initMinerSellGrid(data) {
 				}  
 			},{
 
-			title : "矿机名",
+			title : "矿机类型",
 			field : "minerName",
-			align: 'center',
-			valign: 'middle',
-			width:  '110px',
-		},{
-
-			title : "矿机单价",
-			field : "minerPrice",
-			align: 'center',
-			valign: 'middle',
-			width:  '110px',
-		},{
-
-			title : "矿机等级",
-			field : "minerGrade",
-			align: 'center',
-			valign: 'middle',
-			width:  '110px',
-		},{
-
-			title : "矿机寿命",
-			field : "minerPeriod",
 			align: 'center',
 			valign: 'middle',
 			width:  '110px',
 		},
 			{
 
-			title : "矿机数量",
-			field : "minerPrice",
+			title : "矿机台数",
+			field : "minerNum",
 			align: 'center',
 			valign: 'middle',
 			width:  '80px',
 
 		}],
 		
-		search : true,//搜索
-        searchOnEnterKey : true,
+//		search : true,//搜索
+//        searchOnEnterKey : true,
 		clickToSelect: false, 
 	});
 }

@@ -48,6 +48,8 @@ private VersionService versionService;
 private static String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
 private static String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" 
 +File.separator+File.separator+"Apps"+File.separator;
+//private static String STABLE_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" 
+//+File.separator+File.separator+"StableApps"+File.separator;
 
 @PostMapping(value="/upLoadApp")
 @ResponseBody
@@ -142,57 +144,54 @@ public ResponseEntity<?> deleteApp(@RequestBody VersionInfo versionInfo){
 @ResponseBody
 public ResponseEntity<?> updateApp(VersionInfo versionInfo,@RequestParam(name="file",value="file",required=false) MultipartFile file){
 	
-	Map<String,String> info = new HashMap<>();
+//	Map<String,String> info = new HashMap<>();
 	VersionModel versionModel=new VersionModel();
-	
 	versionModel.setUuid(versionInfo.getUuid());
 	versionModel.setVersionCode(versionInfo.getVersionCode());
 	versionModel.setVersionStatus(versionInfo.getVersionStatus());
 	versionModel.setUpGradeStatus(versionInfo.getUpGradeStatus());
-	
-	if(file!=null) {
-		//日期时间生成唯一标识文件名
-  		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
-  		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
-  		
-  		try {
-  	    // Get the file and save it somewhere
-        byte[] bytes = file.getBytes();
-        Path path = Paths.get(UPLOADED_FOLDER + fileName);
-        Files.write(path, bytes);
-		
-		String str="/image/Apps/";
-		String appUrl=str+fileName;
-		versionModel.setAppUrl(appUrl);
-	    
-		versionModelMapper.updateApp(versionModel);
-		
-		return new ResponseEntity.Builder<VersionModel>()
-				.setData(versionModel)
-				.setErrorCode(ErrorCode.SUCCESS)
-				.build();
-		
-  	}catch (Exception e) {
-  		String msg="error";
-  		info.put("msg",msg);
-  		log.info("文件修改失败，请重试！");
-		return new ResponseEntity.Builder<Map<String, String>>()
-				.setData(info)
-				.setErrorCode(ErrorCode.GENERAL_ERROR)
-				.build();
-  		}
-  	}else {
-  		
-  		log.info("versionInfo.getAppUrl()={}",versionInfo.getAppUrl());
-  		
-  		versionModelMapper.updateApp(versionModel);
-  		
-		return new ResponseEntity.Builder<VersionModel>()
-				.setData(versionModel)
-				.setErrorCode(ErrorCode.SUCCESS)
-				.build();
-  		  }	
+	log.info("versionInfo.getAppUrl()={}",versionInfo.getAppUrl());
+	versionModelMapper.updateApp(versionModel);	
+	return new ResponseEntity.Builder<VersionModel>()
+			.setData(versionModel)
+			.setErrorCode(ErrorCode.SUCCESS)
+			.build();
+//		  }	
 }
+//	if(file!=null) {
+//		//日期时间生成唯一标识文件名
+//  		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+//  		String fileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
+//  		
+//  		try {
+//  	    // Get the file and save it somewhere
+//        byte[] bytes = file.getBytes();
+//        Path path = Paths.get(UPLOADED_FOLDER + fileName);
+//        Files.write(path, bytes);
+//		
+//		String str="/image/Apps/";
+//		String appUrl=str+fileName;
+//		versionModel.setAppUrl(appUrl);
+//	    
+//		versionModelMapper.updateApp(versionModel);
+//		
+//		return new ResponseEntity.Builder<VersionModel>()
+//				.setData(versionModel)
+//				.setErrorCode(ErrorCode.SUCCESS)
+//				.build();
+//		
+//  	}catch (Exception e) {
+//  		String msg="error";
+//  		info.put("msg",msg);
+//  		log.info("文件修改失败，请重试！");
+//		return new ResponseEntity.Builder<Map<String, String>>()
+//				.setData(info)
+//				.setErrorCode(ErrorCode.GENERAL_ERROR)
+//				.build();
+//  		}
+//  	}else {
+  		
+
 
 @PostMapping(value="/downloadApp")
 @ResponseBody
@@ -223,4 +222,25 @@ public ResponseEntity<?> downloadApp(){
 		}
 
 }
+
+////给前端传最新版本的app的固定链接
+//@PostMapping(value="/transferStableApp")
+//@ResponseBody
+//public ResponseEntity<?> transferStableApp(){
+//	File dir=new File(STABLE_FOLDER);
+//	 if(!dir.exists()){
+//	   dir.mkdirs();
+//	 }
+//	 List<VersionModel> stableVersionModel=versionService.selectAppByStableVersion();
+//	 DownloadVersionInfo downloadVersionInfo=new DownloadVersionInfo();
+//	 if(stableVersionModel != null && stableVersionModel.size() != 0) {
+//		 String appUrl=stableVersionModel.get(0).getAppUrl();
+//		 downloadVersionInfo.setAppUrl(appUrl);
+//	 }
+//	 
+//	 return new ResponseEntity.Builder<DownloadVersionInfo>()
+//				.setData(downloadVersionInfo)
+//				.setErrorCode(ErrorCode.SUCCESS)
+//				.build();
+//}
 }

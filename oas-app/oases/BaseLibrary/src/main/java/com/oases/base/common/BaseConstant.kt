@@ -13,10 +13,8 @@ class BaseConstant{
         //本地服务器地址
         //const val SERVER_ADDRESS = "https://10.0.0.20"
         //远程服务器地址
-
-         //const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"/"http://10.0.0.13:8080"//
+        // const val SERVER_ADDRESS = "https://oas.cascv.com"//"http://18.219.19.160:8080"/"http://10.0.0.13:8080"//
         const val SERVER_ADDRESS = "https://dapp.oases.pro"    //正式生产环境
-
 
         //SP表名
         const val TABLE_PREFS = "Kotlin_mall"
@@ -60,8 +58,10 @@ class BaseConstant{
         /*正则表达式*/
         //大于0的整数小数
         const val  POSITIVE_NUMER = "^([1-9][0-9]*)+(.[0-9]*)?$"
-        //英文和数字
+        //大小寫英文和数字
         const val ENGLISH_NUMBER = "^[A-Za-z0-9]+$"
+        //大小寫英文和数字
+        const val SMALL_ENGLISH_NUMBER = "^[a-z0-9]+$"
         //数字小数点后面最多四位
         const val NUMBER_POINT_FOUR ="^((([1-9][0-9]*)+)|(0{1}))(.[0-9]{0,4})?$"//"^\\d+(\\.\\d{1,4})?$"
 
