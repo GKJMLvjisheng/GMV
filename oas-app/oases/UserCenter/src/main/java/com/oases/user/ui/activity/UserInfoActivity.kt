@@ -260,11 +260,11 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         mTakePhoto.onActivityResult(requestCode,resultCode,data)
-       // bitmap = data!!.getParcelableExtra<Bitmap>("data")
-
+        //bitmap = data!!.getParcelableExtra<Bitmap>("data")
+        //xuanzhuan()
     }
 
-  /*  private fun xuanzhuan(){
+    /*private fun xuanzhuan(){
         var matrix:Matrix =Matrix() //旋转图片 动作
         matrix.setRotate(90.toFloat())//旋转角度
         var width = bitmap!!.getWidth()

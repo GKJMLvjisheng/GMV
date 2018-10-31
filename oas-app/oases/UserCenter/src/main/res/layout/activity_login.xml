@@ -41,9 +41,8 @@
         style="@style/WrapWrap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginStart="23dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginStart="20dp"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toTopOf="@+id/mUserName"
         app:layout_constraintStart_toStartOf="@+id/mUserName" />

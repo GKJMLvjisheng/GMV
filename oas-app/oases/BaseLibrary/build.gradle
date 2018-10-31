@@ -18,10 +18,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    kapt {
+        generateStubs = true
+        arguments {
+            arg("moduleName", project.getName())
+        }
+    }
 }
 
 dependencies {
-
     //Android Support
     api "com.android.support:support-v4:${android_support_version}"
     api "com.android.support:appcompat-v7:${android_support_version}"
@@ -33,6 +39,8 @@ dependencies {
     //compile 'com.android.support:multidex:1.0.0'
     api "com.android.support:multidex:1.0.0"
 
+
+    kapt "com.alibaba:arouter-compiler:$arouter_compiler_version"
 
     // Anko Commons
     api "org.jetbrains.anko:anko-commons:$anko_version"
