@@ -36,7 +36,7 @@ function initPurchaseDetailGrid() {
 				}  
 			}  ,{
 				title : "用户名",
-				field : "name",
+				field : "userName",
 				align: 'center',
 				valign: 'middle',
 				width:  '90px',
@@ -66,7 +66,7 @@ function initPurchaseDetailGrid() {
 			},{
 
 				title : "操作",
-				field : "name",
+				field : "userName",
 				align: 'center',
 				valign: 'middle',
 				width:  '50px',
