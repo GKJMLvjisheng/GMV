@@ -1511,10 +1511,11 @@ public class UserController extends BaseShiroController{
     public ResponseEntity<?> updateUserInviteFrom(@RequestBody UserModel userInfo){
 		UserModel userModel = new UserModel();
 		UserModel supriorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(userInfo.getInviteFrom());
+		UserModel nowUserModel=userModelMapper.selectByName(userInfo.getName());
 		if(supriorsUserModel != null) {
 			userModel.setName(userInfo.getName());
 			userModel.setInviteFrom(userInfo.getInviteFrom());
-			String inviteCode=supriorsUserModel.getInviteCode().toString();
+			String inviteCode=nowUserModel.getInviteCode().toString();
 			String inviteFrom=userInfo.getInviteFrom().toString();
 			if(inviteCode.equals(inviteFrom)) {
 				return new ResponseEntity.Builder<Integer>()
@@ -1523,12 +1524,11 @@ public class UserController extends BaseShiroController{
 		                .build();
 			}else {
 				userModelMapper.updateUserInfo(userModel);
+				return new ResponseEntity.Builder<UserModel>()
+		                .setData(userModel)
+		                .setErrorCode(ErrorCode.SUCCESS)
+		                .build();
 			}
-			
-		return new ResponseEntity.Builder<UserModel>()
-                .setData(userModel)
-                .setErrorCode(ErrorCode.SUCCESS)
-                .build();
 		}else {
 			return new ResponseEntity.Builder<Integer>()
 	                .setData(1)
