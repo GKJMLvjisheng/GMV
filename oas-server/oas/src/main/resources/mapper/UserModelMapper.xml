@@ -302,6 +302,7 @@
     <result column="email" property="email"/>
     <result column="IMEI" property="IMEI"/>
     <result column="created" property="created"/>
+     <result column="invite_from" property="inviteFrom"/>
     <result column="status" property="status"/>
     <result column="roleId" property="roleId"/>
     <result column="user_identity_name" property="userIdentityName"/>
@@ -323,6 +324,7 @@
 	    U.IMEI as IMEI,
 	    U.status as status,
 		U.created as created,
+		U.invite_from as invite_from,
 		ICI.user_identity_name as user_identity_name,
 		ICI.user_identity_number as user_identity_number,
 		ICI.remark as remark,

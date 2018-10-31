@@ -1380,7 +1380,6 @@ public class UserController extends BaseShiroController{
 	  	    
 	  	    
 	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit,pageInfo.getRoleId(),searchValue);
-	        
 	        Integer count = userService.countUsers(pageInfo.getRoleId());			        			     
 	        
 	        PageDomain<UserDetailModel> pageUserDetail = new PageDomain<>();
