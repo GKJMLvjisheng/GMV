@@ -48,7 +48,16 @@ class RegisterSucceedActivity : BaseMvpActivity<LoginPresenter>(), View.OnClickL
     }
 
     override fun onLoginResult(result: UserInfo) {
-        setResult(Activity.RESULT_OK)
+        if(result == null){
+            toast("登陆失败，该手机已绑定别的账号")
+        }else{
+            setResult(Activity.RESULT_OK)
+        }
+        startActivity(intentFor<LoginActivity>().singleTop().clearTop())
+        finish()
+    }
+
+    override fun onLoginFailed(e: Throwable) {
         startActivity(intentFor<LoginActivity>().singleTop().clearTop())
         finish()
     }

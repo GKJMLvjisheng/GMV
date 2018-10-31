@@ -114,5 +114,7 @@ class UserServiceImpl @Inject constructor():UserService{
     override fun getPrivateKeyMnemonic(): Observable<PrivateKeyMnemonicResp> {
         return repository.getPrivateKeyMnemonic().convert()
     }
-
+    override fun verifyPassword(req: confirmOldPwdReq): Observable<confirmOldPwdResp> {
+        return repository.verifyPassword(req).convert()
+    }
 }

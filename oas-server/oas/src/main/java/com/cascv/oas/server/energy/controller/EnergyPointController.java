@@ -11,7 +11,6 @@ import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.wrapper.*;
-import com.cascv.oas.server.common.BaseController;
 import com.cascv.oas.server.energy.mapper.EnergyWalletTradeRecordMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
@@ -34,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -192,12 +192,19 @@ public class EnergyPointController extends BaseShiroController{
 
     @PostMapping(value = "/inquireEnergyPointByCategory")
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPointByCategory() {
+    public ResponseEntity<?> inquireEnergyPointByCategory() throws ParseException {
     	String userUuid = ShiroUtils.getUserUuid();
     	Integer status = 0;
-    	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    	String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdf.parse(now);
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.setTime(date);
+    	calendar.add(Calendar.HOUR_OF_DAY, 8);
+    	String newTime = sdf.format(calendar.getTime());
+    	String newDate = newTime.substring(0, 10);
     	BigDecimal point = BigDecimal.ZERO;
-    	List<EnergyPointBall> energyPointBallList = activityMapper.selectAllByUserUuid(userUuid, status, now);
+    	List<EnergyPointBall> energyPointBallList = activityMapper.selectAllByUserUuid(userUuid, status, newDate);
     	for(int i=0; i<energyPointBallList.size(); i++) {
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}

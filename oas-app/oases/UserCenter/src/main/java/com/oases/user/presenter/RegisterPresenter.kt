@@ -20,7 +20,7 @@ class RegisterPresenter @Inject constructor():BasePresenter<RegisterView>() {
     @Inject
     lateinit var userService: UserService
 
-    fun register(name:String, pwd:String, inviteFrom:String, imei: String){
+    fun register(name:String, pwd:String, inviteFrom:String, imei: String?){
         if(!checkNetWork()){
             return
         }
