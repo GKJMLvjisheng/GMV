@@ -60,6 +60,7 @@
 	</div> 
 
 	<div id="page1">
+<!-- 		<input  id="code1" name="code1" /> -->
 		<input class="form" id="user1" required="required" placeholder="搜索" oninput="initNormalGrid(event)"/>
 		<table id="normalGrid"></table>
 	</div> 
@@ -130,6 +131,71 @@
 				<div class="modal-footer">
 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="Confirm()"><span aria-hidden="true">确认</span></button>
 					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="resetIMEIModal()"><span aria-hidden="true">取消</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	 
+	
+		<!-- 查看下级用户模态框 -->
+	<div class="modal fade" id="downUserModal" tabindex="-1" role="dialog">
+
+	<div class="modal-dialog modal-lm" role="document">
+
+		<div class="modal-content">
+
+				<div class="modal-header">
+				
+ 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+					<h3 class="modal-title" id="activityModalLabel">查看下级用户</h3>
+
+				</div>
+
+				<div class="modal-body">	
+					<input type="hidden" name="downName" id="downName">			
+					<table id="downUserGrid">
+	
+					</table>				
+				</div>
+				
+			</div>
+		</div>
+	</div>	
+	
+	<!-- 添加上级用户邀请码 -->
+    <div class="modal fade" id="addCodeModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">修改上级用户邀请码</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="roleForm" action="/IMEI" method="post" class="form-horizontal">						
+						
+						<input style="display:none" type="hidden" name="codeName" id="codeName">
+						<input style="display:none" type="hidden" name="codeId" id="codeId">
+						
+<!-- 							style="display:none" type="hidden" -->
+
+							<div class="form-group">
+							<label for="code" class="col-sm-3 control-label">邀请码：</label>
+							<div class="col-sm-7">
+								<input name="code" class="form-control" id="code" required="required"  placeholder="请输入上级用户邀请码" />
+							</div>						
+						</div>
+																																						
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="addCode()"><span aria-hidden="true">确认</span></button>
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="resetCodeModal()"><span aria-hidden="true">取消</span></button>
 				</div>						
 			</div>					
 		</div>
@@ -311,12 +377,20 @@
 								<input name="Qremark" class="form-control" id="Qremark" readonly="readonly" required="required"/>
 							</div>						
 						</div>
-<!-- 						<div class="form-group"> -->
-<!-- 							<label for="newsTitle" class="col-sm-3 control-label">IMEI：</label> -->
-<!-- 							<div class="col-sm-7"> -->
-<!-- 								<input name="IMEI" class="form-control" id="IMEI" readonly="readonly" required="required"/> -->
-<!-- 							</div>						 -->
-<!-- 						</div> -->
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">上级用户名：</label>
+							<div class="col-sm-7">
+								<input name="QupName" class="form-control" id="QupName" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">上级用户邀请码：</label>
+							<div class="col-sm-7">
+								<input name="Qcode" class="form-control" id="Qcode" readonly="readonly" required="required"/>
+							</div>						
+						</div>
 																									
 					</form>
 				</div>					
