@@ -21,7 +21,7 @@ class DoneMailActivity : BaseMvpActivity<DoneMailPresenter>(), DoneMailView {
 
     var  NewMail:String = ""
     var  mailJumpFlag:String = ""
-    private val sourceCode:Int = 6     //绑定邮箱是6
+    private val sourceCode:String = "CHEACKMAIL"     //绑定邮箱
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_done_mail)

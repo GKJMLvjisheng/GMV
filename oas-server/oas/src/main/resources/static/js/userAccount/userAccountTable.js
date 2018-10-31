@@ -688,7 +688,7 @@ function ViewViewById(name){
 		}
 
 		else{
-			alert("查询内容为空！");
+			alert("查询失败，错误码："+res.code);
 			}						
 	},
 

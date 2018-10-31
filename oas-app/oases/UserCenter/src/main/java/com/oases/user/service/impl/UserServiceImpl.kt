@@ -69,7 +69,7 @@ class UserServiceImpl @Inject constructor():UserService{
         return repository.donePhone(mobile).convert()
     }
 
-    override fun getReward(sourceCode:Int): Observable<Int>{
+    override fun getReward(sourceCode:String): Observable<Int>{
         return repository.getReward(sourceCode).convert()
     }
 
@@ -114,5 +114,7 @@ class UserServiceImpl @Inject constructor():UserService{
     override fun getPrivateKeyMnemonic(): Observable<PrivateKeyMnemonicResp> {
         return repository.getPrivateKeyMnemonic().convert()
     }
-
+    override fun verifyPassword(req: confirmOldPwdReq): Observable<confirmOldPwdResp> {
+        return repository.verifyPassword(req).convert()
+    }
 }

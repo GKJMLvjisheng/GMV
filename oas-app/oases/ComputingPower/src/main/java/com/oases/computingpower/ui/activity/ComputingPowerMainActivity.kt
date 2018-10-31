@@ -159,8 +159,8 @@ class ComputingPowerMainActivity :
         val  mWatchWeChat: String = "关注公众号"
         val  mInviteFriends: String = "好友分享"
         val  mEnvironmentalmProtectionAnswer: String = "环保答题"
-        val  mConnectToPhone: String = "关联手机号"
-        val  mConnectToMail: String = "关联邮箱"
+        val  mConnectToPhone: String = "绑定手机"
+        val  mConnectToMail: String = "绑定邮箱"
         val  mBuyMiner: String = "购买矿机"
         val  mKYC: String = "KYC认证"
         val  mModuleConstruction: String = "模块建设中"
@@ -251,7 +251,14 @@ class ComputingPowerMainActivity :
 
     override fun onInquirePowerActivityStatusResult(result: PowerActivityStatusResp) {
         var list=result.activityResultList
-        var selectList:MutableList<Int> = mutableListOf()
+        var selectList:MutableList<String> = mutableListOf()
+        for(item in list) {
+                if (!selectList.contains(item.sourceName)) {
+                    selectList.add(item.sourceName)
+                }
+        }
+        functionAdapter.setIndex(selectList)
+       /* var selectList:MutableList<Int> = mutableListOf()
         for(item in list) {
             if (item.sourceCode >3 && item.sourceCode < 10) {
                 if (!selectList.contains(item.sourceCode-4)) {
@@ -259,7 +266,7 @@ class ComputingPowerMainActivity :
                 }
             }
         }
-        functionAdapter.setIndex(selectList)
+        functionAdapter.setIndex(selectList)*/
         functionAdapter.notifyDataSetChanged()
     }
 
@@ -274,9 +281,6 @@ class ComputingPowerMainActivity :
 
     override fun onResume() {
         super.onResume()
-        //finish()
-        //startActivity<ComputingPowerMainActivity>()
         mPresenter.inquireCurrentPeriodPoints()
-        //mPresenter.inquirePowerActivityStatus()
     }
 }
