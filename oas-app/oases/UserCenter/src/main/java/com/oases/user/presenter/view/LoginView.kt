@@ -6,4 +6,5 @@ import com.oases.user.data.protocol.UserInfo
 
 interface LoginView : BaseView{
     fun onLoginResult(result: UserInfo)
+    fun onLoginFailed(e: Throwable)
 }

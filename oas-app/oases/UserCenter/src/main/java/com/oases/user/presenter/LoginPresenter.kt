@@ -13,6 +13,7 @@ import com.oases.user.presenter.view.RegisterView
 import com.oases.user.service.UserService
 import com.oases.user.utils.putUserInfo
 import javax.inject.Inject
+import org.jetbrains.anko.toast
 
 class LoginPresenter @Inject constructor() : BasePresenter<LoginView>() {
 
@@ -32,6 +33,10 @@ class LoginPresenter @Inject constructor() : BasePresenter<LoginView>() {
                 AppPrefsUtils.putString(BaseConstant.USER_TOKEN, t.token)
                 putUserInfo(t)
                 mView.onLoginResult(t)
+            }
+            override fun onError(e: Throwable) {
+                super.onError(e)
+                mView.onLoginFailed(e)
             }
         }, lifecycleProvider)
     }

@@ -104,6 +104,9 @@ class UserRepository @Inject constructor() {
         return RetrofitFactory.instance.create(UserApi::class.java).getPrivateKeyMnemonic()
     }
 
+    fun verifyPassword(req: confirmOldPwdReq): Observable<BaseResp<confirmOldPwdResp>> {
+        return RetrofitFactory.instance.create(UserApi::class.java).verifyPassword(req)
+    }
 
 
 

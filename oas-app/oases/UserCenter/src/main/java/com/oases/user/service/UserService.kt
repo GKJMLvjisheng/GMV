@@ -45,4 +45,5 @@ interface UserService {
     fun getBackupWalletStatus():Observable<BackupWalletStatusResp>
     fun getPrivateKeyMnemonic():Observable<PrivateKeyMnemonicResp>
 
+    fun verifyPassword(req: confirmOldPwdReq):Observable<confirmOldPwdResp>
 }

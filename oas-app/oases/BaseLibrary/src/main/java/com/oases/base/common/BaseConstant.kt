@@ -32,6 +32,7 @@ class BaseConstant{
         const val USER_MAIL_ADDRESS = "user_mail_address"
         const val USER_INVITE_CODE = "user_invite_code"
         const val USER_UUID = "uuid"
+        const val USER_REGISTER_CLICK_NUMBERS = "user_register_click_numbers" //用户点击获取助记词的次数
         const val WALLET_BACKUP = "wallet_backup"
 
         const val MY_OAS_ADDRESS = "my_oas_address"

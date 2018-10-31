@@ -65,6 +65,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     override fun onResume() {
         super.onResume()
         Log.d("zbb", "login resume")
+        AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS, 0)
         checkLogined()
     }
 
@@ -82,6 +83,10 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
        toast("登录成功")
         setResult(Activity.RESULT_OK)
         checkLogined()
+    }
+
+   override fun onLoginFailed(e: Throwable) {
+
     }
 
 
