@@ -30,10 +30,10 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         initView()
     }
 
@@ -80,9 +80,9 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     override fun onLoginResult(result:UserInfo) {
-       toast("登录成功")
-        setResult(Activity.RESULT_OK)
-        checkLogined()
+            toast("登录成功")
+            setResult(Activity.RESULT_OK)
+            checkLogined()
     }
 
    override fun onLoginFailed(e: Throwable) {

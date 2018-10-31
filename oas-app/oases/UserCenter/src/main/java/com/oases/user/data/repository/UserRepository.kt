@@ -58,7 +58,7 @@ class UserRepository @Inject constructor() {
         return RetrofitFactory.instance.create(UserApi::class.java).checkPhoneCode(CheckPhoneCodeReq(mobileCode))
     }
 
-    fun getReward(sourceCode:Int): Observable<BaseResp<Int>> {
+    fun getReward(sourceCode:String): Observable<BaseResp<Int>> {
         return RetrofitFactory.instance.create(UserApi::class.java).getReward(GetRewardReq(sourceCode))
     }
 

@@ -51,7 +51,7 @@ class EncryptedMnemonicFragment : BaseMvpFragment<EncryptedMnemonicPresenter>(),
     private var mListener: OnFragmentInteractionListener? = null
     private lateinit var mEncryptUri:TextView
     private lateinit var mExportFile:Button
-    private val sourceCode:Int = 4     //备份钱包代码为4
+    private val sourceCode:String = "BACKUPWALLET"     //备份钱包代码为4
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -49,7 +49,7 @@ class DonePhonePresenter @Inject constructor() : BasePresenter<DonePhoneView>() 
         }, lifecycleProvider)
     }
 
-    fun getReward(sourceCode: Int) {
+    fun getReward(sourceCode: String) {
         if (!checkNetWork()) {
             return
         }
