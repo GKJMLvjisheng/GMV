@@ -9,18 +9,19 @@ function minerReady(){
 	
 	var data2;
 	 $.ajax({		
-		url: "/api/v1/miner/inquireWebMiner",
+		url: "/api/v1/miner/inquireSumMinerNum",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
 		type: 'post',
 		success: function(res) {
 			//alert(JSON.stringify(res));
-			data2=res.data;
+			$("#minerAccount").text(res.data.minerNumSum);
+			data2=res.data.accountTypeMiner;
 			initMinerSellGrid(data2);
 		}, 
 		error: function(){
-			alert("矿机销售统计回显失败！")
+			alert("矿机销售统计回显失败！");
 		}
 		}); 
 }

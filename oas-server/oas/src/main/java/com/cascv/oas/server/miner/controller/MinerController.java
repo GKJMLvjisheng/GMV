@@ -27,6 +27,8 @@ import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.SystemParameterModel;
 import com.cascv.oas.server.miner.service.MinerService;
+import com.cascv.oas.server.miner.wrapper.AccountMiner;
+import com.cascv.oas.server.miner.wrapper.AccountTypeMiner;
 import com.cascv.oas.server.miner.wrapper.AddSystemParameter;
 import com.cascv.oas.server.miner.wrapper.InquireRequest;
 import com.cascv.oas.server.miner.wrapper.MinerDelete;
@@ -36,6 +38,7 @@ import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.miner.wrapper.SystemParameterModelRequest;
 import com.cascv.oas.server.miner.wrapper.SystemParameterResponse;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
+import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.utils.ShiroUtils;
 
@@ -473,8 +476,66 @@ public class MinerController {
 		return new ResponseEntity.Builder<PageDomain<PurchaseRecordWrapper>>()
 				.setData(purchaseRecordDetail)
 				.setErrorCode(ErrorCode.SUCCESS)
+				.build();		
+	}
+	
+	//web端查询用户矿机购买详情记录，分页
+	@PostMapping(value = "/inquireUserPurchaseRecord")  
+	@ResponseBody
+	public ResponseEntity<?> inquireUserPurchaseRecord(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	    List<UserPurchaseRecord> userPurchaseRecord = minerMapper.selectUserPurchaseRecord(searchValue, offset, limit);
+	    for(UserPurchaseRecord purchaseRecord : userPurchaseRecord) {
+	    	String srcFormater="yyyy-MM-dd HH:mm:ss";
+  			String dstFormater="yyyy-MM-dd HH:mm:ss";
+  			String dstTimeZoneId=timeZoneService.switchToUserTimeZoneId();
+  			String created=DateUtils.string2Timezone(srcFormater, purchaseRecord.getCreated(), dstFormater, dstTimeZoneId);
+  			purchaseRecord.setCreated(created);
+	    }
+	    PageDomain<UserPurchaseRecord> purchaseRecordPage = new PageDomain<>();
+	    Integer count = minerMapper.countBySearchValue(searchValue);
+	    purchaseRecordPage.setTotal(count);
+	    purchaseRecordPage.setAsc("desc");
+	    purchaseRecordPage.setOffset(offset);
+	    purchaseRecordPage.setPageNum(pageNum);
+	    purchaseRecordPage.setPageSize(pageSize);
+	    purchaseRecordPage.setRows(userPurchaseRecord);
+		return new ResponseEntity.Builder<PageDomain<UserPurchaseRecord>>()
+				.setData(purchaseRecordPage)
+				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
-		
+	}
+	
+	//查询系统一共卖出了多少台矿机
+	@PostMapping(value = "/inquireSumMinerNum")  
+	@ResponseBody
+	public ResponseEntity<?> inquireSumMinerNum(){
+		//系统卖出的总矿机数
+		Integer minerNumSum = minerMapper.inquireSumMinerNum();
+		//系统卖出的不同类型的矿机的总数
+		List<AccountTypeMiner> accountTypeMiner = minerMapper.inquireTypeMinerNum();
+		AccountMiner accountMiner = new AccountMiner();
+		if(minerNumSum == null) {
+			minerNumSum = 0;
+		}
+		accountMiner.setMinerNumSum(minerNumSum);
+		accountMiner.setAccountTypeMiner(accountTypeMiner);
+		return new ResponseEntity.Builder<AccountMiner>()
+				.setData(accountMiner)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
 	}
 
 }

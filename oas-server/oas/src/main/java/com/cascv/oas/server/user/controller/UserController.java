@@ -44,6 +44,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
@@ -119,6 +120,10 @@ public class UserController extends BaseShiroController{
   private UserModelMapper userModelMapper;
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
+  @Autowired
+  private ActivityService activityService;
+  
+  private static final Integer KYC_SOURCE_CODE = 12;
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -1360,6 +1365,7 @@ public class UserController extends BaseShiroController{
     @ResponseBody
     @WriteLog(value="checkUserIdentity")
     public ResponseEntity<?> checkUserIdentity(@RequestBody UserIdentityCardModel userIdentityCardModelInfo) {
+		String userUuid = ShiroUtils.getUserUuid();
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
 		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
@@ -1369,6 +1375,8 @@ public class UserController extends BaseShiroController{
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
+		
+		//activityService.getReward(KYC_SOURCE_CODE, userUuid);
 		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
@@ -1453,7 +1461,6 @@ public class UserController extends BaseShiroController{
 	  	    
 	  	    
 	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit,pageInfo.getRoleId(),searchValue);
-	        
 	        Integer count = userService.countUsers(pageInfo.getRoleId());			        			     
 	        
 	        PageDomain<UserDetailModel> pageUserDetail = new PageDomain<>();
@@ -1525,6 +1532,11 @@ public class UserController extends BaseShiroController{
     @WriteLog(value="inquireUserKYCInfo")
     public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserDetailModel kycModel){
 		    UserDetailModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getName());
+		    UserModel userModel=userModelMapper.selectSuperiorsUserByInviteFrom(newKYCModel.getInviteFrom());
+		    if(userModel !=null) {
+		    newKYCModel.setSupriorUserName(userModel.getName());
+		    newKYCModel.setSupriorUserInviteCode(userModel.getInviteCode());
+		    }
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
 		    errorCode=ErrorCode.GENERAL_ERROR;
@@ -1532,8 +1544,79 @@ public class UserController extends BaseShiroController{
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();
-
 	}
+	
+	/**
+	 * @author Ming Yang
+	 * @param pageInfo
+	 * @return
+	 *       查看所有下线用户
+	 */
+	@PostMapping(value="/inquireInvitedUsers")
+    @ResponseBody
+    @WriteLog(value="inquireInvitedUsers")
+    public ResponseEntity<?> inquireInvitedUsers(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+		UserModel userModel=userModelMapper.selectByName(pageInfo.getName());
+		Integer inviteCode=userModel.getInviteCode();
+		List<UserModel> promotedUserModelList=userModelMapper.selectInvitedUsersByInviteCode(inviteCode);
+		PageDomain<UserModel> promotedUserModel=new PageDomain<>();
+		Integer count=userModelMapper.userInvitedCountTotal(inviteCode);
+			promotedUserModel.setTotal(count);
+			promotedUserModel.setAsc("desc");
+			promotedUserModel.setOffset(offset);
+			promotedUserModel.setPageNum(pageNum);
+			promotedUserModel.setPageSize(pageSize);
+			promotedUserModel.setRows(promotedUserModelList);
+		return new ResponseEntity.Builder<PageDomain<UserModel>>()
+                .setData(promotedUserModel)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
+	}
+	
+	@PostMapping(value="/updateUserInviteFrom")
+    @ResponseBody
+    @WriteLog(value="updateUserInviteFrom")
+    public ResponseEntity<?> updateUserInviteFrom(@RequestBody UserModel userInfo){
+		UserModel userModel = new UserModel();
+		UserModel supriorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(userInfo.getInviteFrom());
+		UserModel nowUserModel=userModelMapper.selectByName(userInfo.getName());
+		if(supriorsUserModel != null) {
+			userModel.setName(userInfo.getName());
+			userModel.setInviteFrom(userInfo.getInviteFrom());
+			String inviteCode=nowUserModel.getInviteCode().toString();
+			String inviteFrom=userInfo.getInviteFrom().toString();
+			if(inviteCode.equals(inviteFrom)) {
+				return new ResponseEntity.Builder<Integer>()
+		                .setData(2)
+		                .setErrorCode(ErrorCode.INVITECODE_IS_SELF)
+		                .build();
+			}else {
+				userModelMapper.updateUserInfo(userModel);
+				return new ResponseEntity.Builder<UserModel>()
+		                .setData(userModel)
+		                .setErrorCode(ErrorCode.SUCCESS)
+		                .build();
+			}
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+	                .setData(1)
+	                .setErrorCode(ErrorCode.INVITECODE_NOT_EXIST)
+	                .build();
+		}
+	}
+	
 	/**
 	 * 生成随即字串
 	 * @param length

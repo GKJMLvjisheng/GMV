@@ -78,7 +78,7 @@ class EncryptedMnemonicFragment : BaseMvpFragment<EncryptedMnemonicPresenter>(),
     }
 
     private fun initView(){
-            var userName= AppPrefsUtils.getString(BaseConstant.USER_NAME)
+            /*var userName= AppPrefsUtils.getString(BaseConstant.USER_NAME)
             //val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
             //val storageDir = Environment.getExternalStorageDirectory()
             val parentFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "OASES" + File.separator +userName)
@@ -95,11 +95,11 @@ class EncryptedMnemonicFragment : BaseMvpFragment<EncryptedMnemonicPresenter>(),
                 //createTempFile()
                 mEncryptUri.text=saveUri
 
-            }
+            }*/
              mExportFile.onClick {
-                 createTempFile()
+                 //createTempFile()
                  AppPrefsUtils.putBoolean(BaseConstant.WALLET_BACKUP, true)
-                 toast("导出成功，已保存到手机内部存储下的OASES目录")
+                // toast("导出成功，已保存到手机内部存储下的OASES目录")
                  mPresenter.getReward(sourceCode)
             }
     }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.session.ExpiredSessionException;
@@ -78,16 +79,22 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
 
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response){
-        String id = WebUtils.toHttp(request).getHeader(HEADER_TOKEN_NAME);
-        
+    	HttpServletRequest httpRequest = WebUtils.toHttp(request); 
+        String id = httpRequest.getHeader(HEADER_TOKEN_NAME);
+        String uri = httpRequest.getRequestURI();
         if(StringUtils.isEmpty(id)){
-        	log.info("not use {} information", HEADER_TOKEN_NAME);
-          return super.getSessionId(request, response);
+          Serializable ret = super.getSessionId(request, response);
+          if (ret != null) {
+             log.info("{} has no 'token' and use {}", uri, ret.toString());
+          } else {
+             log.info("{} has no 'token' and use null", uri);
+          }
+          return ret;
         }else{
-          log.info("use {} information", HEADER_TOKEN_NAME);
        	  request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE,REFERENCED_SESSION_ID_SOURCE);
           request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID,id);
           request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID,Boolean.TRUE);
+          log.info("{} has 'token' {}", uri, id);
           return id;
         }
     }
@@ -137,12 +144,10 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
           log.info("Finished invalidation session. No sessions were stopped.");
         }
       }
-
     }
 
-    @Override
-    protected Collection<Session> getActiveSessions()
-    {
-        throw new UnsupportedOperationException("getActiveSessions method not supported");
-    }
+  @Override
+  protected Collection<Session> getActiveSessions() {
+    throw new UnsupportedOperationException("getActiveSessions method not supported");
+  }
 }

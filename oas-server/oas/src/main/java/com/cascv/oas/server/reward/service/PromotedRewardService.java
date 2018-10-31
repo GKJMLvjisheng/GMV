@@ -106,7 +106,7 @@ public class PromotedRewardService {
 		        .withIdentity("JobDetailD", "groupD").build();
 	    Trigger immediatelyTrigger = TriggerBuilder.newTrigger().withIdentity("triggerC", "groupC")
 	        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-	            .withIntervalInSeconds(30).repeatForever()).startNow().build();
+	            .withIntervalInSeconds(10).repeatForever()).startNow().build();
 	    Trigger delayTrigger = TriggerBuilder.newTrigger().withIdentity("triggerD", "groupD")
 		        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
 		            .withIntervalInSeconds(60).repeatForever()).startNow().build();
