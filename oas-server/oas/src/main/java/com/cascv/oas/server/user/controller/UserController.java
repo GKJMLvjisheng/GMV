@@ -1464,9 +1464,14 @@ public class UserController extends BaseShiroController{
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();
-
 	}
 	
+	/**
+	 * @author Ming Yang
+	 * @param pageInfo
+	 * @return
+	 *       查看所有下线用户
+	 */
 	@PostMapping(value="/inquireInvitedUsers")
     @ResponseBody
     @WriteLog(value="inquireInvitedUsers")
@@ -1500,6 +1505,37 @@ public class UserController extends BaseShiroController{
                 .build();
 	}
 	
+	@PostMapping(value="/updateUserInviteFrom")
+    @ResponseBody
+    @WriteLog(value="updateUserInviteFrom")
+    public ResponseEntity<?> updateUserInviteFrom(@RequestBody UserModel userInfo){
+		UserModel userModel = new UserModel();
+		UserModel supriorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(userInfo.getInviteFrom());
+		if(supriorsUserModel != null) {
+			userModel.setName(userInfo.getName());
+			userModel.setInviteFrom(userInfo.getInviteFrom());
+			String inviteCode=supriorsUserModel.getInviteCode().toString();
+			String inviteFrom=userInfo.getInviteFrom().toString();
+			if(inviteCode.equals(inviteFrom)) {
+				return new ResponseEntity.Builder<Integer>()
+		                .setData(2)
+		                .setErrorCode(ErrorCode.INVITECODE_IS_SELF)
+		                .build();
+			}else {
+				userModelMapper.updateUserInfo(userModel);
+			}
+			
+		return new ResponseEntity.Builder<UserModel>()
+                .setData(userModel)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+	                .setData(1)
+	                .setErrorCode(ErrorCode.INVITECODE_NOT_EXIST)
+	                .build();
+		}
+	}
 	
 	/**
 	 * 生成随即字串

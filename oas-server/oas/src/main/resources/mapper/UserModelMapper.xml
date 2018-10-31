@@ -200,6 +200,9 @@
 			<if test="gender!= null">
 				gender= #{gender},
 			</if>
+			<if test="inviteFrom!= null">
+				invite_from= #{inviteFrom},
+			</if>
 			<if test="address != null">
 				address = #{address},
 			</if>
