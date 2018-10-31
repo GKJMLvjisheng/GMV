@@ -1,5 +1,90 @@
 var pageSize;
 var pageNum;
+var Data;
+
+function initDownUserGrid() {	
+	$("#downUserGrid").bootstrapTable('destroy');
+	$("#downUserGrid").bootstrapTable({
+		url: '/api/v1/userCenter/inquireInvitedUsers',
+		contentType : "application/json",
+		dataType:"json",
+		method: 'post',
+		striped:true,//隔行变色
+		uniqueId:"name",
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
+		pageNumber:1,//首页页码
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams,//请求服务器时所传的参数
+		responseHandler:responseHandler,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+
+		toolbar:"#toolbar",//工具栏
+		sortable: false,//是否启用排序
+		sortName: 'created', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+			
+	    columns : [{  
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '145px',
+				//visible: false,
+			}],		
+
+			clickToSelect: false,         
+	});
+}
+
+//请求服务数据时所传参数
+function queryParams(params){
+	var name = $("#downName").val();
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
+    return{
+        //每页多少条数据
+        pageSize: pageSize,
+        //当前页码
+        pageNum: pageNum,    
+        name: name,    
+       
+    }
+}
+//请求成功方法
+function responseHandler(res){
+	//alert(JSON.stringify(res));
+    var code = res.code;//在此做了错误代码的判断
+    Data = res.data.rows;
+    if(code != 0){
+        alert("下级用户查看回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
 
 function initNormalGrid() {	
 	$("#normalGrid").bootstrapTable('destroy');
@@ -68,7 +153,7 @@ function initNormalGrid() {
 				field : "imei",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '95px',
 				
 			},{
 
@@ -84,7 +169,7 @@ function initNormalGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '150px',
+				width:  '100px',
 				//visible: false,
 			},{
 				title : "账号状态",
@@ -96,12 +181,20 @@ function initNormalGrid() {
 				
 			},{
 
-				title : "查看",
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				formatter: actionFormatter7
+			},{
+
+				title : "查看下级用户",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
 				width:  '50px',
-				formatter: actionFormatter2
+				formatter: actionFormatter6
 			},{
 
 				title : "角色授权",
@@ -222,7 +315,7 @@ function initTestGrid() {
 				field : "imei",
 				align: 'center',
 				valign: 'middle',
-				width:  '93px',
+				width:  '95px',
 				
 			},{
 
@@ -238,7 +331,7 @@ function initTestGrid() {
 				field : "created",
 				align: 'center',
 				valign: 'middle',
-				width:  '150px',
+				width:  '100px',
 				//visible: false,
 			},{
 				title : "账号状态",
@@ -250,12 +343,20 @@ function initTestGrid() {
 				
 			},{
 
-				title : "查看",
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				formatter: actionFormatter7
+			},{
+
+				title : "查看下级用户",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
 				width:  '50px',
-				formatter: actionFormatter2
+				formatter: actionFormatter6
 			},{
 
 				title : "角色授权",
@@ -397,7 +498,7 @@ function initSystemGrid() {
 				//visible: false,
 			},{
 
-				title : "查看",
+				title : "查看用户信息",
 				field : "name",
 				align: 'center',
 				valign: 'middle',
@@ -469,7 +570,18 @@ function actionFormatter1(value, row, index) {
 function actionFormatter2(value, row, index) {
     var name = value;
     var result = "";
-    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
+    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "')\" title='查看用户信息'><span class='glyphicon glyphicon-search'></span></a>";      
+    return result;
+}
+
+function actionFormatter7(value, row, index) {
+	//alert(JSON.stringify(row));
+    var name = value;
+    var code = row.inviteFrom;
+    var roleId = row.roleId;
+    var result = "";
+    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "')\" title='查看用户信息'><span class='glyphicon glyphicon-search'></span></a>";   
+    result += "<a href='javascript:;' id='viewCode' class='btn btn-xs green' onclick=\"ViewCode('" + name + "','" + roleId + "','" + code + "')\" title='修改上级用户邀请码'><span class='glyphicon glyphicon-pencil'></span></a>";      
     return result;
 }
 
@@ -502,6 +614,15 @@ function actionFormatter5(value, row, index) {
 	}    
 }	
 
+function actionFormatter6(value, row, index) {
+	 var name = value;
+	 var roleId = row.roleId;
+	 var result = "";	
+	
+	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"downUser('" + name + "', '" + roleId + "')\">查看下级用户</a>";
+	return result;	
+}	
+
 function ViewViewById(name){	
 	var data = {
 		"name": name
@@ -521,6 +642,7 @@ function ViewViewById(name){
 			//alert(JSON.stringify(res));			
 			var rows = res.data;
 			var verifyStatus = rows.verifyStatus;
+			var supriorUserInviteCode = rows.supriorUserInviteCode;
 			if(verifyStatus==0){
 				var status = "未认证";
 				document.getElementById("userIdentityName1").style.display="none";
@@ -541,8 +663,7 @@ function ViewViewById(name){
 				document.getElementById("userIdentityName1").style.display="none";
 				document.getElementById("userIdentityNumber1").style.display="none";
 				document.getElementById("remark1").style.display="block";
-			}
-			
+			}			
 			
 			$('#Qname').val(rows.name);
 			$('#Qnickname').val(rows.nickname);
@@ -553,18 +674,21 @@ function ViewViewById(name){
 			$('#Qaddress').val(rows.address);
 			$('#QinviteCode').val(rows.inviteCode);
 			
-			$('#QverifyStatus').val(status);	
-			//$('#IMEI').val(rows.IMEI);
-			
+			$('#QverifyStatus').val(status);				
 			$('#QuserIdentityName').val(rows.userIdentityName);
 			$('#QuserIdentityNumber').val(rows.userIdentityNumber);
-			$('#Qremark').val(rows.remark);					
+			$('#Qremark').val(rows.remark);	
+			
+			$('#QupName').val(rows.supriorUserName);	
+			$('#Qcode').val(supriorUserInviteCode);	
+			
+			$('#code1').val(supriorUserInviteCode);	
 		
 			$("#queryModal").modal("show");
 		}
 
 		else{
-			alert("查询内容为空！");
+			alert("查询失败，错误码："+res.code);
 			}						
 	},
 
