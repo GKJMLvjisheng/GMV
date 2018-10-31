@@ -243,7 +243,7 @@ export default {
     
     //this.synchronizeBall()
     window.skipRefresh= this.skipRefresh
-     this.location()
+     //this.location()
     
     
   },
