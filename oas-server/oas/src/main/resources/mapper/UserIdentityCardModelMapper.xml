@@ -295,6 +295,7 @@
 	    U.email as email,
 	    U.IMEI as IMEI,
 	    U.status as status,
+	    U.invite_from as inviteFrom,
 	    U.invite_code as inviteCode,
 		ICI.created as created,
 		ICI.user_identity_name as userIdentityName,

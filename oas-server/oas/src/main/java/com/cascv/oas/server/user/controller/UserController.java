@@ -1444,6 +1444,9 @@ public class UserController extends BaseShiroController{
     @WriteLog(value="inquireUserKYCInfo")
     public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserDetailModel kycModel){
 		    UserDetailModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getName());
+		    UserModel userModel=userModelMapper.selectSuperiorsUserByInviteFrom(newKYCModel.getInviteFrom());
+		    newKYCModel.setSupriorUserName(userModel.getName());
+		    newKYCModel.setSupriorUserInviteCode(userModel.getInviteCode());
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
 		    errorCode=ErrorCode.GENERAL_ERROR;
@@ -1453,6 +1456,41 @@ public class UserController extends BaseShiroController{
 	                .build();
 
 	}
+	
+	@PostMapping(value="/inquireInvitedUsers")
+    @ResponseBody
+    @WriteLog(value="inquireInvitedUsers")
+    public ResponseEntity<?> inquireInvitedUsers(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+		UserModel userModel=userModelMapper.selectByName(pageInfo.getName());
+		Integer inviteCode=userModel.getInviteCode();
+		List<UserModel> promotedUserModelList=userModelMapper.selectInvitedUsersByInviteCode(inviteCode);
+		PageDomain<UserModel> promotedUserModel=new PageDomain<>();
+		Integer count=userModelMapper.userInvitedCountTotal(inviteCode);
+			promotedUserModel.setTotal(count);
+			promotedUserModel.setAsc("desc");
+			promotedUserModel.setOffset(offset);
+			promotedUserModel.setPageNum(pageNum);
+			promotedUserModel.setPageSize(pageSize);
+			promotedUserModel.setRows(promotedUserModelList);
+		return new ResponseEntity.Builder<PageDomain<UserModel>>()
+                .setData(promotedUserModel)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
+	}
+	
+	
 	/**
 	 * 生成随即字串
 	 * @param length
