@@ -392,6 +392,7 @@ function initActivityRewardGrid(data) {
 			align: 'center',
 			valign: 'middle',
 			//width:  '120px',
+			visible:false,
 
 		},
 		
