@@ -96,7 +96,12 @@
 			#{name,jdbcType=VARCHAR},
 			#{password,jdbcType=VARCHAR},
 			#{salt,jdbcType=VARCHAR},
+			<if test="status == null">
 			'1',
+			</if>
+			<if test="status != null">
+			    #{status,jdbcType=INTEGER},
+			</if>
 			<if test="nickname != null">
 				#{nickname,jdbcType=VARCHAR},
 			</if>
@@ -354,6 +359,10 @@
 	status = #{status}
 	where name = #{name}
   </update>
+  
+  <select id="countSameImeiNumber" resultType="java.lang.Integer">
+  select count(*) from user_info where IMEI = #{imei}
+  </select>
  
 </mapper>
 

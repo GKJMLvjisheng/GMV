@@ -70,5 +70,7 @@ public interface UserModelMapper {
 	 Integer updateUserPassworde(UserModel userModel);
 	 
 	 Integer updateIMEI(UserModel userModel);
+	 //获取该imei的数量
+	 Integer countSameImeiNumber(String imei);
 }
 
