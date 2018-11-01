@@ -65,10 +65,10 @@ public class EnergyPointController extends BaseShiroController{
 	@Autowired 
 	private TimeZoneService timeZoneService;
 	
-	public static final Integer SOURCE_CODE_OF_CHECKIN = 1;
-	public static final Integer SOURCE_CODE_OF_FREE = 2;
-	public static final Integer SOURCE_CODE_OF_WALK = 3;
-	public static final Integer REWARD_CODE_OF_POINT = 1;
+	public static final String SOURCE_UUID_OF_CHECKIN = "CHECKIN";
+	public static final String SOURCE_UUID_OF_FREE = "FREEBALL";
+	public static final String SOURCE_UUID_OF_WALK = "WALK";
+	public static final String REWARD_UUID_OF_POINT = "POINT";
 	
 	
     @PostMapping(value = "/checkin")
@@ -81,7 +81,6 @@ public class EnergyPointController extends BaseShiroController{
     public ResponseEntity<?> checkin() {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
-        Integer sourceCode = 1;
         if (!energyService.isCheckin(userUuid)) {
 //            // today sign in not yet
 //            // generate a new Checkin EnergyBall
@@ -95,10 +94,10 @@ public class EnergyPointController extends BaseShiroController{
 //            // change the Checkin EnergyBall to Die
 //            energyService.updateEnergyBallStatusByUuid(userUuid);
         	//get reward and record
-        	activityService.getReward(sourceCode, userUuid);
+        	activityService.getReward("CHECKIN", userUuid);
         	EnergyCheckinResult energyCheckinResult = new EnergyCheckinResult();
-        	energyCheckinResult.setNewEnergyPoint(activityService.getNewPoint(sourceCode, 1).getNewPoint());
-        	energyCheckinResult.setNewPower(activityService.getNewPower(sourceCode, 2).getNewPower());
+        	energyCheckinResult.setNewEnergyPoint(activityService.getNewPoint("CHECKIN", "POINT").getNewPoint());
+        	energyCheckinResult.setNewPower(activityService.getNewPower("CHECKIN", "POWER").getNewPower());
         	log.info("{energypoin}={}",energyCheckinResult.getNewEnergyPoint());
         	log.info("{energypoin}={}",energyCheckinResult.getNewPower());
         	// change the Checkin EnergyBall to Die
@@ -139,7 +138,7 @@ public class EnergyPointController extends BaseShiroController{
     @PostMapping(value = "/pointBallMaxValue")  
     @ResponseBody
     public ResponseEntity<?> pointBallMaxValue(){
-    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue();
+    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue();
 
     	log.info("{maxvalue}={}",maxValue);
 
@@ -216,12 +215,12 @@ public class EnergyPointController extends BaseShiroController{
     		stepNum = walkBall.getStepNum();
     	}
     	
-    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_CHECKIN, REWARD_CODE_OF_POINT).getMaxValue();
-    	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_FREE, REWARD_CODE_OF_POINT).getMaxValue().multiply(BigDecimal.valueOf((int)12));
+    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
+    	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue().multiply(BigDecimal.valueOf((int)12));
     	BigDecimal maxPoint = checkInPoint.add(freePoint);
     	
-    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALK, REWARD_CODE_OF_POINT).getMaxValue()
-    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALK, REWARD_CODE_OF_POINT).getIncreaseSpeed());
+    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALK, REWARD_UUID_OF_POINT).getMaxValue()
+    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALK, REWARD_UUID_OF_POINT).getIncreaseSpeed());
     	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
@@ -293,7 +292,7 @@ public class EnergyPointController extends BaseShiroController{
 @ResponseBody
 public ResponseEntity<?> inquireNews(PageDomain<Integer> pageInfo){
      Map<String,Object> info=new HashMap<>();
-     Integer pageSize=pageInfo.getPageSize();//获取pageSize
+     Integer pageSize = pageInfo.getPageSize();//获取pageSize
      Integer pageNum = pageInfo.getPageNum();//获取pageNum
      String msg="";
      Integer limit = 3,offset=0,listCount=0,maxPageNum=0;

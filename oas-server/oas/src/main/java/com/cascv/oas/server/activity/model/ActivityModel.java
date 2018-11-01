@@ -5,6 +5,7 @@ import lombok.Setter;
 
 public class ActivityModel {
 	
+	@Getter @Setter private String sourceUuid;
 	@Getter @Setter private Integer sourceCode;
 	@Getter @Setter private String sourceName;
 	@Getter @Setter private String type;

@@ -54,7 +54,7 @@ public class MinerService {
 	private static final Integer STATUS_DIE_OF_MINER = 1;  //矿机处于工作状态
 	private static final Integer MINER_PURCHASE_STATUS = 0;  //矿机推广立即奖励未完成
 	private static final Integer POWER_REWARD_STATUS = 0;  //矿机推广算力立即奖励未完成
-	private static final Integer ACTIVITY_CODE_OF_MINER = 10;  //矿机处于工作状态
+	private static final String ACTIVITY_CODE_OF_MINER = "BUYMINER";  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
 	
@@ -81,7 +81,7 @@ public class MinerService {
 	public void addMinerPowerBall(String userUuid, BigDecimal powerSum) {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		energyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-		energyPowerBall.setSourceCode(ACTIVITY_CODE_OF_MINER);
+		energyPowerBall.setSourceUuid(ACTIVITY_CODE_OF_MINER);
 		energyPowerBall.setUserUuid(userUuid);
 		energyPowerBall.setStatus(STATUS_ACTIVITY_OF_MINER);
 		energyPowerBall.setPower(powerSum);
