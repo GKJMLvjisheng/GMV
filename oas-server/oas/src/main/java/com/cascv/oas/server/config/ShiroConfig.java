@@ -254,6 +254,7 @@ public class ShiroConfig {
 
 
 		filterChainDefinitionMap.put("/**", "user,onlineSession,syncOnlineSession");
+		//filterChainDefinitionMap.put("/**", "user");
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
 		return shiroFilterFactoryBean;

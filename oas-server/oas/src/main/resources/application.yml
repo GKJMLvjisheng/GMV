@@ -73,7 +73,7 @@ server:
     key-alias: alias
 media:
   server:
-    imageHost : https://dapp.oases.pro
+    imageHost : https://oas.cascv.com
 
 mail:
   mailBean:
