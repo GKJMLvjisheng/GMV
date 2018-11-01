@@ -204,7 +204,9 @@ public class UserController extends BaseShiroController{
         	 switch(roleList.get(0)){
 	        	 case "系统账号":
 	        		 log.info("this is 系统账号");
+
 	        		 errorCode=ErrorCode.USER_CANNOT_LOGIN_IN_ANDROID;
+
 	        		 throw new AuthenticationException();
 	        	 case "正常账号":
 	        		 log.info("this is 正常账号");
@@ -227,10 +229,11 @@ public class UserController extends BaseShiroController{
 		        			 if(IMEIOri.equals(IMEINew))
 		        			 {    
 		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null) {
+
 		        					  errorCode=ErrorCode.USER_IMEI_EXIST;
 		        					  throw new AuthenticationException();
 		        			 }
-		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
+ 				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
 			        				 UserFacility userNewFacility=new UserFacility();
 			    				     userNewFacility.setIMEI(loginVo.getIMEI());
 			    				     userNewFacility.setUuid(uuid);
