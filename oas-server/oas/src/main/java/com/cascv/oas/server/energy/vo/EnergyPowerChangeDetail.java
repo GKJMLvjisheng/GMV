@@ -11,7 +11,7 @@ public class EnergyPowerChangeDetail {
 	@Getter @Setter private BigDecimal value;
 	@Getter @Setter private BigDecimal powerChange;
 	@Getter @Setter private String category;
-	@Getter @Setter private Integer sourceCode;
+	@Getter @Setter private String sourceUuid;
 	@Getter @Setter private String activity;
 	@Getter @Setter private Integer inOrOut;
 	@Getter @Setter private String comment;

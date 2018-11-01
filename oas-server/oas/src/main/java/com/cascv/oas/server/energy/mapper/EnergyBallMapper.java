@@ -13,19 +13,19 @@ public interface EnergyBallMapper {
     EnergyBall selectByUuid(@Param("uuid") String uuid);
 
     List<EnergyBall> selectByTimeFuzzyQuery(@Param("userUuid") String userUuid,
-                                            @Param("sourceCode") Integer sourceCode,
+                                            @Param("sourceUuid") String sourceUuid,
                                             @Param("created") String created);
 
     List<EnergyBall> selectByPointSourceCode(@Param("userUuid") String userUuid,
-                                             @Param("sourceCode") Integer sourceCode,
+                                             @Param("sourceUuid") String sourceUuid,
                                              @Param("status") Integer status);
 
     EnergyBall selectLatestOneByPointSourceCode(@Param("userUuid") String userUuid,
-                                                @Param("sourceCode") Integer sourceCode,
+                                                @Param("sourceUuid") String sourceUuid,
                                                 @Param("status") Integer status);
 
     List<EnergyBallWrapper> selectPartByPointSourceCode(@Param("userUuid") String userUuid,
-                                                        @Param("sourceCode") Integer sourceCode,
+                                                        @Param("sourceUuid") String sourceUuid,
                                                         @Param("status") Integer status,
                                                         @Param("timeGap") Integer timeGap);
 
@@ -39,7 +39,7 @@ public interface EnergyBallMapper {
 
     int insertEnergyBall(EnergyBall energyBall);
     
-    Integer countByUserUuidAndPowerSource(@Param("userUuid") String userUuid,@Param("sourceCode") Integer sourceCode);
+    Integer countByUserUuidAndPowerSource(@Param("userUuid") String userUuid,@Param("sourceUuid") Integer sourceUuid);
     //查询一段时间内用户步行产生的积分总数
     BigDecimal selectUserPointByTime(@Param("userUuid") String userUuid,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

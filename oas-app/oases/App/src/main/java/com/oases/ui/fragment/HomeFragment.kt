@@ -82,6 +82,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         myWebHome.settings?.allowContentAccess = true
         myWebHome.settings?.blockNetworkImage = true
         myWebHome.settings?.cacheMode = WebSettings.LOAD_DEFAULT
+        myWebHome.settings?.textZoom = 100
 
         myWebHome.addJavascriptInterface(JsInterface(this, mHandler), "Android")
         initView()
@@ -207,8 +208,8 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     override fun onResume() {
         super.onResume()
         Log.d("zbb1","homeFragment on resume")
-        //initView()
-        myWebHome.loadUrl("javascript:skipRefresh()")
+        initView()
+        //myWebHome.loadUrl("javascript:skipRefresh()")
     }
 
     fun shouldToolBarShowBack(){
