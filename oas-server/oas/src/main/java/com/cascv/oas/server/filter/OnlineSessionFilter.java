@@ -16,11 +16,12 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 import com.cascv.oas.server.utils.ShiroUtils;
 
-// 
-public class OnlineSessionFilter extends AccessControlFilter
-{
+import lombok.extern.slf4j.Slf4j;
 
-    
+// 
+
+@Slf4j
+public class OnlineSessionFilter extends AccessControlFilter {
     // 
     @Value("${shiro.user.loginUrl}")
     private String loginUrl;
@@ -61,13 +62,12 @@ public class OnlineSessionFilter extends AccessControlFilter
         return true;
     }
 
-    
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception
     {
         Subject subject = getSubject(request, response);
-        if (subject != null)
-        {
+        log.info("online session filter onAccessDenied {}", request.getServletContext().getContextPath());
+        if (subject != null) {
             subject.logout();
         }
         saveRequestAndRedirectToLogin(request, response);
