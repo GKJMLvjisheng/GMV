@@ -60,6 +60,8 @@ public interface UserModelMapper {
 	 UserModel selectByInviteFrom(@Param("inviteFrom") Integer InviteFrom);
 	 UserModel selectSuperiorsUserByInviteFrom(@Param("inviteFrom") Integer InviteFrom);
 	 Integer userInvitedCountTotal(@Param("inviteCode") Integer inviteCode);
+	 //查询某用户所有下线
+	 List<UserModel> selectInvitedUsersByInviteCode(@Param("inviteCode") Integer inviteCode);
 	 //验证码
 	 Integer updateIdentifyCode(UserModel userModel);
      
@@ -70,5 +72,9 @@ public interface UserModelMapper {
 	 Integer updateUserPassworde(UserModel userModel);
 	 
 	 Integer updateIMEI(UserModel userModel);
+
+	 //获取该imei的数量
+	 Integer countSameImeiNumber(String imei);
+
 }
 

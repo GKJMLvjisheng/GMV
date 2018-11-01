@@ -1,10 +1,15 @@
 package com.oases.base.rx
 
+import android.content.Intent
 import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.android.arouter.launcher.ARouter.printStackTrace
+import com.alibaba.android.arouter.routes.`ARouter$$Providers$$arouterapi`
+import com.oases.base.common.BaseConstant
 import com.oases.base.presenter.view.BaseView
+import com.oases.base.utils.AppPrefsUtils
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import org.reactivestreams.Subscriber
@@ -30,6 +35,7 @@ open class BaseSubscriber<T>(val baseView: BaseView) : Observer<T> {
         if (e is BaseException) {
             if (e.code == 10001){
                 Log.d("zbb","error 10001")
+                AppPrefsUtils.putString(BaseConstant.USER_TOKEN,"")
                 ARouter.getInstance().build("/userCenter/login").navigation()
                 return
             }

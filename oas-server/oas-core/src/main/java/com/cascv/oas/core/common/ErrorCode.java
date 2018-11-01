@@ -68,7 +68,13 @@ public enum ErrorCode {
   SYSTEM_USER_BALANCE_LOWER_THAN_WARING(10048,"用于提充币的系统在线钱包账号余额已经低于警戒值，请管理员立刻查看原因，并采取行动"),
   FIRSTONE_INPUT_NO_ILLEGAL(10049,"输入不符合规范"),
   FIRSTONE_NOT_EXIST(10050,"FIRSTONE用户不存在"),
-  ALREADY_BACKUP(10051,"已经备份过钱包");
+  INVITECODE_NOT_EXIST(10051,"无此邀请码"),
+  INVITECODE_IS_SELF(10052,"此邀请码为自己"),
+  USER_REGISTER_NO_ACTIVE(10053,"用户未激活,请前往注册页面完成剩余流程"),
+  USER_NO_ACTIVE_BUT_NO_UUID(10054,"该用户未激活却无法获取其用户id"),
+  USER_IMEI_REPEAT(10055,"登录失败，该手机已绑定其他账号"),
+  USER_PASS_NOT_SAME(10056,"获取失败，密码与之前注册时候使用的密码不同"),
+  ALREADY_BACKUP(10057,"已经备份过钱包");
 
 	
   @Getter @Setter private Integer code;

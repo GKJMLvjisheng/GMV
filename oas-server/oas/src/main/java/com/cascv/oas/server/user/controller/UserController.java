@@ -143,6 +143,30 @@ public class UserController extends BaseShiroController{
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
         LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
+	    //查询该用户是否已经激活
+	    UserModel user = userService.findUserByName(loginVo.getName());
+	    if(user == null) {
+	    	return new ResponseEntity.Builder<LoginResult>()
+	                 .setData(loginResult).setErrorCode(ErrorCode.USER_NOT_EXISTS)
+	                 .build();
+	    }
+	    if(user.getStatus() == 2) {
+	    	return new ResponseEntity.Builder<LoginResult>()
+	                 .setData(loginResult).setErrorCode(ErrorCode.USER_REGISTER_NO_ACTIVE)
+	                 .build();
+	    }
+	    //查询该imei是否被其他账号绑定,imei为null表示第一次登陆
+	    if(user.getIMEI() == null) {
+	    	Integer imeiNumber = userService.countSameImeiNumber(loginVo.getIMEI());
+	    	if(imeiNumber>0) {
+	    		 return new ResponseEntity.Builder<LoginResult>()
+		                 .setData(loginResult).setErrorCode(ErrorCode.USER_IMEI_REPEAT)
+		                 .build();
+	    	}
+	    	 //将该imei更新至用户表
+		    userService.updateUserIMEI(loginVo.getName(),loginVo.getIMEI());
+	    }
+	   
       try {
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
@@ -246,33 +270,57 @@ public class UserController extends BaseShiroController{
 	@Transactional
 	@WriteLog(value="Register")
 	public ResponseEntity<?> register(@RequestBody UserModel userModel){
-	  
+
 	  String password = userModel.getPassword();
-		RegisterResult registerResult = new RegisterResult();
-		String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-		EthWallet ethHdWallet = ethWalletService.create(uuid, password);
-		userWalletService.create(uuid);
-		energyPointService.create(uuid);
+      RegisterResult registerResult = new RegisterResult();
+	  String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+	  
+	  ErrorCode ret = userService.addUser(uuid, userModel);//先创建用户
+	  if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {//用户创建成功则添加角色以及3个钱包
 		//给用户赋予默认角色(正常账号roleId为2)
-		
 		  UserRole userRole=new UserRole();
 		  userRole.setUuid(uuid);
 		  userRole.setRoleId(2);
 		  String now =DateUtils.getTime();
 		  userRole.setRolePriority(1);
-
 		  userRole.setCreated(now);		  		  
-		  userRoleModelMapper.insertUserRole(userRole);  
-					
-		  
-		ErrorCode ret = userService.addUser(uuid, userModel);
-//		log.info("inviteCode {}", userModel.getInviteCode());
-  	if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {
-  	  registerResult.setMnemonicList(EthWalletService.fromEncryptedMnemonicList(ethHdWallet.getMnemonicList()));
-  	  registerResult.setUuid(userModel.getUuid());
-  	  ret = ErrorCode.SUCCESS;
-  	}
-  	return new ResponseEntity.Builder<RegisterResult>()
+		  userRoleModelMapper.insertUserRole(userRole);
+		
+		  EthWallet ethHdWallet = ethWalletService.create(uuid, password);
+		  userWalletService.create(uuid);
+		  energyPointService.create(uuid);
+	//		log.info("inviteCode {}", userModel.getInviteCode());
+	  	
+	  	  registerResult.setMnemonicList(EthWalletService.fromEncryptedMnemonicList(ethHdWallet.getMnemonicList()));
+	  	  registerResult.setUuid(userModel.getUuid());
+	  	  ret = ErrorCode.SUCCESS;
+  	  }else if(ret.getCode() == ErrorCode.USER_REGISTER_NO_ACTIVE.getCode()){
+  		  String tUuid = userModel.getUuid();
+  		  UserModel searchUserModel = new UserModel();
+  		  if(tUuid == null) {
+  			searchUserModel = userService.findUserByName(userModel.getName());
+  			if(searchUserModel == null || searchUserModel.getUuid() == null) {
+  				 return new ResponseEntity.Builder<RegisterResult>()
+  					      .setData(registerResult).setErrorCode(ErrorCode.USER_NO_ACTIVE_BUT_NO_UUID).build();
+  			}
+  			tUuid = searchUserModel.getUuid();
+  		  }
+  		  Map<String,Boolean> info = verifyPass(userModel);
+  		  //判断用户与第一次注册时的密码是否一致
+  		  if(info.get("state") == false) {
+  			return new ResponseEntity.Builder<RegisterResult>()
+				      .setData(registerResult).setErrorCode(ErrorCode.USER_PASS_NOT_SAME).build();
+  		  }
+  		  EthWallet userEthWallet = ethWalletService.getEthWalletByUserUuid(tUuid);//获取uuid
+  		  if(userEthWallet ==null) {
+  			return new ResponseEntity.Builder<RegisterResult>()
+				      .setData(registerResult).setErrorCode(ErrorCode.NO_ETH_WALLET).build();
+  		  }
+  		  registerResult.setMnemonicList(EthWalletService.fromEncryptedMnemonicList(userEthWallet.getMnemonicList()));
+	  	  registerResult.setUuid(tUuid);
+	  	  ret = ErrorCode.SUCCESS;
+  	  }
+  	  return new ResponseEntity.Builder<RegisterResult>()
 		      .setData(registerResult).setErrorCode(ret).build();
 	}
 
@@ -307,6 +355,8 @@ public class UserController extends BaseShiroController{
 				energyPointService.destroy(uuid);
 	      userService.deleteUserByUuid(uuid);
 	    }
+	    //注册成功，将用户的未激活状态修改为激活状态
+	    userService.updateUserStatusToActive(userModel!=null?userModel.getName():"");
 	    return new ResponseEntity.Builder<Integer>()
 	          .setData(0)
 	          .setErrorCode(ErrorCode.SUCCESS)
@@ -644,6 +694,37 @@ public class UserController extends BaseShiroController{
 			      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
        }
     }
+    
+    @RequestMapping(value="/verifyPassword",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<?> verifyPassword(@RequestBody UserModel userModel) {
+    	Map<String,Boolean> map = verifyPass(userModel);
+       if (map.get("state")){
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+			      .setData(map).setErrorCode(ErrorCode.SUCCESS).build();
+		
+       }else{
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+			      .setData(map).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+       }
+    }
+    
+    private Map<String,Boolean> verifyPass(UserModel userModel){
+    	 Map<String,Boolean> info=new HashMap<>();
+         String nameIn = userModel.getName(); 
+         String passwordIn = userModel.getPassword();
+         UserModel userNewModel = userService.findUserByName(nameIn);
+         String saltDb = userNewModel.getSalt();  
+         String userPasswordDb = userNewModel.getPassword(); 
+         String userPasswordOu = new Md5Hash(nameIn+passwordIn+saltDb).toHex().toString(); 
+         if (userPasswordOu.equals(userPasswordDb)){
+             info.put("state", true);
+         }else{
+        	 info.put("state", false);
+         }
+         return info;
+    }
+    
 	@PostMapping(value = "/sendMail")
 	@ResponseBody
 	@WriteLog(value="SendMail")
@@ -1378,7 +1459,6 @@ public class UserController extends BaseShiroController{
 	  	    
 	  	    
 	        List<UserDetailModel> userList=userService.selectUsersByPage(offset, limit,pageInfo.getRoleId(),searchValue);
-	        
 	        Integer count = userService.countUsers(pageInfo.getRoleId());			        			     
 	        
 	        PageDomain<UserDetailModel> pageUserDetail = new PageDomain<>();
@@ -1450,6 +1530,11 @@ public class UserController extends BaseShiroController{
     @WriteLog(value="inquireUserKYCInfo")
     public ResponseEntity<?> inquireUserKYCInfo(@RequestBody UserDetailModel kycModel){
 		    UserDetailModel newKYCModel =userIdentityCardModelMapper.inquireUserKYCInfo(kycModel.getName());
+		    UserModel userModel=userModelMapper.selectSuperiorsUserByInviteFrom(newKYCModel.getInviteFrom());
+		    if(userModel !=null) {
+		    newKYCModel.setSupriorUserName(userModel.getName());
+		    newKYCModel.setSupriorUserInviteCode(userModel.getInviteCode());
+		    }
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
 		    errorCode=ErrorCode.GENERAL_ERROR;
@@ -1457,8 +1542,79 @@ public class UserController extends BaseShiroController{
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();
-
 	}
+	
+	/**
+	 * @author Ming Yang
+	 * @param pageInfo
+	 * @return
+	 *       查看所有下线用户
+	 */
+	@PostMapping(value="/inquireInvitedUsers")
+    @ResponseBody
+    @WriteLog(value="inquireInvitedUsers")
+    public ResponseEntity<?> inquireInvitedUsers(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
+
+	    if (pageSize == 0) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+		UserModel userModel=userModelMapper.selectByName(pageInfo.getName());
+		Integer inviteCode=userModel.getInviteCode();
+		List<UserModel> promotedUserModelList=userModelMapper.selectInvitedUsersByInviteCode(inviteCode);
+		PageDomain<UserModel> promotedUserModel=new PageDomain<>();
+		Integer count=userModelMapper.userInvitedCountTotal(inviteCode);
+			promotedUserModel.setTotal(count);
+			promotedUserModel.setAsc("desc");
+			promotedUserModel.setOffset(offset);
+			promotedUserModel.setPageNum(pageNum);
+			promotedUserModel.setPageSize(pageSize);
+			promotedUserModel.setRows(promotedUserModelList);
+		return new ResponseEntity.Builder<PageDomain<UserModel>>()
+                .setData(promotedUserModel)
+                .setErrorCode(ErrorCode.SUCCESS)
+                .build();
+	}
+	
+	@PostMapping(value="/updateUserInviteFrom")
+    @ResponseBody
+    @WriteLog(value="updateUserInviteFrom")
+    public ResponseEntity<?> updateUserInviteFrom(@RequestBody UserModel userInfo){
+		UserModel userModel = new UserModel();
+		UserModel supriorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(userInfo.getInviteFrom());
+		UserModel nowUserModel=userModelMapper.selectByName(userInfo.getName());
+		if(supriorsUserModel != null) {
+			userModel.setName(userInfo.getName());
+			userModel.setInviteFrom(userInfo.getInviteFrom());
+			String inviteCode=nowUserModel.getInviteCode().toString();
+			String inviteFrom=userInfo.getInviteFrom().toString();
+			if(inviteCode.equals(inviteFrom)) {
+				return new ResponseEntity.Builder<Integer>()
+		                .setData(2)
+		                .setErrorCode(ErrorCode.INVITECODE_IS_SELF)
+		                .build();
+			}else {
+				userModelMapper.updateUserInfo(userModel);
+				return new ResponseEntity.Builder<UserModel>()
+		                .setData(userModel)
+		                .setErrorCode(ErrorCode.SUCCESS)
+		                .build();
+			}
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+	                .setData(1)
+	                .setErrorCode(ErrorCode.INVITECODE_NOT_EXIST)
+	                .build();
+		}
+	}
+	
 	/**
 	 * 生成随即字串
 	 * @param length
@@ -1518,6 +1674,6 @@ public class UserController extends BaseShiroController{
 		}else {
 			log.info(name+"用户已存在");
 		}
-		
 	}
+	
 }

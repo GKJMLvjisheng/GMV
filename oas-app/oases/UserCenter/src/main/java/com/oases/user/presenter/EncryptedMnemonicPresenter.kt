@@ -24,7 +24,7 @@ class EncryptedMnemonicPresenter @Inject constructor() : BasePresenter<Encrypted
 
 
 
-    fun getReward(sourceCode: Int) {
+    fun getReward(sourceCode: String) {
         if (!checkNetWork()) {
             return
         }

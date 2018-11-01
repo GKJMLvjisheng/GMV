@@ -82,5 +82,6 @@ interface UserApi {
     @POST("/api/v1/ethWallet/backup")
     fun getPrivateKeyMnemonic():Observable<BaseResp<PrivateKeyMnemonicResp>>
 
-
+    @POST("/api/v1/userCenter/verifyPassword")
+    fun verifyPassword(@Body req: confirmOldPwdReq):Observable<BaseResp<confirmOldPwdResp>>
 }

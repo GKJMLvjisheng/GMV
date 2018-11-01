@@ -64,6 +64,76 @@ function Confirm(){
 	}); 
 }
 
+//查看下级用户
+function downUser(name,roleId){		
+	$('#downName').val(name);
+	initDownUserGrid();	
+	$("#downUserModal").modal("show");												
+}
+
+function ViewCode(name, roleId, code){
+	
+	$('#codeName').val(name);
+	$('#codeId').val(roleId);
+	if(code!=0){
+		$('#code').val(code);
+	}else{
+		$('#code').val("");  //防止操作一行数据（写入邀请码），其他行邀请码自动填写相同的数据
+	}
+	
+	$("#addCodeModal").modal("show");	
+}
+
+function addCode(){
+	var name = $('#codeName').val();
+	var code = $('#code').val();
+	var roleId = $('#codeId').val();
+	if(code==""){
+		alert("请先输入邀请码再修改！");
+		return;
+	}
+	var data={		
+			"name":name,
+			"inviteFrom":code,
+			}
+
+		$.ajax({		
+			url: "/api/v1/userCenter/updateUserInviteFrom",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(data),
+			processData : false,
+			async : false,
+
+			success: function(res) {
+				if(res.code==0){
+					document.getElementById("tipContent").innerText="邀请码修改成功";
+					$("#Tip").modal('show');
+					if(roleId==2){
+						var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+						$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新正常账号当前页
+						
+					}else if(roleId==3){
+						var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+						$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新测试账号当前页							
+						
+					}
+												
+				}else{
+					var message = res.message;
+					document.getElementById("tipContent").innerText=res.message;
+					$("#Tip").modal('show');
+				}			
+			}, 
+			error: function(){
+				document.getElementById("tipContent").innerText="邀请码修改过程发生错误";
+				$("#Tip").modal('show');
+			}
+		}); 
+}
+
 function role(name,roleId){
 	if(roleId==2){
 		var rows=$("#normalGrid").bootstrapTable('getRowByUniqueId', name);
@@ -200,6 +270,19 @@ function changeStatus(){
 			$("#Tip").modal('show');
 		}
 	}); 
+}
+
+//添加上级用户邀请码 点击取消后清空表单中已写信息
+function resetCodeModal(){
+	var codeId = $("#codeId").val();
+	if(codeId==2){
+		var pageNumber1 = $("#normalGrid").bootstrapTable('getOptions').pageNumber;
+		$("#normalGrid").bootstrapTable('selectPage',pageNumber1);  //刷新当前页
+		
+	}else if(codeId==3){
+		var pageNumber2 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
+		$("#testGrid").bootstrapTable('selectPage',pageNumber2);  //刷新当前页
+	}
 }
 
 //重置IMEI 点击取消后清空表单中已写信息

@@ -36,7 +36,7 @@ class PrivateKeyMnemonicPresenter @Inject constructor() : BasePresenter<PrivateK
         }, lifecycleProvider)
     }
 
-    fun getReward(sourceCode: Int) {
+    fun getReward(sourceCode: String) {
         if (!checkNetWork()) {
             return
         }

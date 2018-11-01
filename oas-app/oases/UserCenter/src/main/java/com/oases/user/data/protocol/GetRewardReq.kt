@@ -1,3 +1,3 @@
 package com.oases.user.data.protocol
 
-data class GetRewardReq (val sourceCode: Int)
+data class GetRewardReq (val sourceCode: String)

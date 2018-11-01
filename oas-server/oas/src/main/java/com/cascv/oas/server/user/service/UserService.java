@@ -82,7 +82,11 @@ public class UserService {
 
     UserModel searchUserModel = findUserByName(userModel.getName());
     if (searchUserModel != null) {
-      return ErrorCode.USER_ALREADY_EXISTS;
+    	if(searchUserModel.getStatus() == 2) {
+    		return ErrorCode.USER_REGISTER_NO_ACTIVE;
+    	}else {
+    		 return ErrorCode.USER_ALREADY_EXISTS;
+    	}
     }
     if (userModel.getNickname() == null) {
       userModel.setNickname(userModel.getName());
@@ -96,8 +100,9 @@ public class UserService {
 //        userModel.setInviteFrom(userModel.getInviteFrom());
 //      }
     userModel.setUuid(uuid);
+    userModel.setStatus(2); //未激活状态
     userModel.setSalt(DateUtils.getTime());
-	  userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
+	userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());
 	
     //产生邀请码       
 //    String inviteCode = InviteCodeUtils.getFromUuid(uuid);
@@ -280,6 +285,21 @@ public class UserService {
     	return userModelMapper.countUsers(roleId);
     }
    
+    //查询该imei在数据库中有几条
+    public Integer countSameImeiNumber(String imei) {
+    	return userModelMapper.countSameImeiNumber(imei);
+    }
+    //更新用户的账号为激活状态
+    public void updateUserStatusToActive(String name){
+    	userModelMapper.updateUserStatus(1,name);
+    }
+    //更新用户的imei
+    public void updateUserIMEI(String name,String IMEI) {
+    	UserModel userModel = new UserModel();
+    	userModel.setName(name);
+    	userModel.setIMEI(IMEI);
+    	userModelMapper.updateIMEI(userModel);
+    }
 }
 
 

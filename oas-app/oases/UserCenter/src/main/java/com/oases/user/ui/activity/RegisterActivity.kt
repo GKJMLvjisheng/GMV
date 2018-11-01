@@ -1,5 +1,6 @@
 package com.oases.user.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -30,6 +31,11 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
     }
 
     private fun initView() {
+        var uuid : String = AppPrefsUtils.getString(BaseConstant.USER_UUID)
+        //Log.i("zhtr","uuid=".plus(uuid))
+        if(uuid.isNullOrBlank()){
+            AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS, 0) //用户点击获取助记词后有uuid，第一次进入注册页面为0
+        }
         mRegisterBtn.onClick(this)
         mPwdEt.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -54,8 +60,17 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
         AppPrefsUtils.putString(BaseConstant.USER_NAME, mNameEt.text.toString())
         AppPrefsUtils.putString(BaseConstant.USER_PASSWORD, mPwdEt.text.toString())
         AppPrefsUtils.putString(BaseConstant.USER_UUID, result.uuid)
+        var times:Int = AppPrefsUtils.getInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS)
+        times++
+        AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS,times)
         //AppPrefsUtils.putString(BaseConstant.USER_INVITE_CODE,mInviteFrom.text.toString())
-        startActivity<CreateHelpWordsActivity>("help_words" to result.mnemonicList.toTypedArray())
+        //startActivity<CreateHelpWordsActivity>("help_words" to result.mnemonicList.toTypedArray(),"register_times" to times.toString())
+        var intent = Intent(this,CreateHelpWordsActivity::class.java)
+        var bundle =Bundle()
+        bundle.putStringArray("help_words",result.mnemonicList.toTypedArray())
+        bundle.putString("register_times",times.toString())
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     override fun onClick(view:View){
@@ -63,7 +78,13 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
             R.id.mRegisterBtn -> {
                 if (isInputOk())
                 {
-                    mPresenter.register(mNameEt.text.toString(), mPwdEt.text.toString(), mInviteFrom.text.toString(), getDeviceId(this))
+                    var uuid : String? = AppPrefsUtils.getString(BaseConstant.USER_UUID)
+                    var name : String = AppPrefsUtils.getString(BaseConstant.USER_NAME)
+                    if(name != mNameEt.text.toString()){ //不同用户注册
+                        AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS, 0)
+                        uuid = null
+                    }
+                    mPresenter.register(mNameEt.text.toString(), mPwdEt.text.toString(), mInviteFrom.text.toString(), null)//getDeviceId(this)注册不传imei
                 }
             }
         }

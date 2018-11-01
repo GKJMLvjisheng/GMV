@@ -73,17 +73,22 @@
         <activity
             android:name=".ui.activity.DoneMailActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.ForgetPwdOneActivity"
+        <activity
+            android:name=".ui.activity.ForgetPwdOneActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.activity.ForgetPwdTwoActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.ResetPwdActivity"
+        <activity
+            android:name=".ui.activity.ResetPwdActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.PasswordInSecurityActivity"
+        <activity
+            android:name=".ui.activity.PasswordInSecurityActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.SetPasswordActivity"
+        <activity
+            android:name=".ui.activity.SetPasswordActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.MnemonicBackupActivity"
+        <activity
+            android:name=".ui.activity.MnemonicBackupActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 

@@ -96,7 +96,12 @@
 			#{name,jdbcType=VARCHAR},
 			#{password,jdbcType=VARCHAR},
 			#{salt,jdbcType=VARCHAR},
+			<if test="status == null">
 			'1',
+			</if>
+			<if test="status != null">
+			    #{status,jdbcType=INTEGER},
+			</if>
 			<if test="nickname != null">
 				#{nickname,jdbcType=VARCHAR},
 			</if>
@@ -182,6 +187,11 @@
 		from user_info where invite_from = #{inviteCode}
 	</select>
 	
+	<select id="selectInvitedUsersByInviteCode" resultMap="userResultMap">
+	select
+		<include refid="Base_Column_List" />
+		from user_info where invite_from = #{inviteCode};
+	</select>
 	<!-- Name:upadateUserInfo -->
 	<!-- Author:lvjisheng -->
 	<!-- Date:2018.09.03 -->
@@ -194,6 +204,9 @@
 			</if>
 			<if test="gender!= null">
 				gender= #{gender},
+			</if>
+			<if test="inviteFrom!= null">
+				invite_from= #{inviteFrom},
 			</if>
 			<if test="address != null">
 				address = #{address},
@@ -294,6 +307,7 @@
     <result column="email" property="email"/>
     <result column="IMEI" property="IMEI"/>
     <result column="created" property="created"/>
+     <result column="invite_from" property="inviteFrom"/>
     <result column="status" property="status"/>
     <result column="roleId" property="roleId"/>
     <result column="user_identity_name" property="userIdentityName"/>
@@ -315,6 +329,7 @@
 	    U.IMEI as IMEI,
 	    U.status as status,
 		U.created as created,
+		U.invite_from as invite_from,
 		ICI.user_identity_name as user_identity_name,
 		ICI.user_identity_number as user_identity_number,
 		ICI.remark as remark,
@@ -354,6 +369,10 @@
 	status = #{status}
 	where name = #{name}
   </update>
+  
+  <select id="countSameImeiNumber" resultType="java.lang.Integer">
+  select count(*) from user_info where IMEI = #{imei}
+  </select>
  
 </mapper>
 

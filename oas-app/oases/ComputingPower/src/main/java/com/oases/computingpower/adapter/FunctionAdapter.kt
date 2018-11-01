@@ -22,7 +22,8 @@ class FunctionAdapter(
 
     private val inflater: LayoutInflater
     private lateinit var mData:List<FunctionItem>
-    private var indexList:MutableList<Int> = arrayListOf()
+    //private var indexList:MutableList<Int> = arrayListOf()
+    private var indexList:MutableList<String> = arrayListOf()
 
     init {
         inflater = LayoutInflater.from(context)
@@ -38,11 +39,16 @@ class FunctionAdapter(
         setImage(item.imageUrl, viewHolder.image)
         Log.d("zbb", "set name ${item.name}")
         viewHolder.name.text = item.name
-        if(indexList.size>0 && indexList.contains(position)){
+
+        if(indexList.size>0 && indexList.contains(item.name)){
+            viewHolder.badge.setBadgeText("√").badgeGravity = Gravity.END or Gravity.TOP
+            //viewHolder.badge = null
+        }
+        /*if(indexList.size>0 && indexList.contains(position)){
            viewHolder.badge.setBadgeText("√").badgeGravity = Gravity.END or Gravity.TOP
         //    viewHolder.name.text = item.name.plus("1111")
             viewHolder.badge = null
-        }
+        }*/
         /*for(i in indexList){
             Log.i("zbb",i.toString())
             if(position == i){
@@ -58,10 +64,15 @@ class FunctionAdapter(
         }
 
     }
-    fun setIndex(mList:MutableList<Int>){
+
+    fun setIndex(mList:MutableList<String>){
         indexList.clear()
         indexList.addAll(mList)
     }
+    /*fun setIndex(mList:MutableList<Int>){
+        indexList.clear()
+        indexList.addAll(mList)
+    }*/
     /*fun update(data: List<FunctionItem>){
         mData = data
         notifyDataSetChanged()
