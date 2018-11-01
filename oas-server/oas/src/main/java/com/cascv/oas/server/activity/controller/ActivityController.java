@@ -28,6 +28,7 @@ import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
+import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
@@ -45,6 +46,7 @@ public class ActivityController {
 	private ActivityMapper activityMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
+	
 	@PostMapping(value = "/addActivity")
     @ResponseBody
     public ResponseEntity<?> addActivity(@RequestBody ActivityRequest activityRequest){
@@ -63,6 +65,23 @@ public class ActivityController {
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		
+	}
+	
+	@PostMapping(value = "/inquireSourceUuid")
+    @ResponseBody
+    public ResponseEntity<?> inquireSourceUuid(@RequestBody ActivityDelete activityDelete){
+		String sourceUuid = activityDelete.getSourceUuid();
+		ActivityModel activityModel = activityMapper.selectActivityBySourceUuid(sourceUuid);
+		if(activityModel == null) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();
+		}else
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SOURCE_UUID_EXSIT)
+					.build();
 	}
 	
 	@PostMapping(value = "/selectAllActivity")
@@ -118,6 +137,23 @@ public class ActivityController {
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
+	}
+	
+	@PostMapping(value = "/inquireRewardUuid")
+    @ResponseBody
+    public ResponseEntity<?> inquireRewardUuid(@RequestBody RewardCode rewardCode){
+		String rewardUuid = rewardCode.getRewardUuid();
+		RewardModel rewardModel = activityMapper.selectRewardByRewardCode(rewardUuid);
+		if(rewardModel == null) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();
+		}else
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SOURCE_UUID_EXSIT)
+					.build();
 	}
 	
 	
