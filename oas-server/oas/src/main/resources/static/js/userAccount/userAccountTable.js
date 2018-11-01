@@ -680,9 +680,7 @@ function ViewViewById(name){
 			$('#Qremark').val(rows.remark);	
 			
 			$('#QupName').val(rows.supriorUserName);	
-			$('#Qcode').val(supriorUserInviteCode);	
-			
-			$('#code1').val(supriorUserInviteCode);	
+			$('#Qcode').val(supriorUserInviteCode);				
 		
 			$("#queryModal").modal("show");
 		}
