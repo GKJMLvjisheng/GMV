@@ -73,8 +73,9 @@ public enum ErrorCode {
   USER_REGISTER_NO_ACTIVE(10053,"用户未激活,请前往注册页面完成剩余流程"),
   USER_NO_ACTIVE_BUT_NO_UUID(10054,"该用户未激活却无法获取其用户id"),
   USER_IMEI_REPEAT(10055,"登录失败，该手机已绑定其他账号"),
-  USER_PASS_NOT_SAME(10056,"获取失败，密码与之前注册时候使用的密码不同");
-
+  USER_PASS_NOT_SAME(10056,"获取失败，密码与之前注册时候使用的密码不同"),
+  ALREADY_BACKUP(10057,"已经备份过钱包"),
+  SOURCE_UUID_EXSIT(10058, "标识符已存在");
 
 	
   @Getter @Setter private Integer code;

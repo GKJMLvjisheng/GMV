@@ -71,7 +71,7 @@ public class ComputingPowerController {
 	private EnergySourcePowerMapper energySourcePowerMapper;
 	@Autowired
     private UserModelMapper userModelMapper;
-	private static final Integer POWER_SOURCE_CODE_OF_WECHAT = 7;
+	private static final String POWER_SOURCE_CODE_OF_WECHAT = "WECHATACCOUNT";
     ActivityCompletionStatus activityCompletionStatus=new ActivityCompletionStatus();   	
 	@PostMapping(value = "/inquirePowerActivityStatus")
     @ResponseBody
@@ -316,25 +316,6 @@ public class ComputingPowerController {
 		
 	}
 	
-	@PostMapping(value = "/backupsWallet")
-    @ResponseBody
-	public ResponseEntity<?> backupsWallet(){
-		
-		String userUuid = ShiroUtils.getUserUuid();
-		ErrorCode errorCode = ErrorCode.SUCCESS;
-		
-		if(powerService.isBackupsWallet(userUuid) == 0) {
-			//do backupsWallet
-			
-			return new ResponseEntity.Builder<Integer>().setData(0).setErrorCode(errorCode).build();
-			
-		}else {
-			errorCode = ErrorCode.IS_BACKUPS_WALLET;
-			return new ResponseEntity.Builder<Integer>().setData(1).setErrorCode(errorCode).build();
-
-		}		
-
-	}
 		
 	@PostMapping(value = "/addTopic")
     @ResponseBody
@@ -542,10 +523,10 @@ public class ComputingPowerController {
 	@PostMapping(value = "/doGetReward")
     @ResponseBody
     public ResponseEntity<?> doGetReward(@RequestBody ActivityResult activityResult){
-	Integer sourceCode=activityResult.getSourceCode();
+	String sourceUuid=activityResult.getSourceUuid();
     String userUuid=ShiroUtils.getUser().getUuid();
-    if(activityMapper.inquireACSByUserUuidAndSouceCode(sourceCode, userUuid)==null){  	
-    	activityService.getReward(sourceCode, userUuid);
+    if(activityMapper.inquireACSByUserUuidAndSouceCode(sourceUuid, userUuid)==null){  	
+    	activityService.getReward(sourceUuid, userUuid);
     	// change the Checkin EnergyBall to Die
         activityService.updateEnergyPointBallStatusByUuid(userUuid);
         activityService.updateEnergyPowerBallStatusByUuid(userUuid);
