@@ -168,7 +168,7 @@ public class PowerService {
     	List<EnergyPowerChangeDetail> powerList = new ArrayList<>();
     	
     	for(EnergyPowerChangeDetail energyPowerChangeDetail : energyPowerChangeDetailList) {
-    		if(energyPowerChangeDetail.getSourceUuid() != null && energyPowerChangeDetail.getSourceUuid() == "BUYMINER" && energyPowerChangeDetail.getInOrOut() == 0) {
+    		if(energyPowerChangeDetail.getSourceUuid() != null && energyPowerChangeDetail.getSourceUuid().equals("BUYMINER") && energyPowerChangeDetail.getInOrOut() == 0) {
     			energyPowerChangeDetail.setActivity("矿机失效");
     		}
     		if(energyPowerChangeDetail.getSourceUuid() != null && energyPowerChangeDetail.getSourceUuid().equals("PROMOTEMINER") && energyPowerChangeDetail.getInOrOut() == 1) {
