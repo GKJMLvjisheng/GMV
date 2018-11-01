@@ -171,10 +171,10 @@ public class PowerService {
     		if(energyPowerChangeDetail.getSourceUuid() != null && energyPowerChangeDetail.getSourceUuid() == "BUYMINER" && energyPowerChangeDetail.getInOrOut() == 0) {
     			energyPowerChangeDetail.setActivity("矿机失效");
     		}
-    		if(energyPowerChangeDetail.getSourceUuid() != null &&energyPowerChangeDetail.getSourceUuid() == "PROMOTEMINER" && energyPowerChangeDetail.getInOrOut() == 1) {
+    		if(energyPowerChangeDetail.getSourceUuid() != null && energyPowerChangeDetail.getSourceUuid().equals("PROMOTEMINER") && energyPowerChangeDetail.getInOrOut() == 1) {
     			energyPowerChangeDetail.setActivity("矿机推广奖励");
     		}
-    		if(energyPowerChangeDetail.getSourceUuid() != null &&energyPowerChangeDetail.getSourceUuid() == "PROMOTEMINER" && energyPowerChangeDetail.getInOrOut() == 0) {
+    		if(energyPowerChangeDetail.getSourceUuid() != null && energyPowerChangeDetail.getSourceUuid().equals("PROMOTEMINER") && energyPowerChangeDetail.getInOrOut() == 0) {
     			energyPowerChangeDetail.setActivity("矿机推广奖励到期");
     		}
     		energyPowerChangeDetail.setValue(energyPowerChangeDetail.getPowerChange());
