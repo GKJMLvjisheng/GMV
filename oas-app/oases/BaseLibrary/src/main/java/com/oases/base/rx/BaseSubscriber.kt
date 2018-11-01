@@ -2,8 +2,10 @@ package com.oases.base.rx
 
 import android.support.v4.content.ContextCompat.startActivity
 import android.util.Log
+import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.android.arouter.launcher.ARouter.printStackTrace
+import com.alibaba.android.arouter.routes.`ARouter$$Providers$$arouterapi`
 import com.oases.base.presenter.view.BaseView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable

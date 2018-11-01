@@ -24,15 +24,13 @@
         android:id="@+id/mInviteNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:viewName="已邀请好友数"
-        app:viewValue="3">
+        app:viewName="已邀请好友数">
     </com.oases.base.widgets.ViewInfoBar>
     <com.oases.base.widgets.ViewInfoBar
         android:id="@+id/mTotalLift"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:viewName="累计提升算力"
-        app:viewValue="315">
+        app:viewName="累计提升算力">
     </com.oases.base.widgets.ViewInfoBar>
     <RelativeLayout
         android:layout_width="match_parent"
