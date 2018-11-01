@@ -21,10 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 public class OnlineSessionFactory implements SessionFactory
 {
     public Session createSession(UserOnline userOnline) {
-    	log.info("factory create session, loginName-{}, session-{}", userOnline.getLoginName(), userOnline.getSessionId());
+    	log.info("OnlineSessionFactory create session, loginName-{}, session-{}", userOnline.getLoginName(), userOnline.getSessionId());
         OnlineSession onlineSession = userOnline.getSession();
         if (StringUtils.isNotNull(onlineSession) && onlineSession.getId() == null) {
-        	log.info("factory create session set id");
+        	log.info("OnlineSessionFactory create session set id {}", userOnline.getSessionId());
             onlineSession.setId(userOnline.getSessionId());
         }
         return userOnline.getSession();
@@ -34,12 +34,15 @@ public class OnlineSessionFactory implements SessionFactory
     public Session createSession(SessionContext initData) {
       OnlineSession session = new OnlineSession();
       if (initData != null && initData instanceof WebSessionContext) {
-    	log.info("create session initData not null");
 		WebSessionContext sessionContext = (WebSessionContext) initData;
 		HttpServletRequest request = (HttpServletRequest) sessionContext.getServletRequest();
 		if (request != null) {
 		    session.setHost(IpUtils.getIpAddr(request));
+		    log.info("request path {}", request.getContextPath());
 		}
+		log.info("sessionContext {}", sessionContext.getSessionId());
+		
+		log.info("createSession id {} name {}", session.getId(), session.getLoginName());
       }
       return session;
    }

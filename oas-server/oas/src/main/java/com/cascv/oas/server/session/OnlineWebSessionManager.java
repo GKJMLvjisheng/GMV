@@ -103,7 +103,6 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
     @Override
     public void validateSessions()
     {
-      log.info("invalidation sessions...");
       int invalidCount = 0;
 
       int timeout = (int) this.getGlobalSessionTimeout();
@@ -125,6 +124,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
             log.debug("Invalidated session with id [{}] {}", userOnline.getSessionId(), s);
           }
           invalidCount++;
+          log.info("{} Invalidate session with id {}", invalidCount, userOnline.getSessionId());
           needOfflineIdList.add(userOnline.getSessionId());
         }
       }
