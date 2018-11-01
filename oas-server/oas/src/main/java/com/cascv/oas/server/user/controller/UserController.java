@@ -122,6 +122,7 @@ public class UserController extends BaseShiroController{
   private ActivityService activityService;
   
   private static final String KYC_SOURCE_CODE = "KYC";
+  private static final String SIGN_UP = "SIGNUP";
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -357,6 +358,7 @@ public class UserController extends BaseShiroController{
 	    }
 	    //注册成功，将用户的未激活状态修改为激活状态
 	    userService.updateUserStatusToActive(userModel!=null?userModel.getName():"");
+	    activityService.getReward(SIGN_UP, registerConfirm.getUuid());
 	    return new ResponseEntity.Builder<Integer>()
 	          .setData(0)
 	          .setErrorCode(ErrorCode.SUCCESS)
@@ -1537,8 +1539,8 @@ public class UserController extends BaseShiroController{
 		    }
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
-		    errorCode=ErrorCode.GENERAL_ERROR;
-	        return new ResponseEntity.Builder<UserDetailModel>()
+		    	errorCode=ErrorCode.GENERAL_ERROR;
+		    return new ResponseEntity.Builder<UserDetailModel>()
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();
