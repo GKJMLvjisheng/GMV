@@ -46,8 +46,8 @@ class ProgressLoading private constructor(context: Context, theme: Int) : Dialog
         显示加载对话框，动画开始
      */
     fun showLoading() {
-        /*super.show()
-        animDrawable?.start()*/
+        super.show()
+        animDrawable?.start()
     }
 
     /*
