@@ -19,6 +19,7 @@ import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.model.PointTradeRecord;
 import com.cascv.oas.server.common.UuidPrefix;
+import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.service.EnergyService;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
@@ -45,10 +46,13 @@ public class WalkService {
 	private MinerMapper minerMapper;
 	
 	@Autowired
+	private EnergyWalletMapper energyWalletMapper;
+	
+	@Autowired
 	private EnergyService energyService;
 	
-	private static final Integer SOURCE_CODE_OF_WALKING = 3;             // 能量球来源：计步为3
-	private static final Integer REWARD_CODE_OF_WALKING_POINT = 1;             //能量球奖励：计步奖励积分，为1
+	private static final String SOURCE_UUID_OF_WALKING = "WALK";             // 能量球来源：计步为3
+	private static final String REWARD_UUID_OF_WALKING_POINT = "POINT";             //能量球奖励：计步奖励积分，为1
 	private static final Integer STATUS_OF_ACTIVE_ENERGYBALL = 1;         //能量球活跃状态，可被获取
 	private static final Integer STATUS_OF_DIE_ENERGYBALL = 0;            //能量球死亡状态，不可被获取
 	private static final Integer ENERGY_IN = 1;                            //表示能量球的进账
@@ -65,7 +69,7 @@ public class WalkService {
      * @return
      */
 	public List<StepPointQuota> getPoint(List<StepNumQuota> quota, String userUuid) {
-		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALKING, REWARD_CODE_OF_WALKING_POINT);
+		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALKING, REWARD_UUID_OF_WALKING_POINT);
 		List<StepPointQuota> stepPointQuotaList = new ArrayList<>();
 		for(int i=0; i<quota.size(); i++){
 			StepPointQuota stepPointQuota = new StepPointQuota();
@@ -152,7 +156,7 @@ public class WalkService {
 		newEnergyPointBall.setUuid(uuid);
 		log.info("uuid={}", newEnergyPointBall.getUuid());
 		newEnergyPointBall.setUserUuid(userUuid);
-		newEnergyPointBall.setSourceCode(SOURCE_CODE_OF_WALKING);
+		newEnergyPointBall.setSourceUuid(SOURCE_UUID_OF_WALKING);
 		newEnergyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		
 		List<StepNumQuota> stepNumQuotaList = new ArrayList<>();
@@ -175,7 +179,7 @@ public class WalkService {
 			energyPointBall.setUuid(walkBall.getUuid());
 			log.info("uuid={}", energyPointBall.getUuid());
 			energyPointBall.setUserUuid(userUuid);
-			energyPointBall.setSourceCode(SOURCE_CODE_OF_WALKING);
+			energyPointBall.setSourceUuid(SOURCE_UUID_OF_WALKING);
 			energyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 			
 			energyPointBall.setPoint(this.getPoint(quota, userUuid).get(i).getPoint());
@@ -219,12 +223,7 @@ public class WalkService {
 		if (StringUtils.isEmpty(userUuid)) {
             return null;
         }
-		List<WalkBall> walkBallList = walkMapper
-				.selectWalkBall(userUuid, STATUS_OF_ACTIVE_ENERGYBALL);
-		WalkBall todayWalkBall = walkMapper.selectTodayWalkBall(userUuid);
-		if(todayWalkBall != null && todayWalkBall.getStatus() == 0) {
-			walkBallList.add(todayWalkBall);
-		}
+		List<WalkBall> walkBallList = walkMapper.selectWalkBall(userUuid);
 		//如果没有球，则产生球
 		if(walkBallList.size() == 0) {
 			this.addWalkPointBall(userUuid, quota);
@@ -253,7 +252,7 @@ public class WalkService {
 				}
 			}
 		}
-		List<WalkBallReturn> walkBallReturnList = walkMapper.selectEnergyBallList(userUuid, SOURCE_CODE_OF_WALKING, STATUS_OF_ACTIVE_ENERGYBALL);
+		List<WalkBallReturn> walkBallReturnList = walkMapper.selectEnergyBallList(userUuid, SOURCE_UUID_OF_WALKING, STATUS_OF_ACTIVE_ENERGYBALL);
 		return walkBallReturnList;
 		
 	}
@@ -271,12 +270,19 @@ public class WalkService {
             log.info("userUuid or energyBallUuid is null");
             return null;
         }
-        if (activityMapper.selectByUuid(energyBallUuid).getStatus().equals(STATUS_OF_DIE_ENERGYBALL)) {
+		Integer status = activityMapper.selectByUuid(energyBallUuid).getStatus();
+		log.info("status={}", status);
+        if (activityMapper.selectByUuid(energyBallUuid).getStatus() == STATUS_OF_DIE_ENERGYBALL) {
             log.info("该能量球已经被获取！");
             return null;
         }
-        BigDecimal maxValue = activityMapper
-        		.selectBaseValueBySourceCodeAndRewardCode(SOURCE_CODE_OF_WALKING, REWARD_CODE_OF_WALKING_POINT).getMaxValue();
+        BigDecimal value = activityMapper
+        		.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALKING, REWARD_UUID_OF_WALKING_POINT).getMaxValue();
+        BigDecimal power = BigDecimal.ONE;
+        if(energyWalletMapper.selectByUserUuid(userUuid).getPower().compareTo(BigDecimal.ZERO) != 0) {
+        	power = energyWalletMapper.selectByUserUuid(userUuid).getPower();
+        }
+        BigDecimal maxValue = value.multiply(power);
         BigDecimal point = activityMapper.selectByUuid(energyBallUuid).getPoint();
         //如果计步球的积分满值，则可以采集计步球，但不生成新的计步球
         if(point.compareTo(maxValue) == 0) {

@@ -28,7 +28,7 @@ public class WechatService {
     //private Map<String,Object> userInfo=new HashMap<String,Object>();
     //判断是否输入"获取验证码"
     Boolean isChecked=false;
-    private static final Integer POWER_SOURCE_CODE_OF_OFFICIALACCOUNT = 3; 
+    private static final String POWER_SOURCE_UUID_OF_OFFICIALACCOUNT = "WECHATACCOUNT"; 
     @SuppressWarnings("null")
 	public String processRequest(HttpServletRequest request){
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
@@ -75,7 +75,7 @@ public class WechatService {
 						            String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 						            log.info(userUuid);
 						            activityCompletionStatus.setUserUuid(userUuid);
-						            activityCompletionStatus.setSourceCode(POWER_SOURCE_CODE_OF_OFFICIALACCOUNT);
+						            activityCompletionStatus.setSourceUuid(POWER_SOURCE_UUID_OF_OFFICIALACCOUNT);
 						            //未使用表示1
 						            activityCompletionStatus.setStatus(0);
 						            uuid=UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS);

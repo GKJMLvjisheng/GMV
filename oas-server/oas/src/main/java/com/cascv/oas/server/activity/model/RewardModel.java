@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class RewardModel {
+	@Getter @Setter private String rewardUuid;
 	@Getter @Setter private Integer rewardCode;
 	@Getter @Setter private String rewardName;
 	@Getter @Setter private String rewardDescription;

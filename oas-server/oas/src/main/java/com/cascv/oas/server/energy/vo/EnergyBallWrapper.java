@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @ToString
 public class EnergyBallWrapper {
     @Getter @Setter private String uuid;
-    @Getter @Setter private Integer type;
+    @Getter @Setter private String type;
     @Getter @Setter private String name;
     @Getter @Setter private BigDecimal value;
     @Getter @Setter private String startDate;

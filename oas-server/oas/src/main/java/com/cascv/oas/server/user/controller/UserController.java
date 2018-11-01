@@ -19,7 +19,6 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -75,7 +74,6 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
-import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -123,7 +121,7 @@ public class UserController extends BaseShiroController{
   @Autowired
   private ActivityService activityService;
   
-  private static final Integer KYC_SOURCE_CODE = 12;
+  private static final String KYC_SOURCE_CODE = "KYC";
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -1295,7 +1293,7 @@ public class UserController extends BaseShiroController{
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
 		
-		//activityService.getReward(KYC_SOURCE_CODE, userUuid);
+		activityService.getReward(KYC_SOURCE_CODE, userUuid);
 		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
