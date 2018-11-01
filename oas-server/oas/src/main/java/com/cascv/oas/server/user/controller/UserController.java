@@ -138,7 +138,6 @@ public class UserController extends BaseShiroController{
 		//获取请求头，来判断是来自web的请求还是移动端的请求
 		String userAgent=request.getHeader("user-agent");
 		log.info("user-agent={}",userAgent);
-		log.info("user-agent={}",userAgent);
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
