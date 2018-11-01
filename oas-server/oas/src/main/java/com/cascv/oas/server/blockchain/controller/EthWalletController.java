@@ -28,7 +28,9 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
 import com.cascv.oas.server.activity.service.ActivityService;
+import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.EthWalletTradeRecordMapper;
@@ -73,6 +75,8 @@ public class EthWalletController extends BaseShiroController {
   private EthWalletTradeRecordMapper ethWalletTradeRecordMapper;
   @Autowired
   private ActivityService activityService;
+  @Autowired
+  private ActivityMapper activityMapper;
   
   @PostMapping(value="/transfer")
   @RequiresPermissions("转账")
@@ -506,12 +510,21 @@ public class EthWalletController extends BaseShiroController {
   @ResponseBody
   public ResponseEntity<?> backupWallet(@RequestBody RewardSourceCode rewardSourceCode){
 	  String userUuid = ShiroUtils.getUserUuid();
-	  Integer sourceCode = rewardSourceCode.getSourceCode();
-	  activityService.getReward(sourceCode, userUuid);
-	  return new ResponseEntity.Builder<Integer>()
-			  .setData(0)
-			  .setErrorCode(ErrorCode.SUCCESS)
-			  .build();
+	  String sourceUuid = rewardSourceCode.getSourceUuid();
+	  RewardConfigResult activityConfigReward = activityMapper.inquireACSByUserUuidAndSouceCode(sourceUuid, userUuid);
+	  if(activityConfigReward == null) {
+		  activityService.getReward(sourceUuid, userUuid);
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(0)
+				  .setErrorCode(ErrorCode.SUCCESS)
+				  .build();
+	  }else
+		  return new ResponseEntity.Builder<Integer>()
+				  .setData(0)
+				  .setErrorCode(ErrorCode.ALREADY_BACKUP)
+				  .build();
+	  
+	  
   }
 
   @PostMapping(value="/status")

@@ -1,5 +1,6 @@
 package com.cascv.oas.server.walk.controller;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.List;
 
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.ResponseEntity;
+import com.cascv.oas.server.activity.mapper.ActivityMapper;
+import com.cascv.oas.server.activity.model.ActivityRewardConfig;
+import com.cascv.oas.server.energy.mapper.EnergyWalletMapper;
 import com.cascv.oas.server.energy.vo.EnergyBallTakenResult;
 import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
 import com.cascv.oas.server.log.annotation.WriteLog;
@@ -32,6 +36,10 @@ public class WalkPointBallController {
 	private WalkService walkService; 
 	@Autowired
 	private PermService permService;
+	@Autowired
+	private ActivityMapper activityMapper;
+	@Autowired
+	private EnergyWalletMapper energyWalletMapper;
 	
 	 @PostMapping(value = "/inquireWalkPointBall")  
 	 @ResponseBody
@@ -49,6 +57,26 @@ public class WalkPointBallController {
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		 
+	 }
+	 
+	 @PostMapping(value = "/inquireWalkBallMaxValue")  
+	 @ResponseBody
+	 public ResponseEntity<?> inquireWalkBallMaxValue(){
+		 String userUuid = ShiroUtils.getUserUuid();
+		 ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode("WALK", "POINT");
+		 BigDecimal maxValue = BigDecimal.ZERO;
+		 if(activityRewardConfig != null) {
+			 BigDecimal value = activityRewardConfig.getMaxValue();
+			 BigDecimal power = BigDecimal.ONE;
+		     if(energyWalletMapper.selectByUserUuid(userUuid).getPower().compareTo(BigDecimal.ZERO) != 0) {
+		        power = energyWalletMapper.selectByUserUuid(userUuid).getPower();
+		     }
+			 maxValue = value.multiply(power);
+		 }
+		 return new ResponseEntity.Builder<BigDecimal>()
+				 .setData(maxValue)
+				 .setErrorCode(ErrorCode.SUCCESS)
+				 .build();
 	 }
 	 
 	 

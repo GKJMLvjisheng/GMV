@@ -9,12 +9,12 @@ import java.util.List;
 
 @Component
 public interface EnergySourcePowerMapper {
-    BigDecimal queryPowerSingle(@Param("sourceCode")Integer sourceCode, @Param("rewardCode")Integer rewardCode);
+    BigDecimal queryPowerSingle(@Param("sourceUuid")String sourceUuid, @Param("rewardUuid")String rewardUuid);
     List<ActivityResult> selectByUserUuid(@Param("userUuid")String userUuid);
     ActivityResult selectStatusByUserUuid(@Param("userUuid")String userUuid);
     
     
     Integer insertActivity(ActivityCompletionStatus activityCompletionStatus);
     Integer updateStatus(ActivityCompletionStatus activityCompletionStatus);
-    ActivityCompletionStatus selectACSByUserUuid(@Param("userUuid")String userUuid,@Param("sourceCode")Integer sourceCode);
+    ActivityCompletionStatus selectACSByUserUuid(@Param("userUuid")String userUuid,@Param("sourceUuid")String sourceUuid);
 }

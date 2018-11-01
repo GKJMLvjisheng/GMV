@@ -9,6 +9,7 @@ var check2=1;
 var check3=1;
 var check4=1;
 var check5=1;
+var checkUuid=1;
 //主界面用户表格回显
 $(function() {
 
@@ -48,12 +49,14 @@ function activityReady(){
 }
 $('#rewardName').on('change',function(){
     //获取对应值--后期作为类选择器
+	
     var thisVal = $(this).val();
    if(thisVal=="请选择"){
 	   return;
    }
-   var data={"rewardCode":thisVal,
-		   	 "sourceCode":$("#activitySoureId").val()};
+   var data={"rewardUuid":thisVal,
+		   	 "sourceUuid":$("#activitySoureId").val()};
+   console.log(data)
      $.ajax({
 		   type: 'post',
 		   url: '/api/v1/activityConfig/inquireRewardByRewardCode',
@@ -78,6 +81,57 @@ $('#rewardName').on('change',function(){
 		  
 		  });
 })
+function checkSourceUuid(){
+	var sourceUuid=$("#sourceUuid").val();
+	
+	if(validateUuid(sourceUuid)){
+		
+		$("#msg_sourceUuid").html("");
+		data={"sourceUuid":sourceUuid}
+		$.ajax({
+			type:'post',
+			url:'/api/v1/activityConfig/inquireSourceUuid',
+			data:JSON.stringify(data),
+			contentType:'application/json;charset=utf8',
+			dataType:'json',
+			cache:false,
+			async:false,
+			success:function(res){
+				console.log(res)
+				if(res.code==0){
+					checkUuid=1;
+					
+				}else{
+					checkUuid=0;
+					alert("输入的活动标识符已存在！");
+					$("#msg_sourceUuid").html("该活动标识符已存在");
+					$("#msg_sourceUuid").css("color", "red");
+				}
+			},
+		error:function(res){
+			alert(JSON.stringify(res.message));
+		},
+			
+		});
+			
+		
+	}else{
+		$("#msg_sourceUuid").html("活动标识符由大写的英文字母组成！");
+		 $("#msg_sourceUuid").css("color", "red");
+		checkUuid=0;
+	}
+	
+}
+function validateUuid(num){
+	var reg =/^[A-Z]+$/ ;//匹配英文
+	  
+	  if(reg.test(num)){
+		  
+		  return true;}
+	
+	  return false ;  
+}
+
 function checkEbaseValue(){
 	var baseValue=$("#EbaseValue").val();
 	if(validate(baseValue)||baseValue===""){
@@ -223,7 +277,16 @@ function validateInter(num)
 //新增活动
 function addActivity(){
 	
-    
+	if($("#sourceUuid").val()==="")
+	{
+	alert("活动标识符不能为空");
+	return;
+	}
+	if(!checkUuid)
+	{
+	alert("请填写正确的活动标识符");
+	return;
+	}
 	if($("#sourceName").val()==="")
 		{
 		alert("活动名称不能为空");
@@ -231,7 +294,8 @@ function addActivity(){
 		}
 
 	
-	var data={"sourceName":$("#sourceName").val(),
+	var data={"sourceUuid":$("#sourceUuid").val(),
+			"sourceName":$("#sourceName").val(),
 				"type":$("#sourceType").val()
 			}
 	$.ajax({
@@ -322,7 +386,7 @@ function initActivityRewardGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"rewardCode",//Indicate an unique identifier for each row
+		uniqueId:"rewardUuid",//Indicate an unique identifier for each row
 
 		toolbar:"#rewardToolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
@@ -410,7 +474,7 @@ function initActivityRewardGrid(data) {
 
 			title : " 操作",
 			
-			field : "rewardCode",
+			field : "rewardUuid",
 			align: 'center',
 			valign: 'middle',
 			//width:  '90px',
@@ -436,8 +500,8 @@ function deleteActivityRewardById(id){
 		  return;
 		 }
 
-	data={"rewardCode":id,
-		  "sourceCode":$("#activityId").val()};
+	data={"rewardUuid":id,
+		  "sourceUuid":$("#activityId").val()};
 	//alert(JSON.stringify(data));
 	$.ajax({
 
@@ -470,7 +534,7 @@ function deleteActivityRewardById(id){
 function editActivityRewardById(id){
 	 var rows=$("#activityRewardGrid").bootstrapTable('getRowByUniqueId', id);
 		$("#EActivitySoureId").val($('#activityId').val());  
-	    $("#EActivityRewardId").val(rows.rewardCode);
+	    $("#EActivityRewardId").val(rows.rewardUuid);
 	    $("#ErewardName").val(rows.rewardName); 
 	    
 	    var EselectionUnit = document.getElementById("EincreaseSpeedUnit");
@@ -496,9 +560,9 @@ function updateActivityReward(){
 		alert("请给奖励配置正确参数!");
 		return;
 	}
-	var sourceCode=$("#EActivitySoureId").val();  
+	var sourceUuid=$("#EActivitySoureId").val();  
 	
-    var rewardCode=$("#EActivityRewardId").val();
+    var rewardUuid=$("#EActivityRewardId").val();
 	
 	var baseValue=$("#EbaseValue").val();
 	var increaseSpeed=$("#EincreaseSpeed").val();
@@ -514,8 +578,8 @@ function updateActivityReward(){
 			  "increaseSpeedUnit": increaseSpeedUnit,
 			  "maxValue": maxValue,
 			  "period":period,
-			  "rewardCode": rewardCode,
-			  "sourceCode":sourceCode
+			  "rewardUuid": rewardUuid,
+			  "sourceUuid":sourceUuid
 			};
 		$.ajax({
 			url:"/api/v1/activityConfig/updateActivityRewardConfig",
@@ -549,7 +613,7 @@ function updateActivityReward(){
 		 check3=1;
 		 check4=1;
 		 check5=1;
-		activityRewardReady(sourceCode);
+		activityRewardReady(sourceUuid);
 		resteUpdate();
 }
 function allotReward(){
@@ -563,8 +627,8 @@ function allotReward(){
     	optionUnit.text= Unit[i];
     	selectionUnit.options.add(optionUnit);
     	}
-	var sourceCode=$('#activityId').val();
-	$('#activitySoureId').val(sourceCode);
+	var sourceUuid=$('#activityId').val();
+	$('#activitySoureId').val(sourceUuid);
 	
 $.ajax({
 	url:"/api/v1/activityConfig/selectAllReward",
@@ -592,7 +656,7 @@ $.ajax({
 		    	 for(var i =0;i<len;i++){
                      //设置下拉列表中的值的属性
                      var option = document.createElement("option");
-                         option.value = optionData[i].rewardCode;
+                         option.value = optionData[i].rewardUuid;
                         
                          option.text= optionData[i].rewardName;
                      //将option增加到下拉列表中。
@@ -616,8 +680,8 @@ $.ajax({
 }
 function addAllotReward(){
 	$("#allot").attr("onclick","addAllotReward()");
-	var rewardCode=$("#rewardName").val();
-	if(rewardCode=="请选择"||check1==0){
+	var rewardUuid=$("#rewardName").val();
+	if(rewardUuid=="请选择"||check1==0){
 		alert("请配置该活动没有的奖励!");
 		return;
 	}
@@ -640,15 +704,15 @@ function addAllotReward(){
 		return;
 	}
 	var period=$("#period").val();
-	var sourceCode=$("#activitySoureId").val();
+	var sourceUuid=$("#activitySoureId").val();
 	var data={
 		  "baseValue":baseValue,
 		  "increaseSpeed":increaseSpeed,
 		  "increaseSpeedUnit": increaseSpeedUnit,
 		  "maxValue": maxValue,
 		  "period":period,
-		  "rewardCode": rewardCode,
-		  "sourceCode":sourceCode
+		  "rewardUuid": rewardUuid,
+		  "sourceUuid":sourceUuid
 		};
 	$.ajax({
 		url:"/api/v1/activityConfig/activityRewardConfig",
@@ -683,7 +747,7 @@ function addAllotReward(){
 	 check4=1;
 	 check5=1;
 	resteAllotReward();
-	activityRewardReady(sourceCode);
+	activityRewardReady(sourceUuid);
 }
 
 function initActivityGrid(data) {	
@@ -707,7 +771,7 @@ function initActivityGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"sourceCode",//Indicate an unique identifier for each row
+		uniqueId:"sourceUuid",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
@@ -756,7 +820,7 @@ function initActivityGrid(data) {
 
 			title : " 操作",
 			
-			field : "sourceCode",
+			field : "sourceUuid",
 			align: 'center',
 			valign: 'middle',
 			//width:  '90px',
@@ -814,7 +878,7 @@ function viewActivityById(id){
 function activityRewardReady(id)
 {
 	$('#activityRewardGrid').bootstrapTable('destroy');
-	var data={"sourceCode":id};
+	var data={"sourceUuid":id};
 	//alert(JSON.stringify(data));
 	var data1;
 	$.ajax({
@@ -853,7 +917,7 @@ function editActivityById(id){
 function updateActivity(){
 	 var type=$('#EsourceType').val();
 	 var sourceCode=$('#EactivityId').val();
-	 var data={"sourceCode":sourceCode,
+	 var data={"sourceUuid":sourceUuid,
 			 "type":type};
 	 $.ajax({
 
@@ -890,7 +954,7 @@ function deleteActivityById(id)
 		  return;
 		 }
 
-	data={"sourceCode":id};
+	data={"sourceUuid":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 

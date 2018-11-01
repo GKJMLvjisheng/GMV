@@ -12,8 +12,7 @@ import com.cascv.oas.server.walk.wrapper.WalkBallReturn;
 @Component
 public interface WalkMapper {
 	
-	List<WalkBall> selectWalkBall(@Param("userUuid") String userUuid, 
-			@Param("status") Integer status);
+	List<WalkBall> selectWalkBall(@Param("userUuid") String userUuid);
 	Integer updateStatusByUuid(@Param("uuid") String uuid,
             @Param("status") Integer status,
             @Param("updated") String updated);
@@ -27,7 +26,7 @@ public interface WalkMapper {
 	WalkBall selectTodayWalkBall(@Param("userUuid") String userUuid);
 	
 	List<WalkBallReturn> selectEnergyBallList(@Param("userUuid") String userUuid, 
-			@Param("sourceCode") Integer sourceCode, @Param("status") Integer status);
+			@Param("sourceUuid") String sourceUuid, @Param("status") Integer status);
 	
 	Integer insertWalkBall(WalkBall walkBall);
 

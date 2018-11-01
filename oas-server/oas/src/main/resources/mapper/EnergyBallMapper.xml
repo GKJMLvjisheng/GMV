@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.cascv.oas.server.energy.model.EnergyBall">
         <id column="uuid" jdbcType="VARCHAR" property="uuid"/>
         <result column="user_uuid" jdbcType="VARCHAR" property="userUuid" />
-        <result column="source_code" jdbcType="INTEGER" property="sourceCode" />
+        <result column="source_uuid" jdbcType="VARCHAR" property="sourceUuid" />
         <result column="point" jdbcType="DECIMAL" property="point"/>
 <!--         <result column="power_source" jdbcType="INTEGER" property="powerSource"/> -->
 <!--         <result column="power" jdbcType="DECIMAL" property="power"/> -->
@@ -14,7 +14,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        uuid, user_uuid, source_code, point, status, created, updated
+        uuid, user_uuid, source_uuid, point, status, created, updated
     </sql>
     <!-- 根据能量球id查询 -->
     <select id="selectByUuid" resultMap="BaseResultMap">
@@ -32,8 +32,8 @@
             <if test="userUuid != null">
                 user_uuid = #{userUuid}
             </if>
-            <if test="sourceCode != null">
-                and source_code = #{sourceCode}
+            <if test="sourceUuid != null">
+                and source_uuid = #{sourceUuid}
             </if>
             <if test="created != null">
                 and created like #{created}"%"
@@ -51,7 +51,7 @@
                 user_uuid = #{userUuid}
             </if>
             <if test="sourceCode != null">
-                and source_code = #{sourceCode}
+                and source_uuid = #{sourceUuid}
             </if>
             <if test="status != null">
                 and status = #{status}
@@ -69,7 +69,7 @@
                 user_uuid = #{userUuid}
             </if>
             <if test="sourceCode != null">
-                and source_code = #{sourceCode}
+                and source_Uuid = #{sourceUuid}
             </if>
             <if test="status != null">
                 and status = #{status}
@@ -82,7 +82,7 @@
 <select id="selectUserPointByTime" resultType="java.math.BigDecimal">
         select SUM(point) as point
         from energy_point_ball
-        where user_uuid=#{userUuid} and source_code=3 and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
+        where user_uuid=#{userUuid} and source_uuid='WALK' and DATE_FORMAT(created,"%Y-%m-%d %T") BETWEEN #{startTime} and #{endTime}
     </select>
     
     <!-- 查询某用户某种积分的所有能量球 部分信息 -->
@@ -93,14 +93,14 @@
             b.point as value,
             DATE_FORMAT(b.start_date, '%Y-%m-%d %H:%i:%S') as start_date,
             date_add( b.start_date, interval #{timeGap} second ) as end_date,
-            p.source_code as type,
+            p.uuid as type,
             p.source_name as name
         from
             (
             select
                 uuid,
                 user_uuid,
-                source_code,
+                source_uuid,
                 point,
                 status,
                 DATE_FORMAT( STR_TO_DATE( created, '%Y-%m-%d %H:%i:%S' ), '%Y-%m-%d %H:%i:%S') as start_date
@@ -109,8 +109,8 @@
             ) b
             inner join activity p
         where
-            b.source_code = p.source_code
-            and b.source_code = #{sourceCode}
+            b.source_uuid = p.uuid
+            and b.source_uuid = #{sourceUuid}
             and b.status = #{status}
             and b.user_uuid = #{userUuid}
     </select>
@@ -118,7 +118,7 @@
     <!-- 查询某用户通过某种方式累计算力提升 -->
     <select id="countByUserUuidAndPowerSource" resultType="java.lang.Integer">
     select SUM(power) from energy_power_ball 
-    where source_code=#{sourceCode} and user_uuid=#{userUuid}
+    where source_uuid=#{sourceUuid} and user_uuid=#{userUuid}
     </select>
     
     <resultMap id="EnergyBallWrapper" type="com.cascv.oas.server.energy.vo.EnergyBallWrapper">

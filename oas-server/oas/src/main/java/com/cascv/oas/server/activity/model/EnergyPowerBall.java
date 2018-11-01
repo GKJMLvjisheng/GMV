@@ -8,7 +8,7 @@ import lombok.Setter;
 public class EnergyPowerBall {
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
-	@Getter @Setter private Integer sourceCode;
+	@Getter @Setter private String sourceUuid;
 	@Getter @Setter private BigDecimal power;
 	@Getter @Setter private Integer status;
 	@Getter @Setter private String created;

@@ -38,6 +38,7 @@ public class ActivityService {
     private static final Integer STATUS_OF_ACTIVE_ENERGYRECORD = 1;    // 能量记录活跃状态，可被获取
 //    private static final Integer STATUS_OF_DIE_ENERGYRECORD = 0;       // 能量记录活跃状态，不可被获取
     private static final Integer STATUS_OF_ACTIVITY = 1;             //表示已完成该任务
+    
 	
 	private EnergyPointBall addEnergyPointBall = new EnergyPointBall();
 	private EnergyPowerBall addEnergyPowerBall = new EnergyPowerBall();
@@ -51,8 +52,8 @@ public class ActivityService {
 	 * @param rewardCode 
      * @return
      */
-	public ActivityRewardConfig inquireRewardByRewardCode(Integer sourceCode, Integer rewardCode) {
-		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode);
+	public ActivityRewardConfig inquireRewardByRewardCode(String sourceUuid, String rewardUuid) {
+		ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceUuid, rewardUuid);
 		return activityRewardConfig;
 		
 	}
@@ -64,10 +65,10 @@ public class ActivityService {
 	 * @param rewardCode 
      * @return
      */
-	public EnergyResultPoint getNewPoint(Integer sourceCode, Integer rewardCode) {
-		if(rewardCode == 1) {
+	public EnergyResultPoint getNewPoint(String sourceUuid, String rewardUuid) {
+		if(rewardUuid.equals("POINT")) {
 			BigDecimal point;
-			ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode);
+			ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceUuid, rewardUuid);
 			if(activityRewardConfig == null) {
 				point = BigDecimal.ZERO;
 			}else {
@@ -87,10 +88,10 @@ public class ActivityService {
 	 * @param rewardCode 
      * @return
      */
-	public EnergyResultPower getNewPower(Integer sourceCode, Integer rewardCode) {
-		if (rewardCode == 2) {
+	public EnergyResultPower getNewPower(String sourceUuid, String rewardUuid) {
+		if (rewardUuid.equals("POWER")) {
 			BigDecimal power;
-			ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceCode, rewardCode);
+			ActivityRewardConfig activityRewardConfig = activityMapper.selectBaseValueBySourceCodeAndRewardCode(sourceUuid, rewardUuid);
 			if(activityRewardConfig == null) {
 				power = BigDecimal.ZERO;
 			}else {
@@ -109,17 +110,17 @@ public class ActivityService {
      * @param userUuid, sourceCode
      * @return
      */
-	public EnergyPointBall getEnergyPointBall(String userUuid, Integer sourceCode, Integer rewardCode) {
+	public EnergyPointBall getEnergyPointBall(String userUuid, String sourceUuid, String rewardUuid) {
 		addEnergyPointBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		log.info("uuid={}",addEnergyPointBall.getUuid());
 		addEnergyPointBall.setUserUuid(userUuid);
 		addEnergyPointBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-		addEnergyPointBall.setSourceCode(sourceCode);			
+		addEnergyPointBall.setSourceUuid(sourceUuid);			
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addEnergyPointBall.setCreated(now);
 		addEnergyPointBall.setUpdated(now);
 		
-		EnergyResultPoint energyResult = this.getNewPoint(sourceCode, rewardCode);
+		EnergyResultPoint energyResult = this.getNewPoint(sourceUuid, rewardUuid);
 		if(energyResult != null) {
 			addEnergyPointBall.setPoint(energyResult.getNewPoint());
 			return addEnergyPointBall;
@@ -133,16 +134,16 @@ public class ActivityService {
      * @param userUuid, sourceCode
      * @return
      */
-	public EnergyPowerBall getEnergyPowerBall(String userUuid, Integer sourceCode, Integer rewardCode) {
+	public EnergyPowerBall getEnergyPowerBall(String userUuid, String sourceUuid, String rewardUuid) {
 		addEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		addEnergyPowerBall.setUserUuid(userUuid);
 		addEnergyPowerBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
-		addEnergyPowerBall.setSourceCode(sourceCode);			
+		addEnergyPowerBall.setSourceUuid(sourceUuid);			
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addEnergyPowerBall.setCreated(now);
 		addEnergyPowerBall.setUpdated(now);
 		
-		EnergyResultPower energyResult = this.getNewPower(sourceCode, rewardCode);
+		EnergyResultPower energyResult = this.getNewPower(sourceUuid, rewardUuid);
 		if(energyResult != null) {
 			addEnergyPowerBall.setPower(energyResult.getNewPower());
 			return addEnergyPowerBall;
@@ -159,7 +160,7 @@ public class ActivityService {
      * @param userUuid
      * @return
      */
-	public PointTradeRecord getPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
+	public PointTradeRecord getPointTradeRecord(String userUuid, String sourceUuid, String rewardUuid) {
 		addPointTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addPointTradeRecord.setUserUuid(userUuid);
 		addPointTradeRecord.setInOrOut(ENEGY_IN);
@@ -168,10 +169,10 @@ public class ActivityService {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addPointTradeRecord.setCreated(now);
 		
-		if(this.getNewPoint(sourceCode, rewardCode) == null)
+		if(this.getNewPoint(sourceUuid, rewardUuid) == null)
 			addPointTradeRecord.setPointChange(BigDecimal.ZERO);
 		else
-			addPointTradeRecord.setPointChange(this.getNewPoint(sourceCode, rewardCode).getNewPoint());
+			addPointTradeRecord.setPointChange(this.getNewPoint(sourceUuid, rewardUuid).getNewPoint());
 		
 		EnergyPointBall energyPointBall = addEnergyPointBall;
 		if (energyPointBall != null) {
@@ -190,7 +191,7 @@ public class ActivityService {
    * @param userUuid
    * @return
    */
-	public PowerTradeRecord getPowerTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
+	public PowerTradeRecord getPowerTradeRecord(String userUuid, String sourceUuid, String rewardUuid) {
 		addPowerTradeRecord.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_TRADE_RECORD));
 		addPowerTradeRecord.setUserUuid(userUuid);
 		addPowerTradeRecord.setInOrOut(ENEGY_IN);
@@ -199,10 +200,10 @@ public class ActivityService {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		addPowerTradeRecord.setCreated(now);
 
-		if(this.getNewPower(sourceCode, rewardCode) == null)
+		if(this.getNewPower(sourceUuid, rewardUuid) == null)
 			addPowerTradeRecord.setPowerChange(BigDecimal.ZERO);
 		else
-			addPowerTradeRecord.setPowerChange(this.getNewPower(sourceCode, rewardCode).getNewPower());
+			addPowerTradeRecord.setPowerChange(this.getNewPower(sourceUuid, rewardUuid).getNewPower());
 		
 		EnergyPowerBall energyPowerBall = addEnergyPowerBall;
 		if (energyPowerBall != null) {
@@ -219,11 +220,11 @@ public class ActivityService {
      * @param userUuid
      * @return
      */
-	public ActivityCompletionStatus getActivityCompletionStatus(String userUuid, Integer sourceCode) {
+	public ActivityCompletionStatus getActivityCompletionStatus(String userUuid, String sourceUuid) {
 		log.info("uuid{}",UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS));
 		addActivityCompletionStatus.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_COMPLETION_STATUS));
 		addActivityCompletionStatus.setUserUuid(userUuid);
-		addActivityCompletionStatus.setSourceCode(sourceCode);
+		addActivityCompletionStatus.setSourceUuid(sourceUuid);
 		addActivityCompletionStatus.setStatus(STATUS_OF_ACTIVITY);
 		
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
@@ -239,8 +240,8 @@ public class ActivityService {
      * @param userUuid, sourceCode
      * @return
      */
-	public Integer addEnergyPointBall(String userUuid, Integer sourceCode, Integer rewardCode) {
-		if(this.getEnergyPointBall(userUuid, sourceCode, rewardCode) != null)
+	public Integer addEnergyPointBall(String userUuid, String sourceUuid, String rewardUuid) {
+		if(this.getEnergyPointBall(userUuid, sourceUuid, rewardUuid) != null)
 			return activityMapper.insertEnergyPointBall(addEnergyPointBall);
 		else
 			return null;		
@@ -252,8 +253,8 @@ public class ActivityService {
      * @param userUuid, sourceCode
      * @return
      */
-	public Integer addEnergyPowerBall(String userUuid, Integer sourceCode, Integer rewardCode) {
-		if(this.getEnergyPowerBall(userUuid, sourceCode, rewardCode) != null)
+	public Integer addEnergyPowerBall(String userUuid, String sourceUuid, String rewardUuid) {
+		if(this.getEnergyPowerBall(userUuid, sourceUuid, rewardUuid) != null)
 			return activityMapper.insertEnergyPowerBall(addEnergyPowerBall);
 		else
 			return null;
@@ -266,9 +267,9 @@ public class ActivityService {
      * @param userUuid
      * @return
      */
-	public Integer addPointTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
+	public Integer addPointTradeRecord(String userUuid, String sourceUuid, String rewardUuid) {
 		log.info("addPointTradeRecord={}",addPointTradeRecord.getEnergyBallUuid());
-		if (this.getPointTradeRecord(userUuid, sourceCode, rewardCode) != null) {
+		if (this.getPointTradeRecord(userUuid, sourceUuid, rewardUuid) != null) {
 			addPointTradeRecord.setRestPoint(energyService.getPointWalletPoint(addPointTradeRecord.getUserUuid(),addPointTradeRecord.getInOrOut(),addPointTradeRecord.getPointChange()));
 			return activityMapper.insertPointTradeRecord(addPointTradeRecord);
 		}
@@ -283,8 +284,8 @@ public class ActivityService {
      * @param userUuid
      * @return
      */
-	public Integer addPowerTradeRecord(String userUuid, Integer sourceCode, Integer rewardCode) {
-		if (this.getPowerTradeRecord(userUuid, sourceCode, rewardCode) != null)	
+	public Integer addPowerTradeRecord(String userUuid, String sourceUuid, String rewardUuid) {
+		if (this.getPowerTradeRecord(userUuid, sourceUuid, rewardUuid) != null)	
 			return activityMapper.insertPowerTradeRecord(addPowerTradeRecord);
 		else
 			return null;
@@ -297,26 +298,26 @@ public class ActivityService {
 	 * @param rewardCode 
      * @return
      */
-	public void updateEnergyWallet(String userUuid, Integer sourceCode, Integer rewardCode) {
+	public void updateEnergyWallet(String userUuid, String sourceUuid, String rewardUuid) {
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		BigDecimal valuePoint;
 		BigDecimal valuePower;
-		if(this.getNewPoint(sourceCode, rewardCode) != null && this.getNewPower(sourceCode, rewardCode) != null) {
-			valuePoint = this.getNewPoint(sourceCode, rewardCode).getNewPoint();
-			valuePower = this.getNewPower(sourceCode, rewardCode).getNewPower();
+		if(this.getNewPoint(sourceUuid, rewardUuid) != null && this.getNewPower(sourceUuid, rewardUuid) != null) {
+			valuePoint = this.getNewPoint(sourceUuid, rewardUuid).getNewPoint();
+			valuePower = this.getNewPower(sourceUuid, rewardUuid).getNewPower();
 			activityMapper.increasePoint(userUuid, valuePoint, updated);
 			activityMapper.increasePower(userUuid, valuePower, updated);	
-		}else if (this.getNewPoint(sourceCode, rewardCode) != null && this.getNewPower(sourceCode, rewardCode) == null){
-			valuePoint = this.getNewPoint(sourceCode, rewardCode).getNewPoint();
+		}else if (this.getNewPoint(sourceUuid, rewardUuid) != null && this.getNewPower(sourceUuid, rewardUuid) == null){
+			valuePoint = this.getNewPoint(sourceUuid, rewardUuid).getNewPoint();
 			valuePower = BigDecimal.ZERO;
 			activityMapper.increasePoint(userUuid, valuePoint, updated);
 			activityMapper.increasePower(userUuid, valuePower, updated);
-		}else if(this.getNewPoint(sourceCode, rewardCode) == null && this.getNewPower(sourceCode, rewardCode) != null) {
+		}else if(this.getNewPoint(sourceUuid, rewardUuid) == null && this.getNewPower(sourceUuid, rewardUuid) != null) {
 			valuePoint = BigDecimal.ZERO;
-			valuePower = this.getNewPower(sourceCode, rewardCode).getNewPower();
+			valuePower = this.getNewPower(sourceUuid, rewardUuid).getNewPower();
 			activityMapper.increasePoint(userUuid, valuePoint, updated);
 			activityMapper.increasePower(userUuid, valuePower, updated);
-		}else if(this.getNewPoint(sourceCode, rewardCode) == null && this.getNewPower(sourceCode, rewardCode) == null){
+		}else if(this.getNewPoint(sourceUuid, rewardUuid) == null && this.getNewPower(sourceUuid, rewardUuid) == null){
 			valuePoint = BigDecimal.ZERO;
 			valuePower = BigDecimal.ZERO;
 			activityMapper.increasePoint(userUuid, valuePoint, updated);
@@ -331,8 +332,8 @@ public class ActivityService {
      * @param userUuid
      * @return
      */
-	public Integer addActivityCompletionStatus(String userUuid, Integer sourceCode) {
-		this.getActivityCompletionStatus(userUuid, sourceCode);
+	public Integer addActivityCompletionStatus(String userUuid, String sourceUuid) {
+		this.getActivityCompletionStatus(userUuid, sourceUuid);
 		return activityMapper.insertActivityCompletionStatus(addActivityCompletionStatus);
 	}
 	
@@ -343,26 +344,26 @@ public class ActivityService {
      * @return
      */
 	
-	 public void getReward(Integer sourceCode, String userUuid){
-			List<RewardConfigResult> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
+	 public void getReward(String sourceUuid, String userUuid){
+			List<RewardConfigResult> activityRewardConfigList = activityMapper.selectActivityRewardBySourceCode(sourceUuid);
 			Integer len = activityRewardConfigList.size();
 			log.info("len={}",len);
 			for(int i=0; i<len; i++){
-				Integer rewardCode = activityRewardConfigList.get(i).getRewardCode();
-				log.info("rewardCode={}",rewardCode);
-				this.addEnergyPointBall(userUuid, sourceCode, rewardCode);
-				this.addEnergyPowerBall(userUuid, sourceCode, rewardCode);
-				if(this.getNewPoint(sourceCode, rewardCode) != null) {
-					this.addPointTradeRecord(userUuid, sourceCode, rewardCode);
+				String rewardUuid = activityRewardConfigList.get(i).getRewardUuid();
+				log.info("rewardUuid={}",rewardUuid);
+				this.addEnergyPointBall(userUuid, sourceUuid, rewardUuid);
+				this.addEnergyPowerBall(userUuid, sourceUuid, rewardUuid);
+				if(this.getNewPoint(sourceUuid, rewardUuid) != null) {
+					this.addPointTradeRecord(userUuid, sourceUuid, rewardUuid);
 					this.updateEnergyPointBallStatusByUuid(userUuid);
 				}
-				if(this.getNewPower(sourceCode, rewardCode) != null) {
-					this.addPowerTradeRecord(userUuid, sourceCode, rewardCode);
+				if(this.getNewPower(sourceUuid, rewardUuid) != null) {
+					this.addPowerTradeRecord(userUuid, sourceUuid, rewardUuid);
 					this.updateEnergyPowerBallStatusByUuid(userUuid);
 				}
-				this.updateEnergyWallet(userUuid, sourceCode, rewardCode);
+				this.updateEnergyWallet(userUuid, sourceUuid, rewardUuid);
 			}
-			this.addActivityCompletionStatus(userUuid, sourceCode);
+			this.addActivityCompletionStatus(userUuid, sourceUuid);
 
 		}
 	 
