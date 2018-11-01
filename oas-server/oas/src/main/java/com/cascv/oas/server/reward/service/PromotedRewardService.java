@@ -153,6 +153,14 @@ public class PromotedRewardService {
 				  this.giveSuperiorsUserPowerReward(purchaseRecord, userUuid);
 				  minerMapper.updateByPowerRewardStatus(purchaseRecord);
 				  log.info("end reward power job ...");
+				  //若此时无邀请码  不进行奖励补助
+				  String rewardEnergyBallUuid=purchaseRecord.getRewardEnergyBallUuid();
+				  if(rewardEnergyBallUuid.equals("not exist")) {
+					  Integer minerNum=purchaseRecord.getMinerNum();
+					  purchaseRecord.setFinishRewardNumber(minerNum);
+					  minerMapper.updateByMinerNumFinishRewardNumber(purchaseRecord);
+					  minerMapper.updateByPowerRewardStatusToDecrease(purchaseRecord);
+				  }
 			  }
 		  }
 		  }else {
@@ -795,6 +803,7 @@ public class PromotedRewardService {
 			}
 			return 0;
 		}else {
+			
 			return -1;
 		}
 		
