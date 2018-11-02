@@ -582,12 +582,12 @@ public class EnergyService {
     		List<EnergyChangeDetail> energyList = new ArrayList<>();
     	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
     		   //.intValue()方法是把Integer转为Int?
-    		   energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
-    		   if(energyChangeDetail.getValue() != 0) {
-    			   energyList.add(energyChangeDetail);
-       		}
     		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 			   energyChangeDetail.setCreated(created);
+			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
+    		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
+    			   energyList.add(energyChangeDetail);
+       			}
     	   }
     	    return energyList;
     	}
@@ -598,12 +598,12 @@ public class EnergyService {
         		energyChangeDetail.setActivity("积分消费");
     			energyChangeDetail.setCategory("积分兑换OAS代币");                                
         		//.intValue()方法是把Integer转为Int?
-        		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue()); 
-     		   if(energyChangeDetail.getValue() != 0) {
-    			   energyList.add(energyChangeDetail);
-       		   }
-     		  String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
-			  energyChangeDetail.setCreated(created);
+    			String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+ 			   energyChangeDetail.setCreated(created);
+ 			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
+     		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
+     			   energyList.add(energyChangeDetail);
+        	    }
         	}
         	return energyList;
     	}
@@ -617,13 +617,12 @@ public class EnergyService {
 				 energyChangeDetail.setCategory("积分兑换OAS代币");
 	    		 }
 	    		   //.intValue()方法是把Integer转为Int?
-	    		 energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
-	   		   if(energyChangeDetail.getValue()!= 0){
-	  			   energyList.add(energyChangeDetail);
-	     		}
-    	     //}
-	   		String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
-			energyChangeDetail.setCreated(created);
+	    		 String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+				   energyChangeDetail.setCreated(created);
+				   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
+	    		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
+	    			   energyList.add(energyChangeDetail);
+	       			}
     	   }
     	    return energyList;
     	}
