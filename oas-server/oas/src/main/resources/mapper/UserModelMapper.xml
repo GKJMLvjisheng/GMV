@@ -371,7 +371,10 @@
   </update>
   
   <select id="countSameImeiNumber" resultType="java.lang.Integer">
-  select count(*) from user_info where IMEI = #{imei}
+  <!-- select count(*) from user_info where IMEI = #{imei} -->
+  select count(*) from user_info a 
+  left join user_role b on a.uuid = b.uuid
+  where a.status = 1 and b.role_id=2 and a.IMEI = #{imei}
   </select>
  
 </mapper>

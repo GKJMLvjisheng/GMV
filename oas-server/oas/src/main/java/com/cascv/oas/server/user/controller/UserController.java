@@ -155,8 +155,13 @@ public class UserController extends BaseShiroController{
 	                 .setData(loginResult).setErrorCode(ErrorCode.USER_REGISTER_NO_ACTIVE)
 	                 .build();
 	    }
-	    //查询该imei是否被其他账号绑定,imei为null表示第一次登陆
-	    if(user.getIMEI() == null) {
+	    String uuid=ShiroUtils.getUser().getUuid();
+        Set<String> roles=roleService.getRolesByUserUuid(uuid);
+        List<String>  roleList =new ArrayList<>(roles);
+        log.info("roles={}",roles);
+        
+	    //查询该imei是否被其他正常账号绑定,imei为null表示第一次登陆
+	    if(user.getIMEI() == null && roleList.get(0).equals("正常账号")) {
 	    	Integer imeiNumber = userService.countSameImeiNumber(loginVo.getIMEI());
 	    	if(imeiNumber>0) {
 	    		 return new ResponseEntity.Builder<LoginResult>()
@@ -183,10 +188,6 @@ public class UserController extends BaseShiroController{
            */
           String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
           String IMEINew=loginVo.getIMEI();
-          String uuid=ShiroUtils.getUser().getUuid();
-          Set<String> roles=roleService.getRolesByUserUuid(uuid);
-          List<String>  roleList =new ArrayList<>(roles);
-          log.info("roles={}",roles);
           
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
