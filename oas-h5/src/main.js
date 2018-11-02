@@ -13,10 +13,10 @@ var token = null
 Vue.prototype.$axios = Axios
 Vue.config.productionTip = false
 let startApp = function () {
-  Axios.get('/static/config.json').then((res) => {
+  //Axios.get('/static/config.json').then((res) => {
     // 基础地址
     //Vue.prototype.BASE_URL = res.data.BASE_URL;
-   console.log(res.data.BASE_URL)
+   //console.log(res.data.BASE_URL)
    //Axios.defaults.baseURL = res.data.BASE_URL 
    if(window.Android) {
     token = window.Android.getToken()
@@ -37,6 +37,6 @@ new Vue({
   //router ,
   render: h => h(App)
 }).$mount('#app')
- })
+ //})
 }
 startApp()
