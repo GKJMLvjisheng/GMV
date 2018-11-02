@@ -7,6 +7,7 @@ import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.alibaba.android.arouter.launcher.ARouter.printStackTrace
 import com.alibaba.android.arouter.routes.`ARouter$$Providers$$arouterapi`
+import com.oases.base.common.AppManager
 import com.oases.base.common.BaseConstant
 import com.oases.base.presenter.view.BaseView
 import com.oases.base.utils.AppPrefsUtils

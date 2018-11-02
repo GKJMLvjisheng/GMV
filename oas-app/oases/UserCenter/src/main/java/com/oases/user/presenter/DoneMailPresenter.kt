@@ -31,7 +31,8 @@ class DoneMailPresenter @Inject constructor() : BasePresenter<DoneMailView>() {
         }, lifecycleProvider)
     }
 
-    fun getReward(sourceCode: String) {
+    //fun getReward(sourceCode: String) {
+    fun getReward(sourceCode: Int) {
         if (!checkNetWork()) {
             return
         }

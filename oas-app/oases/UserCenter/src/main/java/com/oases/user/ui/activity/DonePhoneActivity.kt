@@ -22,7 +22,8 @@ class DonePhoneActivity : BaseMvpActivity<DonePhonePresenter>(), DonePhoneView {
 
     var  NewMobile:String = ""
     var  phoneJumpFlag:String = ""
-    private val sourceCode:String = "CHEACKMOBILE"     //绑定手机是5
+    //private val sourceCode:String = "CHEACKMOBILE"     //绑定手机是5
+    private val sourceCode:Int = 5
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_done_phone)
