@@ -41,9 +41,7 @@ import com.today.step.lib.ISportStepInterface
 import com.today.step.lib.TodayStepService
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.jetbrains.anko.support.v4.startService
-
-
-
+import java.lang.ref.WeakReference
 
 
 @Route(path = RouterPath.App.PATH_MAIN)
@@ -65,8 +63,14 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
     private val REFRESH_STEP_WHAT = 0
     private lateinit var iSportStepInterface: ISportStepInterface
 
+    lateinit var instance:MainActivity
+
+    companion object {
+        val instance:MainActivity by lazy { MainActivity() }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        instance = this
         setContentView(R.layout.activity_main)
         initFragment()
         initBottomNav()
@@ -260,5 +264,4 @@ class MainActivity : BaseMvpActivity<MainPresenter>(), MainView,
             e.printStackTrace()
         }
     }
-
 }

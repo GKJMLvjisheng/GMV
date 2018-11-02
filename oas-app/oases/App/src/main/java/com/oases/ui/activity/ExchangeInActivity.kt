@@ -1,5 +1,6 @@
 package com.oases.ui.activity
 
+import android.app.Activity
 import android.os.Bundle
 import com.oases.R
 import com.oases.base.common.BaseConstant
@@ -16,11 +17,16 @@ import com.oases.base.ext.onClick
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.util.Log
+import com.alibaba.android.arouter.launcher.ARouter
+import com.oases.base.common.AppManager
+import com.today.step.lib.TodayStepService
 import kotlinx.android.synthetic.main.activity_wallet_exchange_in.*
 import org.jetbrains.anko.clearTop
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.jetbrains.anko.toast
+import java.util.*
 
 
 class ExchangeInActivity: BaseActivity() {
@@ -55,8 +61,6 @@ class ExchangeInActivity: BaseActivity() {
             cm.setPrimaryClip(mClipData)
             toast("已复制到剪贴板")
         }
-
-
 
     }
 
