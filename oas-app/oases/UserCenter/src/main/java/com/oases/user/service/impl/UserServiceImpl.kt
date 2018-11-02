@@ -69,8 +69,10 @@ class UserServiceImpl @Inject constructor():UserService{
         return repository.donePhone(mobile).convert()
     }
 
-    override fun getReward(sourceCode:String): Observable<Int>{
-        return repository.getReward(sourceCode).convert()
+    override fun getReward(sourceUuid:String): Observable<Int>{
+    //override fun getReward(sourceCode:Int): Observable<Int>{
+        return repository.getReward(sourceUuid).convert()
+        //return repository.getReward(sourceCode).convert()
     }
 
     override fun checkMail(email: String): Observable<Int> {
