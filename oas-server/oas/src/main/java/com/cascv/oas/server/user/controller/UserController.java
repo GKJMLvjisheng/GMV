@@ -191,6 +191,7 @@ public class UserController extends BaseShiroController{
           Set<String> roles=roleService.getRolesByUserUuid(uuid);
           List<String>  roleList =new ArrayList<>(roles);
           log.info("roles={}",roles);
+          log.info("IMEI={}",loginVo.getIMEI());
           
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
