@@ -1387,7 +1387,9 @@ public class UserController extends BaseShiroController{
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
 		
-		activityService.getReward(KYC_SOURCE_CODE, userUuid);
+	    if(userIdentityCardModelInfo.getVerifyStatus() == 2) {
+	    	activityService.getReward(KYC_SOURCE_CODE, userUuid);
+	    }		
 		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
