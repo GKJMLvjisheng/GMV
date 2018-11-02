@@ -171,6 +171,7 @@ public class UserController extends BaseShiroController{
       try {
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
+          log.info("new login token {}", ShiroUtils.getSessionId());
           //设置头像
           UserModel userModel=new UserModel();
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
