@@ -19,8 +19,6 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -76,7 +74,6 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
-import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -125,7 +122,6 @@ public class UserController extends BaseShiroController{
   private ActivityService activityService;
   
   private static final String KYC_SOURCE_CODE = "KYC";
-  private static final String SIGN_UP = "SIGNUP";
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -147,7 +143,6 @@ public class UserController extends BaseShiroController{
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
         LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
-	    ErrorCode errorCode=ErrorCode.LOGIN_FAILED;
 	    //查询该用户是否已经激活
 	    UserModel user = userService.findUserByName(loginVo.getName());
 	    if(user == null) {
@@ -175,6 +170,7 @@ public class UserController extends BaseShiroController{
       try {
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
+          log.info("new login token {}", ShiroUtils.getSessionId());
           //设置头像
           UserModel userModel=new UserModel();
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
@@ -191,17 +187,14 @@ public class UserController extends BaseShiroController{
           Set<String> roles=roleService.getRolesByUserUuid(uuid);
           List<String>  roleList =new ArrayList<>(roles);
           log.info("roles={}",roles);
-          log.info("IMEI={}",loginVo.getIMEI());
           
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
 		 UserFacility userFacility=new UserFacility();
 		 userFacility.setUuid(ShiroUtils.getUser().getUuid());
 		 userFacility.setIMEI(IMEINew);
-         if(status==0) {
-        	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
+         if(status==0)
         	 throw new AuthenticationException();
-         }
          //判断是否是移动端登录
          if(userAgent.indexOf("Windows")==-1){
         	 log.info("this is android!");
@@ -209,17 +202,12 @@ public class UserController extends BaseShiroController{
         	 switch(roleList.get(0)){
 	        	 case "系统账号":
 	        		 log.info("this is 系统账号");
-
-	        		 errorCode=ErrorCode.USER_CANNOT_LOGIN_IN_ANDROID;
-
 	        		 throw new AuthenticationException();
 	        	 case "正常账号":
 	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
-                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null) {
-                        	 errorCode=ErrorCode.USER_IMEI_REPEAT;
+                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null)
                         	 throw new AuthenticationException();
-                         }
                          else{
 	        				 UserFacility userNewFacility=new UserFacility();
 	    				     userNewFacility.setIMEI(loginVo.getIMEI());
@@ -233,12 +221,9 @@ public class UserController extends BaseShiroController{
 	        		 else{
 		        			 if(IMEIOri.equals(IMEINew))
 		        			 {    
-		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null) {
-
-		        					  errorCode=ErrorCode.USER_IMEI_EXIST;
+		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null)
 		        					  throw new AuthenticationException();
-		        			 }
- 				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
+		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
 			        				 UserFacility userNewFacility=new UserFacility();
 			    				     userNewFacility.setIMEI(loginVo.getIMEI());
 			    				     userNewFacility.setUuid(uuid);
@@ -275,7 +260,7 @@ public class UserController extends BaseShiroController{
       } catch (AuthenticationException e)  {
           return new ResponseEntity.Builder<LoginResult>()
                 .setData(loginResult)
-                .setErrorCode(errorCode).build();
+                .setErrorCode(ErrorCode.LOGIN_FAILED).build();
       }
 	}
 	
@@ -373,7 +358,6 @@ public class UserController extends BaseShiroController{
 	    }
 	    //注册成功，将用户的未激活状态修改为激活状态
 	    userService.updateUserStatusToActive(userModel!=null?userModel.getName():"");
-	    activityService.getReward(SIGN_UP, registerConfirm.getUuid());
 	    return new ResponseEntity.Builder<Integer>()
 	          .setData(0)
 	          .setErrorCode(ErrorCode.SUCCESS)
@@ -949,82 +933,82 @@ public class UserController extends BaseShiroController{
 		  }         
      }
 	
-//	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
-//    public ResponseEntity<?> sendMobile(@RequestBody MobileModel mobileModel){
-//		Map<String,Boolean> info=new HashMap<>();
-//		log.info("****start****");
-//		//后续"+86"可以在前端进行修改
-//		String mobile = "+86"+mobileModel.getMobile();
-//		String SignName="OASESCHAIN";
-//		String content="";
-//        //获取验证码
-//		vcode=MessageService.createRandomVcode();
-//		if(mobileModel.getContent()!=null){
-//			content = mobileModel.getContent();
-//		}else {
-//		content = "【"+SignName+"】"+"验证码为"+vcode+",您正在尝试变更重要信息，请妥善保管账户信息。";
-//		}
-//        PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
-//        log.info(publishResult.toString());
-//		info.put("state",true);
-//		log.info("code={}",vcode);
-//        log.info("****end****");
-//        return new ResponseEntity.Builder<Map<String,Boolean>>()
-//		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
-//    }
+	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
+    public ResponseEntity<?> sendMobile(@RequestBody MobileModel mobileModel){
+		Map<String,Boolean> info=new HashMap<>();
+		log.info("****start****");
+		//后续"+86"可以在前端进行修改
+		String mobile = "+86"+mobileModel.getMobile();
+		String SignName="OASESCHAIN";
+		String content="";
+        //获取验证码
+		vcode=MessageService.createRandomVcode();
+		if(mobileModel.getContent()!=null){
+			content = mobileModel.getContent();
+		}else {
+		content = "【"+SignName+"】"+"验证码为"+vcode+",您正在尝试变更重要信息，请妥善保管账户信息。";
+		}
+        PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
+        log.info(publishResult.toString());
+		info.put("state",true);
+		log.info("code={}",vcode);
+        log.info("****end****");
+        return new ResponseEntity.Builder<Map<String,Boolean>>()
+		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
+    }
 	
 	/*
 	 * Name:sendMobile--Aliyun
 	 * Author:lvjisheng
 	 * Date:2018.09.04
 	 */
-	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
-	@WriteLog(value="SendMobile")
-//	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
-	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
-    Map<String,Boolean> info=new HashMap<>();
-	
-    log.info("-----------sendMobile start---------------");
-	
-//	String mobile = userModel.getMobile();
-    
-    //String mobile=request.getParameter("mobile");
-    String oldMobile =request.getReader().readLine();
-    int length=11+2;
-    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+length);
-    log.info(mobile);
-	try {	
-		vcode = AuthenticationUtils.createRandomVcode();
-		log.info("vcode = "+vcode);
-//		Session session = ShiroUtils.getSession();
-		HttpSession session=request.getSession();
-		
-		session.setAttribute("mobileCheckCode", vcode);
-		log.info("sessionCheckCode{}",session.getAttribute("mobileCheckCode"));
-		AuthenticationUtils sms = new AuthenticationUtils();		
-		if(sms.SendCode(mobile,vcode).getCode().equals("OK")){
-				info.put("state",true);
-				log.info("success");
-				return new ResponseEntity.Builder<Map<String, Boolean>>()
-				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();			
-		}else{
-			
-			info.put("state",false);
-			log.info("failure1");
-			return new ResponseEntity.Builder<Map<String, Boolean>>()
-			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-		}
-		
-	} catch (Exception e) {
-		log.info(e.getMessage());
-		log.info("failure2");
-		e.printStackTrace();	
-		info.put("state",false);
-		return new ResponseEntity.Builder<Map<String, Boolean>>()
-		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-	}		
-}
-	
+//	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
+//	@WriteLog(value="SendMobile")
+////	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+//	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
+//    Map<String,Boolean> info=new HashMap<>();
+//	
+//    log.info("-----------sendMobile start---------------");
+//	
+////	String mobile = userModel.getMobile();
+//    
+//    //String mobile=request.getParameter("mobile");
+//    String oldMobile =request.getReader().readLine();
+//    int length=11+2;
+//    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+length);
+//    log.info(mobile);
+//	try {	
+//		vcode = AuthenticationUtils.createRandomVcode();
+//		log.info("vcode = "+vcode);
+////		Session session = ShiroUtils.getSession();
+//		HttpSession session=request.getSession();
+//		
+//		session.setAttribute("mobileCheckCode", vcode);
+//		log.info("sessionCheckCode{}",session.getAttribute("mobileCheckCode"));
+//		AuthenticationUtils sms = new AuthenticationUtils();		
+//		if(sms.SendCode(mobile,vcode).getCode().equals("OK")){
+//				info.put("state",true);
+//				log.info("success");
+//				return new ResponseEntity.Builder<Map<String, Boolean>>()
+//				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();			
+//		}else{
+//			
+//			info.put("state",false);
+//			log.info("failure1");
+//			return new ResponseEntity.Builder<Map<String, Boolean>>()
+//			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+//		}
+//		
+//	} catch (Exception e) {
+//		log.info(e.getMessage());
+//		log.info("failure2");
+//		e.printStackTrace();	
+//		info.put("state",false);
+//		return new ResponseEntity.Builder<Map<String, Boolean>>()
+//		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+//	}		
+//}
+//	
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
@@ -1391,9 +1375,7 @@ public class UserController extends BaseShiroController{
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
 		
-	    if(userIdentityCardModelInfo.getVerifyStatus() == 2) {
-	    	activityService.getReward(KYC_SOURCE_CODE, userUuid);
-	    }		
+		activityService.getReward(KYC_SOURCE_CODE, userUuid);
 		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
@@ -1556,8 +1538,8 @@ public class UserController extends BaseShiroController{
 		    }
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
-		    	errorCode=ErrorCode.GENERAL_ERROR;
-		    return new ResponseEntity.Builder<UserDetailModel>()
+		    errorCode=ErrorCode.GENERAL_ERROR;
+	        return new ResponseEntity.Builder<UserDetailModel>()
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();

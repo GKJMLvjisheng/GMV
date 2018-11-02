@@ -17,7 +17,11 @@ $(function() {
 	
 	
 });
-
+function initAddmodel(){
+	checkUuid=1;
+	 resetAddModal();
+	$("#addRewardModal").modal('show');
+}
 function rewardReady(){
 	
 	
@@ -190,7 +194,6 @@ function addReward(){
 		},
 	});
 	
-	resetAddModal();
 	rewardReady();
 }
 
