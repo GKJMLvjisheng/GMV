@@ -11,8 +11,8 @@ public class RewardConfigResult implements Serializable {
 	
 	@Getter @Setter private String uuid;
 	@Getter @Setter private String userUuid;
-	@Getter @Setter private Integer sourceCode;
-	@Getter @Setter private Integer rewardCode;
+	@Getter @Setter private String sourceUuid;
+	@Getter @Setter private String rewardUuid;
 	@Getter @Setter private String rewardName;
 	@Getter @Setter private BigDecimal baseValue;
 	@Getter @Setter private BigDecimal increaseSpeed;

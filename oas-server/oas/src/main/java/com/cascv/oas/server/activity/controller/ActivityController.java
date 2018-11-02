@@ -28,6 +28,7 @@ import com.cascv.oas.server.activity.wrapper.ActivityRewardUpdate;
 import com.cascv.oas.server.activity.wrapper.RewardCode;
 import com.cascv.oas.server.activity.wrapper.RewardConfigResult;
 import com.cascv.oas.server.activity.wrapper.RewardRequest;
+import com.cascv.oas.server.activity.wrapper.RewardSourceCode;
 import com.cascv.oas.server.common.UuidPrefix;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
@@ -45,12 +46,16 @@ public class ActivityController {
 	private ActivityMapper activityMapper;
 	@Autowired 
 	private TimeZoneService timeZoneService;
+	
 	@PostMapping(value = "/addActivity")
     @ResponseBody
     public ResponseEntity<?> addActivity(@RequestBody ActivityRequest activityRequest){
 //		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
-		String now = DateUtils.getYear();
+		String now = DateUtils.getYearMonth();
 		ActivityModel activityModel = new ActivityModel();
+		Integer sourceCode = activityMapper.selectAllActivity().size() + 1;
+		activityModel.setSourceUuid(activityRequest.getSourceUuid());
+		activityModel.setSourceCode(sourceCode);
 		activityModel.setSourceName(activityRequest.getSourceName());
 		activityModel.setType(activityRequest.getType());
 		activityModel.setCreated(now);
@@ -60,6 +65,23 @@ public class ActivityController {
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 		
+	}
+	
+	@PostMapping(value = "/inquireSourceUuid")
+    @ResponseBody
+    public ResponseEntity<?> inquireSourceUuid(@RequestBody ActivityDelete activityDelete){
+		String sourceUuid = activityDelete.getSourceUuid();
+		ActivityModel activityModel = activityMapper.selectActivityBySourceUuid(sourceUuid);
+		if(activityModel == null) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();
+		}else
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SOURCE_UUID_EXSIT)
+					.build();
 	}
 	
 	@PostMapping(value = "/selectAllActivity")
@@ -81,9 +103,17 @@ public class ActivityController {
 	@PostMapping(value = "/deleteActivity")
     @ResponseBody
     public ResponseEntity<?> deleteActivity(@RequestBody ActivityDelete activityDelete){
-		Integer sourceCode = activityDelete.getSourceCode();
-		log.info("sourceCode={}",sourceCode);
-		activityMapper.deleteActivity(sourceCode);
+		String sourceUuid = activityDelete.getSourceUuid();
+		log.info("sourceUuid={}",sourceUuid);
+		Integer sourceCode = activityMapper.selectActivityBySourceUuid(activityDelete.getSourceUuid()).getSourceCode();
+		log.info("sourceCode={}", sourceCode);
+		Integer count = activityMapper.selectAllActivity().size();
+		activityMapper.deleteActivity(sourceUuid);
+		for(; sourceCode < count; sourceCode++) {
+			Integer newSourceCode = sourceCode +1;
+			String newUuid = activityMapper.selectActivityBySourceCode(newSourceCode).getSourceUuid();
+			activityMapper.updateSourceCode(newUuid, sourceCode);
+		}
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -96,6 +126,9 @@ public class ActivityController {
     public ResponseEntity<?> addRewardType(@RequestBody RewardRequest rewardRequest){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		RewardModel rewardModel = new RewardModel();
+		Integer rewardCode = activityMapper.selectAllReward().size() + 1;
+		rewardModel.setRewardUuid(rewardRequest.getRewardUuid());
+		rewardModel.setRewardCode(rewardCode);
 		rewardModel.setRewardName(rewardRequest.getRewardName());
 		rewardModel.setRewardDescription(rewardRequest.getRewardDescription());
 		rewardModel.setCreated(now);
@@ -104,6 +137,23 @@ public class ActivityController {
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
+	}
+	
+	@PostMapping(value = "/inquireRewardUuid")
+    @ResponseBody
+    public ResponseEntity<?> inquireRewardUuid(@RequestBody RewardCode rewardCode){
+		String rewardUuid = rewardCode.getRewardUuid();
+		RewardModel rewardModel = activityMapper.selectRewardByRewardCode(rewardUuid);
+		if(rewardModel == null) {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SUCCESS)
+					.build();
+		}else
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.SOURCE_UUID_EXSIT)
+					.build();
 	}
 	
 	
@@ -135,9 +185,17 @@ public class ActivityController {
 	@PostMapping(value = "/deleteReward")
     @ResponseBody
     public ResponseEntity<?> deleteReward(@RequestBody RewardCode rewardDelete){
-		Integer rewardCode = rewardDelete.getRewardCode();
-		log.info("sourceCode={}",rewardCode);
-		activityMapper.deleteReward(rewardCode);
+		String rewardUuid = rewardDelete.getRewardUuid();
+		log.info("sourceCode={}",rewardUuid);
+		Integer rewardCode = activityMapper.selectRewardByRewardCode(rewardUuid).getRewardCode();
+		Integer count = activityMapper.selectAllReward().size();
+		activityMapper.deleteReward(rewardUuid);
+		for(; rewardCode < count; rewardCode++) {
+			Integer newRewardCode = rewardCode + 1;
+			String newUuid = activityMapper.selectRewardByCode(newRewardCode).getRewardUuid();
+			activityMapper.updateRewardCode(newUuid, rewardCode);
+		}
+		
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -148,7 +206,7 @@ public class ActivityController {
 	@PostMapping(value = "/selectRewardByRewardCode")
     @ResponseBody
     public ResponseEntity<?> selectRewardByRewardCode(@RequestBody RewardCode rewardCode){
-		RewardModel rewardModel = activityMapper.selectRewardByRewardCode(rewardCode.getRewardCode());
+		RewardModel rewardModel = activityMapper.selectRewardByRewardCode(rewardCode.getRewardUuid());
 		return new ResponseEntity.Builder<RewardModel>()
 				.setData(rewardModel)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -159,9 +217,9 @@ public class ActivityController {
 	@PostMapping(value="/inquireRewardByRewardCode")
 	@ResponseBody
 	public ResponseEntity<?> inquireRewardByRewardCode(@RequestBody ActivityGetReward activityGetReward){
-		Integer sourceCode = activityGetReward.getSourceCode();
-		Integer rewardCode = activityGetReward.getRewardCode();
-		if(activityService.inquireRewardByRewardCode(sourceCode, rewardCode) == null)
+		String sourceUuid = activityGetReward.getSourceUuid();
+		String rewardUuid = activityGetReward.getRewardUuid();
+		if(activityService.inquireRewardByRewardCode(sourceUuid, rewardUuid) == null)
 			return new ResponseEntity.Builder<Integer>()
 			        .setData(0)
 			        .setErrorCode(ErrorCode.SUCCESS).build();
@@ -178,8 +236,8 @@ public class ActivityController {
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		ActivityRewardConfig activityRewardConfig = new ActivityRewardConfig();
 		activityRewardConfig.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ACTIVITY_REWARD_CONFIG));
-		activityRewardConfig.setSourceCode(activityRewardAdd.getSourceCode());
-		activityRewardConfig.setRewardCode(activityRewardAdd.getRewardCode());
+		activityRewardConfig.setSourceUuid(activityRewardAdd.getSourceUuid());
+		activityRewardConfig.setRewardUuid(activityRewardAdd.getRewardUuid());
 		activityRewardConfig.setBaseValue(activityRewardAdd.getBaseValue());
 		activityRewardConfig.setIncreaseSpeed(activityRewardAdd.getIncreaseSpeed());
 		activityRewardConfig.setIncreaseSpeedUnit(activityRewardAdd.getIncreaseSpeedUnit());
@@ -199,9 +257,9 @@ public class ActivityController {
 	@PostMapping(value = "/selectAllActivityReward")
     @ResponseBody
     public ResponseEntity<?> selectAllActivityReward(@RequestBody ActivityDelete activityDelete){
-		Integer sourceCode = activityDelete.getSourceCode();
+		String sourceUuid = activityDelete.getSourceUuid();
 		Map<String,Object> info=new HashMap<>();
-		List<RewardConfigResult> activityRewardList = activityMapper.selectActivityRewardBySourceCode(sourceCode);
+		List<RewardConfigResult> activityRewardList = activityMapper.selectActivityRewardBySourceCode(sourceUuid);
 		if(activityRewardList.size() > 0)
 			info.put("activityList", activityRewardList);
 		else
@@ -219,8 +277,8 @@ public class ActivityController {
     public ResponseEntity<?> updateActivityRewardConfig(@RequestBody ActivityRewardUpdate activityRewardList){
 		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		ActivityRewardConfig activityRewardConfig = new ActivityRewardConfig();
-		activityRewardConfig.setSourceCode(activityRewardList.getSourceCode());
-		activityRewardConfig.setRewardCode(activityRewardList.getRewardCode());
+		activityRewardConfig.setSourceUuid(activityRewardList.getSourceUuid());
+		activityRewardConfig.setRewardUuid(activityRewardList.getRewardUuid());
 		activityRewardConfig.setBaseValue(activityRewardList.getBaseValue());
 		activityRewardConfig.setIncreaseSpeed(activityRewardList.getIncreaseSpeed());
 		activityRewardConfig.setIncreaseSpeedUnit(activityRewardList.getIncreaseSpeedUnit());
@@ -239,11 +297,11 @@ public class ActivityController {
 	@PostMapping(value = "/deleteActivityReward")
     @ResponseBody
     public ResponseEntity<?> deleteActivityReward(@RequestBody ActivityGetReward activityGetReward){
-		Integer sourceCode = activityGetReward.getSourceCode();
-		Integer rewardCode = activityGetReward.getRewardCode();
-		log.info("sourceCode={}",sourceCode);
-		log.info("type={}", rewardCode);
-		activityMapper.deleteActivityReward(sourceCode, rewardCode);
+		String sourceUuid = activityGetReward.getSourceUuid();
+		String rewardUuid = activityGetReward.getRewardUuid();
+		log.info("sourceCode={}",sourceUuid);
+		log.info("type={}", rewardUuid);
+		activityMapper.deleteActivityReward(sourceUuid, rewardUuid);
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)
 				.setErrorCode(ErrorCode.SUCCESS)

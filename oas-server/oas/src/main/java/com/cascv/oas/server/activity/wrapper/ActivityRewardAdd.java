@@ -9,8 +9,8 @@ import lombok.Setter;
 public class ActivityRewardAdd implements Serializable {
 	
     private static final long serialVersionUID = 1L;
-    @Getter @Setter private Integer sourceCode;
-	@Getter @Setter private Integer rewardCode;
+    @Getter @Setter private String sourceUuid;
+	@Getter @Setter private String rewardUuid;
 	@Getter @Setter private BigDecimal baseValue;
 	@Getter @Setter private BigDecimal increaseSpeed;
 	@Getter @Setter private String increaseSpeedUnit;

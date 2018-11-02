@@ -73,7 +73,7 @@ public class PromotedRewardService {
 	private static final Integer STATUS_DIE_OF_MINER = 0;  //矿机处于工作状态
 	private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
 	private static final Integer ENEGY_OUT = 0;               // 能量增加为1，能量减少为0
-	private static final Integer REWARD_CODE_OF_MINER = 11;  //矿机推广奖励
+	private static final String REWARD_CODE_OF_MINER = "PROMOTEMINER";  //矿机推广奖励
 	
 	private EnergyPowerBall rewardEnergyPowerBall = new EnergyPowerBall();
 	private EnergyPowerBall decreaseRewardEnergyPowerBall = new EnergyPowerBall();
@@ -153,6 +153,14 @@ public class PromotedRewardService {
 				  this.giveSuperiorsUserPowerReward(purchaseRecord, userUuid);
 				  minerMapper.updateByPowerRewardStatus(purchaseRecord);
 				  log.info("end reward power job ...");
+				  //若此时无邀请码  不进行奖励补助
+				  String rewardEnergyBallUuid=purchaseRecord.getRewardEnergyBallUuid();
+				  if(rewardEnergyBallUuid.equals("not exist")) {
+					  Integer minerNum=purchaseRecord.getMinerNum();
+					  purchaseRecord.setFinishRewardNumber(minerNum);
+					  minerMapper.updateByMinerNumFinishRewardNumber(purchaseRecord);
+					  minerMapper.updateByPowerRewardStatusToDecrease(purchaseRecord);
+				  }
 			  }
 		  }
 		  }else {
@@ -320,7 +328,7 @@ public class PromotedRewardService {
 		public void addRewardPowerBall(PurchaseRecord purchaseRecord,String userUuid, BigDecimal powerSum) {
 			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			rewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-			rewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_MINER);
+			rewardEnergyPowerBall.setSourceUuid(REWARD_CODE_OF_MINER);
 			rewardEnergyPowerBall.setUserUuid(userUuid);
 			rewardEnergyPowerBall.setStatus(STATUS_ACTIVITY_OF_MINER);
 			rewardEnergyPowerBall.setPower(powerSum);
@@ -345,7 +353,7 @@ public class PromotedRewardService {
 		public void addDecreaseRewardPowerBall(PurchaseRecord purchaseRecord,String userUuid, BigDecimal powerSum) {
 			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 			decreaseRewardEnergyPowerBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
-			decreaseRewardEnergyPowerBall.setSourceCode(REWARD_CODE_OF_MINER);
+			decreaseRewardEnergyPowerBall.setSourceUuid(REWARD_CODE_OF_MINER);
 			decreaseRewardEnergyPowerBall.setUserUuid(userUuid);
 			decreaseRewardEnergyPowerBall.setStatus(STATUS_DIE_OF_MINER);
 			decreaseRewardEnergyPowerBall.setPower(powerSum);
@@ -795,6 +803,7 @@ public class PromotedRewardService {
 			}
 			return 0;
 		}else {
+			
 			return -1;
 		}
 		

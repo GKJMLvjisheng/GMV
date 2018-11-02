@@ -25,7 +25,7 @@
    <select id="selectWalkBall" resultMap="walkBallMap">
        select 
        <include refid="walkBall_List" />
-       from walk_ball where user_uuid = #{userUuid} and status = #{status}
+       from walk_ball where user_uuid = #{userUuid}
    </select>
    
    <select id="selectTodayWalkBall" resultMap="walkBallMap">
@@ -68,13 +68,13 @@
           b.user_uuid,
           b.point as value,
           b.created as start_date,
-          p.source_code as type,
+          p.uuid as type,
           p.source_name as name
        from(
           select
              uuid,
              user_uuid,
-             source_code,
+             source_uuid,
              point,
              status,
              created
@@ -83,8 +83,8 @@
        ) b
        inner join activity p
        where
-       b.source_code = p.source_code
-            and b.source_code = #{sourceCode}
+       b.source_uuid = p.uuid
+            and b.source_uuid = #{sourceUuid}
             and b.status = #{status}
             and b.user_uuid = #{userUuid}
        order by start_date desc limit 7

@@ -45,7 +45,6 @@ class PrivateKeyMnemonicFragment : BaseMvpFragment<PrivateKeyMnemonicPresenter>(
     private var listener: OnFragmentInteractionListener? = null
     private lateinit var saveWalletBackup:Button
     private val sourceCode:String = "BACKUPWALLET"     //备份钱包
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
