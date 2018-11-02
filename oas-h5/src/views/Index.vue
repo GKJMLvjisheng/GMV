@@ -134,7 +134,7 @@
     </div>
     <!-- 底部 End -->
     <!-- 签到弹框 Start -->
-    <div v-if="isShowMask" class="mask">
+    <div v-show="isShowMask" class="mask">
       <div class="content">
         <img :src="attendanceSuccess" alt="">
         <p class="tips">{{attendanceMsg.msg}}</p>
