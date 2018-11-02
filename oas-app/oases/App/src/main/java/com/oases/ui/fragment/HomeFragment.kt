@@ -209,12 +209,17 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     override fun onResume() {
         super.onResume()
         Log.d("zbb1","homeFragment on resume")
-        initView()
-        //myWebHome.loadUrl("javascript:skipRefresh()")
+        //initView()
+        if (myWebHome.canGoBack()) {
+            Log.d("zbb1","homeFragment on resume goBack")
+            myWebHome.goBack()
+        }
+        myWebHome.loadUrl("javascript:skipRefresh()")
     }
 
     fun shouldToolBarShowBack(){
         if (myWebHome.canGoBack()) {
+            Log.i("zbb2"," headbar myWebHome.canGoBack() true")
             mHeadBar?.setVisible(true)
         }
         else{
@@ -257,11 +262,16 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
         @JavascriptInterface
         fun getToken():String {
-            Log.d("zbb", "get token called")
+            Log.d("zbb2", "get token called")
+            var token= AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
+            Log.i("zbb2","token".plus(token))
+
             mHandler.post{
                 shouldToolBarShowBack()
             }
-            return AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
+
+
+            return token//AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
         }
 
         //点击首页提升算力图标，进入提升算力界面
@@ -326,6 +336,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
                 mHeadBar?.setVisible(false)
             }
             else {
+                Log.i("zbb","hanldeUri headbar visible true")
                 mHeadBar?.setVisible(true)
             }
             return false
