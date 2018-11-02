@@ -605,7 +605,10 @@ function actionFormatter4(value, row, index) {
 function actionFormatter5(value, row, index) {
     var result = "";
     //alert(JSON.stringify(value))
-    if(value==1){
+    if(value==2){
+    result += "<span>未激活</span>";
+    return result;
+    }else if(value==1){
 	result += "<span>激活</span>";      
     return result;
 	}else if(value==0){

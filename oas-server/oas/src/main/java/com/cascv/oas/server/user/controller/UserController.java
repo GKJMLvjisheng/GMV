@@ -155,8 +155,8 @@ public class UserController extends BaseShiroController{
 	                 .setData(loginResult).setErrorCode(ErrorCode.USER_REGISTER_NO_ACTIVE)
 	                 .build();
 	    }
-	    String uuid=ShiroUtils.getUser().getUuid();
-        Set<String> roles=roleService.getRolesByUserUuid(uuid);
+	    
+        Set<String> roles=roleService.getRolesByUserUuid(user.getUuid());
         List<String>  roleList =new ArrayList<>(roles);
         log.info("roles={}",roles);
         
@@ -188,7 +188,7 @@ public class UserController extends BaseShiroController{
            */
           String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
           String IMEINew=loginVo.getIMEI();
-          
+          String uuid=ShiroUtils.getUser().getUuid();
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
 		 UserFacility userFacility=new UserFacility();
