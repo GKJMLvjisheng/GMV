@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cascv.oas.server.common.ShiroConstants;
 import com.cascv.oas.server.user.model.OnlineSession;
+
+import lombok.extern.slf4j.Slf4j;
+
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 
+@Slf4j
 public class SyncOnlineSessionFilter extends PathMatchingFilter
 {
     @Autowired
@@ -23,6 +27,7 @@ public class SyncOnlineSessionFilter extends PathMatchingFilter
         // 
         if (session != null && session.getUserUuid() != null && session.getStopTimestamp() == null) {
             onlineSessionDAO.syncToDb(session);
+            log.info("sync to db {} userid {}", session.getId(), session.getUserUuid());
         }
         return true;
     }

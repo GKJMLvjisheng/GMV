@@ -52,7 +52,8 @@ import java.util.*
 
 class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     lateinit var myWebHome: WebView
-    lateinit var mHeadBar: Toolbar
+    //lateinit var mHeadBar: Toolbar
+    var mHeadBar:Toolbar? = null
     val mHost: String = BaseConstant.SERVER_ADDRESS//"18.219.19.160:8080"
     val homeUrl: String = "$mHost/api/v1/greenMap"//"http://$mHost/api/v1/greenMap"//
     //val homeUrl:String = "http://10.0.0.25:8080/api/v1/greenMap"
@@ -214,10 +215,10 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
     fun shouldToolBarShowBack(){
         if (myWebHome.canGoBack()) {
-            mHeadBar.setVisible(true)
+            mHeadBar?.setVisible(true)
         }
         else{
-            mHeadBar.setVisible(false)
+            mHeadBar?.setVisible(false)
         }
     }
     private fun initView(){
@@ -236,7 +237,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         mHeadBar = homeFragment.findViewById(R.id.mHeadBar) as Toolbar
         (activity as AppCompatActivity).setSupportActionBar(mHeadBar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-        mHeadBar.setNavigationOnClickListener {
+        mHeadBar?.setNavigationOnClickListener {
             if (myWebHome.canGoBack()) {
                 myWebHome.goBack()
             }
@@ -322,14 +323,23 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
 
             if(mHost.contains(host)){
-                mHeadBar.setVisible(false)
+                mHeadBar?.setVisible(false)
             }
             else {
-                mHeadBar.setVisible(true)
+                mHeadBar?.setVisible(true)
             }
             return false
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        Log.i("zbb","homefragment headbar".plus(isVisibleToUser))
+        if(isVisibleToUser){
+            if(mHeadBar!=null){
+                mHeadBar!!.setVisible(false)
+            }
 
+        }
+    }
 }

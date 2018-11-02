@@ -16,11 +16,11 @@ import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 import com.cascv.oas.server.utils.ShiroUtils;
 
-// 
-public class OnlineSessionFilter extends AccessControlFilter
-{
+import lombok.extern.slf4j.Slf4j;
 
-    
+// 
+@Slf4j
+public class OnlineSessionFilter extends AccessControlFilter {
     // 
     @Value("${shiro.user.loginUrl}")
     private String loginUrl;
@@ -53,23 +53,22 @@ public class OnlineSessionFilter extends AccessControlFilter
                 }
             }
 
-            if (onlineSession.getStatus() == OnlineSession.OnlineStatus.off_line)
-            {
+            if (onlineSession.getStatus() == OnlineSession.OnlineStatus.off_line) {
+            	log.info("OnlineSessionFilter offline {}", session.getId());
                 return false;
             }
         }
         return true;
     }
 
-    
     @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception
-    {
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception  {
         Subject subject = getSubject(request, response);
-        if (subject != null)
-        {
+        if (subject != null) {
+            log.info("OnlineSessionFilter logout {}", request.getServletContext().getContextPath());
             subject.logout();
         }
+        log.info("OnlineSessionFilter redirect to login");
         saveRequestAndRedirectToLogin(request, response);
         return true;
     }

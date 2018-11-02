@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.oases.base.common.AppManager
 import com.oases.base.common.BaseConstant
 import com.oases.base.ext.onClick
 import com.oases.base.ui.activity.BaseMvpActivity
@@ -25,12 +26,14 @@ import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.util.*
 
 @Route(path = RouterPath.UserCenter.PATH_LOGIN)
 class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+    private var pressTime:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +70,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
         super.onResume()
         Log.d("zbb", "login resume")
         AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS, 0)
+
         checkLogined()
     }
 
@@ -142,6 +146,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     private fun checkLogined(){
+        //getActiveActivity()
         if (isLogined()){
             setResult(Activity.RESULT_OK)
             finish()
@@ -149,8 +154,28 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        setResult(Activity.RESULT_CANCELED)
-        finish()
+       // super.onBackPressed()
+        /*val time = System.currentTimeMillis()
+       // setResult(Activity.RESULT_CANCELED)
+        //finish()
+        if (time - pressTime > 2000) {
+            toast("再按一次退出程序")
+            pressTime = time
+        } else {
+            Log.d("zbb", "exit app")
+            AppPrefsUtils.putString(BaseConstant.USER_TOKEN, "")
+            finish()
+            AppManager.instance.exitApp(this)
+        }*/
+
     }
+
+    private fun getActiveActivity(){
+       var stack: Stack<Activity> = AppManager.instance.getAllActivity()
+        for(s in stack){
+            Log.i("zbb","now activity".plus(s))
+        }
+    }
+
+
 }
