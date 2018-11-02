@@ -22,8 +22,8 @@ class DonePhoneActivity : BaseMvpActivity<DonePhonePresenter>(), DonePhoneView {
 
     var  NewMobile:String = ""
     var  phoneJumpFlag:String = ""
-    //private val sourceCode:String = "CHEACKMOBILE"     //绑定手机是5
-    private val sourceCode:Int = 5
+    private val sourceUuid:String = "CHEACKMOBILE"     //绑定手机是5
+    //private val sourceCode:Int = 5
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_done_phone)
@@ -59,7 +59,8 @@ class DonePhoneActivity : BaseMvpActivity<DonePhonePresenter>(), DonePhoneView {
          //}
 
          //if (phoneJumpFlag=="fromComputingPower") {
-             mPresenter.getReward(sourceCode)
+            mPresenter.getReward(sourceUuid)
+             //mPresenter.getReward(sourceCode)
          //    toast("手机号已关联，奖励只在第一次参与活动时获得哦！")
          //    ARouter.getInstance().build("/computingPower/ComputingPowerMainActivity").navigation()
         // }

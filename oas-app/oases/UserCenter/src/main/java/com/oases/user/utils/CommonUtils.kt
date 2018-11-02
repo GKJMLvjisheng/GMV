@@ -28,7 +28,7 @@ fun getDeviceId(activity: Activity): String {
     if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
         val telephonyManager = activity.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            ImeiNumber = telephonyManager.imei
+            ImeiNumber = telephonyManager.getImei(0)
             Log.d("zbb", "get imei $ImeiNumber")
             if (ImeiNumber == null){
                 ImeiNumber = telephonyManager.meid

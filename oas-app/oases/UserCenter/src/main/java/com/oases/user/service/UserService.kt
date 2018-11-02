@@ -25,8 +25,8 @@ interface UserService {
     fun sendMobile(mobile:String):Observable<SendMobileResp>
     fun checkPhoneCode(mobileCode:String):Observable<CheckPhoneCodeResp>
     fun donePhone(mobile:String):Observable<DonePhoneResp>
-    //fun getReward(sourceCode:String): Observable<Int>
-    fun getReward(sourceCode:Int): Observable<Int>
+    fun getReward(sourceUuid:String): Observable<Int>
+    //fun getReward(sourceCode:Int): Observable<Int>
 
     fun checkMail(email:String):Observable<Int>
     fun sendMail(email:String):Observable<SendMailResp>

@@ -21,8 +21,8 @@ class DoneMailActivity : BaseMvpActivity<DoneMailPresenter>(), DoneMailView {
 
     var  NewMail:String = ""
     var  mailJumpFlag:String = ""
-    //private val sourceCode:String = "CHEACKEMAIL"     //绑定邮箱6
-    private val sourceCode:Int = 6
+    private val sourceUuid:String = "CHEACKEMAIL"     //绑定邮箱6
+    //private val sourceCode:Int = 6
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_done_mail)
@@ -59,7 +59,8 @@ class DoneMailActivity : BaseMvpActivity<DoneMailPresenter>(), DoneMailView {
         //}
 
         //if (mailJumpFlag=="fromComputingPower") {
-            mPresenter.getReward(sourceCode)
+        mPresenter.getReward(sourceUuid)
+        //mPresenter.getReward(sourceCode)
         //    toast("邮箱已关联,奖励只在第一次参与活动时获得哦！")
         //    ARouter.getInstance().build("/computingPower/ComputingPowerMainActivity").navigation()
        // }
