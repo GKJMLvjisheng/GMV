@@ -37,8 +37,8 @@ public class AuthenticationUtils {
         final String product = "Dysmsapi";
         final String domain = "dysmsapi.aliyuncs.com";
   
-        final String accessKeyId = "LTAIL9r6XmpbBe9g";
-        final String accessKeySecret = "Ra4rhaRCGsleSxOQHb9BNQTPCAgMfC";
+        final String accessKeyId = "LTAIHAgE3AhUoCIe";
+        final String accessKeySecret = "f6uoZJCp5VtiUZOAEZm7zmrakNAalE";
         
         IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou",accessKeyId, accessKeySecret);
         DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product,
@@ -50,10 +50,14 @@ public class AuthenticationUtils {
         request.setMethod(MethodType.POST);
         
         request.setPhoneNumbers(PhoneNumbers);
-       
-        request.setSignName("国科云景");
         
-        request.setTemplateCode("SMS_143716732");
+        //签名
+    
+        request.setSignName("OAS");
+        
+        //模板
+        
+        request.setTemplateCode("SMS_149418395");
         
         request.setTemplateParam("{\"code\":\"" + mobilecode + "\"}");
         System.out.println("***********mobilecode = ************" + mobilecode);
