@@ -17,12 +17,12 @@ let startApp = function () {
     // 基础地址
     //Vue.prototype.BASE_URL = res.data.BASE_URL;
    console.log(res.data.BASE_URL)
-   Axios.defaults.baseURL = res.data.BASE_URL 
+   //Axios.defaults.baseURL = res.data.BASE_URL 
    if(window.Android) {
     token = window.Android.getToken()
   }
   
-  //Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
+  Axios.defaults.baseURL = process.env.VUE_APP_BASE_URL
   Axios.interceptors.request.use(config => {
     config.headers['Content-type'] = 'application/json;charset=UTF-8'
     config.headers['token'] = token || '99e04e02-fb5c-4f65-a6cf-a93006c351b6'

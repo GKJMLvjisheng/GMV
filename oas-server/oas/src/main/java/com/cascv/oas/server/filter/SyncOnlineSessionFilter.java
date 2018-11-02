@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.cascv.oas.server.shiro.OnlineSessionDAO;
 
-
 @Slf4j
 public class SyncOnlineSessionFilter extends PathMatchingFilter
 {
@@ -27,8 +26,8 @@ public class SyncOnlineSessionFilter extends PathMatchingFilter
         OnlineSession session = (OnlineSession) request.getAttribute(ShiroConstants.ONLINE_SESSION);
         // 
         if (session != null && session.getUserUuid() != null && session.getStopTimestamp() == null) {
-        	log.info("synch to db {}", request.getServletContext().getContextPath());
             onlineSessionDAO.syncToDb(session);
+            log.info("sync to db {} userid {}", session.getId(), session.getUserUuid());
         }
         return true;
     }

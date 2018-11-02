@@ -104,6 +104,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
     public void validateSessions()
     {
       int invalidCount = 0;
+
       int timeout = (int) this.getGlobalSessionTimeout();
       Date expiredDate = DateUtils.addMilliseconds(new Date(), 0 - timeout);
       List<UserOnline> userOnlineList = userOnlineService.selectOnlineByExpired(expiredDate);
@@ -123,7 +124,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
             log.debug("Invalidated session with id [{}] {}", userOnline.getSessionId(), s);
           }
           invalidCount++;
-          log.info("{} invalidate session {}", invalidCount, userOnline.getSessionId());
+          log.info("{} Invalidate session with id {}", invalidCount, userOnline.getSessionId());
           needOfflineIdList.add(userOnline.getSessionId());
         }
       }

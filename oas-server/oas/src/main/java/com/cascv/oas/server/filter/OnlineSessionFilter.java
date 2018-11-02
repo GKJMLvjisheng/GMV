@@ -19,7 +19,6 @@ import com.cascv.oas.server.utils.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
 
 // 
-
 @Slf4j
 public class OnlineSessionFilter extends AccessControlFilter {
     // 
@@ -54,8 +53,8 @@ public class OnlineSessionFilter extends AccessControlFilter {
                 }
             }
 
-            if (onlineSession.getStatus() == OnlineSession.OnlineStatus.off_line)
-            {
+            if (onlineSession.getStatus() == OnlineSession.OnlineStatus.off_line) {
+            	log.info("OnlineSessionFilter offline {}", session.getId());
                 return false;
             }
         }
@@ -63,13 +62,13 @@ public class OnlineSessionFilter extends AccessControlFilter {
     }
 
     @Override
-    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception
-    {
+    protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception  {
         Subject subject = getSubject(request, response);
-        log.info("online session filter onAccessDenied {}", request.getServletContext().getContextPath());
         if (subject != null) {
+            log.info("OnlineSessionFilter logout {}", request.getServletContext().getContextPath());
             subject.logout();
         }
+        log.info("OnlineSessionFilter redirect to login");
         saveRequestAndRedirectToLogin(request, response);
         return true;
     }
