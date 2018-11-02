@@ -65,9 +65,17 @@ public class EnergyService {
      * 查询当日是否签过到，已签到返回true,当日尚未签到返回false
      * @param userUuid
      * @return
+     * @throws ParseException 
      */
-    public Boolean isCheckin(String userUuid) {
-        String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    public Boolean isCheckin(String userUuid) throws ParseException {
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdf.parse(now);
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.setTime(date);
+    	calendar.add(Calendar.HOUR_OF_DAY, 8);
+    	String newTime = sdf.format(calendar.getTime());
+    	String today = newTime.substring(0, 10);
         List<EnergyBall> energyBalls = energyBallMapper
                 .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, today);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
