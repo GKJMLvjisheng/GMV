@@ -19,6 +19,8 @@ import java.util.concurrent.FutureTask;
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.SystemUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -74,6 +76,7 @@ import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 import com.cascv.oas.server.user.wrapper.UserStatus;
+import com.cascv.oas.server.utils.AuthenticationUtils;
 import com.cascv.oas.server.utils.SendMailUtils;
 import com.cascv.oas.server.utils.ShiroUtils;
 import io.swagger.annotations.Api;
@@ -934,81 +937,81 @@ public class UserController extends BaseShiroController{
 		  }         
      }
 	
-	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
-    public ResponseEntity<?> sendMobile(@RequestBody MobileModel mobileModel){
-		Map<String,Boolean> info=new HashMap<>();
-		log.info("****start****");
-		//后续"+86"可以在前端进行修改
-		String mobile = "+86"+mobileModel.getMobile();
-		String SignName="OASESCHAIN";
-		String content="";
-        //获取验证码
-		vcode=MessageService.createRandomVcode();
-		if(mobileModel.getContent()!=null){
-			content = mobileModel.getContent();
-		}else {
-		content = "【"+SignName+"】"+"验证码为"+vcode+",您正在尝试变更重要信息，请妥善保管账户信息。";
-		}
-        PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
-        log.info(publishResult.toString());
-		info.put("state",true);
-		log.info("code={}",vcode);
-        log.info("****end****");
-        return new ResponseEntity.Builder<Map<String,Boolean>>()
-		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
-    }
+//	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
+//    public ResponseEntity<?> sendMobile(@RequestBody MobileModel mobileModel){
+//		Map<String,Boolean> info=new HashMap<>();
+//		log.info("****start****");
+//		//后续"+86"可以在前端进行修改
+//		String mobile = "+86"+mobileModel.getMobile();
+//		String SignName="OASESCHAIN";
+//		String content="";
+//        //获取验证码
+//		vcode=MessageService.createRandomVcode();
+//		if(mobileModel.getContent()!=null){
+//			content = mobileModel.getContent();
+//		}else {
+//		content = "【"+SignName+"】"+"验证码为"+vcode+",您正在尝试变更重要信息，请妥善保管账户信息。";
+//		}
+//        PublishResult publishResult = messageService.sendSMSMessage(mobile,content);
+//        log.info(publishResult.toString());
+//		info.put("state",true);
+//		log.info("code={}",vcode);
+//        log.info("****end****");
+//        return new ResponseEntity.Builder<Map<String,Boolean>>()
+//		  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();		
+//    }
 	
 	/*
 	 * Name:sendMobile--Aliyun
 	 * Author:lvjisheng
 	 * Date:2018.09.04
 	 */
-//	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
-//	@WriteLog(value="SendMobile")
-////	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
-//	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
-//    Map<String,Boolean> info=new HashMap<>();
-//	
-//    log.info("-----------sendMobile start---------------");
-//	
-////	String mobile = userModel.getMobile();
-//    
-//    //String mobile=request.getParameter("mobile");
-//    String oldMobile =request.getReader().readLine();
-//    int length=11+2;
-//    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+length);
-//    log.info(mobile);
-//	try {	
-//		vcode = AuthenticationUtils.createRandomVcode();
-//		log.info("vcode = "+vcode);
-////		Session session = ShiroUtils.getSession();
-//		HttpSession session=request.getSession();
-//		
-//		session.setAttribute("mobileCheckCode", vcode);
-//		log.info("sessionCheckCode{}",session.getAttribute("mobileCheckCode"));
-//		AuthenticationUtils sms = new AuthenticationUtils();		
-//		if(sms.SendCode(mobile,vcode).getCode().equals("OK")){
-//				info.put("state",true);
-//				log.info("success");
-//				return new ResponseEntity.Builder<Map<String, Boolean>>()
-//				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();			
-//		}else{
-//			
-//			info.put("state",false);
-//			log.info("failure1");
-//			return new ResponseEntity.Builder<Map<String, Boolean>>()
-//			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-//		}
-//		
-//	} catch (Exception e) {
-//		log.info(e.getMessage());
-//		log.info("failure2");
-//		e.printStackTrace();	
-//		info.put("state",false);
-//		return new ResponseEntity.Builder<Map<String, Boolean>>()
-//		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
-//	}		
-//}
+	@RequestMapping(value = "/sendMobile", method = RequestMethod.POST)
+	@WriteLog(value="SendMobile")
+//	public ResponseEntity<?> sendMobile(@RequestBody UserModel userModel) throws Exception {
+	public ResponseEntity<?> sendMobile(HttpServletRequest request) throws Exception {
+    Map<String,Boolean> info=new HashMap<>();
+	
+    log.info("-----------sendMobile start---------------");
+	
+//	String mobile = userModel.getMobile();
+    
+    //String mobile=request.getParameter("mobile");
+    String oldMobile =request.getReader().readLine();
+    int length=11+2;
+    String mobile = oldMobile.substring(oldMobile.indexOf(":")+2,oldMobile.indexOf(":")+length);
+    log.info(mobile);
+	try {	
+		vcode = AuthenticationUtils.createRandomVcode();
+		log.info("vcode = "+vcode);
+//		Session session = ShiroUtils.getSession();
+		HttpSession session=request.getSession();
+		
+		session.setAttribute("mobileCheckCode", vcode);
+		log.info("sessionCheckCode{}",session.getAttribute("mobileCheckCode"));
+		AuthenticationUtils sms = new AuthenticationUtils();		
+		if(sms.SendCode(mobile,vcode).getCode().equals("OK")){
+				info.put("state",true);
+				log.info("success");
+				return new ResponseEntity.Builder<Map<String, Boolean>>()
+				  	      .setData(info).setErrorCode(ErrorCode.SUCCESS).build();			
+		}else{
+			
+			info.put("state",false);
+			log.info("failure1");
+			return new ResponseEntity.Builder<Map<String, Boolean>>()
+			  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+		}
+		
+	} catch (Exception e) {
+		log.info(e.getMessage());
+		log.info("failure2");
+		e.printStackTrace();	
+		info.put("state",false);
+		return new ResponseEntity.Builder<Map<String, Boolean>>()
+		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
+	}		
+}
 //	
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
