@@ -36,7 +36,7 @@
                 and source_uuid = #{sourceUuid}
             </if>
             <if test="created != null">
-                and created like #{created}"%"
+                and date_add(created, interval 8 hour) like #{created}"%"
             </if>
         </where>
     </select>

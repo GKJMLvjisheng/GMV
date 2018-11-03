@@ -76,6 +76,7 @@ public class EnergyService {
     	calendar.add(Calendar.HOUR_OF_DAY, 8);
     	String newTime = sdf.format(calendar.getTime());
     	String today = newTime.substring(0, 10);
+    	log.info("today={}", today);
         List<EnergyBall> energyBalls = energyBallMapper
                 .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, today);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
