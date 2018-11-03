@@ -137,7 +137,7 @@ public class UserController extends BaseShiroController{
 	@ResponseBody
 	@WriteLog(value="Login")
 	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo,HttpServletRequest request) {
-		
+		ErrorCode errorCode=ErrorCode.LOGIN_FAILED;
 		//获取请求头，来判断是来自web的请求还是移动端的请求
 		String userAgent=request.getHeader("user-agent");
 		log.info("user-agent={}",userAgent);
@@ -186,6 +186,7 @@ public class UserController extends BaseShiroController{
           userModel.setProfile(fullLink);         
           ShiroUtils.setUser(userModel);
           
+          
           /**
            * 判断IMEI是否相匹配
            */
@@ -197,8 +198,10 @@ public class UserController extends BaseShiroController{
 		 UserFacility userFacility=new UserFacility();
 		 userFacility.setUuid(ShiroUtils.getUser().getUuid());
 		 userFacility.setIMEI(IMEINew);
-         if(status==0)
+         if(status==0){
+        	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
         	 throw new AuthenticationException();
+         }
          //判断是否是移动端登录
          if(userAgent.indexOf("Windows")==-1){
         	 log.info("this is android!");
@@ -206,12 +209,15 @@ public class UserController extends BaseShiroController{
         	 switch(roleList.get(0)){
 	        	 case "系统账号":
 	        		 log.info("this is 系统账号");
+	        		 errorCode=ErrorCode.USER_CANNOT_LOGIN_IN_ANDROID;
 	        		 throw new AuthenticationException();
 	        	 case "正常账号":
 	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
-                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null)
+                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null){
+                        	 errorCode=ErrorCode.USER_IMEI_REPEAT;
                         	 throw new AuthenticationException();
+                         }
                          else{
 	        				 UserFacility userNewFacility=new UserFacility();
 	    				     userNewFacility.setIMEI(loginVo.getIMEI());
@@ -226,7 +232,11 @@ public class UserController extends BaseShiroController{
 		        			 if(IMEIOri.equals(IMEINew))
 		        			 {    
 		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null)
+		        				  {
+
+		        					  errorCode=ErrorCode.USER_IMEI_EXIST;
 		        					  throw new AuthenticationException();
+		        			 }
 		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
 			        				 UserFacility userNewFacility=new UserFacility();
 			    				     userNewFacility.setIMEI(loginVo.getIMEI());
@@ -264,7 +274,7 @@ public class UserController extends BaseShiroController{
       } catch (AuthenticationException e)  {
           return new ResponseEntity.Builder<LoginResult>()
                 .setData(loginResult)
-                .setErrorCode(ErrorCode.LOGIN_FAILED).build();
+                .setErrorCode(errorCode).build();
       }
 	}
 	
