@@ -34,23 +34,23 @@ function checkMostAmount() {
 	var mostAmount = $("#mostAmount").val();
 	var len = mostAmount.length;
 	if(len==0){ 
-		$("#msg_mostAmount").html("请输入正数，不超过500,000"); //判断%在不在最后一位
+		$("#msg_mostAmount").html("请输入正数"); //判断%在不在最后一位
 		$("#msg_mostAmount").css("color", "red");
 	}else{
 		if (/^\d+(?=\.{0,1}\d+$|$)/.test(mostAmount)) {
-			if (parseFloat(mostAmount)>0 && parseFloat(mostAmount)<= 500000) {								
+			if (parseFloat(mostAmount)>0) {								
 				$("#msg_mostAmount").html("输入符合要求");  
 				$("#msg_mostAmount").css("color", "green");
 				check1 = 1;
 				return check1;		
 			}else{
-				$("#msg_mostAmount").html("请输入正数，不超过500,000");
+				$("#msg_mostAmount").html("请输入正数");
 		        $("#msg_mostAmount").css("color", "red");
 		        check1 = 0;
 				return check1;
 			}
 		}else{
-			$("#msg_mostAmount").html("请输入正数，不超过500,000");
+			$("#msg_mostAmount").html("请输入正数");
 	        $("#msg_mostAmount").css("color", "red");	
 	        check1 = 0;
 			return check1;
@@ -63,23 +63,23 @@ function checkBrokerage() {
 	var lessBrokerage = $("#lessBrokerage").val();
 	var len = lessBrokerage.length;
 	if(len==0){ 
-		$("#msg_lessBrokerage").html("请输入正数，不少于500"); //判断%在不在最后一位
+		$("#msg_lessBrokerage").html("请输入正数"); //判断%在不在最后一位
 		$("#msg_lessBrokerage").css("color", "red");
 	}else{
 		if (/^\d+(?=\.{0,1}\d+$|$)/.test(lessBrokerage)) {
-			if (parseFloat(lessBrokerage)>=500) {								
+			if (parseFloat(lessBrokerage)>0) {								
 				$("#msg_lessBrokerage").html("输入符合要求");  // (?=(">)) 表示 匹配以(">)结尾的字符串，并且捕获(存储)到分组中
 				$("#msg_lessBrokerage").css("color", "green");
 				check2 = 1;
 				return check2;		
 			}else{
-				$("#msg_lessBrokerage").html("请输入正数，不少于500");
+				$("#msg_lessBrokerage").html("请输入正数");
 		        $("#msg_lessBrokerage").css("color", "red");
 		        check2 = 0;
 				return check2;
 			}
 		}else{
-			$("#msg_lessBrokerage").html("请输入正数，不少于500");
+			$("#msg_lessBrokerage").html("请输入正数");
 	        $("#msg_lessBrokerage").css("color", "red");	
 	        check2 = 0;
 			return check2;

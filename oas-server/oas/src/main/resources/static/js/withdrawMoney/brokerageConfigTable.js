@@ -62,8 +62,8 @@ function initBrokeragedGrid(data) {
 			formatter: actionFormatter2
 		}],
 		
-		search : true,//搜索
-        searchOnEnterKey : true,
+		//search : true,//搜索
+        //searchOnEnterKey : true,
 		clickToSelect: false,         
 	});
 }
@@ -71,7 +71,7 @@ function initBrokeragedGrid(data) {
 
 function actionFormatter1(value, row, index) {
 	var ratio = parseFloat(value);	
-	var ratio1 =(ratio*100).toFixed(0);	
+	var ratio1 =(ratio*100).toFixed(1);	
 	//alert(JSON.stringify(ratio1));	
 	var ratio2 = ratio1.toString()+"%";	
 	//alert(JSON.stringify(ratio2));
@@ -93,7 +93,7 @@ function EditRewardById(valueMax){
     //获取选中行的数据
     var rows=$("#brokerageGrid").bootstrapTable('getRowByUniqueId', valueMax);
 	
-	var value1 = (rows.value*100).toFixed(0);
+	var value1 = (rows.value*100).toFixed(1);
 	var value = value1+"%";
 		
 
@@ -101,13 +101,13 @@ function EditRewardById(valueMax){
 	$('#brokerageMoney').val(value);
 	$('#lessBrokerage').val(rows.valueMin);
 	
-	$("#msg_mostAmount").html("请输入正数，不超过500,000");
+	$("#msg_mostAmount").html("请输入正数");
 	$("#msg_mostAmount").css("color", "green");
 	
 	$("#msg_brokerageMoney").html("请输入0-100之间的数字并加%，例如2%");
 	$("#msg_brokerageMoney").css("color", "green");
 	
-	$("#msg_lessBrokerage").html("请输入正数，不少于500");
+	$("#msg_lessBrokerage").html("请输入正数");
     $("#msg_lessBrokerage").css("color", "green");
 	
 	$("#updateBrokerageModal").modal("show");           
