@@ -125,6 +125,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
     private fun uploadHistorySteps() {
         val lastUpdateDate = getStepUploadDate()
+        //val lastUpdateDate = "2018-11-02"
         val daysGap = getDaysBetweenDates(lastUpdateDate, getNow(DATE_FORMAT))
         Log.d("zbb", "last update date $lastUpdateDate, gaps $daysGap")
 
@@ -209,12 +210,18 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     override fun onResume() {
         super.onResume()
         Log.d("zbb1","homeFragment on resume")
-        //initView()
+        //
         if (myWebHome.canGoBack()) {
             Log.d("zbb1","homeFragment on resume goBack")
             myWebHome.goBack()
         }
-        myWebHome.loadUrl("javascript:skipRefresh()")
+        /*
+        if(mHeadBar!=null){
+            mHeadBar!!.setVisible(false)
+        }*/
+
+        initView()
+        //myWebHome.loadUrl("javascript:skipRefresh()")
     }
 
     fun shouldToolBarShowBack(){
@@ -267,7 +274,8 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
             Log.i("zbb2","token".plus(token))
 
             mHandler.post{
-                shouldToolBarShowBack()
+                mHeadBar?.setVisible(false)
+                //shouldToolBarShowBack()
             }
 
 
@@ -347,9 +355,10 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         super.setUserVisibleHint(isVisibleToUser)
         Log.i("zbb","homefragment headbar".plus(isVisibleToUser))
         if(isVisibleToUser){
+            /*
             if(mHeadBar!=null){
                 mHeadBar!!.setVisible(false)
-            }
+            }*/
 
         }
     }
