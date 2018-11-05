@@ -143,7 +143,7 @@ public class UserController extends BaseShiroController{
 		log.info("user-agent={}",userAgent);
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
-		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
+		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);		
         LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
 	    //查询该用户是否已经激活
@@ -164,7 +164,7 @@ public class UserController extends BaseShiroController{
         log.info("roles={}",roles);
         
 	    //查询该imei是否被其他正常账号绑定,imei为null表示第一次登陆
-	    if(user.getIMEI() == null && roleList.get(0).equals("正常账号")) {
+	    /*if(user.getIMEI() == null && roleList.get(0).equals("正常账号")) {
 	    	Integer imeiNumber = userService.countSameImeiNumber(loginVo.getIMEI());
 	    	if(imeiNumber>0) {
 	    		 return new ResponseEntity.Builder<LoginResult>()
@@ -173,7 +173,7 @@ public class UserController extends BaseShiroController{
 	    	}
 	    	 //将该imei更新至用户表
 		    userService.updateUserIMEI(loginVo.getName(),loginVo.getIMEI());
-	    }
+	    }*/
 	   
       try {
           subject.login(token);
@@ -185,8 +185,7 @@ public class UserController extends BaseShiroController{
           userModel=ShiroUtils.getUser();
           userModel.setProfile(fullLink);         
           ShiroUtils.setUser(userModel);
-          
-          
+                    
           /**
            * 判断IMEI是否相匹配
            */

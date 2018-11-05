@@ -575,4 +575,26 @@ public class UserWalletController extends BaseShiroController {
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
 	}
+	
+	/**
+	 * @author lvjisheng
+	 * @describle 管理员批量转账
+	 * @param 
+	 * @return
+	 */	
+	  @PostMapping(value="/multiTransfer")
+	  @ResponseBody
+	  @Transactional
+	  public ResponseEntity<?> multiTransfer(@RequestBody UserWalletTransfer userWalletTransfer){
+	    UserModel fromUser=ShiroUtils.getUser();
+	    List<String> toUsers=userWalletTransfer.getToUsers();
+	    for(String toUser:toUsers) {
+	    UserModel userModel=userService.findUserByName(toUser);	
+	    userWalletService.transfer(fromUser.getUuid(), userModel.getUuid(),userWalletTransfer.getValue(), userWalletTransfer.getRemark(), userWalletTransfer.getComment());
+	    }
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(ErrorCode.SUCCESS)
+	        .build();
+	  }
 }
