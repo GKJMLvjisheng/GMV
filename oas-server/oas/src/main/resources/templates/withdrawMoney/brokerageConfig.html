@@ -2,42 +2,38 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-  	<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script> 
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>   
+   
     <style type="text/css">
-     table{     
-         border-collapse :collapse ;
-		 margin-top: 40px;
-		 margin-left: 150px;
-     }
-     th,td
-     {
-         width:200px;
-         height:40px;
-         border :1px solid black;
-         font-size:12px;
-         text-align :center;
-     }
+    table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+	}
+	label{ 
+    vertical-align:middle;
+	}
      
     </style>
 </head>
 
 <body>
 
-  <table>
-    <tr>
-      <th>手续费</th>
-      <th>操作</th>
-    </tr>
-	<tr>
-      <td id="brokerage"></td>
-      <td><a onclick="edit()" title="修改"><span class="glyphicon glyphicon-pencil"></span></a></td>
-	</tr> 
-  </table>
+	<section class="content table-content">
+		
+		<div class = "container">
+			<table id="brokerageGrid"></table>
+		</div>
+
+	</section>
 
   <!-- 提币配置的模态框 -->
-    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="updateBrokerageModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
 
@@ -45,18 +41,39 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">手续费配置</h3>			
+					<h3 class="modal-title" id="myModalLabel">提币手续费配置</h3>			
 				</div>
 
 				<div class="modal-body">
-				
-					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">
+					<form id="updateBrokerageForm" action="/brokerage/brokerageConfig" method="post" class="form-horizontal">
+						<input  style="display:none" type="hidden" name="promotedId" id="promotedId">
+
 						<div class="form-group">
-							<label for="ErewardName" class="col-sm-3 control-label">手续费：</label>
-							<div class="col-sm-6">
-								<input name="Ebrokerage" class="form-control" id="Ebrokerage" required="required" /></input>								
+							<label for="question" class="col-sm-3 control-label">单次提币限额：</label>
+							<div class="col-sm-7">
+								<input name="mostAmount" class="form-control" id="mostAmount" required="required" onblur="checkMostAmount()"/>
+								<span id="msg_mostAmount"></span>
 							</div>						
-						</div>																								
+						</div>												
+						
+						<div class="form-group" id="frozen">
+							<label for="question" class="col-sm-3 control-label">手续费比例：</label>
+							<div class="col-sm-7">
+								<input name="brokerageMoney" class="form-control" id="brokerageMoney" required="required" onblur="checkBrokerageRate()"/>
+								<span id="msg_brokerageMoney"></span>
+							</div>						
+						</div>
+						
+						
+						<div class="form-group">
+							<label for="question" class="col-sm-3 control-label">最低手续费：</label>
+							<div class="col-sm-7">
+								<input name="lessBrokerage" class="form-control" id="lessBrokerage" required="required" onblur="checkBrokerage()"/>
+								<span id="msg_lessBrokerage"></span>
+							</div>						
+						</div>
+											
+																											
 					</form>
 				</div>
 
@@ -92,6 +109,7 @@
 
 	</div>
 	
-	<script type="text/javascript" th:src="@{/js/withdrawMoney/brokerageConfig.js}"></script>  
+	<script type="text/javascript" th:src="@{/js/withdrawMoney/brokerageConfig.js}"></script> 
+	<script type="text/javascript" th:src="@{/js/withdrawMoney/brokerageConfigTable.js}"></script>  
 </body>
 </html>
