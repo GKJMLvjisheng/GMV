@@ -154,6 +154,7 @@ public class PromotedRewardService {
 				  minerMapper.updateByPowerRewardStatus(purchaseRecord);
 				  log.info("end reward power job ...");
 				  //若此时无邀请码  不进行奖励补助
+				  log.info("finish reward vitural");
 				  String rewardEnergyBallUuid=purchaseRecord.getRewardEnergyBallUuid();
 				  if(rewardEnergyBallUuid.equals("not exist")) {
 					  Integer minerNum=purchaseRecord.getMinerNum();

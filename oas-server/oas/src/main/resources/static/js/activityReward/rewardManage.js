@@ -7,6 +7,7 @@ document.write("<script language=javascript src='/js/deleteConfirm.js'></script>
 var check1=1;
 var check2=1;
 var check3=1;
+var checkUuid=1;
 //主界面用户表格回显
 $(function() {
 
@@ -16,7 +17,11 @@ $(function() {
 	
 	
 });
-
+function initAddmodel(){
+	checkUuid=1;
+	 resetAddModal();
+	$("#addRewardModal").modal('show');
+}
 function rewardReady(){
 	
 	
@@ -44,13 +49,63 @@ function rewardReady(){
 		}); 
 	 initRewardGrid(data);
 }
+function checkRewardUuid() {
+	
+	var rewardUuid = $("#rewardUuid").val(); 
+		if(validateUuid(rewardUuid)){
+		
+		$("#msg_rewardUuid").html("");
+		data={"rewardUuid":rewardUuid}
+		$.ajax({
+			type:'post',
+			url:'/api/v1/activityConfig/inquireRewardUuid',
+			data:JSON.stringify(data),
+			contentType:'application/json;charset=utf8',
+			dataType:'json',
+			cache:false,
+			async:false,
+			success:function(res){
+				console.log(res)
+				if(res.code==0){
+					checkUuid=1;
+					
+				}else{
+					checkUuid=0;
+					alert("输入的奖励标识符已存在！");
+					$("#msg_rewardUuid").html("该奖励标识符已存在");
+					$("#msg_rewardUuid").css("color", "red");
+				}
+			},
+		error:function(res){
+			alert(JSON.stringify(res.message));
+		},
+			
+		});
+			
+		
+	}else{
+		$("#msg_rewardUuid").html("奖励标识符由大写的英文字母组成！");
+		 $("#msg_rewardUuid").css("color", "red");
+		checkUuid=0;
+	}
+	
+}
+function validateUuid(num){
+	var reg =/^[A-Z]+$/ ;//匹配英文
+	  
+	  if(reg.test(num)){
+		  
+		  return true;}
+	
+	  return false ;  
+}
 
 function checkRewardName() {
 	var abstract = $("#rewardName").val(); 
 	var len=abstract.length;
 	//alert(len);
-	if (len>10) {
-		$("#msg_rewardName").html("输入版本状态长度为10个字符，已达上限");
+	if (len>20) {
+		$("#msg_rewardName").html("输入版本状态长度为20个字符，已达上限");
         $("#msg_rewardName").css("color", "red");
 	}
 	else {
@@ -88,16 +143,25 @@ function checkErewardDescription(){
 //新增版本
 function addReward(){
 	
-    
+	if($("#rewardUuid").val()==="")
+	{
+	alert("奖励标识符不能为空");
+	return;
+	}
 	if($("#rewardName").val()==="")
 		{
 		alert("奖励名称不能为空");
 		return;
 		}
-
+	if(!checkUuid){
+		alert("请输入正确的奖励标识符！");
+		return;
+	}
+	var rewardUuid=$("#rewardUuid").val();
 	var rewardName=$("#rewardName").val();
 	var rewardDescription=$("#rewardDescription").val();
 	var data={
+			"rewardUuid":rewardUuid,
 			"rewardName":rewardName,
 			"rewardDescription":rewardDescription
 	};
@@ -130,7 +194,6 @@ function addReward(){
 		},
 	});
 	
-	resetAddModal();
 	rewardReady();
 }
 
@@ -160,10 +223,10 @@ function resteUpdate(){
 }
 //修改没写完
 function updateReward(){
-	var rewardCode=$("#ErewardId").val();
+	var rewardUuid=$("#ErewardId").val();
 	var rewardDescription=$("#ErewardDescription").val();
 	var data={"rewardDescription":rewardDescription,
-		"rewardCode":rewardCode}
+		"rewardUuid":rewardUuid}
 	
 	$.ajax({
 		url:"/api/v1/userCenter/updateApp",
@@ -180,7 +243,7 @@ function updateReward(){
 			if(res.code==0){
 				alert("修改成功");
 				
-				versionReady();
+				rewardReady();
 			    //newsReady();
 			}
 			else{
@@ -218,7 +281,7 @@ function initRewardGrid(data) {
 		pageList:[5,10, 25, 50, 100],
 		
 
-		uniqueId:"rewardCode",//Indicate an unique identifier for each row
+		uniqueId:"rewardUuid",//Indicate an unique identifier for each row
 
 		toolbar:"#toolbar",//工具栏
 		sortName: 'ID', // 要排序的字段
@@ -307,7 +370,7 @@ function editRewardById(id){
     
     //获取选中行的数据
     var rows=$("#rewardGrid").bootstrapTable('getRowByUniqueId', id);
-	$('#ErewardId').val(rows.rewardCode);  
+	$('#ErewardId').val(rows.rewardUuid);  
     $('#ErewardDescription').val(rows.rewardDescription);
     
 	
@@ -322,7 +385,7 @@ function deleteRewardById(id)
 		  return;
 		 }
 
-	data={"rewardCode":id};
+	data={"rewardUuid":id};
 	//alert(JSON.stringify(data));
 	$.ajax({
 

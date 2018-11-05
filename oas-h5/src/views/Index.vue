@@ -241,7 +241,6 @@ export default {
     this.getArticleList()
     this.getUserInfo()
     
-    //this.synchronizeBall()
     window.skipRefresh= this.skipRefresh
      //this.location()
     

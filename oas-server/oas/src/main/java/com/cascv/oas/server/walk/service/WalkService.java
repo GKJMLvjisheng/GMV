@@ -104,14 +104,13 @@ public class WalkService {
      */
 	public String returnWalkBallUuid(String userUuid, StepNumQuota stepNumQuota) {
 		WalkBall oneWalkBall = new WalkBall();
-		String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 		 oneWalkBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 		 log.info("uuid={}", oneWalkBall.getUuid());
 		 oneWalkBall.setUserUuid(userUuid);
 		 oneWalkBall.setStepNum(stepNumQuota.getStepNum());
 		 oneWalkBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 		 oneWalkBall.setCreated(stepNumQuota.getDate());
-		 oneWalkBall.setUpdated(now);
+		 oneWalkBall.setUpdated(stepNumQuota.getDate());
 		 walkMapper.insertWalkBall(oneWalkBall);
 		 return oneWalkBall.getUuid();
 	}
@@ -124,7 +123,6 @@ public class WalkService {
      */
 	public void addWalkPointBall(String userUuid, List<StepNumQuota> quota) {
 		for(int i=0; i<quota.size(); i++){
-			String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
 			 walkBall.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.ENERGY_POINT));
 			 log.info("uuid={}", walkBall.getUuid());
 			 walkBall.setUserUuid(userUuid);
@@ -140,7 +138,7 @@ public class WalkService {
 			 
 			 walkBall.setStatus(STATUS_OF_ACTIVE_ENERGYBALL);
 			 walkBall.setCreated(quota.get(i).getDate());
-			 walkBall.setUpdated(now);
+			 walkBall.setUpdated(quota.get(i).getDate());
 			 walkMapper.insertWalkBall(walkBall);
 		}		
 	}
