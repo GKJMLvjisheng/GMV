@@ -78,7 +78,8 @@ public enum ErrorCode {
   SOURCE_UUID_EXSIT(10058, "标识符已存在"),
   USER_IMEI_EXIST(10059, "该用户已经绑定其他手机"),
   USER_CANNOT_LOGIN_IN_ANDROID(10060, "该用户是系统账号,不能在移动端登录"),
-  USER_IS_FORBIDDEN(10061, "该用户已经被禁用");
+  USER_IS_FORBIDDEN(10061, "该用户已经被禁用"),
+  OAS_NO_USERFUL_UPDATE(10062,"数据没有修改，无需更新");
 	
 
 	

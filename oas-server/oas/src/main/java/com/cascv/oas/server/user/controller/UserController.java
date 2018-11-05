@@ -39,13 +39,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.amazonaws.services.sns.model.PublishResult;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
-import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
@@ -63,14 +61,12 @@ import com.cascv.oas.server.user.model.UserFacility;
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.user.model.UserRole;
-import com.cascv.oas.server.user.service.MessageService;
 import com.cascv.oas.server.user.service.RoleService;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.wrapper.AuthCode;
 import com.cascv.oas.server.user.wrapper.IMEIModel;
 import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
-import com.cascv.oas.server.user.wrapper.MobileModel;
 import com.cascv.oas.server.user.wrapper.RegisterConfirm;
 import com.cascv.oas.server.user.wrapper.RegisterResult;
 import com.cascv.oas.server.user.wrapper.updateUserInfo;
@@ -112,8 +108,6 @@ public class UserController extends BaseShiroController{
   @Autowired
   private EnergyWalletService energyPointService;
   @Autowired
-  private MessageService messageService;
-  @Autowired
   private UserRoleModelMapper userRoleModelMapper;
   @Autowired
   private UserFacilityMapper userFacilityMapper;
@@ -121,10 +115,10 @@ public class UserController extends BaseShiroController{
   private UserModelMapper userModelMapper;
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
-  @Autowired
-  private ActivityService activityService;
+//  @Autowired
+//  private ActivityService activityService;
   
-  private static final String KYC_SOURCE_CODE = "KYC";
+  //private static final String KYC_SOURCE_CODE = "KYC";
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -1377,7 +1371,7 @@ public class UserController extends BaseShiroController{
     @ResponseBody
     @WriteLog(value="checkUserIdentity")
     public ResponseEntity<?> checkUserIdentity(@RequestBody UserIdentityCardModel userIdentityCardModelInfo) {
-		String userUuid = ShiroUtils.getUserUuid();
+		//String userUuid = ShiroUtils.getUserUuid();
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
 		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
@@ -1551,7 +1545,7 @@ public class UserController extends BaseShiroController{
 		    }
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
-		    errorCode=ErrorCode.GENERAL_ERROR;
+		    	errorCode=ErrorCode.GENERAL_ERROR;
 	        return new ResponseEntity.Builder<UserDetailModel>()
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
