@@ -279,7 +279,7 @@ public class UserWalletController extends BaseShiroController {
   @GetMapping(value="/getOasExtra")
   @ResponseBody
   public ResponseEntity<?> getOasExtra() {
-	  return new ResponseEntity.Builder<String>()
+	  return new ResponseEntity.Builder<OasReq>()
 		        .setData(userWalletService.getOasExtra())
 		        .setErrorCode(ErrorCode.SUCCESS).build();
   }
@@ -290,18 +290,25 @@ public class UserWalletController extends BaseShiroController {
    */
   @PostMapping(value="/updateOasExtra")
   @ResponseBody
-//  @RequiresRoles("admin")
   public ResponseEntity<?> updateOasExtra(@RequestBody OasReq oasDetail){
-	  String value = oasDetail.getValue().toString();
-	  if(value == null || !NumberUtils.isNumber(value)) {
+	  //String value = oasDetail.getValue().toString();
+	  if(!judgeIsNumber(oasDetail.getValue()) || !judgeIsNumber(oasDetail.getValueMax()) || !judgeIsNumber(oasDetail.getValueMin())) {
 		  return new ResponseEntity.Builder<Integer>()
 			        .setData(1)
 			        .setErrorCode(ErrorCode.INPUT_ILLEGAL).build();
 	  }
 	  return new ResponseEntity.Builder<Integer>()
 		        .setData(1)
-		        .setErrorCode(userWalletService.updateOasExtra(value)).build();
+		        .setErrorCode(userWalletService.updateOasExtra(oasDetail)).build();
   }
+  
+  private boolean judgeIsNumber(String value) {
+	  if(value == null || !NumberUtils.isNumber(value)) {
+		  return false;
+	  }
+	  return true;
+  }
+  
   /**
    * 设置firstone在线钱包值
    * @param detail
