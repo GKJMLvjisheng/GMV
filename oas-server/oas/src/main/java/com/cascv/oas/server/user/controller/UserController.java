@@ -125,7 +125,6 @@ public class UserController extends BaseShiroController{
   private ActivityService activityService;
   
   private static final String KYC_SOURCE_CODE = "KYC";
-  private static final String SIGN_UP = "SIGNUP";
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -138,7 +137,7 @@ public class UserController extends BaseShiroController{
 	@ResponseBody
 	@WriteLog(value="Login")
 	public ResponseEntity<?> userLogin(@RequestBody LoginVo loginVo,HttpServletRequest request) {
-		
+		ErrorCode errorCode=ErrorCode.LOGIN_FAILED;
 		//获取请求头，来判断是来自web的请求还是移动端的请求
 		String userAgent=request.getHeader("user-agent");
 		log.info("user-agent={}",userAgent);
@@ -147,7 +146,6 @@ public class UserController extends BaseShiroController{
 		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
         LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
-	    ErrorCode errorCode=ErrorCode.LOGIN_FAILED;
 	    //查询该用户是否已经激活
 	    UserModel user = userService.findUserByName(loginVo.getName());
 	    if(user == null) {
@@ -160,8 +158,13 @@ public class UserController extends BaseShiroController{
 	                 .setData(loginResult).setErrorCode(ErrorCode.USER_REGISTER_NO_ACTIVE)
 	                 .build();
 	    }
-	    //查询该imei是否被其他账号绑定,imei为null表示第一次登陆
-	    if(user.getIMEI() == null) {
+	    
+        Set<String> roles=roleService.getRolesByUserUuid(user.getUuid());
+        List<String>  roleList =new ArrayList<>(roles);
+        log.info("roles={}",roles);
+        
+	    //查询该imei是否被其他正常账号绑定,imei为null表示第一次登陆
+	    if(user.getIMEI() == null && roleList.get(0).equals("正常账号")) {
 	    	Integer imeiNumber = userService.countSameImeiNumber(loginVo.getIMEI());
 	    	if(imeiNumber>0) {
 	    		 return new ResponseEntity.Builder<LoginResult>()
@@ -175,6 +178,7 @@ public class UserController extends BaseShiroController{
       try {
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
+          log.info("new login token {}", ShiroUtils.getSessionId());
           //设置头像
           UserModel userModel=new UserModel();
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
@@ -182,23 +186,19 @@ public class UserController extends BaseShiroController{
           userModel.setProfile(fullLink);         
           ShiroUtils.setUser(userModel);
           
+          
           /**
            * 判断IMEI是否相匹配
            */
           String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
           String IMEINew=loginVo.getIMEI();
           String uuid=ShiroUtils.getUser().getUuid();
-          Set<String> roles=roleService.getRolesByUserUuid(uuid);
-          List<String>  roleList =new ArrayList<>(roles);
-          log.info("roles={}",roles);
-          log.info("IMEI={}",loginVo.getIMEI());
-          
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
 		 UserFacility userFacility=new UserFacility();
 		 userFacility.setUuid(ShiroUtils.getUser().getUuid());
 		 userFacility.setIMEI(IMEINew);
-         if(status==0) {
+         if(status==0){
         	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
         	 throw new AuthenticationException();
          }
@@ -209,14 +209,12 @@ public class UserController extends BaseShiroController{
         	 switch(roleList.get(0)){
 	        	 case "系统账号":
 	        		 log.info("this is 系统账号");
-
 	        		 errorCode=ErrorCode.USER_CANNOT_LOGIN_IN_ANDROID;
-
 	        		 throw new AuthenticationException();
 	        	 case "正常账号":
 	        		 log.info("this is 正常账号");
 	        		 if(IMEIOri==null) {
-                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null) {
+                         if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null){
                         	 errorCode=ErrorCode.USER_IMEI_REPEAT;
                         	 throw new AuthenticationException();
                          }
@@ -233,12 +231,13 @@ public class UserController extends BaseShiroController{
 	        		 else{
 		        			 if(IMEIOri.equals(IMEINew))
 		        			 {    
-		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null) {
+		        				  if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)!=null&&userFacilityMapper.inquireUserFacilityByModel(userFacility)==null)
+		        				  {
 
 		        					  errorCode=ErrorCode.USER_IMEI_EXIST;
 		        					  throw new AuthenticationException();
 		        			 }
- 				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
+		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
 			        				 UserFacility userNewFacility=new UserFacility();
 			    				     userNewFacility.setIMEI(loginVo.getIMEI());
 			    				     userNewFacility.setUuid(uuid);
@@ -373,7 +372,6 @@ public class UserController extends BaseShiroController{
 	    }
 	    //注册成功，将用户的未激活状态修改为激活状态
 	    userService.updateUserStatusToActive(userModel!=null?userModel.getName():"");
-	    activityService.getReward(SIGN_UP, registerConfirm.getUuid());
 	    return new ResponseEntity.Builder<Integer>()
 	          .setData(0)
 	          .setErrorCode(ErrorCode.SUCCESS)
@@ -1024,7 +1022,7 @@ public class UserController extends BaseShiroController{
 		  	      .setData(info).setErrorCode(ErrorCode.GENERAL_ERROR).build();
 	}		
 }
-	
+//	
 	@RequestMapping(value = "/mobileCheckCode", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> mobileCheckCode(@RequestBody AuthCode authCode) throws Exception {
@@ -1391,9 +1389,7 @@ public class UserController extends BaseShiroController{
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
 		
-	    if(userIdentityCardModelInfo.getVerifyStatus() == 2) {
-	    	activityService.getReward(KYC_SOURCE_CODE, userUuid);
-	    }		
+		//activityService.getReward(KYC_SOURCE_CODE, userUuid);
 		
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
@@ -1556,8 +1552,8 @@ public class UserController extends BaseShiroController{
 		    }
 		    ErrorCode errorCode=ErrorCode.SUCCESS;
 		    if(newKYCModel==null)
-		    	errorCode=ErrorCode.GENERAL_ERROR;
-		    return new ResponseEntity.Builder<UserDetailModel>()
+		    errorCode=ErrorCode.GENERAL_ERROR;
+	        return new ResponseEntity.Builder<UserDetailModel>()
 	                .setData(newKYCModel)
 	                .setErrorCode(errorCode)
 	                .build();

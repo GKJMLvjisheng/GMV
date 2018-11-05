@@ -41,7 +41,7 @@
 			<!-- 工具栏 -->
 			<div id="toolbar">
 
-					<input type="button" value="奖励新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn"  data-toggle="modal" data-target="#addRewardModal"></input>
+					<input type="button" value="奖励新增" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn"   onclick="initAddmodel()" ></input>
 <!-- 					<input type="button" value="批量删除" id="deleteBtn" data-toggle="modal" data-target="#deleteNewsModal" class="btn btn-primary" onclick="deleteNews()"></input> -->
 			</div>
 		</form>
@@ -69,9 +69,9 @@
 
 					<form id="addRewardForm" action="/reward" method="post" class="form-horizontal">
 					<div class="form-group">
-							<label for="rewardUuid" class="col-sm-3 control-label">奖励名称：</label>
+							<label for="rewardUuid" class="col-sm-3 control-label">奖励标识符：</label>
 							<div class="col-sm-8">
-								<input name="rewardUuid" class="form-control" id="rewardUuid" required="required" onblur="checkRewardUuid()" maxlength="20" placeholder="奖励标识符长度最多为20个字符" autocomplete="off"/></input>
+								<input name="rewardUuid" type="text"class="form-control" id="rewardUuid" required="required" onblur="checkRewardUuid()" maxlength="20" placeholder="奖励标识符长度最多为20个字符" autocomplete="off"/></input>
 								<span id='msg_rewardUuid'></span>
 
 							</div>						
@@ -79,7 +79,7 @@
 						<div class="form-group">
 							<label for="rewardName" class="col-sm-3 control-label">奖励名称：</label>
 							<div class="col-sm-8">
-								<input name="rewardName" class="form-control" id="rewardName" required="required" oninput="checkRewardName()" maxlength="20" placeholder="奖励名称长度最多为20个字符" autocomplete="off"/></input>
+								<input name="rewardName" type="text"class="form-control" id="rewardName" required="required" oninput="checkRewardName()" maxlength="20" placeholder="奖励名称长度最多为20个字符" autocomplete="off"/></input>
 								<span id='msg_rewardName'></span>
 
 							</div>						

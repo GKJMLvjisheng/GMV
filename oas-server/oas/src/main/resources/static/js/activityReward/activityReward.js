@@ -9,6 +9,10 @@ var check2=1;
 var check3=1;
 var check4=1;
 var check5=1;
+var checkE2=1;
+var checkE3=1;
+var checkE4=1;
+var checkE5=1;
 var checkUuid=1;
 //主界面用户表格回显
 $(function() {
@@ -19,7 +23,11 @@ $(function() {
 	
 	
 });
-
+function initAddmodel(){
+	checkUuid=1;
+	resetAddModal();
+	$("#addActivityModal").modal("show");
+}
 function activityReady(){
 	
 	
@@ -136,14 +144,14 @@ function checkEbaseValue(){
 	var baseValue=$("#EbaseValue").val();
 	if(validate(baseValue)||baseValue===""){
 		
-		check2=1;
+		checkE2=1;
 		$("#msg_EbaseValue").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		
 		 $("#msg_EbaseValue").html("请输入大于等于0的数值");
 		 $("#msg_EbaseValue").css("color", "red");
-		check2=0;
+		checkE2=0;
 	}
 }
 function checkEincreaseSpeed(){
@@ -151,44 +159,44 @@ function checkEincreaseSpeed(){
 	var num=increaseSpeed.split('.');
 	
 	if(validate(increaseSpeed)||increaseSpeed===""){
-		check3=1;
+		checkE3=1;
 		$("#msg_EincreaseSpeed").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		 $("#msg_EincreaseSpeed").html("请输入大于等于0的数值");
 		 $("#msg_EincreaseSpeed").css("color", "red");
-		check3=0;
+		checkE3=0;
 	}
 	if(num[1]){
 	if(num[1].length>6){
 		$("#msg_EincreaseSpeed").html("奖励增长速度精度为6");
 		 $("#msg_EincreaseSpeed").css("color", "red");
-		 check3=0;
+		 checkE3=0;
 	}
 	}
 }
 function checkEmaxValue(){
 	var maxValue=$("#EmaxValue").val();
 	if(validate(maxValue)){
-		check4=1;
+		checkE4=1;
 		$("#msg_EmaxValue").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		 $("#msg_EmaxValue").html("必填项：请输入大于等于0的数值");
 		 $("#msg_EmaxValue").css("color", "red");
-		check4=0;
+		checkE4=0;
 	}
 }
 function checkEperiod(){
 	var period=$("#Eperiod").val();
 	if(validateInter(period)||period===""){
-		check4=1;
+		checkE5=1;
 		$("#msg_Eperiod").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		 $("#msg_Eperiod").html("请输入大于等于0的数值");
 		 $("#msg_Eperiod").css("color", "red");
-		check4=0;
+		checkE5=0;
 	}
 }
 function checkBaseValue(){
@@ -241,13 +249,13 @@ function checkMaxValue(){
 function checkPeriod(){
 	var period=$("#period").val();
 	if(validateInter(period)||period===""){
-		check4=1;
+		check5=1;
 		$("#msg_period").html("");
 		 //$("#msg_baseValue").css("color", "red");
 	}else{
 		 $("#msg_period").html("请输入大于等于0的数值");
 		 $("#msg_period").css("color", "red");
-		check4=0;
+		check5=0;
 	}
 }
 //正数
@@ -318,7 +326,6 @@ function addActivity(){
 				$("#addActivityModal").modal('hide');
 				
 				 
-				//$("#newsGrid").bootstrapTable('refresh');	
 				 }						
 		},
 		error:function(){
@@ -328,7 +335,6 @@ function addActivity(){
 
 		},
 	});
-	resetAddModal();
 	activityReady();
 }
 
@@ -337,7 +343,7 @@ function addActivity(){
 function resetAddModal(){
 	//document.getElementById("addActivityForm").reset();
 	//document.getElementById("updateActivityRewardForm").reset();
-	$("#addActivityForm").find('textarea,input[type=text],select').each(function() {
+	$("#addActivityForm").find('textarea,input[type=text],select,span').each(function() {
         		$(this).val('');
         		$(this).html('');
     });
@@ -532,6 +538,11 @@ function deleteActivityRewardById(id){
 });
 }
 function editActivityRewardById(id){
+	 checkE2=1;
+	 checkE3=1;
+	 checkE4=1;
+	 checkE5=1;
+	resteUpdate();
 	 var rows=$("#activityRewardGrid").bootstrapTable('getRowByUniqueId', id);
 		$("#EActivitySoureId").val($('#activityId').val());  
 	    $("#EActivityRewardId").val(rows.rewardUuid);
@@ -556,7 +567,7 @@ function editActivityRewardById(id){
 		$("#updateActivityRewardModal").modal("show");
 }
 function updateActivityReward(){
-	if(check2==0||check3==0||check4==0||check5==0){
+	if(checkE2==0||checkE3==0||checkE4==0||checkE5==0){
 		alert("请给奖励配置正确参数!");
 		return;
 	}
@@ -608,15 +619,16 @@ function updateActivityReward(){
 
 			},
 		});
-		 check1=1;
-		 check2=1;
-		 check3=1;
-		 check4=1;
-		 check5=1;
+		
 		activityRewardReady(sourceUuid);
-		resteUpdate();
 }
 function allotReward(){
+	 check1=1;
+	 check2=1;
+	 check3=1;
+	 check4=1;
+	 check5=1;
+	resteAllotReward();
 	//初始加载
 	var selectionUnit = document.getElementById("increaseSpeedUnit");
 		selectionUnit.options.length=0;
@@ -662,8 +674,6 @@ $.ajax({
                      //将option增加到下拉列表中。
                      selections.options.add(option);
                          //selections.appendChild(option);  
-			 
-			//$("#newsGrid").bootstrapTable('refresh');	
 		    	 }
 		    }else{
 				 alert("下拉选择回显失败")
@@ -741,12 +751,6 @@ function addAllotReward(){
 
 		},
 	});
-	 check1=1;
-	 check2=1;
-	 check3=1;
-	 check4=1;
-	 check5=1;
-	resteAllotReward();
 	activityRewardReady(sourceUuid);
 }
 
