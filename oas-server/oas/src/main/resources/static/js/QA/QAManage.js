@@ -1,7 +1,6 @@
 /**
  * 答题管理js文件
  */
-document.write("<script language=javascript src='/js/QA/QAManageTable.js'></script>");
 
 //主界面用户表格回显
 $(function() {
