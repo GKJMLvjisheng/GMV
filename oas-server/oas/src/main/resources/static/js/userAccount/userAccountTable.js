@@ -605,13 +605,16 @@ function actionFormatter4(value, row, index) {
 function actionFormatter5(value, row, index) {
     var result = "";
     //alert(JSON.stringify(value))
-    if(value==1){
-	result += "<span>激活</span>";      
-    return result;
+    if(value==2){
+        result += "<span>未激活</span>";
+        return result;
+    }else if(value==1){
+		result += "<span>激活</span>";      
+	    return result;
 	}else if(value==0){
-	result += "<span>禁用</span>";      
-    return result;
-	}    
+		result += "<span>禁用</span>";      
+	    return result;
+	}     
 }	
 
 function actionFormatter6(value, row, index) {
