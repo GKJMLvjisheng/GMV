@@ -26,6 +26,7 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
+import com.cascv.oas.server.blockchain.config.MultiTransferQuota;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.OasDetail;
@@ -37,6 +38,7 @@ import com.cascv.oas.server.blockchain.model.UserWalletDetail;
 import com.cascv.oas.server.blockchain.service.UserWalletDetailService;
 import com.cascv.oas.server.blockchain.service.UserWalletService;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletBalanceSummary;
+import com.cascv.oas.server.blockchain.wrapper.UserWalletMultiTransfer;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTradeRecordInfo;
 import com.cascv.oas.server.blockchain.wrapper.UserWalletTransfer;
 import com.cascv.oas.server.blockchain.wrapper.WalletTotalTradeRecordInfo;
@@ -582,4 +584,27 @@ public class UserWalletController extends BaseShiroController {
 		        .setErrorCode(ErrorCode.SUCCESS)
 		        .build();
 	}
+	
+	/**
+	 * @author lvjisheng
+	 * @describle 管理员批量转账
+	 * @param 
+	 * @return
+	 */	
+	  @PostMapping(value="/multiTransfer")
+	  @ResponseBody
+	  @Transactional
+	  public ResponseEntity<?> multiTransfer(@RequestBody UserWalletMultiTransfer userWalletMultiTransfer){
+	    UserModel fromUser=ShiroUtils.getUser();
+	    //List<String> toUsers=userWalletMultiTransfer.getToUsers();
+	    List<MultiTransferQuota> quotaes=userWalletMultiTransfer.getMultiTransferQuota();
+	    for(MultiTransferQuota quota:quotaes) {
+	    UserModel userModel=userService.findUserByName(quota.getToUserName());	
+	    userWalletService.transfer(fromUser.getUuid(),userModel.getUuid(),quota.getValue(),null,null);
+	    }
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(ErrorCode.SUCCESS)
+	        .build();
+	  }
 }

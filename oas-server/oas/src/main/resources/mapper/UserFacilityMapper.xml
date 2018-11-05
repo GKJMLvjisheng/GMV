@@ -3,12 +3,12 @@
 <mapper namespace="com.cascv.oas.server.user.mapper.UserFacilityMapper">
 
   <select id="inquireUserFacilityByIMEI"  resultType="com.cascv.oas.server.user.model.UserFacility">
-<!-- select * from user_facility 
-    where IMEI = #{IMEI} -->
-    select b.* from user_info a 
-	left join user_facility b on a.uuid = b.uuid
-	left join user_role c on a.uuid = c.uuid
-	where  c.role_id =2 and b.IMEI = #{IMEI}
+select * from user_facility 
+    where IMEI = #{IMEI}
+<!--     select b.* from user_info a  -->
+<!-- 	left join user_facility b on a.uuid = b.uuid -->
+<!-- 	left join user_role c on a.uuid = c.uuid -->
+<!-- 	where  c.role_id =2 and b.IMEI = #{IMEI} -->
   </select>
   
   
