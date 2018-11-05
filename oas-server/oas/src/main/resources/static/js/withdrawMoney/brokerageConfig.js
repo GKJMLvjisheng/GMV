@@ -137,7 +137,7 @@ function updateBrokerage(){
 	var intRatio1 = parseFloat(brokerageMoney2);  //类型为number
 	var brokerageMoney3 = intRatio1/100;
 	var brokerageMoney = brokerageMoney3.toString();  //类型为string
-	alert(JSON.stringify(brokerageMoney3));
+	//alert(JSON.stringify(brokerageMoney3));
 	
 	var data={
 		"valueMax":mostAmount,

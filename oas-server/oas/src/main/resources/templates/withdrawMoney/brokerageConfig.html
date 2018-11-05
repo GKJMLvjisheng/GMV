@@ -41,7 +41,7 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">手续费配置</h3>			
+					<h3 class="modal-title" id="myModalLabel">提币手续费配置</h3>			
 				</div>
 
 				<div class="modal-body">
@@ -49,7 +49,7 @@
 						<input  style="display:none" type="hidden" name="promotedId" id="promotedId">
 
 						<div class="form-group">
-							<label for="question" class="col-sm-3 control-label">提币单次限额：</label>
+							<label for="question" class="col-sm-3 control-label">单次提币限额：</label>
 							<div class="col-sm-7">
 								<input name="mostAmount" class="form-control" id="mostAmount" required="required" onblur="checkMostAmount()"/>
 								<span id="msg_mostAmount"></span>
@@ -57,7 +57,7 @@
 						</div>												
 						
 						<div class="form-group" id="frozen">
-							<label for="question" class="col-sm-3 control-label">提币手续费：</label>
+							<label for="question" class="col-sm-3 control-label">手续费比例：</label>
 							<div class="col-sm-7">
 								<input name="brokerageMoney" class="form-control" id="brokerageMoney" required="required" onblur="checkBrokerageRate()"/>
 								<span id="msg_brokerageMoney"></span>

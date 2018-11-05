@@ -35,7 +35,7 @@ function initBrokeragedGrid(data) {
 		},
 			{
 
-			title : "提币手续费",
+			title : "手续费比例",
 			field : "value",
 			align: 'center',
 			valign: 'middle',
