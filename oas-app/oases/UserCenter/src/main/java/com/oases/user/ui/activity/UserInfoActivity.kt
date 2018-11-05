@@ -306,8 +306,9 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
                 }else{
                     //mTakePhoto.onPickFromGallery()
                     createTempFile()
-                    var cropOptions: CropOptions = CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create()
-                    mTakePhoto.onPickFromGalleryWithCrop(Uri.fromFile(mTempFile), cropOptions)
+                    mTakePhoto.onPickFromGallery()
+                    //var cropOptions: CropOptions = CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create()
+                    //mTakePhoto.onPickFromGalleryWithCrop(Uri.fromFile(mTempFile), cropOptions)
                 }
             } else{
                 //permission denied
