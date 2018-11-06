@@ -21,8 +21,8 @@ function initNormalGrid() {
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		pageSize:50,//分页，页面数据条数
-		pageList:[50, 100],
+		pageSize:20,//分页，页面数据条数
+		pageList:[20,50, 100],
 		queryParams:queryParams1,//请求服务器时所传的参数
 		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
@@ -124,7 +124,7 @@ function initTestGrid() {
 		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
-		toolbar:"#toolbar",//工具栏
+		//toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
@@ -152,27 +152,19 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '90px',
 			},
+			
 			{
-				title : "昵称",
-				field : "nickname",
-				align: 'center',
-				valign: 'middle',
-				width:  '90px',
-				
-			},
-			{
-				title : "手机",
-				field : "mobile",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},
-			{
-				title : "邮箱",
-				field : "email",
+				title : "转账金额",
+				field : "status",
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
+				editable:true,
+				formatter:function action(value,row,index){
+					value=0;
+					row.status=0;
+					return value;
+				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
@@ -182,7 +174,7 @@ function initTestGrid() {
 
 //请求服务数据时所传参数
 function queryParams2(params){
-	var searchValue = $("#searchValue").val();
+	var searchValue = $("#searchValueTest").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -386,3 +378,47 @@ function responseHandler2(res){
         baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
         return (num1 * baseNum + num2 * baseNum) / baseNum;
     };
+    function getTestData(){
+    	var Global=$("#globalTestValue").val();
+   	 
+   	 var rows = $("#testGrid").bootstrapTable("getSelections");
+   	 if(rows.length<1){
+   		 alert("请选择要转账的用户");
+   		 return;
+   	 }
+   	 var data = new Array(); 
+   	 if(validateValue(Global)){
+   		 
+   		  Ewin.confirm({ message: "确认要全局配置金额？手动输入金额将不生效"}).on(function (e) {
+   		if (!e) {
+   			alert("确认不使用全局配置，请清空全局配置金额！")
+   		  return;
+   		 }
+    	
+   	 for(var i=0;i<rows.length;i++){
+   		 var row={};
+   		 row['toUserName']=rows[i].name;
+   		 row['value']=Global;
+   		 data.push(row);
+   	 }
+   	 console.log(data);
+   	 transfer(data);
+   	
+//   	var row=$.map($("#normalGrid").bootstrapTable('getSelections'),function(row){
+//   		alert(12)
+//   		return row ;
+//   		});
+   	 
+   		  })  
+   }else{
+   	 for(var i=0;i<rows.length;i++){
+   		 var row={};
+   		 row['toUserName']=rows[i].name;
+   		 row['value']=rows[i].status;
+   		 data.push(row);
+   	 }
+   	 console.log(data);
+   	 transfer(data);
+   	}
+    	
+    }
