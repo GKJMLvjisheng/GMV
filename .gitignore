@@ -22,3 +22,4 @@ yarn-error.log*
 /.gradle
 /bin
 oas-server/.vs
+/.metadata/
