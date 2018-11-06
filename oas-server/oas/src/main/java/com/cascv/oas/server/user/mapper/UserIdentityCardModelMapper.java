@@ -29,6 +29,8 @@ public interface UserIdentityCardModelMapper {
 	List<UserIdentityCardModel> selectUserIdentityByUserName(@Param("userName") String userName);
 	UserIdentityCardModel selectFinishUserIdentityByUserName(@Param("userName") String userName);//选择已经完成认证的用户信息
 	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatus(@Param("userName") String userName);
+	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatusOne(@Param("userName") String userName);
+	UserIdentityCardModel selectUserIdentityByUserNameVerifyStatusTwo(@Param("userName") String userName);
 	UserIdentityCardModel selectUserByIdentityNumber(@Param("userIdentityNumber") String userIdentityNumber);
 	UserIdentityCardModel inquireByuuid(@Param("uuid") Integer uuid);
 	
