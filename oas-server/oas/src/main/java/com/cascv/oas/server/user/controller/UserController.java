@@ -257,7 +257,8 @@ public class UserController extends BaseShiroController{
          } 
          
           //普通用户无法在web端登录
-          else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
+          //else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
+         else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
         	       throw new AuthenticationException();
          
           log.info("this is PC!");       
@@ -283,7 +284,7 @@ public class UserController extends BaseShiroController{
 	  String password = userModel.getPassword();
       RegisterResult registerResult = new RegisterResult();
 	  String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-	  
+	  		  
 	  ErrorCode ret = userService.addUser(uuid, userModel);//先创建用户
 	  if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {//用户创建成功则添加角色以及3个钱包
 		//给用户赋予默认角色(正常账号roleId为2)
@@ -294,7 +295,7 @@ public class UserController extends BaseShiroController{
 		  userRole.setRolePriority(1);
 		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);
-		
+		  
 		  EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		  userWalletService.create(uuid);
 		  energyPointService.create(uuid);

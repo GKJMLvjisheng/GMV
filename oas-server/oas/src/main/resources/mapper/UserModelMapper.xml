@@ -321,31 +321,19 @@
 	 select 
 		U.name as name,
 	    U.nickname as nickname, 
-	    U.gender as gender,
-	    U.birthday as birthday,
-	    U.address as address,
 	    U.mobile as mobile,
 	    U.email as email,
 	    U.IMEI as IMEI,
 	    U.status as status,
 		U.created as created,
-		U.invite_from as invite_from,
-		ICI.user_identity_name as user_identity_name,
-		ICI.user_identity_number as user_identity_number,
-		ICI.remark as remark,
-		ICI.verify_status as verify_status,
 		UR.role_id as roleId
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 
-		left join identity_card_info ICI on U.name=ICI.user_name
 		where UR.role_id=#{roleId} 
 	   <if test="searchValue != null and searchValue !='' ">
     	    and (
     	    name like concat('%',#{searchValue},'%') 
 	    	or nickname like concat('%',#{searchValue},'%') 
-	    	or gender like concat('%',#{searchValue},'%')  
-	    	or birthday like concat('%',#{searchValue},'%')  
-	    	or address like concat('%',#{searchValue},'%') 
 	    	or mobile like concat('%',#{searchValue},'%') 
 	    	or email like concat('%',#{searchValue},'%') 
 	    	or IMEI like concat('%',#{searchValue},'%')

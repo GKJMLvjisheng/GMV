@@ -1,6 +1,7 @@
 /**
  * 
  */
+document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 $(function() {
 	initNormalGrid();
 	initTestGrid();
@@ -20,13 +21,13 @@ function initNormalGrid() {
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"server",//在服务器分页
 		pageNumber:1,//首页页码
-		pageSize:10,//分页，页面数据条数
-		pageList:[5,10, 25, 50, 100],
+		pageSize:20,//分页，页面数据条数
+		pageList:[20,50, 100],
 		queryParams:queryParams1,//请求服务器时所传的参数
 		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 
-		toolbar:"#toolbar",//工具栏
+		//toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
@@ -64,18 +65,19 @@ function initNormalGrid() {
 				editable:true,
 				formatter:function action(value,row,index){
 					value=0;
+					row.status=0;
 					return value;
 				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: true,         
+		clickToSelect: false,         
 	});
 }
 	
 //请求服务数据时所传参数
 function queryParams1(params){
-	var searchValue = $("#user1").val();
+	var searchValue = $("#searchValue").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -122,7 +124,7 @@ function initTestGrid() {
 		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
-		toolbar:"#toolbar",//工具栏
+		//toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
@@ -150,27 +152,19 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '90px',
 			},
+			
 			{
-				title : "昵称",
-				field : "nickname",
-				align: 'center',
-				valign: 'middle',
-				width:  '90px',
-				
-			},
-			{
-				title : "手机",
-				field : "mobile",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},
-			{
-				title : "邮箱",
-				field : "email",
+				title : "转账金额",
+				field : "status",
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
+				editable:true,
+				formatter:function action(value,row,index){
+					value=0;
+					row.status=0;
+					return value;
+				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
@@ -180,7 +174,7 @@ function initTestGrid() {
 
 //请求服务数据时所传参数
 function queryParams2(params){
-	var searchValue = $("#user2").val();
+	var searchValue = $("#searchValueTest").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -222,14 +216,38 @@ function responseHandler2(res){
     	$('#btn1').removeClass('active').addClass('active1');
     }
     function getTableData(){
-    
+    	 var Global=$("#globalValue").val();
+    	 
     	 var rows = $("#normalGrid").bootstrapTable("getSelections");
+    	 if(rows.length<1){
+    		 alert("请选择要转账的用户");
+    		 return;
+    	 }
+    	 var data = new Array(); 
+    	 if(validateValue(Global)){
+    		 
+    		  Ewin.confirm({ message: "确认要全局配置金额？手动输入金额将不生效"}).on(function (e) {
+    		if (!e) {
+    			alert("确认不使用全局配置，请清空全局配置金额！")
+    		  return;
+    		 }
+     	
+    	 for(var i=0;i<rows.length;i++){
+    		 var row={};
+    		 row['toUserName']=rows[i].name;
+    		 row['value']=Global;
+    		 data.push(row);
+    	 }
+    	 console.log(data);
+    	 transfer(data);
+    	
 //    	var row=$.map($("#normalGrid").bootstrapTable('getSelections'),function(row){
 //    		alert(12)
 //    		return row ;
 //    		});
-    	 var data = new Array();  
-    	
+    	 
+    		  })  
+    }else{
     	 for(var i=0;i<rows.length;i++){
     		 var row={};
     		 row['toUserName']=rows[i].name;
@@ -238,7 +256,7 @@ function responseHandler2(res){
     	 }
     	 console.log(data);
     	 transfer(data);
-    	 
+    	}
     }
     //判断正数
     function validateValue(num)
@@ -259,59 +277,53 @@ function responseHandler2(res){
         var sunmary=0;
         var flag=false;
         var flag1=false;
-        var flag2=false;
+        
         for(var i=0;i<tableDataLen;i++)
         {
 
-         if(data[i]['toUserAddress']==0||data[i]['amount']==0)
+         if(data[i]['toUserName']==0||data[i]['value']==0)
      	{		
     	 		flag=true;
     	 		break;}
-         else if(!validateValue(data[i]['amount']))
+         else if(!validateValue(data[i]['value']))
       	{		
     	 		flag1=true;
     	 		break;
-      	}else if(!validateAddress(data[i]['toUserAddress']))
-      		{flag2=true;
-    	 		break;}
+      	}
          //sunmary=sunmary+parseInt(rowAdd['amount']);
-         sunmary=numAdd(sunmary,data[i]['amount']);
+         sunmary=numAdd(sunmary,data[i]['value']);
          //sunmary=sunmary+parseFloat(data[i]['amount']);
          
     		}
 
        if(flag)
-       	{	alert("输入的地址或金额不能为空");
+       	{	alert("输入金额不能为0");
        		return;}
        if(flag1)
     	{	alert("金额请输入大于0的正数");
     		return;}
-       if(flag2)
-   	{	alert("地址由以0x开头的42位字母数字组成");
-   		return;}
+    
       
-       if($("#money").text()<sunmary){
-    	   alert("账户余额小于转账金额！");
-    	   return;
-       }
-        var userAddress=$("#userAddress").val();
-        var userName=$("#userNickname",parent.document).text();
-        var symbol=$('#contractSymbol option:selected') .text();
-        Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
+//       if($("#money").text()<sunmary){
+//    	   alert("账户余额小于转账金额！");
+//    	   return;
+//       }
+        //var userAddress=$("#userAddress").val();
+        var userName="FIRSTONE";
+        Ewin.confirm({ message: "确认从账户【"+userName+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】." }).on(function (e) {
     		if (!e) {
     		  return;
     		 }
     		
        var dataSum={
-        		"contract": contract,
-        		"gasPrice":gasPrice,
-        		"gasLimit":gasLimit,
-        	    "quota":data,
+        		
+        		"fromName":userName,
+        	    "multiTransferQuota":data,
         	}; 
        console.log(JSON.stringify(dataSum))
     $.ajax({
 
-		url:"/api/v1/ethWallet/multiTtransfer",
+		url:"/api/v1/userWallet/multiTransfer",
 		//headers: {'Authorization': token},
 
 		contentType : 'application/json;charset=utf8',
@@ -324,22 +336,11 @@ function responseHandler2(res){
 			
 			if(res.code==0)
          {  
-				var strMain="https://etherscan.io/tx/"+res.data.txHash;
-				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
-				 if(parent.$("#iframenetConfig")[0])
-				     {
-						  activeNetwork=parent.$("#iframenetConfig")[0].contentWindow.getValue();}
 				
-				console.log(activeNetwork);
-				if(strTest.indexOf(activeNetwork)!=-1)
-						{
-						str=strTest;}
-					else{
-						str=strMain;}
 					
 					$("#Tip").modal('show');
 					
-					document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
+					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
 					 //setTimeout(setMoney, 50000);
 				
          }
@@ -377,3 +378,47 @@ function responseHandler2(res){
         baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
         return (num1 * baseNum + num2 * baseNum) / baseNum;
     };
+    function getTestData(){
+    	var Global=$("#globalTestValue").val();
+   	 
+   	 var rows = $("#testGrid").bootstrapTable("getSelections");
+   	 if(rows.length<1){
+   		 alert("请选择要转账的用户");
+   		 return;
+   	 }
+   	 var data = new Array(); 
+   	 if(validateValue(Global)){
+   		 
+   		  Ewin.confirm({ message: "确认要全局配置金额？手动输入金额将不生效"}).on(function (e) {
+   		if (!e) {
+   			alert("确认不使用全局配置，请清空全局配置金额！")
+   		  return;
+   		 }
+    	
+   	 for(var i=0;i<rows.length;i++){
+   		 var row={};
+   		 row['toUserName']=rows[i].name;
+   		 row['value']=Global;
+   		 data.push(row);
+   	 }
+   	 console.log(data);
+   	 transfer(data);
+   	
+//   	var row=$.map($("#normalGrid").bootstrapTable('getSelections'),function(row){
+//   		alert(12)
+//   		return row ;
+//   		});
+   	 
+   		  })  
+   }else{
+   	 for(var i=0;i<rows.length;i++){
+   		 var row={};
+   		 row['toUserName']=rows[i].name;
+   		 row['value']=rows[i].status;
+   		 data.push(row);
+   	 }
+   	 console.log(data);
+   	 transfer(data);
+   	}
+    	
+    }
