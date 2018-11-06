@@ -21,69 +21,6 @@
 
     <style type="text/css">  
 
-    <!--  
-
-    p,ul,li,font,span,td,th{  
-
-    font-size:10pt;  
-
-     line-height:30px;   
-
-    }  
-
-    table{  
-
-    border-top-width: 1px;  
-
-    border-right-width: 1px;  
-
-    border-bottom-width: 0px;  
-
-    border-left-width: 1px;  
-
-    border-top-style: solid;  
-
-    border-right-style: solid;  
-
-    border-bottom-style: none;  
-
-    border-left-style: solid;  
-
-    border-top-color: #CCCCCC;  
-
-    border-right-color: #CCCCCC;  
-
-    border-bottom-color: #CCCCCC;  
-
-    border-left-color: #CCCCCC;  
-
-    }  
-
-    td{  
-
-    border-bottom-width: 1px;  
-
-    border-bottom-style: solid;  
-
-    border-bottom-color: #CCCCCC;  
-
-    }  
-
-    .EditCell_TextBox {  
-
-    width: 100%;  
-
-    border:1px solid #0099CC;  
-
-    }  
-
-    .EditCell_DropDownList {  
-
-    width: 90%;  
-
-    }  
-
-    -->  
 .fileBtn { 
 /*  width: 25%;  */
  margin-top: 20px; 
@@ -110,23 +47,7 @@
 
 }
 
- .col-sm-1 { 
-     width: 10.6667%; 
-     margin-right:-1.6667%; 
-     margin-left:-2.6667%;
-/*      padding-right: 25px;  */
- } 
-  .col-sm-2 { 
-     width: 15.89%; 
-     margin-right:0%; 
-/*      padding-right: 20px;  */
- } 
-   .col-sm-3 { 
-/*      width: 11.1%; */
-		width: 9.1%;
-     margin-right:auto;  
-/*       padding-right: 20px;  */
- } 
+
  .content-tabs {
     border-bottom: solid 1px #d8dbde;
 /*     #d8dbde; */
@@ -144,24 +65,21 @@ background:#d8dbde
 .modal-sm {
     width: 400px;
 }
-.excel{
- 	margin:0 auto; 
-    padding-top: 90px;}
- .toolbar{
- 	margin:0 auto; 
-    padding-top: 15px;
-    padding-bottom: 20px;}
- #drop{
- 	margin:0 auto; 
-    padding-top: 15px;
- }
-/*   input:focus{  */
-/*   	outline:none;  */
-/*   	border:0px;  */
-/*   	box-shadow:none;  */
-/*   }  */
-h4{
-line-height:2;}
+ .input-group	{ 
+    vertical-align:middle;
+	margin-top:11px;
+	}
+	 .col-sm-2{
+   margin-left: -40px;
+   }
+   	 .pullRight{
+    width: 50.33333333%;
+	margin-bottom:13px;
+	margin-top:13px;
+	height: 35px;
+	float:right;
+	margin-right: -135px;
+   }
     </style>  
 
 
@@ -190,20 +108,32 @@ line-height:2;}
 
   <div class="container" id="page1">             	
             
-    <div class="toolbar" >  
-     <input type="button" class="btn btn-primary" name="Submit" value="新增" onclick="addRow(document.getElementById('tabProduct'),1)" />  
+   <form id="addonlineForm" action="/online" method="post" class="form-horizontal "> 
 
-    <input type="button" class="btn btn-primary"name="Submit2" value="删除" onclick="deleteRow(document.getElementById('tabProduct'),1)" />  
+						<div class="form-group "style="padding-top: 15px;  ">
+							<label for="versionCode" class="col-sm-2 control-label">全局配置金额：</label>
+							<div class="col-sm-3" style=" width: 22%;padding-right: 0px;padding-left: 0px;">
+								<input  id="globalValue" required="required" class="form-control" maxlength="100" autocomplete="off" placeholder="请输入全局配置金额" />
+								
+								
+							</div>
+							<div class="col-sm-1">
+								<input id="but" type="button" class="btn btn-primary "onclick="getTableData()" value="提交"/>
+							</div>	
+							<div class="col-sm-3 pull-right">	
+								<input type="text" class="form-control "placeholder="请输入搜索字段" id="searchValue"oninput="initNormalGrid(event)"/>	
+								</div>
+						</div>
+						
+	</form>	 
 
-    <input type="button"class="btn btn-primary" name="Submit22" value="重置" onclick="window.location.reload()" />  
 
-    <input type="submit" class="btn btn-primary"name="Submit3" value="提交" onclick="getTableData();return false;" />
-   </div> 
 
 
     
     <table id="normalGrid"></table>  
-    </div>
+   
+    </div> 
 <!-- <span id="spanFirst">第一页</span> <span id="spanPre">上一页</span> <span id="spanNext">下一页</span> <span id="spanLast">最后一页</span> 第<span id="spanPageNum"></span>页/共<span id="spanTotalPage"></span>页 -->
       
 

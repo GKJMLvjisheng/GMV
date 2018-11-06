@@ -1378,13 +1378,17 @@ public class UserController extends BaseShiroController{
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
 		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
+		if(userIdentityCardModelInfo.getUserIdentityName() !=null)
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
+		if(userIdentityCardModelInfo.getUserIdentityNumber() !=null)
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
+		if(userIdentityCardModelInfo.getVerifyStatus() !=null)
 		userIdentityCardModel.setVerifyStatus(userIdentityCardModelInfo.getVerifyStatus());
+		if(userIdentityCardModelInfo.getRemark() !=null)
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
-		if(userIdentityCardModelInfo.getVerifyStatus() == 2) {
+		if(userIdentityCardModelInfo.getVerifyStatus() != null && userIdentityCardModelInfo.getVerifyStatus() == 2) {
 			activityService.getReward(KYC_SOURCE_CODE, userUuid);
 		}
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
