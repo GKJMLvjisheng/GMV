@@ -65,9 +65,18 @@ public class EnergyService {
      * 查询当日是否签过到，已签到返回true,当日尚未签到返回false
      * @param userUuid
      * @return
+     * @throws ParseException 
      */
-    public Boolean isCheckin(String userUuid) {
-        String today = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+    public Boolean isCheckin(String userUuid) throws ParseException {
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = sdf.parse(now);
+    	Calendar calendar = Calendar.getInstance();
+    	calendar.setTime(date);
+    	calendar.add(Calendar.HOUR_OF_DAY, 8);
+    	String newTime = sdf.format(calendar.getTime());
+    	String today = newTime.substring(0, 10);
+    	log.info("today={}", today);
         List<EnergyBall> energyBalls = energyBallMapper
                 .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, today);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
@@ -582,12 +591,12 @@ public class EnergyService {
     		List<EnergyChangeDetail> energyList = new ArrayList<>();
     	for (EnergyChangeDetail energyChangeDetail : energyChangeDetailList){
     		   //.intValue()方法是把Integer转为Int?
-    		   energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
-    		   if(energyChangeDetail.getValue() != 0) {
-    			   energyList.add(energyChangeDetail);
-       		}
     		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 			   energyChangeDetail.setCreated(created);
+			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
+    		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
+    			   energyList.add(energyChangeDetail);
+       			}
     	   }
     	    return energyList;
     	}
@@ -598,12 +607,12 @@ public class EnergyService {
         		energyChangeDetail.setActivity("积分消费");
     			energyChangeDetail.setCategory("积分兑换OAS代币");                                
         		//.intValue()方法是把Integer转为Int?
-        		energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue()); 
-     		   if(energyChangeDetail.getValue() != 0) {
-    			   energyList.add(energyChangeDetail);
-       		   }
-     		  String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
-			  energyChangeDetail.setCreated(created);
+    			String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+ 			   energyChangeDetail.setCreated(created);
+ 			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
+     		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
+     			   energyList.add(energyChangeDetail);
+        	    }
         	}
         	return energyList;
     	}
@@ -617,13 +626,12 @@ public class EnergyService {
 				 energyChangeDetail.setCategory("积分兑换OAS代币");
 	    		 }
 	    		   //.intValue()方法是把Integer转为Int?
-	    		 energyChangeDetail.setValue(energyChangeDetail.getDecPoint().intValue());
-	   		   if(energyChangeDetail.getValue()!= 0){
-	  			   energyList.add(energyChangeDetail);
-	     		}
-    	     //}
-	   		String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
-			energyChangeDetail.setCreated(created);
+	    		 String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
+				   energyChangeDetail.setCreated(created);
+				   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
+	    		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
+	    			   energyList.add(energyChangeDetail);
+	       			}
     	   }
     	    return energyList;
     	}

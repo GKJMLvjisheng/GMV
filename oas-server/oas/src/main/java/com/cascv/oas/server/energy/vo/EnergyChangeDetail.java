@@ -9,7 +9,7 @@ import lombok.Setter;
 public class EnergyChangeDetail {
   @Getter @Setter private String uuid;
   @Getter @Setter private String userUuid;
-  @Getter @Setter private Integer value;
+  @Getter @Setter private BigDecimal value;
   @Getter @Setter private BigDecimal decPoint;
   @Getter @Setter private String category;
   @Getter @Setter private String source;

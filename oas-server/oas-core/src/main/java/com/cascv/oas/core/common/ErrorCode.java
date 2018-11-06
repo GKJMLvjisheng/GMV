@@ -76,9 +76,9 @@ public enum ErrorCode {
   USER_PASS_NOT_SAME(10056,"获取失败，密码与之前注册时候使用的密码不同"),
   ALREADY_BACKUP(10057,"已经备份过钱包"),
   SOURCE_UUID_EXSIT(10058, "标识符已存在"),
-  USER_REGISTER_IS_FORBBIDEN(10059, "该用户已被禁用"),
-  USER_CANNOT_LOGIN_IN_ANDROID(10060, "该用户是系统账号,不能再移动端登录"),
-  USER_IMEI_EXIST(10061, "该用户已经绑定了其他手机");
+  USER_IMEI_EXIST(10059, "该用户已经绑定其他手机"),
+  USER_CANNOT_LOGIN_IN_ANDROID(10060, "该用户是系统账号,不能在移动端登录"),
+  USER_IS_FORBIDDEN(10061, "该用户已经被禁用");
 	
 
 	
