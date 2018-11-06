@@ -132,6 +132,8 @@ public class EthWalletService {
         }else {
             if (ethWalletDetail.getPrior() > 2880) {
                 ethWalletDetail.setTxResult(0x4);
+                ErrorCode result = getExchangeResult(ethWalletDetail);
+                log.info("eth job update Result:",result.getMessage());
             }
         }
         ethWalletDetailMapper.update(ethWalletDetail);

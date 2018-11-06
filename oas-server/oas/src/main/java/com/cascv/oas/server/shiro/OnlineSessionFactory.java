@@ -33,9 +33,11 @@ public class OnlineSessionFactory implements SessionFactory
     @Override
     public Session createSession(SessionContext initData) {
       OnlineSession session = new OnlineSession();
+      
       if (initData != null && initData instanceof WebSessionContext) {
 		WebSessionContext sessionContext = (WebSessionContext) initData;
 		HttpServletRequest request = (HttpServletRequest) sessionContext.getServletRequest();
+		
 		if (request != null) {
 		    session.setHost(IpUtils.getIpAddr(request));
 		    log.info("request path {}", request.getContextPath());

@@ -138,7 +138,7 @@ public class UserController extends BaseShiroController{
 		log.info("user-agent={}",userAgent);
 		log.info("authentication name {}, password {}", loginVo.getName(), loginVo.getPassword());
 		Boolean rememberMe = loginVo.getRememberMe() == null ? false : loginVo.getRememberMe();
-		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);
+		UsernamePasswordToken token = new UsernamePasswordToken(loginVo.getName(), loginVo.getPassword(), rememberMe);		
         LoginResult loginResult = new LoginResult();
 	    Subject subject = SecurityUtils.getSubject();
 	    //查询该用户是否已经激活
@@ -159,7 +159,7 @@ public class UserController extends BaseShiroController{
         log.info("roles={}",roles);
         
 	    //查询该imei是否被其他正常账号绑定,imei为null表示第一次登陆
-	    if(user.getIMEI() == null && roleList.get(0).equals("正常账号")) {
+	    /*if(user.getIMEI() == null && roleList.get(0).equals("正常账号")) {
 	    	Integer imeiNumber = userService.countSameImeiNumber(loginVo.getIMEI());
 	    	if(imeiNumber>0) {
 	    		 return new ResponseEntity.Builder<LoginResult>()
@@ -168,7 +168,7 @@ public class UserController extends BaseShiroController{
 	    	}
 	    	 //将该imei更新至用户表
 		    userService.updateUserIMEI(loginVo.getName(),loginVo.getIMEI());
-	    }
+	    }*/
 	   
       try {
           subject.login(token);
@@ -180,8 +180,6 @@ public class UserController extends BaseShiroController{
           userModel=ShiroUtils.getUser();
           userModel.setProfile(fullLink);         
           ShiroUtils.setUser(userModel);
-          
-          
           /**
            * 判断IMEI是否相匹配
            */
@@ -258,7 +256,8 @@ public class UserController extends BaseShiroController{
          } 
          
           //普通用户无法在web端登录
-          else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
+          //else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
+         else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
         	       throw new AuthenticationException();
          
           log.info("this is PC!");       
@@ -284,7 +283,7 @@ public class UserController extends BaseShiroController{
 	  String password = userModel.getPassword();
       RegisterResult registerResult = new RegisterResult();
 	  String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-	  
+	  		  
 	  ErrorCode ret = userService.addUser(uuid, userModel);//先创建用户
 	  if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {//用户创建成功则添加角色以及3个钱包
 		//给用户赋予默认角色(正常账号roleId为2)
@@ -295,7 +294,7 @@ public class UserController extends BaseShiroController{
 		  userRole.setRolePriority(1);
 		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);
-		
+		  
 		  EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		  userWalletService.create(uuid);
 		  energyPointService.create(uuid);
@@ -355,7 +354,6 @@ public class UserController extends BaseShiroController{
   @ResponseBody
   @WriteLog(value="RegisterConfirm")
   public ResponseEntity<?> registerConfirm(@RequestBody RegisterConfirm registerConfirm) {
-	  
 	  UserModel userModel = userService.findUserByUuid(registerConfirm.getUuid());
 	    if (userModel != null && registerConfirm.getCode() != null && registerConfirm.getCode() != 0) {
 				String uuid = userModel.getUuid();
@@ -367,6 +365,7 @@ public class UserController extends BaseShiroController{
 	    }
 	    //注册成功，将用户的未激活状态修改为激活状态
 	    userService.updateUserStatusToActive(userModel!=null?userModel.getName():"");
+	    activityService.getReward("SIGNUP", userModel.getUuid());
 	    return new ResponseEntity.Builder<Integer>()
 	          .setData(0)
 	          .setErrorCode(ErrorCode.SUCCESS)
@@ -1081,6 +1080,39 @@ public class UserController extends BaseShiroController{
 	@ResponseBody
 	public ResponseEntity<?> inqureUserIdentityInfo(){
 		String userName=ShiroUtils.getLoginName();
+		UserIdentityCardModel userIdentityCardModelFinish=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusTwo(userName);
+		if(userIdentityCardModelFinish !=null) {
+			 String frontOfPhoto = mediaServer.getImageHost() +userIdentityCardModelFinish.getFrontOfPhoto();
+			 String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModelFinish.getBackOfPhoto();
+			 String holdInHand = mediaServer.getImageHost() + userIdentityCardModelFinish.getHoldInHand();
+			 userIdentityCardModelFinish.setFrontOfPhoto(frontOfPhoto);
+			 userIdentityCardModelFinish.setBackOfPhoto(backOfPhoto);
+			 userIdentityCardModelFinish.setHoldInHand(holdInHand);
+			if(userIdentityCardModelFinish.getUpdated()==null)
+			{
+				String updated=userIdentityCardModelFinish.getCreated();
+				userIdentityCardModelFinish.setUpdated(updated);
+			}
+			if(userIdentityCardModelFinish.getRemark()==null)
+			{
+					String remark="empty";
+					userIdentityCardModelFinish.setRemark(remark);
+			}
+			if(userIdentityCardModelFinish.getUserIdentityName()==null) 
+			{
+				String userIdentityName="empty";
+				userIdentityCardModelFinish.setUserIdentityName(userIdentityName);
+			}
+			if(userIdentityCardModelFinish.getUserIdentityNumber()==null)
+			{
+				String userIdentityNumber="empty";
+				userIdentityCardModelFinish.setUserIdentityNumber(userIdentityNumber);
+			}
+				return new ResponseEntity.Builder<UserIdentityCardModel>()
+				  	      .setData(userIdentityCardModelFinish)
+				  	      .setErrorCode(ErrorCode.SUCCESS)
+				  	      .build();
+		}else {
 		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectUserIdentityByUserName(userName);
 		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelList.get(0);
 		log.info("userIdentityCardModel={}",userIdentityCardModel.getCreated());
@@ -1123,21 +1155,38 @@ public class UserController extends BaseShiroController{
 			  	      .setData(userIdentityCardModel)
 			  	      .setErrorCode(ErrorCode.SUCCESS)
 			  	      .build();
+		}
 			}
+	
 	@PostMapping(value="/upLoadUserIdentityInfo")
 	@ResponseBody
 	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam("file") MultipartFile file){
 		
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
-		
+		UserIdentityCardModel userIdentityCardModelIng=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusOne(userName);
+		UserIdentityCardModel userIdentityCardModelFinish=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusTwo(userName);
 		Map<String,String> info = new HashMap<>();
 		File dir=new File(IDENTITY_UPLOADED);
 	  	 if(!dir.exists()){
 	  	   dir.mkdirs();
 	  	  }
 	  	String str="/image/identityCard/";
-
+	  	
+        //check user whether ing identity or finish identity
+	  	if(userIdentityCardModelIng != null) {
+	  		log.info("正在认证");
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModelIng)
+			  	      .setErrorCode(ErrorCode.INDENTITY_IS_ING)
+			  	      .build();
+	  	}else if(userIdentityCardModelFinish !=null) {
+	  		log.info("认证已通过");
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModelFinish)
+			  	      .setErrorCode(ErrorCode.INDENTITY_IS_FINISH)
+			  	      .build();
+	  	}else {
 	  	//日期时间生成唯一标识文件名
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
 			String uniqueFileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
@@ -1300,6 +1349,7 @@ public class UserController extends BaseShiroController{
 					  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
 					  	      .build();
 			   }
+	  	}
 	}
 	
 	/**

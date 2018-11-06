@@ -110,14 +110,26 @@
   </select>
   
   <select id="getOasExtra" resultType="java.lang.String">
-  	select value from oas_extra_cost where code='oas_extra'
+  	select value from oas_extra_cost where code=#{code}
   </select> 
   
   <update id="updateOasExtra">
-  	update oas_extra_cost
+  <!-- 	update oas_extra_cost
   	set value = #{value,jdbcType=VARCHAR},
   	updated = #{updated,jdbcType=VARCHAR}
-  	where code='oas_extra'
+  	where code='oas_extra' -->
+  	update oas_extra_cost
+  	set value = CASE code
+	WHEN 'oas_extra' THEN #{detail.value}
+	WHEN 'oas_max' THEN #{detail.valueMax}
+	WHEN 'oas_min' THEN #{detail.valueMin}
+	END,
+	updated = CASE code
+		WHEN 'oas_extra' THEN #{updated}
+		WHEN 'oas_max' THEN #{updated}
+		WHEN 'oas_min' THEN #{updated}
+	END
+	WHERE code in ('oas_extra','oas_max','oas_min')
   </update>
   
   <select id="getRecordByUuid" resultMap="BaseResultMap">
