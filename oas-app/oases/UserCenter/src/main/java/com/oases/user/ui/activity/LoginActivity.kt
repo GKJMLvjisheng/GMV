@@ -1,7 +1,6 @@
 package com.oases.user.ui.activity
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -27,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import java.util.*
+import android.util.Base64
 
 @Route(path = RouterPath.UserCenter.PATH_LOGIN)
 class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
@@ -47,6 +47,15 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
             mUserName.setText(AppPrefsUtils.getString(BaseConstant.USER_NAME))
         }
 
+        if( AppPrefsUtils.getBoolean(BaseConstant.PASSWORD_IS_REMEMBER)){
+            rememberPassword.setChecked(true)
+            var pass = AppPrefsUtils.getString(BaseConstant.USER_PASSWORD)
+            //var afterP = Base64.decode(AppPrefsUtils.getString(BaseConstant.USER_PASSWORD),0).toString()
+            //Log.i("zbbcun2",pass)
+            //Log.i("zbbcun3",afterP)
+            mPwd.setText(pass)
+        }
+
         mLoginBtn.setOnClickListener {
             attemptLogin()
         }
@@ -63,6 +72,13 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
 
         mForgetPwdBtn.onClick {
             startActivity<ForgetPwdOneActivity>()
+        }
+        rememberPassword.onClick{
+            if(rememberPassword.isChecked()){
+                AppPrefsUtils.putBoolean(BaseConstant.PASSWORD_IS_REMEMBER,true)
+            }else{
+                AppPrefsUtils.putBoolean(BaseConstant.PASSWORD_IS_REMEMBER,false)
+            }
         }
     }
 
@@ -86,6 +102,12 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
 
     override fun onLoginResult(result:UserInfo) {
             toast("登录成功")
+            if(rememberPassword.isChecked()){
+               // Log.i("zbbcun1", Base64.encode(mPwd.text.toString().toByteArray(),0).toString())
+                AppPrefsUtils.putString(BaseConstant.USER_PASSWORD,mPwd.text.toString())
+            }else{
+                AppPrefsUtils.putString(BaseConstant.USER_PASSWORD,"")
+            }
             setResult(Activity.RESULT_OK)
             checkLogined()
     }

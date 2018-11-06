@@ -13,6 +13,7 @@ import com.oases.base.common.BaseConstant
 import com.oases.base.ext.onClick
 import com.oases.base.ui.activity.BaseMvpActivity
 import com.oases.base.utils.AppPrefsUtils
+import com.oases.data.protocol.OasResp
 import com.oases.data.protocol.TransferOasResp
 import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
@@ -131,7 +132,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
             }*/
 
             if(receiveMoney.isEmpty() || !ToolUtil.regularExpressionValidate(receiveMoney,BaseConstant.NUMBER_POINT_FOUR)){
-                toast("充币金额格式有误！")
+                toast("金额格式有误！")
                 return@onClick
             }
             if(receiveMoney.toBigDecimal() > mAvailableAmount.text.toString().toBigDecimal() ){
@@ -215,7 +216,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
     override fun withdraw(t: Int) {
     }
 
-    override fun getOasExtra(t: String) {
+    override fun getOasExtra(t: OasResp) {
     }
 
     override fun reverseWithdraw(t: Int) {

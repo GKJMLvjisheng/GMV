@@ -304,11 +304,10 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
                     var cropOptions: CropOptions = CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create()   //实现拍照+剪切
                     mTakePhoto.onPickFromCaptureWithCrop(Uri.fromFile(mTempFile), cropOptions)     //实现拍照+剪切
                 }else{
-                    //mTakePhoto.onPickFromGallery()
                     createTempFile()
-                    mTakePhoto.onPickFromGallery()
-                    //var cropOptions: CropOptions = CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create()
-                    //mTakePhoto.onPickFromGalleryWithCrop(Uri.fromFile(mTempFile), cropOptions)
+                    //mTakePhoto.onPickFromGallery()
+                    var cropOptions: CropOptions = CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create()
+                    mTakePhoto.onPickFromGalleryWithCrop(Uri.fromFile(mTempFile), cropOptions)
                 }
             } else{
                 //permission denied
