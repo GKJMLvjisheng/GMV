@@ -8,6 +8,7 @@ import com.cascv.oas.core.common.PageIODomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
+import com.cascv.oas.server.activity.model.ActivityRewardConfig;
 import com.cascv.oas.server.activity.model.EnergyPointBall;
 import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.wrapper.*;
@@ -207,20 +208,30 @@ public class EnergyPointController extends BaseShiroController{
     	for(int i=0; i<energyPointBallList.size(); i++) {
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
+    	
+    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
+    	ActivityRewardConfig activityRewardConfig = 
+        		activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT);
+        BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();
+        BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed);
+    	BigDecimal time = new BigDecimal("24");
+    	BigDecimal num = time.divide(timeGap);
+    	BigDecimal freePoint = pointCapacityEachBall.multiply(num);
+    	BigDecimal maxPoint = checkInPoint.add(freePoint);
+    	
+    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALK, REWARD_UUID_OF_POINT).getMaxValue()
+    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALK, REWARD_UUID_OF_POINT).getIncreaseSpeed());
     	BigDecimal stepNum;
     	WalkBall walkBall = walkMapper.selectTodayWalkBall(userUuid);
     	if (walkBall == null) {
     		stepNum = BigDecimal.ZERO;
     	}else {
-    		stepNum = walkBall.getStepNum();
+    		if(walkBall.getStepNum().compareTo(maxStepNum) == 1)
+    			stepNum = maxStepNum;
+    		else
+    			stepNum = walkBall.getStepNum();
     	}
-    	
-    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
-    	BigDecimal freePoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue().multiply(BigDecimal.valueOf((int)12));
-    	BigDecimal maxPoint = checkInPoint.add(freePoint);
-    	
-    	BigDecimal maxStepNum = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALK, REWARD_UUID_OF_POINT).getMaxValue()
-    			.divide(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_WALK, REWARD_UUID_OF_POINT).getIncreaseSpeed());
     	
         List<EnergyPointCategory> energyPointCategoryList = new ArrayList<>();
 
