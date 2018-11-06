@@ -15,7 +15,7 @@
 //     // 设置表格可编辑  
 
 //     // 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
-document.write("<script language=javascript src='js/deleteConfirm.js'></script>");
+document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 var activeNetwork;
 var optionData;
 $(function ()

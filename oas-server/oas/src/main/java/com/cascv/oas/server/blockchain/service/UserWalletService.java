@@ -2,13 +2,15 @@ package com.cascv.oas.server.blockchain.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.utils.Convert;
 
-import com.amazonaws.services.sns.model.PublishResult;
+import com.alibaba.druid.util.StringUtils;
 import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ReturnValue;
@@ -22,6 +24,7 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
+import com.cascv.oas.server.blockchain.model.OasReq;
 import com.cascv.oas.server.blockchain.model.UserCoin;
 import com.cascv.oas.server.blockchain.model.UserWallet;
 import com.cascv.oas.server.blockchain.model.UserWalletDetail;
@@ -208,7 +211,7 @@ public class UserWalletService {
   }
 
   public ErrorCode withdraw(OasDetail oasDetail,UserModel user){
-	  oasDetail.setExtra(new BigDecimal(oasDetailMapper.getOasExtra()));
+	//oasDetail.setExtra(new BigDecimal(oasDetailMapper.getOasExtra()));
 	//用户的在线钱包代币变化
 	  UserWallet userWallet = userWalletMapper.selectByUserUuid(oasDetail.getUserUuid());
 	  BigDecimal value = new BigDecimal(0);
@@ -391,12 +394,24 @@ public class UserWalletService {
 	  return ErrorCode.SUCCESS;
   }
   
-  public String getOasExtra() {
-	  return oasDetailMapper.getOasExtra();
+  public OasReq getOasExtra() {
+	  String value = oasDetailMapper.getOasExtra("oas_extra");
+	  String max = oasDetailMapper.getOasExtra("oas_max");
+	  String min = oasDetailMapper.getOasExtra("oas_min");
+	  OasReq req = new OasReq();
+	  req.setValue(StringUtils.isEmpty(value)?"0":value);
+	  req.setValueMax(StringUtils.isEmpty(max)?"0":max);
+	  req.setValueMin(StringUtils.isEmpty(min)?"0":min);
+	  return req;
   }
-  public ErrorCode updateOasExtra(String value) {
+  public ErrorCode updateOasExtra(OasReq oasDetail) {
 	  String now = DateUtils.getTime();
-	  return oasDetailMapper.updateOasExtra(value,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
+	  OasReq reqExist = this.getOasExtra();
+	  if(reqExist.getValue().equals(oasDetail.getValue()) && reqExist.getValueMin().equals(oasDetail.getValueMin()) 
+			  && reqExist.getValueMax().equals(oasDetail.getValueMax())) {
+		  return ErrorCode.OAS_NO_USERFUL_UPDATE;
+	  }
+	  return oasDetailMapper.updateOasExtra(oasDetail,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
   }
   
   public ErrorCode setFirstOneUserBalance(UserWalletDetail detail) {
@@ -427,6 +442,5 @@ public class UserWalletService {
 		  userWalletDetailMapper.insertSelective(setDetail(firstOneWallet, "", UserWalletDetailScope.FIRSTONE_INIT, value, UserWalletDetailScope.FIRSTONE_INIT.getSubTitle(), UserWalletDetailScope.FIRSTONE_INIT.getSubTitle(),null,firstOneWallet.getBalance()));
 			 
 	  }
-  }
-  
+  }  
 }

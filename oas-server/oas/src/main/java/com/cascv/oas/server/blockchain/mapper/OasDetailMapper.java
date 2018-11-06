@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
+import com.cascv.oas.server.blockchain.model.OasReq;
 import com.cascv.oas.server.user.model.UserModel;
 
 public interface OasDetailMapper {
@@ -29,13 +30,13 @@ public interface OasDetailMapper {
    * 获取提币手续费
    * @return
    */
-  String getOasExtra();
+  String getOasExtra(String code);
   /**
    * 更新提币手续费
    * @param value
    * @return
    */
-  Integer updateOasExtra(@Param("value") String value,@Param("updated") String updated);
+  Integer updateOasExtra(@Param("detail") OasReq oasDetail,@Param("updated") String updated);
   /**
    * 根据uuid查询提币充币记录
    * @param uuid

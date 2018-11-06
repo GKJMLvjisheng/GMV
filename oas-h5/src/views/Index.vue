@@ -65,8 +65,9 @@
           <div class="bar">
             <div></div>
             <div v-if="analysis[0]" :style="{width: formatWalkAnalysis(analysis[0].value,analysis[0].maxValue)}"></div>
-          </div>
+         </div>
           <span  v-if="analysis[0]" class="count">{{analysis[0].value}}</span><span class="count1">积分</span>
+           
         </li>
          <li>
           <i></i>
@@ -259,8 +260,8 @@ export default {
     // })
     },
    getStep(){
-    //let todayStep=100
-      let todayStep=window.Android.getTodaySteps()
+    let todayStep=100
+      //let todayStep=window.Android.getTodaySteps()
       console.log(todayStep)
       return todayStep
    },
@@ -390,7 +391,8 @@ export default {
             }else{	
               this.userInfo.avatar=infoIamge
             }
-        this.userInfo.nickname = data.nickname
+            //data.nickname
+        this.userInfo.nickname =data.nickname 
         
       })
     },
@@ -874,9 +876,10 @@ function currentTime(flag)
 <style lang="scss" scoped>
 header {
   box-sizing: border-box;
-  padding: 8px 40px;
+  padding: 8px 30px;
   height: 88px;
   background-color: #ecedf1;
+  display: flex;
 }
 .left {
   box-sizing: border-box;
@@ -885,6 +888,7 @@ header {
   font-size: 28px;
   color: #000;
   display: flex;
+  flex:1;
   align-items: center;
   img {
     border-radius: 50%;
@@ -902,6 +906,7 @@ header {
   div {
     float: left;
     display: flex;
+    flex:1;
     align-items: center;
     i {
       display: inline-block;
@@ -1084,12 +1089,13 @@ header {
       background-image: url("../assets/images/other@2x.png");
       background-size: 48px 48px;
     }
-  }
+  
   .equipment {
     width: 102px;//112px
     text-align: center;
   }
   .bar {
+    
     position: relative;
     width: 360px;//400px;
     height:12px; //12px;
@@ -1122,6 +1128,7 @@ header {
     text-align: center;
     margin-right: -30px;
     margin-left: -35px;
+  }
   }
 }
 

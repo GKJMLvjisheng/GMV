@@ -302,17 +302,21 @@ public class ShiroConfig {
 	    
 	// cookie 属性设置
 	public SimpleCookie rememberMeCookie() {
+		System.out.println("ShiroConfiguration.rememberMeCookie()");
 		SimpleCookie cookie = new SimpleCookie("rememberMe");
 		cookie.setDomain(domain);
 		cookie.setPath(path);
 		cookie.setHttpOnly(httpOnly);
+		//cookie生效时间
 		cookie.setMaxAge(maxAge * 24 * 60 * 60);
 		return cookie;
 	}
 
 	    
 	// rememberMe
+	//cookie管理对象
 	public CookieRememberMeManager rememberMeManager() {
+		System.out.println("ShiroConfiguration.rememberMeManager()");
 		CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
 		cookieRememberMeManager.setCookie(rememberMeCookie());
 		cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ=="));
