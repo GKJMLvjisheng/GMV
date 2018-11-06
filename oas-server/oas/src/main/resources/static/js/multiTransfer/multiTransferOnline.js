@@ -339,6 +339,7 @@ function responseHandler2(res){
 //    		});
     	 
     		  })  
+    		  
     }else{
     	 for(var i=0;i<rows.length;i++){
     		 var row={};
@@ -346,9 +347,13 @@ function responseHandler2(res){
     		 row['value']=rows[i].value;
     		 data.push(row);
     	 }
-    	 console.log(data);
+    	
     	 transfer(data);
+    	 
+    	
     	}
+    	 
+    	 
     }
     //判断正数
     function validateValue(num)
@@ -430,7 +435,7 @@ function responseHandler2(res){
 		cache: false,
 		type: 'post',
 		data:JSON.stringify(dataSum),
-			
+		async:false,	
 		success:function(res){
 			
 			if(res.code==0)
@@ -441,7 +446,11 @@ function responseHandler2(res){
 					
 					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
 					 //setTimeout(setMoney, 50000);
-				
+//					console.log(123)
+			    	 initNormalGrid();
+			    	 initTestGrid();
+			    	 resetAddModal();
+			    	 resetTestModal();
          }
          else{
         	 alert("转账失败");
@@ -519,5 +528,27 @@ function responseHandler2(res){
    	 console.log(data);
    	 transfer(data);
    	}
-    	
+   	
     }
+    function resetAddModal(){
+    	document.getElementById("addonlineForm").reset();
+    	//document.getElementById("updateActivityRewardForm").reset();
+    	$("#addonlineForm").find('textarea,input[type=text],select').each(function() {
+    		
+            		$(this).val('');
+            		$(this).html('');
+        });
+    	//$("span[id='msg_parameterValue']").html("");
+    	
+     }
+    function resetTestModal(){
+    	document.getElementById("addTestForm").reset();
+    	//document.getElementById("updateActivityRewardForm").reset();
+    	$("#addTestForm").find('textarea,input[type=text],select').each(function() {
+    		
+            		$(this).val('');
+            		$(this).html('');
+        });
+    	//$("span[id='msg_parameterValue']").html("");
+    	
+     }
