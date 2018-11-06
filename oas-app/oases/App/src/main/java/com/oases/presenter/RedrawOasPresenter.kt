@@ -32,12 +32,12 @@ class RedrawOasPresenter @Inject constructor() : BasePresenter<RedrawOasView>() 
             }
         }, lifecycleProvider)
     }*/
-    fun withdraw(value:String,remark:String){
+    fun withdraw(value:String,remark:String,extra:String){
         if (!checkNetWork()) {
             return
         }
         mView.showLoading()
-        walletService.withdraw(TransferReq("",value,remark)).execute(object : BaseSubscriber<Int>(mView) {
+        walletService.withdraw(TransferReq("",value,remark,extra)).execute(object : BaseSubscriber<Int>(mView) {
             override fun onNext(t: Int) {
                 mView.withdraw(t)
             }
@@ -60,8 +60,8 @@ class RedrawOasPresenter @Inject constructor() : BasePresenter<RedrawOasView>() 
             return
         }
         mView.showLoading()
-        walletService.getOasExtra().execute(object : BaseSubscriber<String>(mView) {
-            override fun onNext(t: String) {
+        walletService.getOasExtra().execute(object : BaseSubscriber<OasResp>(mView) {
+            override fun onNext(t: OasResp) {
                 mView.getOasExtra(t)
             }
         }, lifecycleProvider)

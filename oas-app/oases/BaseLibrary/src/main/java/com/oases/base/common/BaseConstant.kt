@@ -34,6 +34,7 @@ class BaseConstant{
         const val USER_UUID = "uuid"
         const val USER_REGISTER_CLICK_NUMBERS = "user_register_click_numbers" //用户点击获取助记词的次数
         const val WALLET_BACKUP = "wallet_backup"
+        const val PASSWORD_IS_REMEMBER = "password_remember"
 
         const val MY_OAS_ADDRESS = "my_oas_address"
         const val MY_OAS_AMOUNT = "my_oas_amount"
