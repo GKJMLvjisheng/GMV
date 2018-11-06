@@ -71,7 +71,7 @@ function initNormalGrid() {
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: true,         
+		clickToSelect: false,         
 	});
 }
 	
