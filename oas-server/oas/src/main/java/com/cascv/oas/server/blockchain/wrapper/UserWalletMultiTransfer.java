@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class UserWalletMultiTransfer implements Serializable {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    @Getter @Setter private String fromName;
     @Getter @Setter private List<MultiTransferQuota> multiTransferQuota;
 }

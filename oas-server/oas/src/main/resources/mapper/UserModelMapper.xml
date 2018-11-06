@@ -338,7 +338,6 @@
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 
 		left join identity_card_info ICI on U.name=ICI.user_name
-<!--         left join identity_card_info ICI on U.name=(select user_name from ICI where user_name=U.name) -->
 		where UR.role_id=#{roleId} 
 	   <if test="searchValue != null and searchValue !='' ">
     	    and (
@@ -356,8 +355,6 @@
        </if>
        	order by U.created desc 
 	    limit #{offset}, #{limit}
-		
-<!--         concat(u.name,ed.value) like concat('%',#{searchValue},'%') -->
                   
   </select>
   <select id="countUsers" resultType="java.lang.Integer">

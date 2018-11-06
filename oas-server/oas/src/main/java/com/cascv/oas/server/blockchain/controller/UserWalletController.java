@@ -595,7 +595,7 @@ public class UserWalletController extends BaseShiroController {
 	  @ResponseBody
 	  @Transactional
 	  public ResponseEntity<?> multiTransfer(@RequestBody UserWalletMultiTransfer userWalletMultiTransfer){
-	    UserModel fromUser=ShiroUtils.getUser();
+	    UserModel fromUser=userService.findUserByName(userWalletMultiTransfer.getFromName());
 	    //List<String> toUsers=userWalletMultiTransfer.getToUsers();
 	    List<MultiTransferQuota> quotaes=userWalletMultiTransfer.getMultiTransferQuota();
 	    for(MultiTransferQuota quota:quotaes) {
