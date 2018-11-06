@@ -82,6 +82,22 @@
  where
  		user_name = #{userName} and verify_status=0;
   </select>
+     <select id="selectUserIdentityByUserNameVerifyStatusOne" resultMap="userIdentityCardModelMap">
+ select 
+ 		<include refid="Base_Column_List" /> 	  
+ from 
+ 		identity_card_info 
+ where
+ 		user_name = #{userName} and verify_status=1;
+  </select>
+     <select id="selectUserIdentityByUserNameVerifyStatusTwo" resultMap="userIdentityCardModelMap">
+ select 
+ 		<include refid="Base_Column_List" /> 	  
+ from 
+ 		identity_card_info 
+ where
+ 		user_name = #{userName} and verify_status=2;
+  </select>
 <!-- insert user -->
   <insert id="insertUserIdentityCard" parameterType="com.cascv.oas.server.user.model.UserIdentityCardModel">
     <selectKey keyProperty="uuid" order="AFTER" resultType="java.lang.Integer">
