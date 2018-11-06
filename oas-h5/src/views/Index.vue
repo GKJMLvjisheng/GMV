@@ -260,8 +260,8 @@ export default {
     // })
     },
    getStep(){
-    let todayStep=100
-      //let todayStep=window.Android.getTodaySteps()
+    //let todayStep=100
+      let todayStep=window.Android.getTodaySteps()
       console.log(todayStep)
       return todayStep
    },
