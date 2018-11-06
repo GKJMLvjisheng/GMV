@@ -56,7 +56,7 @@
                     
                     <shiro:hasRole name="系统账号">
                          <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-usd"></i> <span class="nav-label" >钱包管理</span></a>
+                            <a href="#"><i class="glyphicon glyphicon-usd"></i> <span class="nav-label" >钱包管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/wallet/energyWallet}">积分钱包查询</a></li>                              
                                 <li class="active"><a class="menuItem" th:href="@{/wallet/userWallet}">在线钱包查询</a></li>
@@ -67,7 +67,7 @@
                         </li>    
                         
                          <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >内容管理</span></a>
+                            <a href="#"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >内容管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/newsManage}">新闻管理</a></li>
                                 <li class="active"><a class="menuItem" th:href="@{/QA/QAManage}">环保答题</a></li>                      
@@ -75,7 +75,7 @@
                         </li>  
                         
                         <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-th-large"></i> <span class="nav-label" >挖矿管理</span></a>
+                            <a href="#"><i class="glyphicon glyphicon-th-large"></i> <span class="nav-label" >挖矿管理</span></a>
                             <ul class="nav nav-second-level">
 	                            <li class="active"><a class="menuItem" th:href="@{/activityReward/activityReward}">活动管理</a></li>
 	                            <li class="active"><a class="menuItem" th:href="@{/activityReward/rewardManage}">奖励管理</a></li>
@@ -89,7 +89,7 @@
                         </li>
                         
                         <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-user"></i> <span class="nav-label" >用户管理</span></a>
+                            <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label" >用户管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/KYC/KYC}">KYC认证</a></li>
                                 <li class="active"><a class="menuItem" th:href="@{/userAccountManage}">用户账号管理</a></li> 
@@ -98,12 +98,17 @@
                         </li> 
                         
                         <li class="">
-                            <a href="main"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label" >系统管理</span></a>
+                            <a href="#"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label" >系统管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/versionManage}">APP版本管理</a></li>
                                 <li class="active"><a class="menuItem" th:href="@{/netConfiguration/netConfig}">ETH网络设置</a></li> 
                                 <li class="active"><a class="menuItem" th:href="@{/menuManage/menuAuthor}">系统模块授权</a></li>
-                                <li class="active"><a class="menuItem" th:href="@{/multiTransfer}">一对多转账</a></li>
+                                <li class=""><a  href="#">一对多转账</a>
+                                <ul class="nav nav-third-level">
+                                <li class="active"><a class="menuItem" th:href="@{/multiTransfer/multiTransfer}">交易钱包转账</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/multiTransfer/multiTransferOnline}">在线钱包转账</a></li>
+                                </ul></li>
+                                 
                                  <li class="active"><a class="menuItem" th:href="@{/systemAccount/system}">系统账号监控</a></li>
                             </ul>
                         </li>   
@@ -150,8 +155,8 @@
                                                                             页签操作<span class="caret"></span>
                         </button>
                         <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                            <li><a class="tabCloseCurrent" href="javascript:void();">关闭当前</a></li>
-                            <li><a class="tabCloseAll" href="javascript:void();">全部关闭</a></li>
+                            <li><a class="tabCloseCurrent" href="javascript:void(0);">关闭当前</a></li>
+                            <li><a class="tabCloseAll" href="javascript:void(0);">全部关闭</a></li>
                         </ul>
                     </div>
 

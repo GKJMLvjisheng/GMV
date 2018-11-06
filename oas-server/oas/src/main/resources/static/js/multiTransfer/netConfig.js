@@ -43,7 +43,7 @@
      });
       $('#network').on('change',function(){
                 //获取对应值--后期作为类选择器
-		
+    	  
                 var thisVal = $(this).val();
                 
 //                if(thisVal=="kovan"||thisVal=="rinkeby")
@@ -76,7 +76,8 @@
          		  
          		  });
                if(parent.$("#iframeMultiTransfer")[0])
-               {
+            	   
+               {//调用一对多转账交易钱包货币列表
             	   parent.$("#iframeMultiTransfer")[0].contentWindow.initsymbol(); }
         	 
             });
