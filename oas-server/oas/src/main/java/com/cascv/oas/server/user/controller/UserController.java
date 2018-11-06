@@ -257,7 +257,8 @@ public class UserController extends BaseShiroController{
          } 
          
           //普通用户无法在web端登录
-          else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
+          //else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
+         else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
         	       throw new AuthenticationException();
          
           log.info("this is PC!");       
@@ -283,7 +284,7 @@ public class UserController extends BaseShiroController{
 	  String password = userModel.getPassword();
       RegisterResult registerResult = new RegisterResult();
 	  String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
-	  
+	  		  
 	  ErrorCode ret = userService.addUser(uuid, userModel);//先创建用户
 	  if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {//用户创建成功则添加角色以及3个钱包
 		//给用户赋予默认角色(正常账号roleId为2)
@@ -294,7 +295,7 @@ public class UserController extends BaseShiroController{
 		  userRole.setRolePriority(1);
 		  userRole.setCreated(now);		  		  
 		  userRoleModelMapper.insertUserRole(userRole);
-		
+		  
 		  EthWallet ethHdWallet = ethWalletService.create(uuid, password);
 		  userWalletService.create(uuid);
 		  energyPointService.create(uuid);
@@ -1080,6 +1081,48 @@ public class UserController extends BaseShiroController{
 	@ResponseBody
 	public ResponseEntity<?> inqureUserIdentityInfo(){
 		String userName=ShiroUtils.getLoginName();
+		UserIdentityCardModel userIdentityCardModelFinish=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusTwo(userName);
+		if(userIdentityCardModelFinish !=null) {
+			if(userIdentityCardModelFinish.getUpdated()==null)
+			{
+				String updated=userIdentityCardModelFinish.getCreated();
+				userIdentityCardModelFinish.setUpdated(updated);
+			}
+			if(userIdentityCardModelFinish.getRemark()==null)
+			{
+					String remark="empty";
+					userIdentityCardModelFinish.setRemark(remark);
+			}
+			if(userIdentityCardModelFinish.getUserIdentityName()==null) 
+			{
+				String userIdentityName="empty";
+				userIdentityCardModelFinish.setUserIdentityName(userIdentityName);
+			}
+			if(userIdentityCardModelFinish.getUserIdentityNumber()==null)
+			{
+				String userIdentityNumber="empty";
+				userIdentityCardModelFinish.setUserIdentityNumber(userIdentityNumber);
+			}
+			if(userIdentityCardModelFinish.getFrontOfPhoto()==null)
+			{
+				String frontOfPhoto="empty";
+				userIdentityCardModelFinish.setFrontOfPhoto(frontOfPhoto);
+			}
+			if(userIdentityCardModelFinish.getBackOfPhoto()==null)
+			{
+				String backOfPhoto="empty";
+				userIdentityCardModelFinish.setBackOfPhoto(backOfPhoto);
+			}
+			if(userIdentityCardModelFinish.getHoldInHand()==null)
+			{
+				String holdInHand="empty";
+				userIdentityCardModelFinish.setHoldInHand(holdInHand);
+			}
+				return new ResponseEntity.Builder<UserIdentityCardModel>()
+				  	      .setData(userIdentityCardModelFinish)
+				  	      .setErrorCode(ErrorCode.SUCCESS)
+				  	      .build();
+		}else {
 		List<UserIdentityCardModel> userIdentityCardModelList=userService.selectUserIdentityByUserName(userName);
 		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelList.get(0);
 		log.info("userIdentityCardModel={}",userIdentityCardModel.getCreated());
@@ -1122,21 +1165,38 @@ public class UserController extends BaseShiroController{
 			  	      .setData(userIdentityCardModel)
 			  	      .setErrorCode(ErrorCode.SUCCESS)
 			  	      .build();
+		}
 			}
+	
 	@PostMapping(value="/upLoadUserIdentityInfo")
 	@ResponseBody
 	public ResponseEntity<?> upLoadUserIdentityInfo(@RequestParam("file") MultipartFile file){
 		
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userIdentityCardModel=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatus(userName);
-		
+		UserIdentityCardModel userIdentityCardModelIng=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusOne(userName);
+		UserIdentityCardModel userIdentityCardModelFinish=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusTwo(userName);
 		Map<String,String> info = new HashMap<>();
 		File dir=new File(IDENTITY_UPLOADED);
 	  	 if(!dir.exists()){
 	  	   dir.mkdirs();
 	  	  }
 	  	String str="/image/identityCard/";
-
+	  	
+        //check user whether ing identity or finish identity
+	  	if(userIdentityCardModelIng != null) {
+	  		log.info("正在认证");
+			return new ResponseEntity.Builder<Integer>()
+			  	      .setData(5)
+			  	      .setErrorCode(ErrorCode.INDENTITY_IS_ING)
+			  	      .build();
+	  	}else if(userIdentityCardModelFinish !=null) {
+	  		log.info("认证已通过");
+			return new ResponseEntity.Builder<Integer>()
+			  	      .setData(5)
+			  	      .setErrorCode(ErrorCode.INDENTITY_IS_FINISH)
+			  	      .build();
+	  	}else {
 	  	//日期时间生成唯一标识文件名
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
 			String uniqueFileName = format.format(new Date())+new Random().nextInt()+"-"+file.getOriginalFilename();
@@ -1299,6 +1359,7 @@ public class UserController extends BaseShiroController{
 					  	      .setErrorCode(ErrorCode.GENERAL_ERROR)
 					  	      .build();
 			   }
+	  	}
 	}
 	
 	/**
@@ -1377,13 +1438,17 @@ public class UserController extends BaseShiroController{
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
 		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
+		if(userIdentityCardModelInfo.getUserIdentityName() !=null)
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
+		if(userIdentityCardModelInfo.getUserIdentityNumber() !=null)
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
+		if(userIdentityCardModelInfo.getVerifyStatus() !=null)
 		userIdentityCardModel.setVerifyStatus(userIdentityCardModelInfo.getVerifyStatus());
+		if(userIdentityCardModelInfo.getRemark() !=null)
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
-		if(userIdentityCardModelInfo.getVerifyStatus() == 2) {
+		if(userIdentityCardModelInfo.getVerifyStatus() != null && userIdentityCardModelInfo.getVerifyStatus() == 2) {
 			activityService.getReward(KYC_SOURCE_CODE, userUuid);
 		}
 		return new ResponseEntity.Builder<UserIdentityCardModel>()

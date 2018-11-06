@@ -1,6 +1,8 @@
 package com.cascv.oas.server.user.wrapper;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +27,6 @@ public class UserDetailModel implements Serializable {
 	@Getter @Setter private String userIdentityNumber;
 	@Getter @Setter private String remark;
 	@Getter @Setter private Integer verifyStatus;
+	@Getter @Setter private BigDecimal value;
+	
 }

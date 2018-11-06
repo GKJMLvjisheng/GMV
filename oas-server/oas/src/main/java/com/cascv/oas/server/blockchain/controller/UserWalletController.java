@@ -28,6 +28,7 @@ import com.cascv.oas.core.common.ReturnValue;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.blockchain.config.MultiTransferQuota;
 import com.cascv.oas.server.blockchain.mapper.UserWalletDetailMapper;
+import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
@@ -62,7 +63,9 @@ public class UserWalletController extends BaseShiroController {
 
   @Autowired
   private UserService userService;
-
+  @Autowired
+  private UserWalletMapper userWalletMapper;
+  
   @Autowired
   private UserWalletDetailMapper userWalletDetailMapper;
   @Autowired 
@@ -595,13 +598,28 @@ public class UserWalletController extends BaseShiroController {
 	  @ResponseBody
 	  @Transactional
 	  public ResponseEntity<?> multiTransfer(@RequestBody UserWalletMultiTransfer userWalletMultiTransfer){
-	    UserModel fromUser=ShiroUtils.getUser();
+	    UserModel fromUser=userService.findUserByName(userWalletMultiTransfer.getFromName());
 	    //List<String> toUsers=userWalletMultiTransfer.getToUsers();
 	    List<MultiTransferQuota> quotaes=userWalletMultiTransfer.getMultiTransferQuota();
 	    for(MultiTransferQuota quota:quotaes) {
-	    UserModel userModel=userService.findUserByName(quota.getToUserName());	
+	    UserModel userModel=userService.findUserByName(quota.getToUserName());
+	    //提交后清空转账金额
+	    userWalletMapper.updateUserTransfer(userModel.getUuid(),BigDecimal.ZERO);
 	    userWalletService.transfer(fromUser.getUuid(),userModel.getUuid(),quota.getValue(),null,null);
 	    }
+	    return new ResponseEntity.Builder<Integer>()
+	        .setData(1)
+	        .setErrorCode(ErrorCode.SUCCESS)
+	        .build();
+	  }
+	  
+	  @PostMapping(value="/updateTransfer")
+	  @ResponseBody
+	  @Transactional
+	  public ResponseEntity<?> updateTransfer(@RequestBody MultiTransferQuota multiTransferQuota){
+		String uuid=userService.findUserByName(multiTransferQuota.getToUserName()).getUuid();
+		BigDecimal value=multiTransferQuota.getValue();
+	    userWalletMapper.updateUserTransfer(uuid,value);        
 	    return new ResponseEntity.Builder<Integer>()
 	        .setData(1)
 	        .setErrorCode(ErrorCode.SUCCESS)
