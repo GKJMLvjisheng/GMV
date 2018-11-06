@@ -228,7 +228,152 @@ function responseHandler2(res){
 //    		alert(12)
 //    		return row ;
 //    		});
-    
-    	 console.log(rows)
+    	 var data = new Array();  
+    	
+    	 for(var i=0;i<rows.length;i++){
+    		 var row={};
+    		 row['toUserName']=rows[i].name;
+    		 row['value']=rows[i].status;
+    		 data.push(row);
+    	 }
+    	 console.log(data);
+    	 transfer(data);
     	 
     }
+    //判断正数
+    function validateValue(num)
+    {
+     
+      var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
+    	
+      if(reg.test(num)) return true;
+      return false ;  
+    }
+   
+   
+    //转账接口
+    function transfer(data)
+    {
+        var tableDataLen=data.length;
+        
+        var sunmary=0;
+        var flag=false;
+        var flag1=false;
+        var flag2=false;
+        for(var i=0;i<tableDataLen;i++)
+        {
+
+         if(data[i]['toUserAddress']==0||data[i]['amount']==0)
+     	{		
+    	 		flag=true;
+    	 		break;}
+         else if(!validateValue(data[i]['amount']))
+      	{		
+    	 		flag1=true;
+    	 		break;
+      	}else if(!validateAddress(data[i]['toUserAddress']))
+      		{flag2=true;
+    	 		break;}
+         //sunmary=sunmary+parseInt(rowAdd['amount']);
+         sunmary=numAdd(sunmary,data[i]['amount']);
+         //sunmary=sunmary+parseFloat(data[i]['amount']);
+         
+    		}
+
+       if(flag)
+       	{	alert("输入的地址或金额不能为空");
+       		return;}
+       if(flag1)
+    	{	alert("金额请输入大于0的正数");
+    		return;}
+       if(flag2)
+   	{	alert("地址由以0x开头的42位字母数字组成");
+   		return;}
+      
+       if($("#money").text()<sunmary){
+    	   alert("账户余额小于转账金额！");
+    	   return;
+       }
+        var userAddress=$("#userAddress").val();
+        var userName=$("#userNickname",parent.document).text();
+        var symbol=$('#contractSymbol option:selected') .text();
+        Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
+    		if (!e) {
+    		  return;
+    		 }
+    		
+       var dataSum={
+        		"contract": contract,
+        		"gasPrice":gasPrice,
+        		"gasLimit":gasLimit,
+        	    "quota":data,
+        	}; 
+       console.log(JSON.stringify(dataSum))
+    $.ajax({
+
+		url:"/api/v1/ethWallet/multiTtransfer",
+		//headers: {'Authorization': token},
+
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(dataSum),
+			
+		success:function(res){
+			
+			if(res.code==0)
+         {  
+				var strMain="https://etherscan.io/tx/"+res.data.txHash;
+				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				 if(parent.$("#iframenetConfig")[0])
+				     {
+						  activeNetwork=parent.$("#iframenetConfig")[0].contentWindow.getValue();}
+				
+				console.log(activeNetwork);
+				if(strTest.indexOf(activeNetwork)!=-1)
+						{
+						str=strTest;}
+					else{
+						str=strMain;}
+					
+					$("#Tip").modal('show');
+					
+					document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
+					 //setTimeout(setMoney, 50000);
+				
+         }
+         else{
+        	 alert("转账失败");
+        	
+         	}
+		     
+		},
+	
+		error:function(){
+					alert("请求失败！")
+				}
+	}); 
+    });
+    }
+    /**
+     * 加法运算，避免数据相加小数点后产生多位数和计算精度损失。
+     * 
+     * @author: QQQ
+     * @param num1加数1 | num2加数2
+     */
+    function numAdd(num1, num2) {
+        var baseNum, baseNum1, baseNum2;
+        try {
+            baseNum1 = num1.toString().split(".")[1].length;
+        } catch (e) {
+            baseNum1 = 0;
+        }
+        try {
+            baseNum2 = num2.toString().split(".")[1].length;
+        } catch (e) {
+            baseNum2 = 0;
+        }
+        baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
+        return (num1 * baseNum + num2 * baseNum) / baseNum;
+    };
