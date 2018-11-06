@@ -295,7 +295,7 @@
           where 
           A.user_uuid = #{userUuid} and
           A.status = #{status} and
-          updated like #{updated}"%" and
+          date_add(updated, interval 8 hour) like #{updated}"%" and
           B.type = '手机'
     </select>
     
