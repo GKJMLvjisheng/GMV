@@ -329,15 +329,9 @@
 	    U.IMEI as IMEI,
 	    U.status as status,
 		U.created as created,
-		U.invite_from as invite_from,
-		ICI.user_identity_name as user_identity_name,
-		ICI.user_identity_number as user_identity_number,
-		ICI.remark as remark,
-		ICI.verify_status as verify_status,
 		UR.role_id as roleId
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 
-		left join identity_card_info ICI on U.name=ICI.user_name
 		where UR.role_id=#{roleId} 
 	   <if test="searchValue != null and searchValue !='' ">
     	    and (
