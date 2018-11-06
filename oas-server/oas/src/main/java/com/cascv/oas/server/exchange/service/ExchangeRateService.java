@@ -57,7 +57,7 @@ public class ExchangeRateService {
 				 while(it.hasNext()) {
 					String key  = (String) it.next();
 					JSONObject base = data.getJSONObject(key);
-					if(base.getString("quoteCurrencyName").equals("ZC")) {
+					if(base.getString("quoteCurrencyName").equals("ZC") && key.indexOf("zc_ticker")!=-1) {
 						String coinName = (String)base.get("baseCurrencyName");
 						String value = base.getString("close");
 						BigDecimal valueResult = new BigDecimal(value).divide(new BigDecimal(oasValue),4,BigDecimal.ROUND_HALF_UP); //币转换为oas,四舍五入保留4位小数

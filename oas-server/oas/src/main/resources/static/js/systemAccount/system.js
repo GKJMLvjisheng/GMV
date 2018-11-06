@@ -476,7 +476,7 @@ function resetAddModal(){
 	document.getElementById("addfirstOneForm").reset();
 	//document.getElementById("updateActivityRewardForm").reset();
 	$("#addfirstOneForm").find('textarea,input[type=text],select').each(function() {
-		alert(1)
+		
         		$(this).val('');
         		$(this).html('');
     });

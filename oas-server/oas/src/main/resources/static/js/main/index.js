@@ -242,9 +242,11 @@ $(function() {
             $('.menuTabs .page-tabs-content').append(str);
             // 添加选项卡对应的iframe
             var id;
-            if(dataUrl=="multiTransfer"){
+            //alert(dataUrl)
+            if(dataUrl=="/multiTransfer/multiTransfer"){
+            	
             	id="iframeMultiTransfer";
-            }else if(dataUrl=="netConfiguration/netConfig"){
+            }else if(dataUrl=="/netConfiguration/netConfig"){
             	id="iframenetConfig";
             	
             }else{id="iframe"+dataIndex;}
@@ -446,7 +448,7 @@ $(function() {
     // 关闭当前
     $('.tabCloseCurrent').on('click', function () {
     	//alert("关闭");
-       $('.page-tabs-content').find('.active i').trigger("click")
+      $('.page-tabs-content').find('.active i').trigger("click")
     	//.each(function() {
      //   $('.RuoYi_iframe[data-id="' + $(this).data('id') + '"]').remove();
        // $(this).remove();

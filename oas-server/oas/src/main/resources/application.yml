@@ -73,13 +73,13 @@ server:
     key-alias: alias
 media:
   server:
-    imageHost : https://dapp.oases.pro
+    imageHost : https://oas.cascv.com
 
 mail:
   mailBean:
-    rootMail: "oases@oases.pro"
-    password: "Epc588"
-    name: "oases@oases.pro"
+    rootMail: "support@oases.pro"
+    password: "Jykj588"
+    name: "support@oases.pro"
     subject: "邮箱验证"
 
 quartz:

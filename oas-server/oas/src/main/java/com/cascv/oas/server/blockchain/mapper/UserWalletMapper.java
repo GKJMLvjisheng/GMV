@@ -28,4 +28,6 @@ public interface UserWalletMapper {
    * @return
    */
   UserWallet getFirstOneWallet();
+  
+  Integer updateUserTransfer(@Param("uuid")  String uuid, @Param("value")  BigDecimal value);
 }
