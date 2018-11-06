@@ -1,0 +1,379 @@
+/**
+ * 
+ */
+$(function() {
+	initNormalGrid();
+	initTestGrid();
+	
+	
+});
+function initNormalGrid() {	
+	$("#normalGrid").bootstrapTable('destroy');
+	$("#normalGrid").bootstrapTable({
+		url: '/api/v1/userCenter/selectAllUsers',
+		contentType : "application/json",
+		dataType:"json",
+		method: 'post',
+		striped:true,//隔行变色
+		uniqueId:"name",
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
+		pageNumber:1,//首页页码
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams1,//请求服务器时所传的参数
+		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+
+		toolbar:"#toolbar",//工具栏
+		sortable: false,//是否启用排序
+		sortName: 'uuid', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+			
+	    columns : [{
+			
+			checkbox:"true",
+			
+			align: 'center',// 居中显示
+			
+			field : "box",
+		},{  
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+			},
+			
+			{
+				title : "转账金额",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '98px',
+				editable:true,
+				formatter:function action(value,row,index){
+					value=0;
+					return value;
+				}
+			}],		
+//		search : true,//搜索
+//        searchOnEnterKey : true,
+		clickToSelect: true,         
+	});
+}
+	
+//请求服务数据时所传参数
+function queryParams1(params){
+	var searchValue = $("#user1").val();
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
+    return{
+        //每页多少条数据
+        pageSize: pageSize,
+        //当前页码
+        pageNum: pageNum,      
+        roleId: 2,
+        searchValue: searchValue,
+    }
+}
+//请求成功方法
+function responseHandler1(res){
+	//alert(JSON.stringify(res));
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("正常账号回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
+function initTestGrid() {	
+	$("#testGrid").bootstrapTable('destroy');
+	$("#testGrid").bootstrapTable({
+		url: '/api/v1/userCenter/selectAllUsers',
+		contentType : "application/json",
+		dataType:"json",
+		method: 'post',
+		striped:true,//隔行变色
+		uniqueId:"name",
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
+		pageNumber:1,//首页页码
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams2,//请求服务器时所传的参数
+		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+		
+		toolbar:"#toolbar",//工具栏
+		sortable: false,//是否启用排序
+		sortName: 'uuid', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+			
+	    columns : [{
+			
+			checkbox:"true",
+			
+			align: 'center',// 居中显示
+			
+			field : "box",
+		},{  
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+			},
+			{
+				title : "昵称",
+				field : "nickname",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				
+			},
+			{
+				title : "手机",
+				field : "mobile",
+				align: 'center',
+				valign: 'middle',
+				width:  '110px',
+			},
+			{
+				title : "邮箱",
+				field : "email",
+				align: 'center',
+				valign: 'middle',
+				width:  '98px',
+			}],		
+//		search : true,//搜索
+//        searchOnEnterKey : true,
+		clickToSelect: false,         
+	});
+}
+
+//请求服务数据时所传参数
+function queryParams2(params){
+	var searchValue = $("#user2").val();
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
+    return{
+        //每页多少条数据
+        pageSize: pageSize,
+        //当前页码
+        pageNum: pageNum,  
+        //测试账号
+        roleId: 3,  
+        searchValue: searchValue,
+    }
+}
+//请求成功方法
+function responseHandler2(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("测试账号回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+    function display1()
+    {document.getElementById("page2").style.display="none";
+    document.getElementById("page1").style.display="block";
+    $('#btn1').removeClass('active1').addClass('active');
+    $('#btn2').removeClass('active').addClass('active1');
+    }
+    function display2()
+    {
+    	//$("#page2").attr()
+    	document.getElementById("page1").style.display="none";
+    	document.getElementById("page2").style.display="block";
+    	$('#btn2').removeClass('active1').addClass('active');
+    	$('#btn1').removeClass('active').addClass('active1');
+    }
+    function getTableData(){
+    
+    	 var rows = $("#normalGrid").bootstrapTable("getSelections");
+//    	var row=$.map($("#normalGrid").bootstrapTable('getSelections'),function(row){
+//    		alert(12)
+//    		return row ;
+//    		});
+    	 var data = new Array();  
+    	
+    	 for(var i=0;i<rows.length;i++){
+    		 var row={};
+    		 row['toUserName']=rows[i].name;
+    		 row['value']=rows[i].status;
+    		 data.push(row);
+    	 }
+    	 console.log(data);
+    	 transfer(data);
+    	 
+    }
+    //判断正数
+    function validateValue(num)
+    {
+     
+      var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
+    	
+      if(reg.test(num)) return true;
+      return false ;  
+    }
+   
+   
+    //转账接口
+    function transfer(data)
+    {
+        var tableDataLen=data.length;
+        
+        var sunmary=0;
+        var flag=false;
+        var flag1=false;
+        var flag2=false;
+        for(var i=0;i<tableDataLen;i++)
+        {
+
+         if(data[i]['toUserAddress']==0||data[i]['amount']==0)
+     	{		
+    	 		flag=true;
+    	 		break;}
+         else if(!validateValue(data[i]['amount']))
+      	{		
+    	 		flag1=true;
+    	 		break;
+      	}else if(!validateAddress(data[i]['toUserAddress']))
+      		{flag2=true;
+    	 		break;}
+         //sunmary=sunmary+parseInt(rowAdd['amount']);
+         sunmary=numAdd(sunmary,data[i]['amount']);
+         //sunmary=sunmary+parseFloat(data[i]['amount']);
+         
+    		}
+
+       if(flag)
+       	{	alert("输入的地址或金额不能为空");
+       		return;}
+       if(flag1)
+    	{	alert("金额请输入大于0的正数");
+    		return;}
+       if(flag2)
+   	{	alert("地址由以0x开头的42位字母数字组成");
+   		return;}
+      
+       if($("#money").text()<sunmary){
+    	   alert("账户余额小于转账金额！");
+    	   return;
+       }
+        var userAddress=$("#userAddress").val();
+        var userName=$("#userNickname",parent.document).text();
+        var symbol=$('#contractSymbol option:selected') .text();
+        Ewin.confirm({ message: "确认从账户【"+userName+"】的地址【"+userAddress+"】转到【"+tableDataLen+"】个目标账户，总金额为【"+sunmary+"】"+symbol+"." }).on(function (e) {
+    		if (!e) {
+    		  return;
+    		 }
+    		
+       var dataSum={
+        		"contract": contract,
+        		"gasPrice":gasPrice,
+        		"gasLimit":gasLimit,
+        	    "quota":data,
+        	}; 
+       console.log(JSON.stringify(dataSum))
+    $.ajax({
+
+		url:"/api/v1/ethWallet/multiTtransfer",
+		//headers: {'Authorization': token},
+
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(dataSum),
+			
+		success:function(res){
+			
+			if(res.code==0)
+         {  
+				var strMain="https://etherscan.io/tx/"+res.data.txHash;
+				var strTest="https://ropsten.etherscan.io/tx/"+res.data.txHash;
+				 if(parent.$("#iframenetConfig")[0])
+				     {
+						  activeNetwork=parent.$("#iframenetConfig")[0].contentWindow.getValue();}
+				
+				console.log(activeNetwork);
+				if(strTest.indexOf(activeNetwork)!=-1)
+						{
+						str=strTest;}
+					else{
+						str=strMain;}
+					
+					$("#Tip").modal('show');
+					
+					document.getElementById("tipContent").innerHTML="转账请求已成功提交，"+"<br/>"+"查看转账请求的详细状态请:"+"<a href='"+str+"' target='_blank'>"+"点击这里"+"</a>";
+					 //setTimeout(setMoney, 50000);
+				
+         }
+         else{
+        	 alert("转账失败");
+        	
+         	}
+		     
+		},
+	
+		error:function(){
+					alert("请求失败！")
+				}
+	}); 
+    });
+    }
+    /**
+     * 加法运算，避免数据相加小数点后产生多位数和计算精度损失。
+     * 
+     * @author: QQQ
+     * @param num1加数1 | num2加数2
+     */
+    function numAdd(num1, num2) {
+        var baseNum, baseNum1, baseNum2;
+        try {
+            baseNum1 = num1.toString().split(".")[1].length;
+        } catch (e) {
+            baseNum1 = 0;
+        }
+        try {
+            baseNum2 = num2.toString().split(".")[1].length;
+        } catch (e) {
+            baseNum2 = 0;
+        }
+        baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
+        return (num1 * baseNum + num2 * baseNum) / baseNum;
+    };
