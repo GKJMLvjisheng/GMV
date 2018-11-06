@@ -24,7 +24,7 @@ function brokerageReady(){
 			initBrokeragedGrid(array);
 		}, 
 		error: function(){
-			alert("提币手续费配置回显失败！")
+			alert("提币限额和配置回显失败！")
 		}
 		}); 
 }
