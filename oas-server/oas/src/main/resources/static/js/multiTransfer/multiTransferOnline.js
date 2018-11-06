@@ -5,7 +5,7 @@ document.write("<script language=javascript src='/js/deleteConfirm.js'></script>
 $(function() {
 	initNormalGrid();
 	initTestGrid();
-	
+  
 	
 });
 function initNormalGrid() {	
@@ -31,7 +31,7 @@ function initNormalGrid() {
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-			
+	    //maintainSelected:true,
 	    columns : [{
 			
 			checkbox:"true",
@@ -39,6 +39,11 @@ function initNormalGrid() {
 			align: 'center',// 居中显示
 			
 			field : "box",
+			formatter:function action(value,row,index){
+				console.log(row.status)
+//				if(row.status==1)
+//				{return {checked : true }}
+			}
 		},{  
 			title: '序号',  
 			field: '',
@@ -71,7 +76,50 @@ function initNormalGrid() {
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false,    
+		  onCheck:function(row){
+	          console.log(row);       
+	        },
+	        onClickRow : function(row, td,flied){
+	        	var data={}
+	        	data['name']=row.name;
+	        	data['value']=row.value;
+	        	$.ajax({
+
+	        		url:"/api/v1/userWallet/updateTransfer",
+	        		//headers: {'Authorization': token},
+
+	        		contentType : 'application/json;charset=utf8',
+	        		dataType: 'json',
+	        		cache: false,
+	        		type: 'post',
+	        		data:JSON.stringify(data),
+	        			
+	        		success:function(res){
+	        			
+	        			if(res.code==0)
+	                 {  
+	        				
+	        					
+	        					$("#Tip").modal('show');
+	        					
+	        					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
+	        					 //setTimeout(setMoney, 50000);
+	        				
+	                 }
+	                 else{
+	                	 alert("转账失败");
+	                	
+	                 	}
+	        		     
+	        		},
+	        	
+	        		error:function(){
+	        					alert("请求失败！")
+	        				}
+	        	}); 
+	        }
+	        
 	});
 }
 	
@@ -224,14 +272,17 @@ function responseHandler2(res){
     		 return;
     	 }
     	 var data = new Array(); 
-    	 if(validateValue(Global)){
+    	 if(Global){
     		 
     		  Ewin.confirm({ message: "确认要全局配置金额？手动输入金额将不生效"}).on(function (e) {
     		if (!e) {
     			alert("确认不使用全局配置，请清空全局配置金额！")
     		  return;
     		 }
-     	
+     	if(!validateValue(Global)){
+     		alert("请输入正确的全局配置金额！");
+     		return;
+     	}
     	 for(var i=0;i<rows.length;i++){
     		 var row={};
     		 row['toUserName']=rows[i].name;
@@ -261,11 +312,16 @@ function responseHandler2(res){
     //判断正数
     function validateValue(num)
     {
-     
+    	var flag=false;
+        var flag1=false;
       var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
-    	
-      if(reg.test(num)) return true;
-      return false ;  
+      var reg1=/^0.*$/;
+      if(reg.test(num)){
+     	 flag=true;}
+       if(!reg1.test(num)){
+     	  console.log("0")
+     	  flag1=true;}
+       return flag&&flag1;   
     }
    
    
@@ -280,13 +336,15 @@ function responseHandler2(res){
         
         for(var i=0;i<tableDataLen;i++)
         {
-
+        	
          if(data[i]['toUserName']==0||data[i]['value']==0)
      	{		
     	 		flag=true;
     	 		break;}
+         
          else if(!validateValue(data[i]['value']))
       	{		
+        	
     	 		flag1=true;
     	 		break;
       	}
