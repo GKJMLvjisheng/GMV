@@ -1083,6 +1083,12 @@ public class UserController extends BaseShiroController{
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userIdentityCardModelFinish=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusTwo(userName);
 		if(userIdentityCardModelFinish !=null) {
+			 String frontOfPhoto = mediaServer.getImageHost() +userIdentityCardModelFinish.getFrontOfPhoto();
+			 String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModelFinish.getBackOfPhoto();
+			 String holdInHand = mediaServer.getImageHost() + userIdentityCardModelFinish.getHoldInHand();
+			 userIdentityCardModelFinish.setFrontOfPhoto(frontOfPhoto);
+			 userIdentityCardModelFinish.setBackOfPhoto(backOfPhoto);
+			 userIdentityCardModelFinish.setHoldInHand(holdInHand);
 			if(userIdentityCardModelFinish.getUpdated()==null)
 			{
 				String updated=userIdentityCardModelFinish.getCreated();
@@ -1102,21 +1108,6 @@ public class UserController extends BaseShiroController{
 			{
 				String userIdentityNumber="empty";
 				userIdentityCardModelFinish.setUserIdentityNumber(userIdentityNumber);
-			}
-			if(userIdentityCardModelFinish.getFrontOfPhoto()==null)
-			{
-				String frontOfPhoto="empty";
-				userIdentityCardModelFinish.setFrontOfPhoto(frontOfPhoto);
-			}
-			if(userIdentityCardModelFinish.getBackOfPhoto()==null)
-			{
-				String backOfPhoto="empty";
-				userIdentityCardModelFinish.setBackOfPhoto(backOfPhoto);
-			}
-			if(userIdentityCardModelFinish.getHoldInHand()==null)
-			{
-				String holdInHand="empty";
-				userIdentityCardModelFinish.setHoldInHand(holdInHand);
 			}
 				return new ResponseEntity.Builder<UserIdentityCardModel>()
 				  	      .setData(userIdentityCardModelFinish)
@@ -1186,14 +1177,14 @@ public class UserController extends BaseShiroController{
         //check user whether ing identity or finish identity
 	  	if(userIdentityCardModelIng != null) {
 	  		log.info("正在认证");
-			return new ResponseEntity.Builder<Integer>()
-			  	      .setData(5)
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModelIng)
 			  	      .setErrorCode(ErrorCode.INDENTITY_IS_ING)
 			  	      .build();
 	  	}else if(userIdentityCardModelFinish !=null) {
 	  		log.info("认证已通过");
-			return new ResponseEntity.Builder<Integer>()
-			  	      .setData(5)
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModelFinish)
 			  	      .setErrorCode(ErrorCode.INDENTITY_IS_FINISH)
 			  	      .build();
 	  	}else {
