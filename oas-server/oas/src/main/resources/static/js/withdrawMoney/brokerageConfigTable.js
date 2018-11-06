@@ -71,7 +71,7 @@ function initBrokeragedGrid(data) {
 
 function actionFormatter1(value, row, index) {
 	var ratio = parseFloat(value);	
-	var ratio1 =(ratio*100).toFixed(1);	
+	var ratio1 =(ratio*100).toFixed(2);	
 	//alert(JSON.stringify(ratio1));	
 	var ratio2 = ratio1.toString()+"%";	
 	//alert(JSON.stringify(ratio2));
@@ -93,7 +93,7 @@ function EditRewardById(valueMax){
     //获取选中行的数据
     var rows=$("#brokerageGrid").bootstrapTable('getRowByUniqueId', valueMax);
 	
-	var value1 = (rows.value*100).toFixed(1);
+	var value1 = (rows.value*100).toFixed(2);
 	var value = value1+"%";
 		
 

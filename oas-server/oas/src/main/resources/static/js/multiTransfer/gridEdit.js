@@ -688,11 +688,16 @@ function initsymbol(){
     //判断正数
     function validateValue(num)
     {
-     
+    	var flag=false;
+        var flag1=false;
       var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
-    	
-      if(reg.test(num)) return true;
-      return false ;  
+      var reg1=/^0.*$/;
+      if(reg.test(num)){
+     	 flag=true;}
+       if(!reg1.test(num)){
+     	  console.log("0")
+     	  flag1=true;}
+       return flag&&flag1;  
     }
     function validateAddress(num)
     {

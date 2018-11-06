@@ -406,11 +406,11 @@ public class UserWalletService {
   }
   public ErrorCode updateOasExtra(OasReq oasDetail) {
 	  String now = DateUtils.getTime();
-	  OasReq reqExist = this.getOasExtra();
+	  /*OasReq reqExist = this.getOasExtra();
 	  if(reqExist.getValue().equals(oasDetail.getValue()) && reqExist.getValueMin().equals(oasDetail.getValueMin()) 
 			  && reqExist.getValueMax().equals(oasDetail.getValueMax())) {
 		  return ErrorCode.OAS_NO_USERFUL_UPDATE;
-	  }
+	  }*/
 	  return oasDetailMapper.updateOasExtra(oasDetail,now)>0?ErrorCode.SUCCESS:ErrorCode.UPDATE_FAILED;
   }
   

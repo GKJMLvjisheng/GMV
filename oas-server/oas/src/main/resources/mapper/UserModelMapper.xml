@@ -314,6 +314,7 @@
     <result column="user_identity_number" property="userIdentityNumber"/>
     <result column="remark" property="remark"/>
     <result column="verify_status" property="verifyStatus"/>
+    <result column="value" property="value"/>
     
   </resultMap>
    
@@ -326,6 +327,7 @@
 	    U.IMEI as IMEI,
 	    U.status as status,
 		U.created as created,
+		U.value as value,
 		UR.role_id as roleId
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 
