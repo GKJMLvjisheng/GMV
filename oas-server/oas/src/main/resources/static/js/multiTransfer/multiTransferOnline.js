@@ -40,9 +40,9 @@ function initNormalGrid() {
 			
 			field : "box",
 			formatter:function action(value,row,index){
-				console.log(row.status)
-//				if(row.status==1)
-//				{return {checked : true }}
+				//console.log(row)
+				if(row.value>0)
+				{return {checked : true }}
 			}
 		},{  
 			title: '序号',  
@@ -63,27 +63,32 @@ function initNormalGrid() {
 			
 			{
 				title : "转账金额",
-				field : "status",
+				field : "value",
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
 				editable:true,
-				formatter:function action(value,row,index){
-					value=0;
-					row.status=0;
-					return value;
-				}
+//				formatter:function action(value,row,index){
+//					value=0;
+//					row.status=0;
+//					return value;
+//				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
 		clickToSelect: false,    
-		  onCheck:function(row){
-	          console.log(row);       
-	        },
-	        onClickRow : function(row, td,flied){
+//		  onCheck:function(row){
+//	          console.log(row);       
+//	        },
+//	        onClickRow : function(row, td,flied){
+//	        	console.log(td[0].children[3].innerText)
+//	        	
+//	        },
+	        onEditableSave: function (field, row, oldValue, $el) {
 	        	var data={}
-	        	data['name']=row.name;
+	        	data['toUserName']=row.name;
 	        	data['value']=row.value;
+	        	console.log(data)
 	        	$.ajax({
 
 	        		url:"/api/v1/userWallet/updateTransfer",
@@ -99,26 +104,22 @@ function initNormalGrid() {
 	        			
 	        			if(res.code==0)
 	                 {  
-	        				
-	        					
-	        					$("#Tip").modal('show');
-	        					
-	        					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
-	        					 //setTimeout(setMoney, 50000);
+	        				//alert("保存成功");
 	        				
 	                 }
 	                 else{
-	                	 alert("转账失败");
+	                	 //alert("转账失败");
 	                	
 	                 	}
 	        		     
 	        		},
 	        	
 	        		error:function(){
-	        					alert("请求失败！")
+	        					//alert("请求失败！")
 	        				}
 	        	}); 
 	        }
+	        
 	        
 	});
 }
@@ -184,6 +185,11 @@ function initTestGrid() {
 			align: 'center',// 居中显示
 			
 			field : "box",
+			formatter:function action(value,row,index){
+				//console.log(row)
+				if(row.value>0)
+				{return {checked : true }}
+			}
 		},{  
 			title: '序号',  
 			field: '',
@@ -203,20 +209,55 @@ function initTestGrid() {
 			
 			{
 				title : "转账金额",
-				field : "status",
+				field : "value",
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
 				editable:true,
-				formatter:function action(value,row,index){
-					value=0;
-					row.status=0;
-					return value;
-				}
+//				formatter:function action(value,row,index){
+//					value=0;
+//					row.status=0;
+//					return value;
+//				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false,
+		 onEditableSave: function (field, row, oldValue, $el) {
+	        	var data={}
+	        	data['toUserName']=row.name;
+	        	data['value']=row.value;
+	        	console.log(data)
+	        	$.ajax({
+
+	        		url:"/api/v1/userWallet/updateTransfer",
+	        		//headers: {'Authorization': token},
+
+	        		contentType : 'application/json;charset=utf8',
+	        		dataType: 'json',
+	        		cache: false,
+	        		type: 'post',
+	        		data:JSON.stringify(data),
+	        			
+	        		success:function(res){
+	        			
+	        			if(res.code==0)
+	                 {  
+	        				//alert("保存成功");
+	        				
+	                 }
+	                 else{
+	                	 //alert("转账失败");
+	                	
+	                 	}
+	        		     
+	        		},
+	        	
+	        		error:function(){
+	        					//alert("请求失败！")
+	        				}
+	        	}); 
+	        }
 	});
 }
 
@@ -302,7 +343,7 @@ function responseHandler2(res){
     	 for(var i=0;i<rows.length;i++){
     		 var row={};
     		 row['toUserName']=rows[i].name;
-    		 row['value']=rows[i].status;
+    		 row['value']=rows[i].value;
     		 data.push(row);
     	 }
     	 console.log(data);
@@ -472,7 +513,7 @@ function responseHandler2(res){
    	 for(var i=0;i<rows.length;i++){
    		 var row={};
    		 row['toUserName']=rows[i].name;
-   		 row['value']=rows[i].status;
+   		 row['value']=rows[i].value;
    		 data.push(row);
    	 }
    	 console.log(data);
