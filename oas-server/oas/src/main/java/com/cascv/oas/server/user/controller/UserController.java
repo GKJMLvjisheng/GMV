@@ -1377,9 +1377,13 @@ public class UserController extends BaseShiroController{
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
 		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
+		if(userIdentityCardModelInfo.getUserIdentityName() !=null)
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
+		if(userIdentityCardModelInfo.getUserIdentityNumber() !=null)
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
+		if(userIdentityCardModelInfo.getVerifyStatus() !=null)
 		userIdentityCardModel.setVerifyStatus(userIdentityCardModelInfo.getVerifyStatus());
+		if(userIdentityCardModelInfo.getRemark() !=null)
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
