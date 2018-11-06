@@ -78,7 +78,7 @@ public class EnergyPointController extends BaseShiroController{
      * 签到/返回签到成功即可（奖励用统一接口）
      * @return
      */
-    public ResponseEntity<?> checkin() {
+    public ResponseEntity<?> checkin() throws ParseException {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         if (!energyService.isCheckin(userUuid)) {

@@ -2,6 +2,9 @@ package com.cascv.oas.server.energy.controller;
 
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.server.energy.vo.EnergyBallTokenRequest;
+
+import java.text.ParseException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,7 @@ public class EnergyPointControllerTest {
     @Autowired
     private EnergyPointController energyPointController;
     @Test
-    public void checkin() {
+    public void checkin() throws ParseException {
         ResponseEntity<?> checkin = energyPointController.checkin();
         System.out.println("data: " + checkin.getData());
         System.out.println("code: " + checkin.getCode());

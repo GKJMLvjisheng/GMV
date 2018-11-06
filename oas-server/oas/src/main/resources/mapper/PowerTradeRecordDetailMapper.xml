@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cascv.oas.server.energy.mapper.PowerTradeRecordDetailMapper">
 
@@ -16,7 +16,7 @@ select
 from 
 	  power_trade_record ptr left join user_info u on ptr.user_uuid=u.uuid
 	  left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
-	  left join activity a on epb.source_code=a.source_code
+	  left join activity a on epb.source_uuid=a.uuid
 	   <if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
        </if>
@@ -30,7 +30,7 @@ select
 from 
 	  power_trade_record ptr left join user_info u on ptr.user_uuid=u.uuid
 	  left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
-	  left join activity a on epb.source_code=a.source_code
+	  left join activity a on epb.source_uuid=a.uuid
        	   <if test="searchValue != null and searchValue !='' ">
     		where u.name like concat('%',#{searchValue},'%')
        </if>
@@ -42,7 +42,7 @@ from
 	from 
 		power_trade_record ptr left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
     where 
-        ptr.user_uuid=#{userUuid} and ptr.in_or_out=1 and epb.source_code='11';
+        ptr.user_uuid=#{userUuid} and ptr.in_or_out=1 and epb.source_uuid='PROMOTEMINER';
   </select>
   
        <select id="sumOutPointByPromoted" resultType="java.math.BigDecimal">
@@ -51,7 +51,7 @@ from
 	from 
 		power_trade_record ptr left join energy_power_ball epb on ptr.energy_ball_uuid=epb.uuid
     where 
-        ptr.user_uuid=#{userUuid} and ptr.in_or_out=0 and epb.source_code='11';
+        ptr.user_uuid=#{userUuid} and ptr.in_or_out=0 and epb.source_uuid='PROMOTEMINER';
   </select>
    
 </mapper>

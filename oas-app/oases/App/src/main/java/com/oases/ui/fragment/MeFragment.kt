@@ -22,6 +22,7 @@ import com.oases.injection.module.WalletModule
 import com.oases.presenter.MainPresenter
 import com.oases.presenter.view.MainView
 import com.oases.ui.activity.MainActivity
+import com.oases.user.ui.activity.HelpAndFeedbackActivity
 import com.oases.user.ui.activity.PasswordInSecurityActivity
 import com.oases.user.ui.activity.UserInfoActivity
 import com.oases.user.ui.activity.UserInfoQrCodeActivity
@@ -84,7 +85,7 @@ class MeFragment : BaseMvpFragment<MainPresenter>(), MainView, View.OnClickListe
             mAddressTv -> startActivity<PasswordInSecurityActivity>()
             mShareTv -> readyTip()
             mSwitchLanguageTv -> readyTip()
-            mHelpTv -> readyTip()
+            mHelpTv -> startActivity<HelpAndFeedbackActivity>()
             mAboutUsTv -> readyTip()
         }
     }

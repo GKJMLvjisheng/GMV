@@ -38,7 +38,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.UserInfoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.AccountActivity"
             android:screenOrientation="portrait" />
@@ -75,21 +75,24 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.ForgetPwdOneActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.activity.ForgetPwdTwoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.ForgetPwdTwoActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.ResetPwdActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.PasswordInSecurityActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.SetPasswordActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.MnemonicBackupActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.HelpAndFeedbackActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
