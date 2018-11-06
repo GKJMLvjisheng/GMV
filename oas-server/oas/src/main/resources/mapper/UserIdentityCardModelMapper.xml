@@ -19,6 +19,10 @@
     uuid, user_name, user_identity_name,user_identity_number,front_of_photo,back_of_photo,hold_in_hand,remark,verify_status,created,updated
   </sql>
   
+  <select id="inquireByuuid" resultMap="userIdentityCardModelMap">
+      select <include refid="Base_Column_List" /> from identity_card_info where uuid = #{uuid}
+  </select>
+  
  <select id="selectAllUserIdentityCardBySearchValue" resultMap="userIdentityCardModelMap">
  select 
   	  <include refid="Base_Column_List" /> 	  
