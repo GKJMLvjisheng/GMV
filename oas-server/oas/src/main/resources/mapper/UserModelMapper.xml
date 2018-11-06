@@ -314,6 +314,7 @@
     <result column="user_identity_number" property="userIdentityNumber"/>
     <result column="remark" property="remark"/>
     <result column="verify_status" property="verifyStatus"/>
+    <result column="value" property="value"/>
     
   </resultMap>
    
@@ -321,14 +322,12 @@
 	 select 
 		U.name as name,
 	    U.nickname as nickname, 
-	    U.gender as gender,
-	    U.birthday as birthday,
-	    U.address as address,
 	    U.mobile as mobile,
 	    U.email as email,
 	    U.IMEI as IMEI,
 	    U.status as status,
 		U.created as created,
+		U.value as value,
 		UR.role_id as roleId
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 
@@ -337,9 +336,6 @@
     	    and (
     	    name like concat('%',#{searchValue},'%') 
 	    	or nickname like concat('%',#{searchValue},'%') 
-	    	or gender like concat('%',#{searchValue},'%')  
-	    	or birthday like concat('%',#{searchValue},'%')  
-	    	or address like concat('%',#{searchValue},'%') 
 	    	or mobile like concat('%',#{searchValue},'%') 
 	    	or email like concat('%',#{searchValue},'%') 
 	    	or IMEI like concat('%',#{searchValue},'%')
