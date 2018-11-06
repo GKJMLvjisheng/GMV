@@ -44,6 +44,7 @@ import com.cascv.oas.core.common.PageDomain;
 import com.cascv.oas.core.common.ResponseEntity;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
+import com.cascv.oas.server.activity.service.ActivityService;
 import com.cascv.oas.server.blockchain.model.EthWallet;
 import com.cascv.oas.server.blockchain.service.EnergyWalletService;
 import com.cascv.oas.server.blockchain.service.EthWalletService;
@@ -115,10 +116,10 @@ public class UserController extends BaseShiroController{
   private UserModelMapper userModelMapper;
   @Autowired
   private UserIdentityCardModelMapper userIdentityCardModelMapper;
-//  @Autowired
-//  private ActivityService activityService;
+  @Autowired
+  private ActivityService activityService;
   
-  //private static final String KYC_SOURCE_CODE = "KYC";
+  private static final String KYC_SOURCE_CODE = "KYC";
    
   String SYSTEM_USER_HOME=SystemUtils.USER_HOME;
   String UPLOADED_FOLDER =SYSTEM_USER_HOME+File.separator+"Temp"+File.separator+"Image" + File.separator+"profile"+File.separator;	
@@ -1372,19 +1373,24 @@ public class UserController extends BaseShiroController{
     @ResponseBody
     @WriteLog(value="checkUserIdentity")
     public ResponseEntity<?> checkUserIdentity(@RequestBody UserIdentityCardModel userIdentityCardModelInfo) {
-		//String userUuid = ShiroUtils.getUserUuid();
+		String name = userIdentityCardModelMapper.inquireByuuid(userIdentityCardModelInfo.getUuid()).getUserName();
+		String userUuid = userService.findUserByName(name).getUuid();
 		UserIdentityCardModel userIdentityCardModel = new UserIdentityCardModel();
 		
 		userIdentityCardModel.setUuid(userIdentityCardModelInfo.getUuid());
+		if(userIdentityCardModelInfo.getUserIdentityName() !=null)
 		userIdentityCardModel.setUserIdentityName(userIdentityCardModelInfo.getUserIdentityName());
+		if(userIdentityCardModelInfo.getUserIdentityNumber() !=null)
 		userIdentityCardModel.setUserIdentityNumber(userIdentityCardModelInfo.getUserIdentityNumber());
+		if(userIdentityCardModelInfo.getVerifyStatus() !=null)
 		userIdentityCardModel.setVerifyStatus(userIdentityCardModelInfo.getVerifyStatus());
+		if(userIdentityCardModelInfo.getRemark() !=null)
 		userIdentityCardModel.setRemark(userIdentityCardModelInfo.getRemark());
 		
 		userIdentityCardModelMapper.updateUserIdentityCardByNameNumberRemarkVerifyStatus(userIdentityCardModel);
-		
-		//activityService.getReward(KYC_SOURCE_CODE, userUuid);
-		
+		if(userIdentityCardModelInfo.getVerifyStatus() != null && userIdentityCardModelInfo.getVerifyStatus() == 2) {
+			activityService.getReward(KYC_SOURCE_CODE, userUuid);
+		}
 		return new ResponseEntity.Builder<UserIdentityCardModel>()
 		  	      .setData(userIdentityCardModel)
 		  	      .setErrorCode(ErrorCode.SUCCESS)
