@@ -191,12 +191,14 @@ export default {
       articleList:[],
       newsLength:0,
       datetime:'',
+      endTime:'',
       analysis:'',
       //analysisCount:0,
       tempArr:[],
      // tempArrWalk:[],
       //input1:'',
       energyMaxValue:0,
+      walkMaxValue:0,
       toastMsg:'提示信息',
       attendanceMsg:{
         msg:'签到成功',
@@ -250,6 +252,9 @@ export default {
   filters: {
   },
   methods: {
+    getMaxWalkValue(){
+      return this.$axios.post('/walkPoint/inquireWalkBallMaxValue')
+    },
     getMaxValue(){
     return this.$axios.post('/energyPoint/pointBallMaxValue')
     // .then(({data}) => {
@@ -260,7 +265,7 @@ export default {
     // })
     },
    getStep(){
-    //let todayStep=100
+    //let todayStep=10
       let todayStep=window.Android.getTodaySteps()
       console.log(todayStep)
       return todayStep
@@ -416,8 +421,13 @@ export default {
                 //console.log(list)
                 console.log("maxvalue"+list.data.data)
                 this.energyMaxValue=list.data.data
+                let walklist = await this.getMaxWalkValue()
+                this.walkMaxValue=walklist.data.data
+                 console.log("maxvalue"+walklist.data.data)
+                 //let endTime=reduceTime(false)
+                 //console.log(endTime)
                 dataBall=await this.getEnergyBall();
-                //console.log(JSON.stringify(dataBall))
+                
                 if(dataBall.data.code==0)
                 {
                 
@@ -426,11 +436,15 @@ export default {
                     // pArr.splice(randomIdx,1)
                     el.x = p.x / 75 + 'rem'
                     el.y = p.y / 75 + 'rem'
-                    if(el.value<this.energyMaxValue)
-                    { el.generate=true}
-                    else{el.generate=false}
+                    
+                    if(el.value>=this.energyMaxValue||el.endDate<this.endTime)
+                    { 
+                      el.generate=false}
+                    else{el.generate=true}
                     return el
                   }) 
+                 
+                 
                    for(let i=0;i<energyBallListBackup.length;i++)  
                   { 
                   if(energyBallListBackup[i].value==0)
@@ -439,9 +453,9 @@ export default {
                     i--}
                   }
                 }
+                //let walkStartTime=currentTime(true)
                 dataWalkBall=await this.getWalkEnergyBall();
-               this.getEnergyAnalysis()
-                let time=currentTime(true)
+                this.getEnergyAnalysis()
                 if(dataWalkBall.data.code==0)
               { walkEnergyBallListtBackup= dataWalkBall.data.data.map(el => {
                 
@@ -450,10 +464,10 @@ export default {
                   el.x = p.x / 75 + 'rem'
                   el.y = p.y / 75 + 'rem'
                   
-                    if(el.startDate>=time)
+                    if(el.startDate<this.datetime||el.value>=this.walkMaxValue)
                   { 
-                    el.generate=true}
-                  else{el.generate=false}
+                    el.generate=false}
+                  else{el.generate=true}
                    if(el.value>100)
                     { console.log(el.value)
                       el.value=parseInt(el.value)
@@ -639,12 +653,10 @@ export default {
         this.Toast('能量暂不可收取')
         return
       }*/
+      let enddate=data.endDate
       let value = data.value
-      if (value <this.energyMaxValue) {
-        this.Toast('能量暂不可收取')
-        return
-      }
-      let ele = event.currentTarget
+     if(value>=this.energyMaxValue||enddate<this.endTime) {
+         let ele = event.currentTarget
       this.$axios.post('/energyPoint/takeEnergyPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
@@ -658,16 +670,17 @@ export default {
       this.getCurrentPower()
       this.getEnergyAnalysis()
       })
-      
+      }
+     else{
+      this.Toast('能量暂不可收取')
+        return
+     }
     },
     handleClickWalkEnergy(event, data){
-      let datatime = data.startDate
-      let time=currentTime(true)
-      if (datatime>=time) {
-        this.Toast('能量暂不可收取')
-        return
-      }
-      let ele = event.currentTarget
+      let datetime = data.startDate
+      let value = data.value
+      if (datetime<this.datetime||value>=this.walkMaxValue) {
+         let ele = event.currentTarget
       this.$axios.post('/walkPoint/takeWalkPointBall',{ballId: data.uuid}).then(({data}) => {
         console.log(JSON.stringify(data))
         if (data.code != 0) {
@@ -681,6 +694,10 @@ export default {
       this.getCurrentPower()
       this.getEnergyAnalysis()
       })
+      }else{
+      this.Toast('能量暂不可收取')
+        return
+      }
     },
     // 随机生成不重复坐标点方法
     randomPoint() {
@@ -703,7 +720,6 @@ export default {
     refresh (done) {
       //this.getMaxValue()
       this.getCurrenttime()
-      
       this.tempArr = [] // 刷新清空这个临时数组 防止栈溢出
       this.energyBallList=[]
       this.walkEnergyBallList=[]
@@ -765,6 +781,7 @@ export default {
         this.isShowToast = false
       },delay || 1500)
     },
+
     location(){
     window.addEventListener('pageshow', function(evt){
     setTimeout(function(){
@@ -775,13 +792,14 @@ export default {
     });
 });    
 },
-getCurrenttime(){
+  getCurrenttime(){
     //var SERVER_TIME = document.getElementById("SERVER_TIME");
-var time=currentTime(true)
-//this.$refs.input1.value=time
-this.datetime=time
-//console.log("year"+this.$refs.input1.value);
-},
+  this.datetime=currentTime(true)
+  //this.$refs.input1.value=time
+  this.endTime=reduceTime(false)
+
+  //console.log("year"+this.$refs.input1.value);
+  },
   }
    
 };
@@ -820,10 +838,23 @@ console.log("111"+$("#SERVER_TIME").val());
     window.name = "";
 }
 });*/
-function currentTime(flag)
+    function currentTime(flag)
     { 
-        var now = new Date();
-       
+       var now = new Date();
+       var time =generateTime(flag,now)
+       return time
+      
+    } 
+    function reduceTime(flag) {
+        var t = new Date();//你已知的时间
+        //var t_s = t.getTime();//转化为时间戳毫秒数
+        //t.setTime(t_s + 1000 * 60 * 60);
+        t.setTime(t.setHours(t.getHours() -8));
+        var time=generateTime(flag,t)
+        return time
+         
+}
+    function generateTime(flag,now){
         var year = now.getFullYear();       //年
         var month = now.getMonth() + 1;     //月
         var day = now.getDate();            //日
@@ -869,7 +900,7 @@ function currentTime(flag)
         clock += ss; 
         return(clock); 
         }
-    } 
+    }
 
 </script>
 
