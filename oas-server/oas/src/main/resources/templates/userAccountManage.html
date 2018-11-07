@@ -34,6 +34,15 @@
 	height: 35px;
 	float:right;
    }
+    .form1{    
+	margin-top:13px;
+	background-color: #293846;
+	width: 76px;
+	height: 38px;
+	outline:none;
+	border:none;
+	color: #ecf9ff
+   }
    .input-group	{ 
     vertical-align:middle;
 	margin-top:11px;
@@ -84,9 +93,9 @@
 
 	<div style="display:none" id="page5">
 	
-		<div id="toolbar">
-				<input type="button" value="创建账号" style="background-color: #293846;width: 76px;height: 38px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" data-target="#addOperationModal"></input>
-		</div>		
+
+		<input class="form1" type="button" value="创建账号" id="addBtn" data-toggle="modal" data-target="#addOperationModal"></input>
+
 		<input class="form" id="user5" required="required" placeholder="搜索" oninput="initOperationGrid(event)"/>
 		<table id="operationGrid"></table>
 	</div> 
