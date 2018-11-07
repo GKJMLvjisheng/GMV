@@ -24,12 +24,14 @@ class EncryptedMnemonicPresenter @Inject constructor() : BasePresenter<Encrypted
 
 
 
-    fun getReward(sourceCode: String) {
+    fun getReward(sourceUuid: String) {
+    //fun getReward(sourceCode: Int) {
         if (!checkNetWork()) {
             return
         }
         mView.showLoading()
-        userService.getReward(sourceCode).execute(object : BaseSubscriber<Int>(mView) {
+        userService.getReward(sourceUuid).execute(object : BaseSubscriber<Int>(mView) {
+        //userService.getReward(sourceCode).execute(object : BaseSubscriber<Int>(mView) {
             override fun onNext(t: Int) {
                 mView.onGetRewardResult(t)
             }

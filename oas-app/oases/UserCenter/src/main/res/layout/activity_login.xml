@@ -85,6 +85,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mUserName" />
 
+    <CheckBox
+        android:id="@+id/rememberPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mPwd" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="记住密码"
+        android:layout_marginTop="7dp"
+        app:layout_constraintLeft_toRightOf="@+id/rememberPassword"
+        app:layout_constraintTop_toBottomOf="@+id/mPwd" />
 
     <Button
         android:id="@+id/mLoginBtn"

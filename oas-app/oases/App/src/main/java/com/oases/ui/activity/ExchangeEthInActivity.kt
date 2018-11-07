@@ -29,12 +29,12 @@ import org.jetbrains.anko.toast
 import java.util.*
 
 
-class ExchangeInActivity: BaseActivity() {
+class ExchangeEthInActivity: BaseActivity() {
    private  var address:String = AppPrefsUtils.getString(BaseConstant.MY_OAS_ADDRESS)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_wallet_exchange_in)
+        setContentView(R.layout.activity_wallet_exchange_eth_in)
 
         var address_1:String = address.substring(0,16)
         var address_2:String = address.substring(21,37)
@@ -47,9 +47,9 @@ class ExchangeInActivity: BaseActivity() {
 
         generateQrCode()
 
-        walletInHead!!.onClickRightTv({
+        /*walletInHead!!.onClickRightTv({
             startActivity(intentFor<ExchangeOutActivity>().singleTop().clearTop())
-        })
+        })*/
 
        mCopyBtn.onClick {
             //Toast.makeText(this,"已复制到剪贴板",Toast.LENGTH_SHORT)

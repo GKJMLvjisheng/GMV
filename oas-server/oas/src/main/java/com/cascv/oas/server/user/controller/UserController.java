@@ -171,26 +171,19 @@ public class UserController extends BaseShiroController{
 	    }*/
 	   
       try {
-          subject.login(token);
-          loginResult.setToken(ShiroUtils.getSessionId());
-          log.info("new login token {}", ShiroUtils.getSessionId());
-          //设置头像
+
           UserModel userModel=new UserModel();
-    	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
-          userModel=ShiroUtils.getUser();
-          userModel.setProfile(fullLink);         
-          ShiroUtils.setUser(userModel);
-                    
+
           /**
            * 判断IMEI是否相匹配
            */
           String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
           String IMEINew=loginVo.getIMEI();
-          String uuid=ShiroUtils.getUser().getUuid();
+          String uuid=userService.findUserByName(loginVo.getName()).getUuid();
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
 		 UserFacility userFacility=new UserFacility();
-		 userFacility.setUuid(ShiroUtils.getUser().getUuid());
+		 userFacility.setUuid(uuid);
 		 userFacility.setIMEI(IMEINew);
          if(status==0){
         	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
@@ -258,10 +251,19 @@ public class UserController extends BaseShiroController{
          
           //普通用户无法在web端登录
           //else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
-         else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
-        	       throw new AuthenticationException();
+         else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
+        	    throw new AuthenticationException();
          
-          log.info("this is PC!");       
+          log.info("this is PC!");
+          //开始登录
+          subject.login(token);
+          loginResult.setToken(ShiroUtils.getSessionId());
+    	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
+          userModel=ShiroUtils.getUser();
+          userModel.setProfile(fullLink);         
+          ShiroUtils.setUser(userModel);
+          log.info("new login token {}", ShiroUtils.getSessionId());
+          
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
@@ -287,7 +289,7 @@ public class UserController extends BaseShiroController{
 	  		  
 	  ErrorCode ret = userService.addUser(uuid, userModel);//先创建用户
 	  if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {//用户创建成功则添加角色以及3个钱包
-		//给用户赋予默认角色(正常账号roleId为2)
+		  //给用户赋予默认角色(正常账号roleId为2)
 		  UserRole userRole=new UserRole();
 		  userRole.setUuid(uuid);
 		  userRole.setRoleId(2);
@@ -1083,6 +1085,12 @@ public class UserController extends BaseShiroController{
 		String userName=ShiroUtils.getLoginName();
 		UserIdentityCardModel userIdentityCardModelFinish=userIdentityCardModelMapper.selectUserIdentityByUserNameVerifyStatusTwo(userName);
 		if(userIdentityCardModelFinish !=null) {
+			 String frontOfPhoto = mediaServer.getImageHost() +userIdentityCardModelFinish.getFrontOfPhoto();
+			 String backOfPhoto = mediaServer.getImageHost() + userIdentityCardModelFinish.getBackOfPhoto();
+			 String holdInHand = mediaServer.getImageHost() + userIdentityCardModelFinish.getHoldInHand();
+			 userIdentityCardModelFinish.setFrontOfPhoto(frontOfPhoto);
+			 userIdentityCardModelFinish.setBackOfPhoto(backOfPhoto);
+			 userIdentityCardModelFinish.setHoldInHand(holdInHand);
 			if(userIdentityCardModelFinish.getUpdated()==null)
 			{
 				String updated=userIdentityCardModelFinish.getCreated();
@@ -1102,21 +1110,6 @@ public class UserController extends BaseShiroController{
 			{
 				String userIdentityNumber="empty";
 				userIdentityCardModelFinish.setUserIdentityNumber(userIdentityNumber);
-			}
-			if(userIdentityCardModelFinish.getFrontOfPhoto()==null)
-			{
-				String frontOfPhoto="empty";
-				userIdentityCardModelFinish.setFrontOfPhoto(frontOfPhoto);
-			}
-			if(userIdentityCardModelFinish.getBackOfPhoto()==null)
-			{
-				String backOfPhoto="empty";
-				userIdentityCardModelFinish.setBackOfPhoto(backOfPhoto);
-			}
-			if(userIdentityCardModelFinish.getHoldInHand()==null)
-			{
-				String holdInHand="empty";
-				userIdentityCardModelFinish.setHoldInHand(holdInHand);
 			}
 				return new ResponseEntity.Builder<UserIdentityCardModel>()
 				  	      .setData(userIdentityCardModelFinish)
@@ -1186,14 +1179,14 @@ public class UserController extends BaseShiroController{
         //check user whether ing identity or finish identity
 	  	if(userIdentityCardModelIng != null) {
 	  		log.info("正在认证");
-			return new ResponseEntity.Builder<Integer>()
-			  	      .setData(5)
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModelIng)
 			  	      .setErrorCode(ErrorCode.INDENTITY_IS_ING)
 			  	      .build();
 	  	}else if(userIdentityCardModelFinish !=null) {
 	  		log.info("认证已通过");
-			return new ResponseEntity.Builder<Integer>()
-			  	      .setData(5)
+			return new ResponseEntity.Builder<UserIdentityCardModel>()
+			  	      .setData(userIdentityCardModelFinish)
 			  	      .setErrorCode(ErrorCode.INDENTITY_IS_FINISH)
 			  	      .build();
 	  	}else {
@@ -1749,6 +1742,36 @@ public class UserController extends BaseShiroController{
 		}else {
 			log.info(name+"用户已存在");
 		}
+	}
+	
+	
+	@PostMapping(value="/registerOperator")
+	@ResponseBody
+	@Transactional
+	@WriteLog(value="RegisterOperator")
+	public ResponseEntity<?> registerOperator(@RequestBody UserModel userModel){
+
+	  String password = userModel.getPassword();
+	  String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+	  String now =DateUtils.getTime();
+	    userModel.setUuid(uuid);
+	    userModel.setNickname(userModel.getName());
+	    userModel.setStatus(1); 
+	    userModel.setSalt(DateUtils.getTime());
+		userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());	    
+	    userModel.setCreated(now);
+	    userModel.setUpdated(now);  
+	    userModelMapper.insertUser(userModel);
+	  
+		  UserRole userRole=new UserRole();
+		  userRole.setUuid(uuid);
+		  userRole.setRoleId(4);	  
+		  userRole.setRolePriority(1);
+		  userRole.setCreated(now);		  		  
+		  userRoleModelMapper.insertUserRole(userRole);
+	  	  
+  	  return new ResponseEntity.Builder<Integer>()
+		      .setData(1).setErrorCode(ErrorCode.SUCCESS).build();
 	}
 	
 }

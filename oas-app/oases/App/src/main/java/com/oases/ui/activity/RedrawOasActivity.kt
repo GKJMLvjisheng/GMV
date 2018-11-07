@@ -3,12 +3,14 @@ package com.oases.ui.activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Toast
 import com.oases.R
 import com.oases.base.common.BaseConstant
 import com.oases.base.ext.onClick
 import com.oases.base.ui.activity.BaseMvpActivity
 import com.oases.base.utils.AppPrefsUtils
+import com.oases.data.protocol.OasResp
 import com.oases.injection.component.DaggerMainComponent
 import com.oases.injection.module.WalletModule
 import com.oases.presenter.RedrawOasPresenter
@@ -22,6 +24,10 @@ import org.jetbrains.anko.toast
 import java.math.BigDecimal
 
 class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
+
+    private var extra:String? = null
+    private var max_extra:String? = null
+    private var min_extra:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +73,9 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
                         val diff = inputStr.length - beforeText.length
                         mAmount.setText(beforeText)
                         mAmount.setSelection(inputStr.length-diff) //删除字符重写光标位置
+
                     }
+                    getOasExtraResult()
                 }
 
             }
@@ -102,14 +110,19 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
                 return@onClick
             }*/
             if(receiveMoney.isEmpty() || !ToolUtil.regularExpressionValidate(receiveMoney,BaseConstant.NUMBER_POINT_FOUR)){
-                toast("提币金额格式有误！")
+                toast("金额格式有误！")
                 return@onClick
             }
-            if(receiveMoney.toBigDecimal().add(mFactorTv.text.toString().toBigDecimal()) > mAvailableAmount.text.toString().toBigDecimal() ){
-                toast("余额不足,无法提币！")
+            if(receiveMoney.toBigDecimal().compareTo(max_extra?.toBigDecimal()) == 1){
+                toast("超过限额，操作失败！")
                 return@onClick
             }
-            mPresenter.withdraw(receiveMoney,receiveComment)
+            if(receiveMoney.toBigDecimal().add(mFactorTv.text.toString().toBigDecimal()).compareTo( mAvailableAmount.text.toString().toBigDecimal())==1 ){
+                toast("余额不足,操作失败！")
+                return@onClick
+            }
+
+            mPresenter.withdraw(receiveMoney,receiveComment, mFactorTv.text.toString())
 
         }
     }
@@ -127,8 +140,27 @@ class RedrawOasActivity : BaseMvpActivity<RedrawOasPresenter>(), RedrawOasView {
 
     override fun reverseWithdraw(t: Int) {
     }
-    override fun getOasExtra(t: String) {
-        mFactorTv.text = t
+    override fun getOasExtra(t: OasResp) {
+        extra = t.value
+        max_extra = t.valueMax
+        min_extra = t.valueMin
+
+        getOasExtraResult()
+    }
+
+    private fun getOasExtraResult(){
+        var amount = mAmount.text.toString().replace(" ","")
+        if(amount.isEmpty()){
+            mFactorTv.text = min_extra?.toBigDecimal()?.setScale(4,BigDecimal.ROUND_UP).toString()
+        }else{
+            var nowExtra = amount.toString().toBigDecimal().multiply(extra?.toBigDecimal()).setScale(4,BigDecimal.ROUND_UP)
+            if(nowExtra.compareTo(min_extra?.toBigDecimal()) == -1){
+                mFactorTv.text = min_extra?.toBigDecimal()?.setScale(4,BigDecimal.ROUND_UP).toString()
+            }else{
+                mFactorTv.text = nowExtra.toString()
+            }
+        }
+
     }
 
 

@@ -21,6 +21,7 @@ import com.oases.injection.module.WalletModule
 import com.oases.presenter.TransitWalletPresenter
 import com.oases.presenter.view.TransitWalletView
 import com.oases.ui.activity.ExchangeCoinActivity
+import com.oases.ui.activity.ExchangeEthInActivity
 import kotlinx.android.synthetic.main.fragment_transit_wallet.*
 import org.jetbrains.anko.support.v4.startActivity
 import java.math.BigDecimal
@@ -97,6 +98,9 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
              // ARouter.getInstance().build("/app/ExchangeCoinActivity").navigation()
                      /*  .withString("balance", mOas.getValue())
                        .withString("value",mOas.getEqualsValue())*/
+        }
+        mEth.onClick{
+            startActivity<ExchangeEthInActivity>()
         }
     }
 

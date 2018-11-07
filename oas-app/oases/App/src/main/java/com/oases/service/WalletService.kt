@@ -61,7 +61,7 @@ interface WalletService {
  /**
   * 获取oas手续费
   */
- fun getOasExtra(): Observable<String>
+ fun getOasExtra(): Observable<OasResp>
 
  /**
   * 获取交易钱包交易记录获取转账结果
