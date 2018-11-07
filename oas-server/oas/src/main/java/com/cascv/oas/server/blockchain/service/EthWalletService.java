@@ -481,6 +481,14 @@ public class EthWalletService {
 	    }
 	    String txHash=coinClient.transfer(ethWallet.getAddress(), key, toUserAddress,amountDec.toBigInteger(), gasPrice, gasLimit);
 	    log.info("txhash {}", txHash);
+	   
+	    returnValue.setErrorCode(ErrorCode.SUCCESS);
+	    returnValue.setData(txHash);
+	    //查询记录表中是否有重复的记录
+	    Integer count = ethWalletDetailMapper.getRecordCountByHash(txHash);
+	    if(count > 0) {
+	    	return returnValue;
+	    }
 	    if (txHash != null) {
 	      //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH,amount, txHash, comment, toUserAddress);
 	    	if(flag) {
@@ -492,8 +500,7 @@ public class EthWalletService {
 	    	}
 	     
 	    }
-	    returnValue.setErrorCode(ErrorCode.SUCCESS);
-	    returnValue.setData(txHash);
+	    
 	    return returnValue;
 	  }
   
@@ -605,6 +612,12 @@ public class EthWalletService {
 			  return ErrorCode.ETH_RETURN_HASH;
 		  }
 		  //update oasdetail hash值
+		  OasDetail existRecord = oasDetailMapper.getOasDetailByHash(ethInfo.getData());
+		  if(existRecord!=null) {
+			  //库中存在该hash值记录
+			  oasDetailMapper.deleteByUuid(uuid);
+			  return ErrorCode.REPEAT_ETH_HASH;
+		  }
 		  Integer oasResult = oasDetailMapper.setWithdrawResultByUuid(uuid,null,DateUtils.getTime(),ethInfo.getData());
 		  if(oasResult == 0) {
 			  return ErrorCode.UPDATE_FAILED;
@@ -690,19 +703,21 @@ public class EthWalletService {
 		   }
 		   return ErrorCode.SUCCESS;	
 		  }
+		  OasDetail oasD = oasDetailMapper.selectRecordByHash(hash);
+	  	  if(oasD == null) {
+	  		 return ErrorCode.SELECT_EMPTY;
+	  	  }
+	  	  log.info("oas detail id is:{}",oasD.getUuid());
 		  OasDetail oasDetail = new OasDetail();
 	  	  oasDetail.setTxHash(hash);
+	  	  oasDetail.setUuid(oasD.getUuid());
 	  	  oasDetail.setStatus(flag.equals("success")?OasEventEnum.SUCCESS.getCode():OasEventEnum.FAILED.getCode());
 	  	  //修改提币记录充币表该记录事件状态
 	  	  Integer oResult = oasDetailMapper.updateRecordByHash(oasDetail);	  
 	  	  if(oResult == 0) {
 	  		return ErrorCode.UPDATE_FAILED;
 	  	  }
-	  	 OasDetail oasD = oasDetailMapper.selectRecordByHash(hash);
-	  	 if(oasD == null) {
-	  		 return ErrorCode.SELECT_EMPTY;
-	  	 }
-	  	 log.info("oas detail id is:{}",oasD.getUuid());
+	  	 
 	  	 UserWallet myWallet = userWalletMapper.selectByUserUuid(user.getUuid());
 	  	 if(myWallet == null) {
 	  		 return ErrorCode.NO_ONLINE_ACCOUNT;
@@ -787,8 +802,8 @@ public class EthWalletService {
 				
 	  	 }
 	  	//更新记录中的restBalance
-		List<EthWalletDetail> details = ethWalletDetailMapper.getEthRecordByHash(oasD.getTxHash());
-		if(detail!=null) {
+/*		List<EthWalletDetail> details = ethWalletDetailMapper.getEthRecordByHash(oasD.getTxHash());
+		if(details!=null) {
 			for(EthWalletDetail de:details) {
 				String targetUuid = ethWalletMapper.getUserUuidByAddress(de.getAddress());
 			    if(!StringUtils.isEmpty(targetUuid)) {
@@ -807,7 +822,14 @@ public class EthWalletService {
 			    }
 				
 			}
-		}
+		}*/
+	  	String targetUuid = ethWalletMapper.getUserUuidByAddress(detail.getAddress());
+	    if(!StringUtils.isEmpty(targetUuid)) {
+	    	UserCoin uCoin = this.getUserCoin(targetUuid);
+	    	if(uCoin!=null) {
+	    		ethWalletDetailMapper.updateRestBalanceByHash(detail.getUuid(),uCoin.getBalance());
+	    	}
+	    }
 			
 		//检查system账号是否需要报警
 		UserWallet systemWalletNow = userWalletMapper.selectByUserUuid(systemInfo.getUuid());

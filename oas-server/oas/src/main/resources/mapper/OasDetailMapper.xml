@@ -154,6 +154,15 @@
    where uuid = #{uuid,jdbcType=VARCHAR}
   </update>
   
+  <select id="getOasDetailByHash" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" /> 
+  	from oas_detail
+  	where 
+  	<if test="txHash != null" >
+     and tx_hash = #{txHash,jdbcType=VARCHAR},
+    </if>
+  </select>
+  
   <select id="getSystemUserInfo" resultType="com.cascv.oas.server.user.model.UserModel">
    select * from user_info
    where name = 'SYSTEM' limit 1
@@ -196,13 +205,15 @@
         updated = #{updated,jdbcType=VARCHAR},
       </if>
     </set>
-    where tx_hash = #{txHash,jdbcType=VARCHAR}
+    where tx_hash = #{txHash,jdbcType=VARCHAR} and uuid= #{uuid,jdbcType=VARCHAR}
   </update>
   
   <select id="selectRecordByHash" resultMap="BaseResultMap">
   	select  <include refid="Base_Column_List" />
   	from  oas_detail
   	where tx_hash = #{txHash,jdbcType=VARCHAR}
+  	and (status =1 or status = 0)
+  	limit 1
   </select>
   
   <update id="updateStatusByUuid">
