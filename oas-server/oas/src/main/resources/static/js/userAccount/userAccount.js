@@ -81,7 +81,7 @@ function downUser(name,roleId){
 }
 
 function ViewCode(name, roleId, code){
-	
+	//alert(JSON.stringify(code));
 	$('#codeName').val(name);
 	$('#codeId').val(roleId);
 	if(code!=0){
