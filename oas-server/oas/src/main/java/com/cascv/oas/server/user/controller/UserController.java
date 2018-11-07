@@ -171,26 +171,19 @@ public class UserController extends BaseShiroController{
 	    }*/
 	   
       try {
-          subject.login(token);
-          loginResult.setToken(ShiroUtils.getSessionId());
-          log.info("new login token {}", ShiroUtils.getSessionId());
-          //设置头像
+
           UserModel userModel=new UserModel();
-    	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
-          userModel=ShiroUtils.getUser();
-          userModel.setProfile(fullLink);         
-          ShiroUtils.setUser(userModel);
-                    
+                  
           /**
            * 判断IMEI是否相匹配
            */
           String IMEIOri=userService.findUserByName(loginVo.getName()).getIMEI();
           String IMEINew=loginVo.getIMEI();
-          String uuid=ShiroUtils.getUser().getUuid();
+          String uuid=userService.findUserByName(loginVo.getName()).getUuid();
          Integer status=userService.findUserByName(loginVo.getName()).getStatus();
          log.info("if android={}",userAgent.indexOf("Windows")==-1);
 		 UserFacility userFacility=new UserFacility();
-		 userFacility.setUuid(ShiroUtils.getUser().getUuid());
+		 userFacility.setUuid(uuid);
 		 userFacility.setIMEI(IMEINew);
          if(status==0){
         	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
@@ -261,7 +254,16 @@ public class UserController extends BaseShiroController{
          else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
         	    throw new AuthenticationException();
          
-          log.info("this is PC!");       
+          log.info("this is PC!");
+          //开始登录
+          subject.login(token);
+          loginResult.setToken(ShiroUtils.getSessionId());
+    	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
+          userModel=ShiroUtils.getUser();
+          userModel.setProfile(fullLink);         
+          ShiroUtils.setUser(userModel);
+          log.info("new login token {}", ShiroUtils.getSessionId());
+          
           loginResult.fromUserModel(ShiroUtils.getUser());
           return new ResponseEntity.Builder<LoginResult>()
               .setData(loginResult).setErrorCode(ErrorCode.SUCCESS)
