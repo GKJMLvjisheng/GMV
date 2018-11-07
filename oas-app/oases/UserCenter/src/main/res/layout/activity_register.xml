@@ -57,7 +57,7 @@
         android:drawableLeft="@drawable/lock_selector"/>
 
         <EditText
-            android:id="@+id/mInviteFrom"
+            android:id="@+id/mInviteFromEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"

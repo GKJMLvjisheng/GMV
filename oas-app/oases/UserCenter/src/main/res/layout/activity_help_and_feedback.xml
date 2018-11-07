@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/border_bottom_gray"
+    tools:context=".ui.activity.HelpAndFeedbackActivity">
+
+    <com.oases.base.widgets.HeaderBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="帮助与反馈">
+    </com.oases.base.widgets.HeaderBar>
+
+    <TextView
+        android:id="@+id/mShowMailStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textSize="19dp"
+        android:textColor="@color/common_black"
+        android:text="联系管理员"/>
+
+    <TextView
+        android:id="@+id/mShowCurrentMail"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:lineSpacingExtra="5dp"
+        android:text="尊敬的用户：您好！\n\t\t\t\t在使用APP过程中，您遇到的任何问题都可以随时联系管理员，管理员邮箱为：support@oases.pro。"
+        android:textColor="@color/common_black"
+        android:textSize="15dp" />
+</LinearLayout>

@@ -84,7 +84,7 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
                         AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS, 0)
                         uuid = null
                     }
-                    mPresenter.register(mNameEt.text.toString(), mPwdEt.text.toString(), mInviteFrom.text.toString(), null)//getDeviceId(this)注册不传imei
+                    mPresenter.register(mNameEt.text.toString(), mPwdEt.text.toString(), mInviteFromEt.text.toString().toInt(), null)//getDeviceId(this)注册不传imei
                 }
             }
         }
@@ -93,6 +93,7 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
         val userName = mNameEt.getText().toString()
         val password = mPwdEt.getText().toString()
         val confirmPwd = mPwdConfirmEt.getText().toString()
+        var mInviteFrom = mInviteFromEt.getText().toString()
 
         if (TextUtils.isEmpty(userName)) {
             mNameEt.setError(getString(R.string.error_field_required))
@@ -121,6 +122,11 @@ class RegisterActivity: BaseMvpActivity<RegisterPresenter>(), RegisterView, View
         else if (confirmPwd != password) {
            mPwdConfirmEt.setError(getString(R.string.error_password_is_not_equal))
            mPwdConfirmEt.requestFocus()
+            return false
+        }
+        if(TextUtils.isEmpty(mInviteFrom)){
+            mInviteFromEt.setError(getString(R.string.invited_no_value))
+            mInviteFromEt.requestFocus()
             return false
         }
         return true

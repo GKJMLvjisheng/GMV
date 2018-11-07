@@ -225,6 +225,23 @@ function tradeWalletGrid() {
 			align: 'center',
 			valign: 'middle',
 			width:  '170px',
+		},
+			{
+			title : "交易状态",
+			field : "txResult",
+			align: 'center',
+			valign: 'middle',
+			width:  '100px',
+			formatter: function (value, row, index) {  
+				if(value == 0){
+					return "进行中";
+				}else if(value == 1){
+					return "成功";
+				}else{
+					return "失败";
+				}
+			}  
+			 
 		},{
 
 			title : "操作",

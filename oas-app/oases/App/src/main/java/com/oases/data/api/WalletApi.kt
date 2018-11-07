@@ -49,7 +49,7 @@ interface WalletApi {
     fun withdraw(@Body req: TransferReq):Observable<BaseResp<Int>>
 
     @GET("/api/v1/userWallet/getOasExtra")
-    fun getOasExtra():Observable<BaseResp<String>>
+    fun getOasExtra():Observable<BaseResp<OasResp>>
 
 
     //Transition Wallet

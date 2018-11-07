@@ -22,6 +22,9 @@ class AppManager private constructor(){
     fun addActivity(activity: Activity){
         activityStack.add(activity)
     }
+    fun getAllActivity():Stack<Activity>{
+        return activityStack
+    }
 
     /*
         Activity出栈

@@ -40,7 +40,7 @@ class RecycleMinerHistoryViewAdapter(val mList:MutableList<MinerHistoryItem>)
             if (status==1){
                  minerStatus = "（工作中）"
             }else{
-                 minerStatus = "（寿终正寝）"
+                 minerStatus = "（算力枯竭，请重新购买）"
             }
             holder.mExchangeItemView.setLeftTopText((mData.minerName).plus(minerStatus))
             holder.mExchangeItemView.setLeftBottomText("购买：".plus(mData.created))

@@ -24,6 +24,7 @@ interface MainComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: ExchangeCoinActivity)
     fun inject(activity: OasExchangeToOnlineActivity)
+    fun inject(activity: ExchangeEthInActivity)
 
     //walk
     fun inject(fragment: HomeFragment)

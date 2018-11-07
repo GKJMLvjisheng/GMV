@@ -7,6 +7,7 @@
     <string name="next">下一步</string>
     <string name="register_success">注册成功</string>
     <string name="pwdNotSame">密码不一致</string>
+    <string name="invited_no_value">邀请码必填，没有请输入000000</string>
 
     <string name="to_head_page">进入首页</string>
     <string name="title_activity_login">Sign in</string>
