@@ -559,6 +559,154 @@ function responseHandler3(res){
     };
 };
 
+function initOperationGrid() {	
+	$("#operationGrid").bootstrapTable('destroy');
+	$("#operationGrid").bootstrapTable({
+		url: '/api/v1/userCenter/selectAllUsers',
+		contentType : "application/json",
+		dataType:"json",
+		method: 'post',
+		striped:true,//隔行变色
+		uniqueId:"name",
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"server",//在服务器分页
+		pageNumber:1,//首页页码
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		queryParams:queryParams4,//请求服务器时所传的参数
+		responseHandler:responseHandler4,//请求数据成功后，渲染表格前的方法		
+		dataField: "data",
+
+		toolbar:"#toolbar",//工具栏
+		sortable: false,//是否启用排序
+		sortName: 'uuid', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+			
+	    columns : [{  
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+			},
+			{
+				title : "昵称",
+				field : "nickname",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+				
+			},
+			{
+				title : "手机",
+				field : "mobile",
+				align: 'center',
+				valign: 'middle',
+				width:  '110px',
+			},
+			{
+				title : "邮箱",
+				field : "email",
+				align: 'center',
+				valign: 'middle',
+				width:  '120px',
+			},
+			{
+				title : "IMEI",
+				field : "imei",
+				align: 'center',
+				valign: 'middle',
+				width:  '120px',
+				
+			},{
+
+				title : "重置IMEI",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter1
+			},
+				{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '145px',
+				//visible: false,
+			},{
+
+				title : "账号状态",
+				field : "status",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter5
+			},{
+
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '50px',
+				formatter: actionFormatter2
+			}
+			,{
+
+				title : "切换账号状态",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: actionFormatter4
+			}
+			],		
+//		  search : true,//搜索
+//        searchOnEnterKey : true,
+		clickToSelect: false,         
+	});
+}
+
+//请求服务数据时所传参数
+function queryParams4(params){
+	var searchValue = $("#user5").val();
+	pageSize = params.limit;
+	pageNum = params.offset / params.limit + 1;	
+	
+    return{
+        //每页多少条数据
+        pageSize: pageSize,
+        //当前页码
+        pageNum: pageNum,
+        //系统账号
+        roleId: 4,
+        searchValue: searchValue,
+    }
+}
+//请求成功方法
+function responseHandler4(res){
+    var code = res.code;//在此做了错误代码的判断
+    if(code != 0){
+        alert("运营账号回显失败，错误代码:" + code);
+        return;
+    }
+    //如果没有错误则返回数据，渲染表格
+    return {
+        total : res.data.total, //后面total总记录的条数,前面total总页数，前面的key必须为"total"
+        data : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
+    };
+};
+
 function actionFormatter1(value, row, index) {
 	 var name = value;
 	 var roleId = row.roleId;
@@ -569,8 +717,9 @@ function actionFormatter1(value, row, index) {
 
 function actionFormatter2(value, row, index) {
     var name = value;
+    var roleId = row.roleId;
     var result = "";
-    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "')\" title='查看用户信息'><span class='glyphicon glyphicon-search'></span></a>";      
+    result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"ViewViewById('" + name + "','" + roleId + "')\" title='查看用户信息'><span class='glyphicon glyphicon-search'></span></a>";      
     return result;
 }
 
@@ -626,7 +775,7 @@ function actionFormatter6(value, row, index) {
 	return result;	
 }	
 
-function ViewViewById(name){	
+function ViewViewById(name,roleId){	
 	var data = {
 		"name": name
 	};
@@ -651,22 +800,47 @@ function ViewViewById(name){
 				document.getElementById("userIdentityName1").style.display="none";
 				document.getElementById("userIdentityNumber1").style.display="none";
 				document.getElementById("remark1").style.display="none";
+				
+				document.getElementById("verifyStatus1").style.display="block";
+				document.getElementById("upName1").style.display="block";
+				document.getElementById("code1").style.display="block";
 			}else if(verifyStatus==1){
 				var status = "未审核";
 				document.getElementById("userIdentityName1").style.display="none";
 				document.getElementById("userIdentityNumber1").style.display="none";
 				document.getElementById("remark1").style.display="none";
+				
+				document.getElementById("verifyStatus1").style.display="block";
+				document.getElementById("upName1").style.display="block";
+				document.getElementById("code1").style.display="block";
 			}else if(verifyStatus==2){
 				var status = "已通过";
 				document.getElementById("userIdentityName1").style.display="block";
 				document.getElementById("userIdentityNumber1").style.display="block";
 				document.getElementById("remark1").style.display="none";
-			}else {
+				
+				document.getElementById("verifyStatus1").style.display="block";
+				document.getElementById("upName1").style.display="block";
+				document.getElementById("code1").style.display="block";
+			}else if(verifyStatus==3){
 				var status = "未通过";
 				document.getElementById("userIdentityName1").style.display="none";
 				document.getElementById("userIdentityNumber1").style.display="none";
 				document.getElementById("remark1").style.display="block";
-			}			
+				
+				document.getElementById("verifyStatus1").style.display="block";
+				document.getElementById("upName1").style.display="block";
+				document.getElementById("code1").style.display="block";
+			}
+			
+			if(roleId==4){
+				document.getElementById("verifyStatus1").style.display="none";
+				document.getElementById("userIdentityName1").style.display="none";
+				document.getElementById("userIdentityNumber1").style.display="none";
+				document.getElementById("remark1").style.display="none";
+				document.getElementById("upName1").style.display="none";
+				document.getElementById("code1").style.display="none";
+			}
 			
 			$('#Qname').val(rows.name);
 			$('#Qnickname').val(rows.nickname);
