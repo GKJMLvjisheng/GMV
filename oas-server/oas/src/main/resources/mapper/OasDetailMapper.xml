@@ -157,7 +157,7 @@
   <select id="getOasDetailByHash" resultMap="BaseResultMap">
   	select <include refid="Base_Column_List" /> 
   	from oas_detail
-  	where 
+  	where 1=1
   	<if test="txHash != null" >
      and tx_hash = #{txHash,jdbcType=VARCHAR},
     </if>
