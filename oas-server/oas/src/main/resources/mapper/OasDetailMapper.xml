@@ -159,7 +159,7 @@
   	from oas_detail
   	where 1=1
   	<if test="txHash != null" >
-     and tx_hash = #{txHash,jdbcType=VARCHAR},
+     and tx_hash = #{txHash,jdbcType=VARCHAR}
     </if>
   </select>
   
