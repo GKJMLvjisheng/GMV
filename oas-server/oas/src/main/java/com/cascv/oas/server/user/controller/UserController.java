@@ -258,8 +258,8 @@ public class UserController extends BaseShiroController{
          
           //普通用户无法在web端登录
           //else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
-         else if(userAgent.indexOf("Windows")!=-1&&!roles.contains("系统账号"))
-        	       throw new AuthenticationException();
+         else if(userAgent.indexOf("Windows")!=-1&&!(roles.contains("系统账号")||roles.contains("运营账号")))
+        	    throw new AuthenticationException();
          
           log.info("this is PC!");       
           loginResult.fromUserModel(ShiroUtils.getUser());
@@ -287,7 +287,7 @@ public class UserController extends BaseShiroController{
 	  		  
 	  ErrorCode ret = userService.addUser(uuid, userModel);//先创建用户
 	  if (ret.getCode() == ErrorCode.SUCCESS.getCode()) {//用户创建成功则添加角色以及3个钱包
-		//给用户赋予默认角色(正常账号roleId为2)
+		  //给用户赋予默认角色(正常账号roleId为2)
 		  UserRole userRole=new UserRole();
 		  userRole.setUuid(uuid);
 		  userRole.setRoleId(2);
@@ -1740,6 +1740,36 @@ public class UserController extends BaseShiroController{
 		}else {
 			log.info(name+"用户已存在");
 		}
+	}
+	
+	
+	@PostMapping(value="/registerOperator")
+	@ResponseBody
+	@Transactional
+	@WriteLog(value="RegisterOperator")
+	public ResponseEntity<?> registerOperator(@RequestBody UserModel userModel){
+
+	  String password = userModel.getPassword();
+	  String uuid = UuidUtils.getPrefixUUID(UuidPrefix.USER_MODEL);
+	  String now =DateUtils.getTime();
+	    userModel.setUuid(uuid);
+	    userModel.setNickname(userModel.getName());
+	    userModel.setStatus(1); 
+	    userModel.setSalt(DateUtils.getTime());
+		userModel.setPassword(new Md5Hash(userModel.getName() + password + userModel.getSalt()).toHex().toString());	    
+	    userModel.setCreated(now);
+	    userModel.setUpdated(now);  
+	    userModelMapper.insertUser(userModel);
+	  
+		  UserRole userRole=new UserRole();
+		  userRole.setUuid(uuid);
+		  userRole.setRoleId(4);	  
+		  userRole.setRolePriority(1);
+		  userRole.setCreated(now);		  		  
+		  userRoleModelMapper.insertUserRole(userRole);
+	  	  
+  	  return new ResponseEntity.Builder<Integer>()
+		      .setData(1).setErrorCode(ErrorCode.SUCCESS).build();
 	}
 	
 }
