@@ -176,6 +176,8 @@ public class EnergyService {
         		Date nowDate = sdf.parse(now);
         		BigDecimal point = freePointBalls.get(i).getPoint();
         		if (nowDate.before(endDate) && point.compareTo(BigDecimal.ZERO) == 0) {
+        			String uuid = freePointBalls.get(i).getUuid();
+        			activityMapper.deleteEnergyPointBall(uuid);
         			log.info("删除无效球");
         		}else {
         			energyPointBalls.add(freePointBalls.get(i));
@@ -194,6 +196,8 @@ public class EnergyService {
         } else {
             String latestUuid = latestEnergyPointBall.getUuid();                 // 最近球id
             BigDecimal latestPoint = latestEnergyPointBall.getPoint();           // 最近球积分
+            BigDecimal remainPoint = pointCapacityEachBall.subtract(latestPoint); //最近球还需要这么多积分才能到最大值
+            long remainTime = remainPoint.divide(pointIncreaseSpeed).longValue();
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
             long currentTime = 0;                    // 现在的时间，声明、初始化
             try {
@@ -202,28 +206,34 @@ public class EnergyService {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            // 已有的球积分总和
+//            // 已有的球积分总和
             int ballAmountPrevious = energyPointBalls.size();
-            BigDecimal pointPrevious = this.calculatePreviousPoints(energyPointBalls);
+            //BigDecimal pointPrevious = this.calculatePreviousPoints(energyPointBalls);
             energyPointBalls.clear();
             // 计算与最近球创建的时间差，即需要增加的积分+ 最近球已有积分
-            long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND;
-            BigDecimal leadPoint = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
-            BigDecimal realNeedPoint = leadPoint.subtract(latestPoint);
-            System.out.println("总的：" + pointPrevious.add(realNeedPoint));
-            System.out.println("满的：" + pointCapacityEachBall.multiply(BigDecimal.valueOf(MAX_COUNT_OF_MINING_ENERGYBALL)));
+            long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND; //现在到最近球的创建时间总共有多少时间
+            long time = leadTime - remainTime;
+//            BigDecimal leadPoint = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
+//            BigDecimal realNeedPoint = leadPoint.subtract(latestPoint);
+//            System.out.println("总的：" + pointPrevious.add(realNeedPoint));
+//            System.out.println("满的：" + pointCapacityEachBall.multiply(BigDecimal.valueOf(MAX_COUNT_OF_MINING_ENERGYBALL)));
             // 根据该用户是否挖满矿来分情况更新
-            if (pointPrevious.add(realNeedPoint)
-                    .compareTo(this.calculateFullEnergyBallPoints()) == -1) {
+//            if (pointPrevious.add(realNeedPoint)
+//                    .compareTo(this.calculateFullEnergyBallPoints()) == -1) {
+            if(ballAmountPrevious < MAX_COUNT_OF_MINING_ENERGYBALL) {
                 // 未挖满情况
 //                long latestBallTime = latestPoint.divide(pointIncreaseSpeed,
 //                        0, BigDecimal.ROUND_HALF_UP).longValue(); // 转化为最新球时间含量
-                BigDecimal pointNeededPlusLatest = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
-                int amount = pointNeededPlusLatest.divide(pointCapacityEachBall, 0, BigDecimal.ROUND_UP).intValue();
-                log.info("amount={}" + amount);
-                BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)));
-                ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
-                energyPointBalls.add(activityMapper.selectByUuid(latestUuid));
+//                BigDecimal pointNeededPlusLatest = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
+//                int amount = pointNeededPlusLatest.divide(pointCapacityEachBall, 0, BigDecimal.ROUND_UP).intValue();
+//                log.info("amount={}" + amount);
+//                BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)));
+//                ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
+//                energyPointBalls.add(activityMapper.selectByUuid(latestUuid));
+            	int amount = BigDecimal.valueOf(time).divide(timeGap, 0, BigDecimal.ROUND_UP).intValue();
+            	long moreTime = leadTime - pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)).longValue();
+            	BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
+            	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
                 if (amount > 1) {
                     energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
                     for (int i = 1; i < amount; i++) {
