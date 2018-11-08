@@ -560,7 +560,7 @@ public class PromotedRewardService {
 		Integer maxN=promotedRewardModel.getMaxPromotedGrade();
 		log.info("maxN:{}",maxN);
 		if(inviteFrom != 0) {
-			for(int i=1;i<maxN;i++) 
+			for(int i=1;i<=maxN;i++) 
 			{
 				UserModel superiorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(inviteFrom);
 				if(superiorsUserModel !=null) {
@@ -638,7 +638,7 @@ public class PromotedRewardService {
 		Integer inviteFrom=userModel.getInviteFrom();
 		
 		if(inviteFrom != 0) {
-			for(int i=1;i<maxN;i++) 
+			for(int i=1;i<=maxN;i++) 
 			{
 				UserModel superiorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(inviteFrom);
 				if(superiorsUserModel !=null) {
@@ -707,7 +707,7 @@ public class PromotedRewardService {
 		Integer inviteFrom=userModel.getInviteFrom();
 		
 		if(inviteFrom != 0) {
-			for(int i=1;i<maxN;i++) 
+			for(int i=1;i<=maxN;i++) 
 			{
 				UserModel superiorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(inviteFrom);
 				if(superiorsUserModel !=null) {
@@ -776,7 +776,7 @@ public class PromotedRewardService {
 		Integer inviteFrom=userModel.getInviteFrom();
 		
 		if(inviteFrom != 0) {
-			for(int i=1;i<maxN;i++) 
+			for(int i=1;i<=maxN;i++) 
 			{
 				UserModel superiorsUserModel=userModelMapper.selectSuperiorsUserByInviteFrom(inviteFrom);
 				if(superiorsUserModel !=null){
