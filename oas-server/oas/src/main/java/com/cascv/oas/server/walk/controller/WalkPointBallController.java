@@ -73,6 +73,7 @@ public class WalkPointBallController {
 		     }
 			 maxValue = value.multiply(power);
 		 }
+		 log.info("walkMaxValue={}", maxValue);
 		 return new ResponseEntity.Builder<BigDecimal>()
 				 .setData(maxValue)
 				 .setErrorCode(ErrorCode.SUCCESS)

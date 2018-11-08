@@ -139,9 +139,10 @@ public class EnergyPointController extends BaseShiroController{
     @PostMapping(value = "/pointBallMaxValue")  
     @ResponseBody
     public ResponseEntity<?> pointBallMaxValue(){
-    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue();
+    	BigDecimal maxValue = activityMapper
+    			.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue();
 
-    	log.info("{maxvalue}={}",maxValue);
+    	log.info("{PointMaxValue}={}",maxValue);
 
     	return new ResponseEntity.Builder<BigDecimal>()
     			.setData(maxValue)

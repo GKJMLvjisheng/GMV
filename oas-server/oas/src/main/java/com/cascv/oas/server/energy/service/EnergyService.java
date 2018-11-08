@@ -341,7 +341,7 @@ public class EnergyService {
         	Date startDate = sdf.parse(created);
     		Date endDate = this.timeCalculator(timeGap, startDate);
     		Date nowDate = sdf.parse(now);
-			if(nowDate.before(endDate)) {
+			if(endDate.before(nowDate)) {
 				// 改变被取走能量的球的状态
 		        activityMapper.updatePointStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
 		        // 增加记录
