@@ -65,19 +65,20 @@ public class CoinClient {
     try {
       EthGetTransactionReceipt ethGetTransactionReceipt = web3j.ethGetTransactionReceipt(txHash).send();
       if(ethGetTransactionReceipt == null) {
-    	  log.info("exception with txHash {}", txHash);
+    	  log.info("no receipt with txHash {}", txHash);
     	  return 0;
       }  
       TransactionReceipt transactionReceipt=ethGetTransactionReceipt.getResult();
       if(transactionReceipt == null) {
-    	  log.info("exception with txHash {}", txHash);
+    	  log.info("no receipt result with txHash {}", txHash);
     	  return 0;
       }
       String status = transactionReceipt.getStatus();
-      if (status.startsWith("0x") || status.startsWith("0X"))
+      if (status.startsWith("0x") || status.startsWith("0X")) {
         return Integer.parseInt(status.substring(2), 16) ;
-      else 
+      } else {
         return Integer.parseInt(status);
+      }
     } catch (Exception e) {
       log.info("exception with txHash {}", txHash);
       e.printStackTrace();
