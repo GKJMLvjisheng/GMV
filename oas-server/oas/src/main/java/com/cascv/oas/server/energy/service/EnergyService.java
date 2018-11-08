@@ -57,7 +57,6 @@ public class EnergyService {
     private static final String SOURCE_UUID_OF_MINING = "FREEBALL";             // 能量球来源：空投为"FREEBALL"
     private static final Integer MAX_COUNT_OF_MINING_ENERGYBALL = 8;       //空投球的最大个数
     private static final Integer TRANSFER_OF_SECOND_TO_MILLISECOND = 1000; // 秒与毫秒的转换倍率
-    private static final long TRANSFER_OF_SECOND_OF_ONE_DAY = 86400; //一天24小时为86400秒
     private static final Integer ENEGY_IN = 1;               // 能量增加为1，能量减少为0
     private static final String FORMAT_OF_TIME = "yyyy-MM-dd HH:mm:ss";
 
@@ -173,10 +172,10 @@ public class EnergyService {
         	for(int i=1; i<freePointBalls.size(); i++) {
         		String created = freePointBalls.get(i).getCreated();
         		Date startDate = sdf.parse(created);
-        		Date endDate = sdf.parse(now);
-        		long time = (endDate.getTime() - startDate.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND ;
+        		Date endDate = this.timeCalculator(timeGap, startDate);
+        		Date nowDate = sdf.parse(now);
         		BigDecimal point = freePointBalls.get(i).getPoint();
-        		if (time > TRANSFER_OF_SECOND_OF_ONE_DAY && point.compareTo(BigDecimal.ZERO) == 0) {
+        		if (nowDate.before(endDate) && point.compareTo(BigDecimal.ZERO) == 0) {
         			log.info("删除无效球");
         		}else {
         			energyPointBalls.add(freePointBalls.get(i));
@@ -325,17 +324,24 @@ public class EnergyService {
             log.info("该能量球已经被获取！");
             return null;
         }
+        List<EnergyPointBall> energyPointBallList = activityMapper
+        		.selectByPointSourceCode(userUuid, SOURCE_UUID_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_OF_TIME);
-        
+        ActivityRewardConfig activityRewardConfig = 
+        		activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_MINING, REWARD_UUID_OF_POINT);
+        BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
+        BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();      // 挖矿球最大容量
+        BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed,
+                0, BigDecimal.ROUND_HALF_UP);// 能量球起始时间和结束时间之差
         if (activityMapper.selectByUuid(energyBallUuid).getPoint()
         		.compareTo(activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_MINING, REWARD_UUID_OF_POINT)
                 .getMaxValue()) == -1){
         	String created = activityMapper.selectByUuid(energyBallUuid).getCreated();
         	Date startDate = sdf.parse(created);
-			Date nowDate = sdf.parse(now);
-			long time = (nowDate.getTime() - startDate.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND;
-			if(time >= TRANSFER_OF_SECOND_OF_ONE_DAY) {
+    		Date endDate = this.timeCalculator(timeGap, startDate);
+    		Date nowDate = sdf.parse(now);
+			if(nowDate.before(endDate)) {
 				// 改变被取走能量的球的状态
 		        activityMapper.updatePointStatusByUuid(energyBallUuid, STATUS_OF_DIE_ENERGYBALL, now);
 		        // 增加记录
@@ -355,12 +361,10 @@ public class EnergyService {
 		        energyBallTakenResult.setNewEnergyPonit(increasePoint);
 		        energyBallTakenResult.setNewPower(BigDecimal.ZERO);
 		        // 判断采摘前球是否已经满了，如果满了，摘掉一个球马上生成一个新的
-		        List<EnergyPointBall> energyPointBallList = activityMapper
-		        		.selectByPointSourceCode(userUuid, SOURCE_UUID_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
 		        List<EnergyPointBall> energyBallsAfter = activityMapper
 		        		.selectByPointSourceCode(userUuid, SOURCE_UUID_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
 		        if (CollectionUtils.isEmpty(energyBallsAfter) ||
-		                this.calculatePreviousPoints(energyPointBallList).compareTo(this.calculateFullEnergyBallPoints()) ==0 ) {
+		        		energyPointBallList.size() == MAX_COUNT_OF_MINING_ENERGYBALL ) {
 		            activityMapper.insertEnergyPointBall(getMiningEnergyBall(userUuid, now));
 		            energyBallsAfter.add(getMiningEnergyBall(userUuid, now));
 		        }
@@ -389,12 +393,10 @@ public class EnergyService {
             energyBallTakenResult.setNewEnergyPonit(increasePoint);
             energyBallTakenResult.setNewPower(BigDecimal.ZERO);
             // 判断采摘前球是否已经满了，如果满了，摘掉一个球马上生成一个新的
-            List<EnergyPointBall> energyPointBallList = activityMapper
-            		.selectByPointSourceCode(userUuid, SOURCE_UUID_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
             List<EnergyPointBall> energyBallsAfter = activityMapper
             		.selectByPointSourceCode(userUuid, SOURCE_UUID_OF_MINING, STATUS_OF_ACTIVE_ENERGYBALL);
             if (CollectionUtils.isEmpty(energyBallsAfter) ||
-                    this.calculatePreviousPoints(energyPointBallList).compareTo(this.calculateFullEnergyBallPoints()) ==0 ) {
+            		energyPointBallList.size() == MAX_COUNT_OF_MINING_ENERGYBALL ) {
                 activityMapper.insertEnergyPointBall(getMiningEnergyBall(userUuid, now));
                 energyBallsAfter.add(getMiningEnergyBall(userUuid, now));
             }
