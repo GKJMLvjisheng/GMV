@@ -42,6 +42,7 @@ public interface ActivityMapper {
 	Integer deleteActivityReward(@Param("sourceUuid") String sourceUuid, @Param("rewardUuid") String rewardUuid);
 	
 	Integer insertEnergyPointBall(EnergyPointBall energyPointBall);
+	Integer deleteEnergyPointBall(@Param("uuid") String uuid);
 	Integer insertEnergyPowerBall(EnergyPowerBall energyPowerBall);
 	Integer insertPointTradeRecord(PointTradeRecord pointTradeRecord);
 	Integer insertPowerTradeRecord(PowerTradeRecord powerTradeRecord);
