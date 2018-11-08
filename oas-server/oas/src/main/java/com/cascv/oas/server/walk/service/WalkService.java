@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -263,7 +264,7 @@ public class WalkService {
 	 * @throws ParseException 
      */
 	public EnergyBallTakenResult takeWalkPointBall(String userUuid, String energyBallUuid) throws ParseException {
-        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD);
+        String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
 		if (StringUtils.isEmpty(userUuid) || StringUtils.isEmpty(energyBallUuid)) {
             log.info("userUuid or energyBallUuid is null");
             return null;
@@ -298,9 +299,17 @@ public class WalkService {
             energyBallTakenResult.setNewPower(BigDecimal.ZERO);
     		return energyBallTakenResult;
         }else {
-        	SimpleDateFormat formatter = new SimpleDateFormat( "yyyy-MM-dd");
-            Date bt = formatter.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
-            Date et = formatter.parse(now);
+        	SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date bt = sdf.parse(activityMapper.selectByUuid(energyBallUuid).getCreated());
+            Date oldNow = format.parse(now);
+            Calendar cal = Calendar.getInstance();   
+            cal.setTime(oldNow);   
+            cal.add(Calendar.HOUR, 8);// 24小时制   
+            Date oldEt = cal.getTime();
+            String newNow = format.format(oldEt).substring(0, 10);
+            Date et = sdf.parse(newNow);
+            
             if(!bt.before(et)) {
             	log.info("该能量球不能被采集");
             	return null;
