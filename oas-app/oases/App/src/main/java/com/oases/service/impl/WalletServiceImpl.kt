@@ -91,7 +91,7 @@ class WalletServiceImpl @Inject constructor(): WalletService {
         return repository.reverseWithdraw(req).convert()
     }
 
-    override fun getOasExtra(): Observable<String> {
+    override fun getOasExtra(): Observable<OasResp> {
         return repository.getOasExtra().convert()
     }
 

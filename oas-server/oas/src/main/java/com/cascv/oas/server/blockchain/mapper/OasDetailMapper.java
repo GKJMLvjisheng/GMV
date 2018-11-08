@@ -51,6 +51,12 @@ public interface OasDetailMapper {
    */
   Integer setWithdrawResultByUuid(@Param("uuid")String uuid,@Param("result") Integer result,@Param("updated")String updated,@Param("txHash") String hash);
   /**
+   * 根据hash查找记录
+   * @param hash
+   * @return
+   */
+  OasDetail getOasDetailByHash(@Param("txHash") String hash);
+  /**
    * 查询出system用户信息
    * @return
    */
@@ -72,7 +78,7 @@ public interface OasDetailMapper {
    */
   Integer updateRecordByHash(OasDetail detail);
   /**
-   * 根据hash值查找记录
+   * 根据hash值查找暂未得到结果的记录
    * @param txHash
    * @return
    */
@@ -83,4 +89,10 @@ public interface OasDetailMapper {
    * @return
    */
   Integer updateStatusByUuid(@Param("uuid")String uuid,@Param("status")Integer status);
+  /**
+   * 根据uuid删除记录
+   * @param uuid
+   * @return
+   */
+  Integer deleteByUuid(@Param("uuid")String uuid);
 }

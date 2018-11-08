@@ -83,7 +83,7 @@ class WalletRepository @Inject constructor() {
     fun reverseWithdraw(req: TransferOasReq):Observable<BaseResp<Int>>{
         return RetrofitFactory.instance.create(WalletApi::class.java).reverseWithdraw(req)
     }
-    fun getOasExtra():Observable<BaseResp<String>>{
+    fun getOasExtra():Observable<BaseResp<OasResp>>{
         return RetrofitFactory.instance.create(WalletApi::class.java).getOasExtra()
     }
     fun getExchangeResult(req:PointItem):Observable<BaseResp<Int>>{

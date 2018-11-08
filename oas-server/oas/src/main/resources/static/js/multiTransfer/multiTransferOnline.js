@@ -5,7 +5,7 @@ document.write("<script language=javascript src='/js/deleteConfirm.js'></script>
 $(function() {
 	initNormalGrid();
 	initTestGrid();
-	
+  
 	
 });
 function initNormalGrid() {	
@@ -31,7 +31,7 @@ function initNormalGrid() {
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
-			
+	    //maintainSelected:true,
 	    columns : [{
 			
 			checkbox:"true",
@@ -39,6 +39,11 @@ function initNormalGrid() {
 			align: 'center',// 居中显示
 			
 			field : "box",
+			formatter:function action(value,row,index){
+				//console.log(row)
+				if(row.value>0)
+				{return {checked : true }}
+			}
 		},{  
 			title: '序号',  
 			field: '',
@@ -58,20 +63,64 @@ function initNormalGrid() {
 			
 			{
 				title : "转账金额",
-				field : "status",
+				field : "value",
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
 				editable:true,
-				formatter:function action(value,row,index){
-					value=0;
-					row.status=0;
-					return value;
-				}
+//				formatter:function action(value,row,index){
+//					value=0;
+//					row.status=0;
+//					return value;
+//				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false,    
+//		  onCheck:function(row){
+//	          console.log(row);       
+//	        },
+//	        onClickRow : function(row, td,flied){
+//	        	console.log(td[0].children[3].innerText)
+//	        	
+//	        },
+	        onEditableSave: function (field, row, oldValue, $el) {
+	        	var data={}
+	        	data['toUserName']=row.name;
+	        	data['value']=row.value;
+	        	console.log(data)
+	        	$.ajax({
+
+	        		url:"/api/v1/userWallet/updateTransfer",
+	        		//headers: {'Authorization': token},
+
+	        		contentType : 'application/json;charset=utf8',
+	        		dataType: 'json',
+	        		cache: false,
+	        		type: 'post',
+	        		data:JSON.stringify(data),
+	        			
+	        		success:function(res){
+	        			
+	        			if(res.code==0)
+	                 {  
+	        				//alert("保存成功");
+	        				
+	                 }
+	                 else{
+	                	 //alert("转账失败");
+	                	
+	                 	}
+	        		     
+	        		},
+	        	
+	        		error:function(){
+	        					//alert("请求失败！")
+	        				}
+	        	}); 
+	        }
+	        
+	        
 	});
 }
 	
@@ -136,6 +185,11 @@ function initTestGrid() {
 			align: 'center',// 居中显示
 			
 			field : "box",
+			formatter:function action(value,row,index){
+				//console.log(row)
+				if(row.value>0)
+				{return {checked : true }}
+			}
 		},{  
 			title: '序号',  
 			field: '',
@@ -155,20 +209,55 @@ function initTestGrid() {
 			
 			{
 				title : "转账金额",
-				field : "status",
+				field : "value",
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
 				editable:true,
-				formatter:function action(value,row,index){
-					value=0;
-					row.status=0;
-					return value;
-				}
+//				formatter:function action(value,row,index){
+//					value=0;
+//					row.status=0;
+//					return value;
+//				}
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false,
+		 onEditableSave: function (field, row, oldValue, $el) {
+	        	var data={}
+	        	data['toUserName']=row.name;
+	        	data['value']=row.value;
+	        	console.log(data)
+	        	$.ajax({
+
+	        		url:"/api/v1/userWallet/updateTransfer",
+	        		//headers: {'Authorization': token},
+
+	        		contentType : 'application/json;charset=utf8',
+	        		dataType: 'json',
+	        		cache: false,
+	        		type: 'post',
+	        		data:JSON.stringify(data),
+	        			
+	        		success:function(res){
+	        			
+	        			if(res.code==0)
+	                 {  
+	        				//alert("保存成功");
+	        				
+	                 }
+	                 else{
+	                	 //alert("转账失败");
+	                	
+	                 	}
+	        		     
+	        		},
+	        	
+	        		error:function(){
+	        					//alert("请求失败！")
+	        				}
+	        	}); 
+	        }
 	});
 }
 
@@ -224,14 +313,17 @@ function responseHandler2(res){
     		 return;
     	 }
     	 var data = new Array(); 
-    	 if(validateValue(Global)){
+    	 if(Global){
     		 
     		  Ewin.confirm({ message: "确认要全局配置金额？手动输入金额将不生效"}).on(function (e) {
     		if (!e) {
     			alert("确认不使用全局配置，请清空全局配置金额！")
     		  return;
     		 }
-     	
+     	if(!validateValue(Global)){
+     		alert("请输入正确的全局配置金额！");
+     		return;
+     	}
     	 for(var i=0;i<rows.length;i++){
     		 var row={};
     		 row['toUserName']=rows[i].name;
@@ -247,25 +339,35 @@ function responseHandler2(res){
 //    		});
     	 
     		  })  
+    		  
     }else{
     	 for(var i=0;i<rows.length;i++){
     		 var row={};
     		 row['toUserName']=rows[i].name;
-    		 row['value']=rows[i].status;
+    		 row['value']=rows[i].value;
     		 data.push(row);
     	 }
-    	 console.log(data);
+    	
     	 transfer(data);
+    	 
+    	
     	}
+    	 
+    	 
     }
     //判断正数
     function validateValue(num)
     {
-     
+    	var flag=false;
+        var flag1=false;
       var reg = /^\d+(?=\.{0,1}\d+$|$)/;//包括0不包括“”
-    	
-      if(reg.test(num)) return true;
-      return false ;  
+      var reg1=/^0.*$/;
+      if(reg.test(num)){
+     	 flag=true;}
+       if(!reg1.test(num)){
+     	  console.log("0")
+     	  flag1=true;}
+       return flag&&flag1;   
     }
    
    
@@ -280,13 +382,15 @@ function responseHandler2(res){
         
         for(var i=0;i<tableDataLen;i++)
         {
-
+        	
          if(data[i]['toUserName']==0||data[i]['value']==0)
      	{		
     	 		flag=true;
     	 		break;}
+         
          else if(!validateValue(data[i]['value']))
       	{		
+        	
     	 		flag1=true;
     	 		break;
       	}
@@ -331,7 +435,7 @@ function responseHandler2(res){
 		cache: false,
 		type: 'post',
 		data:JSON.stringify(dataSum),
-			
+		async:false,	
 		success:function(res){
 			
 			if(res.code==0)
@@ -342,7 +446,11 @@ function responseHandler2(res){
 					
 					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
 					 //setTimeout(setMoney, 50000);
-				
+//					console.log(123)
+			    	 initNormalGrid();
+			    	 initTestGrid();
+			    	 resetAddModal();
+			    	 resetTestModal();
          }
          else{
         	 alert("转账失败");
@@ -414,11 +522,33 @@ function responseHandler2(res){
    	 for(var i=0;i<rows.length;i++){
    		 var row={};
    		 row['toUserName']=rows[i].name;
-   		 row['value']=rows[i].status;
+   		 row['value']=rows[i].value;
    		 data.push(row);
    	 }
    	 console.log(data);
    	 transfer(data);
    	}
-    	
+   	
     }
+    function resetAddModal(){
+    	document.getElementById("addonlineForm").reset();
+    	//document.getElementById("updateActivityRewardForm").reset();
+    	$("#addonlineForm").find('textarea,input[type=text],select').each(function() {
+    		
+            		$(this).val('');
+            		$(this).html('');
+        });
+    	//$("span[id='msg_parameterValue']").html("");
+    	
+     }
+    function resetTestModal(){
+    	document.getElementById("addTestForm").reset();
+    	//document.getElementById("updateActivityRewardForm").reset();
+    	$("#addTestForm").find('textarea,input[type=text],select').each(function() {
+    		
+            		$(this).val('');
+            		$(this).html('');
+        });
+    	//$("span[id='msg_parameterValue']").html("");
+    	
+     }

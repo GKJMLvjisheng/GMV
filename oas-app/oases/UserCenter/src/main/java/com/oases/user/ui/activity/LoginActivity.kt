@@ -1,7 +1,6 @@
 package com.oases.user.ui.activity
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -9,6 +8,7 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.alibaba.android.arouter.facade.annotation.Route
+import com.oases.base.common.AppManager
 import com.oases.base.common.BaseConstant
 import com.oases.base.ext.onClick
 import com.oases.base.ui.activity.BaseMvpActivity
@@ -25,12 +25,15 @@ import com.oases.user.utils.getDeviceId
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
+import java.util.*
+import android.util.Base64
 
 @Route(path = RouterPath.UserCenter.PATH_LOGIN)
 class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+    private var pressTime:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +45,15 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
 
         if (AppPrefsUtils.getString(BaseConstant.USER_NAME) != ""){
             mUserName.setText(AppPrefsUtils.getString(BaseConstant.USER_NAME))
+        }
+
+        if( AppPrefsUtils.getBoolean(BaseConstant.PASSWORD_IS_REMEMBER)){
+            rememberPassword.setChecked(true)
+            var pass = AppPrefsUtils.getString(BaseConstant.USER_PASSWORD)
+            //var afterP = Base64.decode(AppPrefsUtils.getString(BaseConstant.USER_PASSWORD),0).toString()
+            //Log.i("zbbcun2",pass)
+            //Log.i("zbbcun3",afterP)
+            mPwd.setText(pass)
         }
 
         mLoginBtn.setOnClickListener {
@@ -61,12 +73,20 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
         mForgetPwdBtn.onClick {
             startActivity<ForgetPwdOneActivity>()
         }
+        rememberPassword.onClick{
+            if(rememberPassword.isChecked()){
+                AppPrefsUtils.putBoolean(BaseConstant.PASSWORD_IS_REMEMBER,true)
+            }else{
+                AppPrefsUtils.putBoolean(BaseConstant.PASSWORD_IS_REMEMBER,false)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         Log.d("zbb", "login resume")
         AppPrefsUtils.putInt(BaseConstant.USER_REGISTER_CLICK_NUMBERS, 0)
+
         checkLogined()
     }
 
@@ -82,6 +102,12 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
 
     override fun onLoginResult(result:UserInfo) {
             toast("登录成功")
+            if(rememberPassword.isChecked()){
+               // Log.i("zbbcun1", Base64.encode(mPwd.text.toString().toByteArray(),0).toString())
+                AppPrefsUtils.putString(BaseConstant.USER_PASSWORD,mPwd.text.toString())
+            }else{
+                AppPrefsUtils.putString(BaseConstant.USER_PASSWORD,"")
+            }
             setResult(Activity.RESULT_OK)
             checkLogined()
     }
@@ -142,6 +168,7 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     private fun checkLogined(){
+        //getActiveActivity()
         if (isLogined()){
             setResult(Activity.RESULT_OK)
             finish()
@@ -149,8 +176,28 @@ class LoginActivity : BaseMvpActivity<LoginPresenter>(), LoginView{
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        setResult(Activity.RESULT_CANCELED)
-        finish()
+       // super.onBackPressed()
+        /*val time = System.currentTimeMillis()
+       // setResult(Activity.RESULT_CANCELED)
+        //finish()
+        if (time - pressTime > 2000) {
+            toast("再按一次退出程序")
+            pressTime = time
+        } else {
+            Log.d("zbb", "exit app")
+            AppPrefsUtils.putString(BaseConstant.USER_TOKEN, "")
+            finish()
+            AppManager.instance.exitApp(this)
+        }*/
+
     }
+
+    private fun getActiveActivity(){
+       var stack: Stack<Activity> = AppManager.instance.getAllActivity()
+        for(s in stack){
+            Log.i("zbb","now activity".plus(s))
+        }
+    }
+
+
 }

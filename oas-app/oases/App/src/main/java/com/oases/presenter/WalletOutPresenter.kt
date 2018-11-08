@@ -20,7 +20,7 @@ class WalletOutPresenter@Inject constructor(): BasePresenter<WalletOutView>() {
         }
         mView.showLoading()
 
-        walletService.walletOutEvent(TransferReq(toUser,money,rank)).execute(object : BaseSubscriber<Int>(mView) {
+        walletService.walletOutEvent(TransferReq(toUser,money,rank,null)).execute(object : BaseSubscriber<Int>(mView) {
             override fun onNext(t: Int) {
                 mView.onGetWalletOutEvent(t)
             }

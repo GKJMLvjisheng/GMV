@@ -54,6 +54,14 @@
                         </ul>
                     </li>
                     
+                    <shiro:hasAnyRoles name="运营账号,系统账号">
+                        <li class="">
+                            <a href="#"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >内容管理</span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="active"><a class="menuItem" th:href="@{/newsManage}">新闻管理</a></li>
+                                <li class="active"><a class="menuItem" th:href="@{/QA/QAManage}">环保答题</a></li>                      
+                            </ul>
+                        </li> 
                     <shiro:hasRole name="系统账号">
                          <li class="">
                             <a href="#"><i class="glyphicon glyphicon-usd"></i> <span class="nav-label" >钱包管理</span></a>
@@ -65,15 +73,7 @@
                                 <li class="active"><a class="menuItem" th:href="@{/withdrawMoney/brokerageConfig}">提币限额和配置</a></li>
                             </ul>
                         </li>    
-                        
-                         <li class="">
-                            <a href="#"><i class="glyphicon glyphicon-folder-open"></i> <span class="nav-label" >内容管理</span></a>
-                            <ul class="nav nav-second-level">
-                                <li class="active"><a class="menuItem" th:href="@{/newsManage}">新闻管理</a></li>
-                                <li class="active"><a class="menuItem" th:href="@{/QA/QAManage}">环保答题</a></li>                      
-                            </ul>
-                        </li>  
-                        
+                                                
                         <li class="">
                             <a href="#"><i class="glyphicon glyphicon-th-large"></i> <span class="nav-label" >挖矿管理</span></a>
                             <ul class="nav nav-second-level">
@@ -95,21 +95,24 @@
                                 <li class="active"><a class="menuItem" th:href="@{/userAccountManage}">用户账号管理</a></li> 
                                 <li class="active"><a href="#"><span class="nav-label"data-toggle="tooltip" title="待开发" data-placement="right">用户权限管理</span></a></li>          
                             </ul>
-                        </li> 
+                        </li>
+                         
+                        </shiro:hasRole>
                         
                         <li class="">
                             <a href="#"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label" >系统管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/versionManage}">APP版本管理</a></li>
+                                <shiro:hasRole name="系统账号">
                                 <li class="active"><a class="menuItem" th:href="@{/netConfiguration/netConfig}">ETH网络设置</a></li> 
                                 <li class="active"><a class="menuItem" th:href="@{/menuManage/menuAuthor}">系统模块授权</a></li>
                                 <li class=""><a  href="#">一对多转账</a>
                                 <ul class="nav nav-third-level">
                                 <li class="active"><a class="menuItem" th:href="@{/multiTransfer/multiTransfer}">交易钱包转账</a></li>
                                 <li class="active"><a class="menuItem" th:href="@{/multiTransfer/multiTransferOnline}">在线钱包转账</a></li>
-                                </ul></li>
-                                 
-                                 <li class="active"><a class="menuItem" th:href="@{/systemAccount/system}">系统账号监控</a></li>
+                                </ul></li>                                 
+                                <li class="active"><a class="menuItem" th:href="@{/systemAccount/system}">系统账号监控</a></li>
+                                </shiro:hasRole>
                             </ul>
                         </li>   
                                                               

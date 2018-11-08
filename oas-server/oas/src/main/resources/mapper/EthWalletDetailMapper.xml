@@ -235,6 +235,11 @@
     )
     limit 1
   </select>
+  
+  <select id="getRecordCountByHash" resultType="java.lang.Integer">
+  select count(*) from eth_wallet_detail
+  where tx_hash = #{txHash,jdbcType=VARCHAR}
+  </select>
 </mapper>
 
 

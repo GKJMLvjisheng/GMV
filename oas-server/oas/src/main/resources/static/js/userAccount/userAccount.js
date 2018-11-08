@@ -1,11 +1,16 @@
 
 document.write("<script language=javascript src='/js/userAccount/userAccountTable.js'></script>");
 
+var check1;
+var check2;
+var check3;
+
 //主界面用户表格回显
 $(function() {
 	initNormalGrid();
 	initTestGrid();
 	initSystemGrid();
+	initOperationGrid();
 	
 });
 
@@ -50,6 +55,10 @@ function Confirm(){
 					var pageNumber3 = $("#systemGrid").bootstrapTable('getOptions').pageNumber;
 					$("#systemGrid").bootstrapTable('selectPage',pageNumber3);  //刷新当前页
 					
+				}else if(roleId3==4){
+					var pageNumber8 = $("#operationGrid").bootstrapTable('getOptions').pageNumber;
+					$("#operationGrid").bootstrapTable('selectPage',pageNumber8);  //刷新当前页
+					
 				}		
 				
 			}else{
@@ -72,7 +81,7 @@ function downUser(name,roleId){
 }
 
 function ViewCode(name, roleId, code){
-	
+	//alert(JSON.stringify(code));
 	$('#codeName').val(name);
 	$('#codeId').val(roleId);
 	if(code!=0){
@@ -210,6 +219,8 @@ function accountStatus(name,roleId){
 		var rows=$("#normalGrid").bootstrapTable('getRowByUniqueId', name);
 	}else if(roleId==3){
 		var rows=$("#testGrid").bootstrapTable('getRowByUniqueId', name);
+	}else if(roleId==4){
+		var rows=$("#operationGrid").bootstrapTable('getRowByUniqueId', name);
 	}
 	
     //alert(JSON.stringify(rows));
@@ -258,6 +269,9 @@ function changeStatus(){
 				}else if(roleId2==3){
 					var pageNumber7 = $("#testGrid").bootstrapTable('getOptions').pageNumber;
 					$("#testGrid").bootstrapTable('selectPage',pageNumber7);  //刷新测试账号当前页					
+				}else if(roleId2==4){
+					var pageNumber8 = $("#operationGrid").bootstrapTable('getOptions').pageNumber;
+					$("#operationGrid").bootstrapTable('selectPage',pageNumber8);  //刷新测试账号当前页					
 				}
 						
 			}else{
@@ -332,28 +346,189 @@ function resetControlModal(){
 	}
 }
 
+function checkName(){
+	var operationName = $("#operationName").val();
+	//alert(JSON.stringify(operationName));
+	if( /^[a-zA-Z0-9_]+$/ .test(operationName)){
+		var data={		
+				"name":operationName,		
+				}
+
+			$.ajax({		
+				url: "/api/v1/userCenter/inquireName",
+				contentType : 'application/json;charset=utf8',
+				dataType: 'json',
+				cache: false,
+				type: 'post',
+				data:JSON.stringify(data),
+				processData : false,
+				async : false,
+
+				success: function(res) {
+					//alert(JSON.stringify(res));
+					if(res.code==0){
+						$("#msg_operationName").html("该用户名可用");
+				        $("#msg_operationName").css("color", "green");
+				        check1=1;
+				        return check1;
+					}								
+					else{
+						$("#msg_operationName").html("该用户名已存在");
+				        $("#msg_operationName").css("color", "red");
+				        check1=0;
+				        return check1;
+					}			
+				}, 
+				error: function(){
+					document.getElementById("tipContent").innerText="检查用户名是否存在过程发生错误";
+					$("#Tip").modal('show');
+					check1=0;
+			        return check1;
+				}
+			}); 
+		}else{
+			$("#msg_operationName").html("请输入用户名，由字母、数字或者下划线组成");
+	        $("#msg_operationName").css("color", "red");
+	        check1=0;
+	        return check1;
+		}
+}
+
+function checkPassword(){
+	var password = $("#password").val();
+	
+	if(password.length>=8 && password.length<=20){
+		$("#msg_password").html("输入密码符合要求");
+        $("#msg_password").css("color", "green");
+        check2=1;
+        return check2;
+	}else{
+		$("#msg_password").html("请输入密码，长度为8-20之间");
+        $("#msg_password").css("color", "red");
+        check2=0;
+        return check2;
+	}
+}
+
+function checkPassword1(){
+	var password = $("#password").val();
+	var passwordConfirm = $("#passwordConfirm").val();
+	if(passwordConfirm.length==0){
+		$("#msg_passwordConfirm").html("请再次输入密码");
+        $("#msg_passwordConfirm").css("color", "red");
+	}else{
+		if(password==passwordConfirm){
+			$("#msg_passwordConfirm").html("两次输入密码一致");
+	        $("#msg_passwordConfirm").css("color", "green");
+	        check3=1;
+	        return check3;
+		}else{
+			$("#msg_passwordConfirm").html("两次输入密码不一致，请重新确认");
+	        $("#msg_passwordConfirm").css("color", "red");
+	        check3=0;
+	        return check3;
+		}
+	}	
+}
+
+//创建运营账号
+function addAccount(){
+	
+	checkName();
+	checkPassword();
+	checkPassword1();
+	
+	if(check1==1 && check2==1 && check3==1){
+		var operationName = $("#operationName").val();
+		var password = $("#password").val();
+		var data={		
+				"name":operationName,
+				"password":password,
+				}
+
+			$.ajax({		
+				url: "/api/v1/userCenter/registerOperator",
+				contentType : 'application/json;charset=utf8',
+				dataType: 'json',
+				cache: false,
+				type: 'post',
+				data:JSON.stringify(data),
+				processData : false,
+				async : false,
+
+				success: function(res) {
+					if(res.code==0){
+						document.getElementById("tipContent").innerText="账号创建成功";
+						$("#Tip").modal('show');
+						$("#conf").attr('data-dismiss','modal');
+						initOperationGrid();						
+						resetModal();
+													
+					}else{
+						document.getElementById("tipContent").innerText=res.message;
+						$("#Tip").modal('show');
+					}			
+				}, 
+				error: function(){
+					document.getElementById("tipContent").innerText="操作过程发生错误";
+					$("#Tip").modal('show');
+				}
+			}); 
+	}else{
+		alert("请确认输入信息是否符合要求");
+		$("#conf").removeAttr('data-dismiss','modal');
+	}	
+}
+
+function resetModal(){
+	//document.getElementById("addNewsForm").reset();
+	$("#operationName").val("");
+	$("#msg_operationName").html("");
+	$("#password").val("");
+	$("#msg_password").html("");
+	$("#passwordConfirm").val("");
+	$("#msg_passwordConfirm").html("");
+}
+
 function display1(){
 	document.getElementById("page3").style.display="none";
 	document.getElementById("page4").style.display="none";
+	document.getElementById("page5").style.display="none";
 	document.getElementById("page1").style.display="block";
 	$('#btn1').removeClass('active1').addClass('active');
 	$('#btn3').removeClass('active').addClass('active1');
 	$('#btn4').removeClass('active').addClass('active1');
+	$('#btn5').removeClass('active').addClass('active1');
 }
 
 function display3(){
 	document.getElementById("page1").style.display="none";
 	document.getElementById("page4").style.display="none";
+	document.getElementById("page5").style.display="none";
 	document.getElementById("page3").style.display="block";
 	$('#btn3').removeClass('active1').addClass('active');
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn4').removeClass('active').addClass('active1');
+	$('#btn5').removeClass('active').addClass('active1');
 }
 function display4(){
 	document.getElementById("page1").style.display="none";
 	document.getElementById("page3").style.display="none";
+	document.getElementById("page5").style.display="none";
 	document.getElementById("page4").style.display="block";
 	$('#btn4').removeClass('active1').addClass('active');
+	$('#btn1').removeClass('active').addClass('active1');
+	$('#btn3').removeClass('active').addClass('active1');
+	$('#btn5').removeClass('active').addClass('active1');
+}
+
+function display5(){
+	document.getElementById("page1").style.display="none";
+	document.getElementById("page3").style.display="none";
+	document.getElementById("page4").style.display="none";
+	document.getElementById("page5").style.display="block";
+	$('#btn5').removeClass('active1').addClass('active');
+	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn3').removeClass('active').addClass('active1');
 }

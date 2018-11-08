@@ -52,7 +52,8 @@ import java.util.*
 
 class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     lateinit var myWebHome: WebView
-    lateinit var mHeadBar: Toolbar
+    //lateinit var mHeadBar: Toolbar
+    var mHeadBar:Toolbar? = null
     val mHost: String = BaseConstant.SERVER_ADDRESS//"18.219.19.160:8080"
     val homeUrl: String = "$mHost/api/v1/greenMap"//"http://$mHost/api/v1/greenMap"//
     //val homeUrl:String = "http://10.0.0.25:8080/api/v1/greenMap"
@@ -124,6 +125,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
     private fun uploadHistorySteps() {
         val lastUpdateDate = getStepUploadDate()
+        //val lastUpdateDate = "2018-11-02"
         val daysGap = getDaysBetweenDates(lastUpdateDate, getNow(DATE_FORMAT))
         Log.d("zbb", "last update date $lastUpdateDate, gaps $daysGap")
 
@@ -208,16 +210,27 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
     override fun onResume() {
         super.onResume()
         Log.d("zbb1","homeFragment on resume")
+        //
+        if (myWebHome.canGoBack()) {
+            Log.d("zbb1","homeFragment on resume goBack")
+            myWebHome.goBack()
+        }
+        /*
+        if(mHeadBar!=null){
+            mHeadBar!!.setVisible(false)
+        }*/
+
         initView()
         //myWebHome.loadUrl("javascript:skipRefresh()")
     }
 
     fun shouldToolBarShowBack(){
         if (myWebHome.canGoBack()) {
-            mHeadBar.setVisible(true)
+            Log.i("zbb2"," headbar myWebHome.canGoBack() true")
+            mHeadBar?.setVisible(true)
         }
         else{
-            mHeadBar.setVisible(false)
+            mHeadBar?.setVisible(false)
         }
     }
     private fun initView(){
@@ -236,7 +249,7 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
         mHeadBar = homeFragment.findViewById(R.id.mHeadBar) as Toolbar
         (activity as AppCompatActivity).setSupportActionBar(mHeadBar)
         (activity as AppCompatActivity).supportActionBar?.setDisplayShowTitleEnabled(false)
-        mHeadBar.setNavigationOnClickListener {
+        mHeadBar?.setNavigationOnClickListener {
             if (myWebHome.canGoBack()) {
                 myWebHome.goBack()
             }
@@ -256,11 +269,17 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
         @JavascriptInterface
         fun getToken():String {
-            Log.d("zbb", "get token called")
+            Log.d("zbb2", "get token called")
+            var token= AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
+            Log.i("zbb2","token".plus(token))
+
             mHandler.post{
-                shouldToolBarShowBack()
+                mHeadBar?.setVisible(false)
+                //shouldToolBarShowBack()
             }
-            return AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
+
+
+            return token//AppPrefsUtils.getString(BaseConstant.USER_TOKEN)
         }
 
         //点击首页提升算力图标，进入提升算力界面
@@ -322,14 +341,25 @@ class HomeFragment : BaseMvpFragment<HomePresenter>(), HomeView {
 
 
             if(mHost.contains(host)){
-                mHeadBar.setVisible(false)
+                mHeadBar?.setVisible(false)
             }
             else {
-                mHeadBar.setVisible(true)
+                Log.i("zbb","hanldeUri headbar visible true")
+                mHeadBar?.setVisible(true)
             }
             return false
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        Log.i("zbb","homefragment headbar".plus(isVisibleToUser))
+        if(isVisibleToUser){
+            /*
+            if(mHeadBar!=null){
+                mHeadBar!!.setVisible(false)
+            }*/
 
+        }
+    }
 }
