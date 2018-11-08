@@ -185,6 +185,11 @@ public class UserController extends BaseShiroController{
 		 UserFacility userFacility=new UserFacility();
 		 userFacility.setUuid(uuid);
 		 userFacility.setIMEI(IMEINew);
+		 log.info("IMEI={}",IMEINew);
+		 userFacility.setCreated(DateUtils.getTime());
+		 
+		 userModel.setName(loginVo.getName());
+		 userModel.setIMEI(IMEINew);
          if(status==0){
         	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
         	 throw new AuthenticationException();
@@ -206,13 +211,9 @@ public class UserController extends BaseShiroController{
                         	 throw new AuthenticationException();
                          }
                          else{
-	        				 UserFacility userNewFacility=new UserFacility();
-	    				     userNewFacility.setIMEI(loginVo.getIMEI());
-	    				     userNewFacility.setUuid(uuid);
-	    				     userNewFacility.setCreated(DateUtils.getTime());
-	                         userFacilityMapper.insertUserFacility(userFacility);
-		  	  	        	 userModel.setIMEI(loginVo.getIMEI());	        	 
-			  	        	 userModelMapper.updateIMEI(userModel);
+                        	 userModelMapper.updateIMEI(userModel);
+	                         userFacilityMapper.insertUserFacility(userFacility);	        	 
+			  	        	 log.info("用户与手机绑定成功!");
        			          }
 	  	        	 }	        		
 	        		 else{
@@ -225,10 +226,6 @@ public class UserController extends BaseShiroController{
 		        					  throw new AuthenticationException();
 		        			 }
 		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
-			        				 UserFacility userNewFacility=new UserFacility();
-			    				     userNewFacility.setIMEI(loginVo.getIMEI());
-			    				     userNewFacility.setUuid(uuid);
-			    				     userNewFacility.setCreated(DateUtils.getTime());
 			                         userFacilityMapper.insertUserFacility(userFacility);
 		        			      }          
 	        			     }
@@ -259,9 +256,11 @@ public class UserController extends BaseShiroController{
           subject.login(token);
           loginResult.setToken(ShiroUtils.getSessionId());
     	  String fullLink = mediaServer.getImageHost() + ShiroUtils.getUser().getProfile();
-          userModel=ShiroUtils.getUser();
-          userModel.setProfile(fullLink);         
-          ShiroUtils.setUser(userModel);
+    	  
+    	  UserModel userNewModel=new UserModel();
+          userNewModel=ShiroUtils.getUser();
+          userNewModel.setProfile(fullLink);         
+          ShiroUtils.setUser(userNewModel);
           log.info("new login token {}", ShiroUtils.getSessionId());
           
           loginResult.fromUserModel(ShiroUtils.getUser());
