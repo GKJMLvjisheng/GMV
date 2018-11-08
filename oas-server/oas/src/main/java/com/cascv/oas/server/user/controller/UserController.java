@@ -185,6 +185,7 @@ public class UserController extends BaseShiroController{
 		 UserFacility userFacility=new UserFacility();
 		 userFacility.setUuid(uuid);
 		 userFacility.setIMEI(IMEINew);
+		 userFacility.setCreated(DateUtils.getTime());
          if(status==0){
         	 errorCode=ErrorCode.USER_IS_FORBIDDEN;
         	 throw new AuthenticationException();
@@ -206,12 +207,7 @@ public class UserController extends BaseShiroController{
                         	 throw new AuthenticationException();
                          }
                          else{
-	        				 UserFacility userNewFacility=new UserFacility();
-	    				     userNewFacility.setIMEI(loginVo.getIMEI());
-	    				     userNewFacility.setUuid(uuid);
-	    				     userNewFacility.setCreated(DateUtils.getTime());
-	                         userFacilityMapper.insertUserFacility(userFacility);
-		  	  	        	 userModel.setIMEI(loginVo.getIMEI());	        	 
+	                         userFacilityMapper.insertUserFacility(userFacility);	        	 
 			  	        	 userModelMapper.updateIMEI(userModel);
        			          }
 	  	        	 }	        		
@@ -225,10 +221,6 @@ public class UserController extends BaseShiroController{
 		        					  throw new AuthenticationException();
 		        			 }
 		        				  else if(userFacilityMapper.inquireUserFacilityByIMEI(IMEINew)==null){
-			        				 UserFacility userNewFacility=new UserFacility();
-			    				     userNewFacility.setIMEI(loginVo.getIMEI());
-			    				     userNewFacility.setUuid(uuid);
-			    				     userNewFacility.setCreated(DateUtils.getTime());
 			                         userFacilityMapper.insertUserFacility(userFacility);
 		        			      }          
 	        			     }
