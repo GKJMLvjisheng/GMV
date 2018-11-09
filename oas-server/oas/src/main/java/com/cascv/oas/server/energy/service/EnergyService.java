@@ -196,6 +196,19 @@ public class EnergyService {
         } else {
             String latestUuid = latestEnergyPointBall.getUuid();                 // 最近球id
             BigDecimal latestPoint = latestEnergyPointBall.getPoint();           // 最近球积分
+            //如果管理员在球还在生长的时候改变了球的最大值，要先判断最大值比正在生长的球的值大还是小
+            if(latestPoint.compareTo(pointCapacityEachBall) == 1) {
+            	//如果最近球积分比最大值大的话，先判断现在球的个数有没有到8个
+            	if(energyPointBalls.size() < MAX_COUNT_OF_MINING_ENERGYBALL) {
+            		//如果现在球的个数小于8个，现在的球停止生长，然后产生新的球
+            		EnergyPointBall energyBall = getMiningEnergyBall(userUuid, now);
+            		activityMapper.insertEnergyPointBall(energyBall);
+            		ongoingEnergySummary = pointCapacityEachBall;            		
+            	}else {
+            		ongoingEnergySummary = BigDecimal.ZERO;
+            	}
+            	return ongoingEnergySummary;
+            }
             BigDecimal remainPoint = pointCapacityEachBall.subtract(latestPoint); //最近球还需要这么多积分才能到最大值
             long remainTime = remainPoint.divide(pointIncreaseSpeed).longValue();
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
