@@ -239,6 +239,8 @@ public class EnergyService {
             		amount = remainBallNum;
             		moreTime = leadTime - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             		balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
+            		if(balance.compareTo(pointCapacityEachBall) == 1)
+            			balance = pointCapacityEachBall;
             		ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	}
                 if (amount > 1) {
