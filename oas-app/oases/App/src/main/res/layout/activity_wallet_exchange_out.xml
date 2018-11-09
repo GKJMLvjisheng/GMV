@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/mMoney"
             android:layout_toLeftOf="@+id/mAvailableOasPostfix"
-            android:text="123345"
+            android:text="0"
             android:layout_marginTop="20dp"
             android:textColor="@color/common_green"
             android:textSize="@dimen/text_big_size" />
@@ -177,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/mRightTopPostfix"
-            android:max="9"
+            android:max="19"
             android:maxHeight="6dp"
             android:min="0"
             android:minHeight="6dp"

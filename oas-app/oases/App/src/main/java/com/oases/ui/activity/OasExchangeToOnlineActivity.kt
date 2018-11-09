@@ -154,7 +154,7 @@ class OasExchangeToOnlineActivity : BaseMvpActivity<RedrawOasPresenter>(), Redra
         mSeakBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             //SeekBar滚动过程中的回调函数
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                text.setPadding(0,10,changeToBg(width-i*step).toInt(),0)
+                text.setPadding(0,10,changeToBg(width-i*step).toInt()+20,0)
                 text.text =check(i)
                 mFactorTv.text = ToolUtil.caculateETH(text.text.toString().toInt(),BaseConstant.GAS_LIMIT)
             }
