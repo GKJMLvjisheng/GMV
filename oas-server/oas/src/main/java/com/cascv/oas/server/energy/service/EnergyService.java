@@ -232,12 +232,12 @@ public class EnergyService {
 //                energyPointBalls.add(activityMapper.selectByUuid(latestUuid));
             	int remainBallNum = MAX_COUNT_OF_MINING_ENERGYBALL - ballAmountPrevious;
             	int amount = BigDecimal.valueOf(time).divide(timeGap, 0, BigDecimal.ROUND_UP).intValue();
-            	long moreTime = leadTime - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
+            	long moreTime = time - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             	BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	if(amount > remainBallNum) {
             		amount = remainBallNum;
-            		moreTime = leadTime - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
+            		moreTime = time - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             		balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
             		if(balance.compareTo(pointCapacityEachBall) == 1)
             			balance = pointCapacityEachBall;
