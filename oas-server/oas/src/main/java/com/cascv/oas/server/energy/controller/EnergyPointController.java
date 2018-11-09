@@ -211,13 +211,14 @@ public class EnergyPointController extends BaseShiroController{
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
     	
-    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
+    	BigDecimal checkInPoint = activityMapper
+    			.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
     	ActivityRewardConfig activityRewardConfig = 
         		activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT);
         BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
         BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed, 2, BigDecimal.ROUND_HALF_UP);
-    	BigDecimal time = new BigDecimal("24");
+    	BigDecimal time = new BigDecimal("86400");
     	BigDecimal num = time.divide(timeGap, 0, BigDecimal.ROUND_HALF_UP);
     	BigDecimal freePoint = pointCapacityEachBall.multiply(num);
     	BigDecimal maxPoint = checkInPoint.add(freePoint);
