@@ -175,7 +175,7 @@ public class EnergyService {
         		Date endDate = this.timeCalculator(timeGap, startDate);
         		Date nowDate = sdf.parse(now);
         		BigDecimal point = freePointBalls.get(i).getPoint();
-        		if (nowDate.before(endDate) && point.compareTo(BigDecimal.ZERO) == 0) {
+        		if (endDate.before(nowDate) && point.compareTo(BigDecimal.ZERO) == 0) {
         			String uuid = freePointBalls.get(i).getUuid();
         			activityMapper.deleteEnergyPointBall(uuid);
         			log.info("删除无效球");
@@ -230,10 +230,14 @@ public class EnergyService {
 //                BigDecimal balance = pointNeededPlusLatest.subtract(pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)));
 //                ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
 //                energyPointBalls.add(activityMapper.selectByUuid(latestUuid));
+            	int remainBallNum = MAX_COUNT_OF_MINING_ENERGYBALL - ballAmountPrevious;
             	int amount = BigDecimal.valueOf(time).divide(timeGap, 0, BigDecimal.ROUND_UP).intValue();
-            	long moreTime = leadTime - pointCapacityEachBall.multiply(BigDecimal.valueOf(amount - 1)).longValue();
+            	long moreTime = leadTime - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             	BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
+            	if(amount > remainBallNum) {
+            		amount = remainBallNum;
+            	}
                 if (amount > 1) {
                     energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
                     for (int i = 1; i < amount; i++) {

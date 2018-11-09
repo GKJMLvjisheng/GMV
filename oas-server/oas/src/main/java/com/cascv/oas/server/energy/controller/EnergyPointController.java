@@ -126,8 +126,9 @@ public class EnergyPointController extends BaseShiroController{
     public ResponseEntity<?> inquireEnergyPointBall() throws ParseException {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
+    	String name = ShiroUtils.getUser().getName();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
-        log.info("energylist={}",JSON.toJSONString(energyBallResult));
+        log.info("name={}"+name+"energylist={}",JSON.toJSONString(energyBallResult));
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
                 .setData(energyBallResult)
