@@ -145,7 +145,9 @@ public class MinerController {
 			systemParameterResponse.setCurrency(systemParameterModel.get(i).getCurrency());			
 			systemParameterResponse.setPeriod(systemParameterModel.get(i).getPeriod());
 			if(systemParameterModel.get(i).getCurrency() == 11) {
-				systemParameterResponse.setParameterValue(systemParameterModel.get(i).getParameterValue());
+				BigDecimal parameter = systemParameterModel.get(i).getParameterValue();
+				BigDecimal parameterValue = BigDecimal.ONE.divide(parameter, 2, BigDecimal.ROUND_HALF_UP);
+				systemParameterResponse.setParameterValue(parameterValue);
 				systemParameterResponse.setParameterName("β");
 			}
 			else {

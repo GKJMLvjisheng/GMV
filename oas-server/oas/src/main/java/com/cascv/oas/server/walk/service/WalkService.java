@@ -83,9 +83,9 @@ public class WalkService {
 			}
 			log.info("powerSum={}", powerSum);
 			BigDecimal β = minerMapper.selectSystemParameterByCurrency(SYSTEM_PARAMETER_CURRENCY).getParameterValue();
-			BigDecimal point = β.multiply(pointBefore.multiply(powerSum));	
+			BigDecimal point = (pointBefore.multiply(powerSum)).divide(β, 2, BigDecimal.ROUND_HALF_UP);	
 			log.info("point={}", point);
-			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum);
+			BigDecimal maxValue = activityRewardConfig.getMaxValue().multiply(powerSum).divide(β, 2, BigDecimal.ROUND_HALF_UP);
 			BigDecimal newPoint;
 			if(point.compareTo(maxValue) == -1)
 				newPoint = point;
@@ -281,7 +281,8 @@ public class WalkService {
         if(energyWalletMapper.selectByUserUuid(userUuid).getPower().compareTo(BigDecimal.ZERO) != 0) {
         	power = energyWalletMapper.selectByUserUuid(userUuid).getPower();
         }
-        BigDecimal maxValue = value.multiply(power);
+        BigDecimal β = minerMapper.selectSystemParameterByCurrency(SYSTEM_PARAMETER_CURRENCY).getParameterValue();
+        BigDecimal maxValue = value.multiply(power).divide(β, 2, BigDecimal.ROUND_HALF_UP);
         BigDecimal point = activityMapper.selectByUuid(energyBallUuid).getPoint();
         //如果计步球的积分满值，则可以采集计步球，但不生成新的计步球
         if(point.compareTo(maxValue) == 0) {
