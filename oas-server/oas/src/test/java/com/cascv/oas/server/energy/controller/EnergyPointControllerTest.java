@@ -26,7 +26,7 @@ public class EnergyPointControllerTest {
     }
 
     @Test
-    public void inquireEnergyBall() {
+    public void inquireEnergyBall() throws ParseException {
         ResponseEntity<?> energyBallResult = energyPointController.inquireEnergyPointBall();
         System.out.println("data: " + energyBallResult.getData());
         System.out.println("code: " + energyBallResult.getCode());
@@ -34,7 +34,7 @@ public class EnergyPointControllerTest {
     }
 
     @Test
-    public void takeEnergyBall() {
+    public void takeEnergyBall() throws ParseException {
         EnergyBallTokenRequest energyBallTokenRequest = new EnergyBallTokenRequest();
         energyBallTokenRequest.setBallId("EP-e7606aa2b95e11e898b93052cb119add");
         ResponseEntity<?> responseEntity = energyPointController.takeEnergyPointBall(energyBallTokenRequest);
