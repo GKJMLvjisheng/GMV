@@ -328,7 +328,7 @@ public class UserWalletService {
 			  UserCoin tokenCoin = ethWalletService.getUserCoin(systemInfo.getUuid()); //system的usercoin
 			  
 			  //操作交易钱包
-			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(5), Convert.Unit.GWEI).toBigInteger();
+			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.GWEI).toBigInteger();
 			  BigInteger gasLimit = BigInteger.valueOf(60000);
 			  //获取当前用户的eth wallet
 			  EthWallet ethWallet = ethWalletMapper.selectByUserUuid(detail.getUserUuid());
