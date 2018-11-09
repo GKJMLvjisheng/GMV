@@ -81,7 +81,8 @@ public enum ErrorCode {
   USER_IS_FORBIDDEN(10061, "该用户已经被禁用"),
   OAS_NO_USERFUL_UPDATE(10062,"数据没有修改，无需更新"),
   INDENTITY_IS_ING(10063,"认证正在审核中"),
-  INDENTITY_IS_FINISH(10063,"认证已通过");
+  INDENTITY_IS_FINISH(10063,"认证已通过"),
+  REPEAT_ETH_HASH(10064,"提交失败，重复的交易hash值");
 
 	
   @Getter @Setter private Integer code;

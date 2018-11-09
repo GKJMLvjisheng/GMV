@@ -328,6 +328,7 @@
 	    U.status as status,
 		U.created as created,
 		U.value as value,
+		U.invite_from as invite_from,
 		UR.role_id as roleId
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 

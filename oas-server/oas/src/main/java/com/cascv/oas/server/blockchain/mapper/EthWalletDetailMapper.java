@@ -54,5 +54,10 @@ public interface EthWalletDetailMapper {
    * @return
    */
   String getSystemAddress();
+  /**
+   * 获取hash的记录数量
+   * @return
+   */
+  Integer getRecordCountByHash(String txHash);
 
 }
