@@ -210,7 +210,7 @@ public class EnergyService {
             	return ongoingEnergySummary;
             }
             BigDecimal remainPoint = pointCapacityEachBall.subtract(latestPoint); //最近球还需要这么多积分才能到最大值
-            long remainTime = remainPoint.divide(pointIncreaseSpeed).longValue();
+            long remainTime = remainPoint.divide(pointIncreaseSpeed,2,BigDecimal.ROUND_HALF_UP).longValue();
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
             long currentTime = 0;                    // 现在的时间，声明、初始化
             try {
