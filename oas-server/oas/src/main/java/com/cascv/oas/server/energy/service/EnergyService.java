@@ -226,7 +226,7 @@ public class EnergyService {
             // 计算与最近球创建的时间差，即需要增加的积分+ 最近球已有积分
             long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND; //现在到最近球的创建时间总共有多少时间
             long time = leadTime - remainTime;
-            if(time < 0) {
+            if(leadTime < 3600 || time < 0) {
         		BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	energyBallMapper.updatePointByUuid(latestUuid, balance, now);

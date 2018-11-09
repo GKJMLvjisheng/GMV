@@ -50,8 +50,9 @@ public class WalkPointBallController {
 	 @ResponseBody
 	 @WriteLog(value="WalkBall")
 	 public ResponseEntity<?> inquireWalkPointBall(@RequestBody StepNumWrapper stepNumWrapper){
+		 String name = ShiroUtils.getUser().getName();
 		 for(int i=0; i<stepNumWrapper.getQuota().size(); i++) {
-			 log.info("Time={}"+stepNumWrapper.getQuota().get(i).getDate(), "stepNum={}"+stepNumWrapper.getQuota().get(i).getStepNum().toString());
+			 log.info(name+"Time={}"+stepNumWrapper.getQuota().get(i).getDate(), "stepNum={}"+stepNumWrapper.getQuota().get(i).getStepNum().toString());
 		 }
 		 
 		 String userUuid = ShiroUtils.getUserUuid();
