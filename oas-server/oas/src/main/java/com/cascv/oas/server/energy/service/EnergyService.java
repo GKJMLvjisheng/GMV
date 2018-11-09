@@ -237,6 +237,9 @@ public class EnergyService {
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	if(amount > remainBallNum) {
             		amount = remainBallNum;
+            		moreTime = leadTime - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
+            		balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
+            		ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	}
                 if (amount > 1) {
                     energyBallMapper.updatePointByUuid(latestUuid, pointCapacityEachBall, now);
