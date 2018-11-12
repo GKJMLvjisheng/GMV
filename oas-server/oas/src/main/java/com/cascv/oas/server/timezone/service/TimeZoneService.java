@@ -54,10 +54,14 @@ public class TimeZoneService {
 	
 	public Integer getTimeGap(String userUuid) {
 		String address = userModelMapper.selectByUuid(userUuid).getAddress();
-		String [] timeZone = address.split(" ");
-    	String timeZoneId = countryPromaryModelMapper.inqurueTimeZone(timeZone);
-    	Integer time = DateUtils.getTimeGap(timeZoneId) / TRANSFER_OF_SECOND_TO_MILLISECOND;
-    	Integer timeGap = time / TRANSFER_OF_HOUR_TO_SECOND;
-		return timeGap;
+		if(address != null){
+			String [] timeZone = address.split(" ");
+	    	String timeZoneId = countryPromaryModelMapper.inqurueTimeZone(timeZone);
+	    	Integer time = DateUtils.getTimeGap(timeZoneId) / TRANSFER_OF_SECOND_TO_MILLISECOND;
+	    	Integer timeGap = time / TRANSFER_OF_HOUR_TO_SECOND;
+			return timeGap;
+		}else
+			return 0;
+		
 	}
 }
