@@ -359,11 +359,11 @@ export default {
           this.isShowSuccessMsg = true
          
           }else if(data.data.newPower==0){
-         console.log("111{"+this.currentPower)
+         //console.log("111{"+this.currentPower)
          console.log("111{"+this.currentEnergy)
           this.currentPower =numAdd(this.currentPower,data.data.newPower) 
           this.currentEnergy = numAdd(this.currentEnergy,data.data.newEnergyPoint)
-          console.log(this.currentPower)
+         // console.log(this.currentPower)
          console.log(this.currentEnergy)
 
           this.attendanceMsg.msgall = data.data.newEnergyPoint+"点能量"
