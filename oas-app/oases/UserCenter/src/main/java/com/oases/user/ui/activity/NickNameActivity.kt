@@ -2,7 +2,9 @@ package com.oases.user.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import com.oases.base.common.BaseConstant
+import com.oases.base.ext.onClick
 import com.oases.base.ui.activity.BaseMvpActivity
 import com.oases.base.utils.AppPrefsUtils
 import com.oases.user.R
@@ -28,10 +30,29 @@ class NickNameActivity : BaseMvpActivity<NickNamePresenter>(), NickNameView {
 
     private fun initView() {
         mHeadBar.onClickRightTv{
-            mPresenter.updateNickName(mNickName.text.toString())
+            if(isInputOk()) {
+                mPresenter.updateNickName(mNickName.text.toString())
+            }
         }
     }
 
+    private fun isInputOk():Boolean{
+        val newName= mNickName.text.toString()
+        if (TextUtils.isEmpty(newName)) {
+            mNickName.setError("昵称不能为空")
+            mNickName.requestFocus()
+            return false
+        }else if(!isNewNameValid(newName)){
+            mNickName.setError("昵称不能超过15个字符")
+            mNickName.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun isNewNameValid(newName: String): Boolean {
+        return newName.length < 15
+    }
     override fun injectComponent() {
         DaggerUserComponent
                 .builder()

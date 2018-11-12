@@ -5,7 +5,21 @@ const randomNum = (min,max) => {
       let num = min + Math.round(Rand * Range); //四舍五入
       return num;
 }
-
+const numAdd = (num1, num2) => {
+  var baseNum, baseNum1, baseNum2;
+  try {
+      baseNum1 = num1.toString().split(".")[1].length;
+  } catch (e) {
+      baseNum1 = 0;
+  }
+  try {
+      baseNum2 = num2.toString().split(".")[1].length;
+  } catch (e) {
+      baseNum2 = 0;
+  }
+  baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
+  return (num1 * baseNum + num2 * baseNum) / baseNum;
+}
 const createPositionArr = () => {
   let xArr = [20,95,170,245,330,395,470,595,675]
   let yArr = [20,140,260,380,500]
@@ -36,6 +50,7 @@ const getArrItems = (arr, count) => {
   return returnArr
 }
 export {
+  numAdd,
   randomNum,
   createPositionArr,
   getArrItems

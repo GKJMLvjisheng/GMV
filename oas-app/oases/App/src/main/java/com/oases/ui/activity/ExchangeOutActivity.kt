@@ -85,7 +85,7 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
         Log.i("zbb",width.toString())
         step = width.toFloat()/(high-low+1).toFloat()
         text = tipTop
-        text.setTextSize("10".toFloat())
+        text.setTextSize("10".toFloat()) //字体
         text.setPadding(0,10,changeToBg(width-(middle-1)*step).toInt(),0)
         text.text = middle.toString()
         mSeakBar.setProgress(middle-1)
@@ -173,7 +173,7 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
         mSeakBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             //SeekBar滚动过程中的回调函数
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                text.setPadding(0,10,changeToBg(width-i*step).toInt(),0)
+                text.setPadding(0,10,changeToBg(width-i*step).toInt()+20,0)
                 text.text =check(i)
                // Log.i("zbb2",i.toString())
                // Log.i("zbb2",changeToBg(width-i*step).toString())

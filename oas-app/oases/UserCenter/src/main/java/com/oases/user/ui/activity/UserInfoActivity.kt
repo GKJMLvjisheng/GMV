@@ -276,8 +276,9 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
     //获取相机权限
     fun requestPermission() {
         val checkCameraPermission = ActivityCompat.checkSelfPermission(this@UserInfoActivity, Manifest.permission.CAMERA)
+        val checkReadPermission = ActivityCompat.checkSelfPermission(this@UserInfoActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
         val checkWritePermission = ActivityCompat.checkSelfPermission(this@UserInfoActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        if (checkCameraPermission == PackageManager.PERMISSION_GRANTED && checkWritePermission== PackageManager.PERMISSION_GRANTED) {
+        if (checkCameraPermission == PackageManager.PERMISSION_GRANTED && checkReadPermission== PackageManager.PERMISSION_GRANTED && checkWritePermission== PackageManager.PERMISSION_GRANTED) {
             if(selectPosition==0) {
                 createTempFile()
                 //mTakePhoto.onPickFromCapture(Uri.fromFile(mTempFile))      //实现拍照
@@ -291,13 +292,13 @@ class UserInfoActivity : BaseMvpActivity<UserInfoPresenter>(), UserInfoView,Take
             }
         } else {
             //requset permission
-            ActivityCompat.requestPermissions(this@UserInfoActivity, arrayOf(Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE)
+            ActivityCompat.requestPermissions(this@UserInfoActivity, arrayOf(Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && permissions[0] == Manifest.permission.CAMERA && permissions[1] == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && permissions[0] == Manifest.permission.CAMERA && permissions[1] == Manifest.permission.READ_EXTERNAL_STORAGE && permissions[2] == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
                 if(selectPosition==0) {
                     createTempFile()
                     //mTakePhoto.onPickFromCapture(Uri.fromFile(mTempFile))      //实现拍照
