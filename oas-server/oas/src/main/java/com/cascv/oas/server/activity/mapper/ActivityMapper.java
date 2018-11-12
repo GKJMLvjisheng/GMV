@@ -50,6 +50,7 @@ public interface ActivityMapper {
 	EnergyPointBall selectByUuid(@Param("uuid") String uuid);
 	List<EnergyPointBall> selectAllByUserUuid(@Param("userUuid") String userUuid,
             @Param("status") Integer status,
+            @Param("timeGap") Integer timeGap,
             @Param("updated") String updated);
 	List<EnergyPointBall> selectByPointSourceCode(@Param("userUuid") String userUuid,
             @Param("sourceUuid") String sourceUuid,

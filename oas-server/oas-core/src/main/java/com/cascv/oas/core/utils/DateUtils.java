@@ -99,6 +99,10 @@ public class DateUtils {
     	
     }
     
+    public static Integer getTimeGap(String timeZoneId) {
+    	return TimeZone.getDefault().getRawOffset()- TimeZone.getTimeZone(timeZoneId).getRawOffset();
+    }
+    
     /**
      * @author Ming Yang
      * 当前日期(时间)转化为字符串. 

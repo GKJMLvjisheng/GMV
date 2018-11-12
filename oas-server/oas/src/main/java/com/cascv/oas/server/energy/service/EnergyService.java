@@ -17,6 +17,7 @@ import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.*;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,17 +69,18 @@ public class EnergyService {
      * @throws ParseException 
      */
     public Boolean isCheckin(String userUuid) throws ParseException {
+    	Integer timeGap = timeZoneService.getTimeGap(userUuid);
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = sdf.parse(now);
     	Calendar calendar = Calendar.getInstance();
     	calendar.setTime(date);
-    	calendar.add(Calendar.HOUR_OF_DAY, 8);
+    	calendar.add(Calendar.HOUR_OF_DAY, timeGap);
     	String newTime = sdf.format(calendar.getTime());
     	String today = newTime.substring(0, 10);
     	log.info("today={}", today);
         List<EnergyBall> energyBalls = energyBallMapper
-                .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, today);
+                .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, timeGap, today);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
     }
 
@@ -210,7 +212,7 @@ public class EnergyService {
             	return ongoingEnergySummary;
             }
             BigDecimal remainPoint = pointCapacityEachBall.subtract(latestPoint); //最近球还需要这么多积分才能到最大值
-            long remainTime = remainPoint.divide(pointIncreaseSpeed,2,BigDecimal.ROUND_HALF_UP).longValue();
+            long remainTime = remainPoint.divide(pointIncreaseSpeed,0,BigDecimal.ROUND_HALF_UP).longValue();
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
             long currentTime = 0;                    // 现在的时间，声明、初始化
             try {
