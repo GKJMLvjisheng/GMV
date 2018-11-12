@@ -228,6 +228,9 @@ public class EnergyService {
             long time = leadTime - remainTime;
             if(leadTime < 3600 || time < 0) {
         		BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
+        		if(balance.compareTo(pointCapacityEachBall) == 1) {
+        			balance = pointCapacityEachBall;
+        		}        		
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	energyBallMapper.updatePointByUuid(latestUuid, balance, now);
         	}else {
@@ -252,6 +255,8 @@ public class EnergyService {
             	int amount = BigDecimal.valueOf(time).divide(timeGap, 0, BigDecimal.ROUND_UP).intValue();
             	long moreTime = time - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             	BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
+            	if(balance.compareTo(pointCapacityEachBall) == 1)
+        			balance = pointCapacityEachBall;
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	if(amount > remainBallNum) {
             		amount = remainBallNum + 1;
