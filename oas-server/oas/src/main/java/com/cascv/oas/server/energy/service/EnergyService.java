@@ -684,6 +684,9 @@ public class EnergyService {
     		   //.intValue()方法是把Integer转为Int?
     		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 			   energyChangeDetail.setCreated(created);
+			   if(energyChangeDetail.getSourceUuid() != null && energyChangeDetail.getSourceUuid().equals("WALK")) {
+				   energyChangeDetail.setActivity(energyChangeDetail.getComment()+energyChangeDetail.getActivity()+energyChangeDetail.getStepNum()+"步");
+			   }
 			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
     		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
     			   energyList.add(energyChangeDetail);

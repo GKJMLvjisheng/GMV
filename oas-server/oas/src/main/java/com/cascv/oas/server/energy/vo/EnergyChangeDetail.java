@@ -12,7 +12,8 @@ public class EnergyChangeDetail {
   @Getter @Setter private BigDecimal value;
   @Getter @Setter private BigDecimal decPoint;
   @Getter @Setter private String category;
-  @Getter @Setter private String source;
+  @Getter @Setter private String sourceUuid;
+  @Getter @Setter private BigDecimal stepNum;
   @Getter @Setter private String activity;
   @Getter @Setter private String comment;
   @Getter @Setter private Integer inOrOut;
