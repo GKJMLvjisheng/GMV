@@ -158,7 +158,7 @@ const attendanceSuccess = require("@/assets/images/attendance.png");
 const energyBall = require("@/assets/images/ball.png");
 const infoIamge = require("@/assets/images/icon_default_user.png");
 const miner = require("@/assets/images/kuangji@2x.png");
-import { randomNum } from '@/utils/utils.js'
+import { randomNum,numAdd } from '@/utils/utils.js'
 import $ from 'jquery'
 export default {
   //
@@ -266,7 +266,7 @@ export default {
     // })
     },
    getStep(){
-    //let todayStep=10000
+    //let todayStep=0
       let todayStep=window.Android.getTodaySteps()
       console.log(todayStep)
       return todayStep
@@ -348,26 +348,30 @@ export default {
         console.log(JSON.stringify(data))
         if (data.code == 0) {
           if(data.data.newEnergyPoint==0){
-          this.currentPower += data.data.newPower
-          this.currentEnergy += data.data.newEnergyPoint
+          //this.currentPower += data.data.newPower
+          //this.currentEnergy += data.data.newEnergyPoint
+          
+          this.currentPower =numAdd(this.currentPower,data.data.newPower) 
+          this.currentEnergy = numAdd(this.currentEnergy,data.data.newEnergyPoint)
           
           this.attendanceMsg.msgall = data.data.newPower+"点算力"
           
           this.isShowSuccessMsg = true
          
           }else if(data.data.newPower==0){
-          this.currentPower += data.data.newPower
-          this.currentEnergy += data.data.newEnergyPoint
-          //this.attendanceMsg.energy = data.data.newEnergyPoint
-          //this.attendanceMsg.power = data.data.newPower
+         console.log("111{"+this.currentPower)
+         console.log("111{"+this.currentEnergy)
+          this.currentPower =numAdd(this.currentPower,data.data.newPower) 
+          this.currentEnergy = numAdd(this.currentEnergy,data.data.newEnergyPoint)
+          console.log(this.currentPower)
+         console.log(this.currentEnergy)
+
           this.attendanceMsg.msgall = data.data.newEnergyPoint+"点能量"
           this.isShowSuccessMsg = true
          
           }else{
-          this.currentPower += data.data.newPower
-          this.currentEnergy += data.data.newEnergyPoint
-          //this.attendanceMsg.energy = data.data.newEnergyPoint
-          //this.attendanceMsg.power = data.data.newPower
+          this.currentPower =numAdd(this.currentPower,data.data.newPower) 
+          this.currentEnergy = numAdd(this.currentEnergy,data.data.newEnergyPoint)
            this.attendanceMsg.msgall = data.data.newEnergyPoint+"点能量"+","+data.data.newPower+"点算力"
           this.isShowSuccessMsg = true
           }
