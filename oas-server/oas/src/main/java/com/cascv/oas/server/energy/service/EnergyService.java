@@ -226,8 +226,11 @@ public class EnergyService {
             // 计算与最近球创建的时间差，即需要增加的积分+ 最近球已有积分
             long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND; //现在到最近球的创建时间总共有多少时间
             long time = leadTime - remainTime;
-            if(leadTime < 3600 || time < 0) {
+            if(BigDecimal.valueOf(leadTime).compareTo(timeGap) != 1 || time < 0) {
         		BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
+        		if(balance.compareTo(pointCapacityEachBall) == 1) {
+        			balance = pointCapacityEachBall;
+        		}        		
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	energyBallMapper.updatePointByUuid(latestUuid, balance, now);
         	}else {
@@ -252,6 +255,8 @@ public class EnergyService {
             	int amount = BigDecimal.valueOf(time).divide(timeGap, 0, BigDecimal.ROUND_UP).intValue();
             	long moreTime = time - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             	BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
+            	if(balance.compareTo(pointCapacityEachBall) == 1)
+        			balance = pointCapacityEachBall;
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	if(amount > remainBallNum) {
             		amount = remainBallNum + 1;
