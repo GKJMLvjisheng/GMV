@@ -65,6 +65,7 @@ import com.cascv.oas.server.user.model.UserRole;
 import com.cascv.oas.server.user.service.RoleService;
 import com.cascv.oas.server.user.service.UserService;
 import com.cascv.oas.server.user.wrapper.AuthCode;
+import com.cascv.oas.server.user.wrapper.BuyGradeThreeModel;
 import com.cascv.oas.server.user.wrapper.IMEIModel;
 import com.cascv.oas.server.user.wrapper.LoginResult;
 import com.cascv.oas.server.user.wrapper.LoginVo;
@@ -1772,5 +1773,22 @@ public class UserController extends BaseShiroController{
   	  return new ResponseEntity.Builder<Integer>()
 		      .setData(1).setErrorCode(ErrorCode.SUCCESS).build();
 	}
-	
+	/**
+	 * @author Ming Yang
+	 * @param buyGradeThreeModelInfo
+	 * @return  0 ：无权限购买三级矿机  1：有权限购买三级矿机
+	 */
+@PostMapping(value="/gradeTreeMinerAuthorization")
+@ResponseBody
+@WriteLog(value="gradeTreeMinerAuthorization")
+public ResponseEntity<?> gradeTreeMinerAuthorization(@RequestBody BuyGradeThreeModel buyGradeThreeModelInfo){
+   List<UserModel> buyGradeThreeModelList=buyGradeThreeModelInfo.getUserModelList();
+   for(UserModel buyGradeThreeModel:buyGradeThreeModelList) {
+	userModelMapper.updateUserInfo(buyGradeThreeModel);
+	}
+	return new ResponseEntity.Builder<Integer>()
+			  .setData(1)
+			  .setErrorCode(ErrorCode.SUCCESS)
+			  .build();
+	}
 }

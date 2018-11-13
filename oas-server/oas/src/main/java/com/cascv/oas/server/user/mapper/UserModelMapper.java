@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.cascv.oas.server.user.model.UserIdentityCardModel;
 import com.cascv.oas.server.user.model.UserModel;
+import com.cascv.oas.server.user.wrapper.BuyGradeThreeModel;
 import com.cascv.oas.server.user.wrapper.UserDetailModel;
 
 @Component
@@ -27,7 +28,7 @@ public interface UserModelMapper {
 	 * Author:lvjisheng
 	 * Date:2018.09.03
 	 */	 
-	 Integer updateUserInfo(UserModel userModel);
+	 Integer updateUserInfo(UserModel userModel);//顺便完成用户三级购买限制修改
 	 
 	/*
 	 * Name:upadateUserProfile
@@ -76,6 +77,7 @@ public interface UserModelMapper {
 
 	 //获取该imei的数量
 	 Integer countSameImeiNumber(String imei);
+	 
 
 }
 

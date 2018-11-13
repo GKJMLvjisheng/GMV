@@ -42,4 +42,6 @@ public class UserModel implements Serializable {
 	@Getter @Setter private String profile;
 	@Getter @Setter private String IMEI;
 	@Getter @Setter private Integer status;
+	
+	@Getter @Setter private Integer minerThreeRestriction;//三级矿机购买限制
 }

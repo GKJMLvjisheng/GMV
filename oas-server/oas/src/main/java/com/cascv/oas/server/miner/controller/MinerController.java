@@ -40,6 +40,8 @@ import com.cascv.oas.server.miner.wrapper.SystemParameterResponse;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
 import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+import com.cascv.oas.server.user.mapper.UserModelMapper;
+import com.cascv.oas.server.user.model.UserModel;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +68,8 @@ public class MinerController {
 	
 	@Autowired
 	private ActivityMapper activityMapper;
-
+	@Autowired
+	private UserModelMapper userModelMapper;
 
 	//增加系统变量
 	@PostMapping(value = "/addSystemParameter")  
@@ -358,12 +361,19 @@ public class MinerController {
 		BigDecimal balance = userWalletMapper.selectByUserUuid(userUuid).getBalance();
 		BigDecimal minerPower = minerMapper.inquireByMinerName(minerName).getMinerPower();
 		BigDecimal powerSum = minerPower.multiply(BigDecimal.valueOf((int)minerNum));
+		//查询购买是否为三级矿机
+		Integer minerGrade=minerMapper.inquireByMinerName(minerName).getMinerGrade();
+		UserModel userModel=userModelMapper.selectByUuid(userUuid);
+		Integer minerThreeRestriction=userModel.getMinerThreeRestriction();
+		if(minerGrade != 3) {
 		//判断自己剩余的OAS代币是否支持购买所需的矿机
 		if(balance.compareTo(priceSum) != -1) {
 			//更新用户钱包
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			UserWallet tuserWallet = userWalletMapper.selectByUserUuid(userUuid);
 			userWalletMapper.decreaseBalance(tuserWallet.getUuid(), priceSum);
+			//增加一条购买记录
+			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 			//增加在线钱包的消费记录
 			log.info("commet={}", minerNum+"台"+minerName);
 			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "",tuserWallet.getBalance().subtract(priceSum));
@@ -371,8 +381,6 @@ public class MinerController {
 			minerService.addMinerPowerBall(userUuid, powerSum);
 			//增加算力提升记录(有效期)
 			minerService.addMinerPowerTradeRecord(userUuid, powerSum);
-			//增加一条购买记录
-			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 			//更新用户能量钱包，即提升算力
 			activityMapper.increasePower(userUuid, powerSum, updated);
 			return new ResponseEntity.Builder<Integer>()
@@ -385,6 +393,42 @@ public class MinerController {
 					.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH)
 					.build();
 		}
+		
+	}else {
+		if(minerThreeRestriction == 1) {
+			if(balance.compareTo(priceSum) != -1) {
+				//更新用户钱包
+				log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
+				UserWallet tuserWallet = userWalletMapper.selectByUserUuid(userUuid);
+				userWalletMapper.decreaseBalance(tuserWallet.getUuid(), priceSum);
+				//增加一条购买记录
+				minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
+				//增加在线钱包的消费记录
+				log.info("commet={}", minerNum+"台"+minerName);
+				userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "",tuserWallet.getBalance().subtract(priceSum));
+				//增加算力球
+				minerService.addMinerPowerBall(userUuid, powerSum);
+				//增加算力提升记录(有效期)
+				minerService.addMinerPowerTradeRecord(userUuid, powerSum);
+				//更新用户能量钱包，即提升算力
+				activityMapper.increasePower(userUuid, powerSum, updated);
+				return new ResponseEntity.Builder<Integer>()
+						.setData(0)
+						.setErrorCode(ErrorCode.SUCCESS)
+						.build();
+			}else {
+				return new ResponseEntity.Builder<Integer>()
+						.setData(0)
+						.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH)
+						.build();
+			}
+		}else {
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(ErrorCode.BUYGRADETHREE_MINER_NO_AUTHORIZATION)
+					.build();
+		}
+		 }
 		
 	}
 	
