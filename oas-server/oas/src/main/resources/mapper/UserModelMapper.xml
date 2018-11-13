@@ -316,7 +316,9 @@
     <result column="email" property="email"/>
     <result column="IMEI" property="IMEI"/>
     <result column="created" property="created"/>
-     <result column="invite_from" property="inviteFrom"/>
+    <result column="invite_from" property="inviteFrom"/>
+    <result column="miner_three_restriction" property="minerThreeRestriction"
+			jdbcType="INTEGER" />
     <result column="status" property="status"/>
     <result column="roleId" property="roleId"/>
     <result column="user_identity_name" property="userIdentityName"/>
@@ -338,6 +340,7 @@
 		U.created as created,
 		U.value as value,
 		U.invite_from as invite_from,
+		U.miner_three_restriction as miner_three_restriction,
 		UR.role_id as roleId
 		from user_info U 
 		left join user_role UR on U.uuid = UR.uuid 
