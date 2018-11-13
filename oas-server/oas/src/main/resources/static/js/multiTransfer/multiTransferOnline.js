@@ -29,7 +29,7 @@ function initNormalGrid() {
 
 		//toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
-		sortName: 'uuid', // 要排序的字段
+		sortName: 'value', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 	    //maintainSelected:true,
 	    columns : [{
@@ -495,14 +495,17 @@ function responseHandler2(res){
    		 return;
    	 }
    	 var data = new Array(); 
-   	 if(validateValue(Global)){
+   	 if(Global){
    		 
    		  Ewin.confirm({ message: "确认要全局配置金额？手动输入金额将不生效"}).on(function (e) {
    		if (!e) {
    			alert("确认不使用全局配置，请清空全局配置金额！")
    		  return;
    		 }
-    	
+   		if(!validateValue(Global)){
+     		alert("请输入正确的全局配置金额！");
+     		return;
+     	}
    	 for(var i=0;i<rows.length;i++){
    		 var row={};
    		 row['toUserName']=rows[i].name;

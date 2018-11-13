@@ -105,12 +105,22 @@ function initNormalGrid() {
 		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 
-		toolbar:"#toolbar",//工具栏
+		//toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 			
-	    columns : [{  
+	    columns : [{
+			
+			checkbox:"true",
+			
+			align: 'center',// 居中显示
+			valign: 'middle',
+			
+			field : "box",
+			width:  '50px',
+			
+		},{  
 			title: '序号',  
 			field: '',
 			align: 'center',
@@ -126,28 +136,22 @@ function initNormalGrid() {
 				valign: 'middle',
 				width:  '90px',
 			},
-			{
-				title : "昵称",
-				field : "nickname",
-				align: 'center',
-				valign: 'middle',
-				width:  '90px',
-				
-			},
-			{
-				title : "手机",
-				field : "mobile",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},
-			{
-				title : "邮箱",
-				field : "email",
-				align: 'center',
-				valign: 'middle',
-				width:  '98px',
-			},
+//			{
+//				title : "昵称",
+//				field : "nickname",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '90px',
+//				
+//			},
+//			{
+//				title : "手机",
+//				field : "mobile",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '110px',
+//			},
+			
 			{
 				title : "IMEI",
 				field : "imei",
@@ -172,6 +176,15 @@ function initNormalGrid() {
 				width:  '100px',
 				//visible: false,
 			},{
+				title : "三级矿机购买授权",
+				field : "minerThreeRestriction",
+				align: 'center',
+				valign: 'middle',
+				width:  '98px',
+				formatter:author
+					
+				
+			},{
 				title : "账号状态",
 				field : "status",
 				align: 'center',
@@ -185,7 +198,7 @@ function initNormalGrid() {
 				field : "name",
 				align: 'center',
 				valign: 'middle',
-				width:  '90px',
+				width:  '80px',
 				formatter: actionFormatter7
 			},{
 
@@ -214,13 +227,99 @@ function initNormalGrid() {
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: true,         
+		clickToSelect: false,   
+		onCheck:function(row){
+			var data={name:row.name,
+					minerThreeRestriction:row.minerThreeRestriction};
+			$('#normalMinnerGrid').bootstrapTable('prepend', data);
+			//initNormalMinerGrid(data)
+	        }
 	});
 }
-	
+//function initNormalMinerGrid() {	
+	//$("#normalMinnerGrid").bootstrapTable('destroy');
+$(function(){
+	$("#normalMinnerGrid").bootstrapTable({
+		//url: '/api/v1/userCenter/selectAllUsers',
+		contentType : "application/json",
+		dataType:"json",
+		method: 'post',
+		striped:true,//隔行变色
+		uniqueId:"name",
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"client",//在服务器分页
+		pageNumber:1,//首页页码
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		//queryParams:queryParams1,//请求服务器时所传的参数
+		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
+		//data: data,
+
+		//toolbar:"#toolbar",//工具栏
+		sortable: false,//是否启用排序
+		sortName: 'uuid', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+			
+	    columns : [{  
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {  
+				return pageSize * (pageNum - 1) + index + 1; 
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+			},
+
+			{
+				title : "三级矿机购买授权",
+				field : "minerThreeRestriction",
+				align: 'center',
+				valign: 'middle',
+				width:  '98px',
+				formatter:author
+					
+				
+			},{
+
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: function action(value, row, index){
+					var id=row.name
+					var result="";
+					result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+				return result;
+				}
+			}],		
+
+	});
+});
+function author(value, row, index) {
+    var result = "";
+  if(value==1){
+	result += "<span>已授权</span>";      
+    return result;
+	}else if(value==0){
+	result += "<span>未授权</span>";      
+    return result;
+	} 
+}
+function deleteById(id){
+$("#normalMinnerGrid").bootstrapTable('removeByUniqueId', id);
+}
 //请求服务数据时所传参数
 function queryParams1(params){
-	var searchValue = $("#user1").val();
+	var searchValue = $("#searchValue").val();
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;	
 	
@@ -376,7 +475,11 @@ function initTestGrid() {
 			}],		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
-		clickToSelect: false,         
+		clickToSelect: false,    
+		onCheck:function(row){
+	          console.log(row);
+	          alert(1)
+	        }
 	});
 }
 
