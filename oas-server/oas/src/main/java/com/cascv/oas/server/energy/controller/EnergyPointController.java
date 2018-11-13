@@ -202,13 +202,12 @@ public class EnergyPointController extends BaseShiroController{
         Date date = sdf.parse(now);
     	Calendar calendar = Calendar.getInstance();
     	calendar.setTime(date);
-    	Integer timeZone = timeZoneService.getTimeGap(userUuid);
+    	Integer timeZone = timeZoneService.getTimeGap();
     	calendar.add(Calendar.HOUR_OF_DAY, timeZone);
     	String newTime = sdf.format(calendar.getTime());
     	String newDate = newTime.substring(0, 10);
     	BigDecimal point = BigDecimal.ZERO;
-    	Integer getTimeZone = timeZoneService.getTimeGap(userUuid);
-    	List<EnergyPointBall> energyPointBallList = activityMapper.selectAllByUserUuid(userUuid, status, getTimeZone, newDate);
+    	List<EnergyPointBall> energyPointBallList = activityMapper.selectAllByUserUuid(userUuid, status, timeZone, newDate);
     	for(int i=0; i<energyPointBallList.size(); i++) {
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}

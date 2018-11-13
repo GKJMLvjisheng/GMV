@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
 import com.cascv.oas.server.timezone.model.CountryPromaryModel;
-import com.cascv.oas.server.user.mapper.UserModelMapper;
 import com.cascv.oas.server.utils.ShiroUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TimeZoneService {
 	@Autowired 
 	private CountryPromaryModelMapper countryPromaryModelMapper;
-	@Autowired
-	private UserModelMapper userModelMapper;
 	
 	private static final Integer TRANSFER_OF_SECOND_TO_MILLISECOND = 1000; // 秒与毫秒的转换倍率
 	private static final Integer TRANSFER_OF_HOUR_TO_SECOND = 3600; //小时与秒的转化
@@ -52,16 +49,12 @@ public class TimeZoneService {
 		}
 	}
 	
-	public Integer getTimeGap(String userUuid) {
-		String address = userModelMapper.selectByUuid(userUuid).getAddress();
-		if(address != null){
-			String [] timeZone = address.split(" ");
-	    	String timeZoneId = countryPromaryModelMapper.inqurueTimeZone(timeZone);
-	    	Integer time = DateUtils.getTimeGap(timeZoneId) / TRANSFER_OF_SECOND_TO_MILLISECOND;
-	    	Integer timeGap = time / TRANSFER_OF_HOUR_TO_SECOND;
-			return timeGap;
-		}else
-			return 0;
+	public Integer getTimeGap() {
+    	String timeZoneId = this.switchToUserTimeZoneId();
+    	log.info("timeZone");
+    	Integer time = DateUtils.getTimeGap(timeZoneId) / TRANSFER_OF_SECOND_TO_MILLISECOND;
+    	Integer timeGap = time / TRANSFER_OF_HOUR_TO_SECOND;
+		return timeGap;
 		
 	}
 }

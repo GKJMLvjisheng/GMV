@@ -69,7 +69,7 @@ public class EnergyService {
      * @throws ParseException 
      */
     public Boolean isCheckin(String userUuid) throws ParseException {
-    	Integer timeGap = timeZoneService.getTimeGap(userUuid);
+    	Integer timeGap = timeZoneService.getTimeGap();
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = sdf.parse(now);
