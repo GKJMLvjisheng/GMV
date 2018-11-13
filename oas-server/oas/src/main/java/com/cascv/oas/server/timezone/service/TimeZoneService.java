@@ -54,6 +54,7 @@ public class TimeZoneService {
     	log.info("timeZone");
     	Integer time = DateUtils.getTimeGap(timeZoneId) / TRANSFER_OF_SECOND_TO_MILLISECOND;
     	Integer timeGap = time / TRANSFER_OF_HOUR_TO_SECOND;
+    	log.info("timeGap={}", timeGap);
 		return timeGap;
 		
 	}
