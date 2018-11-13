@@ -24,7 +24,12 @@
 </head>
 
 <body>
+	
 
+		
+
+	<input type="button" value="批量提币" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" onclick="withdrowMoneyList()"></input>	
+		
 	<section class="content table-content">		
 		<div class = "container">
 			<table id="requestAuditGrid"></table>
@@ -72,7 +77,7 @@
 				
 					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
 						<input  style="display:none" type="hidden" name="uuid" id="uuid">
-						<input  style="display:none" type="hidden" name="status" id="status">
+						<input  name="status" id="status">
 						
 						<div class="form-group">
 							<label for="ErewardName" id="withdrawMoney" style="font-size:16px;" class="col-sm-8 control-label">确认批准提币请求吗？</label>													
@@ -87,6 +92,37 @@
 			</div>					
 		</div>
 	</div>	 
+	
+		<!--批量提币模态框 -->
+	<div class="modal fade" id="moneyModal" tabindex="-1" role="dialog">
+
+	<div class="modal-dialog modal-lm" role="document">
+
+		<div class="modal-content">
+
+				<div class="modal-header">
+				
+ 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+					<h3 class="modal-title" id="activityModalLabel">批量提币</h3>
+
+				</div>
+
+				<div class="modal-body">	
+					<input type="hidden" name="downName" id="downName">			
+					<table id="moneyGrid">
+	
+					</table>				
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="withdrawMoney1" aria-label="Close" class="btn btn-default" onclick="agreeWithdrawMoney()"><span aria-hidden="true">批准</span></button>
+					<button type="button" data-dismiss="modal" id="withdrawMoney2" aria-label="Close" class="btn btn-default" onclick="rejectWithdrawMoney()"><span aria-hidden="true">拒绝</span></button>
+				</div>	
+				
+			</div>
+		</div>
+	</div>	
 	
 	<!-- 查看用户信息的模态框 -->
     <div class="modal fade" id="queryModal" tabindex="-1" role="dialog">
