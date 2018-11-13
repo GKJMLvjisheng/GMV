@@ -372,8 +372,6 @@ public class MinerController {
 			log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 			UserWallet tuserWallet = userWalletMapper.selectByUserUuid(userUuid);
 			userWalletMapper.decreaseBalance(tuserWallet.getUuid(), priceSum);
-			//增加一条购买记录
-			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 			//增加在线钱包的消费记录
 			log.info("commet={}", minerNum+"台"+minerName);
 			userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "",tuserWallet.getBalance().subtract(priceSum));
@@ -381,6 +379,8 @@ public class MinerController {
 			minerService.addMinerPowerBall(userUuid, powerSum);
 			//增加算力提升记录(有效期)
 			minerService.addMinerPowerTradeRecord(userUuid, powerSum);
+			//增加一条购买记录
+			minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 			//更新用户能量钱包，即提升算力
 			activityMapper.increasePower(userUuid, powerSum, updated);
 			return new ResponseEntity.Builder<Integer>()
@@ -401,8 +401,6 @@ public class MinerController {
 				log.info("walletUuid={}", userWalletMapper.selectByUserUuid(userUuid).getUuid());
 				UserWallet tuserWallet = userWalletMapper.selectByUserUuid(userUuid);
 				userWalletMapper.decreaseBalance(tuserWallet.getUuid(), priceSum);
-				//增加一条购买记录
-				minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 				//增加在线钱包的消费记录
 				log.info("commet={}", minerNum+"台"+minerName);
 				userWalletService.addDetail(userWallet, "", UserWalletDetailScope.PURCHASE_MINER, priceSum, minerNum+"台"+minerName, "",tuserWallet.getBalance().subtract(priceSum));
@@ -410,6 +408,8 @@ public class MinerController {
 				minerService.addMinerPowerBall(userUuid, powerSum);
 				//增加算力提升记录(有效期)
 				minerService.addMinerPowerTradeRecord(userUuid, powerSum);
+				//增加一条购买记录
+				minerService.addPurchaseRecord(userUuid, minerName, minerNum, priceSum);
 				//更新用户能量钱包，即提升算力
 				activityMapper.increasePower(userUuid, powerSum, updated);
 				return new ResponseEntity.Builder<Integer>()
