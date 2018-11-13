@@ -1,5 +1,6 @@
 
 document.write("<script language=javascript src='/js/userAccount/userAccountTable.js'></script>");
+document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 
 var check1;
 var check2;
@@ -531,4 +532,76 @@ function display5(){
 	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn3').removeClass('active').addClass('active1');
+}
+function authorMinnerDisplay(){
+	
+	//$("#table").fadeIn("slow");
+	 
+		  if(document.getElementById("table").style.display=="block")
+          //$("#table").fadeOut("slow");
+			  document.getElementById("table").style.display="none";
+		  else{document.getElementById("table").style.display="block";}
+}
+function authorMinner(){
+	//var allTableData = $tableLeft.bootstrapTable('getData');//获取表格的所有内容行
+	var allTableData=$("#normalMinnerGrid").bootstrapTable('getData');
+	if(allTableData.length==0){
+		alert("请选择用户进行授权");
+		return;
+	}
+	if(allTableData[0].minerThreeRestriction==0){
+		var status="授权";
+	}else{
+		status="取消授权";
+	}
+	 Ewin.confirm({ message: "确认对【"+allTableData.length+"】个用户进行三级矿机购买"+status+"." }).on(function (e) {
+ 		if (!e) {
+ 		  return;
+ 		 }
+ 		
+    var dataSum={
+     		
+     		"fromName":userName,
+     	    "multiTransferQuota":data,
+     	}; 
+    console.log(JSON.stringify(dataSum))
+ $.ajax({
+
+		url:"/api/v1/userWallet/multiTransfer",
+		//headers: {'Authorization': token},
+
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(dataSum),
+		async:false,	
+		success:function(res){
+			
+			if(res.code==0)
+      {  
+				
+					
+					$("#Tip").modal('show');
+					
+					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
+					 //setTimeout(setMoney, 50000);
+//					console.log(123)
+			    	 initNormalGrid();
+			    	 initTestGrid();
+			    	 resetAddModal();
+			    	 resetTestModal();
+      }
+      else{
+     	 alert("转账失败");
+     	
+      	}
+		     
+		},
+	
+		error:function(){
+					alert("请求失败！")
+				}
+	}); 
+ });
 }

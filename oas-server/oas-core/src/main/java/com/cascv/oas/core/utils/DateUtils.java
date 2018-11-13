@@ -100,7 +100,7 @@ public class DateUtils {
     }
     
     public static Integer getTimeGap(String timeZoneId) {
-    	return TimeZone.getDefault().getRawOffset()- TimeZone.getTimeZone(timeZoneId).getRawOffset();
+    	return TimeZone.getTimeZone(timeZoneId).getRawOffset() - TimeZone.getDefault().getRawOffset() ;
     }
     
     /**
