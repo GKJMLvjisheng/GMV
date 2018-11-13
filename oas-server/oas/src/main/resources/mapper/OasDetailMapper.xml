@@ -88,14 +88,16 @@
   </insert>
   
   <sql id="Oas_Detail_Info" >
-    a.uuid, a.value, a.extra, a.status, a.remark,DATE_FORMAT(a.created,"%Y-%m-%d %H:%i:%s")as created,b.name as userName
+    a.uuid, a.value, a.extra, a.status, a.remark,DATE_FORMAT(a.created,"%Y-%m-%d %H:%i:%s")as created,b.name as userName,c.address as address
   </sql>
   
   <select id="getAllWithdrawRecord" resultType="com.cascv.oas.server.blockchain.model.OasDetailResp">
   	select <include refid="Oas_Detail_Info" /> 
   	from oas_detail a 
-  	left join user_info b 
+  	left join user_info b  	
   	on a.user_uuid = b.uuid
+  	left join eth_wallet  c
+  	on a.user_uuid = c.user_uuid
   	where a.type = '1'
   	order by a.created desc
   	limit #{offset},#{limit}

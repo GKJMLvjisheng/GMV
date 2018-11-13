@@ -15,4 +15,5 @@ public class EthWalletTradeRecordInfo implements Serializable {
     @Getter @Setter private String remark;
     @Getter @Setter private String created;
     @Getter @Setter private BigDecimal restBalance;
+    @Getter @Setter private String address;
 }
