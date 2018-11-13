@@ -221,7 +221,7 @@
 				birthday = #{birthday},
 			</if>
 			<if test="minerThreeRestriction != null">
-				mine_three_restriction = #{minerThreeRestriction}
+				miner_three_restriction = #{minerThreeRestriction}
 			</if>
 		</trim>
 		where name = #{name}

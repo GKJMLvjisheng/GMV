@@ -1784,7 +1784,7 @@ public class UserController extends BaseShiroController{
 public ResponseEntity<?> gradeTreeMinerAuthorization(@RequestBody BuyGradeThreeModel buyGradeThreeModelInfo){
    List<UserModel> buyGradeThreeModelList=buyGradeThreeModelInfo.getUserModelList();
    for(UserModel buyGradeThreeModel:buyGradeThreeModelList) {
-	userModelMapper.updateUserInfo(buyGradeThreeModel);
+	   userModelMapper.updateUserInfo(buyGradeThreeModel);
 	}
 	return new ResponseEntity.Builder<Integer>()
 			  .setData(1)
