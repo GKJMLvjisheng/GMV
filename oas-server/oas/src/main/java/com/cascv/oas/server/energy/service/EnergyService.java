@@ -685,7 +685,8 @@ public class EnergyService {
     		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 			   energyChangeDetail.setCreated(created);
 			   if(energyChangeDetail.getSourceUuid() != null && energyChangeDetail.getSourceUuid().equals("WALK")) {
-				   energyChangeDetail.setActivity(energyChangeDetail.getComment()+energyChangeDetail.getActivity()+energyChangeDetail.getStepNum()+"步");
+				   String activity = energyChangeDetail.getComment()+energyChangeDetail.getActivity()+energyChangeDetail.getStepNum().toString()+"步";
+				   energyChangeDetail.setActivity(activity);
 			   }
 			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
     		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
@@ -719,6 +720,10 @@ public class EnergyService {
 	    		 energyChangeDetail.setActivity("积分消费");
 				 energyChangeDetail.setCategory("积分兑换OAS代币");
 	    		 }
+	    		 if(energyChangeDetail.getSourceUuid() != null && energyChangeDetail.getSourceUuid().equals("WALK")) {
+					   String activity = energyChangeDetail.getComment()+energyChangeDetail.getActivity()+energyChangeDetail.getStepNum().toString()+"步";
+					   energyChangeDetail.setActivity(activity);
+				   }
 	    		   //.intValue()方法是把Integer转为Int?
 	    		 String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 				   energyChangeDetail.setCreated(created);
