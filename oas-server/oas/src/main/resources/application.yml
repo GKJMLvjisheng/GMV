@@ -78,7 +78,7 @@ media:
 mail:
   mailBean:
     rootMail: "support@oases.pro"
-    password: "Jykj588"
+    password: "Epc588"
     name: "support@oases.pro"
     subject: "邮箱验证"
 

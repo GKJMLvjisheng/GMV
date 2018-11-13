@@ -262,7 +262,7 @@ public class UserWalletController extends BaseShiroController {
    */
   @PostMapping(value="/setWithdrawResult")
   @ResponseBody
-//  @RequiresRoles("admin")
+//@RequiresRoles("admin")
   @Transactional
   public ResponseEntity<?> setWithdrawResult(@RequestBody OasDetailResp req){ 
 	  String id = req.getUuid();

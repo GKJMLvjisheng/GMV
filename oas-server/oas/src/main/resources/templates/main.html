@@ -87,18 +87,20 @@
                                 <li class="active"><a class="menuItem" th:href="@{/miner/powerRecord}">算力记录查询</a></li>
                              </ul>
                         </li>
+                        </shiro:hasRole>
                         
                         <li class="">
                             <a href="#"><i class="glyphicon glyphicon-user"></i> <span class="nav-label" >用户管理</span></a>
                             <ul class="nav nav-second-level">
                                 <li class="active"><a class="menuItem" th:href="@{/KYC/KYC}">KYC认证</a></li>
+                                
+                                <shiro:hasRole name="系统账号">
                                 <li class="active"><a class="menuItem" th:href="@{/userAccountManage}">用户账号管理</a></li> 
                                 <li class="active"><a href="#"><span class="nav-label"data-toggle="tooltip" title="待开发" data-placement="right">用户权限管理</span></a></li>          
+                                </shiro:hasRole>
                             </ul>
                         </li>
-                         
-                        </shiro:hasRole>
-                        
+                                                                      
                         <li class="">
                             <a href="#"><i class="glyphicon glyphicon-cog"></i> <span class="nav-label" >系统管理</span></a>
                             <ul class="nav nav-second-level">
