@@ -309,7 +309,7 @@ public class EthWalletController extends BaseShiroController {
     Integer limit = pageSize;
     Integer offset;
 
-    if (pageSize == 0) {
+    if (pageSize == null) {
       limit = 10;
     }
     if (pageNum != null && pageNum > 0)
