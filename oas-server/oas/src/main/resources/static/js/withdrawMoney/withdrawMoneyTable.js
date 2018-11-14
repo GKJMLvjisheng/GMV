@@ -4,6 +4,7 @@ var pageSize;
 var pageNum;
 var array = new Array;
 var allData = "";
+var dataRes;
 
 function initRequestAuditGrid() {	
 	$('#requestAuditGrid').bootstrapTable('destroy');
@@ -40,20 +41,19 @@ function initRequestAuditGrid() {
 		//class:'uu_style', 
 		visible: false, 
 		},
-		{			
-			checkbox:"true",			
-			align: 'center',// 居中显示			
-			field : "box",
-			//class:"check",
-			disabled : true,
-		},
+//		{			
+//			checkbox:"true",			
+//			align: 'center',// 居中显示			
+//			field : "box",
+//			
+//		},
 		{  
 			title: '序号',  
 			field: '',
 			align: 'center',
 			valign: 'middle',  
 			width:  '50px',
-			formatter: function (value, row, index) {  
+			formatter: function (value, row, index) { 
 				return pageSize * (pageNum - 1) + index + 1;  
 				}  
 			},
@@ -106,15 +106,31 @@ function initRequestAuditGrid() {
 			formatter: actionFormatter		
 		}],		
 		
-		clickToSelect: false, 
+		clickToSelect: true, 
 		
 		//点击每一个复选框时触发的操作
-		onCheck: function (row) {
-			//alert(JSON.stringify(row));
+		onCheck: function (row,index) {
+			//alert(JSON.stringify(index));
+			var y = 0;
 			if(row.status!=0){
 				alert("该提币请求已审核完毕，请勿重复审核！");
+				index.prop("checked",false);
 			}else{
-				array.unshift(row);	  
+				if(array.length==0){
+					array.push(row);
+				}else{
+					for(var i=0;i<array.length;i++){
+            		
+            			if(array[i].uuid==row.uuid){
+            				alert("该提币请求已添加，请勿重复添加！");
+            				index.prop("checked",false);
+            				y = 1;
+            			}            			          		
+	            	}
+					if(y==0){
+						array.push(row);//无相同的请求的处理
+					}
+				}									  
 			}
 	            	        
 	    },
@@ -132,31 +148,83 @@ function initRequestAuditGrid() {
 	    },
 	    
 	  //点击全选框时触发的操作
-        onCheckAll:function(rows){       	
-        	//alert(JSON.stringify(rows)); 
-        	array = rows;
-        	
+        onCheckAll:function(rows){
+        	var boxes = document.getElementsByName("btSelectItem");
+            var box = document.getElementsByName("btSelectAll");
+            console.log(JSON.stringify(boxes));
+            console.log(JSON.stringify(box));
+            
         	for(var i=0;i<rows.length;i++){
         		if(rows[i].status!=0){
-        			array.splice(i,1);//删除已审核完的提币请求
-        			$('.check').attr("checked",false);
+        			boxes[i].checked = false;
+        		}        		
+        	} 
+        	
+        	if(array.length==0){
+        		array = rows;
+        	}else{
+   		
+        		for(var i=0;i<array.length;i++){
+            		
+            		for(var j=0;j<rows.length;j++){
+            			if(array[i].uuid==rows[j].uuid){
+            				rows.splice(j,1);//删除rows中重复的提币请求            				            				
+            				var f = 1;            	
+            			}
+            		}
+            	}        		
+    			var allData = new Array;
+    			allData = rows;
+    			array = array.concat(allData); //数组拼接    		
+        	}        	
+        	
+        	//删除一条数据后，数组索引值已变
+        	for(var i=array.length-1;i>=0;i--){
+        		if(array[i].status!=0){
+        			array.splice(i,1);//删除已审核完的提币请求       			      			       			
         			var d = 1;
-        		}
-        	}
+        		}        		
+        	}        	
         	
-        	if(d==1){
-        		alert("提币请求中包含部分已审核完毕的请求，已自动为您去除！");
-        	}
-        	
+        	if(d==1 || f==1){
+        		alert("提币请求中包含部分已审核完毕或重复添加的请求，已自动为您去除！");
+        	}        	
         },
         
         //取消所有
-        onUncheckAll: function (row) {
-        	array = [];        	     	
-        },       
-        
+        onUncheckAll: function (row) {          	    
+    		
+        	for(var i=0;i<array.length;i++){
+        		
+        		for(var j=0;j<row.length;j++){
+        			
+        			if(array[i].uuid==row[j].uuid){
+        				array.splice(i,1);//删除array中重复的提币请求
+        			}
+        		}
+        	}        		  			    		
+        	        	
+        },         
+    	 
 	});
 }
+
+//$("click".function(){
+//	debugger;
+//	var j = 0;
+//	var boxes = document.getElementsByName("btSelectItem");
+//    var box = document.getElementsByName("btSelectAll");
+////    console.log(JSON.stringify(boxes));
+////    console.log(JSON.stringify(box));
+//    
+//	for(var i=0;i<dataRes.length;i++){
+//		for(j;j<array.length;j++){
+//			if(dataRes.data.rows[i].uuid == array[j].uuid){
+//				boxes[i].checked = true;
+//			}  
+//		}		      		
+//	} 
+//});
 
 function withdrowMoneyList(){
 	initMoneyGrid(array);			
@@ -170,79 +238,84 @@ function agreeWithdrawMoney(){
 		array1[i] = array[i].uuid;
 	}
 	
-	//alert(JSON.stringify(array1)); 
+	if(array1.length==0){
+		alert("请通过勾选复选框选择提币请求之后，再执行此操作！");
+	} else{ 
 	
-	var data={
-		"array":array1,
-		"status":1,
-		}
-
-	$.ajax({		
-		url: "/api/v1/userWallet/setWithdrawResult",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data:JSON.stringify(data),
-		processData : false,
-		async : false,
-
-		success: function(res) {
-			if(res.code==0){
-				alert("批量提币过程完成");
-				location.reload();
-			}else{
-				alert(res.message);
-				//location.reload();
-			}			
-		}, 
-		error: function(){
-			document.getElementById("tipContent").innerText="审核过程发生错误";
-			$("#Tip").modal('show');
-		}
-	}); 
+		var data={
+			"array":array1,
+			"status":1,
+			}
+	
+		$.ajax({		
+			url: "/api/v1/userWallet/setWithdrawResult",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(data),
+			processData : false,
+			async : false,
+	
+			success: function(res) {
+				if(res.code==0){
+					alert("批量提币过程完成");
+					location.reload();
+				}else{
+					alert(res.message);
+					//location.reload();
+				}			
+			}, 
+			error: function(){
+				document.getElementById("tipContent").innerText="审核过程发生错误";
+				$("#Tip").modal('show');
+			}
+		}); 
+	}
 }
 
 function rejectWithdrawMoney(){
 	
-	alert(JSON.stringify(array)); 
+	//alert(JSON.stringify(array)); 
 	
 	var array2 = new Array();	
 	for(var i=0;i<array.length;i++){
 		array2[i] = array[i].uuid;
 	}
 	
-	//alert(JSON.stringify(array1)); 
-	
-	var data={
-		"array":array2,
-		"status":2,
-		}
+	if(array2.length==0){
+		alert("请通过勾选复选框选择提币请求之后，再执行此操作！");
+	} else{
+		var data={
+				"array":array2,
+				"status":2,
+				}
 
-	$.ajax({		
-		url: "/api/v1/userWallet/setWithdrawResult",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data:JSON.stringify(data),
-		processData : false,
-		async : false,
+			$.ajax({		
+				url: "/api/v1/userWallet/setWithdrawResult",
+				contentType : 'application/json;charset=utf8',
+				dataType: 'json',
+				cache: false,
+				type: 'post',
+				data:JSON.stringify(data),
+				processData : false,
+				async : false,
 
-		success: function(res) {
-			if(res.code==0){
-				alert("批量提币过程完成");
-				location.reload();
-			}else{
-				alert(res.message);
-				//location.reload();
-			}			
-		}, 
-		error: function(){
-			document.getElementById("tipContent").innerText="审核过程发生错误";
-			$("#Tip").modal('show');
-		}
-	}); 
+				success: function(res) {
+					if(res.code==0){
+						alert("批量提币过程完成");
+						location.reload();
+					}else{
+						alert(res.message);
+						//location.reload();
+					}			
+				}, 
+				error: function(){
+					document.getElementById("tipContent").innerText="审核过程发生错误";
+					$("#Tip").modal('show');
+				}
+			}); 
+	}
 }
 
 //批量提币列表
@@ -317,7 +390,7 @@ function initMoneyGrid(data) {
 		//search : true,//搜索
         //searchOnEnterKey : true,
 		clickToSelect: false,  
-	});
+	})	
 }
 
 //请求服务数据时所传参数
@@ -335,7 +408,8 @@ function queryParams(params){
 
 //请求成功方法
 function responseHandler(res){
-	//alert(JSON.stringify(res))
+	//console.log(JSON.stringify(res));
+	dataRes = res;
 	if(res.code != 0 ){
 		alert("提币请求审核回显失败！"+res.message)
 		return{
@@ -343,7 +417,6 @@ function responseHandler(res){
 			withdrawData : null
 		}
 	}
-					
 	return {
 		 total : res.data.total, //总页数,前面的key必须为"total"
 		 withdrawData : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.

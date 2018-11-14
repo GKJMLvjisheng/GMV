@@ -137,7 +137,13 @@ function actionFormatter1(value, row, index) {
 	var s = "https://etherscan.io/token/";
 	var s1 = s+value;
 	var result = "";
-	result +="<a href="+s1+ ">"+value+"</a>"; 
+	
+	//alert(JSON.stringify(typeof value));
+	if(typeof value=="object"){
+		result +="<span>交易钱包地址不存在</span>";
+	}else{
+		result +="<a href="+s1+ ">"+value+"</a>"; 
+	}
 	return result;
 }
 
