@@ -36,6 +36,8 @@ class BaseConstant{
         const val WALLET_BACKUP = "wallet_backup"
         const val PASSWORD_IS_REMEMBER = "password_remember"
 
+        const val HELP_FEEDBACK_DESCRIPTION = "https://mp.weixin.qq.com/s/6ab2dHLCekLJlq21p-TiPg"   //帮助与反馈的用户说明书地址
+
         const val MY_OAS_ADDRESS = "my_oas_address"
         const val MY_OAS_AMOUNT = "my_oas_amount"
         const val MY_OAS_AMOUNT_UNCONFIRMED = "my_oas_amount_unconfirmed"
@@ -55,7 +57,7 @@ class BaseConstant{
         const val GAS_LIMIT = 60000
         const val GAS_AMOUNT = 37247
         const val GAS_PRICE_LOW = 1 //seekbar显示的最小值
-        const val GAS_PRICE_HIGH = 10//seekbar显示的最大值
+        const val GAS_PRICE_HIGH = 20//seekbar显示的最大值
 
         /*正则表达式*/
         //大于0的整数小数
