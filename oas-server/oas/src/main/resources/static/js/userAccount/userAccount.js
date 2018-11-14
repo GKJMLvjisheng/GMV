@@ -9,6 +9,7 @@ var check3;
 //主界面用户表格回显
 $(function() {
 	initNormalGrid();
+	initNormalMinerGrid();
 	initTestGrid();
 	initSystemGrid();
 	initOperationGrid();
@@ -546,28 +547,27 @@ function authorMinner(){
 	//var allTableData = $tableLeft.bootstrapTable('getData');//获取表格的所有内容行
 	var allTableData=$("#normalMinnerGrid").bootstrapTable('getData');
 	if(allTableData.length==0){
-		alert("请选择用户进行授权");
+		alert("请选择用户进行授权/取消授权");
 		return;
 	}
+	 console.log(allTableData);
 	if(allTableData[0].minerThreeRestriction==0){
 		var status="授权";
-	}else{
-		status="取消授权";
-	}
-	 Ewin.confirm({ message: "确认对【"+allTableData.length+"】个用户进行三级矿机购买"+status+"." }).on(function (e) {
+		
+	 Ewin.confirm({ message: "确认对【"+allTableData.length+"】个用户进行三级矿机购买"+"<h4 style='display: inline-block'>"+status+"</h4>"+"！" }).on(function (e) {
  		if (!e) {
  		  return;
  		 }
- 		
-    var dataSum={
-     		
-     		"fromName":userName,
-     	    "multiTransferQuota":data,
-     	}; 
-    console.log(JSON.stringify(dataSum))
+ 		for(var i=0;i<allTableData.length;i++){
+			allTableData[i].minerThreeRestriction=1;
+		}
+		var dataSum={
+	     		
+	    		"userModelList":allTableData
+	    }
  $.ajax({
 
-		url:"/api/v1/userWallet/multiTransfer",
+		url:"/api/v1/userCenter/gradeTreeMinerAuthorization",
 		//headers: {'Authorization': token},
 
 		contentType : 'application/json;charset=utf8',
@@ -584,16 +584,20 @@ function authorMinner(){
 					
 					$("#Tip").modal('show');
 					
-					document.getElementById("tipContent").innerHTML="恭喜您，转账成功！";
+					document.getElementById("tipContent").innerHTML="购买三级矿机授权成功！";
 					 //setTimeout(setMoney, 50000);
 //					console.log(123)
-			    	 initNormalGrid();
-			    	 initTestGrid();
-			    	 resetAddModal();
-			    	 resetTestModal();
+					initNormalGrid();
+					initNormalMinerGrid();
+					document.getElementById("table").style.display="none";
+			    	 //initTestGrid();
+			    	 //resetAddModal();
+			    	 //resetTestModal();
       }
       else{
-     	 alert("转账失败");
+    	  $("#Tip").modal('show');
+			
+			document.getElementById("tipContent").innerHTML="购买三级矿机授权失败！";
      	
       	}
 		     
@@ -604,4 +608,62 @@ function authorMinner(){
 				}
 	}); 
  });
+	}else{
+		status="取消授权";
+		
+		 Ewin.confirm({ message: "确认对【"+allTableData.length+"】个用户进行三级矿机购买"+"<h4 style='display: inline-block'>"+status+"</h4>"+"！" }).on(function (e) {
+	 		if (!e) {
+	 		  return;
+	 		 }
+	 		for(var i=0;i<allTableData.length;i++){
+				allTableData[i].minerThreeRestriction=0;
+			}
+			var dataSum={
+		     		
+		    		"userModelList":allTableData
+		    }
+	 $.ajax({
+
+			url:"/api/v1/userCenter/gradeTreeMinerAuthorization",
+			//headers: {'Authorization': token},
+
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(dataSum),
+			async:false,	
+			success:function(res){
+				
+				if(res.code==0)
+	      {  
+					
+						
+						$("#Tip").modal('show');
+						
+						document.getElementById("tipContent").innerHTML="取消购买三级矿机授权成功！";
+						 //setTimeout(setMoney, 50000);
+//						console.log(123)
+						initNormalGrid();
+						initNormalMinerGrid();
+						document.getElementById("table").style.display="none";
+				    	 //initTestGrid();
+				    	 //resetAddModal();
+				    	 //resetTestModal();
+	      }
+	      else{
+	    	  $("#Tip").modal('show');
+				
+				document.getElementById("tipContent").innerHTML="取消购买三级矿机授权失败！";
+	     	
+	      	}
+			     
+			},
+		
+			error:function(){
+						alert("请求失败！")
+					}
+		}); 
+	 });
+	}
 }
