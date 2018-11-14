@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -349,6 +350,7 @@ public class MinerController {
 	//购买矿机
 	@PostMapping(value = "/buyMiner")  
 	@ResponseBody
+	@Transactional
 	@WriteLog(value="buyMiner")
 	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
 		String userUuid = ShiroUtils.getUserUuid();
