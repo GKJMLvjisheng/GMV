@@ -157,7 +157,6 @@ function initRequestAuditGrid() {
         	for(var i=0;i<rows.length;i++){
         		if(rows[i].status!=0){
         			boxes[i].checked = false;
-        			box.checked = true;
         		}        		
         	} 
         	
@@ -205,11 +204,27 @@ function initRequestAuditGrid() {
         		}
         	}        		  			    		
         	        	
-        }, 
-        
-        
+        },         
+    	 
 	});
 }
+
+//$("click".function(){
+//	debugger;
+//	var j = 0;
+//	var boxes = document.getElementsByName("btSelectItem");
+//    var box = document.getElementsByName("btSelectAll");
+////    console.log(JSON.stringify(boxes));
+////    console.log(JSON.stringify(box));
+//    
+//	for(var i=0;i<dataRes.length;i++){
+//		for(j;j<array.length;j++){
+//			if(dataRes.data.rows[i].uuid == array[j].uuid){
+//				boxes[i].checked = true;
+//			}  
+//		}		      		
+//	} 
+//});
 
 function withdrowMoneyList(){
 	initMoneyGrid(array);			
