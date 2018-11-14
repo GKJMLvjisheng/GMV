@@ -298,6 +298,9 @@
           date_add(updated, interval 8 hour) like #{updated}"%" and
           B.type = '手机'
     </select>
+    <delete id="deleteEnergyPointBall">
+        delete from energy_point_ball where uuid = #{uuid}
+    </delete>
     
   <!-- 插入积分球 -->
     <insert id="insertEnergyPointBall" parameterType="com.cascv.oas.server.activity.model.EnergyPointBall">

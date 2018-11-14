@@ -184,6 +184,7 @@ export default {
       isShowNewsTip: false,
       energyBallList:[],
       walkEnergyBallList:[],
+      walkBallBackup:[],
       currentEnergy:0,
       currentPower:0,
         page:1,
@@ -265,7 +266,7 @@ export default {
     // })
     },
    getStep(){
-    //let todayStep=10
+    //let todayStep=10000
       let todayStep=window.Android.getTodaySteps()
       console.log(todayStep)
       return todayStep
@@ -457,7 +458,11 @@ export default {
                 dataWalkBall=await this.getWalkEnergyBall();
                 this.getEnergyAnalysis()
                 if(dataWalkBall.data.code==0)
-              { walkEnergyBallListtBackup= dataWalkBall.data.data.map(el => {
+              { 
+              
+              let str = JSON.stringify(dataWalkBall.data.data);
+              this.walkBallBackup=JSON.parse(str);
+                walkEnergyBallListtBackup= dataWalkBall.data.data.map(el => {
                 
                   let p = this.randomPoint()
                 
@@ -467,23 +472,25 @@ export default {
                     if(el.startDate<this.datetime||el.value>=this.walkMaxValue)
                   { 
                     el.generate=false}
-                  else{el.generate=true}
-                   if(el.value>100)
+                  else{
+                    el.generate=true}
+                    if(el.value>100)
                     { console.log(el.value)
-                      el.value=parseInt(el.value)
-                      console.log(el.value)
-                   } 
+                       el.value=parseInt(el.value)
+                      
+                   }
                   return el
                 }) 
+                
                 for(let i=0;i<walkEnergyBallListtBackup.length;i++)  
               { 
               if(walkEnergyBallListtBackup[i].value==0)
                 { 
                 walkEnergyBallListtBackup.splice(i, 1)
                 i--}
-              }
-              }
               
+              }
+              }
 
               this.energyBallList=energyBallListBackup
               console.log(this.energyBallList.length+JSON.stringify(this.energyBallList))
@@ -678,7 +685,14 @@ export default {
     },
     handleClickWalkEnergy(event, data){
       let datetime = data.startDate
-      let value = data.value
+      let uuid = data.uuid
+      console.log(uuid)
+      let value
+    for(let i=0;i<this.walkBallBackup.length;i++) {
+      if(data.uuid==this.walkBallBackup[i].uuid){
+          value=this.walkBallBackup[i].value
+      }
+    }
       if (datetime<this.datetime||value>=this.walkMaxValue) {
          let ele = event.currentTarget
       this.$axios.post('/walkPoint/takeWalkPointBall',{ballId: data.uuid}).then(({data}) => {

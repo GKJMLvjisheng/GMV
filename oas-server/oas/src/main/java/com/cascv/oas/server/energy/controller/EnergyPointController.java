@@ -123,11 +123,12 @@ public class EnergyPointController extends BaseShiroController{
 
     @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
-    public ResponseEntity<?> inquireEnergyPointBall() {
+    public ResponseEntity<?> inquireEnergyPointBall() throws ParseException {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
+    	String name = ShiroUtils.getUser().getName();
         EnergyBallResult energyBallResult = energyService.miningEnergyBall(userUuid);
-        log.info("energylist={}",JSON.toJSONString(energyBallResult));
+        log.info(name+"energylist={}",JSON.toJSONString(energyBallResult));
         return new ResponseEntity
                 .Builder<EnergyBallResult>()
                 .setData(energyBallResult)
@@ -139,9 +140,10 @@ public class EnergyPointController extends BaseShiroController{
     @PostMapping(value = "/pointBallMaxValue")  
     @ResponseBody
     public ResponseEntity<?> pointBallMaxValue(){
-    	BigDecimal maxValue = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue();
+    	BigDecimal maxValue = activityMapper
+    			.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT).getMaxValue();
 
-    	log.info("{maxvalue}={}",maxValue);
+    	log.info("{PointMaxValue}={}",maxValue);
 
     	return new ResponseEntity.Builder<BigDecimal>()
     			.setData(maxValue)
@@ -153,7 +155,7 @@ public class EnergyPointController extends BaseShiroController{
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
-    public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) {
+    public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();
         // 挖矿查询
@@ -209,13 +211,14 @@ public class EnergyPointController extends BaseShiroController{
     		point = point.add(energyPointBallList.get(i).getPoint());
     	}
     	
-    	BigDecimal checkInPoint = activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
+    	BigDecimal checkInPoint = activityMapper
+    			.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_CHECKIN, REWARD_UUID_OF_POINT).getMaxValue();
     	ActivityRewardConfig activityRewardConfig = 
         		activityMapper.selectBaseValueBySourceCodeAndRewardCode(SOURCE_UUID_OF_FREE, REWARD_UUID_OF_POINT);
         BigDecimal pointIncreaseSpeed = activityRewardConfig.getIncreaseSpeed();            // 挖矿球增长速度
         BigDecimal pointCapacityEachBall = activityRewardConfig.getMaxValue();
         BigDecimal timeGap = pointCapacityEachBall.divide(pointIncreaseSpeed, 2, BigDecimal.ROUND_HALF_UP);
-    	BigDecimal time = new BigDecimal("24");
+    	BigDecimal time = new BigDecimal("86400");
     	BigDecimal num = time.divide(timeGap, 0, BigDecimal.ROUND_HALF_UP);
     	BigDecimal freePoint = pointCapacityEachBall.multiply(num);
     	BigDecimal maxPoint = checkInPoint.add(freePoint);
