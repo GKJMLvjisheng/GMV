@@ -11,6 +11,7 @@ $(function() {
 	initNormalGrid();
 	initNormalMinerGrid();
 	initTestGrid();
+	initTestMinerGrid();
 	initSystemGrid();
 	initOperationGrid();
 	
@@ -501,6 +502,9 @@ function display1(){
 	$('#btn3').removeClass('active').addClass('active1');
 	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn5').removeClass('active').addClass('active1');
+//	initNormalGrid();
+//	initNormalMinerGrid();
+	
 }
 
 function display3(){
@@ -512,6 +516,8 @@ function display3(){
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn5').removeClass('active').addClass('active1');
+//	initTestGrid();
+//	initTestMinerGrid();
 }
 function display4(){
 	document.getElementById("page1").style.display="none";
@@ -543,9 +549,22 @@ function authorMinnerDisplay(){
 			  document.getElementById("table").style.display="none";
 		  else{document.getElementById("table").style.display="block";}
 }
-function authorMinner(){
-	//var allTableData = $tableLeft.bootstrapTable('getData');//获取表格的所有内容行
-	var allTableData=$("#normalMinnerGrid").bootstrapTable('getData');
+function authorMinnerTestDisplay(){
+	
+	//$("#table").fadeIn("slow");
+	 
+		  if(document.getElementById("testTable").style.display=="block")
+          //$("#table").fadeOut("slow");
+			  document.getElementById("testTable").style.display="none";
+		  else{document.getElementById("testTable").style.display="block";}
+}
+function authorMinner(abs){
+	
+	if(abs==2)
+	{
+		var allTableData=$("#testMinnerGrid").bootstrapTable('getData');}
+	else if(abs==1){
+		var allTableData=$("#normalMinnerGrid").bootstrapTable('getData');}
 	if(allTableData.length==0){
 		alert("请选择用户进行授权/取消授权");
 		return;
@@ -585,12 +604,15 @@ function authorMinner(){
 					$("#Tip").modal('show');
 					
 					document.getElementById("tipContent").innerHTML="购买三级矿机授权成功！";
-					 //setTimeout(setMoney, 50000);
-//					console.log(123)
+					if(abs==2){
+						initTestGrid();
+				    	 initTestMinerGrid();
+				    	 document.getElementById("testTable").style.display="none";
+					}else if(abs==1){
 					initNormalGrid();
 					initNormalMinerGrid();
-					document.getElementById("table").style.display="none";
-			    	 //initTestGrid();
+					document.getElementById("table").style.display="none";}
+			    	 
 			    	 //resetAddModal();
 			    	 //resetTestModal();
       }
@@ -642,14 +664,15 @@ function authorMinner(){
 						$("#Tip").modal('show');
 						
 						document.getElementById("tipContent").innerHTML="取消购买三级矿机授权成功！";
-						 //setTimeout(setMoney, 50000);
-//						console.log(123)
+						if(abs==2){
+							initTestGrid();
+					    	 initTestMinerGrid();
+					    	 document.getElementById("testTable").style.display="none";
+						}else if(abs==1){
 						initNormalGrid();
 						initNormalMinerGrid();
-						document.getElementById("table").style.display="none";
-				    	 //initTestGrid();
-				    	 //resetAddModal();
-				    	 //resetTestModal();
+						document.getElementById("table").style.display="none";}
+				    	 
 	      }
 	      else{
 	    	  $("#Tip").modal('show');

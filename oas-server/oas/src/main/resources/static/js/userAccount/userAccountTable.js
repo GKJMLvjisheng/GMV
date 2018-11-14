@@ -119,11 +119,7 @@ function initNormalGrid() {
 			
 			field : "box",
 			width:  '50px',
-			formatter: function (value, row, index) {  
-				var value='';
-				value=index;
-				return value;
-				} 
+			
 			
 		},{  
 			title: '序号',  
@@ -234,7 +230,7 @@ function initNormalGrid() {
 //        searchOnEnterKey : true,
 		clickToSelect: false,   
 		onCheck:function(row,index){
-			var box=document.getElementsByName("btSelectAll");
+			var box=$("#normalGrid input[name='btSelectAll']");
 			var data={name:row.name,
 					minerThreeRestriction:row.minerThreeRestriction};
 			var rows=$("#normalMinnerGrid").bootstrapTable('getData');
@@ -260,8 +256,10 @@ function initNormalGrid() {
 	        	var str=JSON.stringify(rows)
 	        	var rowBackup=JSON.parse(str)
 	        	console.log(rows)
-	        	var boxes = document.getElementsByName("btSelectItem");
-	        	var box=document.getElementsByName("btSelectAll");
+	        	//var table = document.getElementById("normalMinnerGrid");
+	        	//var boxes = document.getElementsByName("btSelectItem");
+	        	var boxes = $("#normalGrid input[name='btSelectItem']");
+	        	var box=$("#normalGrid input[name='btSelectAll']");
 	        	console.log(box)
 //	        	console.log(boxes)
 //	            for(i=0;i<boxes.length;i++){
@@ -460,7 +458,8 @@ function authorReady(value, row, index){
 		} 
 }
 function deleteById(id){
-	var boxes = document.getElementsByName("btSelectItem");
+	//var boxes = document.getElementsByName("btSelectItem");
+	var boxes =$("#normalGrid input[name='btSelectItem']");
 	var rows=$("#normalGrid").bootstrapTable('getData');
 	$("#normalMinnerGrid").bootstrapTable('removeByUniqueId', id);
 	for(var i=0;i<rows.length;i++){
@@ -518,12 +517,23 @@ function initTestGrid() {
 		responseHandler:responseHandler2,//请求数据成功后，渲染表格前的方法		
 		dataField: "data",
 		
-		toolbar:"#toolbar",//工具栏
+		//toolbar:"#toolbar",//工具栏
 		sortable: false,//是否启用排序
 		sortName: 'uuid', // 要排序的字段
 	    sortOrder: 'asc', // 排序规则
 			
-	    columns : [{  
+	    columns : [{
+			
+			checkbox:"true",
+			
+			align: 'center',// 居中显示
+			valign: 'middle',
+			
+			field : "box",
+			width:  '50px',
+			
+			
+		},{  
 			title: '序号',  
 			field: '',
 			align: 'center',
@@ -539,28 +549,28 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '90px',
 			},
-			{
-				title : "昵称",
-				field : "nickname",
-				align: 'center',
-				valign: 'middle',
-				width:  '90px',
-				
-			},
-			{
-				title : "手机",
-				field : "mobile",
-				align: 'center',
-				valign: 'middle',
-				width:  '110px',
-			},
-			{
-				title : "邮箱",
-				field : "email",
-				align: 'center',
-				valign: 'middle',
-				width:  '98px',
-			},
+//			{
+//				title : "昵称",
+//				field : "nickname",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '90px',
+//				
+//			},
+//			{
+//				title : "手机",
+//				field : "mobile",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '110px',
+//			},
+//			{
+//				title : "邮箱",
+//				field : "email",
+//				align: 'center',
+//				valign: 'middle',
+//				width:  '98px',
+//			},
 			{
 				title : "IMEI",
 				field : "imei",
@@ -584,6 +594,15 @@ function initTestGrid() {
 				valign: 'middle',
 				width:  '100px',
 				//visible: false,
+			},{
+				title : "三级矿机购买授权",
+				field : "minerThreeRestriction",
+				align: 'center',
+				valign: 'middle',
+				width:  '98px',
+				formatter:author
+					
+				
 			},{
 				title : "账号状态",
 				field : "status",
@@ -628,13 +647,211 @@ function initTestGrid() {
 //		search : true,//搜索
 //        searchOnEnterKey : true,
 		clickToSelect: false,    
-		onCheck:function(row){
-	          console.log(row);
-	          alert(1)
-	        }
+		onCheck:function(row,index){
+			var box=$("#testGrid input[name='btSelectAll']");
+			var data={name:row.name,
+					minerThreeRestriction:row.minerThreeRestriction};
+			var rows=$("#testMinnerGrid").bootstrapTable('getData');
+			
+			for(var i=0;i<rows.length;i++){
+				if(rows[i].name==data.name){
+					alert("该条数据已选择");
+					
+					return ;
+				}
+				if(rows[i].minerThreeRestriction!=data.minerThreeRestriction){
+					alert("请选择统一的授权状态用户");
+					box[0].checked = false;
+					return index.prop("checked",false)
+				}
+				
+			};
+			$('#testMinnerGrid').bootstrapTable('prepend', data);
+			
+			//initNormalMinerGrid(data)
+	        },
+	        onCheckAll:function(rows){
+	        	var str=JSON.stringify(rows)
+	        	var rowBackup=JSON.parse(str)
+	        	console.log(rows)
+//	        	var boxes = document.getElementsByName("btSelectItem");
+//	        	var box=document.getElementsByName("btSelectAll");
+	        	var boxes = $("#testGrid input[name='btSelectItem']");
+	        	var box=$("#testGrid input[name='btSelectAll']");
+	        	console.log(box)
+//	        	console.log(boxes)
+//	            for(i=0;i<boxes.length;i++){
+//	                for(j=0;j<val.length;j++){
+//	                    if(boxes[i].value == val[j]){
+//	                        boxes[i].checked = true;
+//	                        break
+//	                    }
+//	                }
+//	            }
+	        	var rowsMinner=$("#testMinnerGrid").bootstrapTable('getData');
+	        	for(var j=0;j<rowsMinner.length;j++)
+	        	{
+	        		for(var i=0,ii=0;i<rows.length;i++,ii++){
+	        		
+	        		if(rowsMinner[j].minerThreeRestriction!=rows[i].minerThreeRestriction){
+	        			rows.splice(i,1);
+	        			console.log(ii)
+	        			boxes[ii].checked = false;
+	        			box[0].checked = false;
+						i--;
+						}else if(rowsMinner[j].name==rows[i].name){
+							rows.splice(i,1);
+		        			
+		        			
+							i--;
+						}
+
+				}
+	        };
+	        //var author=[];unAuthor=[];
+	        var flag=true;
+	        	for(var k=0;k<rows.length-1;k++){
+        			if(rows[k].minerThreeRestriction!=rows[k+1].minerThreeRestriction){
+        				flag=false;
+        				break;
+        			}
+	        	}
+	        	if(!flag)
+	        	{Ewin.confirm({ message: "由于所选用户状态不同，请确认即将对选择的用户进行授权吗？"+"<br/>"+"【确定】为对未授权用户进行授权操作！【取消】为对已授权用户进行取消授权！" }).on(function (e) {
+	         		if (!e) {
+	         			//var ii=0;
+	         			for(var k=0 ,ii=0;k<rows.length;k++,ii++){
+		        			if(rows[k].minerThreeRestriction!=1){
+		        				rows.splice(k,1);
+		        				//rowBackup
+		        				boxes[ii].checked = false;
+		        				box[0].checked = false;
+		        				
+								k--;
+								console.log(rows)
+		        			}
+			        	}
+	         		 }else{
+		         		for(var k=0 ,ii=0;k<rows.length;k++,ii++){
+		        			if(rows[k].minerThreeRestriction!=0){
+		        				rows.splice(k,1);
+		        				boxes[ii].checked = false;
+		        				box[0].checked = false;
+								k--;
+		        			}
+			        	}
+	         		 }	
+	         		$('#testMinnerGrid').bootstrapTable('prepend', rows);
+	         });
+	        	}else{
+	        	
+	        
+	        	$('#testMinnerGrid').bootstrapTable('prepend', rows);  }
+	        	
+	 
+	          },
+	          onUncheckAll:function(rows){
+	        	 
+	        	  for(var i=0;i<rows.length;i++){
+	        	  $("#testMinnerGrid").bootstrapTable('removeByUniqueId', rows[i].name);  
+	        	  }
+	          },
+	          
+	          onUncheck:function(row){
+	        	  $("#testMinnerGrid").bootstrapTable('removeByUniqueId', row.name);       
+	            },
+
 	});
 }
 
+
+function initTestMinerGrid() {
+		$("#testMinnerGrid").bootstrapTable('destroy');
+	
+	$("#testMinnerGrid").bootstrapTable({
+		//url: '/api/v1/userCenter/selectAllUsers',
+		contentType : "application/json",
+		dataType:"json",
+		method: 'post',
+		striped:true,//隔行变色
+		uniqueId:"name",
+		
+		pagination:true,//显示分页条：页码，条数等		
+		sidePagination:"client",//在服务器分页
+		pageNumber:1,//首页页码
+		pageSize:5,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		
+		//请求服务器时所传的参数
+		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
+		//data: data,
+
+		//toolbar:"#toolbar",//工具栏
+		sortable: false,//是否启用排序
+		sortName: 'uuid', // 要排序的字段
+	    sortOrder: 'asc', // 排序规则
+			
+	    columns : [{  
+			title: '序号',  
+			field: '',
+			align: 'center',
+			valign: 'middle', 
+			width:  '50px',
+			formatter: function (value, row, index) {
+				  var value="";
+		           var pageSize=10;
+		         	
+		           //获取当前是第几页        
+		           var pageNumber=1;       
+		           //返回序号，注意index是从0开始的，所以要加上1         
+		            value=pageSize*(pageNumber-1)+index+1;
+		            
+		            return value;
+				}  
+			}  ,{
+				title : "用户名",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '90px',
+			},
+
+			{
+				title : "三级矿机购买授权",
+				field : "minerThreeRestriction",
+				align: 'center',
+				valign: 'middle',
+				width:  '98px',
+				formatter: authorReady
+					
+				
+			},{
+
+				title : "操作",
+				field : "name",
+				align: 'center',
+				valign: 'middle',
+				width:  '80px',
+				formatter: function action(value, row, index){
+					var id=row.name
+					var result="";
+					result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"deleteTestById('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+				return result;
+				}
+			}],		
+
+	});
+	};
+function deleteTestById(id){
+	//var boxes = document.getElementsByName("btSelectItem");
+	var boxes=$("#testGrid input[name='btSelectItem']");
+	var rows=$("#testGrid").bootstrapTable('getData');
+	$("#testMinnerGrid").bootstrapTable('removeByUniqueId', id);
+	for(var i=0;i<rows.length;i++){
+		if(rows[i].name==id)
+		{boxes[i].checked = false;}
+	}
+}
 //请求服务数据时所传参数
 function queryParams2(params){
 	var searchValue = $("#user2").val();
