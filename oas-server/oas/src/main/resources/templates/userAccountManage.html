@@ -82,7 +82,7 @@ width: 500px;
 
 	<div class="container" id="page1">
 <!-- 		<input  id="code1" name="code1" /> -->
-<form id="addonlineForm" action="/online" method="post" class="form-horizontal "> 
+<form id="addUserForm" action="/user" method="post" class="form-horizontal "> 
 
 						<div class="form-group "style="padding-top: 15px;  ">
 							
@@ -92,15 +92,22 @@ width: 500px;
 							<div class="col-sm-1">
 								<input id="butauthor" type="button" class="btn btn-primary "onclick="authorMinner()" value="授权/取消授权"/>
 							</div>	
-							<div class="col-sm-3 pull-right">	
-								<input type="text" class="form-control "placeholder="请输入搜索字段" id="searchValue" oninput="initNormalGrid(event)"/>	
-								</div>
+<!-- 							<div class="col-sm-3 pull-right" >	 -->
+<!-- 								<input type="text" class="form-control "placeholder="请输入搜索字段" id="searchValue" oninput="initNormalGrid(event)"/>	 -->
+<!-- 								</div> -->
 						</div>
 <!-- 						<div class="pull-right" style="font-size:10px">注意：<span id="ETHmoney">全选功能只作用一页</span></div> -->
 						
 	</form>
 <div id="table" style="display:none;" class="contain"><table id="normalMinnerGrid"></table>
 </div>
+<form class="form-horizontal" >
+<div class="form-group "style="padding-top:0px;  ">
+	<div class="col-sm-3 pull-right" >	 
+								<input type="text" class="form-control  " placeholder="请输入搜索字段" id="searchValue" oninput="initNormalGrid(event)"/>	
+								</div>
+								</div>
+								</form>
 		<table id="normalGrid"></table>
 	</div> 
 	
