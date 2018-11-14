@@ -231,14 +231,74 @@ function initNormalGrid() {
 		onCheck:function(row){
 			var data={name:row.name,
 					minerThreeRestriction:row.minerThreeRestriction};
+			var rows=$("#normalMinnerGrid").bootstrapTable('getData');
+			console.log(rows)
+			for(var i=0;i<rows.length;i++){
+				if(rows[i].name==data.name){
+					alert("该条数据已选择");
+					return;
+				}
+				if(rows[i].minerThreeRestriction!=data.minerThreeRestriction){
+					alert("请选择统一的授权状态用户");
+					return;
+				}
+				
+			};
 			$('#normalMinnerGrid').bootstrapTable('prepend', data);
+			
 			//initNormalMinerGrid(data)
-	        }
+	        },
+	        onCheckAll:function(rows){
+	        	for(var k=0;k<rows.length;k++){
+        			if(rows[k].minerThreeRestriction!=rows[k+1].minerThreeRestriction){
+        				alert("请选择统一的矿机授权状态用户");
+        				return;
+        			}
+	        	}
+	        	var rowsMinner=$("#normalMinnerGrid").bootstrapTable('getData');
+	        	for(var j=0;j<rowsMinner.length;j++)
+	        	{
+	        		for(var i=0;i<rows.length;i++){
+	        			
+					if(rowsMinner[j].name==rows[i].name){
+						//alert("该条数据已选择");
+						//return;
+						rows.splice(1,i);
+						i--;
+					}
+					if(rowsMinner[j].minerThreeRestriction!=rows[i].minerThreeRestriction){
+						alert("请选择统一的矿机授权状态用户");
+						return;
+					}
+					
+				}
+	        };
+	        	$('#normalMinnerGrid').bootstrapTable('prepend', rows);  
+	 
+	          },
+	          onUncheck:function(row){
+	              console.log(row);       
+	            },
+//	            rowStyle: function (row, index) {
+//	            if (row.minerThreeRestriction == 0) {
+//                    strclass = 'success';//还有一个active
+//                }
+//                else if (row.minerThreeRestriction == 1) {
+//                    strclass = 'danger';
+//                }
+//                else {
+//                    return {};
+//                }
+//                return { classes: strclass }
+//            },
 	});
 }
 //function initNormalMinerGrid() {	
 	//$("#normalMinnerGrid").bootstrapTable('destroy');
-$(function(){
+
+function initNormalMinerGrid() {
+		$("#normalMinnerGrid").bootstrapTable('destroy');
+	
 	$("#normalMinnerGrid").bootstrapTable({
 		//url: '/api/v1/userCenter/selectAllUsers',
 		contentType : "application/json",
@@ -250,9 +310,10 @@ $(function(){
 		pagination:true,//显示分页条：页码，条数等		
 		sidePagination:"client",//在服务器分页
 		pageNumber:1,//首页页码
-		pageSize:10,//分页，页面数据条数
+		pageSize:5,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],
-		//queryParams:queryParams1,//请求服务器时所传的参数
+		
+		//请求服务器时所传的参数
 		responseHandler:responseHandler1,//请求数据成功后，渲染表格前的方法		
 		//data: data,
 
@@ -267,8 +328,16 @@ $(function(){
 			align: 'center',
 			valign: 'middle', 
 			width:  '50px',
-			formatter: function (value, row, index) {  
-				return pageSize * (pageNum - 1) + index + 1; 
+			formatter: function (value, row, index) {
+				  var value="";
+		           var pageSize=10;
+		         	
+		           //获取当前是第几页        
+		           var pageNumber=1;       
+		           //返回序号，注意index是从0开始的，所以要加上1         
+		            value=pageSize*(pageNumber-1)+index+1;
+		            console.log(index)
+		            return value;
 				}  
 			}  ,{
 				title : "用户名",
@@ -284,7 +353,7 @@ $(function(){
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
-				formatter:author
+				formatter: authorReady
 					
 				
 			},{
@@ -303,16 +372,27 @@ $(function(){
 			}],		
 
 	});
-});
+	};
+
 function author(value, row, index) {
     var result = "";
   if(value==1){
-	result += "<span>已授权</span>";      
+	result += "<span style='color:#c12e2a'>已授权</span>";      
     return result;
 	}else if(value==0){
-	result += "<span>未授权</span>";      
+	result += "<span style='color:#3e8f3e'>未授权</span>";      
     return result;
 	} 
+}
+function authorReady(value, row, index){
+	 var result = "";
+	  if(value==1){
+		result += "<span>欲取消授权</span>";      
+	    return result;
+		}else if(value==0){
+		result += "<span>欲授权</span>";      
+	    return result;
+		} 
 }
 function deleteById(id){
 $("#normalMinnerGrid").bootstrapTable('removeByUniqueId', id);
