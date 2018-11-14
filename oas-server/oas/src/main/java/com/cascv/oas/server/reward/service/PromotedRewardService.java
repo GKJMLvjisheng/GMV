@@ -12,6 +12,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
@@ -532,6 +533,7 @@ public class PromotedRewardService {
 	 * @return 0 返回成功
 	 * @return -1失败
 	 */
+	@Transactional
 	public Integer giveSuperiorsUserImmediatelyReward(PurchaseRecord purchaseRecord,String userUuid) {
 		
 		String rewardCoinName="代币";
@@ -609,6 +611,7 @@ public class PromotedRewardService {
 	 * @param userUuid
 	 * @return   返回冻结的单个矿机的奖励
 	 */
+	@Transactional
 	public Integer giveSuperiorsUserFrozenReward(PurchaseRecord purchaseRecord,String userUuid) {
 		String rewardCoinName="代币";
 		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
@@ -679,7 +682,7 @@ public class PromotedRewardService {
 			return -1;
 		}
 	}
-	
+	@Transactional
 	public Integer giveSuperiorsUserPowerReward(PurchaseRecord purchaseRecord,String userUuid) {
 		String rewardCoinName="算力";
 		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);
@@ -752,6 +755,7 @@ public class PromotedRewardService {
 	 * @param userUuid
 	 * @return   减少各级用户算力奖励
 	 */
+	@Transactional
 	public Integer decreaseSuperiorsUserPowerReward(PurchaseRecord purchaseRecord,String userUuid) {
 		String rewardCoinName="算力";
 		PromotedRewardModel promotedRewardModel = promotedRewardModelMapper.selectPromotedRewardByRewardName(rewardCoinName);

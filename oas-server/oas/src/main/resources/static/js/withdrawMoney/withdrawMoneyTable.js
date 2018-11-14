@@ -388,7 +388,7 @@ function actionFormatter2(value, row, index) {
 	var s = "https://etherscan.io/token/";
 	var s1 = s+value;
 	var result = "";
-	result +="<a href="+s1+ ">"+s1+"</a>"; 
+	result +="<a href="+s1+ ">"+value+"</a>"; 
 	return result;
 }
 
