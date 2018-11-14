@@ -28,7 +28,7 @@
 
 		
 
-	<input type="button" value="批量提币" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" onclick="withdrowMoneyList()"></input>	
+<!-- 	<input type="button" value="批量提币" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" onclick="withdrowMoneyList()"></input>	 -->
 		
 	<section class="content table-content">		
 		<div class = "container">
@@ -77,7 +77,7 @@
 				
 					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
 						<input  style="display:none" type="hidden" name="uuid" id="uuid">
-						<input  name="status" id="status">
+						<input  type="hidden" name="status" id="status">
 						
 						<div class="form-group">
 							<label for="ErewardName" id="withdrawMoney" style="font-size:16px;" class="col-sm-8 control-label">确认批准提币请求吗？</label>													

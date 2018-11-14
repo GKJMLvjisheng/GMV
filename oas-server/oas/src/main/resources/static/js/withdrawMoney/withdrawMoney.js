@@ -3,7 +3,7 @@ document.write("<script language=javascript src='/js/withdrawMoney/withdrawMoney
 $(function() {
 	
 //初始加载提币审核请求	
-	initRequestAuditGrid();;
+	initRequestAuditGrid();
 });
 
 function audit(){
