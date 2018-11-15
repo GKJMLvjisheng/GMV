@@ -56,7 +56,7 @@ class BaseConstant{
         const val PAGE_SIZE = 30 //100
         const val GAS_LIMIT = 60000
         const val GAS_AMOUNT = 37247
-        const val GAS_PRICE_LOW = 1 //seekbar显示的最小值
+        const val GAS_PRICE_LOW = 5 //seekbar显示的最小值
         const val GAS_PRICE_HIGH = 20//seekbar显示的最大值
 
         /*正则表达式*/

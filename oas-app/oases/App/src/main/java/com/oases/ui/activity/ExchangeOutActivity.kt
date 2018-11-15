@@ -51,7 +51,7 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
     lateinit var text:TextView
     var address:String = AppPrefsUtils.getString(BaseConstant.MY_OAS_ADDRESS)
     //var tMoney:BigDecimal = 0.toBigDecimal()
-
+    var minValue:Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,10 +76,11 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
         }
         mMyAddress.setRightTopText(addressAfterChange)
 
+        minValue = BaseConstant.GAS_PRICE_LOW
         high= tipRight.hint.toString().replace("GWEI","").trim().toInt()
         low= tipLeft.hint.toString().replace("GWEI","").trim().toInt()
-        middle = (high-low+1)/2
-        mSeakBar.max = BaseConstant.GAS_PRICE_HIGH -1
+        middle = 10 - minValue//(high-low+1)/2
+        mSeakBar.max = BaseConstant.GAS_PRICE_HIGH - minValue
         //mSeakBar.min = BaseConstant.GAS_PRICE_LOW
         width= 210
         Log.i("zbb",width.toString())
@@ -87,9 +88,9 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
         text = tipTop
         text.setTextSize("10".toFloat()) //字体
         text.setPadding(0,10,changeToBg(width-(middle-1)*step).toInt(),0)
-        text.text = middle.toString()
-        mSeakBar.setProgress(middle-1)
-
+        text.text = "10"//middle.toString()
+        mSeakBar.setProgress(middle)
+        mFactorTv.text = ToolUtil.caculateETH(text.text.toString().toInt(),BaseConstant.GAS_LIMIT)
         qrImg.onClick {
             useCamera()
         }
@@ -174,7 +175,7 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
             //SeekBar滚动过程中的回调函数
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 text.setPadding(0,10,changeToBg(width-i*step).toInt()+20,0)
-                text.text =check(i)
+                text.text = (i+5).toString() //check(i)
                // Log.i("zbb2",i.toString())
                // Log.i("zbb2",changeToBg(width-i*step).toString())
                // text.layout(i*step.toInt(),20,210,80)
@@ -201,8 +202,9 @@ class ExchangeOutActivity : BaseMvpActivity<ExchangeOutPresenter>(), ExchangeOut
         mReceiveAccount.text.clear()
         mMoney.text.clear()
         mRemark.text.clear()
-        text.setPadding(0,10,changeToBg(width-((high-low+1)/2-1)*step).toInt(),0)
-        text.text = ((high-low+1)/2).toString()
+        //text.setPadding(0,10,changeToBg(width-((high-low+1)/2-1)*step).toInt(),0)
+        text.setPadding(0,10,changeToBg(width-(middle-1)*step).toInt(),0)
+        text.text = "10"//((high-low+1)/2).toString()
 
         mFactorTv.text = ToolUtil.caculateETH(text.text.toString().toInt(),BaseConstant.GAS_LIMIT)
         canUseMoney.text =(canUseMoney.text.toString().toBigDecimal()-mFactorTv.text.toString().toBigDecimal()).setScale(10,BigDecimal.ROUND_DOWN).toString()
