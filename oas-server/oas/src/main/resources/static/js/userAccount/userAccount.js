@@ -574,7 +574,7 @@ function authorMinnerSolo(abs,id){
 		status="取消授权";
 		//rowss.minerThreeRestriction=0;
 	}
-	console.log(row.name+"打印"+row.minerThreeRestriction)
+	
 	Ewin.confirm({ message: "确认对该用户进行三级矿机购买"+"<h4 style='display: inline-block'>"+status+"</h4>"+"！" }).on(function (e) {
  		if (!e) {
  		  return;
@@ -584,7 +584,7 @@ function authorMinnerSolo(abs,id){
  		}else if(status=="取消授权"){
  			row.minerThreeRestriction=0;
  		}
- 		console.log(row.name+"打印"+row.minerThreeRestriction)
+ 		
  		var allTableData=[];
  		allTableData.push(row)
 		var dataSum={
