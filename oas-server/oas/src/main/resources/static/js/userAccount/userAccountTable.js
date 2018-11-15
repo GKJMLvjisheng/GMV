@@ -678,7 +678,7 @@ function initTestGrid() {
 //	        	var box=document.getElementsByName("btSelectAll");
 	        	var boxes = $("#testGrid input[name='btSelectItem']");
 	        	var box=$("#testGrid input[name='btSelectAll']");
-	        	console.log(box)
+	        	//console.log(box)
 //	        	console.log(boxes)
 //	            for(i=0;i<boxes.length;i++){
 //	                for(j=0;j<val.length;j++){
