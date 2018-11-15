@@ -558,6 +558,104 @@ function authorMinnerTestDisplay(){
 			  document.getElementById("testTable").style.display="none";
 		  else{document.getElementById("testTable").style.display="block";}
 }
+function authorMinnerSolo(abs,id){
+	if(abs==2){
+		var row=$("#testGrid").bootstrapTable('getRowByUniqueId',id);
+		
+	}else if(abs==1){
+		 row=$("#normalGrid").bootstrapTable('getRowByUniqueId',id);
+		 
+	}
+	
+	if(row.minerThreeRestriction==0){
+		var status="授权";
+		 
+	}else if(row.minerThreeRestriction==1){
+		status="取消授权";
+		//rowss.minerThreeRestriction=0;
+	}
+	console.log(row.name+"打印"+row.minerThreeRestriction)
+	Ewin.confirm({ message: "确认对该用户进行三级矿机购买"+"<h4 style='display: inline-block'>"+status+"</h4>"+"！" }).on(function (e) {
+ 		if (!e) {
+ 		  return;
+ 		 }
+ 		if(status=="授权"){
+ 			row.minerThreeRestriction=1;
+ 		}else if(status=="取消授权"){
+ 			row.minerThreeRestriction=0;
+ 		}
+ 		console.log(row.name+"打印"+row.minerThreeRestriction)
+ 		var allTableData=[];
+ 		allTableData.push(row)
+		var dataSum={
+	     		
+	    		"userModelList":allTableData
+	    }
+ $.ajax({
+
+		url:"/api/v1/userCenter/gradeTreeMinerAuthorization",
+		//headers: {'Authorization': token},
+
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(dataSum),
+		async:false,	
+		success:function(res){
+			
+			if(res.code==0)
+      {  		
+				
+					if(status=="授权")
+					
+					{
+					document.getElementById("tipContent").innerHTML="购买三级矿机授权成功！";}
+					else if(status=="取消授权"){
+						document.getElementById("tipContent").innerHTML="取消购买三级矿机授权成功";
+					}
+					$("#Tip").modal('show');
+					if(abs==2){
+						
+		  				$("#testMinnerGrid").bootstrapTable('removeByUniqueId', row.name);
+						initTestGrid();
+				    	 //initTestMinerGrid();
+				    	 //document.getElementById("testTable").style.display="none";
+				    	 
+					}else if(abs==1){
+					
+		            $("#normalMinnerGrid").bootstrapTable('removeByUniqueId', row.name);
+					initNormalGrid();
+					//initNormalMinerGrid();
+					
+					
+					//document.getElementById("table").style.display="none";}
+			    	 
+			    	 
+					}
+				}
+      else{
+    	  $("#Tip").modal('show');
+			
+    	  if(status=="授权")
+				
+			{
+			document.getElementById("tipContent").innerHTML="购买三级矿机授权失败！";}
+			else if(status=="取消授权"){
+				document.getElementById("tipContent").innerHTML="取消购买三级矿机授权失败";
+			}
+     	
+      	}
+		     
+		},
+	
+		error:function(){
+					alert("请求失败！")
+				}
+	}); 
+ });
+	
+}
 function authorMinner(abs){
 	
 	if(abs==2)
