@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 import org.springframework.stereotype.Service;
 
+import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.server.timezone.mapper.CountryPromaryModelMapper;
 import com.cascv.oas.server.timezone.model.CountryPromaryModel;
 import com.cascv.oas.server.utils.ShiroUtils;
@@ -17,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 public class TimeZoneService {
 	@Autowired 
 	private CountryPromaryModelMapper countryPromaryModelMapper;
+	
+	private static final Integer TRANSFER_OF_SECOND_TO_MILLISECOND = 1000; // 秒与毫秒的转换倍率
+	private static final Integer TRANSFER_OF_HOUR_TO_SECOND = 3600; //小时与秒的转化
+	
 	public String switchToUserTimeZoneId() {
 		String dstTimeZoneId=null;
 		String name=ShiroUtils.getAddress();
@@ -42,5 +47,15 @@ public class TimeZoneService {
 		log.info("dstTimeZoneId={}",dstTimeZoneId);
 		return dstTimeZoneId;
 		}
+	}
+	
+	public Integer getTimeGap() {
+    	String timeZoneId = this.switchToUserTimeZoneId();
+    	log.info("timeZone");
+    	Integer time = DateUtils.getTimeGap(timeZoneId) / TRANSFER_OF_SECOND_TO_MILLISECOND;
+    	Integer timeGap = time / TRANSFER_OF_HOUR_TO_SECOND;
+    	log.info("timeGap={}", timeGap);
+		return timeGap;
+		
 	}
 }

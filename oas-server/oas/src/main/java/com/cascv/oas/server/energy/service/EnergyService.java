@@ -17,6 +17,7 @@ import com.cascv.oas.server.energy.model.EnergyTradeRecord;
 import com.cascv.oas.server.energy.model.EnergyWallet;
 import com.cascv.oas.server.energy.vo.*;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,17 +69,18 @@ public class EnergyService {
      * @throws ParseException 
      */
     public Boolean isCheckin(String userUuid) throws ParseException {
+    	Integer timeGap = timeZoneService.getTimeGap();
         String now = DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = sdf.parse(now);
     	Calendar calendar = Calendar.getInstance();
     	calendar.setTime(date);
-    	calendar.add(Calendar.HOUR_OF_DAY, 8);
+    	calendar.add(Calendar.HOUR_OF_DAY, timeGap);
     	String newTime = sdf.format(calendar.getTime());
     	String today = newTime.substring(0, 10);
     	log.info("today={}", today);
         List<EnergyBall> energyBalls = energyBallMapper
-                .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, today);
+                .selectByTimeFuzzyQuery(userUuid, SOURCE_UUID_OF_CHECKIN, timeGap, today);
         return CollectionUtils.isEmpty(energyBalls) ? false : true;
     }
 
@@ -210,7 +212,7 @@ public class EnergyService {
             	return ongoingEnergySummary;
             }
             BigDecimal remainPoint = pointCapacityEachBall.subtract(latestPoint); //最近球还需要这么多积分才能到最大值
-            long remainTime = remainPoint.divide(pointIncreaseSpeed,2,BigDecimal.ROUND_HALF_UP).longValue();
+            long remainTime = remainPoint.divide(pointIncreaseSpeed,0,BigDecimal.ROUND_HALF_UP).longValue();
             Date latestTimeCreated = new Date();     // 最近球创建时间初始化
             long currentTime = 0;                    // 现在的时间，声明、初始化
             try {
@@ -226,8 +228,11 @@ public class EnergyService {
             // 计算与最近球创建的时间差，即需要增加的积分+ 最近球已有积分
             long leadTime = (currentTime - latestTimeCreated.getTime()) / TRANSFER_OF_SECOND_TO_MILLISECOND; //现在到最近球的创建时间总共有多少时间
             long time = leadTime - remainTime;
-            if(leadTime < 3600 || time < 0) {
+            if(BigDecimal.valueOf(leadTime).compareTo(timeGap) != 1 || time < 0) {
         		BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(leadTime));
+        		if(balance.compareTo(pointCapacityEachBall) == 1) {
+        			balance = pointCapacityEachBall;
+        		}        		
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	energyBallMapper.updatePointByUuid(latestUuid, balance, now);
         	}else {
@@ -252,6 +257,8 @@ public class EnergyService {
             	int amount = BigDecimal.valueOf(time).divide(timeGap, 0, BigDecimal.ROUND_UP).intValue();
             	long moreTime = time - timeGap.multiply(BigDecimal.valueOf(amount - 1)).longValue();
             	BigDecimal balance = pointIncreaseSpeed.multiply(BigDecimal.valueOf(moreTime));
+            	if(balance.compareTo(pointCapacityEachBall) == 1)
+        			balance = pointCapacityEachBall;
             	ongoingEnergySummary = pointCapacityEachBall.subtract(balance);
             	if(amount > remainBallNum) {
             		amount = remainBallNum + 1;
@@ -677,6 +684,10 @@ public class EnergyService {
     		   //.intValue()方法是把Integer转为Int?
     		   String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 			   energyChangeDetail.setCreated(created);
+			   if(energyChangeDetail.getSourceUuid() != null && energyChangeDetail.getSourceUuid().equals("WALK")) {
+				   String activity = energyChangeDetail.getComment()+energyChangeDetail.getActivity()+energyChangeDetail.getStepNum().toString()+"步";
+				   energyChangeDetail.setActivity(activity);
+			   }
 			   energyChangeDetail.setValue(energyChangeDetail.getDecPoint());
     		   if(energyChangeDetail.getValue().compareTo(BigDecimal.ZERO) != 0) {
     			   energyList.add(energyChangeDetail);
@@ -709,6 +720,10 @@ public class EnergyService {
 	    		 energyChangeDetail.setActivity("积分消费");
 				 energyChangeDetail.setCategory("积分兑换OAS代币");
 	    		 }
+	    		 if(energyChangeDetail.getSourceUuid() != null && energyChangeDetail.getSourceUuid().equals("WALK")) {
+					   String activity = energyChangeDetail.getComment()+energyChangeDetail.getActivity()+energyChangeDetail.getStepNum().toString()+"步";
+					   energyChangeDetail.setActivity(activity);
+				   }
 	    		   //.intValue()方法是把Integer转为Int?
 	    		 String created=DateUtils.string2Timezone(srcFormater, energyChangeDetail.getCreated(), dstFormater, dstTimeZoneId);
 				   energyChangeDetail.setCreated(created);

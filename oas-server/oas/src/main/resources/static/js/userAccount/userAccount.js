@@ -1,5 +1,6 @@
 
 document.write("<script language=javascript src='/js/userAccount/userAccountTable.js'></script>");
+document.write("<script language=javascript src='/js/deleteConfirm.js'></script>");
 
 var check1;
 var check2;
@@ -8,7 +9,9 @@ var check3;
 //主界面用户表格回显
 $(function() {
 	initNormalGrid();
+	initNormalMinerGrid();
 	initTestGrid();
+	initTestMinerGrid();
 	initSystemGrid();
 	initOperationGrid();
 	
@@ -499,6 +502,9 @@ function display1(){
 	$('#btn3').removeClass('active').addClass('active1');
 	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn5').removeClass('active').addClass('active1');
+//	initNormalGrid();
+//	initNormalMinerGrid();
+	
 }
 
 function display3(){
@@ -510,6 +516,8 @@ function display3(){
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn5').removeClass('active').addClass('active1');
+//	initTestGrid();
+//	initTestMinerGrid();
 }
 function display4(){
 	document.getElementById("page1").style.display="none";
@@ -531,4 +539,154 @@ function display5(){
 	$('#btn4').removeClass('active').addClass('active1');
 	$('#btn1').removeClass('active').addClass('active1');
 	$('#btn3').removeClass('active').addClass('active1');
+}
+function authorMinnerDisplay(){
+	
+	//$("#table").fadeIn("slow");
+	 
+		  if(document.getElementById("table").style.display=="block")
+          //$("#table").fadeOut("slow");
+			  document.getElementById("table").style.display="none";
+		  else{document.getElementById("table").style.display="block";}
+}
+function authorMinnerTestDisplay(){
+	
+	//$("#table").fadeIn("slow");
+	 
+		  if(document.getElementById("testTable").style.display=="block")
+          //$("#table").fadeOut("slow");
+			  document.getElementById("testTable").style.display="none";
+		  else{document.getElementById("testTable").style.display="block";}
+}
+function authorMinner(abs){
+	
+	if(abs==2)
+	{
+		var allTableData=$("#testMinnerGrid").bootstrapTable('getData');}
+	else if(abs==1){
+		var allTableData=$("#normalMinnerGrid").bootstrapTable('getData');}
+	if(allTableData.length==0){
+		alert("请选择用户进行授权/取消授权");
+		return;
+	}
+	 console.log(allTableData);
+	if(allTableData[0].minerThreeRestriction==0){
+		var status="授权";
+		
+	 Ewin.confirm({ message: "确认对【"+allTableData.length+"】个用户进行三级矿机购买"+"<h4 style='display: inline-block'>"+status+"</h4>"+"！" }).on(function (e) {
+ 		if (!e) {
+ 		  return;
+ 		 }
+ 		for(var i=0;i<allTableData.length;i++){
+			allTableData[i].minerThreeRestriction=1;
+		}
+		var dataSum={
+	     		
+	    		"userModelList":allTableData
+	    }
+ $.ajax({
+
+		url:"/api/v1/userCenter/gradeTreeMinerAuthorization",
+		//headers: {'Authorization': token},
+
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(dataSum),
+		async:false,	
+		success:function(res){
+			
+			if(res.code==0)
+      {  
+				
+					
+					$("#Tip").modal('show');
+					
+					document.getElementById("tipContent").innerHTML="购买三级矿机授权成功！";
+					if(abs==2){
+						initTestGrid();
+				    	 initTestMinerGrid();
+				    	 document.getElementById("testTable").style.display="none";
+					}else if(abs==1){
+					initNormalGrid();
+					initNormalMinerGrid();
+					document.getElementById("table").style.display="none";}
+			    	 
+			    	 //resetAddModal();
+			    	 //resetTestModal();
+      }
+      else{
+    	  $("#Tip").modal('show');
+			
+			document.getElementById("tipContent").innerHTML="购买三级矿机授权失败！";
+     	
+      	}
+		     
+		},
+	
+		error:function(){
+					alert("请求失败！")
+				}
+	}); 
+ });
+	}else{
+		status="取消授权";
+		
+		 Ewin.confirm({ message: "确认对【"+allTableData.length+"】个用户进行三级矿机购买"+"<h4 style='display: inline-block'>"+status+"</h4>"+"！" }).on(function (e) {
+	 		if (!e) {
+	 		  return;
+	 		 }
+	 		for(var i=0;i<allTableData.length;i++){
+				allTableData[i].minerThreeRestriction=0;
+			}
+			var dataSum={
+		     		
+		    		"userModelList":allTableData
+		    }
+	 $.ajax({
+
+			url:"/api/v1/userCenter/gradeTreeMinerAuthorization",
+			//headers: {'Authorization': token},
+
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(dataSum),
+			async:false,	
+			success:function(res){
+				
+				if(res.code==0)
+	      {  
+					
+						
+						$("#Tip").modal('show');
+						
+						document.getElementById("tipContent").innerHTML="取消购买三级矿机授权成功！";
+						if(abs==2){
+							initTestGrid();
+					    	 initTestMinerGrid();
+					    	 document.getElementById("testTable").style.display="none";
+						}else if(abs==1){
+						initNormalGrid();
+						initNormalMinerGrid();
+						document.getElementById("table").style.display="none";}
+				    	 
+	      }
+	      else{
+	    	  $("#Tip").modal('show');
+				
+				document.getElementById("tipContent").innerHTML="取消购买三级矿机授权失败！";
+	     	
+	      	}
+			     
+			},
+		
+			error:function(){
+						alert("请求失败！")
+					}
+		}); 
+	 });
+	}
 }

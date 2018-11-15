@@ -95,6 +95,9 @@
     <result column="source_name" property="activity"/>
     <result column="point" property="decPoint"/>
     <result column="in_or_out" property="inOrOut"/>
+    <result column="step_num" property="stepNum"/>
+    <result column="walk_ball_created" property="comment"/>
+    <result column="source_uuid" property="sourceUuid"/>
   </resultMap>
   
   <select id="selectByPage" resultMap="detailResultMap">
@@ -104,9 +107,13 @@
     	U.point_change as point, 
     	U.created as created, 
     	U.in_or_out as in_or_out,
+    	B.created as walk_ball_created,
+    	B.step_num as step_num,
+    	A.source_uuid as source_uuid,
     	T.source_name as source_name, 
     	T.type as type from point_trade_record U 
     	left outer join energy_point_ball A on U.energy_ball_uuid = A.uuid 
+    	left outer join walk_ball B on A.uuid = B.uuid
     	left outer join activity T on A.source_uuid = T.uuid
     	where U.user_uuid = #{userUuid} and U.in_or_out = 1
     	order by U.created desc 
@@ -130,9 +137,13 @@
     	U.point_change as point, 
     	U.created as created, 
     	U.in_or_out as in_or_out,
+    	B.created as walk_ball_created,
+    	B.step_num as step_num,
+    	A.source_uuid as source_uuid,
     	T.source_name as source_name, 
     	T.type as type from point_trade_record U 
     	left outer join energy_point_ball A on U.energy_ball_uuid = A.uuid 
+    	left outer join walk_ball B on A.uuid = B.uuid
     	left outer join activity T on A.source_uuid = T.uuid
     	where U.user_uuid = #{userUuid} 
     	order by U.created desc 

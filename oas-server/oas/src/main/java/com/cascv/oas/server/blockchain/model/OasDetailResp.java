@@ -12,5 +12,7 @@ public class OasDetailResp{
 	@Getter @Setter private BigDecimal extra;
 	@Getter @Setter private Integer status;
 	@Getter @Setter private String remark;
+	@Getter @Setter private String address;
 	@Getter @Setter private String created;
+	
 }

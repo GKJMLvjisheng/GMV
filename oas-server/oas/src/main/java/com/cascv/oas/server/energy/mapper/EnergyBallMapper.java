@@ -14,6 +14,7 @@ public interface EnergyBallMapper {
 
     List<EnergyBall> selectByTimeFuzzyQuery(@Param("userUuid") String userUuid,
                                             @Param("sourceUuid") String sourceUuid,
+                                            @Param("timeGap") Integer timeGap,
                                             @Param("created") String created);
 
     List<EnergyBall> selectByPointSourceCode(@Param("userUuid") String userUuid,

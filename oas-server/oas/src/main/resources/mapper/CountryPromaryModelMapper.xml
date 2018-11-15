@@ -20,4 +20,9 @@
   where
   		promary_name=#{name} or country_name=#{name};
   </select>
+  
+<!--   <select id="inqurueTimeZone" resultType="java.lang.String"> -->
+<!--       select time_zone from country_promary where -->
+<!--         promary_name in #{timeZone} or country_name in #{timeZone} -->
+<!--   </select> -->
 </mapper>

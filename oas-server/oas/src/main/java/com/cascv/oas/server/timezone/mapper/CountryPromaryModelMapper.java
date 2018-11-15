@@ -8,5 +8,5 @@ import com.cascv.oas.server.timezone.model.CountryPromaryModel;
 @Component
 public interface CountryPromaryModelMapper {
 	
-	CountryPromaryModel selectTimeZone(@Param("name") String name);	
+	CountryPromaryModel selectTimeZone(@Param("name") String name);
 }

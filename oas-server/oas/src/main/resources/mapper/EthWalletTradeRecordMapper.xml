@@ -10,11 +10,12 @@
 	<result column="created" property="created"/>
 	<result column="remark" property="remark"/>
 	<result column="rest_balance" property="restBalance"/>
+	<result column="address" property="address"/>
   </resultMap>
 
 <select id="selectAllTradeRecordBySearchValue" resultMap="ethWalletTradeRecordMap">
   select 
-	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title
+	u.name,ed.value,ed.title,ed.created,ed.remark,ed.rest_balance,ed.sub_title,e.address
 from 	
 	eth_wallet_detail ed left join eth_wallet e on ed.address=e.address
 	left join user_info u on e.user_uuid=u.uuid

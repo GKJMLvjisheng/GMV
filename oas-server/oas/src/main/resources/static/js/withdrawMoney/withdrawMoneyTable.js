@@ -2,6 +2,9 @@
 //提币请求审核创建bootstrapTable
 var pageSize;
 var pageNum;
+var array = new Array;
+var allData = "";
+var dataRes;
 
 function initRequestAuditGrid() {	
 	$('#requestAuditGrid').bootstrapTable('destroy');
@@ -38,14 +41,19 @@ function initRequestAuditGrid() {
 		//class:'uu_style', 
 		visible: false, 
 		},
-		
+//		{			
+//			checkbox:"true",			
+//			align: 'center',// 居中显示			
+//			field : "box",
+//			
+//		},
 		{  
 			title: '序号',  
 			field: '',
 			align: 'center',
 			valign: 'middle',  
-			width:  '80px',
-			formatter: function (value, row, index) {  
+			width:  '50px',
+			formatter: function (value, row, index) { 
 				return pageSize * (pageNum - 1) + index + 1;  
 				}  
 			},
@@ -54,33 +62,40 @@ function initRequestAuditGrid() {
 			field : "userName",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '100px',
 		},
 			{
 			title : "提币数量",
 			field : "value",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '100px',
 		},
 		{
 			title : "手续费",
 			field : "extra",
 			align: 'center',
 			valign: 'middle',
-			width:  '140px',
+			width:  '100px',
 		},{
 			title : "创建时间",
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '200px',
+			width:  '170px',
+		},{
+			title : "钱包地址",
+			field : "address",
+			align: 'center',
+			valign: 'middle',
+			width:  '190px',
+			formatter: actionFormatter2
 		}, {
 			title : "操作",
 			field : "userName",
 			align: 'center',
 			valign: 'middle',
-			width:  '60px',
+			width:  '50px',
 			formatter: actionFormatter1
 		}, 
 		{
@@ -90,10 +105,292 @@ function initRequestAuditGrid() {
 			valign: 'middle',
 			formatter: actionFormatter		
 		}],		
-		//search : true,//搜索
-       // searchOnEnterKey : true,
-		clickToSelect: false,         
+		
+		clickToSelect: true, 
+		
+		//点击每一个复选框时触发的操作
+		onCheck: function (row,index) {
+			//alert(JSON.stringify(index));
+			var y = 0;
+			if(row.status!=0){
+				alert("该提币请求已审核完毕，请勿重复审核！");
+				index.prop("checked",false);
+			}else{
+				if(array.length==0){
+					array.push(row);
+				}else{
+					for(var i=0;i<array.length;i++){
+            		
+            			if(array[i].uuid==row.uuid){
+            				alert("该提币请求已添加，请勿重复添加！");
+            				index.prop("checked",false);
+            				y = 1;
+            			}            			          		
+	            	}
+					if(y==0){
+						array.push(row);//无相同的请求的处理
+					}
+				}									  
+			}
+	            	        
+	    },
+	    
+	    //取消每一个复选框时触发的操作
+	    onUncheck:function(row) {
+	    	uuid = row.uuid;
+	    
+	    	for (var i = 0; i < array.length; i++) {
+	    		if (JSON.stringify(array[i]).indexOf(uuid) != -1) {	    			
+	    			//alert(JSON.stringify(i));
+	    			array.splice(i,1);
+	    		}
+	    	}
+	    },
+	    
+	  //点击全选框时触发的操作
+        onCheckAll:function(rows){
+        	var boxes = document.getElementsByName("btSelectItem");
+            var box = document.getElementsByName("btSelectAll");
+            console.log(JSON.stringify(boxes));
+            console.log(JSON.stringify(box));
+            
+        	for(var i=0;i<rows.length;i++){
+        		if(rows[i].status!=0){
+        			boxes[i].checked = false;
+        		}        		
+        	} 
+        	
+        	if(array.length==0){
+        		array = rows;
+        	}else{
+   		
+        		for(var i=0;i<array.length;i++){
+            		
+            		for(var j=0;j<rows.length;j++){
+            			if(array[i].uuid==rows[j].uuid){
+            				rows.splice(j,1);//删除rows中重复的提币请求            				            				
+            				var f = 1;            	
+            			}
+            		}
+            	}        		
+    			var allData = new Array;
+    			allData = rows;
+    			array = array.concat(allData); //数组拼接    		
+        	}        	
+        	
+        	//删除一条数据后，数组索引值已变
+        	for(var i=array.length-1;i>=0;i--){
+        		if(array[i].status!=0){
+        			array.splice(i,1);//删除已审核完的提币请求       			      			       			
+        			var d = 1;
+        		}        		
+        	}        	
+        	
+        	if(d==1 || f==1){
+        		alert("提币请求中包含部分已审核完毕或重复添加的请求，已自动为您去除！");
+        	}        	
+        },
+        
+        //取消所有
+        onUncheckAll: function (row) {          	    
+    		
+        	for(var i=0;i<array.length;i++){
+        		
+        		for(var j=0;j<row.length;j++){
+        			
+        			if(array[i].uuid==row[j].uuid){
+        				array.splice(i,1);//删除array中重复的提币请求
+        			}
+        		}
+        	}        		  			    		
+        	        	
+        },         
+    	 
 	});
+}
+
+//$("click".function(){
+//	debugger;
+//	var j = 0;
+//	var boxes = document.getElementsByName("btSelectItem");
+//    var box = document.getElementsByName("btSelectAll");
+////    console.log(JSON.stringify(boxes));
+////    console.log(JSON.stringify(box));
+//    
+//	for(var i=0;i<dataRes.length;i++){
+//		for(j;j<array.length;j++){
+//			if(dataRes.data.rows[i].uuid == array[j].uuid){
+//				boxes[i].checked = true;
+//			}  
+//		}		      		
+//	} 
+//});
+
+function withdrowMoneyList(){
+	initMoneyGrid(array);			
+	$("#moneyModal").modal("show");
+}
+
+function agreeWithdrawMoney(){
+	
+	var array1 = new Array();	
+	for(var i=0;i<array.length;i++){
+		array1[i] = array[i].uuid;
+	}
+	
+	if(array1.length==0){
+		alert("请通过勾选复选框选择提币请求之后，再执行此操作！");
+	} else{ 
+	
+		var data={
+			"array":array1,
+			"status":1,
+			}
+	
+		$.ajax({		
+			url: "/api/v1/userWallet/setWithdrawResult",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data:JSON.stringify(data),
+			processData : false,
+			async : false,
+	
+			success: function(res) {
+				if(res.code==0){
+					alert("批量提币过程完成");
+					location.reload();
+				}else{
+					alert(res.message);
+					//location.reload();
+				}			
+			}, 
+			error: function(){
+				document.getElementById("tipContent").innerText="审核过程发生错误";
+				$("#Tip").modal('show');
+			}
+		}); 
+	}
+}
+
+function rejectWithdrawMoney(){
+	
+	//alert(JSON.stringify(array)); 
+	
+	var array2 = new Array();	
+	for(var i=0;i<array.length;i++){
+		array2[i] = array[i].uuid;
+	}
+	
+	if(array2.length==0){
+		alert("请通过勾选复选框选择提币请求之后，再执行此操作！");
+	} else{
+		var data={
+				"array":array2,
+				"status":2,
+				}
+
+			$.ajax({		
+				url: "/api/v1/userWallet/setWithdrawResult",
+				contentType : 'application/json;charset=utf8',
+				dataType: 'json',
+				cache: false,
+				type: 'post',
+				data:JSON.stringify(data),
+				processData : false,
+				async : false,
+
+				success: function(res) {
+					if(res.code==0){
+						alert("批量提币过程完成");
+						location.reload();
+					}else{
+						alert(res.message);
+						//location.reload();
+					}			
+				}, 
+				error: function(){
+					document.getElementById("tipContent").innerText="审核过程发生错误";
+					$("#Tip").modal('show');
+				}
+			}); 
+	}
+}
+
+//批量提币列表
+function initMoneyGrid(data) {	
+	$('#moneyGrid').bootstrapTable('destroy');
+	$("#moneyGrid").bootstrapTable({
+		contentType : "application/x-www-form-urlencoded",
+
+		dataType:"json",
+
+		pagination:true,//显示分页条：页码，条数等
+
+		striped:true,//隔行变色
+
+		pageNumber:1,//首页页码
+		sidePagination:"client",
+
+		pageSize:10,//分页，页面数据条数
+		pageList:[5,10, 25, 50, 100],
+		
+		uniqueId:"valueMax",//Indicate an unique identifier for each row
+
+		toolbar:"#toolbar",//工具栏
+		data:data,
+		
+		columns : [
+			{  
+				title: '序号',  
+				field: '',
+				align: 'center',
+				valign: 'middle',  
+				width:  '80px',
+				formatter: function (value, row, index) {  
+					return index + 1;  
+					}  
+				},
+			{
+				title : "用户名",
+				field : "userName",
+				align: 'center',
+				valign: 'middle',
+				width:  '140px',
+			},
+				{
+				title : "提币数量",
+				field : "value",
+				align: 'center',
+				valign: 'middle',
+				width:  '140px',
+			},
+			{
+				title : "手续费",
+				field : "extra",
+				align: 'center',
+				valign: 'middle',
+				width:  '140px',
+			},{
+				title : "创建时间",
+				field : "created",
+				align: 'center',
+				valign: 'middle',
+				width:  '190px',
+			}, {
+				title : "操作",
+				field : "userName",
+				align: 'center',
+				valign: 'middle',
+				width:  '60px',
+				formatter: actionFormatter1
+			}],
+		
+		//search : true,//搜索
+        //searchOnEnterKey : true,
+		clickToSelect: false,  
+	})	
 }
 
 //请求服务数据时所传参数
@@ -111,7 +408,8 @@ function queryParams(params){
 
 //请求成功方法
 function responseHandler(res){
-	//alert(JSON.stringify(res))
+	//console.log(JSON.stringify(res));
+	dataRes = res;
 	if(res.code != 0 ){
 		alert("提币请求审核回显失败！"+res.message)
 		return{
@@ -119,7 +417,6 @@ function responseHandler(res){
 			withdrawData : null
 		}
 	}
-					
 	return {
 		 total : res.data.total, //总页数,前面的key必须为"total"
 		 withdrawData : res.data.rows //行数据，前面的key要与之前设置的dataField的值一致.
@@ -157,6 +454,14 @@ function actionFormatter1(value, row, index) {
 	var id = value;
 	var result = "";
 	result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"viewUserMessage('" + id + "')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";      
+	return result;
+}
+
+function actionFormatter2(value, row, index) {
+	var s = "https://etherscan.io/token/";
+	var s1 = s+value;
+	var result = "";
+	result +="<a href="+s1+ ">"+value+"</a>"; 
 	return result;
 }
 
