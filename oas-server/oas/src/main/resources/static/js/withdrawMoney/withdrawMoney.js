@@ -4,13 +4,17 @@ $(function() {
 	
 //初始加载提币审核请求	
 	initRequestAuditGrid();
+	
 });
 
 function audit(){
 	var uuid = $("#uuid").val();
 	var status = $("#status").val();
+	
+	var array = new Array();
+	array[0] = uuid;
 	var data={
-		"uuid":uuid,
+		"uuids":array,
 		"status":status,
 		}
 
@@ -30,13 +34,19 @@ function audit(){
 				$("#Tip").modal('show');
 				var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
 				$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
-				//location.reload();
+				
+				debugger;
+				$("#moneyGrid").bootstrapTable('removeByUniqueId', uuid);
+				
 			}else{
 				document.getElementById("tipContent").innerText=res.message;
 				$("#Tip").modal('show');
 				var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
 				$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
-			}			
+				
+				$("#moneyGrid").bootstrapTable('removeByUniqueId', uuid);
+			}		
+			
 		}, 
 		error: function(){
 			document.getElementById("tipContent").innerText="审核过程发生错误";
@@ -50,4 +60,22 @@ function audit(){
 function refresh(){
 	var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
 	$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
+}
+
+function deleteById(uuid){
+	
+	$("#moneyGrid").bootstrapTable('removeByUniqueId', uuid);
+
+	var boxes = document.getElementsByName("btSelectItem");
+    var box = document.getElementsByName("btSelectAll");    
+	var rows=$("#requestAuditGrid").bootstrapTable('getData');//获取表格中当页的数据	
+	//alert(JSON.stringify(rows.length));
+
+	for(var i=0;i<rows.length;i++){
+		if(rows[i].uuid==uuid)
+		{
+			boxes[i].checked = false;
+			box[0].checked=false;
+		}
+	}
 }
