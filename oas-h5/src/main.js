@@ -44,8 +44,9 @@ let startApp = function () {
   },
 
   error => {
+
     window.Toast('token已过期，请重新登录')
-   
+    window.location.reload()
     return Promise.reject(error.response.data)
 
   })
