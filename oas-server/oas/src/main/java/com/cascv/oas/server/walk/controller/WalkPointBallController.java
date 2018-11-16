@@ -57,7 +57,7 @@ public class WalkPointBallController {
 		 
 		 String userUuid = ShiroUtils.getUserUuid();
 		 List<WalkBallReturn> walkBallReturnList = walkService.inquireWalkPointBall(userUuid, stepNumWrapper.getQuota());
-		 log.info("walklist={}",JSON.toJSONString(walkBallReturnList));
+		 log.info(name+"walklist={}",JSON.toJSONString(walkBallReturnList));
 		return new ResponseEntity.Builder<List<WalkBallReturn>>()
 				.setData(walkBallReturnList)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -90,6 +90,7 @@ public class WalkPointBallController {
 	 
 	 @PostMapping(value = "/takeWalkPointBall")  
 	 @ResponseBody
+	 @WriteLog(value="TakeWalkPointBall")
 	 public ResponseEntity<?> takeWalkPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException{
 		 String userUuid = ShiroUtils.getUserUuid();
 		 ErrorCode errorCode = ErrorCode.SUCCESS;
