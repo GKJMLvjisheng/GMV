@@ -35,6 +35,20 @@ let startApp = function () {
      }*/
     return config
   })
+  Axios.interceptors.response.use((response) =>{
+    if(response.data.code == '10001' || response.data.message == '错误'){
+      this.Toast('能量暂不可收取')
+      .toast("错误的传参", 'fail')
+    }
+    return response;
+
+  },
+
+  error => {
+
+    return Promise.reject(error.response.data)
+
+  })
 new Vue({
   //router ,
   render: h => h(App)
