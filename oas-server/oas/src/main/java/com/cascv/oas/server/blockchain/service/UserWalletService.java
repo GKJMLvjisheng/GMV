@@ -2,9 +2,7 @@ package com.cascv.oas.server.blockchain.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -344,7 +342,7 @@ public class UserWalletService {
 			 }*/
 			  
 			 String myName = userModelMapper.selectByUuid(detail.getUserUuid()).getName();
-			 ReturnValue<String> ethInfo = ethWalletService.systemTransfer(true,systemInfo.getUuid(),ethWallet.getAddress(),myName,tokenCoin,value,gasPrice,gasLimit,detail.getRemark());
+			 ReturnValue<String> ethInfo = ethWalletService.systemTransfer(true,systemInfo.getUuid(),ethWallet.getAddress(),myName,tokenCoin,value,gasPrice,gasLimit,detail.getRemark(),detail.getUuid());
 			 if(ethInfo == null || ethInfo.getData()==null) {
 				 oasDetailMapper.updateStatusByUuid(detail.getUuid(),OasEventEnum.FAILED.getCode());
 				 errorOperate(userWallet,systemWallet,value,extra,detail,now,user);
@@ -367,6 +365,68 @@ public class UserWalletService {
 		  return ErrorCode.SYSTEM_NOT_EXIST;
 	  } 
   }
+  
+  public ErrorCode setListWithdrawResult(List<String> uuids,Integer result) {
+	  List<OasDetail> details = oasDetailMapper.getRecordByUuids(uuids);
+	  if(details == null || details.size() == 0) {
+		  return ErrorCode.SELECT_EMPTY;
+	  }
+	  
+	  //查询system账号
+	  UserModel systemInfo = oasDetailMapper.getSystemUserInfo();
+	  if(systemInfo!=null) {
+		  String hash = null;
+		  String now = DateUtils.getTime();
+		  //system的在线钱包
+		  UserWallet systemWallet = userWalletMapper.selectByUserUuid(systemInfo.getUuid());
+		  if(systemWallet == null) {
+			  return ErrorCode.NO_ONLINE_ACCOUNT;
+		  }
+		  //管理员拒绝该提币请求
+		  if(result == 2) {
+			  for(OasDetail d:details) {
+				  String userUuid = d.getUserUuid();
+				  //用户的钱包
+				  UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
+				  UserModel user = userModelMapper.selectByUuid(userUuid);
+				  if(userWallet!=null && user!=null) {
+					  errorOperate(userWallet,systemWallet,d.getValue(),d.getExtra(),d,now,user);
+				  }
+				  
+			  }
+			 
+		  }else {		
+
+			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.GWEI).toBigInteger();
+			  BigInteger gasLimit = BigInteger.valueOf(600000);
+
+			 ReturnValue<String> ethInfo = ethWalletService.systemMultiTransfer(true,systemInfo.getUuid(),details, gasPrice, gasLimit);
+			 if(ethInfo == null || ethInfo.getData()==null) {
+				 for(OasDetail d:details) {
+					  String userUuid = d.getUserUuid();
+					  //用户的钱包
+					  UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
+					  UserModel user = userModelMapper.selectByUuid(userUuid);
+					  if(userWallet!=null && user!=null) {
+						  oasDetailMapper.updateStatusByUuid(d.getUuid(),OasEventEnum.FAILED.getCode());
+						  errorOperate(userWallet,systemWallet,d.getValue(),d.getExtra(),d,now,user);
+					  }
+				  }
+				 return ErrorCode.ETH_RETURN_HASH;
+			 }
+			 hash = ethInfo.getData();	 
+		  }
+		  for(OasDetail d:details) {
+			  String uuid = d.getUuid();
+			  oasDetailMapper.setWithdrawResultByUuid(uuid,result,now,hash);
+		  }
+		  return ErrorCode.SUCCESS;
+	  }else {
+		  return ErrorCode.SYSTEM_NOT_EXIST;
+	  } 
+  }
+  
+  
   //提币失败，待交易金额退回代币，手续费从system退回
   private ErrorCode errorOperate(UserWallet userWallet,UserWallet systemWallet,BigDecimal value,BigDecimal extra,OasDetail detail,String now,UserModel user) {
 	  //待交易记录减去value，代币加value

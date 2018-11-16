@@ -83,7 +83,8 @@ public enum ErrorCode {
   INDENTITY_IS_ING(10063,"认证正在审核中"),
   INDENTITY_IS_FINISH(10063,"认证已通过"),
   REPEAT_ETH_HASH(10064,"提交失败，重复的交易hash值"),
-  BUYGRADETHREE_MINER_NO_AUTHORIZATION(10065,"无权限购买三级矿机，欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro");
+  BUYGRADETHREE_MINER_NO_AUTHORIZATION(10065,"无权限购买三级矿机，欲知详情，请参见社区公告或联系系统管理员：oases@oases.pro"),
+  MUTIL_SYSTEM_WITHDRAW_FAILED(10066,"批量提币失败");
 
 	
   @Getter @Setter private Integer code;

@@ -32,6 +32,7 @@ import com.cascv.oas.server.blockchain.mapper.UserWalletMapper;
 import com.cascv.oas.server.blockchain.mapper.UserWalletTradeRecordMapper;
 import com.cascv.oas.server.blockchain.model.OasDetail;
 import com.cascv.oas.server.blockchain.model.OasDetailResp;
+import com.cascv.oas.server.blockchain.model.OasListResp;
 import com.cascv.oas.server.blockchain.model.OasReq;
 import com.cascv.oas.server.blockchain.model.SystemResq;
 import com.cascv.oas.server.blockchain.model.UserWallet;
@@ -264,7 +265,18 @@ public class UserWalletController extends BaseShiroController {
   @ResponseBody
 //@RequiresRoles("admin")
   @Transactional
-  public ResponseEntity<?> setWithdrawResult(@RequestBody OasDetailResp req){ 
+  public ResponseEntity<?> setWithdrawResult(@RequestBody OasListResp req){ 
+	  Integer result = req.getStatus();
+	  if(req.getUuids() == null || result == null || (result != 1 && result != 2)) {
+		  return new ResponseEntity.Builder<Integer>()
+			        .setData(1)
+			        .setErrorCode(ErrorCode.INPUT_ILLEGAL).build();
+	  }
+	  return new ResponseEntity.Builder<Integer>()
+		        .setData(1)
+		        .setErrorCode(userWalletService.setListWithdrawResult(req.getUuids(),result)).build();
+  }
+  /*  public ResponseEntity<?> setWithdrawResult(@RequestBody OasDetailResp req){ 
 	  String id = req.getUuid();
 	  Integer result = req.getStatus();
 	  if(id == null || result == null || (result != 1 && result != 2)) {
@@ -275,7 +287,7 @@ public class UserWalletController extends BaseShiroController {
 	  return new ResponseEntity.Builder<Integer>()
 		        .setData(1)
 		        .setErrorCode(userWalletService.setWithdrawResult(id,result)).build();
-  }
+	}*/
 
   /**
    * 获取提币手续费
