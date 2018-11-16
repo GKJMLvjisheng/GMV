@@ -28,7 +28,7 @@
 
 		
 
-<!-- 	<input type="button" value="批量提币" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" onclick="withdrowMoneyList()"></input>	 -->
+	<input type="button" value="批量提币" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="addBtn" data-toggle="modal" onclick="withdrowMoneyList()"></input>	
 		
 	<section class="content table-content">		
 		<div class = "container">
@@ -93,6 +93,37 @@
 		</div>
 	</div>	 
 	
+	<!-- 确认批量提币请求 -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">确认信息</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
+						<input type="hidden"  name="status1" id="status1">
+						
+						<div class="form-group">
+							<label for="ErewardName" id="withdrawMoney1" style="font-size:16px;" class="col-sm-8 control-label">确认批准批量提币请求吗？</label>													
+						</div>
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default" onclick="withdrawMoney()"><span aria-hidden="true">确认</span></button>
+					<button type="button" data-dismiss="modal" id="saveVersion" aria-label="Close" class="btn btn-default"><span aria-hidden="true">取消</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	 
+	
 		<!--批量提币模态框 -->
 	<div class="modal fade" id="moneyModal" tabindex="-1" role="dialog">
 
@@ -104,7 +135,7 @@
 				
  					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 
-					<h3 class="modal-title" id="activityModalLabel">批量提币</h3>
+					<h3 class="modal-title" id="activityModalLabel">批量提币<span style="font-size:12px;">（请勾选复选框☑️，批量选择提币请求）</span></h3>
 
 				</div>
 
