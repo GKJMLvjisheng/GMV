@@ -31,12 +31,12 @@ public interface EthWalletDetailMapper {
    */
   List<EthWalletDetail> getEthRecordByHash(String hash);
   /**
-   * 根据hash值更新restbalance
-   * @param hash
+   * 根据Uuid值更新restbalance
+   * @param uuid
    * @param restBalance
    * @return
    */
-  Integer updateRestBalanceByHash(@Param("uuid") String uuid,@Param("restBalance") BigDecimal restBalance);
+  Integer updateRestBalanceByUuid(@Param("uuid") String uuid,@Param("restBalance") BigDecimal restBalance);
   
   /**
    * 获取system的交易记录分页

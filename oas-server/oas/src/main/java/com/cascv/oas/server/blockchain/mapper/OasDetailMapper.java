@@ -95,4 +95,10 @@ public interface OasDetailMapper {
    * @return
    */
   Integer deleteByUuid(@Param("uuid")String uuid);
+  /**
+   * 根据uuids查询记录
+   * @param uuids
+   * @return
+   */
+  List<OasDetail> getRecordByUuids(@Param("uuids")List<String> uuids);
 }
