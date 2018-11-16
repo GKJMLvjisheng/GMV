@@ -245,6 +245,7 @@ export default {
     this.getArticleList()
     this.getUserInfo()
     
+    window.Toast= this.Toast
     window.skipRefresh= this.skipRefresh
      //this.location()
     

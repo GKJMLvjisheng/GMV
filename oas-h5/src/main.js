@@ -37,15 +37,15 @@ let startApp = function () {
   })
   Axios.interceptors.response.use((response) =>{
     if(response.data.code == '10001' || response.data.message == '错误'){
-      this.Toast('能量暂不可收取')
-      .toast("错误的传参", 'fail')
+      window.Toast('token已过期，请重新登录')
     }
     return response;
 
   },
 
   error => {
-
+    window.Toast('token已过期，请重新登录')
+   
     return Promise.reject(error.response.data)
 
   })
