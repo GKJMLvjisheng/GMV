@@ -29,7 +29,7 @@ function initEthWalletGrid() {
 			field: '',
 			align: 'center',
 			valign: 'middle',  
-			width:  '75px',
+			width:  '70px',
 			formatter: function (value, row, index) {
 				return pageSize * (pageNum - 1) + index + 1;  
 				}  
@@ -38,7 +38,7 @@ function initEthWalletGrid() {
 			field : "name",
 			align: 'center',
 			valign: 'middle',
-			width:  '90px',
+			width:  '85px',
 		},
 			{
 			title : "交易金额",
@@ -52,7 +52,7 @@ function initEthWalletGrid() {
 			field : "title",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '120px',
 		},
 		{
 			title : "交易细节",
@@ -66,7 +66,7 @@ function initEthWalletGrid() {
 			field : "created",
 			align: 'center',
 			valign: 'middle',
-			width:  '150px',
+			width:  '180px',
 		}, {
 			title : "交易备注",
 			field : "remark",
@@ -78,7 +78,7 @@ function initEthWalletGrid() {
 			field : "restBalance",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '90px',
 			formatter:function(value){
 				return value == null?0:value
 			}
@@ -120,7 +120,7 @@ function queryParams1(params){
 
 //请求成功方法
 function responseHandler1(res){
-	alert(JSON.stringify(res));
+	//alert(JSON.stringify(res));
     var code = res.code;//在此做了错误代码的判断
     if(code != 0){
         alert("交易钱包回显失败，错误代码:" + code);
@@ -137,7 +137,13 @@ function actionFormatter1(value, row, index) {
 	var s = "https://etherscan.io/token/";
 	var s1 = s+value;
 	var result = "";
-	result +="<a href="+s1+ ">"+s1+"</a>"; 
+	
+	//alert(JSON.stringify(typeof value));
+	if(typeof value=="object"){
+		result +="<span>交易钱包地址不存在</span>";
+	}else{
+		result +="<a href="+s1+ ">"+value+"</a>"; 
+	}
 	return result;
 }
 
