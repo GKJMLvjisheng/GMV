@@ -111,7 +111,7 @@
       </p>
       <div class="news-list">
         <ul>
-          <li :key="index" v-for="(item, index) in articleList">
+          <li :key="index" v-for="(item, index) in articleList">    
             <a :href='item.newsLink' target="_blank">
             <div class="left">
               <p>{{item.title}}</p>
@@ -1200,24 +1200,30 @@ header {
         margin-left: 26px;
       }
       .left {
+        
         flex: 1;
         display: flex;
-        flex-direction: column;
+        flex-direction: column;//一个列一个样子
         //justify-content: space-between;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: -webkit-box;
+        display: -webkit-box;//设置盒子样式，-webkit-是兼容前缀
         -webkit-line-clamp: 1;  //1行
         -webkit-box-orient: vertical;
+        -webkit-box-pack:start;//水平的左和右
+        -webkit-box-align:start; //垂直的
           p:first-child {
+            
             font-size: 28px;
             line-height: 36px;
             //height: 72px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;  //2行
-            -webkit-box-orient: vertical;            
+            overflow: hidden;//设定超出规定宽高部分则隐藏
+            text-overflow: ellipsis;//对溢出文本显示省略号，设定修剪方式
+            display: -webkit-box;//设置盒子样式，-webkit-是兼容前缀
+            -webkit-line-clamp: 2;  //设置超出多少行显示省略号
+            -webkit-box-orient: vertical;  //设置盒子参考方式,垂直居中  
+              
+            
           }
           p:last-child {
             flex: 1;

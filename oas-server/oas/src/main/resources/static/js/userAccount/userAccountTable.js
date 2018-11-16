@@ -182,7 +182,7 @@ function initNormalGrid() {
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
-				formatter:author
+				formatter:authorNormal
 					
 				
 			},{
@@ -255,12 +255,12 @@ function initNormalGrid() {
 	        onCheckAll:function(rows){
 	        	var str=JSON.stringify(rows)
 	        	var rowBackup=JSON.parse(str)
-	        	console.log(rows)
+	        	//console.log(rows)
 	        	//var table = document.getElementById("normalMinnerGrid");
 	        	//var boxes = document.getElementsByName("btSelectItem");
 	        	var boxes = $("#normalGrid input[name='btSelectItem']");
 	        	var box=$("#normalGrid input[name='btSelectAll']");
-	        	console.log(box)
+	        	//console.log(box)
 //	        	console.log(boxes)
 //	            for(i=0;i<boxes.length;i++){
 //	                for(j=0;j<val.length;j++){
@@ -271,17 +271,20 @@ function initNormalGrid() {
 //	                }
 //	            }
 	        	var rowsMinner=$("#normalMinnerGrid").bootstrapTable('getData');
+	        	var flag2=true;
 	        	for(var j=0;j<rowsMinner.length;j++)
 	        	{
 	        		for(var i=0,ii=0;i<rows.length;i++,ii++){
 	        		
 	        		if(rowsMinner[j].minerThreeRestriction!=rows[i].minerThreeRestriction){
+	        			flag2=false;
 	        			rows.splice(i,1);
-	        			console.log(ii)
+	        			
 	        			boxes[ii].checked = false;
 	        			box[0].checked = false;
 						i--;
 						}else if(rowsMinner[j].name==rows[i].name){
+							//flag2=false;
 							rows.splice(i,1);
 		        			
 		        			
@@ -326,14 +329,14 @@ function initNormalGrid() {
 	         		$('#normalMinnerGrid').bootstrapTable('prepend', rows);
 	         });
 	        	}else{
-	        	
-	        
+	        	if(!flag2)
+	        {alert("由于已选列表与当前选择的状态不统一，自动过滤不匹配选项！")}
 	        	$('#normalMinnerGrid').bootstrapTable('prepend', rows);  }
 	        	
 	 
 	          },
 	          onUncheckAll:function(rows){
-	        	 
+	        	  var rows=$("#normalGrid").bootstrapTable('getData');
 	        	  for(var i=0;i<rows.length;i++){
 	        	  $("#normalMinnerGrid").bootstrapTable('removeByUniqueId', rows[i].name);  
 	        	  }
@@ -342,6 +345,29 @@ function initNormalGrid() {
 	          onUncheck:function(row){
 	        	  $("#normalMinnerGrid").bootstrapTable('removeByUniqueId', row.name);       
 	            },
+	            onLoadSuccess :function(data){
+	            	var box=$("#normalGrid input[name='btSelectAll']");
+	            	var boxes=$("#normalGrid input[name='btSelectItem']");
+	            	var rowsMinner=$("#normalMinnerGrid").bootstrapTable('getData');
+	            	//console.log(JSON.stringify(data))
+		        	for(var j=0,k=0;j<rowsMinner.length;j++)
+		        	{
+		        		for(var i=0;i<data.data.length;i++){
+		        		
+		        		if(rowsMinner[j].name==data.data[i].name){
+		        			
+		        			boxes[i].checked = true;
+		        			k++;
+
+		        		}
+		        	}
+		        		 if(k==data.data.length)
+		         			box[0].checked = true;
+		        };
+		       
+	            },
+
+	
 //	            rowStyle: function (row, index) {
 //	            if (row.minerThreeRestriction == 0) {
 //                    strclass = 'success';//还有一个active
@@ -437,13 +463,15 @@ function initNormalMinerGrid() {
 	});
 	};
 
-function author(value, row, index) {
+function authorNormal(value, row, index) {
+	var id=row.name
     var result = "";
+	var abs=1
   if(value==1){
-	result += "<span style='color:#c12e2a'>已授权</span>";      
+	result += "<span style='color:#c12e2a'>已授权</span>&nbsp;&nbsp;<button onclick=\"authorMinnerSolo('"+abs+"','"+id+"')\"class='btn btn-xs 'style='background-color: #337ab7;border-color: #2e6da4;color:white' title='取消授权'>操作</button>";      
     return result;
 	}else if(value==0){
-	result += "<span style='color:#3e8f3e'>未授权</span>";      
+	result += "<span style='color:#3e8f3e'>未授权</span>&nbsp;&nbsp;<button onclick=\"authorMinnerSolo('"+abs+"','"+id+"')\" class='btn btn-xs 'style='background-color: #337ab7;border-color: #2e6da4;color:white' title='授权'>操作</button>";      
     return result;
 	} 
 }
@@ -460,11 +488,13 @@ function authorReady(value, row, index){
 function deleteById(id){
 	//var boxes = document.getElementsByName("btSelectItem");
 	var boxes =$("#normalGrid input[name='btSelectItem']");
+	var box=$("#normalGrid input[name='btSelectAll']");
 	var rows=$("#normalGrid").bootstrapTable('getData');
 	$("#normalMinnerGrid").bootstrapTable('removeByUniqueId', id);
 	for(var i=0;i<rows.length;i++){
 		if(rows[i].name==id)
-		{boxes[i].checked = false;}
+		{boxes[i].checked = false;
+		box[0].checked = false;}
 	}
 
 }
@@ -600,7 +630,7 @@ function initTestGrid() {
 				align: 'center',
 				valign: 'middle',
 				width:  '98px',
-				formatter:author
+				formatter:authorTest
 					
 				
 			},{
@@ -673,29 +703,23 @@ function initTestGrid() {
 	        onCheckAll:function(rows){
 	        	var str=JSON.stringify(rows)
 	        	var rowBackup=JSON.parse(str)
-	        	console.log(rows)
+	        	
 //	        	var boxes = document.getElementsByName("btSelectItem");
 //	        	var box=document.getElementsByName("btSelectAll");
 	        	var boxes = $("#testGrid input[name='btSelectItem']");
 	        	var box=$("#testGrid input[name='btSelectAll']");
-	        	console.log(box)
-//	        	console.log(boxes)
-//	            for(i=0;i<boxes.length;i++){
-//	                for(j=0;j<val.length;j++){
-//	                    if(boxes[i].value == val[j]){
-//	                        boxes[i].checked = true;
-//	                        break
-//	                    }
-//	                }
-//	            }
+	        	
+
 	        	var rowsMinner=$("#testMinnerGrid").bootstrapTable('getData');
+	        	var flag2=true;
 	        	for(var j=0;j<rowsMinner.length;j++)
 	        	{
 	        		for(var i=0,ii=0;i<rows.length;i++,ii++){
 	        		
 	        		if(rowsMinner[j].minerThreeRestriction!=rows[i].minerThreeRestriction){
+	        			flag2=false;
 	        			rows.splice(i,1);
-	        			console.log(ii)
+	        			
 	        			boxes[ii].checked = false;
 	        			box[0].checked = false;
 						i--;
@@ -744,14 +768,16 @@ function initTestGrid() {
 	         		$('#testMinnerGrid').bootstrapTable('prepend', rows);
 	         });
 	        	}else{
-	        	
+	        		if(!flag2)
+	    	        {alert("由于已选列表与当前选择的状态不统一，自动过滤不匹配选项！")}
 	        
 	        	$('#testMinnerGrid').bootstrapTable('prepend', rows);  }
 	        	
 	 
 	          },
 	          onUncheckAll:function(rows){
-	        	 
+	        	 //console.log(rows)
+	        	 var rows=$("#testGrid").bootstrapTable('getData');
 	        	  for(var i=0;i<rows.length;i++){
 	        	  $("#testMinnerGrid").bootstrapTable('removeByUniqueId', rows[i].name);  
 	        	  }
@@ -759,6 +785,27 @@ function initTestGrid() {
 	          
 	          onUncheck:function(row){
 	        	  $("#testMinnerGrid").bootstrapTable('removeByUniqueId', row.name);       
+	            },
+	            onLoadSuccess :function(data){
+	            	var box=$("#testGrid input[name='btSelectAll']");
+	            	var boxes=$("#testGrid input[name='btSelectItem']");
+	            	var rowsMinner=$("#testMinnerGrid").bootstrapTable('getData');
+	            	//console.log(JSON.stringify(data.data))
+		        	for(var j=0,k=0;j<rowsMinner.length;j++)
+		        	{
+		        		for(var i=0;i<data.data.length;i++){
+		        		
+		        		if(rowsMinner[j].name==data.data[i].name){
+		        			
+		        			boxes[i].checked = true;
+		        			k++;
+
+		        		}
+		        	}
+		        		 if(k==data.data.length)
+		         			box[0].checked = true;
+		        };
+		       
 	            },
 
 	});
@@ -842,14 +889,28 @@ function initTestMinerGrid() {
 
 	});
 	};
+	function authorTest(value, row, index) {
+		var id=row.name
+	    var result = "";
+		var abs=2;
+	  if(value==1){
+		result += "<span style='color:#c12e2a'>已授权</span>&nbsp;&nbsp;<button onclick=\"authorMinnerSolo('"+abs+"','"+id+"')\"class='btn btn-xs 'style='background-color: #337ab7;border-color: #2e6da4;color:white' title='取消授权'>操作</button>";      
+	    return result;
+		}else if(value==0){
+		result += "<span style='color:#3e8f3e'>未授权</span>&nbsp;&nbsp;<button onclick=\"authorMinnerSolo('"+abs+"','"+id+"')\"class='btn btn-xs 'style='background-color: #337ab7;border-color: #2e6da4;color:white' title='授权'>操作</button>";      
+	    return result;
+		} 
+	}
 function deleteTestById(id){
 	//var boxes = document.getElementsByName("btSelectItem");
 	var boxes=$("#testGrid input[name='btSelectItem']");
+	var box=$("#testGrid input[name='btSelectAll']");
 	var rows=$("#testGrid").bootstrapTable('getData');
 	$("#testMinnerGrid").bootstrapTable('removeByUniqueId', id);
 	for(var i=0;i<rows.length;i++){
 		if(rows[i].name==id)
-		{boxes[i].checked = false;}
+		{boxes[i].checked = false;
+		box[0].checked=false;}
 	}
 }
 //请求服务数据时所传参数
