@@ -36,8 +36,9 @@ let startApp = function () {
     return config
   })
   Axios.interceptors.response.use((response) =>{
-    if(response.data.code == '10001' || response.data.message == '错误'){
-      window.Toast('token已过期，请重新登录')
+    if(response.data.code == '10001' || response.data.message == '未认证'){
+      window.Toast('很抱歉，token已过期，请退出重新登录')
+      //window.location.reload()
     }
     return response;
 
@@ -45,8 +46,8 @@ let startApp = function () {
 
   error => {
 
-    window.Toast('token已过期，请重新登录')
-    window.location.reload()
+    window.Toast('token已过期，请退出重新登录')
+    //window.location.reload()
     return Promise.reject(error.response.data)
 
   })
