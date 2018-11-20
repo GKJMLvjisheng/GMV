@@ -35,7 +35,6 @@ function audit(){
 				var pageNumber = $("#requestAuditGrid").bootstrapTable('getOptions').pageNumber;
 				$("#requestAuditGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页
 				
-				debugger;
 				$("#moneyGrid").bootstrapTable('removeByUniqueId', uuid);
 				
 			}else{

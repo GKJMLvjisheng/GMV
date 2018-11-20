@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>purchaseLimit</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}">
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+	<script th:src="@{/webjars/momentjs/2.10.3/min/moment-with-locales.min.js}"></script>
+    <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">  
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
+	<script type="text/javascript" th:src="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}"></script>
+	<link rel="stylesheet" type="text/css"  th:href="@{/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css}">	
+	
+   <style>	
+	table{ 
+    word-wrap:break-word;
+    word-break:break-all;
+    }
+
+    </style>
+</head>
+
+<body>
+	
+
+		
+
+	<input type="button" value="矿机批量限制" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="minerBtn" data-toggle="modal" onclick="minerLimitList()"></input>	
+		
+	<section class="content table-content">		
+		<div class = "container">
+			<table id="minerLimitGrid"></table>
+		</div>
+	</section>
+		
+	<!-- 提示信息 -->
+	<div class="modal fade" id="Tip" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent">新增成功</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	
+	<!-- 矿机限制审批 -->
+    <div class="modal fade" id="agreeModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">矿机限制审批</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
+						<input  type="hidden" name="uuid" id="uuid">
+						<input  type="hidden" name="status" id="status">
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">限制台数：</label>
+							<div class="col-sm-7">
+								<input name="QlimitMiner" class="form-control" id="QlimitMiner" required="required" onblur="checkQlimitMiner()"/>
+								<span id = "msg_QlimitMiner"></span>
+							</div>						
+						</div> 
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">开始时间：</label>
+								
+							<div class="col-sm-7">
+								<div class="input-group  date" id="userEd1">
+							
+									<input type="text" name="QstartTime" id="QstartTime" value="" class=" form-control" onblur="checkQstartTime()"/>
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								</div>
+								<span id = "msg_QstartTime"></span>	
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">结束时间：</label>
+								
+							<div class="col-sm-7">
+								<div class="input-group  date" id="userEd2">
+							
+									<input type="text" name="QendTime" id="QendTime" value="" class=" form-control" onblur="checkQendTime()" />
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>						
+								</div>	
+								<span id = "msg_QendTime"></span>
+							</div>				
+						</div>
+						
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="miner1" aria-label="Close" class="btn btn-default" onclick="audit()"><span aria-hidden="true">确认</span></button>
+					<button type="button" data-dismiss="modal" id="miner2" aria-label="Close" class="btn btn-default" onclick="refresh()"><span aria-hidden="true">取消</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	 
+	
+		<!--矿机批量配置模态框 -->
+	<div class="modal fade" id="limitModal" tabindex="-1" role="dialog">
+
+	<div class="modal-dialog modal-lm" role="document">
+
+		<div class="modal-content">
+
+				<div class="modal-header">
+				
+ 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+					<h3 class="modal-title" id="activityModalLabel">矿机批量限制<span style="font-size:12px;">（请勾选复选框☑️，批量选择用户）</span></h3>
+
+				</div>
+
+				<div class="modal-body">	
+					<input type="hidden" name="array1" id="array1">			
+					<table id="limitGrid">
+	
+					</table>				
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="limit1" aria-label="Close" class="btn btn-default" onclick="agreeMinerLimit()"><span aria-hidden="true">审批</span></button>
+					<button type="button" data-dismiss="modal" id="limit2" aria-label="Close" class="btn btn-default"><span aria-hidden="true">取消</span></button>
+				</div>	
+				
+			</div>
+		</div>
+	</div>	
+	
+	<!-- 矿机批量限制审批 -->
+    <div class="modal fade" id="minerModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">矿机批量限制审批</h3>			
+				</div>
+
+				<div class="modal-body">
+				
+					<form id="updateActivityRewardForm" action="/updatedActivityReward" method="post" class="form-horizontal">						
+						<input  type="hidden" name="uuid" id="uuid">
+						<input  type="hidden" name="status" id="status">
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">限制台数：</label>
+							<div class="col-sm-7">
+								<input name="limitMiner" class="form-control" id="limitMiner" required="required" onblur="checkLimitMiner()"/>
+								<span id = "msg_limitMiner"></span>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">开始时间：</label>
+								
+							<div class="col-sm-7">
+								<div class="input-group  date" id="userEd3">
+							
+									<input type="text" name="" id="startTime" value="" class=" form-control" onblur="checkStartTime()" />
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+								</div>	
+								<span id = "msg_startTime"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">结束时间：</label>
+								
+							<div class="col-sm-7">
+								<div class="input-group  date" id="userEd4">
+							
+									<input type="text" name="endTime" id="endTime" value="" class=" form-control" onblur="checkEndTime()"/>
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>									
+								</div>	
+								<span id = "msg_endTime"></span>
+							</div>				
+						</div>
+						
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" id="minerLimit" aria-label="Close" class="btn btn-default" onclick="auditPi()"><span aria-hidden="true">确认</span></button>
+					<button type="button" data-dismiss="modal" id="minerLimit1" aria-label="Close" class="btn btn-default" onclick="refresh1()"><span aria-hidden="true">取消</span></button>
+				</div>						
+			</div>					
+		</div>
+	</div>	 
+	
+	
+	<!-- 查看用户信息的模态框 -->
+    <div class="modal fade" id="queryModal" tabindex="-1" role="dialog">
+
+        <div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="myModalLabel">用户信息</h3>			
+				</div>
+
+				<div class="modal-body">
+					<form id="updateNewsForm" action="/news/updatedNews" method="post" class="form-horizontal">
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">用户名：</label>
+							<div class="col-sm-7">
+								<input name="Qname" class="form-control" id="Qname" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">昵称：</label>
+							<div class="col-sm-7">
+								<input name="Qnickname" class="form-control" id="Qnickname" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">性别：</label>
+							<div class="col-sm-7">
+								<input name="Qgender" class="form-control" id="Qgender" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">生日：</label>
+							<div class="col-sm-7">
+								<input name="Qbirthday" class="form-control" id="Qbirthday" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">手机：</label>
+							<div class="col-sm-7">
+								<input name="Qmobile" class="form-control" id="Qmobile" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邮箱：</label>
+							<div class="col-sm-7">
+								<input name="Qemail" class="form-control" id="Qemail" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">地址：</label>
+							<div class="col-sm-7">
+								<input name="Qaddress" class="form-control" id="Qaddress" readonly="readonly" required="required"/>
+							</div>						
+						</div>
+						
+						<div class="form-group">
+							<label for="newsTitle" class="col-sm-3 control-label">邀请码：</label>
+							<div class="col-sm-7">
+								<input name="QinviteCode" class="form-control" id="QinviteCode" readonly="readonly" required="required"/>
+							</div>						
+						</div>		
+																									
+					</form>
+				</div>					
+			</div>					
+		</div>
+	</div>
+	
+	<script type="text/javascript" th:src="@{/js/miner/purchaseLimit.js}"></script>
+	<script type="text/javascript" th:src="@{/js/miner/purchaseLimitTable.js}"></script>
+</body>
+
+</html>
+
