@@ -637,12 +637,10 @@ public class MinerController {
 	@PostMapping(value = "/updateUserMinerInfo")  
 	@ResponseBody
 	@WriteLog(value="updateUserMinerInfo")
-	public ResponseEntity<?> updateUserMinerInfo(@RequestBody UserMinerUpdate userMinerUpdate){
-        
-		List<UserMinerInfo> umInfos=userMinerUpdate.getUmInfos();
-		for(UserMinerInfo umInfo:umInfos){
-			if(umInfo.getUuid()!=null)
-			minerMapper.updateUserMinerInfo(umInfo.getUuid(), umInfo.getStartTime(), umInfo.getEndTime(), umInfo.getRestriction());
+	public ResponseEntity<?> updateUserMinerInfo(@RequestBody UserMinerInfo userMinerInfo){
+        List<String> uuids = userMinerInfo.getUuids();
+		for(String uuid:uuids){
+			minerMapper.updateUserMinerInfo(uuid, userMinerInfo.getStartTime(), userMinerInfo.getEndTime(), userMinerInfo.getRestriction());
 		}		
 		return new ResponseEntity.Builder<Integer>()
 				.setData(0)

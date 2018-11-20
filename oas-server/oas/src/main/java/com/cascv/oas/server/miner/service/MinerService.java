@@ -18,6 +18,7 @@ import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
@@ -29,6 +30,7 @@ import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
+import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
@@ -261,4 +263,14 @@ public class MinerService {
 	    log.info("check status of miner ...");
 	  }
 
+	public ErrorCode restrictMiners(String uuid){
+		String now = DateUtils.getTime();
+		log.info("Time is {}",now);
+		UserPurchaseRecord upRecord=minerMapper.inquireMinerOfUserByUuid(uuid);
+		String startTime=upRecord.getStartTime();
+		String endTime=upRecord.getEndTime();
+		Integer restriction=upRecord.getRestriction();
+		
+		return ErrorCode.SUCCESS;
+	}
 }

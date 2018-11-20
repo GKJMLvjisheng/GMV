@@ -77,4 +77,6 @@ public interface MinerMapper {
 	Integer countUsersBySearchValue(@Param("searchValue") String searchValue);
 	
 	Integer updateUserMinerInfo(@Param("uuid") String uuid,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("restriction") Integer restriction);
+	
+    UserPurchaseRecord inquireMinerOfUserByUuid(@Param("uuid") String uuid);
 }
