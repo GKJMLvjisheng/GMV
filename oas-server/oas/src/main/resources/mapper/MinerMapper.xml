@@ -345,4 +345,31 @@
          where time = #{period} and currency = #{currency}
     </update>
     
+    
+    <select id="inquireMinerOfUser" resultType="com.cascv.oas.server.miner.wrapper.UserPurchaseRecord">
+	select U.uuid as uuid,U.name as userName ,U.start_time as startTime,U.end_time as endTime,U.miner_restrict as restriction,
+	(select SUM(miner_num) from purchase_record where created between U.start_time and U.end_time and user_uuid=U.uuid) as amount 
+	from user_info U
+	       <if test="searchValue != null and searchValue !='' ">
+    		where U.name like concat('%',#{searchValue},'%')
+           </if>
+        order by U.created desc
+        limit #{offset}, #{limit} 
+    </select>
+    
+    <select id="countUsersBySearchValue" resultType="java.lang.Integer">
+        select count(*) from user_info u
+            <if test="searchValue != null and searchValue !='' ">
+    		   where u.name like concat('%',#{searchValue},'%')
+            </if>
+    </select>
+    
+    <update id="updateUserMinerInfo" parameterType="com.cascv.oas.server.miner.wrapper.UserMinerInfo">
+       update user_info
+       set miner_restrict = #{restriction},
+           start_time = #{startTime},
+           end_time = #{endTime}
+       where uuid=#{uuid}
+    </update>
+      
 </mapper>

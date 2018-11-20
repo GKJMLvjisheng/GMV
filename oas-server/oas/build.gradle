@@ -50,7 +50,7 @@ dependencies{
   compile('org.web3j:core:3.5.0')
   compile('org.bitcoinj:bitcoinj-core:0.14.6')
   compile('org.quartz-scheduler:quartz:2.2.3')
-  runtime('org.springframework.boot:spring-boot-devtools') 
+  runtime('org.springframework.boot:spring-boot-devtools')  
   compile group: 'org.webjars.bower', name: 'js-xlsx', version: '0.8.0'
   compile('com.aliyun:aliyun-java-sdk-core:3.3.1')
   compile('com.aliyun:aliyun-java-sdk-dysmsapi:1.1.0')
