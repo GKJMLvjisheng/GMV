@@ -275,6 +275,8 @@ public class MinerService {
 	    Date startDate = sdf.parse(startTime);
 	    Date endDate = sdf.parse(endTime);
 	    Date justnow = sdf.parse(now);
+	    if(startTime ==null || endTime == null )
+	    	return ErrorCode.SUCCESS;
 	    if ((justnow.after(startDate) && (justnow.before(endDate)))){
 	    	Integer amount = upRecord.getAmount();
 	    	if(amount<=restriction)
