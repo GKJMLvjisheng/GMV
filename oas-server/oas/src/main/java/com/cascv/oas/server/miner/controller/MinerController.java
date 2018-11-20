@@ -357,6 +357,7 @@ public class MinerController {
 	@WriteLog(value="buyMiner")
 	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest) throws ParseException{
 		String userUuid = ShiroUtils.getUserUuid();
+		log.info("userUuid={}", userUuid);
 		
 		//判断矿机购买是否收到限制
 		ErrorCode errorCode = minerService.restrictMiners(userUuid);
@@ -365,8 +366,7 @@ public class MinerController {
 					.setData(0)
 					.setErrorCode(errorCode)
 					.build();
-				
-		log.info("userUuid={}", userUuid);
+						
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
 		String minerName = userBuyMinerRequest.getMinerName();
