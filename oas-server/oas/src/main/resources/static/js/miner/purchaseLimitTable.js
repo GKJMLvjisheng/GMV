@@ -1,5 +1,4 @@
 
-//提币请求审核创建bootstrapTable
 var pageSize;
 var pageNum;
 var array = new Array;
@@ -80,15 +79,15 @@ function initminerLimitGrid() {
 			field : "startTime",
 			align: 'center',
 			valign: 'middle',
-			width:  '180px',
+			width:  '150px',
 		},{
 			title : "结束时间",
 			field : "endTime",
 			align: 'center',
 			valign: 'middle',
-			width:  '180px',
+			width:  '150px',
 		}, {
-			title : "操作",
+			title : "查看",
 			field : "userName",
 			align: 'center',
 			valign: 'middle',
@@ -96,7 +95,7 @@ function initminerLimitGrid() {
 			formatter: actionFormatter1
 		}, 
 		{
-			title : "审批",
+			title : "操作",
 			field : "status",
 			align: 'center',
 			valign: 'middle',
@@ -207,7 +206,7 @@ function agreeMinerLimit(){
 	}
 }
 
-//矿机配置批量审批
+//矿机配置批量限制
 function auditPi(){
 		
 	var array2 = new Array();	
@@ -245,7 +244,7 @@ function auditPi(){
 	
 			success: function(res) {
 				if(res.code==0){
-					document.getElementById("tipContent").innerText="矿机批量配置审核过程完成";
+					document.getElementById("tipContent").innerText="矿机批量配置限制过程完成";
 					$("#Tip").modal('show');
 					$("#minerLimit").attr("data-dismiss","modal");//隐藏模态框
 					initminerLimitGrid();
@@ -262,7 +261,7 @@ function auditPi(){
 				}			
 			}, 
 			error: function(){
-				document.getElementById("tipContent").innerText="矿机批量配置审核过程发生错误";
+				document.getElementById("tipContent").innerText="矿机批量配置限制过程发生错误";
 				$("#Tip").modal('show');
 				$("#minerLimit").attr("data-dismiss","modal");
 				refresh1();
@@ -330,6 +329,7 @@ function initLimitGrid(data) {
 				align: 'center',
 				valign: 'middle',
 				width:  '115px',
+				formatter: actionFormatter4
 			},{
 				title : "开始时间",
 				field : "startTime",
@@ -343,7 +343,7 @@ function initLimitGrid(data) {
 				valign: 'middle',
 				width:  '150px',
 			}, {
-				title : "操作",
+				title : "查看",
 				field : "uuid",
 				align: 'center',
 				valign: 'middle',
@@ -390,7 +390,8 @@ function responseHandler(res){
 function actionFormatter(value, row, index) {
 	var id = row.uuid;
 	var result = "";
-	result += "<a onclick=\"agree('" + id + "')\"'>审批</a>"; 
+	result += "<a onclick=\"agree('" + id + "')\"'>限制 </a>"; 
+	result += "<a onclick=\"cancel('" + id + "')\"'>&nbsp;&nbsp;取消限制</a>"; 
 	return result;
 }
 
@@ -431,6 +432,18 @@ function agree(id){
 	
 	$('#uuid').val(id);
 	$("#agreeModal").modal("show");
+}
+
+function cancel(id){
+	
+	$('#cancelId').val(id);
+	$("#Tip1").modal('show');
+}
+
+function cancel(id){
+	
+	$('#cancelId').val(id);
+	$("#Tip1").modal('show');
 }
 
 function viewUserMessage(id){	

@@ -61,7 +61,60 @@
 
 	</div>
 	
-	<!-- 矿机限制审批 -->
+	<!-- 取消限制提示信息 -->
+	<div class="modal fade" id="Tip1" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<input type="hidden" name="cancelId" id="cancelId">
+					<h4 id="tipContent1">确认取消限制吗？</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelLimit()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	
+	<!-- 批量取消限制提示信息 -->
+	<div class="modal fade" id="Tip2" role="dialog">
+
+		<div class="modal-dialog" role="document">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h3>提示</h3>
+				</div>
+
+				<div class="modal-body" align="center">
+					<h4 id="tipContent2">确认批量取消限制吗？</h4>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick="cancelMinerLimit()">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	
+	<!-- 矿机数目限制-->
     <div class="modal fade" id="agreeModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
@@ -70,7 +123,7 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">矿机限制审批</h3>			
+					<h3 class="modal-title" id="myModalLabel">矿机数目限制</h3>			
 				</div>
 
 				<div class="modal-body">
@@ -146,7 +199,8 @@
 				</div>
 				
 				<div class="modal-footer">
-					<button type="button" data-dismiss="modal" id="limit1" aria-label="Close" class="btn btn-default" onclick="agreeMinerLimit()"><span aria-hidden="true">审批</span></button>
+					<button type="button" data-dismiss="modal" id="limit1" aria-label="Close" class="btn btn-default" onclick="agreeMinerLimit()"><span aria-hidden="true">限制</span></button>
+					<button type="button" data-dismiss="modal" id="limit3" aria-label="Close" class="btn btn-default" onclick="cancelManyLimit()"><span aria-hidden="true">取消限制</span></button>
 					<button type="button" data-dismiss="modal" id="limit2" aria-label="Close" class="btn btn-default"><span aria-hidden="true">取消</span></button>
 				</div>	
 				
@@ -154,7 +208,7 @@
 		</div>
 	</div>	
 	
-	<!-- 矿机批量限制审批 -->
+	<!-- 矿机数目批量限制 -->
     <div class="modal fade" id="minerModal" tabindex="-1" role="dialog">
 
         <div class="modal-dialog" role="document">
@@ -163,7 +217,7 @@
 
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3 class="modal-title" id="myModalLabel">矿机批量限制审批</h3>			
+					<h3 class="modal-title" id="myModalLabel">矿机数目批量限制</h3>			
 				</div>
 
 				<div class="modal-body">

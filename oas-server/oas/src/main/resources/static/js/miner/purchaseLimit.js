@@ -9,7 +9,6 @@ var check6;
 
 $(function() {
 	
-//初始加载提币审核请求	
 	initminerLimitGrid();
 	
 	$('#userEd1').datetimepicker({
@@ -146,7 +145,7 @@ function checkEndTime(){
 	}
 }
 
-//单条矿机配置审批
+//单条矿机配置限制
 function audit(){
 	checkQlimitMiner();
 	checkQstartTime();
@@ -179,7 +178,7 @@ function audit(){
 
 			success: function(res) {
 				if(res.code==0){
-					document.getElementById("tipContent").innerText="审批过程完成";
+					document.getElementById("tipContent").innerText="限制过程完成";
 					$("#Tip").modal('show');
 					$("#miner1").attr("data-dismiss","modal");
 					var pageNumber = $("#minerLimitGrid").bootstrapTable('getOptions').pageNumber;
@@ -200,7 +199,7 @@ function audit(){
 				
 			}, 
 			error: function(){
-				document.getElementById("tipContent").innerText="审批过程发生错误";
+				document.getElementById("tipContent").innerText="限制过程发生错误";
 				$("#Tip").modal('show');
 				$("#miner1").attr("data-dismiss","modal");
 				refresh();
@@ -211,6 +210,112 @@ function audit(){
 		$("#miner1").removeAttr("data-dismiss");
 	}
 	
+}
+
+//单个取消矿机限制
+function cancelLimit(){
+	
+	var uuid = $("#cancelId").val();	
+	var array = new Array();
+	array[0] = uuid;
+	
+	var data={
+		"uuids":array
+		}
+
+	$.ajax({		
+		url: "/api/v1/miner/updateUserMinerInfo",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(data),
+		processData : false,
+		async : false,
+
+		success: function(res) {
+			if(res.code==0){
+				document.getElementById("tipContent").innerText="取消限制过程完成";
+				$("#Tip").modal('show');
+				
+				var pageNumber = $("#minerLimitGrid").bootstrapTable('getOptions').pageNumber;
+				$("#minerLimitGrid").bootstrapTable('selectPage',pageNumber);  //刷新当前页				
+				
+			}else{
+				document.getElementById("tipContent").innerText=res.message;
+				$("#Tip").modal('show');
+				
+			}		
+			
+		}, 
+		error: function(){
+			document.getElementById("tipContent").innerText="取消限制过程发生错误";
+			$("#Tip").modal('show');
+		}
+	}); 
+}
+
+function cancelManyLimit(){
+	
+	var array1 = new Array();	
+	for(var i=0;i<array.length;i++){
+		array1[i] = array[i].uuid;
+	}
+	if(array1.length==0){
+		alert("请通过勾选复选框选择用户矿机配置之后，再执行此操作！");
+	} else{ 
+		
+		$("#Tip2").modal('show');
+	}
+}
+
+
+//批量取消矿机限制
+function cancelMinerLimit(){
+	
+	var array3 = new Array();	
+	for(var i=0;i<array.length;i++){
+		array3[i] = array[i].uuid;
+	}
+	//alert(JSON.stringify(array3));
+	
+	var data={
+		"uuids":array3
+		}
+
+	$.ajax({		
+		url: "/api/v1/miner/updateUserMinerInfo",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data:JSON.stringify(data),
+		processData : false,
+		async : false,
+
+		success: function(res) {
+			if(res.code==0){
+				document.getElementById("tipContent").innerText="批量取消限制过程完成";
+				$("#Tip").modal('show');
+				
+				initminerLimitGrid();
+				array = [];	
+				
+			}else{
+				document.getElementById("tipContent").innerText=res.message;
+				$("#Tip").modal('show');
+				
+				initminerLimitGrid();
+				array = [];
+				
+			}		
+			
+		}, 
+		error: function(){
+			document.getElementById("tipContent").innerText="批量取消限制过程发生错误";
+			$("#Tip").modal('show');
+		}
+	}); 
 }
 
 function refresh(){
