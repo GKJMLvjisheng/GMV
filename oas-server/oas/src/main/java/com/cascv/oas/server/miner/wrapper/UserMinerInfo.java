@@ -12,5 +12,4 @@ public class UserMinerInfo implements Serializable {
 	@Getter @Setter private String startTime;
 	@Getter @Setter private String endTime;
 	@Getter @Setter private Integer restriction;
-
 }

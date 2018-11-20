@@ -263,14 +263,27 @@ public class MinerService {
 	    log.info("check status of miner ...");
 	  }
 
-	public ErrorCode restrictMiners(String uuid){
-		String now = DateUtils.getTime();
+	public ErrorCode restrictMiners(String uuid) throws ParseException{
+		String now = DateUtils.getDate();
 		log.info("Time is {}",now);
 		UserPurchaseRecord upRecord=minerMapper.inquireMinerOfUserByUuid(uuid);
 		String startTime=upRecord.getStartTime();
 		String endTime=upRecord.getEndTime();
 		Integer restriction=upRecord.getRestriction();
-		
-		return ErrorCode.SUCCESS;
+		//将字符串转为Date格式来进行比较
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+	    Date startDate = sdf.parse(startTime);
+	    Date endDate = sdf.parse(endTime);
+	    Date justnow = sdf.parse(now);
+	    if ((justnow.after(startDate) && (justnow.before(endDate)))){
+	    	Integer amount = upRecord.getAmount();
+	    	if(amount<=restriction)
+	    	    return ErrorCode.SUCCESS;
+	    	else
+	    		return ErrorCode.MINER_PURCHASE_RESTRICT;
+	    }else
+	    	
+	    	return ErrorCode.SUCCESS;
+	    
 	}
 }

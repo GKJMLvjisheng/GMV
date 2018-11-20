@@ -1,6 +1,7 @@
 package com.cascv.oas.server.miner.controller;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -354,8 +355,17 @@ public class MinerController {
 	@ResponseBody
 	@Transactional
 	@WriteLog(value="buyMiner")
-	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
+	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest) throws ParseException{
 		String userUuid = ShiroUtils.getUserUuid();
+		
+		//判断矿机购买是否收到限制
+		ErrorCode errorCode = minerService.restrictMiners(userUuid);
+		if(errorCode != ErrorCode.SUCCESS)
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(errorCode)
+					.build();
+				
 		log.info("userUuid={}", userUuid);
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
