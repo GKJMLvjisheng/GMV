@@ -18,7 +18,15 @@
 	table{ 
     word-wrap:break-word;
     word-break:break-all;
-    }
+    }   
+    .form{
+    width: 18.33333333%;
+/* 	margin-bottom:13px; */
+	margin-top:20px;
+	margin-right:51px;
+	height: 38px;
+	float:right;	
+   }
 
     </style>
 </head>
@@ -28,8 +36,9 @@
 
 		
 
-	<input type="button" value="矿机批量限制" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="minerBtn" data-toggle="modal" onclick="minerLimitList()"></input>	
-		
+	<input type="button" value="矿机批量限制" class="form1" style="background-color: #293846;width: 96px;height: 38px;margin-left:51px; margin-top:20px;outline:none;border:none;color: #ecf9ff" id="minerBtn" data-toggle="modal" onclick="minerLimitList()"></input>	
+	<input class="form" id="miner" required="required" placeholder="按用户名搜索" oninput="initminerLimitGrid(event)"/>	
+	
 	<section class="content table-content">		
 		<div class = "container">
 			<table id="minerLimitGrid"></table>
@@ -74,6 +83,7 @@
 
 				<div class="modal-body" align="center">
 					<input type="hidden" name="cancelId" id="cancelId">
+					<input type="hidden" name="restriction" id="restriction">
 					<h4 id="tipContent1">确认取消限制吗？</h4>
 				</div>
 

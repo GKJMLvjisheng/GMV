@@ -361,12 +361,13 @@ function initLimitGrid(data) {
 function queryParams(params){
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;
-	
+	var searchValue = $("#miner").val();
     return{
         //每页多少条数据
         pageSize: params.limit,
         //当前页码
         pageNum: params.offset / params.limit + 1,
+        searchValue: searchValue,
     }
 }
 
@@ -389,9 +390,10 @@ function responseHandler(res){
 
 function actionFormatter(value, row, index) {
 	var id = row.uuid;
+	var restriction = row.restriction;
 	var result = "";
 	result += "<a onclick=\"agree('" + id + "')\"'>限制 </a>"; 
-	result += "<a onclick=\"cancel('" + id + "')\"'>&nbsp;&nbsp;取消限制</a>"; 
+	result += "<a onclick=\"cancel('" + id + "','" + restriction + "')\"'>&nbsp;&nbsp;取消限制</a>"; 
 	return result;
 }
 
@@ -434,16 +436,11 @@ function agree(id){
 	$("#agreeModal").modal("show");
 }
 
-function cancel(id){
+function cancel(id,restriction){
 	
 	$('#cancelId').val(id);
 	$("#Tip1").modal('show');
-}
-
-function cancel(id){
 	
-	$('#cancelId').val(id);
-	$("#Tip1").modal('show');
 }
 
 function viewUserMessage(id){	
