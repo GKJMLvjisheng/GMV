@@ -79,9 +79,9 @@ class TransitWalletFragment : BaseMvpFragment<TransitWalletPresenter>(), Transit
     override fun setCoin(coins: ListCoinResp) {
         val userCoinList = coins.userCoin
         val noShowCoinList = coins.noShowCoin
-        mOas.setValue(userCoinList[0].balance)
+        mOas.setValue(userCoinList[0].balance.toString())
         mOas.setEqualsValue(userCoinList[0].value)
-        mEth.setValue(if(noShowCoinList!=null) noShowCoinList[0].balance else "0".toDouble())
+        mEth.setValue(if(noShowCoinList!=null)noShowCoinList[0].balance.toBigDecimal().setScale(6,BigDecimal.ROUND_HALF_UP).toString() else "0" )
         mEth.setEqualsValue(if(noShowCoinList!=null) noShowCoinList[0].value else "0".toDouble())
         AppPrefsUtils.putString(BaseConstant.MY_OAS_ADDRESS,userCoinList[0].address)
         AppPrefsUtils.putString(BaseConstant.MY_OAS_PROTOCOL,userCoinList[0].contract)
