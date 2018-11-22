@@ -398,7 +398,8 @@ public class UserWalletService {
 		  }else {		
 
 			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.GWEI).toBigInteger();
-			  BigInteger gasLimit = BigInteger.valueOf(600000);
+			  BigInteger gasLimit = BigInteger.valueOf(400000);
+			  
 
 			 ReturnValue<String> ethInfo = ethWalletService.systemMultiTransfer(true,systemInfo.getUuid(),details, gasPrice, gasLimit);
 			 if(ethInfo == null || ethInfo.getData()==null) {
@@ -412,7 +413,8 @@ public class UserWalletService {
 						  errorOperate(userWallet,systemWallet,d.getValue(),d.getExtra(),d,now,user);
 					  }
 				  }
-				 return ErrorCode.ETH_RETURN_HASH;
+				
+				 return  ethInfo.getErrorCode();//ErrorCode.ETH_RETURN_HASH;
 			 }
 			 hash = ethInfo.getData();	 
 		  }

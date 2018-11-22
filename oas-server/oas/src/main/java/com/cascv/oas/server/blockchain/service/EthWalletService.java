@@ -530,11 +530,23 @@ public class EthWalletService {
 			return returnValue;
 		}
 		UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid());
+		Double ethBalance = userCoin.getEthBalance();
+		BigDecimal k = new BigDecimal("10");
+		int m = new Integer("18");
+		BigDecimal price = k.pow(m);  
+		if(new BigDecimal(String.valueOf(gasPrice)).multiply(new BigDecimal(String.valueOf(gasLimit))).compareTo(new BigDecimal(String.valueOf(ethBalance)).multiply(price)) == 1) {
+			returnValue.setErrorCode(ErrorCode.MUTIL_SYSTEM_WITHDRAW_ETH_NOT_ENOUGH);
+			return returnValue;
+		}
 		List<BigInteger> amountIntList = new ArrayList<>();
 		List<String> addressList = new ArrayList<>();
 		BigDecimal total = BigDecimal.ZERO;
 		for (TransferQuotaForWithdraw q : quota) {
 			total = total.add(q.getAmount());
+			if(total.compareTo(userCoin.getBalance()) == 1) {
+				returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
+			    return returnValue;
+			}
 			if (q.getToUserAddress().isEmpty() || q.getToUserAddress().equals("0")) {
 				returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS);
 				return returnValue;
@@ -570,7 +582,7 @@ public class EthWalletService {
 			returnValue.setData(txHash);
 			return returnValue;
 		} else {
-			returnValue.setErrorCode(ErrorCode.MUTIL_SYSTEM_WITHDRAW_FAILED);
+			returnValue.setErrorCode(ErrorCode.ETH_RETURN_HASH);
 			return returnValue;
 		}
 	
