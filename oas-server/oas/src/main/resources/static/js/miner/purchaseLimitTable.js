@@ -1,15 +1,13 @@
 
-//提币请求审核创建bootstrapTable
 var pageSize;
 var pageNum;
 var array = new Array;
-var allData = "";  //全选数据中去除status!=0的数据
 var dataRes;  //请求的当页的数据
 
-function initRequestAuditGrid() {	
-	$('#requestAuditGrid').bootstrapTable('destroy');
-	$("#requestAuditGrid").bootstrapTable({
-		url: "/api/v1/userWallet/getWithdrawList",
+function initminerLimitGrid() {	
+	$('#minerLimitGrid').bootstrapTable('destroy');
+	$("#minerLimitGrid").bootstrapTable({
+		url: "/api/v1/miner/inquireMinerOfUser",
 		contentType : "application/json",
 		dataType:"json",
 		method:"post",
@@ -24,8 +22,6 @@ function initRequestAuditGrid() {
 		
 		queryParams:queryParams,
 		responseHandler:responseHandler,
-		
-		 rowStyle:rowStyle,//通过自定义函数设置行样式
 
 		toolbar:"#toolbar",//工具栏
 		
@@ -62,36 +58,36 @@ function initRequestAuditGrid() {
 			field : "userName",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '130px',
 		},
 			{
-			title : "提币数量",
-			field : "value",
+			title : "限制台数",
+			field : "restriction",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '115px',
 		},
 		{
-			title : "手续费",
-			field : "extra",
+			title : "已购台数",
+			field : "amount",
 			align: 'center',
 			valign: 'middle',
-			width:  '100px',
+			width:  '115px',
+			formatter: actionFormatter4
 		},{
-			title : "创建时间",
-			field : "created",
+			title : "开始时间",
+			field : "startTime",
 			align: 'center',
 			valign: 'middle',
-			width:  '160px',
+			width:  '150px',
 		},{
-			title : "钱包地址",
-			field : "address",
+			title : "结束时间",
+			field : "endTime",
 			align: 'center',
 			valign: 'middle',
-			width:  '190px',
-			formatter: actionFormatter2
+			width:  '150px',
 		}, {
-			title : "操作",
+			title : "查看",
 			field : "userName",
 			align: 'center',
 			valign: 'middle',
@@ -99,7 +95,7 @@ function initRequestAuditGrid() {
 			formatter: actionFormatter1
 		}, 
 		{
-			title : "状态",
+			title : "操作",
 			field : "status",
 			align: 'center',
 			valign: 'middle',
@@ -111,12 +107,7 @@ function initRequestAuditGrid() {
 		//点击每一个复选框时触发的操作
 		onCheck: function (row,index) {
 			//alert(JSON.stringify(index));			
-			if(row.status!=0){
-				alert("该提币请求已审核完毕，请勿重复审核！");
-				index.prop("checked",false);
-			}else{				
-				array.push(row);										  
-			}            	        
+			array.push(row);         	        
 	    },
 	    
 	    //取消每一个复选框时触发的操作
@@ -133,17 +124,6 @@ function initRequestAuditGrid() {
 	    
 	  //点击全选框时触发的操作
         onCheckAll:function(rows){
-        	var boxes = document.getElementsByName("btSelectItem");
-            var box = document.getElementsByName("btSelectAll");
-//            console.log(JSON.stringify(boxes));
-//            console.log(JSON.stringify(box));
-            
-        	for(var i=0;i<rows.length;i++){
-        		if(rows[i].status!=0){
-        			boxes[i].checked = false;
-        		}        		
-        	} 
-        	
         	if(array.length==0){
         		array = rows;
         	}else{
@@ -161,18 +141,11 @@ function initRequestAuditGrid() {
     			allData = rows;
     			array = array.concat(allData); //数组拼接    		
         	}        	
+        	   	
         	
-        	//删除一条数据后，数组索引值已变
-        	for(var i=array.length-1;i>=0;i--){
-        		if(array[i].status!=0){
-        			array.splice(i,1);//删除已审核完的提币请求       			      			       			
-        			var d = 1;
-        		}        		
-        	}        	
-        	
-        	if(d==1 || f==1){
-        		alert("提币请求中包含部分已审核完毕或重复添加的请求，已自动为您去除！");
-        	}        	
+        	if(f==1){
+        		alert("矿机限量配置中包含部分重复添加的配置请求，已自动为您去除！");
+        	}        	 		    	
         },
         
         //取消所有
@@ -200,7 +173,7 @@ function initRequestAuditGrid() {
 	        var s = 0;
 	        for(var i=0;i<rows.length;i++){
 	        	for(var j=0;j<array.length;j++){
-	       			if(rows[i].uuid == array[j].uuid && rows[i].status == 0){
+	       			if(rows[i].uuid == array[j].uuid){
 	       				boxes[i].checked = true;
 	       				s += 1;
 	       			}  
@@ -214,47 +187,53 @@ function initRequestAuditGrid() {
 	});
 }
 
-function withdrowMoneyList(){
-	initMoneyGrid(array);			
-	$("#moneyModal").modal("show");
+function minerLimitList(){
+	initLimitGrid(array);			
+	$("#limitModal").modal("show");
 }
 
 
-function agreeWithdrawMoney(){
-	var status = 1;
-	$('#status1').val(status);
-	document.getElementById("withdrawMoney1").innerText="确认批准批量提币请求吗？";
-	$("#confirmModal").modal("show");
-}
-
-function rejectWithdrawMoney(){
-	
-	var status = 2;
-	$('#status1').val(status);
-	document.getElementById("withdrawMoney1").innerText="确认拒绝批量提币请求吗？";
-	$("#confirmModal").modal("show");
-}
-
-function withdrawMoney(){
-	
-	var status = $("#status1").val();
+function agreeMinerLimit(){
 	var array1 = new Array();	
 	for(var i=0;i<array.length;i++){
 		array1[i] = array[i].uuid;
 	}
-	//alert(JSON.stringify(status));
-	
 	if(array1.length==0){
-		alert("请通过勾选复选框选择提币请求之后，再执行此操作！");
+		alert("请通过勾选复选框选择用户矿机配置之后，再执行此操作！");
 	} else{ 
+		$("#array1").val(array1);
+		$("#minerModal").modal("show");
+	}
+}
+
+//矿机配置批量限制
+function auditPi(){
+		
+	var array2 = new Array();	
+	for(var i=0;i<array.length;i++){
+		array2[i] = array[i].uuid;
+	}
+	//alert(JSON.stringify(array2));
 	
+	var limit = $("#limitMiner").val();
+	var startTime = $("#startTime").val();
+	var endTime = $("#endTime").val();
+		
+	checkLimitMiner();
+	checkStartTime();
+	checkEndTime();
+	
+	if(check4==1 && check5==1 && check6==1){
+		
 		var data={
-			"uuids":array1,
-			"status":status,
+				"uuids":array2,
+				"restriction":limit,
+				"startTime":startTime,
+				"endTime":endTime,
 			}
 	
 		$.ajax({		
-			url: "/api/v1/userWallet/setWithdrawResult",
+			url: "/api/v1/miner/updateUserMinerInfo",
 			contentType : 'application/json;charset=utf8',
 			dataType: 'json',
 			cache: false,
@@ -265,30 +244,41 @@ function withdrawMoney(){
 	
 			success: function(res) {
 				if(res.code==0){
-					document.getElementById("tipContent").innerText="批量提币审核过程完成";
+					document.getElementById("tipContent").innerText="矿机批量配置限制过程完成";
 					$("#Tip").modal('show');
-					initRequestAuditGrid();
+					$("#minerLimit").attr("data-dismiss","modal");//隐藏模态框
+					initminerLimitGrid();
 					array = [];
+					refresh1();
 					//location.reload();
 				}else{
 					document.getElementById("tipContent").innerText = res.message;
 					$("#Tip").modal('show');
-					initRequestAuditGrid();
+					$("#minerLimit").attr("data-dismiss","modal");
+					initminerLimitGrid();
 					array = [];
+					refresh1();
 				}			
 			}, 
 			error: function(){
-				document.getElementById("tipContent").innerText="批量提币审核过程发生错误";
+				document.getElementById("tipContent").innerText="矿机批量配置限制过程发生错误";
 				$("#Tip").modal('show');
+				$("#minerLimit").attr("data-dismiss","modal");
+				refresh1();
 			}
 		}); 
+	
+	}else{
+		alert("请确认输入内容是否符合要求！");
+		$("#minerLimit").removeAttr("data-dismiss");
 	}
+	
 }
 
-//批量提币列表
-function initMoneyGrid(data) {	
-	$('#moneyGrid').bootstrapTable('destroy');
-	$("#moneyGrid").bootstrapTable({
+//矿机批量配置列表
+function initLimitGrid(data) {	
+	$('#limitGrid').bootstrapTable('destroy');
+	$("#limitGrid").bootstrapTable({
 		contentType : "application/x-www-form-urlencoded",
 
 		dataType:"json",
@@ -324,29 +314,36 @@ function initMoneyGrid(data) {
 				field : "userName",
 				align: 'center',
 				valign: 'middle',
-				width:  '120px',
+				width:  '160px',
 			},
 				{
-				title : "提币数量",
-				field : "value",
+				title : "限制台数",
+				field : "restriction",
 				align: 'center',
 				valign: 'middle',
-				width:  '120px',
+				width:  '115px',
 			},
 			{
-				title : "手续费",
-				field : "extra",
+				title : "已购台数",
+				field : "amount",
 				align: 'center',
 				valign: 'middle',
-				width:  '120px',
+				width:  '115px',
+				formatter: actionFormatter4
 			},{
-				title : "创建时间",
-				field : "created",
+				title : "开始时间",
+				field : "startTime",
 				align: 'center',
 				valign: 'middle',
-				width:  '190px',
+				width:  '150px',
+			},{
+				title : "结束时间",
+				field : "endTime",
+				align: 'center',
+				valign: 'middle',
+				width:  '150px',
 			}, {
-				title : "操作",
+				title : "查看",
 				field : "uuid",
 				align: 'center',
 				valign: 'middle',
@@ -364,12 +361,13 @@ function initMoneyGrid(data) {
 function queryParams(params){
 	pageSize = params.limit;
 	pageNum = params.offset / params.limit + 1;
-	
+	var searchValue = $("#miner").val();
     return{
         //每页多少条数据
         pageSize: params.limit,
         //当前页码
         pageNum: params.offset / params.limit + 1,
+        searchValue: searchValue,
     }
 }
 
@@ -378,7 +376,7 @@ function responseHandler(res){
 	//alert(JSON.stringify(res));
 	dataRes = res;
 	if(res.code != 0 ){
-		alert("提币请求审核回显失败！"+res.message)
+		alert("限量配置矿机回显失败！"+res.message);
 		return{
 			total:0,
 			withdrawData : null
@@ -392,29 +390,11 @@ function responseHandler(res){
 
 function actionFormatter(value, row, index) {
 	var id = row.uuid;
-	var status = value;
+	var restriction = row.restriction;
 	var result = "";
-	if(status==0){
-		result += "<input type='radio' onclick=\"agree('" + id + "')\"' name='radio' id='agree' value='1'>批准 ";
-		result += "<input type='radio' onclick=\"reject('" + id + "')\" name='radio' id='reject' value='2'>拒绝";
-		return result;
-		
-	}else if(status==1){
-		result += "<span>审核已通过</span>";      
-		return result;
-		
-	}else if(status==2){
-		result += "<span>审核未通过</span>";      
-		return result;
-		
-	} 
-	else if(status==3){
-		result += "<span>审核已通过-转账成功</span>";      
-		return result;
-	}else{
-		result += "<span>审核已通过-转账失败</span>";      
-		return result;
-	}
+	result += "<a onclick=\"agree('" + id + "')\"'>限制 </a>"; 
+	result += "<a onclick=\"cancel('" + id + "','" + restriction + "')\"'>&nbsp;&nbsp;取消限制</a>"; 
+	return result;
 }
 
 function actionFormatter1(value, row, index) {
@@ -440,47 +420,27 @@ function actionFormatter3(value, row, index) {
 	
 }
 
-function rowStyle(row, index) {
-	var classes = ['active', 'success', 'info', 'warning', 'danger']; 
-	var status = row.status;
-	var style = "";    
-	
-	if(status==0){
-		 style='info'; 
-		 return { classes: style };
-		
-	}else if(status==1){
-		 style='success';  
-		 return { classes: style };
-		
-	}else if(status==2){
-		 style='active';
-		 return { classes: style };
-		
-	} 
-	else if(status==3){
-		 style='warning';  
-		 return { classes: style };
+function actionFormatter4(value, row, index) {
+	var result = "";
+	if(value==null){
+		result +="<span>0</span>"; 
 	}else{
-		 style='danger';
-		 return { classes: style };
-	}	                         
+		result +="<span>"+value+"</span>"; 
+	}
+	return result;
 }
 
 function agree(id){
-	var status = 1;
-	$('#status').val(status);
+	
 	$('#uuid').val(id);
-	document.getElementById("withdrawMoney").innerText="确认批准提币请求吗？";
 	$("#agreeModal").modal("show");
 }
 
-function reject(id){
-	var status = 2;
-	$('#status').val(status);
-	$('#uuid').val(id);
-	document.getElementById("withdrawMoney").innerText="确认拒绝提币请求吗？";
-	$("#agreeModal").modal("show");
+function cancel(id,restriction){
+	
+	$('#cancelId').val(id);
+	$("#Tip1").modal('show');
+	
 }
 
 function viewUserMessage(id){	

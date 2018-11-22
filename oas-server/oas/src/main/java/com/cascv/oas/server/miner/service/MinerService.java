@@ -18,6 +18,7 @@ import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cascv.oas.core.common.ErrorCode;
 import com.cascv.oas.core.utils.DateUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.activity.mapper.ActivityMapper;
@@ -29,6 +30,7 @@ import com.cascv.oas.server.miner.mapper.MinerMapper;
 import com.cascv.oas.server.miner.model.MinerModel;
 import com.cascv.oas.server.miner.model.PurchaseRecord;
 import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
+import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 import com.cascv.oas.server.scheduler.service.SchedulerService;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 
@@ -261,4 +263,31 @@ public class MinerService {
 	    log.info("check status of miner ...");
 	  }
 
+	public ErrorCode restrictMiners(String uuid) throws ParseException{
+		String now = DateUtils.getDate();
+		log.info("Time is {}",now);
+		UserPurchaseRecord upRecord=minerMapper.inquireMinerOfUserByUuid(uuid);
+		log.info("StartTime is {}",upRecord.getStartTime());
+		String startTime=upRecord.getStartTime();
+		String endTime=upRecord.getEndTime();
+		if(startTime == null || endTime == null)
+		   return ErrorCode.SUCCESS;	
+		Integer restriction=upRecord.getRestriction();
+		//将字符串转为Date格式来进行比较
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+	    Date startDate = sdf.parse(startTime);
+	    log.info("StartDate is {}",startDate);
+	    Date endDate = sdf.parse(endTime);
+	    Date justnow = sdf.parse(now);
+	    if ((justnow.after(startDate) && (justnow.before(endDate)))){
+	    	Integer amount = upRecord.getAmount();
+	    	if(amount == null)
+	    		return ErrorCode.SUCCESS;
+	    	if(amount < restriction)
+	    	    return ErrorCode.SUCCESS;
+	    	else
+	    		return ErrorCode.MINER_PURCHASE_RESTRICT;
+	    }else	    	
+	    	return ErrorCode.SUCCESS;	    
+	}
 }

@@ -70,4 +70,13 @@ public interface MinerMapper {
 	Integer insertPurchaseRecord(PurchaseRecord purchaseRecord);
 	Integer countByUserUuid(@Param("userUuid") String userUuid);
 
+	
+	List<UserPurchaseRecord> inquireMinerOfUser(@Param("searchValue") String searchValue,
+			@Param("offset") Integer offset, @Param("limit") Integer limit);
+	
+	Integer countUsersBySearchValue(@Param("searchValue") String searchValue);
+	
+	Integer updateUserMinerInfo(@Param("uuid") String uuid,@Param("startTime") String startTime,@Param("endTime") String endTime,@Param("restriction") Integer restriction);
+	
+    UserPurchaseRecord inquireMinerOfUserByUuid(@Param("uuid") String uuid);
 }

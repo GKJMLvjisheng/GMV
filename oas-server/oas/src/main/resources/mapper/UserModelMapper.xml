@@ -5,7 +5,7 @@
 	<resultMap id="userModelMap"
 		type="com.cascv.oas.server.user.model.UserModel">
 		<id column="uuid" property="uuid" />
-		<result column="name" property="name" />
+		<result column="name" property="name" /> 
 		<result column="nickname" property="nickname" />
 		<result column="password" property="password" />
 		<result column="confirmed" property="confirmed" />

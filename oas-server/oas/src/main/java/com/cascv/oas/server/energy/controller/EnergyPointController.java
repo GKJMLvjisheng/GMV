@@ -19,6 +19,7 @@ import com.cascv.oas.server.energy.vo.*;
 import com.cascv.oas.server.exchange.constant.CurrencyCode;
 import com.cascv.oas.server.exchange.model.ExchangeRateModel;
 import com.cascv.oas.server.exchange.service.ExchangeRateService;
+import com.cascv.oas.server.log.annotation.WriteLog;
 import com.cascv.oas.server.news.model.NewsModel;
 import com.cascv.oas.server.news.service.NewsService;
 import com.cascv.oas.server.shiro.BaseShiroController;
@@ -75,6 +76,7 @@ public class EnergyPointController extends BaseShiroController{
     @PostMapping(value = "/checkin")
     @ResponseBody
     @Transactional
+	 @WriteLog(value="Checkin")
     /**
      * 签到/返回签到成功即可（奖励用统一接口）
      * @return
@@ -123,6 +125,7 @@ public class EnergyPointController extends BaseShiroController{
 
     @PostMapping(value = "/inquireEnergyPointBall")  //不用power
     @ResponseBody
+    @WriteLog(value="FreeBall")
     public ResponseEntity<?> inquireEnergyPointBall() throws ParseException {
 //      String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
     	String userUuid = ShiroUtils.getUserUuid();
@@ -155,6 +158,7 @@ public class EnergyPointController extends BaseShiroController{
     @PostMapping(value = "/takeEnergyPointBall")//不用power
     @ResponseBody
     @Transactional
+    @WriteLog(value="TakeEnergyPointBall")
     public ResponseEntity<?> takeEnergyPointBall(@RequestBody EnergyBallTokenRequest energyBallTokenRequest) throws ParseException {
 //        String userUuid = "USR-0178ea59a6ab11e883290a1411382ce0";
         String userUuid = ShiroUtils.getUserUuid();

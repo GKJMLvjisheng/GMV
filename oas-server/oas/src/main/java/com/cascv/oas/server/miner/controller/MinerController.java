@@ -1,6 +1,7 @@
 package com.cascv.oas.server.miner.controller;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,8 @@ import com.cascv.oas.server.miner.wrapper.PurchaseRecordWrapper;
 import com.cascv.oas.server.miner.wrapper.SystemParameterModelRequest;
 import com.cascv.oas.server.miner.wrapper.SystemParameterResponse;
 import com.cascv.oas.server.miner.wrapper.UserBuyMinerRequest;
+import com.cascv.oas.server.miner.wrapper.UserMinerInfo;
+import com.cascv.oas.server.miner.wrapper.UserMinerUpdate;
 import com.cascv.oas.server.miner.wrapper.UserPurchaseRecord;
 import com.cascv.oas.server.timezone.service.TimeZoneService;
 import com.cascv.oas.server.user.mapper.UserModelMapper;
@@ -352,9 +355,18 @@ public class MinerController {
 	@ResponseBody
 	@Transactional
 	@WriteLog(value="buyMiner")
-	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest){
+	public ResponseEntity<?> buyMiner(@RequestBody UserBuyMinerRequest userBuyMinerRequest) throws ParseException{
 		String userUuid = ShiroUtils.getUserUuid();
 		log.info("userUuid={}", userUuid);
+		
+		//判断矿机购买是否收到限制
+		ErrorCode errorCode = minerService.restrictMiners(userUuid);
+		if(errorCode != ErrorCode.SUCCESS)
+			return new ResponseEntity.Builder<Integer>()
+					.setData(0)
+					.setErrorCode(errorCode)
+					.build();
+						
 		String updated = DateUtils.dateTimeNow(DateUtils.YYYYMMDDHHMMSS);
 		UserWallet userWallet = userWalletMapper.selectByUserUuid(userUuid);
 		String minerName = userBuyMinerRequest.getMinerName();
@@ -585,5 +597,64 @@ public class MinerController {
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}
+	
+	/**
+	 * @category 查看用户和矿机限购信息
+	 * @author lvjisheng
+	 * @param searchValue, offset, limit
+	 * @return 
+	 */
+	@PostMapping(value = "/inquireMinerOfUser")  
+	@ResponseBody
+	public ResponseEntity<?> inquireMinerOfUser(@RequestBody PageDomain<Integer> pageInfo){
+		Integer pageNum = pageInfo.getPageNum();
+	    Integer pageSize = pageInfo.getPageSize();
+	    Integer limit = pageSize;
+	    Integer offset;
 
+	    if (pageSize ==null) {
+	      limit = 10;
+	    }
+	    if (pageNum != null && pageNum > 0)
+	    	offset = (pageNum - 1) * limit;
+	    else 
+	    	offset = 0;
+	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
+	    	    
+	    List<UserPurchaseRecord> purchaseRecords =minerMapper.inquireMinerOfUser(searchValue, offset, limit);
+	    
+	    PageDomain<UserPurchaseRecord> purchaseRecordPage = new PageDomain<>();
+	    Integer count = minerMapper.countUsersBySearchValue(searchValue);
+	    purchaseRecordPage.setTotal(count);
+	    purchaseRecordPage.setAsc("desc");
+	    purchaseRecordPage.setOffset(offset);
+	    purchaseRecordPage.setPageNum(pageNum);
+	    purchaseRecordPage.setPageSize(pageSize);
+	    purchaseRecordPage.setRows(purchaseRecords);
+				
+		return new ResponseEntity.Builder<PageDomain<UserPurchaseRecord>>()
+				.setData(purchaseRecordPage)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
+	/**
+	 * @category 修改用户矿机限购信息
+	 * @author lvjisheng
+	 * @param startTime,endTime,restriction,uuid
+	 * @return 
+	 */
+	@PostMapping(value = "/updateUserMinerInfo")  
+	@ResponseBody
+	@WriteLog(value="updateUserMinerInfo")
+	public ResponseEntity<?> updateUserMinerInfo(@RequestBody UserMinerInfo userMinerInfo){
+        List<String> uuids = userMinerInfo.getUuids();
+		for(String uuid:uuids){
+			minerMapper.updateUserMinerInfo(uuid, userMinerInfo.getStartTime(), userMinerInfo.getEndTime(), userMinerInfo.getRestriction());
+		}		
+		return new ResponseEntity.Builder<Integer>()
+				.setData(0)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();		
+	}	
 }
