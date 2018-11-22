@@ -398,7 +398,7 @@ public class UserWalletService {
 		  }else {		
 
 			  BigInteger gasPrice =Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.GWEI).toBigInteger();
-			  BigInteger gasLimit = BigInteger.valueOf(400000);
+			  BigInteger gasLimit = BigInteger.valueOf(600000);
 			  
 
 			 ReturnValue<String> ethInfo = ethWalletService.systemMultiTransfer(true,systemInfo.getUuid(),details, gasPrice, gasLimit);
