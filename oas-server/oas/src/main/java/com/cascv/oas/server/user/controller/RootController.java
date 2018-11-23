@@ -129,4 +129,9 @@ public class RootController {
 	  public String powerRecord() {
 	  	    return "miner/powerRecord"; 
 	  	    }
+	//矿机明细
+	  @GetMapping("/miner/purchaseLimit")
+	  public String purchaseLimit() {
+	  	    return "miner/purchaseLimit"; 
+	  	    }
 }
