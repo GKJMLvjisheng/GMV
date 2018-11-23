@@ -708,21 +708,6 @@ function initTestGrid() {
 //	        	var box=document.getElementsByName("btSelectAll");
 	        	var boxes = $("#testGrid input[name='btSelectItem']");
 	        	var box=$("#testGrid input[name='btSelectAll']");
-<<<<<<< HEAD
-	        	//console.log(box)
-//	        	console.log(boxes)
-//	            for(i=0;i<boxes.length;i++){
-//	                for(j=0;j<val.length;j++){
-//	                    if(boxes[i].value == val[j]){
-//	                        boxes[i].checked = true;
-//	                        break
-//	                    }
-//	                }
-//	            }
-=======
-	        	
-
->>>>>>> cascv
 	        	var rowsMinner=$("#testMinnerGrid").bootstrapTable('getData');
 	        	var flag2=true;
 	        	for(var j=0;j<rowsMinner.length;j++)
