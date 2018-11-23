@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -279,6 +280,12 @@ public class MinerService {
 	    log.info("StartDate is {}",startDate);
 	    Date endDate = sdf.parse(endTime);
 	    Date justnow = sdf.parse(now);
+	    Calendar calendar =new GregorianCalendar();
+	    calendar.setTime(startDate);
+	    calendar.add(calendar.DATE,-1);
+	    startDate=calendar.getTime();
+	    log.info("StartDate is {}",startDate);
+	    
 	    if ((justnow.after(startDate) && (justnow.before(endDate)))){
 	    	Integer amount = upRecord.getAmount();
 	    	if(amount == null)
