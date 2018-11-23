@@ -10,7 +10,7 @@ import VueScroller from 'vue-scroller'
 Vue.use(VueScroller)
 var token = null
 
-Vue.prototype.$axios = Axios//所有的vue组建均可使用
+Vue.prototype.$axios = Axios//相当于注册，所有的vue组建均可使用
 Vue.config.productionTip = false
 let startApp = function () {
   //Axios.get('/static/config.json').then((res) => {
