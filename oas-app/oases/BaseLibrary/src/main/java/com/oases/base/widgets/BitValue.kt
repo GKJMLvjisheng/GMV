@@ -48,7 +48,7 @@ class BitValue @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         }
     }
 
-    fun setValue(value: Double){
+    fun setValue(value: String){
         mValueTv.text = value.toString()
     }
 

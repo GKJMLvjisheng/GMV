@@ -30,6 +30,7 @@ import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.singleTop
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.startActivity
+import java.math.BigDecimal
 
 @Route(path = "/app/ExchangeCoinActivity")
 class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),ExchangeDetailView{
@@ -203,7 +204,7 @@ class ExchangeCoinActivity : BaseMvpActivity<ExchangeDetailPresenter>(),Exchange
     override fun setCoin(coins: ListCoinResp) {
         balance = coins.userCoin[0].balance.toString()
         unconfirmedBalance = coins.userCoin[0].unconfirmedBalance.toString()
-        eth = coins.userCoin[0].ethBalance.toString()
+        eth = coins.userCoin[0].ethBalance.toBigDecimal().setScale(9,BigDecimal.ROUND_HALF_UP).toString()
         nowCoin.setRightTopText(coins.userCoin[0].balance.toString())
         sumCoin.setRightTopText("≈ ¥".plus(coins.userCoin[0].value.toString()))
         waitRorExchange.setRightTopText(coins.userCoin[0].unconfirmedBalance.toString())//AppPrefsUtils.getString(BaseConstant.ON_GOING_TRANSACTION)
