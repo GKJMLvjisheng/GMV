@@ -132,7 +132,7 @@ public class EthWalletController extends BaseShiroController {
 		//前端传的值单位从wei改为Gwei，差额为10的9次方
 	      BigInteger gasPrice = ethWalletMultiTransfer.getGasPrice();
 	      if (gasPrice == null)
-				gasPrice = Convert.toWei(BigDecimal.valueOf(6), Convert.Unit.GWEI).toBigInteger();
+				gasPrice = Convert.toWei(BigDecimal.valueOf(10), Convert.Unit.GWEI).toBigInteger();
 	      else {
 	    	  BigInteger k = new BigInteger("10");
 			  int m = new Integer("9");

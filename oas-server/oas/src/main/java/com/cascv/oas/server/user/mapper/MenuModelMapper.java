@@ -14,6 +14,6 @@ public interface MenuModelMapper {
 	 Integer deleteMenu(@Param("menuId") Integer menuId);
 	 Integer updateMenuOrderId(@Param("menuOrderId") Integer menuOrderId);
 	 Integer updateMenu(MenuModel menuModel);
-	 List<MenuModel> selectChildrenById(Integer menuId);
+	 List<MenuModel> selectChildrenById(Integer menuId); 
 }
 

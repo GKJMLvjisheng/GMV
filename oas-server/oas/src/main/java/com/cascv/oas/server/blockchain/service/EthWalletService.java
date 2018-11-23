@@ -41,6 +41,7 @@ import com.cascv.oas.core.utils.HttpUtils;
 import com.cascv.oas.core.utils.UuidUtils;
 import com.cascv.oas.server.blockchain.config.CoinClient;
 import com.cascv.oas.server.blockchain.config.TransferQuota;
+import com.cascv.oas.server.blockchain.config.TransferQuotaForWithdraw;
 import com.cascv.oas.server.blockchain.constant.OasEventEnum;
 import com.cascv.oas.server.blockchain.job.EtherRedeemJob;
 import com.cascv.oas.server.blockchain.mapper.EthWalletDetailMapper;
@@ -382,7 +383,7 @@ public class EthWalletService {
   }
 
   private void addDetail(String address, EthWalletDetailScope ethWalletDetailScope, 
-    BigDecimal value, String txHash, String remark, String changeAddress) {
+    BigDecimal value, String txHash, String remark, String changeAddress,String oasDetailUuid) {
     EthWalletDetail ethWalletDetail = new EthWalletDetail();
     ethWalletDetail.setUuid(UuidUtils.getPrefixUUID(UuidPrefix.USER_WALLET_DETAIL));
     ethWalletDetail.setAddress(address);
@@ -396,6 +397,7 @@ public class EthWalletService {
     ethWalletDetail.setTxResult(0);
     ethWalletDetail.setTxHash(txHash);
     ethWalletDetail.setTxNetwork(coinClient.getNetName());
+    ethWalletDetail.setOasDetailUuid(oasDetailUuid);
     String targetUuid = ethWalletMapper.getUserUuidByAddress(address);
     if(!StringUtils.isEmpty(targetUuid)) {
     	UserCoin uCoin = this.getUserCoin(targetUuid);
@@ -439,8 +441,8 @@ public class EthWalletService {
 	   	returnValue.setErrorCode(ErrorCode.UPDATE_FAILED);
         return returnValue;
 	  }
-      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, comment, toUserAddress);
-      addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress());
+      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT,amount, txHash, comment, toUserAddress,null);
+      addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress(),null);
     }
     returnValue.setErrorCode(ErrorCode.SUCCESS);
     returnValue.setData(txHash);
@@ -459,7 +461,7 @@ public class EthWalletService {
    * @return
    */
   public ReturnValue<String> systemTransfer(Boolean flag,String userUuid, String toUserAddress,String onlineWalletName,
-		  UserCoin userCoin,BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment) {
+		  UserCoin userCoin,BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, String comment,String oasDetailUuid) {
 	    //system的交易钱包
 	    EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
 	    ReturnValue<String> returnValue = new ReturnValue<>();
@@ -492,17 +494,99 @@ public class EthWalletService {
 	    if (txHash != null) {
 	      //addDetail(ethWallet.getAddress(), EthWalletDetailScope.COIN_TO_ETH,amount, txHash, comment, toUserAddress);
 	    	if(flag) {
-	    		 addDetail(toUserAddress, EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, "");
-	    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, amount, txHash, comment, toUserAddress);//system的记录
+	    		 addDetail(toUserAddress, EthWalletDetailScope.COIN_TO_ETH, amount, txHash, comment, "",oasDetailUuid);
+	    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, amount, txHash, comment, toUserAddress,null);//system的记录
 	    	}else {
-	    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.ETH_TO_COIN, amount, txHash, comment, "");//onlineWalletName
-	    		 addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress());//system的记录
+	    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.ETH_TO_COIN, amount, txHash, comment, "",oasDetailUuid);//onlineWalletName
+	    		 addDetail(toUserAddress, EthWalletDetailScope.TRANSFER_IN, amount, txHash, comment, ethWallet.getAddress(),null);//system的记录
 	    	}
 	     
 	    }
 	    
 	    return returnValue;
 	  }
+  
+	public ReturnValue<String> systemMultiTransfer(Boolean flag,String userUuid,List<OasDetail> details, BigInteger gasPrice,BigInteger gasLimit) {
+		ReturnValue<String> returnValue = new ReturnValue<>();
+		if(details == null || details.size() == 0) {
+			returnValue.setErrorCode(ErrorCode.MULTIPLE_TRANSFER_FAILURE);
+			return returnValue;
+		}
+		List<TransferQuotaForWithdraw> quota = new ArrayList<>();
+		for(OasDetail d : details) {
+			EthWallet userWallet = ethWalletMapper.selectByUserUuid(d.getUserUuid());
+			TransferQuotaForWithdraw tq = new TransferQuotaForWithdraw();
+			tq.setAmount(d.getValue());
+			tq.setToUserAddress(userWallet.getAddress());
+			tq.setRemark(d.getRemark());
+			tq.setOasDetailUuid(d.getUuid());
+			quota.add(tq);
+		}
+		
+		EthWallet ethWallet = this.getEthWalletByUserUuid(userUuid);
+		
+		if (ethWallet == null) {
+			returnValue.setErrorCode(ErrorCode.NO_ETH_WALLET);
+			return returnValue;
+		}
+		UserCoin userCoin = this.getUserCoin(ethWallet.getUserUuid());
+		Double ethBalance = userCoin.getEthBalance();
+		BigDecimal k = new BigDecimal("10");
+		int m = new Integer("18");
+		BigDecimal price = k.pow(m);  
+		if(new BigDecimal(String.valueOf(gasPrice)).multiply(new BigDecimal(String.valueOf(gasLimit))).compareTo(new BigDecimal(String.valueOf(ethBalance)).multiply(price)) == 1) {
+			returnValue.setErrorCode(ErrorCode.MUTIL_SYSTEM_WITHDRAW_ETH_NOT_ENOUGH);
+			return returnValue;
+		}
+		List<BigInteger> amountIntList = new ArrayList<>();
+		List<String> addressList = new ArrayList<>();
+		BigDecimal total = BigDecimal.ZERO;
+		for (TransferQuotaForWithdraw q : quota) {
+			total = total.add(q.getAmount());
+			if(total.compareTo(userCoin.getBalance()) == 1) {
+				returnValue.setErrorCode(ErrorCode.BALANCE_NOT_ENOUGH);
+			    return returnValue;
+			}
+			if (q.getToUserAddress().isEmpty() || q.getToUserAddress().equals("0")) {
+				returnValue.setErrorCode(ErrorCode.WRONG_ADDRESS);
+				return returnValue;
+			}
+			addressList.add(q.getToUserAddress());
+			BigInteger amountInt = q.getAmount().multiply(userCoin.getWeiFactor()).toBigInteger();
+			if (amountInt.intValue() == 0 || amountInt.equals(null)) {
+				returnValue.setErrorCode(ErrorCode.WRONG_AMOUNT);
+				return returnValue;
+			}
+			amountIntList.add(amountInt);
+		}
+	
+		String key = ethWallet.getPrivateKey();
+		if (ethWallet.getCrypto() != 0) {
+			key = CryptoUtils.decrypt(key, KEY_SALT);
+		}
+		String txHash = coinClient.multiTransfer(ethWallet.getAddress(), key, addressList, amountIntList, gasPrice,
+				gasLimit);
+		log.info("txhash {}", txHash);
+		if (txHash != null) {
+			for (TransferQuotaForWithdraw q : quota) {
+				if(flag) {
+		    		 addDetail(q.getToUserAddress(), EthWalletDetailScope.COIN_TO_ETH, q.getAmount(), txHash, q.getRemark(), "",q.getOasDetailUuid());
+		    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, q.getAmount(), txHash, q.getRemark(), q.getToUserAddress(),null);//system的记录
+		    	}else {
+		    		 addDetail(ethWallet.getAddress(), EthWalletDetailScope.ETH_TO_COIN, q.getAmount(), txHash, q.getRemark(), "",q.getOasDetailUuid());//onlineWalletName
+		    		 addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, q.getRemark(), ethWallet.getAddress(),null);//system的记录
+		    	}
+	
+			}
+			returnValue.setErrorCode(ErrorCode.SUCCESS);
+			returnValue.setData(txHash);
+			return returnValue;
+		} else {
+			returnValue.setErrorCode(ErrorCode.ETH_RETURN_HASH);
+			return returnValue;
+		}
+	
+	}
   
   public ReturnValue<String> multiTransfer(String userUuid, List<TransferQuota> quota,
 		  BigInteger gasPrice, BigInteger gasLimit, String remark) {
@@ -544,10 +628,10 @@ public class EthWalletService {
     log.info("txhash {}", txHash);
     if (txHash!=null) {
     	for (TransferQuota q: quota) {
-	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, q.getAmount(), txHash, "", q.getToUserAddress());
+	      addDetail(ethWallet.getAddress(), EthWalletDetailScope.TRANSFER_OUT, q.getAmount(), txHash, "", q.getToUserAddress(),null);
     	}
 	      for (TransferQuota q: quota) {
-	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "", ethWallet.getAddress());  
+	        addDetail(q.getToUserAddress(), EthWalletDetailScope.TRANSFER_IN, q.getAmount(), txHash, "", ethWallet.getAddress(),null);  
 	      }
 	      returnValue.setErrorCode(ErrorCode.SUCCESS);
 	      returnValue.setData(txHash);
@@ -606,7 +690,7 @@ public class EthWalletService {
 			  return ErrorCode.NO_ETH_WALLET;
 		  }
 		  UserCoin tokenCoin = this.getUserCoin(user.getUuid());
-		  ReturnValue<String> ethInfo = systemTransfer(false,user.getUuid(),systemEthWallet.getAddress(),user.getName(), tokenCoin,info.getAmount(), info.getGasPrice(), info.getGasLimit(),info.getRemark());
+		  ReturnValue<String> ethInfo = systemTransfer(false,user.getUuid(),systemEthWallet.getAddress(),user.getName(), tokenCoin,info.getAmount(), info.getGasPrice(), info.getGasLimit(),info.getRemark(),uuid);
 		  if(ethInfo == null || ethInfo.getData() == null) {
 			  log.info("hash null reason:",ethInfo.getErrorCode());
 			  return ErrorCode.ETH_RETURN_HASH;
@@ -645,7 +729,7 @@ public class EthWalletService {
   //在交易钱包的交易记录中点击记录
   public ErrorCode getExchangeResult(EthWalletDetail detail) {
 	  //EthWalletDetail detail = ethWalletDetailMapper.selectByUUid(ethDetail.getUuid());//
-	  if(detail.getTxHash() == null || detail.getTitle()== null ) {
+	  if(detail.getTxHash() == null || detail.getTitle()== null) {
 		  return ErrorCode.SELECT_EMPTY;
 	  } 
 	  //非进行中的事件不用重新查看结果
@@ -703,7 +787,8 @@ public class EthWalletService {
 		   }
 		   return ErrorCode.SUCCESS;	
 		  }
-		  OasDetail oasD = oasDetailMapper.selectRecordByHash(hash);
+		  OasDetail oasD = oasDetailMapper.getRecordByUuid(detail.getOasDetailUuid());
+		 // OasDetail oasD = oasDetailMapper.selectRecordByHash(hash);
 	  	  if(oasD == null) {
 	  		 return ErrorCode.SELECT_EMPTY;
 	  	  }
@@ -748,7 +833,7 @@ public class EthWalletService {
 	  		  		 return ErrorCode.UPDATE_FAILED;
 	  		  	}
 	  		    //更新在线钱包记录中的状态
-		  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid(),myWallet.getBalance(),0);
+		  		Integer uwdResult = userWalletDetailMapper.updateByOasDetailUuid(flagInt,oasD.getUuid(),null,0);//批量不要更新了myWallet.getBalance()
 		  		if(uwdResult == 0) {
 	 		  		 return ErrorCode.UPDATE_FAILED;
 	 		  	}
@@ -809,7 +894,7 @@ public class EthWalletService {
 			    if(!StringUtils.isEmpty(targetUuid)) {
 			    	UserCoin uCoin = this.getUserCoin(targetUuid);
 			    	if(uCoin!=null) {
-			    		ethWalletDetailMapper.updateRestBalanceByHash(de.getUuid(),uCoin.getBalance());
+			    		ethWalletDetailMapper.updateRestBalanceByUuid(de.getUuid(),uCoin.getBalance());
 			    	}
 			    	//查询system交易钱包账号的余额
 			    	String systemAddress = ethWalletDetailMapper.getSystemAddress();
@@ -827,7 +912,7 @@ public class EthWalletService {
 	    if(!StringUtils.isEmpty(targetUuid)) {
 	    	UserCoin uCoin = this.getUserCoin(targetUuid);
 	    	if(uCoin!=null) {
-	    		ethWalletDetailMapper.updateRestBalanceByHash(detail.getUuid(),uCoin.getBalance());
+	    		ethWalletDetailMapper.updateRestBalanceByUuid(detail.getUuid(),uCoin.getBalance());
 	    	}
 	    }
 			

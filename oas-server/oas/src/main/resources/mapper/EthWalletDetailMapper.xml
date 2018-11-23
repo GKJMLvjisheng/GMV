@@ -17,11 +17,12 @@
 <!-- 	<result column="change_address" property="changeAddress"/> -->
 	<result column="created" property="created"/>
 	<result column="rest_balance" property="restBalance"/>
+	<result column="oas_detail_uuid" property="oasDetailUuid"/>
   </resultMap>
   
   
   <sql id="Base_Column_List">
-    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, prior,created,rest_balance
+    uuid, address, value, title, sub_title,in_or_out, tx_hash, tx_result,tx_network,remark, prior,created,rest_balance,oas_detail_uuid
 <!--     , change_address -->
   </sql>
   
@@ -57,6 +58,9 @@
     	<if test="restBalance != null">
     		rest_balance,
     	</if>
+    	<if test="oasDetailUuid != null">
+    		oas_detail_uuid,
+    	</if>
 <!--     	<if test="changeAddress != null"> -->
 <!--     		change_address, -->
 <!--     	</if> -->
@@ -89,6 +93,9 @@
     	</if>
     	<if test="restBalance != null">
     		#{restBalance,jdbcType=DECIMAL},
+    	</if>
+    	<if test="oasDetailUuid != null">
+    		#{oasDetailUuid,jdbcType=VARCHAR},
     	</if>
     		#{created,jdbcType=VARCHAR}
     </trim>
@@ -201,8 +208,8 @@
   	where tx_hash = #{hash,jdbcType=VARCHAR}
   </select>
   
-  <update id="updateRestBalanceByHash">
-  update eth_wallet_detail
+  <update id="updateRestBalanceByUuid">
+	update eth_wallet_detail
   <set>
    	<if test="restBalance != null">
    		rest_balance = #{restBalance,jdbcType=DECIMAL},

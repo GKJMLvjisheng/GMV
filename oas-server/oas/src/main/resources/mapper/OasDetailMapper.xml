@@ -138,6 +138,7 @@
   	select <include refid="Base_Column_List" /> 
   	from oas_detail
   	where uuid = #{uuid,jdbcType=VARCHAR}
+  	limit 1
   </select>
   
   <update id="setWithdrawResultByUuid">
@@ -223,4 +224,14 @@
   	set status = #{status,jdbcType=INTEGER}
   	where uuid = #{uuid,jdbcType=VARCHAR}
   </update>
+  
+  <delete id="deleteByUuid">
+   delete from oas_detail where uuid = #{uuid}
+  </delete>
+  
+  <select id="getRecordByUuids" resultMap="BaseResultMap">
+  	select  <include refid="Base_Column_List" />
+  	from  oas_detail where uuid in 
+	<foreach collection="uuids" item="item" index="index" open="(" separator="," close=")">#{item}</foreach>
+  </select>
 </mapper>

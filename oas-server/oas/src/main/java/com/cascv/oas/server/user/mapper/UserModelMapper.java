@@ -17,7 +17,7 @@ public interface UserModelMapper {
 	 Integer countUsers( @Param("roleId") Integer roleId);
 	 Integer updateUserStatus(@Param("status") Integer status,@Param("name") String name);
 	 //UserIdentityCardModel inquireUserKYCInfo(@Param("userName") String userName);
-	 Integer insertUser(UserModel userModel);
+	 Integer insertUser(UserModel userModel); 
 	 UserModel selectByName(@Param("name") String name);
 	 UserModel selectByUuid(@Param("uuid") String uuid);
 	 Integer deleteUser(String uuid);

@@ -23,5 +23,6 @@ public class EthWalletDetail implements Serializable {
   @Getter @Setter private String created;
 //  @Getter @Setter private String changeAddress;
   @Getter @Setter private BigDecimal restBalance;
+  @Getter @Setter private String oasDetailUuid;
 
 }
