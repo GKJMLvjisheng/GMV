@@ -2,10 +2,8 @@ package com.gkyj.gmv.server.common;
 
 public interface ShiroConstants {
     
-    
   public static final String CURRENT_USER = "currentUser";
   public static final String CURRENT_USERNAME = "username";
-
   public static final String MESSAGE = "message";
   public static final String ERROR = "errorMsg";
   public static final String ENCODING = "UTF-8";
