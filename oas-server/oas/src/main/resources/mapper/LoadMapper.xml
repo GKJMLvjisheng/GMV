@@ -1,0 +1,55 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gkyj.gmv.server.load.mapper.LoadMapper">
+    
+    <resultMap id="LoadMap" type="com.gkyj.gmv.server.load.model.LoadModel">
+		
+		<result column="miner_name" property="minerName"/>
+	  	<result column="miner_description" property="minerDescription"/>
+	  	<result column="miner_price" property="minerPrice"/>	  		  	
+	  	<result column="circle_number" property="circleNumber"/>
+	  	<result column="updated" property="updated"/>
+    </resultMap>
+        
+    <sql id="load_List">
+  		miner_name, miner_description, miner_price, circle_number, updated
+    </sql>
+    
+   
+    <select id="selectLoadMsg" resultMap="LoadMap">
+        select
+           <include refid="load_List" />
+        from 
+        	miner_source
+        	<if test="searchValue != null and searchValue != null ">
+    	    	where miner_name like concat('%',#{searchValue},'%')
+       		</if> 
+        where 
+        	circle_number=(select MAX(circle_number) from miner_source)
+        order by updated asc
+        limit #{offset}, #{limit};
+    </select>
+    
+    
+    <select id="selectLoadMsgForCurve" resultMap="LoadMap">
+        select
+           <include refid="load_List" />
+        from 
+        	miner_source
+        where 
+        	circle_number=(select MAX(circle_number) from miner_source)
+        order by updated asc
+    </select>
+    
+    <select id="selectLoadMsgByTime" resultMap="LoadMap">
+        select * from miner_source where updated = #{updated}
+    </select>
+    
+    
+     <select id="selectLoadMsgByPeriod" resultMap="LoadMap">
+        select 
+        	* from miner_source 
+        where 
+        	DATE_FORMAT(updated,"%Y-%m-%d %H:%i:%s") BETWEEN #{startTime} and #{endTime}
+			order by miner_description asc
+    </select>
+</mapper>
