@@ -1,7 +1,7 @@
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driverClassName: com.mysql.jdbc.Driver 
+    driverClassName: com.mysql.jdbc.Driver
     druid:
       master:
         url: jdbc:mysql://localhost:3306/oas_db?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
@@ -10,7 +10,7 @@ spring:
       initial-size: 10
       max-active: 100
       min-idle: 10
-      max-wait: 60000 
+      max-wait: 60000
       pool-prepared-statements: true
       max-pool-prepared-statement-per-connection-size: 20
       timeBetweenEvictionRunsMillis: 60000

@@ -4,17 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-    <title>web登录系统 - 登录</title>
-    <meta name="keywords" content="web登录系统">   
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>  
+    <title>web登陆系统 - 登录</title>
+    <meta name="keywords" content="web登陆系统">
+    
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+   
 <!--       <link href="../static/css/style.css" th:href="@{css/style.css}" rel="stylesheet"/>    -->
     <link href="../static/css/login.css" th:href="@{css/login.css}" rel="stylesheet"/>
     <!-- 全局js -->
-    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-	<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+ <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 </head>
 
 <body class="signin">
+
     <div class="signinpanel"> 
         <div class="row">
             <div class="col-sm-7">
@@ -38,155 +41,58 @@
             <div class="col-sm-5">
                 <form id="signupForm">
                     <h4 class="no-margins text-center">欢迎登录</h4>
+<!--                    <p class="no-margins">登录：</p> -->
 					<br/>
-                    <input type="text" id="nameId" name="username" class="form-control uname" placeholder="用户名"/>
-					<input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码">
+                    <input type="text"   id="nameId"  name="username" class="form-control uname"     placeholder="用户名"     />
+                    <input type="password" id="passwordId" name="password" class="form-control pword m-b" placeholder="密码"    />
 
-					<div class="row" >
-						<div class="col-xs-6">
-							<input type="text" id="identifyCode" oninput="checkIdentify(event)" class="form-control checkinput" placeholder="四位验证码" maxlength="4"/>										
-						</div>						
-						<div class="col-xs-6">							
-							<img style="margin-top: 17px" src="/api/v1/userCenter/getCode" id="CreateCheckCode" width="85%"  class="checkcode"
-							onclick="this.src='/api/v1/userCenter/getCode?' + Math.random()"> 												
-						</div>							
-					</div>					
-					<span id="msgFirst"></span>	
-
-                    <button class="btn btn-primary btn-block" type="button" id="btnSubmit" onclick="submitLogin()">登录</button>
-                    <br/>
-                    <br/>
+                    <button class="btn btn-primary btn-block" type=button id="btnSubmit" onclick="submitLogin()">登录</button>
+                     <br/>
+                     <br/>
                 </form>
             </div>
         </div>
         <div class="signup-footer">
             <div class="pull-left">
-                &copy; 2018 All Rights Reserved by OASES Chain
+                &copy; 2018 All Rights Reserved. web区块链
             </div>
         </div>
     </div> 
 
+
+
 </body>
 <script>
-	var check1;
-
-	if (top != window)  
-		top.location.href = window.location.href;			  	
-
-	//检查验证码正确与否
-	function checkIdentify(e){
-		var identifyCode = $("#identifyCode").val();
-		len = identifyCode.length;
-	    var data = {
-	      "identifyCode" : identifyCode
-		};			    
-		if(len==4){
-			$.ajax({
-			url : "/api/v1/userCenter/contrastCode",
-			data :JSON.stringify(data),
-			contentType : 'application/json;charset=utf8',
-			dataType: 'json',
-			type: 'post',
-			async : false,
-			cache: false,
-			success : function(res) {
-				if (res.data.flag == 0) {
-					$("#msgFirst").html("输入的验证码正确！");
-					$("#msgFirst").css("color", "#00ff00");
-					return;
-				} 
-				else {
-					$("#msgFirst").html("输入的验证码有误!");	          
-					$("#msgFirst").css("color", "#ff0000");
-					return;	         
-					}	
-			},
-			error : function() {
-				alert('检查验证码是否存在发生错误');
-			}
-			});
-		}    
-	}
-	
-	function checkUser(){
-		var data={
-			"name": $('#nameId').val(),
-			"password": $('#passwordId').val(),
-			//"rememberMe":true,
-		};				
-
-		$.ajax({
-		type: 'post',
-		url: '/api/v1/userCenter/login',
-		data: JSON.stringify(data),
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		async : false,
-		success: function (res) {
-			if (res.code == 0) {
-				check1=1;
-			} else {
-				//alert("1"+res.message);
-				check1=0;
-			}
-		},
-		error: function (res) {
-			//alert("12"+JSON.stringify(res.message));
-			check1=2;
-		},
- 		complete: function () {
- 			
- 		}
-		});		
+	function submitLogin(){
+	data={
+		"name": $('#nameId').val(),
+	    "password": $('#passwordId').val(),
+	};
+	alert(JSON.stringify(data));
+	var name=$('#nameId').val();
+	$.ajax({
+	   type: 'post',
+	   url: '/api/v1/userCenter/login',
+	   data: JSON.stringify(data),
+	   contentType : 'application/json;charset=utf8',
+	   dataType: 'json',
+	   cache: false,
+	   success: function (res) {
+	     if (res.code == 0) {
+	    	 var string=res.data.token;
+	    	 
+	    	 window.location.replace(encodeURI(encodeURI("multiTransfer?string="+string+"&用户名字="+name)));
+	     } else {
+	    	 alert(res.message);
+	     }
+	   },
+	   error: function (res) {
+		  alert("11"+JSON.stringify(res));
+	   },
+	   complete: function () {
+	   }
+	  });
 	}
 
-	function submitLogin(){	
-
-		var identifyCode = $("#identifyCode").val();
-		var data = {
-	      "identifyCode" : identifyCode
-		};
-		$.ajax({
-		url : "/api/v1/userCenter/contrastCode",
-		data :JSON.stringify(data),
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		type: 'post',
-		async : false,
-		cache: false,
-		success : function(res) {
-			if(res.data.msg=="null"){
-				$("#msgFirst").html("请输入四位验证码!");	          
-				$("#msgFirst").css("color", "#ff0000");
-				return;	
-			}else{
-				if (res.data.flag == 0) {
-					
-					$("#msgFirst").html("输入的验证码正确！");
-					$("#msgFirst").css("color", "#00ff00");					
-	
-					checkUser()
-					//alert(JSON.stringify(check1));
-					if(check1==1){
-						window.location.replace("main");
-						
-					}else if(check1==0){
-						alert("用户名或密码错误！");
-					}											          
-				} 
-				else {
-					$("#msgFirst").html("输入的验证码有误!");	          
-					$("#msgFirst").css("color", "#ff0000");
-					return;	         
-					}	
-			}
-		},
-		error : function() {
-			alert('检查验证码是否存在发生错误');
-		}
-		});								
-	}
-	
 </script>
 </html>

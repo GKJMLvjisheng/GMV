@@ -180,7 +180,7 @@ body.body-small .navbar-top-links li:last-child {
 
 .nav-header {
     padding: 33px 25px;
-    /* background: url("patterns/header-profile.png") no-repeat; */
+    background: url("patterns/header-profile.png") no-repeat;
 }
 
 .pace-done .nav-header {
@@ -189,8 +189,7 @@ body.body-small .navbar-top-links li:last-child {
 }
 
 .nav>li.active {
-    border-left: 4px solid ;
-/*     #19aa8d;  绿色*/
+    border-left: 4px solid #19aa8d;
     background: #293846;
 }
 
@@ -474,7 +473,7 @@ body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
 /*border-radius: 2px;*/
 /*}*/
 
-/*娴煎摜缂夐懣婊冨礋*/
+/*伸缩菜单*/
 .fixed-sidebar.mini-navbar .nav li:hover>a> span.nav-label {
     top: 0px;
     padding: 10px 10px 10px 10px;
@@ -497,7 +496,7 @@ body.body-small.fixed-sidebar.mini-navbar .navbar-static-side {
     min-width: 140px;
     border-radius: 2px;
 }
-/*娴煎摜缂夐懣婊冨礋缂佹挻娼�*/
+/*伸缩菜单结束*/
 
 body.fixed-sidebar.mini-navbar .navbar-default .nav>li>.nav-second-level li a {
     font-size: 12px;
@@ -677,9 +676,9 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
     min-width: 120px;
 }
 
-/* .btn-primary.btn-outline { */
-/*     color: #1ab394; */
-/* } */
+.btn-primary.btn-outline {
+    color: #1ab394;
+}
 
 .btn-success.btn-outline {
     color: #1c84c6;
@@ -701,17 +700,17 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
     color: #fff;
 }
 
-/* .btn-primary { */
-/*     background-color: #1ab394; */
-/*     border-color: #1ab394; */
-/*     color: #FFFFFF; */
-/* } */
+.btn-primary {
+    background-color: #1ab394;
+    border-color: #1ab394;
+    color: #FFFFFF;
+}
 
-/* .btn-primary:hover, .btn-primary:focus, .btn-primary:active,  .btn-primary.active, .open .dropdown-toggle.btn-primary { */
-/*     background-color: #18a689; */
-/*     border-color: #18a689; */
-/*     color: #FFFFFF; */
-/* } */
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active,  .btn-primary.active, .open .dropdown-toggle.btn-primary {
+    background-color: #18a689;
+    border-color: #18a689;
+    color: #FFFFFF;
+}
 
 .btn-primary:active, .btn-primary.active, .open .dropdown-toggle.btn-primary {
     background-image: none;
@@ -907,13 +906,13 @@ button.dim:active {
     top: 3px;
 }
 
-/* button.btn-primary.dim { */
-/*     box-shadow: inset 0px 0px 0px #16987e, 0px 5px 0px 0px #16987e, 0px 10px  5px #999999; */
-/* } */
+button.btn-primary.dim {
+    box-shadow: inset 0px 0px 0px #16987e, 0px 5px 0px 0px #16987e, 0px 10px  5px #999999;
+}
 
-/* button.btn-primary.dim:active { */
-/*     box-shadow: inset 0px 0px 0px #16987e, 0px 2px 0px 0px #16987e, 0px 5px  3px #999999; */
-/* } */
+button.btn-primary.dim:active {
+    box-shadow: inset 0px 0px 0px #16987e, 0px 2px 0px 0px #16987e, 0px 5px  3px #999999;
+}
 
 button.btn-default.dim {
     box-shadow: inset 0px 0px 0px #b3b3b3, 0px 5px 0px 0px #b3b3b3, 0px 10px  5px #999999;
@@ -1830,9 +1829,9 @@ table.dataTable thead .sorting:after {
     font-size: 14px;
 }
 
-/* .form-control:focus, .single-line:focus { */
-/*     border-color: #1ab394 !important; */
-/* } */
+.form-control:focus, .single-line:focus {
+    border-color: #1ab394 !important;
+}
 
 .has-success .form-control {
     border-color: #1ab394;
@@ -3350,14 +3349,14 @@ nav.page-tabs .page-tabs-content {
 }
 
 #content-main {
-    height: calc(100% - 80px);
+    height: calc(100% - 140px);
     overflow: hidden;
 }
 
-/* .fixed-nav #content-main { */
-/*     height: calc(100% - 140px); */
-/*     overflow: hidden; */
-/* } */
+.fixed-nav #content-main {
+    height: calc(100% - 80px);
+    overflow: hidden;
+}
 /* TABLES */
 .table-bordered {
     border: 1px solid #EBEBEB;
@@ -6662,7 +6661,7 @@ body.rtls .top-navigation .footer.fixed, body.rtls.top-navigation .footer.fixed 
 }
 /*
  *
- *   SKIN blue 閼汇儰绶风粻锛勬倞缁崵绮�
+ *   SKIN blue 若依管理系统
  *   NAME - blue/purple
  *
 */
@@ -6805,7 +6804,7 @@ body.skin-blue {
 }
 /*
  *
- *   SKIN Yellow 閼汇儰绶风粻锛勬倞缁崵绮�
+ *   SKIN Yellow 若依管理系统
  *   NAME - Yellow/purple
  *
 */
@@ -7341,7 +7340,7 @@ body.skin-yellow {
     padding:0;
 }
 
-/*缂傛牞绶崳銊﹀瘻闁筋喗鐗卞蹇撳暱缁愶拷*/
+/*编辑器按钮样式冲突*/
 .note-editor .btn-default {
     color: #333333!important;
     background-color: #ffffff!important;

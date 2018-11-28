@@ -2,13 +2,13 @@
  * 
  */
 (function ($) {
-	//modal-dm
+
     window.Ewin = function () {
         var html = '<div id="[Id]" class="modal fade" role="dialog" aria-labelledby="modalLabel">' +
                               '<div class="modal-dialog modal-sm">' +
                                   '<div class="modal-content">' +
                                       '<div class="modal-header">' +
-                                          //'<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                                          '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
                                           '<h4 class="modal-title" id="modalLabel">[Title]</h4>' +
                                       '</div>' +
                                       '<div class="modal-body">' +
@@ -27,7 +27,7 @@
                               '<div class="modal-dialog">' +
                                   '<div class="modal-content">' +
                                       '<div class="modal-header">' +
-                                         // '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
+                                          '<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' +
                                           '<h4 class="modal-title" id="modalLabel">[Title]</h4>' +
                                       '</div>' +
                                       '<div class="modal-body">' +
@@ -47,7 +47,7 @@
                 btnok: "确定",
                 btncl: "取消",
                 width: 200,
-                auto: true
+                auto: false
             }, options || {});
             var modalId = generateId();
             var content = html.replace(reg, function (node, key) {

@@ -53,44 +53,27 @@ shiro:
     maxAge: 30
   session:
     # default 30 minutes
-    expireTime: -100000000
+    expireTime: 30
     # interval syn session to db(default 1 minutes)
     dbSyncPeriod: 1
     # interval to validate session(default 10 minutes)
     validationInterval: 10
-    sessionCount: 1
-    kickoutUrl: "/kickout"
-  cache:
-    prefix: "shiro"
 
 server:
-  port: 443
-  session-timeout: -100000000 #1800
-  ssl:
-    key-store-type: PKCS12
-    key-store: classpath:215096020960791.pfx
-    key-store-password: 215096020960791
-    key-alias: alias
-media:
-  server:
-    imageHost : https://dapp.oases.pro
+  port: 8080
+  session-timeout: 1800
 
-mail:
-  mailBean:
-    rootMail: "support@oases.pro"
-    password: "Epc588"
-    name: "support@oases.pro"
-    subject: "邮箱验证"
-
-quartz:
-  properties:
-    org.quartz.scheduler.instanceName: "EtherScheduler"
-    org.quartz.scheduler.instanceId: "AUTO"
-    # thread pool
-    org.quartz.threadPool.class: "org.quartz.simpl.SimpleThreadPool"
-    org.quartz.threadPool.threadCount: 20
-    org.quartz.threadPool.threadPriority: 5
-    # JobStore
-    org.quartz.jobStore.class: "org.quartz.simpl.RAMJobStore"
-    
-exchangeHourseuUrl : http://www.zzex.pro/m/allticker
+wallet:
+  provider: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
+  
+  token: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
+  
+  contracts[0]: 
+    address: "0x6Fe2542DC2B902141C14F085A646A38cDF0BeecF"
+  
+  exchange:
+    energyPointDaily: 15
+    energyPowerDaily: 10
+    energyPointRate: 0.0001
+    tokenRmbRate: 97
+      
