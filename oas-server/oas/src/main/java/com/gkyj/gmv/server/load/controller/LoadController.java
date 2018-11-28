@@ -36,9 +36,9 @@ public class LoadController {
 	 * @param (searchValue, pageSize, pageNum)
 	 * @return 
 	 */
-	@PostMapping(value = "/selectLoadMsg")  
+	@PostMapping(value = "/selectLoadMsgForExcel")  
 	@ResponseBody
-	public ResponseEntity<?> selectLoadMsg(@RequestBody PageDomain<Integer> pageInfo){
+	public ResponseEntity<?> selectLoadMsgForExcel(@RequestBody PageDomain<Integer> pageInfo){
 		
 		Integer pageNum = pageInfo.getPageNum();
 	    Integer pageSize = pageInfo.getPageSize();
@@ -53,14 +53,14 @@ public class LoadController {
 	    	offset = 0;
 	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
 	    	     
-	    List<LoadModel> loadModelList = loadMapper.selectLoadMsg(searchValue, offset, limit);	    
+	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgForExcel(searchValue, offset, limit);	    
 	   
 	    String startTime = loadModelList.get(0).getUpdated();
 		String endTime = loadModelList.get(loadModelList.size()-1).getUpdated();
 	    
 	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
-	    Integer count = loadModelList.size();
-	    	
+	    //Integer count = loadModelList.size();
+	    Integer count = loadMapper.countOfSelectLoadMsgForExcel(searchValue);
 	    loadRecordPage.setTotal(count);
 	    loadRecordPage.setAsc("asc");
 	    loadRecordPage.setOffset(offset);
@@ -76,7 +76,35 @@ public class LoadController {
 				.build();
 	}
 	
-
+	/**
+	 * @category 查询所有数据，包括开始时间和结束时间
+	 * @param 无
+	 * @return 
+	 */
+	@PostMapping(value = "/selectLoadMsgForCurve")  
+	@ResponseBody
+	public ResponseEntity<?> selectLoadMsgForCurve(@RequestBody PageDomain<Integer> pageInfo){
+	    	     
+	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgForCurve();	    
+	   
+	    String startTime = loadModelList.get(0).getUpdated();
+		String endTime = loadModelList.get(loadModelList.size()-1).getUpdated();
+	    
+	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
+	    Integer count = loadModelList.size();
+	    	
+	    loadRecordPage.setTotal(count);
+	    loadRecordPage.setAsc("asc");
+	    loadRecordPage.setStartTime(startTime);
+	    loadRecordPage.setEndTime(endTime);
+	    loadRecordPage.setRows(loadModelList);
+	   
+		return new ResponseEntity.Builder<PageDomain<LoadModel>>()
+				.setData(loadRecordPage)
+				.setErrorCode(ErrorCode.SUCCESS)
+				.build();
+	}
+	
 	/**
 	 * @category 根据给定时间去查询载体数据
 	 * @param  updated,(searchValue, pageSize, pageNum)
@@ -91,7 +119,7 @@ public class LoadController {
 	    Integer limit = pageSize;
 	    Integer offset;
 	    
-	    //String time = pageInfo.getPageNum();
+	    String time = pageInfo.getTime();
 	    
 	    if (pageSize ==null) {
 	      limit = 10;
@@ -102,11 +130,11 @@ public class LoadController {
 	    	offset = 0;
 	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
 	    	     
-	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgByTime(pageInfo.getTime(),searchValue, offset, limit);	    
+	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgByTime(time,searchValue, offset, limit);	    
 	    
 	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
-	    Integer count = loadModelList.size();
-	    	
+	    //Integer count = loadModelList.size();
+	    Integer count = loadMapper.countOfSelectLoadMsgByTime(searchValue,time);	
 	    loadRecordPage.setTotal(count);
 	    loadRecordPage.setOffset(offset);
 	    loadRecordPage.setPageNum(pageNum);
@@ -156,8 +184,8 @@ public class LoadController {
 	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgByPeriod(startTime,endTime,searchValue, offset, limit);	    
 	    
 	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
-	    Integer count = loadModelList.size();
-	    	
+	    //Integer count = loadModelList.size();
+	    Integer count = loadMapper.countOfSelectLoadMsgByPeriod(searchValue,startTime,endTime);	
 	    loadRecordPage.setTotal(count);
 	    loadRecordPage.setOffset(offset);
 	    loadRecordPage.setPageNum(pageNum);
@@ -171,34 +199,5 @@ public class LoadController {
 				.build();
 	}
 	
-	
-	/**
-	 * @category 查询所有数据，包括开始时间和结束时间
-	 * @param 无
-	 * @return 
-	 */
-	@PostMapping(value = "/selectLoadMsgForCurve")  
-	@ResponseBody
-	public ResponseEntity<?> selectLoadMsgForCurve(@RequestBody PageDomain<Integer> pageInfo){
-	    	     
-	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgForCurve();	    
-	   
-	    String startTime = loadModelList.get(0).getUpdated();
-		String endTime = loadModelList.get(loadModelList.size()-1).getUpdated();
-	    
-	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
-	    Integer count = loadModelList.size();
-	    	
-	    loadRecordPage.setTotal(count);
-	    loadRecordPage.setAsc("asc");
-	    loadRecordPage.setStartTime(startTime);
-	    loadRecordPage.setEndTime(endTime);
-	    loadRecordPage.setRows(loadModelList);
-	   
-		return new ResponseEntity.Builder<PageDomain<LoadModel>>()
-				.setData(loadRecordPage)
-				.setErrorCode(ErrorCode.SUCCESS)
-				.build();
-	}
 }
 
