@@ -1,9 +1,11 @@
 var pageSize;
 var pageNum;
-
+//表格回显
+$(function(){
+	ready();
+});
 //初始化表格
-function initMinerSellGrid(data) {	
-//	$("#table").bootstrapTable('destroy');
+function initTable(data) {	
 	$("#table").bootstrapTable({
 		contentType : "application/x-www-form-urlencoded",
 		dataType:"json",
@@ -17,71 +19,99 @@ function initMinerSellGrid(data) {
 		data:data,
 		columns : [{  
 			title: "参数代码",  
-			field: "",
+			field: "minerName",
 			align: 'center',
 			valign: 'middle', 
 			width:  '80px',
 			},
 			{
 			title : "参数名称",
-			field : "",
+			field : "minerDescription",
 			align: 'center',
 			valign: 'middle',
 			width:  '110px',
-		    },
-			{
-			title : "参数意义",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
-			},
-			{
-			title : "参数源码",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
-			},
-			{
-			title : "比特位",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
-			},
-			{
-			title : "结果",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
-			},
-			{
-			title : "超限",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
-			},
-			{
-			title : "范围",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
-			},
-			{
-			title : "单位",
-			field : "",
-			align: 'center',
-			valign: 'middle',
-			width:  '80px',
+//		    },
+//			{
+//			title : "参数意义",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
+//			},
+//			{
+//			title : "参数源码",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
+//			},
+//			{
+//			title : "比特位",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
+//			},
+//			{
+//			title : "结果",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
+//			},
+//			{
+//			title : "超限",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
+//			},
+//			{
+//			title : "范围",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
+//			},
+//			{
+//			title : "单位",
+//			field : "",
+//			align: 'center',
+//			valign: 'middle',
+//			width:  '80px',
 		}],
 		
 //		search : true,//搜索
 //        searchOnEnterKey : true,
 //		clickToSelect: false, 
 	});
+}
+
+function ready(){
+    $('#table').bootstrapTable('destroy');
+	var data;
+	var data1={};
+	 $.ajax({
+		
+		url: "/api/v1/load/selectLoadMsg",
+	    contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data: JSON.stringify(data1),
+		async : false,
+		success: function(res) {
+		alert(JSON.stringify(res));
+		if(res.code==0)
+			{data=res.data.rows;}
+		
+		else{alert("回显失败！");}
+			
+		}, 
+		error: function(){
+			alert("失败！")
+		}
+		}); 
+	 initTable(data);
 }
 
