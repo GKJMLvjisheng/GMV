@@ -12,6 +12,7 @@ public class LoadModel {
 	@Getter @Setter private BigDecimal minerPrice;	
 	@Getter @Setter private Integer circleNumber;	
 	@Getter @Setter private String updated;
+	@Getter @Setter private String loadPicturePath;
 	
 
 }

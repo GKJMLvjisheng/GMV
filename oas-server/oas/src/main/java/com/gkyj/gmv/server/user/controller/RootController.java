@@ -32,9 +32,17 @@ public class RootController {
        
     return "table";  }
   
+//Line
+ @GetMapping("/line")
+ public String line(HttpServletRequest request, HttpServletResponse response) {
+   return "line";  }
+ 
   @GetMapping(value="/wbTest")
   public String wbTest(){
     return "wbTest";
- }
+  }
+
+
 }
+
 
