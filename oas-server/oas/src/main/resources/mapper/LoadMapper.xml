@@ -8,26 +8,29 @@
 	  	<result column="miner_price" property="minerPrice"/>	  		  	
 	  	<result column="circle_number" property="circleNumber"/>
 	  	<result column="updated" property="updated"/>
+	  	<result column="load_picture_path" property="loadPicturePath"/>
     </resultMap>
         
     <sql id="load_List">
-  		miner_name, miner_description, miner_price, circle_number, updated
+  		miner_name, miner_description, miner_price, circle_number, updated, load_picture_path
     </sql>
     
    
-    <select id="selectLoadMsgForExcel" resultMap="LoadMap">
+    <select id="selectLoadMsg" resultMap="LoadMap">
         select
            <include refid="load_List" />
         from 
         	miner_source
         	
         where 
-        	circle_number=(select MAX(circle_number) from miner_source)
+        	updated=(select MIN(updated) from miner_source 
+        where circle_number=(select MAX(circle_number) from miner_source))
+        	
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if> 
         order by updated asc
-        limit #{offset}, #{limit};
+<!--         limit #{offset}, #{limit}; -->
     </select>
     
     
@@ -51,7 +54,7 @@
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if>
-       		limit #{offset}, #{limit};
+<!--        		limit #{offset}, #{limit}; -->
     </select>
     
     
@@ -64,7 +67,7 @@
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if>
 			order by miner_description asc
-			limit #{offset}, #{limit};
+<!-- 			limit #{offset}, #{limit}; -->
     </select>
     
     <select id="countOfSelectLoadMsgForExcel" resultType="java.lang.Integer">
@@ -73,10 +76,18 @@
 		from 
 			 miner_source
         where 
-        	circle_number=(select MAX(circle_number) from miner_source)
+        	updated=(select MIN(updated) from miner_source 
+        where circle_number=(select MAX(circle_number) from miner_source))
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if>
+	</select>
+	
+	<select id="endTimeOfSelectLoadMsgForExcel" resultType="java.lang.String">
+		select 
+			  MAX(updated)
+		from 
+			 miner_source
 	</select>
 	
 	<select id="countOfSelectLoadMsgByTime" resultType="java.lang.Integer">

@@ -62,6 +62,10 @@ shiro:
 server:
   port: 8080
   session-timeout: 1800
+  
+media:
+  server:
+    imageHost : https://oas.cascv.com
 
 wallet:
   provider: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
