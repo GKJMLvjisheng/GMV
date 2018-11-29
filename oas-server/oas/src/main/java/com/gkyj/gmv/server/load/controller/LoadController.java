@@ -99,16 +99,18 @@ public class LoadController {
 	    List<LoadModel> loadModelList1 = loadMapper.selectLoadMsgForCurve();	 	    
 	    List<LoadModel> loadModelList = null;
 	    
+	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
+	    
 	    if(loadModelList1.size()>=10) {
 	    	loadModelList = loadModelList1.subList(0, 10);
 	    }else {
 	    	loadModelList = loadModelList1.subList(0, loadModelList1.size());
+	    	loadRecordPage.setMsg("数据库中数据少于10条！");
 	    }
 	    
 	    String startTime = loadModelList1.get(0).getUpdated();
 		String endTime = loadModelList1.get(loadModelList1.size()-1).getUpdated();
 	    
-	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
 	    Integer count = loadModelList.size();
 	    	
 	    loadRecordPage.setTotal(count);

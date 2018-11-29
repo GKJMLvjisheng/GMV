@@ -15,6 +15,10 @@
   		miner_name, miner_description, miner_price, circle_number, updated, load_picture_path
     </sql>
     
+    <sql id="load_List1">
+  		miner_name, miner_description, miner_price, circle_number, updated
+    </sql>
+    
    
     <select id="selectLoadMsg" resultMap="LoadMap">
         select
@@ -36,7 +40,7 @@
     
     <select id="selectLoadMsgForCurve" resultMap="LoadMap">
         select
-           <include refid="load_List" />
+           <include refid="load_List1" />
         from 
         	miner_source
         where 
