@@ -31,5 +31,10 @@ public class RootController {
   public String table() {
        
     return "table";  }
+  
+  @GetMapping(value="/wbTest")
+  public String wbTest(){
+    return "wbTest";
+ }
 }
 

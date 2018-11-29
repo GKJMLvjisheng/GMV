@@ -9,6 +9,12 @@
     .QQQ{
     }
     </style>
+    <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script type="text/javascript">
+      function gotoWbTest(){
+    	  window.location.replace("wbTest");
+      }
+    </script>
 </head>
 <body>
 <div class="QQQ">
@@ -17,6 +23,7 @@
 <li><a href="#">曲线</a></li>
 <li><a href="#">图片</a></li>
 <li><a href="#">视频</a></li>
+<li><span onclick="gotoWbTest()">推送测试</span></li>
 </ol>
 </div>
 </body>
