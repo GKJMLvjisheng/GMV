@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>曲线显示</title>
+        <style>
+/*             .highcharts-axis-resizer {
+    stroke: #eee;
+}
+.highcharts-axis-resizer:hover {
+    stroke: #ccc;
+} */
+        </style>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/highcharts/6.2.0/css/highstock.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/webjars/highstock/6.0.3/css/highcharts.css}"/>
+        <!-- 全局js -->
+        <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+        
+        <script th:src="@{/webjars/highstock/6.0.3/js/highstock.js}"></script>
+        <script th:src="@{/webjars/highcharts/6.2.0/js/highcharts.js}"></script>
+    </head>
+    <body>
+        <div id="container" style="min-width:400px;height:400px"></div>
+        <script>
+        /* $.getJSON('https://data.jianshukeji.com/stock/history/000001', function (data) {
+        	if(data.code !== 1) {
+        		alert('读取股票数据失败！');
+        		return false;
+        	}
+        	data = data.data;
+        	// 去掉多余的数据
+        	Highcharts.each(data, function(d) {
+        		d.length = 2;
+        	});
+        	Highcharts.stockChart('container', {
+        		rangeSelector: {
+        			selected: 2
+        		},
+        		title: {
+        			text: '平安银行历史股价'
+        		},
+        		plotOptions: {
+        			series: {
+        				showInLegend: true
+        			}
+        		},
+        		tooltip: {
+        			split: false,
+        			shared: true
+        		},
+        		series: [{
+        			// type: 'line',
+        			id: '000001',
+        			name: '平安银行',
+        			data: data
+        		}]
+        	});
+        }); */
+        
+         var chart1 = new Highcharts.Chart({
+            chart: {
+                renderTo: "container",
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+            },
+            title: {
+                text: '曲线图'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+
+                    },
+                    //showInLegend: true
+                }
+            },
+             series: [{
+                type: 'line',
+                name: '人员数量',
+                data: []
+            }] 
+        }); 
+        
+       //通过Ajax获取图表1数据
+       $(function(){
+    	   var data1={};
+    	   $.ajax({
+    	    
+    	    url: "/api/v1/load//selectLoadMsgForCurve",
+    	    contentType : 'application/json;charset=utf8',
+    	    dataType: 'json',
+    	    cache: false,
+    	    type: 'post',
+    	    data:JSON.stringify(data1),
+    	    async : false,
+    	    success: function(res) {
+    	      alert(JSON.stringify(res));
+    	      for (var key in res){
+    	    	  if
+    	      }
+    	    }, 
+    	    error: function(){
+    	      alert("数据获取失败！")
+    	    }
+    	    }); 
+       })
+        /* $.ajaxSettings.async = false;
+        var data1 = [];
+        $.getJSON("/api/v1/load/selectLoadMsgForCurve", function (dict) {                
+            for (var key in dict) {
+                if (dict.hasOwnProperty(key)) {
+                    data1.push([key, dict[key]]);
+                }
+            };
+            chart1.series[0].setData(data1);
+        });  */
+ 
+        </script>
+    </body>
+</html>
