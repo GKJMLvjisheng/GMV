@@ -1,0 +1,242 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" mrc="text/html; charset=utf-8" />
+<title>JS切换图片（页面中可重复使用）</title>
+<style type="text/css"> 
+* { margin:0; padding:0; }
+body { background:#FFF; color:#333; font:12px/1.6em Helvetica, Arial, sans-serif; }
+h1, h2, h3, h4, h5, h6 { font-size:1em; }
+a { color:#0287CA; text-decoration:none; }
+a:hover { text-decoration:underline; }
+ul, li { list-style:none; }
+fieldset, img { border:none; }
+legend { display:none; }
+em, strong, cite, th { font-style:normal; font-weight:normal; }
+input, textarea, select, button { font:12px Helvetica, Arial, sans-serif; }
+table { border-collapse:collapse; }
+html { overflow:-moz-scrollbars-vertical; } 
+.ibanner { position:relative; overflow:hidden; margin:20px 0 20px 300px; }
+.ibanner_pic {}
+.ibanner_pic a { position:absolute; top:0; display:block;  overflow:hidden; }
+.ibanner_btn { position:absolute; z-index:9999; right:5px; bottom:5px; font-weight:700; font-family:Arial; }
+.ibanner_btn span { display:block; float:left; margin-left:4px; padding:0 5px; background:#000; cursor:pointer; }
+.ibanner_btn .normal { height:20px; margin-top:8px; border:1px solid #999; color:#999; font-size:16px; line-height:20px; }
+.ibanner_btn .current { height:28px; border:1px solid #FF5300; color:#FF5300; font-size:28px; line-height:28px; }
+</style>
+<script type="text/javascript">
+    function $(id) {
+    	console.log(id)
+        return document.getElementById(id);
+    }
+    function addLoadEvent(func) {
+        var oldonload = window.onload;
+        if (typeof window.onload != 'function') {
+            window.onload = func;
+        }
+        else {
+            window.onload = function () {//文档加载完处理
+                oldonload();
+                func();
+            }
+        }
+    }
+    function addBtn(ibannerIndex) {
+        if (!$('ibanner' + ibannerIndex) || !$('ibanner_pic' + ibannerIndex)) {
+            return;
+        }
+        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        if (picList.length == 0) {
+            return;
+        }
+        var btnBox = document.createElement('div');
+        btnBox.setAttribute('id', 'ibanner_btn' + ibannerIndex);
+        btnBox.setAttribute('class', 'ibanner_btn');
+        var SpanBox = '';
+        for (var i = 1; i <= picList.length; i++) {
+            var spanList = '<span class="normal">' + i + '</span>';
+            SpanBox += spanList;
+        }
+        btnBox.innerHTML = SpanBox;
+        $('ibanner' + ibannerIndex).appendChild(btnBox);
+        $('ibanner_btn' + ibannerIndex).getElementsByTagName('span')[0].className = 'current';
+        for (var m = 0; m < picList.length; m++) {
+            var attributeValue = 'picLi_' + ibannerIndex + m;
+            picList[m].setAttribute('id', attributeValue);
+        }
+    }
+    function moveElement(elementID, final_x, final_y, interval) {
+        if (!document.getElementById) {
+            return false;
+        }
+        if (!document.getElementById(elementID)) {
+            return false;
+        }
+        var elem = document.getElementById(elementID);
+        if (elem.movement) {//先判断是否在运动，先结束上次运行的这段函数
+            clearTimeout(elem.movement);//clearTimeout() 方法可取消由 setTimeout() 方法设置的 timeout。
+        }
+        if (!elem.style.left) {
+            elem.style.left = "0px";
+        }
+        if (!elem.style.top) {
+            elem.style.top = "0px";
+        }
+        var xpos = parseInt(elem.style.left);
+        var ypos = parseInt(elem.style.top);
+        if (xpos == final_x && ypos == final_y) {
+            moveing = false;
+            return true;
+        }
+        if (xpos < final_x) {
+            var dist = Math.ceil((final_x - xpos) / 10);//每运动一次的数值，返回大于等于参数x的最小整数,即对浮点数向上取整
+            xpos = xpos + dist;
+        }
+        if (xpos > final_x) {
+            var dist = Math.ceil((xpos - final_x) / 10);
+            xpos = xpos - dist;
+        }
+        if (ypos < final_y) {
+            var dist = Math.ceil((final_y - ypos) / 10);
+            ypos = ypos + dist;
+        }
+        if (ypos > final_y) {
+            var dist = Math.ceil((ypos - final_y) / 10);
+            ypos = ypos - dist; 
+        }
+        elem.style.left = xpos + "px";
+        elem.style.top = ypos + "px";
+        var repeat = "moveElement('" + elementID + "'," + final_x + "," + final_y + "," + interval + ")";
+        elem.movement = setTimeout(repeat, interval);//再次运行
+    }
+    function classNormal(ibannerIndex) {
+        var btnList = $('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        for (var i = 0; i < btnList.length; i++) {
+            btnList[i].className = 'normal';
+        }
+    }
+    function picZ(ibannerIndex) {
+        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        for (var i = 0; i < picList.length; i++) {
+            picList[i].style.zIndex = '1';
+        }
+    }
+    var autoKey = false;
+    function iBanner(ibannerIndex) {
+        if (!$('ibanner' + ibannerIndex) || !$('ibanner_pic' + ibannerIndex) || !$('ibanner_btn' + ibannerIndex)) {
+            return;
+        }
+        $('ibanner' + ibannerIndex).onmouseover = function () {//鼠标移动到图片执行代码
+            autoKey = true;
+        };
+        $('ibanner' + ibannerIndex).onmouseout = function () {//鼠标移出图片执行代码
+            autoKey = false;
+        };
+        var btnList = $('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        if (picList.length == 1) {
+            return;
+        }
+        picList[0].style.zIndex = '2';
+        for (var m = 0; m < btnList.length; m++) {
+            btnList[m].onmouseover = function () {
+                for (var n = 0; n < btnList.length; n++) {
+                    if (btnList[n].className == 'current') {
+                        var currentNum = n;
+                    }
+                }
+                classNormal(ibannerIndex);
+                picZ(ibannerIndex);
+                console.log("1",this)
+                this.className = 'current';
+                picList[currentNum].style.zIndex = '2';
+                var z = this.childNodes[0].nodeValue - 1;
+                picList[z].style.zIndex = '3';
+                if (currentNum != z) {
+                    picList[z].style.left = '650px';
+                    moveElement('picLi_' + ibannerIndex + z, 0, 0, 10);
+                }
+            }
+        }
+    }
+ 
+    function autoBanner(ibannerIndex) {
+        if (!$('ibanner' + ibannerIndex) || !$('ibanner_pic' + ibannerIndex) || !$('ibanner_btn' + ibannerIndex) || autoKey) {
+            return;
+        }
+        var btnList = $('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        var picList1 = $('ibanner_pic' + ibannerIndex).getElementsByTagName('img');
+        //ajax
+        
+        for (var i = 0; i < piclist1.length; i++) {
+            if (btnList[i].className == 'current') {
+                var currentNum = i;
+            }
+        }
+        if (picList.length == 1) {
+            return;
+        }
+        for (var i = 0; i < btnList.length; i++) {
+            if (btnList[i].className == 'current') {
+                var currentNum = i;
+            }
+        }
+        if (currentNum == (picList.length - 1)) {
+            classNormal(ibannerIndex);
+            picZ(ibannerIndex);
+            btnList[0].className = 'current';
+            picList[currentNum].style.zIndex = '2';
+            picList[0].style.zIndex = '3';
+            picList[0].style.left = '650px';
+            moveElement('picLi_' + ibannerIndex + '0', 0, 0, 10);
+        }
+        else {
+            classNormal(ibannerIndex);
+            picZ(ibannerIndex);
+            var nextNum = currentNum + 1;
+            btnList[nextNum].className = 'current';
+            picList[currentNum].style.zIndex = '2';
+            picList[nextNum].style.zIndex = '3';
+            picList[nextNum].style.left = '650px';
+            moveElement('picLi_' + ibannerIndex + nextNum, 0, 0, 10);
+        }
+    }
+    function bannerInit() {
+        addBtn('1');
+        iBanner('1');
+        setInterval('autoBanner("1")', 2000);
+ 
+        addBtn('2');
+        iBanner('2');
+        setInterval('autoBanner("2")', 3000);
+    }
+    addLoadEvent(bannerInit);
+ 
+</script>
+</head>
+<body>
+<div class="ibanner" style="width:650px; height:250px;" id="ibanner1">
+<div class="ibanner_pic" id="ibanner_pic1">
+<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443156.jpg" alt="" /></a>
+<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a>
+<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443158.jpg" alt="" /></a>
+<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443159.jpg" alt="" /></a>
+</div>
+</div><!--ibanner end-->
+<div style="height:20px; background:#EEE;"></div>
+ 
+<!-- <div class="ibanner" style="width:350px; height:125px;" id="ibanner2"> -->
+<!-- <div class="ibanner_pic" id="ibanner_pic2"> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443156.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443158.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443159.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
+<!-- </div> -->
+<!-- </div> -->
+ 
+ 
+</body>
+</html>

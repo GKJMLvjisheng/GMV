@@ -8,9 +8,14 @@
 	  	<result column="miner_price" property="minerPrice"/>	  		  	
 	  	<result column="circle_number" property="circleNumber"/>
 	  	<result column="updated" property="updated"/>
+	  	<result column="load_picture_path" property="loadPicturePath"/>
     </resultMap>
         
     <sql id="load_List">
+  		miner_name, miner_description, miner_price, circle_number, updated, load_picture_path
+    </sql>
+    
+    <sql id="load_List1">
   		miner_name, miner_description, miner_price, circle_number, updated
     </sql>
     
@@ -20,19 +25,22 @@
            <include refid="load_List" />
         from 
         	miner_source
-        	<if test="searchValue != null and searchValue != null ">
-    	    	where miner_name like concat('%',#{searchValue},'%')
-       		</if> 
+        	
         where 
-        	circle_number=(select MAX(circle_number) from miner_source)
+        	updated=(select MIN(updated) from miner_source 
+        where circle_number=(select MAX(circle_number) from miner_source))
+        	
+        	<if test="searchValue != null and searchValue != null ">
+    	    	and miner_name like concat('%',#{searchValue},'%')
+       		</if> 
         order by updated asc
-        limit #{offset}, #{limit};
+<!--         limit #{offset}, #{limit}; -->
     </select>
     
     
     <select id="selectLoadMsgForCurve" resultMap="LoadMap">
         select
-           <include refid="load_List" />
+           <include refid="load_List1" />
         from 
         	miner_source
         where 
@@ -41,7 +49,16 @@
     </select>
     
     <select id="selectLoadMsgByTime" resultMap="LoadMap">
-        select * from miner_source where updated = #{updated}
+        select 
+        	* 
+        from 
+        	miner_source 
+        where 
+        	updated = #{time}
+        	<if test="searchValue != null and searchValue != null ">
+    	    	and miner_name like concat('%',#{searchValue},'%')
+       		</if>
+<!--        		limit #{offset}, #{limit}; -->
     </select>
     
     
@@ -50,6 +67,55 @@
         	* from miner_source 
         where 
         	DATE_FORMAT(updated,"%Y-%m-%d %H:%i:%s") BETWEEN #{startTime} and #{endTime}
+        	<if test="searchValue != null and searchValue != null ">
+    	    	and miner_name like concat('%',#{searchValue},'%')
+       		</if>
 			order by miner_description asc
+<!-- 			limit #{offset}, #{limit}; -->
     </select>
+    
+    <select id="countOfSelectLoadMsgForExcel" resultType="java.lang.Integer">
+		select 
+			  count(*) 
+		from 
+			 miner_source
+        where 
+        	updated=(select MIN(updated) from miner_source 
+        where circle_number=(select MAX(circle_number) from miner_source))
+        	<if test="searchValue != null and searchValue != null ">
+    	    	and miner_name like concat('%',#{searchValue},'%')
+       		</if>
+	</select>
+	
+	<select id="endTimeOfSelectLoadMsgForExcel" resultType="java.lang.String">
+		select 
+			  MAX(updated)
+		from 
+			 miner_source
+	</select>
+	
+	<select id="countOfSelectLoadMsgByTime" resultType="java.lang.Integer">
+		select 
+			  count(*) 
+		from 
+			 miner_source
+        where 
+        	updated = #{time}
+        	<if test="searchValue != null and searchValue != null ">
+    	    	and miner_name like concat('%',#{searchValue},'%')
+       		</if>
+	</select>
+	
+	<select id="countOfSelectLoadMsgByPeriod" resultType="java.lang.Integer">
+		select 
+			  count(*) 
+		from 
+			 miner_source
+        where 
+        	DATE_FORMAT(updated,"%Y-%m-%d %H:%i:%s") BETWEEN #{startTime} and #{endTime}
+        	<if test="searchValue != null and searchValue != null ">
+    	    	and miner_name like concat('%',#{searchValue},'%')
+       		</if>
+	</select>
+	
 </mapper>
