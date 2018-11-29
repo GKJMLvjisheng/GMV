@@ -96,9 +96,14 @@ public class LoadController {
 	@ResponseBody
 	public ResponseEntity<?> selectLoadMsgForCurve(@RequestBody PageDomain<Integer> pageInfo){
 	    	     
-	    List<LoadModel> loadModelList1 = loadMapper.selectLoadMsgForCurve();	 
+	    List<LoadModel> loadModelList1 = loadMapper.selectLoadMsgForCurve();	 	    
+	    List<LoadModel> loadModelList = null;
 	    
-	    List<LoadModel> loadModelList = loadModelList1.subList(0, 10);
+	    if(loadModelList1.size()>=10) {
+	    	loadModelList = loadModelList1.subList(0, 10);
+	    }else {
+	    	loadModelList = loadModelList1.subList(0, loadModelList1.size());
+	    }
 	    
 	    String startTime = loadModelList1.get(0).getUpdated();
 		String endTime = loadModelList1.get(loadModelList1.size()-1).getUpdated();
