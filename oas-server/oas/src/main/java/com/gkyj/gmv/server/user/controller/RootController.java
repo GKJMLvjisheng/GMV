@@ -27,5 +27,9 @@ public class RootController {
   public String main() {
        
     return "main";  }
+  @GetMapping("/table")
+  public String table() {
+       
+    return "table";  }
 }
 
