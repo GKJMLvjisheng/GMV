@@ -22,5 +22,14 @@ public class RootController {
       return ServletUtils.renderString(response, "{\"code\":\"10001\",\"message\":\"未认证\"}");
     }
     return "login";  }
+  
+  @GetMapping("/main")
+  public String main() {
+       
+    return "main";  }
+  @GetMapping("/table")
+  public String table() {
+       
+    return "table";  }
 }
 
