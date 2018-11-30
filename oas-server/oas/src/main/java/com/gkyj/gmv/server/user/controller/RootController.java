@@ -31,9 +31,28 @@ public class RootController {
   public String table() {
        
     return "table";  }
-  @GetMapping("/videoAndCanvas")
+
+  @GetMapping("/canvas")
   public String videoAndCanvas() {
        
-    return "videoAndCanvas";  }
+    return "canvas";  }
+
+  
+//Line
+ @GetMapping("/line")
+ public String line(HttpServletRequest request, HttpServletResponse response) {
+   return "line";  }
+ 
+  @GetMapping(value="/wbTest")
+  public String wbTest(){
+    return "wbTest";
+  }
+
+  @GetMapping(value="/video")
+  public String video(){
+    return "video";
+  }
+
 }
+
 

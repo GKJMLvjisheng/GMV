@@ -33,8 +33,8 @@ dependencies{
   
   compile project(':oas-core')
   
-  compile('org.springframework.boot:spring-boot-starter')
-  compile('org.springframework.boot:spring-boot-starter-web')
+  //compile('org.springframework.boot:spring-boot-starter')
+  //compile('org.springframework.boot:spring-boot-starter-web')
   compile('org.springframework.boot:spring-boot-starter-aop')
   compile('org.springframework.boot:spring-boot-starter-thymeleaf')
   compile('org.springframework:spring-context-support')
@@ -45,14 +45,31 @@ dependencies{
   compile('com.alibaba:druid-spring-boot-starter:1.1.10')
   compile('org.webjars:jquery:3.1.1')
   compile('org.webjars:bootstrap:3.3.7')
+  compile group: 'org.webjars.bower', name: 'bootstrap-treeview', version: '1.2.0'
   compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
   compile('eu.bitwalker:UserAgentUtils:1.19')
   compile('org.web3j:core:3.5.0')
   compile('org.bitcoinj:bitcoinj-core:0.14.6')
   runtime('org.springframework.boot:spring-boot-devtools')
   compile group: 'org.webjars.bower', name: 'js-xlsx', version: '0.8.0'
+  // https://mvnrepository.com/artifact/org.webjars/highstock
+  compile group: 'org.webjars', name: 'highstock', version: '6.0.3'
+  // https://mvnrepository.com/artifact/org.webjars/highcharts
+ compile group: 'org.webjars', name: 'highcharts', version: '6.2.0'
   
   testCompile('org.springframework.boot:spring-boot-starter-test')
+  
+  /*kafka websocket*/
+  compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: '2.0.4.RELEASE'
+  compile( group: 'org.apache.kafka', name: 'kafka_2.12', version: '1.0.0'){
+  	exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+  	exclude group: 'org.slf4j', module: 'slf4j-api'
+  }
+   compile group: 'org.apache.kafka', name: 'kafka-clients', version: '1.0.0'
+   compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.5.RELEASE'
+   compile 'org.eclipse:yasson:1.0'
+   compile 'org.glassfish:javax.json:1.0.4'
+   
 }
 
 
