@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>JS切换图片（页面中可重复使用）</title>
 <!-- <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/> -->
+ <script src="/js/wbsocket.js"></script>
+
  <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
   <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
 <!--   <script src="/js/video/video.js" type="text/javascript"></script> -->
@@ -33,7 +35,7 @@ table { border-collapse:collapse; }
 
  /* 进度条 */  
 .range {   
-    width: 470px;   
+    width: 430px;   
      height: 1rem;    
 /*         background: #2386e4;    */
 background: -webkit-linear-gradient(#61bd12, #61bd12) no-repeat, #ddd;
@@ -227,13 +229,27 @@ cursor: pointer;
   height: 0;
   margin-top: -20px;
 }
+.time{
+position: absolute;
+ width: auto;
+  height: auto;
+  margin-left: 910px;
+  margin-top: -0px;
+}
+.real{
+position: absolute;
+ width: auto;
+  height: auto;
+  margin-left: 970px;
+  margin-top: -0px;
+}
 </style>
 
 </head>
 <body>
 <div class="ibanner" style="width:650px; height:250px;" id="ibanner1">
 <div class="ibanner_pic" id="ibanner_pic1">
-<a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a>
+<a href="#"><img style="width:650px; height:250px;" src="" alt="" /></a>
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
@@ -247,8 +263,8 @@ cursor: pointer;
  <em id="buttonPlay" class="btn "style="display:inline-block" ></em>
  <em class="btnright "style="display:inline-block" ></em>
 <input type="range" style="display:inline-block" id="range_speed" min="0" max="100" class='range' value="0"oninput="changeSpeed()" />
-
-<!-- <span class='max'></span>  -->
+<input type="button"style="display:inline-block" value='00:00:00' id="timeb" class="time" /> 
+<input type="button"style="display:inline-block" value='订阅' id="real" class="real" onclick="real()" /> 
 </div>
 <br/>
 <!-- <div style="height:20px; background:#EEE;"></div> -->
@@ -268,44 +284,55 @@ cursor: pointer;
  var event='';
  var btn = document.querySelector('.btn')
  btn.addEventListener('click', function () {
+	 console.log(event)
 	  if (!event) {
-		  event=setInterval('autoBanner("1")', 2000);
+		   
+		  if($('#range_speed').val()==$('#range_speed').attr("max")){
+			  init(); 
+			  
+		  }
+		  
+		  //clearInterval(event);
+		  event=setInterval('autoBanner("1","1")', 2000);
 		  $('#buttonPlay').addClass('btn2');
 	  } else {
+		  console.log("bujin")
 		  $('#buttonPlay').removeClass('btn2');
 		  clearInterval(event);
+		  event="";
 	  }
 	})
 	  
     function bannerInit() {
         addBtn('1');
         iBanner('1');
-        
-        
-        
  
-       // addBtn('2');
-       //  iBanner('2');
-//         setInterval('autoBanner("2")', 3000);
     }
  function changeSpeed() {
-		var value = $('#range_speed').val();
+		 var value = $('#range_speed').val();
+		var sum=$("#range_speed").attr("max")
 		console.log(value)
-		var valStr = value + "% 100%";
+		var valStr = value/sum*100 + "% 100%";
 		$('#value1').html((value / 10).toFixed(1));
 		$('#range_speed').css({
 		  "background-size": valStr
-		})
+		}) 
 		//$("input[name='animat_speed']").val((value / 10).toFixed(1));
  }
 function changeThumb(time){
-	console.log(time)
+	
 	var value=time;
-	var valStr = value + "% 100%";
+	//var sum=$("#timeb").val();
+	var sum=$("#range_speed").attr("max")
+	
+	var valStr = value / sum * 100 + "% 100%";
+	console.log(valStr)
+
 	$('#value1').html((value / 10).toFixed(1));
 	$('#range_speed').css({
 	  "background-size": valStr
 	})
+	
 	$('#range_speed').val(value);
 }
 
@@ -350,53 +377,62 @@ var startTimeback;
 var endTime;
 $(function(){
 	bannerInit()
+	init();
+	  });
+function init(){
 	var data={};
-	$.ajax({
+$.ajax({
 
-	   type: 'post',
-	   url: '/api/v1/load/selectLoadMsg',
-	   data: JSON.stringify(data),
-	   contentType : 'application/json;charset=utf8',
-	   dataType: 'json',
-	   cache: false,
-	   async:false,
-	   success: function (res) {
-	     if (res.code == 0) {
-	    	startTime=res.data.startTime;
-	    	endTime=res.data.endTime;
-	    	startTimeback=res.data.startTime;
-	    	$("#range_speed").max=res.data.total;
-	    	var row=res.data.rows;
-	    	
-	    	 for(var i=0;i<row.length;i++)
-	    	{ 
-	    		 console.log("tupian",row[i].loadPicturePath)
-	    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
-	    		 	{ row.splice(i,1);
-	    		 		i--;
-	    		 	}else{
-	    		 	photo.push(row[i].loadPicturePath)
-	    		 	}
-	    		
-	    	}
-	     } else {
-	    	 	alert(res.message);
-	     		}
-	   },
-	   error: function (res) {
-		  alert("11"+JSON.stringify(res));
-	   },
-	   complete: function () {
-	   }
-	  });
-	var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
-	 for (var i = 0; i < phoList.length; i++) {
-         phoList[i].src = photo[i]
-         console.log("lujin",phoList[i].src)
-            
-         
-     }
-	  });
+   type: 'post',
+   url: '/api/v1/load/selectLoadMsg',
+   data: JSON.stringify(data),
+   contentType : 'application/json;charset=utf8',
+   dataType: 'json',
+   cache: false,
+   async:false,
+   success: function (res) {
+     if (res.code == 0) {
+    	startTime=res.data.startTime;
+    	endTime=res.data.endTime;
+    	startTimeback=res.data.startTime;
+    	
+    	//$("#range_speed").max=res.data.totalOfLast*2;
+    	$('#range_speed').val(0);
+    	time=0;
+    	changeThumb(0);
+    	 $(".range").attr({'max':(res.data.totalOfLast-1)*2});   
+    	$("#timeb").val(changeTime((res.data.totalOfLast-1)*2));
+    	var row=res.data.rows;
+    	
+    	 for(var i=0;i<row.length;i++)
+    	{ 
+    		 console.log("tupian",row[i].loadPicturePath)
+    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+    		 	{ row.splice(i,1);
+    		 		i--;
+    		 	}else{
+    		 	photo.push(row[i].loadPicturePath)
+    		 	}
+    		
+    	}
+     } else {
+    	 	alert(res.message);
+     		}
+   },
+   error: function (res) {
+	  alert("11"+JSON.stringify(res));
+   },
+   complete: function () {
+   }
+  });
+var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
+ for (var i = 0; i < phoList.length; i++) {
+     phoList[i].src = photo[i]
+     console.log("lujin",phoList[i].src)
+        
+     
+ }
+}  
     function getEvent(id) {
     	
         return document.getElementById(id);
@@ -537,14 +573,14 @@ $(function(){
         }
     }
  
-    function autoBanner(ibannerIndex) {//
+    function autoBanner(ibannerIndex,ids) {
         if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex)|| !getEvent('ibanner_btn' + ibannerIndex)|| autoKey  ) {
             return;
         }
     	time=parseInt(time)+2;
-    	console.log("iii",time);
+    	
         changeThumb(time)
-        changeSpeed();
+        //changeSpeed();
         var btnList = getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
         var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
         var phoList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('img');
@@ -555,48 +591,56 @@ $(function(){
        // console.log(picList1)
        photo.splice(0, 1)
        console.log("photo",photo)
-     var date1 = new Date(startTimeback)
-       startTimeback=increateTime(false,date1)
-       console.log("starttime",startTime)
-       console.log("startTimeback",startTimeback)
-       var data={"time":startTimeback};
-		$.ajax({
-		
-	   type: 'post',
-	   url: '/api/v1/load/selectLoadMsgByTime',
-	   data: JSON.stringify(data),
-	   contentType : 'application/json;charset=utf8',
-	   dataType: 'json',
-	   cache: false,
-	   async:true,
-	   success: function (res) {
-	     if (res.code == 0) {
-	    	var row=res.data.rows
-	    	 for(var i=0;i<row.length;i++)
-	    	{ 	
-	    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
-		 			{ console.log(111)
-	    			 row.splice(i,1);
-	 					i--;
-	 				}else{
-	 					photo.push(row[i].loadPicturePath)
-	 					}
-	    	}
-	    	 console.log("photo1",photo)
-	     } else {
-	    	 alert(res.message);
-	     }
-	   },
-	   error: function (res) {
-		  alert("11"+JSON.stringify(res));
-	   },
-	   complete: function () {
-	   }
-	  });
+      if(ids=="1")
+     	{
+		    	  var date1 = new Date(startTimeback)
+		       startTimeback=increateTime(false,date1)
+		       console.log("starttime",startTime)
+		       console.log("startTimeback",startTimeback)
+		       var data={"time":startTimeback};
+				$.ajax({
+				
+			   type: 'post',
+			   url: '/api/v1/load/selectLoadMsgByTime',
+			   data: JSON.stringify(data),
+			   contentType : 'application/json;charset=utf8',
+			   dataType: 'json',
+			   cache: false,
+			   async:true,
+			   success: function (res) {
+			     if (res.code == 0) {
+			    	var row=res.data.rows
+			    	 for(var i=0;i<row.length;i++)
+			    	{ 	
+			    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+				 			{ 
+			    			 row.splice(i,1);
+			 					i--;
+			 				}else{
+			 					photo.push(row[i].loadPicturePath)
+			 					}
+			    	}
+			    	 console.log("photo1",photo)
+			     } else {
+			    	 alert(res.message);
+			     }
+			   },
+			   error: function (res) {
+				  alert("11"+JSON.stringify(res));
+			   },
+			   complete: function () {
+			   }
+			  });
+     	}
 		if(photo.length==0){
-    		alert("数据已播完")
-    		//clearTimeout(event)
+    		//alert("数据已播完")
+    		 $('#buttonPlay').removeClass('btn2');
     		clearInterval(event);
+    		event="";
+    		eventReal="";
+    		//var date1 = new Date(startTime)
+    		startTimeback=0;
+    			//reduceTime(false,date1,1);
     		return;
     	}
         for (var i = 0; i < phoList.length; i++) {
@@ -622,7 +666,6 @@ $(function(){
             picList[currentNum].style.zIndex = '2';
             picList[0].style.zIndex = '3';
             picList[0].style.left = '650px';
-            
             moveElement('picLi_' + ibannerIndex + '0', 0, 0, 10);
         }
         else {
@@ -636,8 +679,28 @@ $(function(){
             moveElement('picLi_' + ibannerIndex + nextNum, 0, 0, 10);
         }
     }
-  
-    
+    function changeTime(time){
+		
+		var newTime = parseInt(time);
+		var hour = toZero(Math.floor(newTime/3600));//Math.floor返回小于等于x的最大整数:
+		var min = toZero(Math.floor(newTime%3600/60));
+		var sec = toZero(Math.floor(newTime%60));
+		return hour+":"+min+":"+sec;
+		function toZero(num){
+			if(num<10){
+				return '0'+num;
+			} else{
+				return num;
+			}
+		}
+	}
+    function reduceTime(flag,t,seconds)
+    {//var t = new Date();//你已知的时间
+        var t_s = t.getTime();//转化为时间戳毫秒数
+        t.setTime(t_s - 1000 * seconds);
+        //t.setTime(t.setHours(t.getHours() -8));
+        var time=generateTime(flag,t)
+        return time}
     function increateTime(flag,t) {
         //var t = new Date();//你已知的时间
         var t_s = t.getTime();//转化为时间戳毫秒数
@@ -694,7 +757,33 @@ $(function(){
         return(clock); 
         }
     }
- 
+   // var photoReal;
+    var eventReal;
+    function real(){
+    	 if(!eventReal){
+    		 event="";
+    		 photo=[];
+    	connect(undefined,function(msg){
+    		console.log(msg);
+    		msg = JSON.parse(msg)
+    		
+    		for(var i=0;i<msg.length;i++)
+    		{
+    			photo.push(msg[i].loadPicturePath)
+    		}
+    	},"topic");
+    	//realPlay();
+    	$('#range_speed').val(0);
+    	time=0;
+    	changeThumb(0);
+    	 $(".range").attr({'max':photoReal*2});   
+    	$("#timeb").val(changeTime(photoReal*2));
+    	eventReal=setInterval('autoBanner("1","2")', 2000);
+    }
+    }
+   
+  
+    
 </script>
 </body>
 </html>
