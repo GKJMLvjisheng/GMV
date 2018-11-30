@@ -7,7 +7,7 @@
 <script src="/js/wbsocket.js"></script>
 <script type="text/javascript">
 	function conectWS(){
-		connect(undefined,function(msg){
+		connect(selector,function(msg){
 			console.log(msg);
 		},"topic");
 	}
