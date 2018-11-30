@@ -61,7 +61,8 @@ $(function(){
 function playInTime(){
 	connect(undefined,function(msg){
 		console.log(msg);
-		loadInTime(msg, msg.length);
+		var list = JSON.parse(msg);
+		loadInTime(list, list.length);
 	},"topic");
 }
 
