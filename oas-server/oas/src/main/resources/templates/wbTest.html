@@ -5,9 +5,16 @@
 <title>WebSocket client</title>
 <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 <script src="/js/wbsocket.js"></script>
+<script type="text/javascript">
+	function conectWS(){
+		connect(undefined,function(msg){
+			console.log(msg);
+		},"topic");
+	}
+</script>
 </head>
 <body>
-    <button onclick="connect(selector)">连接ws</button>
+    <button onclick="conectWS()">连接ws</button>
     <button onclick="sendMsg(123)">向ws发信息</button>
     <select id="selector">
     	<option value="topic">topic</option>

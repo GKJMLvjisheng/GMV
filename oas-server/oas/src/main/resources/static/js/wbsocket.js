@@ -1,7 +1,15 @@
 
 var socket,timer;
-function connect(selector) {
-	var topicName = selector.value;
+/**
+ * 
+ * @param selector 选择器，为undefined时使用topic作为主题
+ * @param fun 回调函数，返回结果
+ * @param topic 主题，为undefined时使用test主题
+ * @returns
+ */
+function connect(selector,fun,topic) {
+	var topicName = topic || "test";
+	selector && (topicName =  selector.value);
     //Connect WebSocket server
     socket =new WebSocket("ws://127.0.0.1:8080/wbSocket/"+topicName);
     //open
@@ -10,7 +18,8 @@ function connect(selector) {
     }
     //Get message
     socket.onmessage = function (msg) {
-        console.log(msg.data)
+       // console.log(msg.data)
+    	fun(msg.data);
     }
     //close
     socket.onclose = function () {
@@ -23,7 +32,12 @@ function connect(selector) {
 }
 
 function closeWs() {
-    socket.close();
+	if(socket && socket.readyState == 1){
+		 socket.close();
+	}else{
+		console.log("webSocket is closed");
+	}
+   
 }
 
 function sendMsg(message) {
