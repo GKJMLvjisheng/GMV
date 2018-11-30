@@ -72,7 +72,7 @@
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if>
-			order by miner_description asc
+			order by updated asc
 <!-- 			limit #{offset}, #{limit}; -->
     </select>
     
@@ -118,6 +118,18 @@
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if>
+	</select>
+	
+	<select id="countOfSelectLoadMsgLastCircle" resultType="java.lang.Integer">
+		select 
+			count(*)
+		from
+			miner_source 
+		where 
+			load_picture_path!='' 
+		and 
+			circle_number=(select MAX(circle_number) from miner_source)
+        	
 	</select>
 	
 </mapper>

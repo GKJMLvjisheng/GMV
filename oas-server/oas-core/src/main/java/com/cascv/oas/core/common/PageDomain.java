@@ -13,6 +13,7 @@ public class PageDomain<T> implements Serializable {
   @Getter @Setter private String orderByColumn;
   @Getter @Setter private String asc;
   @Getter @Setter private Integer total;
+  @Getter @Setter private Integer totalOfLast;
   @Getter @Setter private String msg;
   @Getter @Setter private Integer offset;
   @Getter @Setter private String searchValue;//搜索关键词
