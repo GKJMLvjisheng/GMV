@@ -40,12 +40,14 @@
     
     <select id="selectLoadMsgForCurve" resultMap="LoadMap">
         select
-           <include refid="load_List1" />
+           *
         from 
-        	miner_source
-        where 
-        	circle_number=(select MAX(circle_number) from miner_source)
-        order by updated asc
+        	miner_source     
+        where circle_number=(select MAX(circle_number) from miner_source )and (
+        updated BETWEEN (select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1) and 
+        (select date_add((select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1), interval 4 second)))
+		order by updated asc         
+        
     </select>
     
     <select id="selectLoadMsgByTime" resultMap="LoadMap">
