@@ -779,6 +779,7 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
     		$(".range").attr({'max':photo.length*2});   
         	$("#timeb").val(changeTime(photo.length*2));
     	},"topic");
+
     	if(photo.length==0){
     		setTimeout(function(){
     		$('#range_speed').val(0);
@@ -794,6 +795,7 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
         	eventReal=setInterval('autoBanner("1","2")', 2000);
     	}
     	
+
     }
     }
    
