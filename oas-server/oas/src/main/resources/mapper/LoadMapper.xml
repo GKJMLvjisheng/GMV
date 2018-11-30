@@ -72,7 +72,7 @@
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if>
-			order by miner_description asc
+			order by updated asc
 <!-- 			limit #{offset}, #{limit}; -->
     </select>
     
