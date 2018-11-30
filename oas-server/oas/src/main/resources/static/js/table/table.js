@@ -1,3 +1,7 @@
+/* 
+ * 以下是表格相关func
+ *  QQQ
+ */
 var pageSize;
 var pageNum;
 //表格回显
@@ -5,13 +9,14 @@ $(function(){
 	ready();
 });
 //初始化表格
-function initTable(data) {	
+function initTable(data) {
+	$('#table').bootstrapTable('destroy');
 	$("#table").bootstrapTable({
 		contentType : "application/x-www-form-urlencoded",
 		dataType:"json",
-		pagination:true,//显示分页条：页码，条数等
-		striped:true,//隔行变色
-		pageNumber:1,//首页页码
+		pagination:false,//显示分页条：页码，条数等
+//		striped:true,//隔行变色
+//		pageNumber:1,//首页页码
 		sidePagination:"client",
 		pageSize:10,//分页，页面数据条数
 		pageList:[5,10, 25, 50, 100],	
@@ -86,13 +91,13 @@ function initTable(data) {
 //		clickToSelect: false, 
 	});
 }
-
-function ready(){
-    $('#table').bootstrapTable('destroy');
+/*
+ * 得到初始数据
+ */
+function getData(){
 	var data;
 	var data1={};
-	 $.ajax({
-		
+	$.ajax({		
 		url: "/api/v1/load/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
@@ -101,17 +106,25 @@ function ready(){
 		data: JSON.stringify(data1),
 		async : false,
 		success: function(res) {
-		alert(JSON.stringify(res));
+//		alert(JSON.stringify(res));
 		if(res.code==0)
-			{data=res.data.rows;}
-		
-		else{alert("回显失败！");}
-			
+			{data=res.data;
+			console.log("111",JSON.stringify(data.rows));
+			}		
+		  else{alert("回显失败！");}			
 		}, 
 		error: function(){
-			alert("失败！")
+			alert("失败！");
 		}
 		}); 
+	    return data;
+}
+
+function ready(){
+    $('#table').bootstrapTable('destroy');
+	 var resData = getData();
+	 var data = resData.rows;
+	 console.log(JSON.stringify(data));
 	 initTable(data);
 }
 

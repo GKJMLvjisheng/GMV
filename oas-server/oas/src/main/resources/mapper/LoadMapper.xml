@@ -120,4 +120,16 @@
        		</if>
 	</select>
 	
+	<select id="countOfSelectLoadMsgLastCircle" resultType="java.lang.Integer">
+		select 
+			count(*)
+		from
+			miner_source 
+		where 
+			load_picture_path!='' 
+		and 
+			circle_number=(select MAX(circle_number) from miner_source)
+        	
+	</select>
+	
 </mapper>
