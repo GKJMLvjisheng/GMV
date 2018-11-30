@@ -60,15 +60,6 @@ $(function(){
 /*
 *播放
 */
-function playAndSetTime(){
-	play();
-//	setT();
-}
-function setT(){
-	timer = setInterval(function(){
-    	playInterval();
-    },1000)
-}
 function play(){
 	index = 0;
 	var time = {"startTime": startTime};
@@ -103,10 +94,6 @@ function play(){
 function load(data,len){
 	if(data.length == 0) {
 		playInterval();
-		return;
-	}
-	if(index == len){
-		
 		return;
 	}else{
 		if(!map.hasOwnProperty(data[0].updated)){
