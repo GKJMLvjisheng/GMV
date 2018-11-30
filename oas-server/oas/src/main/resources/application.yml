@@ -62,6 +62,10 @@ shiro:
 server:
   port: 8080
   session-timeout: 1800
+  
+media:
+  server:
+    imageHost : https://oas.cascv.com
 
 wallet:
   provider: "https://ropsten.infura.io/16897256b61d42689d088039a362a61b"
@@ -77,3 +81,18 @@ wallet:
     energyPointRate: 0.0001
     tokenRmbRate: 97
       
+kafka:
+  consumer:
+    zookeeper.connect: 10.0.0.88:2181
+    servers: 10.0.0.88:9092
+    enable.auto.commit: true
+    session.timeout: 6000
+    auto.commit.interval: 100
+    auto.offset.reset: latest
+    group.id: test
+    concurrency: 10
+  producer:
+    retries: 0
+    batch.size: 4096
+    linger: 1
+    buffer.memory: 40960
