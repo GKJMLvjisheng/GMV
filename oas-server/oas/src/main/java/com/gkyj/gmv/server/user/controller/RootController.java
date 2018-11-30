@@ -31,5 +31,9 @@ public class RootController {
   public String table() {
        
     return "table";  }
+  @GetMapping("/videoAndCanvas")
+  public String videoAndCanvas() {
+       
+    return "videoAndCanvas";  }
 }
 

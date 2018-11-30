@@ -1,12 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html >
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta http-equiv="Content-Type" mrc="text/html; charset=utf-8" />
+ <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>JS切换图片（页面中可重复使用）</title>
+<!-- <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/> -->
+ <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+  <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<!--   <script src="/js/video/video.js" type="text/javascript"></script> -->
 <style type="text/css"> 
 * { margin:0; padding:0; }
-body { background:#FFF; color:#333; font:12px/1.6em Helvetica, Arial, sans-serif; }
+/* body { background:#FFF; color:#333; font:12px/1.6em Helvetica, Arial, sans-serif; } */
 h1, h2, h3, h4, h5, h6 { font-size:1em; }
 a { color:#0287CA; text-decoration:none; }
 a:hover { text-decoration:underline; }
@@ -14,9 +19,9 @@ ul, li { list-style:none; }
 fieldset, img { border:none; }
 legend { display:none; }
 em, strong, cite, th { font-style:normal; font-weight:normal; }
-input, textarea, select, button { font:12px Helvetica, Arial, sans-serif; }
+ input, textarea, select, button { font:12px Helvetica, Arial, sans-serif; } 
 table { border-collapse:collapse; }
-html { overflow:-moz-scrollbars-vertical; } 
+/* html { overflow:-moz-scrollbars-vertical; }  */
 .ibanner { position:relative; overflow:hidden; margin:20px 0 20px 300px; }
 .ibanner_pic {}
 .ibanner_pic a { position:absolute; top:0; display:block;  overflow:hidden; }
@@ -24,10 +29,335 @@ html { overflow:-moz-scrollbars-vertical; }
 .ibanner_btn span { display:block; float:left; margin-left:4px; padding:0 5px; background:#000; cursor:pointer; }
 .ibanner_btn .normal { height:20px; margin-top:8px; border:1px solid #999; color:#999; font-size:16px; line-height:20px; }
 .ibanner_btn .current { height:28px; border:1px solid #FF5300; color:#FF5300; font-size:28px; line-height:28px; }
+
+
+ /* 进度条 */  
+.range {   
+    width: 470px;   
+     height: 1rem;    
+/*         background: #2386e4;    */
+background: -webkit-linear-gradient(#61bd12, #61bd12) no-repeat, #ddd;
+    border-radius: 0.5rem;   
+    -webkit-appearance: none !important;   
+    position: absolute;   
+/*     top: 3.55rem;    */
+/*     left: 6rem;   */
+     left:470px  ;
+     background-size: 0% 100%;
+    
+}   
+/* 进度滑块 */  
+.range::-webkit-slider-thumb {   
+    width: 1.25rem;   
+    height: 1.25rem;   
+    background: #fff;   
+    border: 1px solid #f18900;   
+    cursor: pointer;   
+    border-radius: 1.25rem;   
+     -webkit-appearance: none !important;    
+}  
+/*  cursor: pointer; 鼠标变成手型,-webkit-appearance: none !important;将原来样式去除*/
+  .col-center-block {
+  position: relative;
+
+/*      width: 768px;  */
+ 
+
+/*       display: block;   */
+
+    margin-left: auto;
+
+    margin-right: auto;
+    vertical-align: middle;
+    margin-top: 30px;
+
+}
+ .btn{
+/*   display: none; */
+cursor: pointer;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  position: absolute;
+  left: 30%;
+  top: 50%;
+  margin: -15px auto  auto -35px;
+  padding: 15px;
+  background: rgba(255,255,255,0.5);
+/*   rgba(255,255,255,0.5);灰色 */
+  line-height: 40px;
+  border: 1px solid #f18900;  
+}
+.ibanner .btn:hover{
+  background: rgba(255,255,255,0.7);
+}
+ .btn:before{
+  border: 15px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: 2px;
+  width: 0;
+  height: 0;
+  margin-top: -7px;
+}
+.ibanner .btn:before:hover{
+  border-left-color: #fff;
+}
+
+.ibanner.pause .btn{
+  display: block;
+}
+
+.ibanner .state{
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  font-size: 14px;
+  color: #000;
+}
+.ibanner.pause .state{
+  display: none;
+}
+.btnleft{
+/*   display: none; */
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  position: absolute;
+  left: 26%;
+  top: 50%;
+  margin: -10px auto  auto -35px;
+  padding: 15px;
+  background: rgba(255,255,255,0.5);
+  line-height: 40px;
+  border: 1px solid #f18900;  
+}
+.btnleft:before{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -20px;
+  width: 0;
+  height: 0;
+  margin-top: -7px;
+}
+.btnleft:after{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -10px;
+  width: 0;
+  height: 0;
+  margin-top: -20px;
+}
+.btnright{
+/*   display: none; */
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  position: absolute;
+  left: 34.8%;
+  top: 50%;
+  margin: -10px auto  auto -35px;
+  padding: 15px;
+  background: rgba(255,255,255,0.5);
+  line-height: 40px;
+  border: 1px solid #f18900;  
+}
+.btnright:before{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: 5px;
+  width: 0;
+  height: 0;
+  margin-top: -7px;
+}
+.btnright:after{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -5px;
+  width: 0;
+  height: 0;
+  margin-top: -20px;
+}
 </style>
-<script type="text/javascript">
-    function $(id) {
-    	console.log(id)
+
+</head>
+<body>
+<div class="ibanner" style="width:650px; height:250px;" id="ibanner1">
+<div class="ibanner_pic" id="ibanner_pic1">
+<a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a>
+<!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
+
+</div>
+
+</div>
+<div  class="col-center-block">
+<!-- <span class='cur'></span> -->
+<em class="btnleft "style="display:inline-block"></em>
+ <em class="btn "style="display:inline-block" ></em>
+ <em class="btnright "style="display:inline-block" ></em>
+<input type="range" style="display:inline-block" min="0" max="100" class='range' value="0"/>
+<!-- <span class='max'></span>  -->
+</div>
+<br/>
+<!-- <div style="height:20px; background:#EEE;"></div> -->
+
+ 
+<!-- <div class="ibanner" style="width:350px; height:125px;" id="ibanner2"> -->
+<!-- <div class="ibanner_pic" id="ibanner_pic2"> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443156.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443158.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443159.jpg" alt="" /></a> -->
+<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
+<!-- </div> -->
+<!-- </div> -->
+ 
+ <script type="text/javascript">
+ var event;
+ var btn = document.querySelector('.btn')
+ btn.addEventListener('click', function () {
+	  //if (video.paused) {
+		  event=setInterval('autoBanner("1")', 2000);
+	 // } else {
+	   // video.pause()
+	  //}
+	})
+	  
+    function bannerInit() {
+        addBtn('1');
+        iBanner('1');
+        
+        
+        
+ 
+       // addBtn('2');
+       //  iBanner('2');
+//         setInterval('autoBanner("2")', 3000);
+    }
+ function changeSpeed() {
+		var value = $('#range_speed').val();
+		var valStr = value + "% 100%";
+		$('#value1').html((value / 10).toFixed(1));
+		$('#range_speed').css({
+		  "background-size": valStr
+		})
+		$("input[name='animat_speed']").val((value / 10).toFixed(1));
+ }
+
+
+ //将秒数转为00:00格式   
+ function timeToStr(time) {   
+     var m = 0,   
+     s = 0,   
+     _m = '00',   
+     _s = '00';   
+    time = Math.floor(time % 3600);   
+     m = Math.floor(time / 60);   
+     s = Math.floor(time % 60);   
+     _s = s < 10 ? '0' + s : s + '';   
+     _m = m < 10 ? '0' + m : m + '';   
+     return _m + ":" + _s;   
+ }   
+ //触发播放事件   
+ $('.play').on('click',function(){   
+     var audio=document.getElementById('ao');   
+     audio.play();   
+     setInterval(function(){   
+         var t=parseInt(audio.currentTime);   
+     $(".range").attr({'max':751});   
+     $('.max').html(timeToStr(751));   
+         $(".range").val(t);   
+     $('.cur').text(timeToStr(t));   
+     },1000);   
+ });   
+ //监听滑块，可以拖动   
+ $(".range").on('change',function(){   
+     document.getElementById('ao').currentTime=this.value;$(".range").val(this.value);   
+ });  
+
+
+ 
+ 
+ 
+var photo=[];
+var startTime;
+var startTimeback;
+var endTime;
+$(function(){
+	bannerInit()
+	var data={};
+	$.ajax({
+
+	   type: 'post',
+	   url: '/api/v1/load/selectLoadMsg',
+	   data: JSON.stringify(data),
+	   contentType : 'application/json;charset=utf8',
+	   dataType: 'json',
+	   cache: false,
+	   async:false,
+	   success: function (res) {
+	     if (res.code == 0) {
+	    	startTime=res.data.startTime;
+	    	endTime=res.data.endTime;
+	    	startTimeback=res.data.startTime;
+	    	var row=res.data.rows
+	    	 for(var i=0;i<row.length;i++)
+	    	{ 
+	    		 console.log("tupian",row[i].loadPicturePath)
+	    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+	    		 	{ row.splice(i,1);
+	    		 		i--;
+	    		 	}else{
+	    		 	photo.push(row[i].loadPicturePath)
+	    		 	}
+	    		
+	    	}
+	     } else {
+	    	 	alert(res.message);
+	     		}
+	   },
+	   error: function (res) {
+		  alert("11"+JSON.stringify(res));
+	   },
+	   complete: function () {
+	   }
+	  });
+	var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
+	 for (var i = 0; i < phoList.length; i++) {
+         phoList[i].src = photo[i]
+         console.log("lujin",phoList[i].src)
+            
+         
+     }
+	  });
+    function getEvent(id) {
+    	
         return document.getElementById(id);
     }
     function addLoadEvent(func) {
@@ -43,10 +373,10 @@ html { overflow:-moz-scrollbars-vertical; }
         }
     }
     function addBtn(ibannerIndex) {
-        if (!$('ibanner' + ibannerIndex) || !$('ibanner_pic' + ibannerIndex)) {
+        if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex)) {
             return;
         }
-        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
         if (picList.length == 0) {
             return;
         }
@@ -59,8 +389,8 @@ html { overflow:-moz-scrollbars-vertical; }
             SpanBox += spanList;
         }
         btnBox.innerHTML = SpanBox;
-        $('ibanner' + ibannerIndex).appendChild(btnBox);
-        $('ibanner_btn' + ibannerIndex).getElementsByTagName('span')[0].className = 'current';
+        getEvent('ibanner' + ibannerIndex).appendChild(btnBox);
+        getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span')[0].className = 'current';
         for (var m = 0; m < picList.length; m++) {
             var attributeValue = 'picLi_' + ibannerIndex + m;
             picList[m].setAttribute('id', attributeValue);
@@ -68,13 +398,16 @@ html { overflow:-moz-scrollbars-vertical; }
     }
     function moveElement(elementID, final_x, final_y, interval) {
         if (!document.getElementById) {
+        	
             return false;
         }
         if (!document.getElementById(elementID)) {
+        	
             return false;
         }
         var elem = document.getElementById(elementID);
         if (elem.movement) {//先判断是否在运动，先结束上次运行的这段函数
+        	
             clearTimeout(elem.movement);//clearTimeout() 方法可取消由 setTimeout() 方法设置的 timeout。
         }
         if (!elem.style.left) {
@@ -86,6 +419,7 @@ html { overflow:-moz-scrollbars-vertical; }
         var xpos = parseInt(elem.style.left);
         var ypos = parseInt(elem.style.top);
         if (xpos == final_x && ypos == final_y) {
+        	console.log(222)
             moveing = false;
             return true;
         }
@@ -107,34 +441,35 @@ html { overflow:-moz-scrollbars-vertical; }
         }
         elem.style.left = xpos + "px";
         elem.style.top = ypos + "px";
+       
         var repeat = "moveElement('" + elementID + "'," + final_x + "," + final_y + "," + interval + ")";
         elem.movement = setTimeout(repeat, interval);//再次运行
     }
     function classNormal(ibannerIndex) {
-        var btnList = $('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        var btnList = getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
         for (var i = 0; i < btnList.length; i++) {
             btnList[i].className = 'normal';
         }
     }
     function picZ(ibannerIndex) {
-        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
         for (var i = 0; i < picList.length; i++) {
             picList[i].style.zIndex = '1';
         }
     }
     var autoKey = false;
     function iBanner(ibannerIndex) {
-        if (!$('ibanner' + ibannerIndex) || !$('ibanner_pic' + ibannerIndex) || !$('ibanner_btn' + ibannerIndex)) {
+        if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex) || !getEvent('ibanner_btn' + ibannerIndex)) {
             return;
         }
-        $('ibanner' + ibannerIndex).onmouseover = function () {//鼠标移动到图片执行代码
+        getEvent('ibanner' + ibannerIndex).onmouseover = function () {//鼠标移动到图片执行代码
             autoKey = true;
         };
-        $('ibanner' + ibannerIndex).onmouseout = function () {//鼠标移出图片执行代码
+        getEvent('ibanner' + ibannerIndex).onmouseout = function () {//鼠标移出图片执行代码
             autoKey = false;
         };
-        var btnList = $('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
-        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        var btnList = getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
         if (picList.length == 1) {
             return;
         }
@@ -161,22 +496,75 @@ html { overflow:-moz-scrollbars-vertical; }
         }
     }
  
-    function autoBanner(ibannerIndex) {
-        if (!$('ibanner' + ibannerIndex) || !$('ibanner_pic' + ibannerIndex) || !$('ibanner_btn' + ibannerIndex) || autoKey) {
+    function autoBanner(ibannerIndex) {//
+        if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex)|| !getEvent('ibanner_btn' + ibannerIndex)|| autoKey  ) {
             return;
         }
-        var btnList = $('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
-        var picList = $('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
-        var picList1 = $('ibanner_pic' + ibannerIndex).getElementsByTagName('img');
-        //ajax
+       
+        var btnList = getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
+        var phoList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('img');
         
-        for (var i = 0; i < piclist1.length; i++) {
-            if (btnList[i].className == 'current') {
-                var currentNum = i;
-            }
+        
+        //ajax
+        //var photo=[];
+       // console.log(picList1)
+       photo.splice(0, 1)
+       console.log("photo",photo)
+     var date1 = new Date(startTimeback)
+       startTimeback=increateTime(false,date1)
+       console.log("starttime",startTime)
+       console.log("startTimeback",startTimeback)
+       var data={"time":startTimeback};
+		$.ajax({
+		
+	   type: 'post',
+	   url: '/api/v1/load/selectLoadMsgByTime',
+	   data: JSON.stringify(data),
+	   contentType : 'application/json;charset=utf8',
+	   dataType: 'json',
+	   cache: false,
+	   async:true,
+	   success: function (res) {
+	     if (res.code == 0) {
+	    	var row=res.data.rows
+	    	 for(var i=0;i<row.length;i++)
+	    	{ 	
+	    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+		 			{ console.log(111)
+	    			 row.splice(i,1);
+	 					i--;
+	 				}else{
+	 					photo.push(row[i].loadPicturePath)
+	 					}
+	    	}
+	    	 console.log("photo1",photo)
+	     } else {
+	    	 alert(res.message);
+	     }
+	   },
+	   error: function (res) {
+		  alert("11"+JSON.stringify(res));
+	   },
+	   complete: function () {
+	   }
+	  });
+		if(photo.length==0){
+    		alert("数据已播完")
+    		//clearTimeout(event)
+    		clearInterval(event);
+    		return;
+    	}
+        for (var i = 0; i < phoList.length; i++) {
+        	
+        	
+            phoList[i].src = photo[i]
+            console.log("lujin",phoList[i].src)
+              
+            
         }
         if (picList.length == 1) {
-            return;
+            //return;
         }
         for (var i = 0; i < btnList.length; i++) {
             if (btnList[i].className == 'current') {
@@ -190,6 +578,7 @@ html { overflow:-moz-scrollbars-vertical; }
             picList[currentNum].style.zIndex = '2';
             picList[0].style.zIndex = '3';
             picList[0].style.left = '650px';
+            
             moveElement('picLi_' + ibannerIndex + '0', 0, 0, 10);
         }
         else {
@@ -203,40 +592,65 @@ html { overflow:-moz-scrollbars-vertical; }
             moveElement('picLi_' + ibannerIndex + nextNum, 0, 0, 10);
         }
     }
-    function bannerInit() {
-        addBtn('1');
-        iBanner('1');
-        setInterval('autoBanner("1")', 2000);
- 
-        addBtn('2');
-        iBanner('2');
-        setInterval('autoBanner("2")', 3000);
+  
+    
+    function increateTime(flag,t) {
+        //var t = new Date();//你已知的时间
+        var t_s = t.getTime();//转化为时间戳毫秒数
+        t.setTime(t_s + 1000 * 1);
+        //t.setTime(t.setHours(t.getHours() -8));
+        var time=generateTime(flag,t)
+        return time
+         
+}
+    function generateTime(flag,now){
+        var year = now.getFullYear();       //年
+        var month = now.getMonth() + 1;     //月
+        var day = now.getDate();            //日
+       
+        var hh = now.getHours();            //时
+        var mm = now.getMinutes();          //分
+        var ss=now.getSeconds();
+        if(flag){
+         //var clock = JSON.stringify(year);
+        var clock = year + "-";
+          
+              if(month < 10)
+                clock += "0";
+          
+            clock += month + "-";
+          
+              if(day < 10)
+                clock += "0";
+              
+            clock += day;
+                  return (clock)
+                }
+        else{
+          clock = year + "-";
+       
+        if(month < 10)
+            clock += "0";
+       
+        clock += month + "-";
+       
+        if(day < 10)
+            clock += "0";
+           
+        clock += day + " ";
+       
+        if(hh < 10)
+            clock += "0";
+           
+        clock += hh + ":";
+        if (mm < 10) clock += '0'; 
+        clock += mm+":"; 
+         if (ss < 10) clock += '0'; 
+        clock += ss; 
+        return(clock); 
+        }
     }
-    addLoadEvent(bannerInit);
  
 </script>
-</head>
-<body>
-<div class="ibanner" style="width:650px; height:250px;" id="ibanner1">
-<div class="ibanner_pic" id="ibanner_pic1">
-<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443156.jpg" alt="" /></a>
-<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a>
-<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443158.jpg" alt="" /></a>
-<a href="/jscss/"><img style="width:650px; height:250px;" src="http://p1.mb5u.com/texiao/1/20110225160443159.jpg" alt="" /></a>
-</div>
-</div><!--ibanner end-->
-<div style="height:20px; background:#EEE;"></div>
- 
-<!-- <div class="ibanner" style="width:350px; height:125px;" id="ibanner2"> -->
-<!-- <div class="ibanner_pic" id="ibanner_pic2"> -->
-<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443156.jpg" alt="" /></a> -->
-<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
-<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443158.jpg" alt="" /></a> -->
-<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443159.jpg" alt="" /></a> -->
-<!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
-<!-- </div> -->
-<!-- </div> -->
- 
- 
 </body>
 </html>
