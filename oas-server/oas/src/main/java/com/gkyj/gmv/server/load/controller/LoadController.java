@@ -148,15 +148,19 @@ public class LoadController {
 	    	offset = 0;*/
 		String time = pageInfo.getTime();
 	    String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
-	    	     
+	    
+	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
+	    
 	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgByTime(time,searchValue);
 	    for (LoadModel loadModel : loadModelList) {
 			String fullLink = mediaServer.getImageHost() + loadModel.getLoadPicturePath();
 			loadModel.setLoadPicturePath(fullLink);
 		  }
 	    
-	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
-	    //Integer count = loadModelList.size();
+	    if(loadModelList.size()==0) {
+	    	loadRecordPage.setMsg("数据库中无匹配的数据！");
+	    }	    
+	       
 	    Integer count = loadMapper.countOfSelectLoadMsgByTime(searchValue,time);	
 	    loadRecordPage.setTotal(count);
 //	    loadRecordPage.setOffset(offset);
@@ -199,7 +203,8 @@ public class LoadController {
 		String searchValue=pageInfo.getSearchValue();//后端搜索关键词支持
 		
 	    String startTime = pageInfo.getStartTime();
-	    String endTime3 = pageInfo.getEndTime();	 
+	    String endTime3 = pageInfo.getEndTime();
+	    Integer status = pageInfo.getStatus();//status=1,向曲线传递5秒的数据
 	    Date endTime1 = null;
 	    String endTime = null;
 		
@@ -208,25 +213,36 @@ public class LoadController {
 		DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		endTime1 = format1.parse(startTime);  		  		 
 		log.info("当前时间={}" ,sdf.format(endTime1));
-		Date afterTime = new Date(endTime1 .getTime() + 2000);
-		log.info("处理后时间={}" ,sdf.format(afterTime));
+		Date afterTime3 = new Date(endTime1 .getTime() + 2000);
+		Date afterTime5 = new Date(endTime1 .getTime() + 4000);
+		log.info("处理后时间+3={}" ,sdf.format(afterTime3));
+		log.info("处理后时间+10={}" ,sdf.format(afterTime5));
 		//Date转字符串		
-		String endTime2 = sdf.format(afterTime);  
+		String endTime2 = sdf.format(afterTime3); 
+		String endTime4 = sdf.format(afterTime5); 
 		
 		if(endTime3==null) {
-			endTime = endTime2; //前端输入开始时间加3秒=结束时间
+			if(status==null) {
+				endTime = endTime2; //前端输入开始时间加3秒=结束时间
+			}else if(status==1) {
+				endTime = endTime4; //前端输入开始时间加5秒=结束时间
+			}			
 		}else {
 			endTime = endTime3; //前端输入的结束时间   
 		}
   
-	    	     
+		PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
+		
 	    List<LoadModel> loadModelList = loadMapper.selectLoadMsgByPeriod(startTime,endTime,searchValue);
 	    for (LoadModel loadModel : loadModelList) {
 			String fullLink = mediaServer.getImageHost() + loadModel.getLoadPicturePath();
 			loadModel.setLoadPicturePath(fullLink);
 		  }
 	    
-	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
+	    if(loadModelList.size()==0) {
+	    	loadRecordPage.setMsg("数据库中无匹配的数据！");
+	    }
+	    
 	    //Integer count = loadModelList.size();
 	    Integer count = loadMapper.countOfSelectLoadMsgByPeriod(searchValue,startTime,endTime);	
 	    loadRecordPage.setTotal(count);
