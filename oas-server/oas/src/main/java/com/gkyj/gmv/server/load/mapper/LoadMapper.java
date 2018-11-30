@@ -29,4 +29,6 @@ public interface LoadMapper {
     
     Integer countOfSelectLoadMsgByPeriod(@Param("searchValue") String searchValue, @Param("startTime") String startTime, @Param("endTime") String endTime);
     
+    Integer countOfSelectLoadMsgLastCircle();
+    
 }

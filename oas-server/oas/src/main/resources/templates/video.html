@@ -9,12 +9,27 @@
 		<title></title>
 		<style type="text/css">
 			video{ 
- 				margin: 30px auto; 
+/*  				margin: 30px auto;  */
  				background-color: black; 
  			} 
 			.range1{
 				width: 500px;
 			}
+			  .col-center-block {
+  position: relative;
+
+/*      width: 768px;  */
+ 
+
+/*       display: block;   */
+
+    margin-left: auto;
+
+    margin-right: auto;
+    vertical-align: middle;
+    margin-top: 30px;
+
+}
 		</style>
 	</head>
 	<body>
@@ -23,29 +38,29 @@
 <!-- 		</video> -->
 
 
-    <div class="player pause">
-      <video id="video" controls></video>
-      <em class="btn"></em>
+    <div class="player pause col-center-block">
+      <video id="video" controls  ></video>
+<!--       <em class="btn"></em> -->
       <span class="state">正在直播</span>
     </div>
 		<br/>
 		<br/>
-		<div>	
-			音量<input type="range" min="0" max="1" step="0.01" oninput="volumchange(this.value)"/>
-		</div>
-		<button onclick="fullScreen();">全屏模式</button>
-		<button onclick="play();">播放</button>
-		<button onclick="pausePlay();">暂停</button>
-		<button onclick="muted();">静音</button>
-		<button onclick="replay();">启用循环播放</button>
-		<button onclick="noReplay();">禁用循环播放</button>
-		<button onclick="skip(-10)">快退</button>		 
-		<button onclick="skip(10)">快进</button>
-		<button onclick="restart();">重播</button>
-		<p id="time"></p><br />
-		<input id="cs" type="range" min="0"  step="1" value='0'/>
-		<input type="button" value='00:00:00' id="timea" />
-		<input type="button" value='00:00:00' id="timeb" />
+<!-- 		<div>	 -->
+<!-- 			音量<input type="range" min="0" max="1" step="0.01" oninput="volumchange(this.value)"/> -->
+<!-- 		</div> -->
+<!-- 		<button onclick="fullScreen();">全屏模式</button> -->
+<!-- 		<button onclick="play();">播放</button> -->
+<!-- 		<button onclick="pausePlay();">暂停</button> -->
+<!-- 		<button onclick="muted();">静音</button> -->
+<!-- 		<button onclick="replay();">启用循环播放</button> -->
+<!-- 		<button onclick="noReplay();">禁用循环播放</button> -->
+<!-- 		<button onclick="skip(-10)">快退</button>		  -->
+<!-- 		<button onclick="skip(10)">快进</button> -->
+<!-- 		<button onclick="restart();">重播</button> -->
+<!-- 		<p id="time"></p><br /> -->
+<!-- 		<input id="cs" type="range" min="0"  step="1" value='0'/> -->
+<!-- 		<input type="button" value='00:00:00' id="timea" /> -->
+<!-- 		<input type="button" value='00:00:00' id="timeb" /> -->
 		    <script src="/js/hls/index.js" charset="utf-8"></script>
 		<script type="text/javascript">
 			var videoEle = document.getElementById("video");
@@ -62,9 +77,9 @@
 				timeb.value=changeTime(videoEle.currentTime);
 				cs.value= videoEle.currentTime;
 			})
-			cs.addEventListener('change',function(){
-				videoEle.currentTime = cs.value;
-			})
+// 			cs.addEventListener('change',function(){
+// 				videoEle.currentTime = cs.value;
+// 			})
 			
 			function videoPlayOrPause(){				
 				if(videoEle.paused){

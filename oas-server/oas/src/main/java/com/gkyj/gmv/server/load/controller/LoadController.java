@@ -72,7 +72,9 @@ public class LoadController {
 	    
 	    PageDomain<LoadModel> loadRecordPage = new PageDomain<>();
 	    Integer count = loadMapper.countOfSelectLoadMsgForExcel(searchValue);
+	    Integer count1 = loadMapper.countOfSelectLoadMsgLastCircle();
 	    loadRecordPage.setTotal(count);
+	    loadRecordPage.setTotalOfLast(count1);
 	    loadRecordPage.setAsc("asc");
 //	    loadRecordPage.setOffset(offset);
 //	    loadRecordPage.setPageNum(pageNum);
