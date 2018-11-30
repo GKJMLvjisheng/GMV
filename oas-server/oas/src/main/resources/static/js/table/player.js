@@ -58,7 +58,36 @@ $(function(){
 });
 
 /*
-*播放
+*实时播放
+*/
+function playInTime(){
+	connect(undefined,function(msg){
+		console.log(msg);
+		loadInTime(msg, msg.length);
+	},"topic");
+}
+
+//实时播放延迟加载
+function loadInTime(data,len){
+	if(data.length == 0) {
+		return;
+	}else{
+		if(!map.hasOwnProperty(data[0].updated)){
+        	map[data[0].updated] = Array();
+        }
+        var arr = map[data[0].updated];
+        arr.push(data[0]);
+    	initTable(arr);
+    	data.splice(0,1);
+    	setTimeout(function(){
+    		loadInTime(data,len);
+    	},500)
+	}
+	index++;
+}
+
+/*
+*点播放
 */
 function play(){
 	index = 0;
@@ -110,17 +139,17 @@ function load(data,len){
 	index++;
 }
 
-//设置定时器每隔两秒向服务器请求一次
+//设置每隔一段时间向服务器请求一次
 function playInterval(){
+	index = 0;
 	var start = new Date(startTime.replace("-", "/").replace("-", "/"));
 	var end = new Date(endTime.replace("-", "/").replace("-", "/"));
 	if(end > start){  
 		var date = new Date(startTime);
 		startTime = increateTime(false,date);
 	}else{
-		clearInterval(timer);
+		return;
 	}
-	index = 0;
 	console.log(startTime);
 	var time = {"startTime": startTime};
 	console.log(time);
