@@ -31,6 +31,12 @@ public class RootController {
   public String table() {
        
     return "table";  }
+
+  @GetMapping("/canvas")
+  public String videoAndCanvas() {
+       
+    return "canvas";  }
+
   
 //Line
  @GetMapping("/line")
@@ -42,6 +48,10 @@ public class RootController {
     return "wbTest";
   }
 
+  @GetMapping(value="/video")
+  public String video(){
+    return "video";
+  }
 
 }
 
