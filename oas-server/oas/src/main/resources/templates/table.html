@@ -10,6 +10,7 @@
 <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/bootstrap-table.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/bootstrap-table-master/dist/locale/bootstrap-table-zh-CN.min.js}"></script>
 <script th:src="@{/webjars/bootstrap-treeview/1.2.0/src/js/bootstrap-treeview.js}"></script>
+<script src="/js/wbsocket.js"></script>
 <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
 <link rel="stylesheet" type="text/css"  th:href="@{/js/bootstrap-table-master/dist/bootstrap-table.min.css}">
 <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-treeview/1.2.0/src/css/bootstrap-treeview.css}"/>
@@ -40,6 +41,7 @@
 </div>
 <div class="col-sm-10" style="padding-top:20px;font-size:12px">
   <div id="autoTable">
+    <button id="inTime" onclick="playInTime()">实时播放</button>
     <table id="table"></table>
   </div>
   <div id="player" style="padding-top:20px;">
@@ -51,12 +53,19 @@
 	    </div>
 	    
 	    <div class="col-sm-10" style="text-align:left;font-size:14px">
-	      <div class="progress">
+	      <div class="progress" onclick="progress()">
 	        <div class="progress_bg">
-	            <div class="progress_bar" style="background:rgb(51,122,183)" onclick=""></div>
+	            <div class="progress_bar" style="background:rgb(51,122,183)"></div>
 	        </div>
 	        <div class="progress_btn"></div>
     	  </div>
+<!-- 			<div id="wrapper" style="padding-left:0;padding-right:0">
+				<div class="progress progress-striped active" >
+	        		<div id="prog" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width:0%;min-width: 3em;">
+	            	<span id="proglabel" style="padding-top:-2px;font-size:8px">正在发送...</span>
+	        		</div>
+	    		</div>    
+    		</div>  -->
 	    </div>
 	    <div class="col-sm-1" style="text-align:center;font-size:14px">
 	      <a><span class="glyphicon glyphicon-fullscreen"></span></a>

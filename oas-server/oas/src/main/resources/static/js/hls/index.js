@@ -10,7 +10,7 @@ $(function(){
 	connect(undefined,function(msg){
 		console.log(msg);
 		playq(msg);
-	},"test");
+	},"video");
 });
 	
 function playq(url){

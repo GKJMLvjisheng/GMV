@@ -28,7 +28,14 @@ public class Listener {
        TestData testData = (TestData)record.value();
        log.info("kafka的value: " + testData.getParameter());*/
         sendMessageToUser(record,WebSocket.wbSocketsMap.get("topic"));
-        
+	}
+	
+	@KafkaListener(topics = {"video"})
+    public void videoListen(ConsumerRecord<?, ?> record) {
+       /* log.info("kafka的key: " + record.key());
+       TestData testData = (TestData)record.value();
+       log.info("kafka的value: " + testData.getParameter());*/
+        sendMessageToUser(record,WebSocket.wbSocketsMap.get("video"));
 	}
 	
 	public void sendMessageToUser(ConsumerRecord<?, ?> record,CopyOnWriteArraySet<WebSocket> sets) {
@@ -37,7 +44,7 @@ public class Listener {
 		}
 		for (WebSocket webSocket :sets){
             try {
-            	if(record.key().equals("str")) {
+            	if(record.key() != null && record.key().equals("str")) {
                     webSocket.sendMessage(record.value().toString());
             	}else {
             		List<TestData> testData =(ArrayList) record.value();

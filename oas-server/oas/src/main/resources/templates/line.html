@@ -21,52 +21,21 @@
         
         <script th:src="@{/webjars/highstock/6.0.3/js/highstock.js}"></script>
         <script th:src="@{/webjars/highcharts/6.2.0/js/highcharts.js}"></script>
+        <script th:src="@{/js/wbsocket.js}"></script>
     </head>
     <body>
         <div id="container" style="min-width:400px;height:400px"></div>
         <div id="container1" style="min-width:400px;height:400px"></div>
         <button type=button id="donymicLine" onclick="dynamicLine()">切换</button>
         <div id="container2" style="min-width:400px;height:400px"></div>
+        <button type=button id="realTimeLine" onclick="realTimeLine()">播放</button>
         <script>
-        /* $.getJSON('https://data.jianshukeji.com/stock/history/000001', function (data) {
-          if(data.code !== 1) {
-            alert('读取股票数据失败！');
-            return false;
-          }
-          data = data.data;
-          // 去掉多余的数据
-          Highcharts.each(data, function(d) {
-            d.length = 2;
-          });
-          Highcharts.stockChart('container', {
-            rangeSelector: {
-              selected: 2
-            },
-            title: {
-              text: '平安银行历史股价'
-            },
-            plotOptions: {
-              series: {
-                showInLegend: true
-              }
-            },
-            tooltip: {
-              split: false,
-              shared: true
-            },
-            series: [{
-              // type: 'line',
-              id: '000001',
-              name: '平安银行',
-              data: data
-            }]
-          });
-        }); */
-        
+
       
        
 //通过Ajax获取静态图表数据
 var startTime='';
+//var msg={};
 $(function(){
 	var data1={};
     var x = [];//X轴
@@ -83,6 +52,7 @@ $(function(){
 	    success: function(res) {
 	    	alert(JSON.stringify(res));
 	        var data2=res.data.rows;
+	        //msg = data2;
 	        var map={}
 	        for (var i in data2){
 	        	//alert(JSON.stringify(data2[i]));
@@ -94,9 +64,11 @@ $(function(){
 	            var arr = map[data3.minerName];
 	            arr.push(data3);
 	            if(arr.length == 0){
+	            	//arr[0].x =data3.updated;
 	            	arr[0].y = Number(data3.minerDescription)
 	     	        xtext.push(data3.updated);//给X轴TEXT赋值
 	     	        }else{
+	     	        	//arr[arr.length-1].x =data3.updated;
 	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
 	     	        	if(xtext[xtext.length-1]!=data3.updated){
 	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
@@ -163,122 +135,28 @@ $(function(){
 	        	}
 	        }); 
     })
-        //动态显示曲线
-        function dynamicLine(){
-        	  var data1 = {
-        	    "startTime" : startTime,
-        	    "status":1
-        	  };
-            var x = [];//X轴
-            var y = [];//Y轴
-            var xtext = [];//X轴TEXT
-        	$.ajax({
-        		url: "/api/v1/load/selectLoadMsgByPeriod",
-        	    contentType : 'application/json;charset=utf8',
-        	    dataType: 'json',
-        	    cache: false,
-        	    type: 'post',
-        	    data:JSON.stringify(data1),
-        	    async : false,
-        	    processData : false,
-        	    success: function(res) {
-        	    	alert(JSON.stringify(res));
-        	        var data2=res.data.rows;
-        	        var map={}
-        	        for (var i in data2){
-        	        	//alert(JSON.stringify(data2[i]));
-        	            var data3 = data2[i];
-        	            //alert(JSON.stringify(data3.minerName));
-        	            if(!map.hasOwnProperty(data3.minerName)){
-        	            	map[data3.minerName] = Array();
-        	            	}
-        	            var arr = map[data3.minerName];
-        	            arr.push(data3);
-        	            if(arr.length == 0){
-        	            	arr[0].y = Number(data3.minerDescription)
-        	     	        xtext.push(data3.updated);//给X轴TEXT赋值
-        	     	        }else{
-        	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
-        	     	        	if(xtext[xtext.length-1]!=data3.updated){
-        	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
-        	     	        		startTime =data3.updated;
-        	     	        		}
-        	     	        	}
-        	            } 
-        	        var chart1 = new Highcharts.Chart({
-        	        	chart: {
-        	        		renderTo: "container1",
-        	                plotBackgroundColor: null,
-        	                plotBorderWidth: null,
-        	                plotShadow: false,
-        	                },
-        	                title: {
-        	                	text: '动态曲线图'
-        	                	},
-        	                xAxis: {
-        	                	categories: xtext
-        	                	},
-        	                yAxis: {                            //设置Y轴
-        	                	title: { 
-        	                		text: 'Values' 
-        	                		}
-        	                },
-        	                credits:{                          //右下角文本不显示
-        	                	enabled: false
-        	                		},
-        	                tooltip: {
-        	                	pointFormat: '{series.name}: <b>{point.y}</b>'
-        	                	    },
-        	                plotOptions: {
-        	                	pie: {
-        	                		allowPointSelect: true,
-        	                		cursor: 'pointer',
-        	                		dataLabels: {
-        	                			enabled: true,
-        	                			format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-        	                			style: {
-        	                				color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-        	                				}
-        	                			},
-        	                			//showInLegend: true
-        	                			}
-        	                	   },
-        	                series: [{
-        	                	type: 'line',
-        	                	name: '温度值',
-        	                	//data:[1,2,3,4,5]
-        	                       },{
-        	                	type: 'line',
-        	                	name: '湿度值',
-        	                	//data:[1,2,3,4,5]
-        	                	   },
-        	                		]
-        	                });
-        	        //alert(map);
-        	        chart1.series[0].setData(map["温度"]);
-        	        chart1.series[1].setData(map["湿度"]);
-        	        // alert((chart1.series[0].data));
-        	        },
-        	        error: function(){
-        	        	alert("数据获取失败！")
-        	        	}
-        	        }); 
-        }
-
-//function realTimeLine(){
-$(function(){	
-	/* var data1={};
+    
+    
+    
+    
+//动态显示曲线
+function dynamicLine(){
+	  var data1 = {
+	    "startTime" : startTime,
+	    "status":1
+	  };
     var x = [];//X轴
     var y = [];//Y轴
     var xtext = [];//X轴TEXT
 	$.ajax({
-		url: "/api/v1/load//selectLoadMsgForCurve",
+		url: "/api/v1/load/selectLoadMsgByPeriod",
 	    contentType : 'application/json;charset=utf8',
 	    dataType: 'json',
 	    cache: false,
 	    type: 'post',
 	    data:JSON.stringify(data1),
 	    async : false,
+	    processData : false,
 	    success: function(res) {
 	    	alert(JSON.stringify(res));
 	        var data2=res.data.rows;
@@ -299,23 +177,145 @@ $(function(){
 	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
 	     	        	if(xtext[xtext.length-1]!=data3.updated){
 	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
+	     	        		startTime =data3.updated;
 	     	        		}
 	     	        	}
 	            } 
+	        var chart1 = new Highcharts.Chart({
+	        	chart: {
+	        		renderTo: "container1",
+	                plotBackgroundColor: null,
+	                plotBorderWidth: null,
+	                plotShadow: false,
+	                },
+	                title: {
+	                	text: '动态曲线图'
+	                	},
+	                xAxis: {
+	                	categories: xtext
+	                	},
+	                yAxis: {                            //设置Y轴
+	                	title: { 
+	                		text: 'Values' 
+	                		}
+	                },
+	                credits:{                          //右下角文本不显示
+	                	enabled: false
+	                		},
+	                tooltip: {
+	                	pointFormat: '{series.name}: <b>{point.y}</b>'
+	                	    },
+	                plotOptions: {
+	                	pie: {
+	                		allowPointSelect: true,
+	                		cursor: 'pointer',
+	                		dataLabels: {
+	                			enabled: true,
+	                			format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	                			style: {
+	                				color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                				}
+	                			},
+	                			//showInLegend: true
+	                			}
+	                	   },
+	                series: [{
+	                	type: 'line',
+	                	name: '温度值',
+	                	//data:[1,2,3,4,5]
+	                       },{
+	                	type: 'line',
+	                	name: '湿度值',
+	                	//data:[1,2,3,4,5]
+	                	   },
+	                		]
+	                });
+	        //alert(map);
+	        chart1.series[0].setData(map["温度"]);
+	        chart1.series[1].setData(map["湿度"]);
+	        // alert((chart1.series[0].data));
 	        },
 	        error: function(){
 	        	alert("数据获取失败！")
 	        	}
-	        }); */ 
-	
-	Highcharts.setOptions({
+	        }); 
+}
+
+
+
+//实时曲线显示
+var realTimeList = [];
+var xtext =[];
+var realLength ;
+var realMsg=[];
+var x;
+var y;
+function realTimeLine(){
+$(function(){
+	  connect(undefined,function(msg){
+		console.log(msg);
+		realMsg = JSON.parse(msg);
+		realTimeLineCreate();
+	},"topic");  
+ 	/* realMsg =msg;
+	realTimeLineCreate();  */
+});
+}
+
+var map2={};
+function realTimeLineCreate(){
+var map={};
+for (var i in realMsg){
+	//alert(JSON.stringify(data2[i]));
+    var data3 = realMsg[i];
+    //alert(JSON.stringify(data3.minerName));
+    if(!map.hasOwnProperty(data3.minerName)){
+    	map[data3.minerName] = Array();
+    	map2[data3.minerName] = Array();
+    	}
+    var arr = map[data3.minerName];
+    var arr2 =map2[data3.minerName];
+    arr.push(data3);
+    if(arr.length == 0){
+    	arr[0].x =data3.updated;
+    	arr[0].y = Number(data3.minerDescription)
+	        //xtext.push(data3.updated);//给X轴TEXT赋值
+	        xtext.push(data3.updated);
+	       var a ={};
+	       a.x =arr[0].x;
+	       a.y =arr[0].y;
+	       arr2.push(a);
+	       //realTimeList.push(a);
+	        }else{
+	        	arr[arr.length-1].x = data3.updated;
+	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
+	        	 if(xtext[xtext.length-1]!=data3.updated){
+	        		xtext.push(data3.updated);//给X轴TEXT赋值
+	        		//realTimeList.push[xtext[xtext.length-1], arr[arr.length-1].y];
+	        		}
+	        	var a ={};
+	        	//a.x =xtext[xtext.length-1];
+	        	//a.x = data3.updated;
+	 	        //a.y =arr[arr.length-1].y;
+	 	        a.x = new Date(data3.updated).getTime();
+				a.y = arr[arr.length - 1].y;
+	 	       arr2.push(a);
+	 	      map2[data3.minerName] = arr2;
+	 	      //x=new Date(data3.updated).getTime();
+	 	      //y =12;
+	 	      map["温度"][0].x=x;
+	 	      map["温度"][0].y=y;
+	        	//realTimeList.push(a);
+	        	}
+    
+    Highcharts.setOptions({
 		global: {
 				useUTC: false
 		}
 });
 function activeLastPointToolip(chart) {
-		var points = chart.series[0].points;
-		chart.tooltip.refresh(points[points.length -1]);
+		var points = chart.series[0].points;;
+		chart.tooltip.refresh(points[points.length-1]);
 }
 var chart = Highcharts.chart('container2', {
 		chart: {
@@ -326,22 +326,27 @@ var chart = Highcharts.chart('container2', {
 								var series = this.series[0],
 										chart = this;
 								activeLastPointToolip(chart);
-								setInterval(function () {
-										var x = (new Date()).getTime(), // 当前时间
-										y = Math.random();          // 随机值
-										series.addPoint([x, y], true, true);
+								//setInterval(function () {
+										//var x = (new Date()).getTime(), // 当前时间
+										//   y = Math.random();          // 随机值
+										//series.addPoint([x, y], true, true);
+										var x1=x,
+										y1=y;
+										series.addPoint([x1,y1], true, true);
+										//series.addPoint(map2["温度"], true, true);
+										//series.addPoint(realTimeList, true, true);
 										activeLastPointToolip(chart);
-								}, 1000);
+								//}, 1000);
 						}
 				}
 		},
 		title: {
 				text: '动态模拟实时数据'
 		},
-		xAxis: {
-				//type: 'datetime',
+		 xAxis: {
+				type: 'datetime', 
 				tickPixelInterval: 150
-		},
+		}, 
 		yAxis: {
 				title: {
 						text: null
@@ -362,20 +367,165 @@ var chart = Highcharts.chart('container2', {
 				data: (function () {
 						// 生成随机值
 						var data = [],
+						//var data = realTimeList;
 								time = (new Date()).getTime(),
 								i;
-						for (i = -19; i <= 0; i += 1) {
+						 for (i = -19; i <= 0; i += 1) {
 								data.push({
 										x: time + i * 1000,
 										y: Math.random()
 								});
-						}
+						} 
+						
 						return data;
 				}())
 		}]
 });
-//}  
+    
+    
+    }
+    //realLength = realTimeList.length;
+	/* Highcharts.setOptions({
+		global: {
+				useUTC: false
+		}
 });
+function activeLastPointToolip(chart) {
+		//var points = chart.series[0].points;
+		var points = chart.series[0].points;;
+		chart.tooltip.refresh(points[points.length-1]);
+}
+var chart = Highcharts.chart('container2', {
+		chart: {
+				type: 'spline',
+				marginRight: 10,
+				events: {
+						load: function () {
+								var series = this.series[0],
+										chart = this;
+								//activeLastPointToolip(chart);
+								//setInterval(function () {
+										//var x = (new Date()).getTime(), // 当前时间
+										//   y = Math.random();          // 随机值
+										//series.addPoint([x, y], true, true);
+										series.addPoint(map2["温度"], true, true);
+										//series.addPoint(realTimeList, true, true);
+										activeLastPointToolip(chart);
+								//}, 1000);
+						}
+				}
+		},
+		title: {
+				text: '动态模拟实时数据'
+		},
+		 xAxis: {
+				type: 'datetime', 
+				tickPixelInterval: 150
+		}, 
+		yAxis: {
+				title: {
+						text: null
+				}
+		},
+		tooltip: {
+				formatter: function () {
+						return '<b>' + this.series.name + '</b><br/>' +
+								Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+								Highcharts.numberFormat(this.y, 2);
+				}
+		},
+		legend: {
+				enabled: false
+		},
+		series: [{
+				name: '随机数据',
+				data: (function () {
+						// 生成随机值
+						var data = [],
+						//var data = realTimeList;
+								time = (new Date()).getTime(),
+								i;
+						 for (i = -19; i <= 0; i += 1) {
+								data.push({
+										x: time + i * 1000,
+										y: Math.random()
+								});
+						} 
+						
+						return data;
+				}())
+		}]
+}); */
+};  
+
+/* $(function(){
+Highcharts.setOptions({
+	global: {
+		useUTC: false
+	}
+});
+function activeLastPointToolip(chart) {
+	var points = chart.series[0].points;
+	chart.tooltip.refresh(points[points.length -1]);
+}
+var chart = Highcharts.chart('container', {
+	chart: {
+		type: 'spline',
+		marginRight: 10,
+		events: {
+			load: function () {
+				var series = this.series[0],
+					chart = this;
+				activeLastPointToolip(chart);
+				setInterval(function () {
+					var x = (new Date()).getTime(), // 当前时间
+						y = Math.random();          // 随机值
+					series.addPoint([x, y], true, true);
+					activeLastPointToolip(chart);
+				}, 1000);
+			}
+		}
+	},
+	title: {
+		text: '动态模拟实时数据'
+	},
+	xAxis: {
+		type: 'datetime',
+		tickPixelInterval: 150
+	},
+	yAxis: {
+		title: {
+			text: null
+		}
+	},
+	tooltip: {
+		formatter: function () {
+			return '<b>' + this.series.name + '</b><br/>' +
+				Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+				Highcharts.numberFormat(this.y, 2);
+		}
+	},
+	legend: {
+		enabled: false
+	},
+	series: [{
+		name: '随机数据',
+		data: (function () {
+			// 生成随机值
+			var data = [],
+				time = (new Date()).getTime(),
+				i;
+			for (i = -19; i <= 0; i += 1) {
+				data.push({
+					x: time + i * 1000,
+					y: Math.random()
+				});
+			}
+			return data;
+		}())
+	}]
+});
+}); */
         
         
  
