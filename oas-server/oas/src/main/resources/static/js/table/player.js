@@ -61,8 +61,7 @@ $(function(){
 function playInTime(){
 	connect(undefined,function(msg){
 		console.log(msg);
-		var list = JSON.parse(msg);
-		loadInTime(list, list.length);
+		loadInTime(msg, msg.length);
 	},"topic");
 }
 
@@ -173,8 +172,6 @@ function playInterval(){
 *快退
 */
 function backward(){
-	var $play_span = $("#play span");
-	if($play_span.attr("class") == "glyphicon glyphicon-play"){
 		var date = new Date(startTime);
 		startTime = fastDecreaseTime(false,date);
 		index = 0;
@@ -203,15 +200,12 @@ function backward(){
 				alert("失败！");
 			}
 			});
-	}
 }
 
 /*
 *快进
 */
 function forward(){
-	var $play_span = $("#play span");
-	if($play_span.attr("class") == "glyphicon glyphicon-play"){
 	var date = new Date(startTime);
 	startTime = fastIncreateTime(false,date);
 	index = 0;
@@ -240,7 +234,6 @@ function forward(){
 			alert("失败！");
 		}
 		}); 
-	}
 }
 
 
