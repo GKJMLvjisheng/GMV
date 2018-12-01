@@ -29,7 +29,7 @@
    .progress_btn{width: 10px; height: 10px; position: absolute;background:white; 
    left: 0px; margin-left: -10px; top:0px; cursor: pointer;border:1px #ddd solid;box-sizing:border-box;}
    .progress_btn:hover{border-color:#F7B824;}
-    .col-center-block {width: 768px; /* display: block;*/margin-left: auto; margin-right: auto;}
+    .col-center-block {/*width: 768px;  display: block;*/margin-left: auto; margin-right: auto;vertical-align: middle; margin-top: 30px;}
 </style>
 </head>
 <body>
@@ -42,13 +42,13 @@
 <div class="col-sm-10" style="padding-top:20px;font-size:12px">
   <div id="autoTable">
     <button id="inTime" onclick="playInTime()">实时播放</button>
-    <table id="table"></table>
+    <table id="table" style="position:absolute;"></table>
   </div>
-  <div id="player" style="padding-top:20px;">
+  <div id="player" style="padding-top:400px;">
     <div class="row">
 	    <div class="col-sm-1" style="text-align:center;font-size:14px;padding-right: 0;">
 	      <a id="backward"><span class="glyphicon glyphicon-backward" onclick="backward()"></span></a>
-	      <a id="play"><span class="glyphicon glyphicon-play" onclick="play()"></span></a>
+	      <a id="play" onclick="play()"><span class="glyphicon glyphicon-play"></span></a>
 	      <a id="forward"><span class="glyphicon glyphicon-forward" onclick="forward()"></span></a>
 	    </div>
 	    

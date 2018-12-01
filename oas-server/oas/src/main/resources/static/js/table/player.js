@@ -91,36 +91,36 @@ function play(){
 	var $play_span = $("#play span");
 	if($play_span.attr("class") == "glyphicon glyphicon-play"){
 		$play_span.attr("class","glyphicon glyphicon-pause");
+		index = 0;
+		var time = {"startTime": startTime};
+		console.log(time);
+//		alert(time);
+		$.ajax({
+			url: "/api/v1/load/selectLoadMsgByPeriod",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data: JSON.stringify(time),
+			async : false,
+			success: function(res) {
+//			alert(JSON.stringify(res));
+			if(res.code==0){
+				var resData=res.data.rows;
+				console.log("111",JSON.stringify(resData));
+				map={};
+				load(resData,resData.length);
+			}		
+			  else{alert("回显失败！");}			
+			}, 
+			error: function(){
+				alert("失败！");
+			}
+			}); 
 	}else{
 		$play_span.attr("class","glyphicon glyphicon-play");
+		return;
 	}
-
-	index = 0;
-	var time = {"startTime": startTime};
-	console.log(time);
-//	alert(time);
-	$.ajax({
-		url: "/api/v1/load/selectLoadMsgByPeriod",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data: JSON.stringify(time),
-		async : false,
-		success: function(res) {
-//		alert(JSON.stringify(res));
-		if(res.code==0){
-			var resData=res.data.rows;
-			console.log("111",JSON.stringify(resData));
-			map={};
-			load(resData,resData.length);
-		}		
-		  else{alert("回显失败！");}			
-		}, 
-		error: function(){
-			alert("失败！");
-		}
-		}); 
 	
 }
 
