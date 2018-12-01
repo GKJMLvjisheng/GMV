@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WebSocket client</title>
+<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="/js/wbsocket.js"></script>
+<script type="text/javascript">
+	function conectWS(){
+		connect(selector,function(msg){
+			console.log(msg);
+		},"topic");
+	}
+</script>
+</head>
+<body>
+    <button onclick="conectWS()">连接ws</button>
+    <button onclick="sendMsg(123)">向ws发信息</button>
+    <select id="selector">
+    	<option value="topic">topic</option>
+    	<option value="test">test</option>
+    	<option value="video">video</option>
+    </select>
+     <label>发送信息给kafka：</label>
+    <input type="text" id="sendM"> 
+     <button onclick="sendMsgToKafka(null,selector,sendM)">发送信息</button>
+     <button onclick="setTimer(selector,sendM)">开启定时器</button>
+     <button onclick="stopInterval()">停止定时器</button>
+     <button onclick="closeWs()">关闭ws</button>
+</body>
+</html>
