@@ -15,54 +15,22 @@
   		miner_name, miner_description, miner_price, circle_number, updated, load_picture_path
     </sql>
     
-    <sql id="load_List1">
-  		miner_name, miner_description, miner_price, circle_number, updated
-    </sql>
-    
    
     <select id="selectLoadMsg" resultMap="LoadMap">
-        select
-           <include refid="load_List" />
+         select
+           *
         from 
-        	miner_source
-        	
-        where 
-        	updated=(select MIN(updated) from miner_source 
-        where circle_number=(select MAX(circle_number) from miner_source))
+        	miner_source     
+        where circle_number=(select MAX(circle_number) from miner_source )and (
+        updated BETWEEN (select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1) and 
+        (select date_add((select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1), interval #{number} second)))
         	
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
        		</if> 
         order by updated asc
 <!--         limit #{offset}, #{limit}; -->
-    </select>
-    
-    
-    <select id="selectLoadMsgForCurve" resultMap="LoadMap">
-        select
-           *
-        from 
-        	miner_source     
-        where circle_number=(select MAX(circle_number) from miner_source )and (
-        updated BETWEEN (select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1) and 
-        (select date_add((select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1), interval 4 second)))
-		order by updated asc         
-        
-    </select>
-    
-    <select id="selectLoadMsgByTime" resultMap="LoadMap">
-        select 
-        	* 
-        from 
-        	miner_source 
-        where 
-        	updated = #{time}
-        	<if test="searchValue != null and searchValue != null ">
-    	    	and miner_name like concat('%',#{searchValue},'%')
-       		</if>
-<!--        		limit #{offset}, #{limit}; -->
-    </select>
-    
+    </select>    
     
      <select id="selectLoadMsgByPeriod" resultMap="LoadMap">
         select 
@@ -76,36 +44,27 @@
 <!-- 			limit #{offset}, #{limit}; -->
     </select>
     
-    <select id="countOfSelectLoadMsgForExcel" resultType="java.lang.Integer">
-		select 
-			  count(*) 
-		from 
-			 miner_source
-        where 
-        	updated=(select MIN(updated) from miner_source 
-        where circle_number=(select MAX(circle_number) from miner_source))
+    <select id="countOfSelectLoadMsg" resultType="java.lang.Integer">
+		select
+           count(*)
+        from 
+        	miner_source     
+        where circle_number=(select MAX(circle_number) from miner_source )and (
+        updated BETWEEN (select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1) and 
+        (select date_add((select updated from miner_source where circle_number=(select MAX(circle_number) from miner_source order by updated) limit 1), interval #{number} second)))
+        	
         	<if test="searchValue != null and searchValue != null ">
     	    	and miner_name like concat('%',#{searchValue},'%')
-       		</if>
+       		</if> 
+        order by updated asc
+        	
 	</select>
 	
-	<select id="endTimeOfSelectLoadMsgForExcel" resultType="java.lang.String">
+	<select id="endTimeOfSelectLoadMsg" resultType="java.lang.String">
 		select 
 			  MAX(updated)
 		from 
 			 miner_source
-	</select>
-	
-	<select id="countOfSelectLoadMsgByTime" resultType="java.lang.Integer">
-		select 
-			  count(*) 
-		from 
-			 miner_source
-        where 
-        	updated = #{time}
-        	<if test="searchValue != null and searchValue != null ">
-    	    	and miner_name like concat('%',#{searchValue},'%')
-       		</if>
 	</select>
 	
 	<select id="countOfSelectLoadMsgByPeriod" resultType="java.lang.Integer">
