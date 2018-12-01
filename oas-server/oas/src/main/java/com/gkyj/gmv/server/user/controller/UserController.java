@@ -98,7 +98,7 @@ public class UserController {
         	String date = DateUtils.getTime();
         	for(int i=0;i<4;i++) {
         		TestData a = new TestData();
-        		String [] picImgs = {"https://oas.cascv.comnull","https://oas.cascv.com/image/news/20181029052104493915232-007.jpg"};
+        		String [] picImgs = {"https://oas.cascv.com/image/news/201810290521162072513786-face09877.jpg","https://oas.cascv.com/image/news/20181029052104493915232-007.jpg"};
         		switch(i) {
 	    			case 0:
 	    				a.setMinerName("温度");
