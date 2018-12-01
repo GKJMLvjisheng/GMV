@@ -260,7 +260,7 @@ $(function(){
 });
 }
 
-
+var map2={};
 function realTimeLineCreate(){
 var map={};
 for (var i in realMsg){
@@ -271,6 +271,7 @@ for (var i in realMsg){
     	map[data3.minerName] = Array();
     	}
     var arr = map[data3.minerName];
+    var arr2 =map2[data3.minerName];
     arr.push(data3);
     if(arr.length == 0){
     	arr[0].x =data3.updated;
@@ -280,7 +281,8 @@ for (var i in realMsg){
 	       var a ={};
 	       a.x =arr[0].x;
 	       a.y =arr[0].y;
-	       realTimeList.push(a);
+	       arr2.push(a);
+	       //realTimeList.push(a);
 	        }else{
 	        	arr[arr.length-1].x = data3.updated;
 	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
@@ -292,7 +294,8 @@ for (var i in realMsg){
 	        	//a.x =xtext[xtext.length-1];
 	        	a.x = data3.updated;
 	 	        a.y =arr[arr.length-1].y;
-	        	realTimeList.push(a);
+	 	       arr2.push(a);
+	        	//realTimeList.push(a);
 	        	}
     }
     realLength = realTimeList.length;
@@ -314,12 +317,13 @@ var chart = Highcharts.chart('container2', {
 						load: function () {
 								var series = this.series[0],
 										chart = this;
-								activeLastPointToolip(chart);
+								//activeLastPointToolip(chart);
 								//setInterval(function () {
 										//var x = (new Date()).getTime(), // 当前时间
 										//   y = Math.random();          // 随机值
 										//series.addPoint([x, y], true, true);
-										series.addPoint(realTimeList, true, true);
+										series.addPoint(map2["温度"], true, true);
+										//series.addPoint(realTimeList, true, true);
 										activeLastPointToolip(chart);
 								//}, 1000);
 						}
@@ -351,16 +355,16 @@ var chart = Highcharts.chart('container2', {
 				name: '随机数据',
 				data: (function () {
 						// 生成随机值
-						//var data = [],
-						var data = realTimeList;
-						/*		time = (new Date()).getTime(),
+						var data = [],
+						//var data = realTimeList;
+								time = (new Date()).getTime(),
 								i;
 						 for (i = -19; i <= 0; i += 1) {
 								data.push({
 										x: time + i * 1000,
 										y: Math.random()
 								});
-						} */
+						} 
 						
 						return data;
 				}())
