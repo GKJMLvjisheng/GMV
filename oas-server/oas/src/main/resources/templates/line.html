@@ -140,6 +140,7 @@ $(function(){
     
     
 //动态显示曲线
+//var y1;
 function dynamicLine(){
 	  var data1 = {
 	    "startTime" : startTime,
@@ -173,11 +174,13 @@ function dynamicLine(){
 	            if(arr.length == 0){
 	            	arr[0].y = Number(data3.minerDescription)
 	     	        xtext.push(data3.updated);//给X轴TEXT赋值
+	     	        //y1=12;
 	     	        }else{
 	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
 	     	        	if(xtext[xtext.length-1]!=data3.updated){
 	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
 	     	        		startTime =data3.updated;
+	     	        		//y1=12;
 	     	        		}
 	     	        	}
 	            } 
@@ -248,17 +251,20 @@ var realTimeList = [];
 var xtext =[];
 var realLength ;
 var realMsg=[];
-var x;
-var y;
+ var x1;
+var x2;
+var y1; 
+var points1 ={};
 function realTimeLine(){
 $(function(){
-	  connect(undefined,function(msg){
+	   connect(undefined,function(msg){
 		console.log(msg);
 		realMsg = JSON.parse(msg);
 		realTimeLineCreate();
-	},"topic");  
- 	/* realMsg =msg;
-	realTimeLineCreate();  */
+		createRealTimeLine();
+	},"topic");   
+ 	 /* realMsg =msg;
+	realTimeLineCreate();   */
 });
 }
 
@@ -295,19 +301,19 @@ for (var i in realMsg){
 	        		}
 	        	var a ={};
 	        	//a.x =xtext[xtext.length-1];
-	        	//a.x = data3.updated;
+	        	a.x = data3.updated;
 	 	        //a.y =arr[arr.length-1].y;
-	 	        a.x = new Date(data3.updated).getTime();
+	 	        //a.x = new Date(data3.updated).getTime();
 				a.y = arr[arr.length - 1].y;
 	 	       arr2.push(a);
 	 	      map2[data3.minerName] = arr2;
 	 	      //x=new Date(data3.updated).getTime();
 	 	      //y =12;
-	 	      map["温度"][0].x=x;
-	 	      map["温度"][0].y=y;
+	 	      //x2=map["温度"][0].x;
+	 	      y1=map["温度"][0].y;
 	        	//realTimeList.push(a);
 	        	}
-    
+ /*    
     Highcharts.setOptions({
 		global: {
 				useUTC: false
@@ -380,12 +386,21 @@ var chart = Highcharts.chart('container2', {
 						return data;
 				}())
 		}]
-});
+}); */
     
     
     }
     //realLength = realTimeList.length;
-	/* Highcharts.setOptions({
+    
+    /* var x1 = function (x2) {  
+    var t = Date.parse(x2);  
+    if (!isNaN(t)) {  
+        return new Date(Date.parse(date.replace(/-/g, "/")));  
+    } else {  
+        return new Date();  
+    }  
+}; */ 
+	/*  Highcharts.setOptions({
 		global: {
 				useUTC: false
 		}
@@ -403,13 +418,18 @@ var chart = Highcharts.chart('container2', {
 						load: function () {
 								var series = this.series[0],
 										chart = this;
-								//activeLastPointToolip(chart);
+								activeLastPointToolip(chart);
 								//setInterval(function () {
-										//var x = (new Date()).getTime(), // 当前时间
+									//var x = (new Date());
+									//alert(x);
+										var x1 = (new Date()).getTime(), // 当前时间
 										//   y = Math.random();          // 随机值
 										//series.addPoint([x, y], true, true);
-										series.addPoint(map2["温度"], true, true);
+										//series.addPoint(map2["温度"], true, true);
 										//series.addPoint(realTimeList, true, true);
+										//var x=x1;
+										y=y1;
+										series.addPoint([x,y], true, true);
 										activeLastPointToolip(chart);
 								//}, 1000);
 						}
@@ -455,20 +475,24 @@ var chart = Highcharts.chart('container2', {
 						return data;
 				}())
 		}]
-}); */
+});  */
 };  
 
-/* $(function(){
+function createRealTimeLine(){
+  $(function(){
 Highcharts.setOptions({
 	global: {
 		useUTC: false
 	}
 });
+//var points1 ={};
 function activeLastPointToolip(chart) {
 	var points = chart.series[0].points;
+	//var points = points1;
 	chart.tooltip.refresh(points[points.length -1]);
+	//points1= chart.series[0].points;
 }
-var chart = Highcharts.chart('container', {
+var chart = Highcharts.chart('container2', {
 	chart: {
 		type: 'spline',
 		marginRight: 10,
@@ -477,12 +501,13 @@ var chart = Highcharts.chart('container', {
 				var series = this.series[0],
 					chart = this;
 				activeLastPointToolip(chart);
-				setInterval(function () {
+				//setInterval(function () {
 					var x = (new Date()).getTime(), // 当前时间
-						y = Math.random();          // 随机值
+						//y = Math.random();          // 随机值
+						y = y1;
 					series.addPoint([x, y], true, true);
 					activeLastPointToolip(chart);
-				}, 1000);
+				//}, 1000);
 			}
 		}
 	},
@@ -512,20 +537,23 @@ var chart = Highcharts.chart('container', {
 		name: '随机数据',
 		data: (function () {
 			// 生成随机值
-			var data = [],
+			//var data = [1,1];
+			 var data = [],
 				time = (new Date()).getTime(),
 				i;
 			for (i = -19; i <= 0; i += 1) {
 				data.push({
 					x: time + i * 1000,
-					y: Math.random()
+					//y: Math.random()
+					y:1
 				});
-			}
+			} 
 			return data;
 		}())
 	}]
 });
-}); */
+});   
+}
         
         
  
