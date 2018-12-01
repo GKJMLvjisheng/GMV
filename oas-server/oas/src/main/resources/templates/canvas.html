@@ -4,7 +4,7 @@
 <head>
  <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>JS切换图片（页面中可重复使用）</title>
+<title>图片</title>
 <!-- <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/> -->
  <script src="/js/wbsocket.js"></script>
 
@@ -595,7 +595,7 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
       if(ids=="1")
      	{
     	  
-		    	  var date1 = new Date(startTimeback)
+		    	var date1 = new Date(startTimeback)
 		       startTimeback=increateTime(false,date1)
 		       console.log("starttime",startTime)
 		       console.log("startTimeback",startTimeback)
@@ -785,13 +785,13 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
     		$('#range_speed').val(0);
         	time=0;
         	changeThumb(0);
-        
-        	eventReal=setInterval('autoBanner("1","2")', 2000);},1000)
+        $('#buttonPlay').addClass('btn2');
+        	eventReal=setInterval('autoBanner("1","2")', 2000);},2000)
     	}else{
     		$('#range_speed').val(0);
         	time=0;
         	changeThumb(0);
-        	
+        	$('#buttonPlay').addClass('btn2');
         	eventReal=setInterval('autoBanner("1","2")', 2000);
     	}
     	
