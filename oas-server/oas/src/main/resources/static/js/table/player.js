@@ -53,8 +53,6 @@ $(function(){
             $('.text').html(parseInt((left/800)*100) + '%');
          }
     });
-    
-    //clearInterval(timer)
 });
 
 /*
@@ -63,8 +61,7 @@ $(function(){
 function playInTime(){
 	connect(undefined,function(msg){
 		console.log(msg);
-		var list = JSON.parse(msg);
-		loadInTime(list, list.length);
+		loadInTime(msg, msg.length);
 	},"topic");
 }
 
@@ -91,6 +88,13 @@ function loadInTime(data,len){
 *点播放
 */
 function play(){
+	var $play_span = $("#play span");
+	if($play_span.attr("class") == "glyphicon glyphicon-play"){
+		$play_span.attr("class","glyphicon glyphicon-pause");
+	}else{
+		$play_span.attr("class","glyphicon glyphicon-play");
+	}
+
 	index = 0;
 	var time = {"startTime": startTime};
 	console.log(time);
@@ -120,26 +124,6 @@ function play(){
 	
 }
 
-//延迟加载
-function load(data,len){
-	if(data.length == 0) {
-		playInterval();
-		return;
-	}else{
-		if(!map.hasOwnProperty(data[0].updated)){
-        	map[data[0].updated] = Array();
-        }
-        var arr = map[data[0].updated];
-        arr.push(data[0]);
-    	initTable(arr);
-    	data.splice(0,1);
-    	setTimeout(function(){
-    		load(data,len);
-    	},500)
-	}
-	index++;
-}
-
 //设置每隔一段时间向服务器请求一次
 function playInterval(){
 	index = 0;
@@ -149,6 +133,7 @@ function playInterval(){
 		var date = new Date(startTime);
 		startTime = increateTime(false,date);
 	}else{
+		$("#play span").attr("class","glyphicon glyphicon-play");
 		return;
 	}
 	console.log(startTime);
@@ -187,13 +172,68 @@ function playInterval(){
 *快退
 */
 function backward(){
-	
+		var date = new Date(startTime);
+		startTime = fastDecreaseTime(false,date);
+		index = 0;
+		var time = {"startTime": startTime};
+		console.log(time);
+//		alert(time);
+		$.ajax({
+			url: "/api/v1/load/selectLoadMsgByPeriod",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data: JSON.stringify(time),
+			async : false,
+			success: function(res) {
+//			alert(JSON.stringify(res));
+			if(res.code==0){
+				var resData=res.data.rows;
+				console.log("111",JSON.stringify(resData));
+				map={};
+				load(resData,resData.length);
+			}		
+			  else{alert("回显失败！");}			
+			}, 
+			error: function(){
+				alert("失败！");
+			}
+			});
 }
 
 /*
 *快进
 */
 function forward(){
+	var date = new Date(startTime);
+	startTime = fastIncreateTime(false,date);
+	index = 0;
+	var time = {"startTime": startTime};
+	console.log(time);
+//	alert(time);
+	$.ajax({
+		url: "/api/v1/load/selectLoadMsgByPeriod",
+		contentType : 'application/json;charset=utf8',
+		dataType: 'json',
+		cache: false,
+		type: 'post',
+		data: JSON.stringify(time),
+		async : false,
+		success: function(res) {
+//		alert(JSON.stringify(res));
+		if(res.code==0){
+			var resData=res.data.rows;
+			console.log("111",JSON.stringify(resData));
+			map={};
+			load(resData,resData.length);
+		}		
+		  else{alert("回显失败！");}			
+		}, 
+		error: function(){
+			alert("失败！");
+		}
+		}); 
 }
 
 
@@ -201,13 +241,28 @@ function forward(){
  * 时间的生成
  */
 
-//时间增加
+//时间增加1秒请求一次
 function increateTime(flag,t) {
     var t_s = t.getTime();//转化为时间戳毫秒数
     t.setTime(t_s + 1000 * 1);
     var time=generateTime(flag,t)
+    return time     
+}
+
+//快进一次2秒
+function fastIncreateTime(flag,t) {
+    var t_s = t.getTime();//转化为时间戳毫秒数
+    t.setTime(t_s + 1000 * 2);
+    var time=generateTime(flag,t)
+    return time     
+}
+
+//快退一次2秒
+function fastDecreaseTime(flag,t){
+	var t_s = t.getTime();//转化为时间戳毫秒数
+    t.setTime(t_s - 1000 * 2);
+    var time=generateTime(flag,t)
     return time
-     
 }
 
 function generateTime(flag,now){

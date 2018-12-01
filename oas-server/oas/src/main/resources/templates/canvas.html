@@ -589,10 +589,12 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
         //ajax
         //var photo=[];
        // console.log(picList1)
-       photo.splice(0, 1)
-       console.log("photo",photo)
+       photo.splice(0, 1);
+       console.log("photo.length",photo.length)
+       
       if(ids=="1")
      	{
+    	  
 		    	  var date1 = new Date(startTimeback)
 		       startTimeback=increateTime(false,date1)
 		       console.log("starttime",startTime)
@@ -610,6 +612,7 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
 			   success: function (res) {
 			     if (res.code == 0) {
 			    	var row=res.data.rows
+			    	
 			    	 for(var i=0;i<row.length;i++)
 			    	{ 	
 			    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
@@ -617,10 +620,11 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
 			    			 row.splice(i,1);
 			 					i--;
 			 				}else{
+			 					console.log("photo1",row[i].loadPicturePath)
 			 					photo.push(row[i].loadPicturePath)
 			 					}
 			    	}
-			    	 console.log("photo1",photo)
+			    	 
 			     } else {
 			    	 alert(res.message);
 			     }
@@ -636,6 +640,7 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
     		//alert("数据已播完")
     		 $('#buttonPlay').removeClass('btn2');
     		clearInterval(event);
+    		clearInterval(eventReal);
     		event="";
     		eventReal="";
     		//var date1 = new Date(startTime)
@@ -771,14 +776,26 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
     		{
     			photo.push(msg[i].loadPicturePath)
     		}
+    		$(".range").attr({'max':photo.length*2});   
+        	$("#timeb").val(changeTime(photo.length*2));
     	},"topic");
-    	//realPlay();
-    	$('#range_speed').val(0);
-    	time=0;
-    	changeThumb(0);
-    	 $(".range").attr({'max':photo.length*2});   
-    	$("#timeb").val(changeTime(photo.length*2));
-    	eventReal=setInterval('autoBanner("1","2")', 2000);
+
+    	if(photo.length==0){
+    		setTimeout(function(){
+    		$('#range_speed').val(0);
+        	time=0;
+        	changeThumb(0);
+        
+        	eventReal=setInterval('autoBanner("1","2")', 2000);},1000)
+    	}else{
+    		$('#range_speed').val(0);
+        	time=0;
+        	changeThumb(0);
+        	
+        	eventReal=setInterval('autoBanner("1","2")', 2000);
+    	}
+    	
+
     }
     }
    
