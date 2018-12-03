@@ -37,12 +37,14 @@
 var startTime='';
 //var msg={};
 $(function(){
-	var data1={};
+	var data1={
+			"number":5
+	};
     var x = [];//X轴
     var y = [];//Y轴
     var xtext = [];//X轴TEXT
 	$.ajax({
-		url: "/api/v1/load//selectLoadMsgForCurve",
+		url: "/api/v1/load/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
 	    dataType: 'json',
 	    cache: false,
@@ -72,7 +74,7 @@ $(function(){
 	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
 	     	        	if(xtext[xtext.length-1]!=data3.updated){
 	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
-	     	        		startTime=xtext[0];
+	     	        		startTime=xtext[xtext.length-1];
 	     	        		}
 	     	        	}
 	            } 
@@ -143,8 +145,7 @@ $(function(){
 //var y1;
 function dynamicLine(){
 	  var data1 = {
-	    "startTime" : startTime,
-	    "status":1
+	    "startTime" : startTime
 	  };
     var x = [];//X轴
     var y = [];//Y轴
