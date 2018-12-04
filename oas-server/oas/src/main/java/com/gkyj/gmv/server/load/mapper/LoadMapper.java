@@ -13,19 +13,13 @@ public interface LoadMapper {
     
 //    List<LoadModel> selectLoadMsgForExcel(@Param("searchValue") String searchValue,
 //			@Param("offset") Integer offset, @Param("limit") Integer limit);
-    List<LoadModel> selectLoadMsg(@Param("searchValue") String searchValue);
-    
-    List<LoadModel> selectLoadMsgForCurve();
-    
-    List<LoadModel> selectLoadMsgByTime(@Param("time") String time, @Param("searchValue") String searchValue);
+    List<LoadModel> selectLoadMsg(@Param("number") Integer number, @Param("searchValue") String searchValue);
     
     List<LoadModel> selectLoadMsgByPeriod(@Param("startTime") String startTime, @Param("endTime") String endTime,@Param("searchValue") String searchValue);
     
-    Integer countOfSelectLoadMsgForExcel(@Param("searchValue") String searchValue);
+    Integer countOfSelectLoadMsg(@Param("number") Integer number, @Param("searchValue") String searchValue);
     
-    String endTimeOfSelectLoadMsgForExcel();
-    
-    Integer countOfSelectLoadMsgByTime(@Param("searchValue") String searchValue, @Param("time") String time);
+    String endTimeOfSelectLoadMsg();
     
     Integer countOfSelectLoadMsgByPeriod(@Param("searchValue") String searchValue, @Param("startTime") String startTime, @Param("endTime") String endTime);
     
