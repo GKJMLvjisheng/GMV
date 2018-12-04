@@ -46,10 +46,10 @@ video.addEventListener('click', function () {
   }
 })
 
-video.addEventListener('play', function () {
-  player.className = 'player'
-})
-
-video.addEventListener('pause', function () {
-  player.className = 'player pause'
-})
+//video.addEventListener('play', function () {
+//  player.className = 'player'
+//})
+//
+//video.addEventListener('pause', function () {
+//  player.className = 'player pause'
+//})

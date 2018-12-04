@@ -4,6 +4,7 @@
  */
 var pageSize;
 var pageNum;
+
 //表格回显
 $(function(){
 	ready();
@@ -182,21 +183,37 @@ function progress(){
 
 //延迟加载
 function load(data,len){
+	var map = {};
 	if(data.length == 0) {
 		playInterval();
 		return;
 	}else{
-		if(!map.hasOwnProperty(data[0].updated)){
-        	map[data[0].updated] = Array();
-        }
-        var arr = map[data[0].updated];
-        arr.push(data[0]);
-    	initTable(arr);
-    	data.splice(0,1);
-    	setTimeout(function(){
+		//var time_t = data[0].updated;
+		for(var i=0; i<data.length; i++){
+			if(!map.hasOwnProperty(data[i].updated)){
+	        	map[data[i].updated] = Array();
+	        	var arr = map[data[i].updated];
+		        arr.push(data[i]);
+	        }else{
+	        	var arList = map[data[i].updated];
+	        	arList.push(data[i]);
+	        	map[data[i].updated] = arList;
+	        }	        	
+//	        console.log("arr:", arr);	    
+		}
+		/*map.sort(function(a,b){
+			return a.key-b.key;
+		});*/
+		for(var i in map){
+			var ii = 0;
+			initTable(map[i]);
+			data.splice(0,map[i].length);
+			if(ii == 0) break;
+		}
+		setTimeout(function(){
     		load(data,len);
-    	},500)
+    	},1000)
+		return;
 	}
-	index++;
 }
 
