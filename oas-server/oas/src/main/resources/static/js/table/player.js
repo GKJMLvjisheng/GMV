@@ -67,7 +67,7 @@ function playInTime(){
 }
 
 //实时播放延迟加载
-function load(data,len){
+function loadInTime(data,len){
 	var map = {};
 	if(data.length == 0) {
 		return;

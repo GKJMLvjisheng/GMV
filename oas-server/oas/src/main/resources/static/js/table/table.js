@@ -51,28 +51,28 @@ function initTable(data) {
 			field: "minerName",
 			align: 'center',
 			valign: 'middle', 
-			width:  '80px',
+			width:  '40px',
 			},
 			{
 			title : "参数名称",
 			field : "minerDescription",
 			align: 'center',
 			valign: 'middle',
-			width:  '110px',
-//		    },
-//			{
-//			title : "参数意义",
-//			field : "",
-//			align: 'center',
-//			valign: 'middle',
-//			width:  '80px',
-//			},
-//			{
-//			title : "参数源码",
-//			field : "",
-//			align: 'center',
-//			valign: 'middle',
-//			width:  '80px',
+			width:  '40px',
+		    },
+			{
+			title : "参数意义",
+			field : "loadPicturePath",
+			align: 'center',
+			valign: 'middle',
+			width:  '100px',
+			},
+			{
+			title : "参数源码",
+			field : "minerPrice",
+			align: 'center',
+			valign: 'middle',
+			width:  '40px',
 //			},
 //			{
 //			title : "比特位",
@@ -120,7 +120,7 @@ function initTable(data) {
  */
 function getData(){
 	var data;
-	var data1={};
+	var data1={"number": 1};
 	$.ajax({		
 		url: "/api/v1/load/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
