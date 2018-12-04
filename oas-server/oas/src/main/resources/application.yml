@@ -60,7 +60,7 @@ shiro:
     validationInterval: 10
 
 server:
-  port: 8080
+  port: 8088
   session-timeout: 1800
   
 media:
