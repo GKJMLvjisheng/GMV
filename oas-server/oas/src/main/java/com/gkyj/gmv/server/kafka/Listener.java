@@ -44,7 +44,8 @@ public class Listener {
 		}
 		for (WebSocket webSocket :sets){
             try {
-            	if(record.key() != null && record.key().equals("str")) {
+            	
+            	if(record.topic() != null && record.topic().equals("video")) {
                     webSocket.sendMessage(record.value().toString());
             	}else {
             		List<TestData> testData =(ArrayList) record.value();

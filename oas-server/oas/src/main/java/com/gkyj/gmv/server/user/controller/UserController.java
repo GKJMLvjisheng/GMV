@@ -91,7 +91,7 @@ public class UserController {
         	JSONObject jb = JSON.parseObject(message);
         	String jbMessage = (String)jb.get("value");
         	if(jbMessage != null && !jbMessage.isEmpty()) {
-        		kafkaTemplate.send(topicName,"str", jbMessage);
+        		kafkaTemplate.send(topicName,null, jbMessage);
         		return;
         	}
         	List<TestData> list = new ArrayList<>();
@@ -123,7 +123,7 @@ public class UserController {
             	list.add(a);
         	}
         	
-        	kafkaTemplate.send(topicName, "list" ,list);
+        	kafkaTemplate.send(topicName, null ,list);
         } catch (Exception e) {
         	log.error("发送kafka失败", e);
         }

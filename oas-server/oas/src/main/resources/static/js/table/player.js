@@ -6,7 +6,7 @@ document.write("<script language=javascript src='/js/table/table.js'></script>")
 /*
  * 进度条
  */
-var index=0,map={},timer ;
+//var index=0;
 var data;
 var startTime;
 var endTime;
@@ -61,12 +61,45 @@ $(function(){
 function playInTime(){
 	connect(undefined,function(msg){
 		console.log(msg);
-		loadInTime(msg, msg.length);
+		var reData = JSON.parse(msg);
+		loadInTime(reData, reData.length);
 	},"topic");
 }
 
 //实时播放延迟加载
 function loadInTime(data,len){
+	var map = {};
+	if(data.length == 0) {
+		return;
+	}else{
+		for(var i=0; i<data.length; i++){
+			if(!map.hasOwnProperty(data[i].updated)){
+	        	map[data[i].updated] = Array();
+	        	var arr = map[data[i].updated];
+		        arr.push(data[i]);
+	        }else{
+	        	var arList = map[data[i].updated];
+	        	arList.push(data[i]);
+	        	map[data[i].updated] = arList;
+	        }	        	
+//	        console.log("arr:", arr);	    
+		}
+		/*map.sort(function(a,b){
+			return a.key-b.key;
+		});*/
+		for(var i in map){
+			var ii = 0;
+			initTable(map[i]);
+			data.splice(0,map[i].length);
+			if(ii == 0) break;
+		}
+		setTimeout(function(){
+    		load(data,len);
+    	},1000)
+		return;
+	}
+}
+/*function loadInTime(data,len){
 	if(data.length == 0) {
 		return;
 	}else{
@@ -81,8 +114,7 @@ function loadInTime(data,len){
     		loadInTime(data,len);
     	},500)
 	}
-	index++;
-}
+}*/
 
 /*
 *点播放
@@ -91,10 +123,8 @@ function play(){
 	var $play_span = $("#play span");
 	if($play_span.attr("class") == "glyphicon glyphicon-play"){
 		$play_span.attr("class","glyphicon glyphicon-pause");
-		index = 0;
 		var time = {"startTime": startTime};
 		console.log(time);
-//		alert(time);
 		$.ajax({
 			url: "/api/v1/load/selectLoadMsgByPeriod",
 			contentType : 'application/json;charset=utf8',
@@ -119,14 +149,12 @@ function play(){
 			}); 
 	}else{
 		$play_span.attr("class","glyphicon glyphicon-play");
-		return;
 	}
 	
 }
 
 //设置每隔一段时间向服务器请求一次
 function playInterval(){
-	index = 0;
 	var start = new Date(startTime.replace("-", "/").replace("-", "/"));
 	var end = new Date(endTime.replace("-", "/").replace("-", "/"));
 	if(end > start){  
@@ -139,7 +167,6 @@ function playInterval(){
 	console.log(startTime);
 	var time = {"startTime": startTime};
 	console.log(time);
-//	alert(time);
 	$.ajax({
 		url: "/api/v1/load/selectLoadMsgByPeriod",
 		contentType : 'application/json;charset=utf8',
@@ -163,9 +190,6 @@ function playInterval(){
 			alert("失败！");
 		}
 		}); 
-//	timer = setInterval(function(){
-//    	play();
-//    },1000)
 }
 
 /*
@@ -174,7 +198,6 @@ function playInterval(){
 function backward(){
 		var date = new Date(startTime);
 		startTime = fastDecreaseTime(false,date);
-		index = 0;
 		var time = {"startTime": startTime};
 		console.log(time);
 //		alert(time);
@@ -208,7 +231,6 @@ function backward(){
 function forward(){
 	var date = new Date(startTime);
 	startTime = fastIncreateTime(false,date);
-	index = 0;
 	var time = {"startTime": startTime};
 	console.log(time);
 //	alert(time);
