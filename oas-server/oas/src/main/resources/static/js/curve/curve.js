@@ -316,7 +316,6 @@ Highcharts.setOptions({
 function activeLastPointToolip(chart) {
 	var points = chart.series[0].points;
 		chart.tooltip.refresh(points[points.length -1]);
-		chart.data =map2["温度"];
 	//var points = points1;
 	
 	//points1= chart.series[0].points;
@@ -370,7 +369,8 @@ var chart = Highcharts.chart('container2', {
 	},
 	series: [{
 		name: '随机数据',
-		data:map2["温度"]
+		//data:map2["温度"]
+		data:map2["温度"][map2["温度"].length-20-1,map2["温度"].length-1]
 		/*data: (function () {
 			// 生成随机值
 			//var data = [1,1];
