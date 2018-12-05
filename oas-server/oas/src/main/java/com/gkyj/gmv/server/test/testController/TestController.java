@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 public class TestController {
 	@Autowired
 	private TestMapper testMapper;  
+
 	@RequestMapping("/list")
 	public List<TestModel> list() {
 		return testMapper.getAll();
