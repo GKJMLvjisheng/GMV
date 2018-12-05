@@ -84,9 +84,6 @@ function loadInTime(data,len){
 	        }	        	
 //	        console.log("arr:", arr);	    
 		}
-		/*map.sort(function(a,b){
-			return a.key-b.key;
-		});*/
 		for(var i in map){
 			var ii = 0;
 			initTable(map[i]);
@@ -271,18 +268,18 @@ function increateTime(flag,t) {
     return time     
 }
 
-//快进一次2秒
+//快进一次1秒
 function fastIncreateTime(flag,t) {
     var t_s = t.getTime();//转化为时间戳毫秒数
-    t.setTime(t_s + 1000 * 2);
+    t.setTime(t_s + 1000 * 1);
     var time=generateTime(flag,t)
     return time     
 }
 
-//快退一次2秒
+//快退一次1秒
 function fastDecreaseTime(flag,t){
 	var t_s = t.getTime();//转化为时间戳毫秒数
-    t.setTime(t_s - 1000 * 2);
+    t.setTime(t_s - 1000 * 1);
     var time=generateTime(flag,t)
     return time
 }
