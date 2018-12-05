@@ -240,6 +240,13 @@ position: absolute;
 position: absolute;
  width: auto;
   height: auto;
+  margin-left: 1030px;
+  margin-top: -0px;
+}
+.timeEnd{
+  position: absolute;
+  width: auto;
+  height: auto;
   margin-left: 970px;
   margin-top: -0px;
 }
@@ -249,7 +256,7 @@ position: absolute;
 <body>
 <div class="ibanner" style="width:650px; height:250px;" id="ibanner1">
 <div class="ibanner_pic" id="ibanner_pic1">
-<a href="#"><img style="width:650px; height:250px;" src="" alt="" /></a>
+<a href="#" id="picLi_10"><img style="width:650px; height:250px;" src="" alt="" /></a>
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
@@ -263,7 +270,8 @@ position: absolute;
  <em id="buttonPlay" class="btn "style="display:inline-block" ></em>
  <em class="btnright "style="display:inline-block" ></em>
 <input type="range" style="display:inline-block" id="range_speed" min="0" max="100" class='range' value="0"oninput="changeSpeed()" />
-<input type="button"style="display:inline-block" value='00:00:00' id="timeb" class="time" /> 
+<input type="button"style="display:inline-block" value='00:00:00' id="timeStart" class="time" />
+<input type="button"style="display:inline-block" value='00:00:00' id="timeEnd" class="timeEnd" /> 
 <input type="button"style="display:inline-block" value='订阅' id="real" class="real" onclick="real()" /> 
 </div>
 <br/>
@@ -282,6 +290,7 @@ position: absolute;
  
  <script type="text/javascript">
  var event='';
+ var playInternal;
  var btn = document.querySelector('.btn')
  btn.addEventListener('click', function () {
 	 console.log(event)
@@ -293,7 +302,7 @@ position: absolute;
 		  }
 		  
 		  //clearInterval(event);
-		  event=setInterval('autoBanner("1","1")', 2000);
+		  event=setInterval('autoBanner("1","1")', playInternal);
 		  $('#buttonPlay').addClass('btn2');
 	  } else {
 		  console.log("bujin")
@@ -309,25 +318,94 @@ position: absolute;
  
     }
  function changeSpeed() {
-		 var value = $('#range_speed').val();
-		var sum=$("#range_speed").attr("max")
-		console.log(value)
+		var value = $('#range_speed').val();
+		var sum=$("#range_speed").attr("max");
+		console.log(value);
+		var date=new Date(startTime);
+		//var num = new Number(value);
+		var questTime=increateTime(false,date,value);
+		$("#timeStart").val(questTime.substr(questTime.length-8));
+		console.log(questTime)
+		var data={
+			"startTime":questTime,
+			"endTime":questTime
+		}
+		$.ajax({
+
+		   type: 'post',
+		   url: '/api/v1/load/selectLoadMsgByPeriod',
+		   data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   async:false,
+		   success: function (res) {
+		     if (res.code == 0) {
+		    	 console.log(res)
+		    
+		    	var row=res.data.rows;
+		    	 sum=0;
+		    	 photo=[];
+		    	 for(var i=0;i<row.length;i++)
+		    	{ 
+		    		 console.log("tupian",row[i].loadPicturePath)
+		    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+		    		 	{ row.splice(i,1);
+		    		 		i--;
+		    		 	}else{
+		    		 	photo.push(row[i].loadPicturePath)
+		    		 	sum++;
+		    		 	}
+		    		
+		    	}
+		     } else {
+		    	 	alert(res.message);
+		     		}
+		   },
+		   error: function (res) {
+			  alert("11"+JSON.stringify(res));
+		   },
+		   complete: function () {
+		   }
+		  });
 		var valStr = value/sum*100 + "% 100%";
-		$('#value1').html((value / 10).toFixed(1));
+		
 		$('#range_speed').css({
 		  "background-size": valStr
 		}) 
 		//$("input[name='animat_speed']").val((value / 10).toFixed(1));
+		if (!event) {
+			   
+			  if($('#range_speed').val()==$('#range_speed').attr("max")){
+				  init(); 
+				  
+			  }
+			  
+			  //clearInterval(event);
+			  event=setInterval('autoBanner("1","1")', playInternal);
+			  $('#buttonPlay').addClass('btn2');
+		  } else {
+			  console.log("bujin")
+			  $('#buttonPlay').removeClass('btn2');
+			  clearInterval(event);
+			  event="";
+		  }
  }
 function changeThumb(time){
-	
+	console.log(time)
 	var value=time;
 	//var sum=$("#timeb").val();
 	var sum=$("#range_speed").attr("max")
 	
 	var valStr = value / sum * 100 + "% 100%";
 	console.log(valStr)
-
+	console.log(parseInt(value))
+	var date1 = new Date(startTime)
+	var start=increateTime(false,date1,parseInt(value))
+	
+	//var date1 = new Date(start)
+	//start=reduceTime(false,date1,1)
+	$("#timeStart").val(start.substr(start.length-8))
 	$('#value1').html((value / 10).toFixed(1));
 	$('#range_speed').css({
 	  "background-size": valStr
@@ -370,17 +448,20 @@ function changeThumb(time){
 
  
  
- var time=0;
+var time=0;
 var photo=[];
 var startTime;
 var startTimeback;
 var endTime;
+var t=1;
+var sum;
 $(function(){
-	bannerInit()
+	//bannerInit()
 	init();
 	  });
 function init(){
-	var data={};
+	var data={
+		  "number": 1};
 $.ajax({
 
    type: 'post',
@@ -400,10 +481,17 @@ $.ajax({
     	$('#range_speed').val(0);
     	time=0;
     	changeThumb(0);
-    	 $(".range").attr({'max':(res.data.totalOfLast-1)*2});   
-    	$("#timeb").val(changeTime((res.data.totalOfLast-1)*2));
-    	var row=res.data.rows;
     	
+    	var start=new Date(startTime)
+    	var end=new Date(endTime)
+    	console.log(end-start)
+    	var max=Number((end-start)/1000)+1
+    	 $(".range").attr({'max':max});  
+    	 end=increateTime(false,end,1)//多了一秒
+    	 $("#timeStart").val(startTime.substr(startTime.length-8));
+    	$("#timeEnd").val(end.substr(endTime.length-8));
+    	var row=res.data.rows;
+    	 sum=0;
     	 for(var i=0;i<row.length;i++)
     	{ 
     		 console.log("tupian",row[i].loadPicturePath)
@@ -412,6 +500,7 @@ $.ajax({
     		 		i--;
     		 	}else{
     		 	photo.push(row[i].loadPicturePath)
+    		 	sum++;
     		 	}
     		
     	}
@@ -432,6 +521,8 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
         
      
  }
+ playInternal=1000/sum;
+ //$(".range").attr({'step':playInternal/1000}); 
 }  
     function getEvent(id) {
     	
@@ -501,24 +592,24 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
             return true;
         }
         if (xpos < final_x) {
-            var dist = Math.ceil((final_x - xpos) / 10);//每运动一次的数值，返回大于等于参数x的最小整数,即对浮点数向上取整
+            var dist = Math.ceil((final_x - xpos) / 2);//每运动一次的数值，返回大于等于参数x的最小整数,即对浮点数向上取整
             xpos = xpos + dist;
         }
         if (xpos > final_x) {
-            var dist = Math.ceil((xpos - final_x) / 10);
+            var dist = Math.ceil((xpos - final_x) / 2);
             xpos = xpos - dist;
         }
         if (ypos < final_y) {
-            var dist = Math.ceil((final_y - ypos) / 10);
+            var dist = Math.ceil((final_y - ypos) / 2);
             ypos = ypos + dist;
         }
         if (ypos > final_y) {
-            var dist = Math.ceil((ypos - final_y) / 10);
+            var dist = Math.ceil((ypos - final_y) / 2);
             ypos = ypos - dist; 
         }
         elem.style.left = xpos + "px";
         elem.style.top = ypos + "px";
-       
+       console.log("left",elem.style.left)
         var repeat = "moveElement('" + elementID + "'," + final_x + "," + final_y + "," + interval + ")";
         elem.movement = setTimeout(repeat, interval);//再次运行
     }
@@ -574,14 +665,17 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
     }
  
     function autoBanner(ibannerIndex,ids) {
-        if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex)|| !getEvent('ibanner_btn' + ibannerIndex)|| autoKey  ) {
+    	//|| !getEvent('ibanner_btn' + ibannerIndex)|| autoKey
+        if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex)  ) {
             return;
         }
-    	time=parseInt(time)+2;
-    	
-        changeThumb(time)
+        
+    	time=Number(time)+Number(playInternal/1000);
+    	if(parseInt(time, 10) === time)
+    	{changeThumb(time);}
+        
         //changeSpeed();
-        var btnList = getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
+        //var btnList = getEvent('ibanner_btn' + ibannerIndex).getElementsByTagName('span');
         var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
         var phoList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('img');
         
@@ -596,14 +690,17 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
      	{
     	  
 		    	var date1 = new Date(startTimeback)
-		       startTimeback=increateTime(false,date1)
+		       startTimeback=increateTime(false,date1,1)
+		       
+		       var endTime=startTimeback;
 		       console.log("starttime",startTime)
 		       console.log("startTimeback",startTimeback)
-		       var data={"time":startTimeback};
+		       var data={"startTime":startTimeback,
+		    		"endTime":endTime};
 				$.ajax({
 				
 			   type: 'post',
-			   url: '/api/v1/load/selectLoadMsgByTime',
+			   url: '/api/v1/load/selectLoadMsgByPeriod',
 			   data: JSON.stringify(data),
 			   contentType : 'application/json;charset=utf8',
 			   dataType: 'json',
@@ -656,33 +753,33 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
               
             
         }
-        if (picList.length == 1) {
+       // if (picList.length == 1) {
             //return;
-        }
-        for (var i = 0; i < btnList.length; i++) {
-            if (btnList[i].className == 'current') {
-                var currentNum = i;
-            }
-        }
-        if (currentNum == (picList.length - 1)) {
-            classNormal(ibannerIndex);
+       // }
+//         for (var i = 0; i < btnList.length; i++) {
+//             if (btnList[i].className == 'current') {
+//                 var currentNum = i;
+//             }
+//         }
+        //if (currentNum == (picList.length - 1)) {
+            //classNormal(ibannerIndex);
             picZ(ibannerIndex);
-            btnList[0].className = 'current';
-            picList[currentNum].style.zIndex = '2';
+            //btnList[0].className = 'current';
+            //picList[currentNum].style.zIndex = '2';
             picList[0].style.zIndex = '3';
             picList[0].style.left = '650px';
-            moveElement('picLi_' + ibannerIndex + '0', 0, 0, 10);
-        }
-        else {
-            classNormal(ibannerIndex);
-            picZ(ibannerIndex);
-            var nextNum = currentNum + 1;
-            btnList[nextNum].className = 'current';
-            picList[currentNum].style.zIndex = '2';
-            picList[nextNum].style.zIndex = '3';
-            picList[nextNum].style.left = '650px';
-            moveElement('picLi_' + ibannerIndex + nextNum, 0, 0, 10);
-        }
+            moveElement('picLi_' + ibannerIndex + '0', 0, 0, 0);
+       // }
+//         else {
+//             classNormal(ibannerIndex);
+//             picZ(ibannerIndex);
+//             var nextNum = currentNum + 1;
+//             btnList[nextNum].className = 'current';
+//             picList[currentNum].style.zIndex = '2';
+//             picList[nextNum].style.zIndex = '3';
+//             picList[nextNum].style.left = '650px';
+//             moveElement('picLi_' + ibannerIndex + nextNum, 0, 0, 10);
+//         }
     }
     function changeTime(time){
 		
@@ -706,10 +803,10 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
         //t.setTime(t.setHours(t.getHours() -8));
         var time=generateTime(flag,t)
         return time}
-    function increateTime(flag,t) {
+    function increateTime(flag,t,seconds) {
         //var t = new Date();//你已知的时间
         var t_s = t.getTime();//转化为时间戳毫秒数
-        t.setTime(t_s + 1000 * 1);
+        t.setTime(t_s + 1000 * seconds);
         //t.setTime(t.setHours(t.getHours() -8));
         var time=generateTime(flag,t)
         return time
@@ -762,41 +859,34 @@ var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
         return(clock); 
         }
     }
-   // var photoReal;
+    var photoReal;
     var eventReal;
-    function real(){
-    	 if(!eventReal){
+    function real()
+    {
+    	 if(!eventReal)
+    	 {
     		 event="";
     		 photo=[];
-    	connect(undefined,function(msg){
-    		console.log(msg);
-    		msg = JSON.parse(msg)
-    		
-    		for(var i=0;i<msg.length;i++)
-    		{
-    			photo.push(msg[i].loadPicturePath)
-    		}
-    		$(".range").attr({'max':photo.length*2});   
-        	$("#timeb").val(changeTime(photo.length*2));
-    	},"topic");
+    		connect(undefined,function(msg){
+	    		console.log(msg);
+	    		msg = JSON.parse(msg)
+	    	
+	    		for(var i=0;i<msg.length;i++)
+	    		{
+	    			photo.push(msg[i].loadPicturePath)
+	    		}
+	    		$(".range").attr({'max':photo.length*2});   
+	        	$("#timeb").val(changeTime(photo.length*2));
+	        	if(!eventReal){
+	        		$('#range_speed').val(0);
+	            	time=0;
+	            	changeThumb(0);
+	            $('#buttonPlay').addClass('btn2');
+	            	eventReal=setInterval('autoBanner("1","2")', playTnternal);
+	        	}
+    		},"topic");
 
-    	if(photo.length==0){
-    		setTimeout(function(){
-    		$('#range_speed').val(0);
-        	time=0;
-        	changeThumb(0);
-        $('#buttonPlay').addClass('btn2');
-        	eventReal=setInterval('autoBanner("1","2")', 2000);},2000)
-    	}else{
-    		$('#range_speed').val(0);
-        	time=0;
-        	changeThumb(0);
-        	$('#buttonPlay').addClass('btn2');
-        	eventReal=setInterval('autoBanner("1","2")', 2000);
     	}
-    	
-
-    }
     }
    
   
