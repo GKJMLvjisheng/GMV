@@ -305,8 +305,8 @@ for (var i in realMsg){
     }
 };  
 
-function createRealTimeLine(){
-//  $(function(){
+//function createRealTimeLine(){
+  $(function(){
 Highcharts.setOptions({
 	global: {
 		useUTC: false
@@ -410,5 +410,5 @@ var chart = Highcharts.chart('container2', {
 		}())
 	}*/]
 });
-//});   
-}
+});   
+//}
