@@ -5,5 +5,10 @@
 .project
 .classpath
 /test/*.pyc
-
+/oas-core/oas-core.iml
+/oas-core/out/
+/oas-server.iml
+/oas/oas.iml
+/oas/out/
+/rebel.xml
 
