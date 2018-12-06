@@ -53,14 +53,14 @@ public class RootController {
     return "video";
   }
   
-  @GetMapping(value="/maps/newsManage")
-  public String newsManage(){
-    return "maps/newsManage";
+  @GetMapping(value="/maps/maps1")
+  public String maps1(){
+    return "maps/maps1";
   }
   
-  @GetMapping(value="/maps/reward")
-  public String reward(){
-    return "maps/reward";
+  @GetMapping(value="/maps/maps2")
+  public String maps2(){
+    return "maps/maps2";
   }
 
 }
