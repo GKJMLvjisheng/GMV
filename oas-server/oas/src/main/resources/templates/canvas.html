@@ -287,8 +287,20 @@ position: absolute;
 <!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
 <!-- </div> -->
 <!-- </div> -->
- 
+ <script src="/js/storage/myStorage.js"></script>
+
+ <script src="/js/storage/localDB.js"></script>
+  
+
  <script type="text/javascript">
+ 
+ localDB.deleteSpace("myDB");
+     //创建一个叫myDB存储空间
+     localDB.createSpace("myDB");
+
+     
+    
+
  var event='';
  var playInternal;
  var btn = document.querySelector('.btn')
@@ -373,6 +385,7 @@ position: absolute;
 		$('#range_speed').css({
 		  "background-size": valStr
 		}) 
+		var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
 		//$("input[name='animat_speed']").val((value / 10).toFixed(1));
 		if (!event) {
 			   
@@ -462,6 +475,7 @@ $(function(){
 function init(){
 	var data={
 		  "number": 1};
+	var total;
 $.ajax({
 
    type: 'post',
@@ -473,6 +487,8 @@ $.ajax({
    async:false,
    success: function (res) {
      if (res.code == 0) {
+    	 console.log(res)
+    	 total=res.data.total;
     	startTime=res.data.startTime;
     	endTime=res.data.endTime;
     	startTimeback=res.data.startTime;
@@ -491,7 +507,8 @@ $.ajax({
     	 $("#timeStart").val(startTime.substr(startTime.length-8));
     	$("#timeEnd").val(end.substr(endTime.length-8));
     	var row=res.data.rows;
-    	 sum=0;
+    	console.log(row)
+    	
     	 for(var i=0;i<row.length;i++)
     	{ 
     		 console.log("tupian",row[i].loadPicturePath)
@@ -499,8 +516,9 @@ $.ajax({
     		 	{ row.splice(i,1);
     		 		i--;
     		 	}else{
-    		 	photo.push(row[i].loadPicturePath)
-    		 	sum++;
+    		 		localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+    		 	//photo.push(row[i].loadPicturePath)
+    		 	
     		 	}
     		
     	}
@@ -515,13 +533,16 @@ $.ajax({
    }
   });
 var phoList = getEvent('ibanner_pic' + 1).getElementsByTagName('img');
+var some = localDB.select("myDB");
+console.log(some[0].At)
+
  for (var i = 0; i < phoList.length; i++) {
-     phoList[i].src = photo[i]
+     phoList[i].src = some[some.length-1].Obj.url;
      console.log("lujin",phoList[i].src)
         
      
  }
- playInternal=1000/sum;
+ playInternal=1000/total;
  //$(".range").attr({'step':playInternal/1000}); 
 }  
     function getEvent(id) {
