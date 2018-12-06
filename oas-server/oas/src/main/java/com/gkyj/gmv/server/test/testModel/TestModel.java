@@ -1,13 +1,13 @@
 package com.gkyj.gmv.server.test.testModel;
 
+import com.cascv.oas.core.common.BaseEntity;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 import lombok.Data;
 @Data
-@Table
-public class TestModel {
- 
+@Table("box_info")
+public class TestModel extends BaseEntity {
     @PrimaryKey
     private Integer box_id;
     
@@ -25,10 +25,5 @@ public class TestModel {
     
     @Column(value = "time")
     private String time;
-//    
-//    @Override
-//    public String toString() {
-//        return String.format("TestModel[boxId=%s, circleNumber=%s ,parameter=%s ,picPath=%s ,value=%s ,time=%s]", this.box_id,
-//        		this.circleNumber,this.parameter,this.picPath,this.value,this.time);
-//    }
+
 }
