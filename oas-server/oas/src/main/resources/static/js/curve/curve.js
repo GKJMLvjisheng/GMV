@@ -47,7 +47,8 @@ $(function(){
 	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
 	     	        	if(xtext[xtext.length-1]!=data3.updated){
 	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
-	     	        		startTime=xtext[xtext.length-1];
+	     	        		//startTime=xtext[xtext.length-1];
+	     	        		startTime=xtext[0];
 	     	        		}	     	  
 	     	        	var a ={};
 	    	        	a.x =new Date(xtext[xtext.length-1]).getTime();
@@ -266,7 +267,7 @@ function generateChart(){
 			}
 		},
 		legend: {
-			//enabled: false
+			enabled: false
 			layout: 'vertical',
             align: 'right',
             verticalAlign: 'top',
@@ -346,10 +347,8 @@ function createSeries() {
     }else{
     	for(j in series){
     	series[j].data.slice(mapSize-20,mapSize)
-    	}
-    	
-    }
-    
+    	}   	
+    }    
     return series;
 	
 }
