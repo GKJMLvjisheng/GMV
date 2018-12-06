@@ -6,15 +6,9 @@ document.write("<script language=javascript src='/js/table/table.js'></script>")
 /*
  * 进度条
  */
-var index=0,map={},timer ;
-var data;
-var startTime;
-var endTime;
-console.log(startTime);
+//var index=0;
+
 $(function(){
-	data = getData();
-	startTime = data.startTime;
-	endTime = data.endTime;
     var tag = false,ox = 0,left = 0,bgleft = 0;
     $('.progress_btn').mousedown(function(e) {
         ox = e.pageX - left;
@@ -61,12 +55,45 @@ $(function(){
 function playInTime(){
 	connect(undefined,function(msg){
 		console.log(msg);
-		loadInTime(msg, msg.length);
+		var reData = JSON.parse(msg);
+		loadInTime(reData);
 	},"topic");
 }
 
 //实时播放延迟加载
-function loadInTime(data,len){
+function loadInTime(data){
+	var map = {};
+	if(data.length == 0) {
+		return;
+	}else{
+		for(var i=0; i<data.length; i++){
+			if(!map.hasOwnProperty(data[i].updated)){
+	        	map[data[i].updated] = Array();
+	        	var arr = map[data[i].updated];
+		        arr.push(data[i]);
+	        }else{
+	        	var arList = map[data[i].updated];
+	        	arList.push(data[i]);
+	        	map[data[i].updated] = arList;
+	        }	        	
+//	        console.log("arr:", arr);	    
+		}
+		/*map.sort(function(a,b){
+			return a.key-b.key;
+		});*/
+		for(var i in map){
+			var ii = 0;
+			initTable(map[i]);
+			data.splice(0,map[i].length);
+			if(ii == 0) break;
+		}
+		setTimeout(function(){
+    		load(data,len);
+    	},1000)
+		return;
+	}
+}
+/*function loadInTime(data,len){
 	if(data.length == 0) {
 		return;
 	}else{
@@ -81,20 +108,20 @@ function loadInTime(data,len){
     		loadInTime(data,len);
     	},500)
 	}
-	index++;
-}
+}*/
 
 /*
 *点播放
 */
 function play(){
+	var data = getData();
+	var startTime = progressTime();
+	var endTime = data.endTime;
 	var $play_span = $("#play span");
 	if($play_span.attr("class") == "glyphicon glyphicon-play"){
 		$play_span.attr("class","glyphicon glyphicon-pause");
-		index = 0;
 		var time = {"startTime": startTime};
 		console.log(time);
-//		alert(time);
 		$.ajax({
 			url: "/api/v1/load/selectLoadMsgByPeriod",
 			contentType : 'application/json;charset=utf8',
@@ -109,7 +136,7 @@ function play(){
 				var resData=res.data.rows;
 				console.log("111",JSON.stringify(resData));
 				map={};
-				load(resData,resData.length);
+				load(resData,startTime,endTime);
 			}		
 			  else{alert("回显失败！");}			
 			}, 
@@ -119,63 +146,76 @@ function play(){
 			}); 
 	}else{
 		$play_span.attr("class","glyphicon glyphicon-play");
-		return;
 	}
 	
-}
-
-//设置每隔一段时间向服务器请求一次
-function playInterval(){
-	index = 0;
-	var start = new Date(startTime.replace("-", "/").replace("-", "/"));
-	var end = new Date(endTime.replace("-", "/").replace("-", "/"));
-	if(end > start){  
-		var date = new Date(startTime);
-		startTime = increateTime(false,date);
-	}else{
-		$("#play span").attr("class","glyphicon glyphicon-play");
-		return;
-	}
-	console.log(startTime);
-	var time = {"startTime": startTime};
-	console.log(time);
-//	alert(time);
-	$.ajax({
-		url: "/api/v1/load/selectLoadMsgByPeriod",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data: JSON.stringify(time),
-		async : false,
-		success: function(res) {
-//		alert(JSON.stringify(res));
-		if(res.code==0){
-			data=res.data.rows;
-			data.splice(0,4);
-			console.log("111",JSON.stringify(data));
-			map={};
-			load(data,data.length);
-		}		
-		  else{alert("回显失败！");}			
-		}, 
-		error: function(){
-			alert("失败！");
-		}
-		}); 
-//	timer = setInterval(function(){
-//    	play();
-//    },1000)
 }
 
 /*
 *快退
 */
 function backward(){
+	backwardStatus = 1;
+	var $play_span = $("#play span");
+	if($play_span.attr("class") != "glyphicon glyphicon-play"){
+		var data = getData();
+		var startTime = progressTime();
+		var endTime = data.endTime;
 		var date = new Date(startTime);
-		startTime = fastDecreaseTime(false,date);
-		index = 0;
-		var time = {"startTime": startTime};
+		newTime = fastDecreaseTime(false,date);
+		var start = new Date(startTime.replace("-", "/").replace("-", "/"));
+		var end = new Date(newTime.replace("-", "/").replace("-", "/"));
+		if(end < start){  
+			newTime = startTime;
+		}
+		var time = {"startTime": newTime};
+		console.log(time);
+//			alert(time);
+		$.ajax({
+			url: "/api/v1/load/selectLoadMsgByPeriod",
+			contentType : 'application/json;charset=utf8',
+			dataType: 'json',
+			cache: false,
+			type: 'post',
+			data: JSON.stringify(time),
+			async : false,
+			success: function(res) {
+//				alert(JSON.stringify(res));
+			if(res.code==0){
+				var resData=res.data.rows;
+				console.log("111",JSON.stringify(resData));
+				map={};
+				var d = 0 - unitLength();
+				console.log(d);
+				progressBtn(d);
+				backwardLoad(resData,newTime,endTime);
+			}		
+			  else{alert("回显失败！");}			
+			}, 
+			error: function(){
+				alert("失败！");
+			}
+			});
+	}
+}
+
+/*
+*快进
+*/
+function forward(){
+	forwardStatus = 1;
+	var $play_span = $("#play span");
+	if($play_span.attr("class") != "glyphicon glyphicon-play"){
+		var data = getData();
+		var startTime = progressTime();
+		var endTime = data.endTime;
+		var date = new Date(startTime);
+		newTime = fastIncreateTime(false,date);
+		var start = new Date(newTime.replace("-", "/").replace("-", "/"));
+		var end = new Date(endTime.replace("-", "/").replace("-", "/"));
+		if(end < start){  
+			newTime = endTime;
+		}
+		var time = {"startTime": newTime};
 		console.log(time);
 //		alert(time);
 		$.ajax({
@@ -192,7 +232,10 @@ function backward(){
 				var resData=res.data.rows;
 				console.log("111",JSON.stringify(resData));
 				map={};
-				load(resData,resData.length);
+				var d = unitLength();
+				console.log(d);
+				progressBtn(d);
+				forwardLoad(resData,newTime,endTime);
 			}		
 			  else{alert("回显失败！");}			
 			}, 
@@ -200,40 +243,7 @@ function backward(){
 				alert("失败！");
 			}
 			});
-}
-
-/*
-*快进
-*/
-function forward(){
-	var date = new Date(startTime);
-	startTime = fastIncreateTime(false,date);
-	index = 0;
-	var time = {"startTime": startTime};
-	console.log(time);
-//	alert(time);
-	$.ajax({
-		url: "/api/v1/load/selectLoadMsgByPeriod",
-		contentType : 'application/json;charset=utf8',
-		dataType: 'json',
-		cache: false,
-		type: 'post',
-		data: JSON.stringify(time),
-		async : false,
-		success: function(res) {
-//		alert(JSON.stringify(res));
-		if(res.code==0){
-			var resData=res.data.rows;
-			console.log("111",JSON.stringify(resData));
-			map={};
-			load(resData,resData.length);
-		}		
-		  else{alert("回显失败！");}			
-		}, 
-		error: function(){
-			alert("失败！");
-		}
-		}); 
+	}	 
 }
 
 
@@ -241,26 +251,18 @@ function forward(){
  * 时间的生成
  */
 
-//时间增加1秒请求一次
-function increateTime(flag,t) {
+//快进一次1秒
+function fastIncreateTime(flag,t) {
     var t_s = t.getTime();//转化为时间戳毫秒数
     t.setTime(t_s + 1000 * 1);
     var time=generateTime(flag,t)
     return time     
 }
 
-//快进一次2秒
-function fastIncreateTime(flag,t) {
-    var t_s = t.getTime();//转化为时间戳毫秒数
-    t.setTime(t_s + 1000 * 2);
-    var time=generateTime(flag,t)
-    return time     
-}
-
-//快退一次2秒
+//快退一次1秒
 function fastDecreaseTime(flag,t){
 	var t_s = t.getTime();//转化为时间戳毫秒数
-    t.setTime(t_s - 1000 * 2);
+    t.setTime(t_s - 1000 * 1);
     var time=generateTime(flag,t)
     return time
 }
