@@ -25,10 +25,41 @@
         <script th:src="@{/js/curve/curve.js}"></script>
     </head>
     <body>
-        <div id="container" style="min-width:400px;height:400px"></div>
-        <div id="container1" style="min-width:400px;height:400px"></div>
+    <div id="container" style="min-width:400px;height:400px"></div>
+        <!-- <div id="container1" style="min-width:400px;height:400px"></div>
         <button type=button id="donymicLine" onclick="dynamicCurve()">切换</button>
         <div id="container2" style="min-width:400px;height:400px"></div>
-        <button type=button id="realTimeLine" onclick="realTimeCurve()">播放</button>
+        <button type=button id="realTimeLine" onclick="realTimeCurve()">播放</button> -->
+    <div class="col-sm-10" style="padding-top:20px;font-size:12px">
+  <div>
+    <button type=button id="realTimecruve" onclick="realTimeCurve()">实时播放</button>
+  </div>
+  <div id="player" style="padding-top:20px;">
+    <div class="row">
+	    <div class="col-sm-1" style="text-align:center;font-size:20px;padding-right: 0;">
+	      <a id="backward"><span class="glyphicon glyphicon-backward" onclick="backward()"></span></a>
+	      <a id="play"><span class="glyphicon glyphicon-play" onclick="play()"></span></a>
+	      <a id="forward"><span class="glyphicon glyphicon-forward" onclick="forward()"></span></a>
+	    </div>	  
+	      
+	    <div class="col-sm-10" style="text-align:left;font-size:20px">
+	      <div class="progress" onclick="progress()">
+	        <div class="progress_bg">
+	            <div class="progress_bar" style="background:rgb(51,122,183)"></div>
+	        </div>
+	        <div class="progress_btn" style="background:rgb(51,122,183)"></div>
+    	  </div>
+	    </div>
+		<div>
+	    <input type="button"style="display:inline-block" value='00:00:00' id="timeStart" class="time" />
+		<input type="button"style="display:inline-block" value='00:00:00' id="timeEnd" class="timeEnd" />
+	    </div>
+	    <div class="col-sm-1" style="text-align:center;font-size:20px">
+	      <a><span class="glyphicon glyphicon-fullscreen"></span></a>
+	    </div>
+	    
+    </div>
+  </div>
+</div>
     </body>
 </html>
