@@ -4,6 +4,7 @@
  */
 var backwardStatus = 0; //快退标志位
 var forwardStatus = 0; //快退标志位
+var loadT;
 //表格回显
 $(function(){
 	ready();
@@ -189,6 +190,7 @@ function progress(){
 
 //正常情况延迟加载
 function load(data,startTime,endTime){
+	var startT = startTime;
 	if($("#play span").attr("class") == "glyphicon glyphicon-play"){
 		return;
 	}
@@ -198,9 +200,11 @@ function load(data,startTime,endTime){
 		return;
 	}
 	request(data,startTime,endTime);
-	setTimeout(function(){
+	
+	loadT = setTimeout(function(){
 		load(data,startTime,endTime);
 	},1000)
+	
 	return;
 }
 
@@ -304,6 +308,7 @@ function playInterval(startTime, endTime){
 			data.splice(0,4);
 			console.log("111",JSON.stringify(data));
 			map={};
+			clearTimeout(loadT);
 			load(data,startTime,endTime);
 		}		
 		  else{alert("回显失败！");}			
