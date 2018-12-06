@@ -16,15 +16,15 @@ public class LoadService {
     @Autowired
     private CassandraOperations cassandraTemplate;
 
-    public List<LoadModel> selectLoadMsg(){
+    public List<LoadModel> selectLoadMsg(Integer number){
         Integer maxCircleNumber = 2;
-        Select maxCircleNumberData = QueryBuilder.select().from("box_info").where(QueryBuilder.eq("circle_number",maxCircleNumber)).allowFiltering();
+        Select maxCircleNumberData = QueryBuilder.select().from("box").where(QueryBuilder.eq("circle_number",maxCircleNumber)).limit(number).allowFiltering();
         List<LoadModel> loadModelList = this.cassandraTemplate.select(maxCircleNumberData,LoadModel.class);
         return loadModelList;
     }
 
     public List<LoadModel> selectLoadMsgByPeriod(String startTime,String endTime){
-        Select LoadMsgByPeriod = QueryBuilder.select().from("box_info").where(QueryBuilder.gte("time",startTime)).and(QueryBuilder.lte("time",endTime)).allowFiltering();
+        Select LoadMsgByPeriod = QueryBuilder.select().from("box").where(QueryBuilder.gte("time",startTime)).and(QueryBuilder.lte("time",endTime)).allowFiltering();
         List<LoadModel> loadModelList = this.cassandraTemplate.select(LoadMsgByPeriod,LoadModel.class);
         return loadModelList;
     }

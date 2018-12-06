@@ -40,9 +40,9 @@ public class LoadController {
 	@ResponseBody
 	public ResponseEntity<?> selectLoadMsg(@RequestBody LoadInfo loadInfo){
 
-	    Integer number=loadInfo.getNumber()-1;
+	    Integer number=loadInfo.getNumber()*4;
 	    //初始化几秒的数据
-	    List<LoadModel> loadModelList = loadService.selectLoadMsg();
+	    List<LoadModel> loadModelList = loadService.selectLoadMsg(number);
 	    
 	    for (LoadModel loadModel : loadModelList) {
 			String fullLink = mediaServer.getImageHost() + loadModel.getPicPath();
@@ -55,7 +55,7 @@ public class LoadController {
 		    String startTime = loadModelList.get(0).getTime();
 		    putLoadInfo.setStartTime(startTime);
 		    Integer listSize = loadModelList.size();
-		    String endTime = loadModelList.get(listSize-number).getTime();
+		    String endTime = loadModelList.get(listSize-2).getTime();
 		    putLoadInfo.setEndTime(endTime);
 
 		return new ResponseEntity.Builder<LoadInfo>()
