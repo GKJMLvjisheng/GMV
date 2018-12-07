@@ -69,7 +69,7 @@ function initTable(data) {
 			},
 			{
 			title : "参数源码",
-			field : "updated",
+			field : "minerPrice",
 			align: 'center',
 			valign: 'middle',
 			width:  '40px',
@@ -133,7 +133,7 @@ function getData(){
 //		alert(JSON.stringify(res));
 		if(res.code==0)
 			{data=res.data;
-			console.log("rows:",JSON.stringify(data.loadModelList));
+			console.log("rows:",JSON.stringify(data.rows));
 			}		
 		  else{alert("回显失败！");}			
 		}, 
