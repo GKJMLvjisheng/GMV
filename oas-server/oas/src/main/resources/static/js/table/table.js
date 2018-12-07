@@ -120,7 +120,7 @@ function initTable(data) {
  */
 function getData(){
 	var data;
-	var data1={"number": 2};
+	var data1={"number": 1};
 	$.ajax({		
 		url: "/api/v1/load/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
@@ -148,7 +148,7 @@ function ready(){
     $('#table').bootstrapTable('destroy');
 	 var resData = getData();
 	 console.log(resData);
-	 var data = resData.loadModelList;
+	 var data = resData.rows;
 	 console.log(JSON.stringify(data));
 	 initTable(data);
 }
