@@ -22,7 +22,11 @@ spring:
     basename: i18n/messages
   profiles: 
     active: druid
-    
+spring.data.cassandra.username: gkyj
+spring.data.cassandra.password: 123456
+spring.data.cassandra.keyspace-name: gmv_db
+spring.data.cassandra.contact-points: 10.0.0.88
+spring.data.cassandra.port: 9042
 
 
 mybatis:
@@ -91,7 +95,7 @@ kafka:
     session.timeout: 6000
     auto.commit.interval: 100
     auto.offset.reset: latest
-    group.id: test3
+    group.id: test2
     concurrency: 10
   producer:
     retries: 0

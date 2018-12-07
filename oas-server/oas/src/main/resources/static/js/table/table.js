@@ -4,6 +4,7 @@
  */
 var backwardStatus = 0; //快退标志位
 var forwardStatus = 0; //快退标志位
+var loadT;
 //表格回显
 $(function(){
 	ready();
@@ -68,7 +69,7 @@ function initTable(data) {
 			},
 			{
 			title : "参数源码",
-			field : "minerPrice",
+			field : "updated",
 			align: 'center',
 			valign: 'middle',
 			width:  '40px',
@@ -119,7 +120,7 @@ function initTable(data) {
  */
 function getData(){
 	var data;
-	var data1={"number": 1};
+	var data1={"number": 2};
 	$.ajax({		
 		url: "/api/v1/load/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
@@ -132,7 +133,7 @@ function getData(){
 //		alert(JSON.stringify(res));
 		if(res.code==0)
 			{data=res.data;
-			console.log("rows:",JSON.stringify(data.rows));
+			console.log("rows:",JSON.stringify(data.loadModelList));
 			}		
 		  else{alert("回显失败！");}			
 		}, 
@@ -146,7 +147,8 @@ function getData(){
 function ready(){
     $('#table').bootstrapTable('destroy');
 	 var resData = getData();
-	 var data = resData.rows;
+	 console.log(resData);
+	 var data = resData.loadModelList;
 	 console.log(JSON.stringify(data));
 	 initTable(data);
 }
@@ -189,6 +191,7 @@ function progress(){
 
 //正常情况延迟加载
 function load(data,startTime,endTime){
+	var startT = startTime;
 	if($("#play span").attr("class") == "glyphicon glyphicon-play"){
 		return;
 	}
@@ -198,9 +201,11 @@ function load(data,startTime,endTime){
 		return;
 	}
 	request(data,startTime,endTime);
-	setTimeout(function(){
+	
+	loadT = setTimeout(function(){
 		load(data,startTime,endTime);
 	},1000)
+	
 	return;
 }
 
@@ -304,6 +309,7 @@ function playInterval(startTime, endTime){
 			data.splice(0,4);
 			console.log("111",JSON.stringify(data));
 			map={};
+			clearTimeout(loadT);
 			load(data,startTime,endTime);
 		}		
 		  else{alert("回显失败！");}			

@@ -6,8 +6,6 @@
 <body>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
     <div id="main1" style="height:250px;width:900px;padding-left:200px;"></div>
-<!--     <div id="main2" style="height:200px"></div> -->
-<!--     <div id="main3" style="height:200px"></div> -->
     <div id="main2" style="height:250px;width:900px;padding-left:200px;"></div>
     <!-- ECharts单文件引入 -->
     <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
@@ -116,6 +114,11 @@
                                text: '时间安排',
                                left: 10
                            },
+                           
+                           legend: {
+
+                               data: ['计划实施时间', '实际实施时间']
+                    },
                            
                         // 提示框
                         tooltip: {
