@@ -449,7 +449,6 @@ function createDynamicPointSeries() {
 	  for(j in series){
 		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})
 		  	}
-	  for ()
   }else{
   	for(j in series){
   	series[j].data.splice(0,mapSize-20)
