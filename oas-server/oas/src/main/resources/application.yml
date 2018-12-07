@@ -22,6 +22,12 @@ spring:
     basename: i18n/messages
   profiles: 
     active: druid
+spring.data.cassandra.username: gkyj
+spring.data.cassandra.password: 123456
+spring.data.cassandra.keyspace-name: gmv_db
+spring.data.cassandra.contact-points: 10.0.0.88
+spring.data.cassandra.port: 9042
+
 
 mybatis:
   config-locations: classpath:mybatis/mybatis-config.xml
