@@ -1,5 +1,7 @@
 
 var socket,timer;
+var server_address = document.location.host;
+	
 /**
  * 
  * @param selector 选择器，为undefined时使用topic作为主题
@@ -11,7 +13,7 @@ function connect(selector,fun,topic) {
 	var topicName = topic || "test";
 	selector && (topicName =  selector.value);
     //Connect WebSocket server
-    socket =new WebSocket("ws://127.0.0.1:8080/wbSocket/"+topicName);
+    socket =new WebSocket("ws://"+server_address+"/wbSocket/"+topicName);
     //open
     socket.onopen = function () {
     	console.log("WebSocket is open");
