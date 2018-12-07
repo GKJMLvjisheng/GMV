@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 
 import com.alibaba.fastjson.JSON;
@@ -15,27 +16,12 @@ import com.gkyj.gmv.server.websocket.WebSocket;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Listener {
-	@KafkaListener(topics = {"test"})
+
+	@KafkaListener(topics ={"test","topic","video"})
     public void listen(ConsumerRecord<?, ?> record) {
-        /*log.info("kafka的key: " + record.key());
-        log.info("kafka的value: " + record.value().toString());*/
-        sendMessageToUser(record,WebSocket.wbSocketsMap.get("test"));
+		String topic = record.topic();
+        sendMessageToUser(record,WebSocket.wbSocketsMap.get(topic));
         
-	}
-	@KafkaListener(topics = {"topic"})
-    public void topicListen(ConsumerRecord<?, ?> record) {
-       /* log.info("kafka的key: " + record.key());
-       TestData testData = (TestData)record.value();
-       log.info("kafka的value: " + testData.getParameter());*/
-        sendMessageToUser(record,WebSocket.wbSocketsMap.get("topic"));
-	}
-	
-	@KafkaListener(topics = {"video"})
-    public void videoListen(ConsumerRecord<?, ?> record) {
-       /* log.info("kafka的key: " + record.key());
-       TestData testData = (TestData)record.value();
-       log.info("kafka的value: " + testData.getParameter());*/
-        sendMessageToUser(record,WebSocket.wbSocketsMap.get("video"));
 	}
 	
 	public void sendMessageToUser(ConsumerRecord<?, ?> record,CopyOnWriteArraySet<WebSocket> sets) {

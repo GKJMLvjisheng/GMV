@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main1" style="height:250px;width:900px;padding-left:200px;"></div>
+    <div id="main2" style="height:250px;width:900px;padding-left:200px;"></div>
+    <!-- ECharts单文件引入 -->
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+    <script type="text/javascript">
+        // 路径配置
+        require.config({
+            paths: {
+                echarts: 'http://echarts.baidu.com/build/dist'
+            }
+        });
+
+        // 使用
+        require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart1 = ec.init(document.getElementById('main1'));
+                var myChart2 = ec.init(document.getElementById('main2'));
+
+                //设置主题皮肤
+                myChart1.setTheme("macarons");
+                myChart2.setTheme("macarons");				
+                              
+                function  DateDiff(sDate1,sDate2){    
+                    //sDate1和sDate2是2006-12-18格式
+                        var aDate,oDate1,oDate2,iDays;
+                        aDate = sDate1.split("-");
+                        oDate1 = new Date(aDate[1]+'-'+aDate[2]+'-'+aDate[0]) ;   
+                        aDate = sDate2.split("-");
+                        oDate2 = new Date(aDate[1]+'-'+aDate[2]+'-'+aDate[0]);
+                        iDays = parseInt(Math.abs(oDate1-oDate2)/1000/60/60/24)    ;//把相差的毫秒数转换为天数
+                        return iDays;
+                    }
+
+                    //获得两个日期间所有日期-fn1
+                    Date.prototype.format = function() {
+                        var s = '';
+                        var mouth = (this.getMonth()+1)>=10?(this.getMonth()+1):('0'+(this.getMonth() + 1));
+                        var day = this.getDate()>=10?this.getDate():('0'+this.getDate());
+                        s += this.getFullYear()+'-'; // 获取年份。
+                        s += mouth + "-"; // 获取月份。
+                        s += day;   //获取日。
+                        return (s); //返回日期。
+                    };
+                    //获得两个日期间所有日期-fn2
+                    function getAll(begin, end) {
+                        var return_=[];
+                        var ab = begin.split("-");
+                        var ae = end.split("-");
+                        var db = new Date();
+                        db.setUTCFullYear(ab[0], ab[1] - 1, ab[2]);
+                        var de = new Date();
+                        de.setUTCFullYear(ae[0], ae[1] - 1, ae[2]);
+                        var unixDb = db.getTime();
+                        var unixDe = de.getTime();
+                        for (var k = unixDb; k <= unixDe;) {
+                            return_.push((new Date(parseInt(k))).format());
+                            k = k + 24 * 60 * 60 * 1000;
+                        }
+                        return return_;
+                    }
+
+
+                    var dataa = [
+                        {
+                        "name":"项目a",
+                        "startTime":"2017-08-07",
+                        "latestTime":"2017-08-09"
+                        },
+                        {
+                        "name":"项目b",
+                        "startTime":"2017-08-07",
+                        "latestTime":"2017-08-09"
+                        },
+                        {
+                        "name":"项目c",
+                        "startTime":"2017-08-01",
+                        "latestTime":"2017-08-03"
+                        },
+                        {
+                        "name":"项目d",
+                        "startTime":"2017-08-07",
+                        "latestTime":"2017-08-09"
+                        }
+                    ];//假数据，实际应用可以用ajax从后台请求，获取数据
+                    var start_="2017-08-01",end_="2017-08-11";//用户自定义时间
+                    var data$ = DateDiff(start_,end_);//用户自定义的时间长度
+                    var data1 = DateDiff(start_,dataa[0].startTime);//项目a 起始位置
+                    var data1_1 = DateDiff(dataa[0].startTime,dataa[0].latestTime);//项目a 持续时间
+                    var data2 = DateDiff(start_,dataa[1].startTime);//项目b 起始位置
+                    var data2_1 = DateDiff(dataa[1].startTime,dataa[1].latestTime);//项目b 持续时间
+                    var data3_1 = DateDiff(dataa[2].startTime,dataa[2].latestTime);//项目c持续时间
+                    var data4_1 = DateDiff(dataa[3].startTime,dataa[3].latestTime);//项目d 持续时间
+                    var data3 = DateDiff(start_,dataa[2].startTime);//项目c 起始位置
+                    var data4 = DateDiff(start_,dataa[3].startTime);//项目d 起始位置
+                    
+                    x_ = getAll(start_,end_);
+
+                    
+                    var option1 = {
+                   		title: {
+                               text: '时间安排',
+                               left: 10
+                           },
+                           
+                           legend: {
+
+                               data: ['计划实施时间', '实际实施时间']
+                    },
+                           
+                        // 提示框
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            
+                                type: 'shadow'      
+                            },
+                            formatter: function (params) {
+                                var tar = params[1];
+
+                                return tar.name + '<br/>' ;
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                      
+                        xAxis: {
+                            type: 'value',
+                            max:data$,
+                             axisLabel: {
+                            	 interval:0 ,
+                                 formatter: function (value, index) {
+                                     return x_[value]
+                                 }
+                             }
+                        },
+                        
+                        yAxis: {
+                        	
+                            type: 'category',
+                            'name':'用户实验',
+                            //splitLine: {show: false},
+                            data: ['实验1', '实验2','实验3', '实验4']
+                        				
+                        },
+                        
+                      //缩放控制器
+                        dataZoom: {
+                            show: true,//显示缩放控制器
+                            realtime: true,
+                            orient: 'horizontal',  
+                            //yAxisIndex : "none",   //不启用y轴的选中
+                            start: 0,
+                            end: 100,
+                            height: '30'
+//                         	id: 'dataZoomX',
+
+//                             show:true,                              //是否显示 组件。如果设置为 false，不会显示，但是数据过滤的功能还存在。
+
+//                             backgroundColor:"rgba(47,69,84,0)",  
+//                             type: 'slider',                         //slider表示有滑动块的，inside表示内置的
+
+                           
+//                             fillerColor:"rgba(167,183,204,0.4)",  //选中范围的填充颜色。
+
+//                             borderColor:"#ddd",                     //边框颜色。
+
+//                             filterMode: 'filter',      
+                        },
+                        
+                        series: [
+                            {
+                                name: '辅助',
+                                type: 'bar',
+                                stack: '总量',
+                                itemStyle: {
+                                    normal: {
+                                        barBorderColor: 'rgba(0,0,0,0)',
+                                        color: 'rgba(0,0,0,0)'
+                                    },
+                                    emphasis: {
+                                        barBorderColor: 'rgba(0,0,0,0)',
+                                        color: 'rgba(0,0,0,0)'
+                                    }
+                                },
+                                data: [data1,data2,data3,data4]
+                            },
+                            {
+                                //每个项目 持续时间长度
+                                name: '时长',
+                                type: 'bar',
+                                stack: '总量',
+                                label: {
+                                    normal: {
+                                        show: true,
+                                        position: 'inside'
+                                    }
+                                },
+                                data: [data1_1,data2_1,data3_1,data4_1]
+                            }
+                        ]
+                    };
+                    
+                    
+                var option = {    
+						tooltip: {        
+							trigger: 'axis'    
+						}, 
+						
+						lineStyle:{        
+							normal:{            
+								//color:'#FFC400'        
+								}    
+						},	 
+						
+						legend: {        
+									
+							data:['激活数量','测试数量']    
+						},  
+						
+
+						
+						grid: {        
+							left: '3%',        
+							right: '4%',        
+							bottom: '9%',        
+							containLabel: true    
+						}, 
+						
+						toolbox: {
+					        feature: {
+					           // saveAsImage: {}//将统计图保存为
+					        }
+					        ,right:100
+					        ,top:0
+					    },
+					    
+					    xAxis: {							
+					    	show: true,
+	                        type: 'category', //x轴为类目类型
+	                        axisTick: {//决定是否显示坐标刻度  
+	                            alignWithLabel: true,
+	                            show:true
+	                        },
+	                      
+	                        axisLabel: {
+	                            show: true,
+	                            interval: 0,
+	                            rotate: 45
+	                        },
+	                        
+					    	data: ['02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30']
+	                        
+					    	
+					    },					    
+                        
+					    
+					    yAxis: {
+							'name':'(个)',
+					        type: 'value'
+					    },
+					    
+					    series: [
+					        {
+					            name:'激活数量',
+					            type:'line',
+					            stack: '总量1',
+					            smooth:true,
+					            // areaStyle: {normal: {}},
+					             data:['10','50','13'],
+					             
+					             //itemStyle : {normal : {color:'#ffc400'}},
+					 			itemStyle: {
+					 				normal: {
+					 							label : {
+					 								show:true,
+													position:'top',
+													formatter:'{c}'
+					 							},
+					 							areaStyle:{
+													color:'#04bb74'
+												},
+												color:'#04bb74'
+											}
+					 			}
+					        },
+							{
+					            name:'测试数量',
+					            type:'line',
+					            stack: '总量1',
+					            smooth:true,
+					            areaStyle: {normal: {}},
+					            data:['30','53','60'],
+					            //itemStyle : {normal : {color:'#ffc400'}},
+								itemStyle: {normal: {
+									label : {show:true,
+										position:'top',
+										formatter:'{c}'},
+										color:'#ffc400',
+										areaStyle:{
+											color:'#ffc400'
+										},
+								}}
+							 }
+							
+					        ]
+					    }; 
+                             
+
+                var option2 = {
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        y: -30,
+                        data: ['设定温度', '进水温度', '出水温度', '环境温度']
+                    },
+                    toolbox: {
+                        y: -30,
+                        show: true,
+                        feature: {
+                            mark: { show: true },
+                            dataView: { show: true, readOnly: false },
+                            magicType: { show: true, type: ['line', 'bar', 'stack', 'tiled'] },
+                            restore: { show: true },
+                            saveAsImage: { show: true }
+                        }
+                    },
+                    //缩放控制器
+                    dataZoom: {
+                        show: true,//显示缩放控制器
+                        realtime: true,
+                        start: 0,
+                        end: 100,
+                        height: '30'
+                    },
+                    xAxis: [
+                        {
+                            type: 'category', //x轴为类目类型
+                           // 'name':'时间',
+                            boundaryGap: false, //坐标轴两边留白策略
+                            axisLabel: {
+                                //show: true,
+                                interval: 0,
+                                //rotate: 45
+                            },
+                            //data: ['2', '05', '10', '15', '20', '25', '30', '35', '40', '45']
+                            //data: ['02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30']
+							data: ['2017-08-01', '2017-08-03', '2017-08-05', '2017-08-07', '2017-08-09', '2017-08-11']					
+                        }],
+
+// 						xAxis: [{
+//                             type: 'value',
+//                             max:data$,
+//                              axisLabel: {
+//                             	 //interval:0 ;
+//                                  formatter: function (value, index) {
+//                                      return x_[value]
+//                                  }
+//                              }
+//                         }],
+                        
+                    yAxis: [
+                        {
+                            type: 'value' , //y轴为值类型
+                            'name':'功率曲线',
+                        }
+                    ],
+                    series: [
+                    	{
+	                    	name: '实验1',
+	                        type: 'line',
+	                        smooth: true,
+	                        data: ['-','-', '-',"1","1"],
+	                        itemStyle: {
+				 				normal: {
+		 							label : {
+		 								show:true,
+										position:'top',
+										formatter:'{c}'
+		 							},
+		 							areaStyle:{
+										color:'#04bb74'
+									},
+									color:'#04bb74'
+								}
+				 			}
+                    	},
+                    	
+                    	{
+	                    	name: '实验2',
+	                        type: 'line',
+	                        smooth: true,
+	                        data: ['-','-', '-',"2","2"],
+	                        itemStyle: {
+				 				normal: {
+		 							label : {
+		 								show:true,
+										position:'top',
+										formatter:'{c}'
+		 							},
+		 							areaStyle:{
+										color:'#ffc400'
+									},
+									color:'#ffc400'
+								}
+				 			}
+                    	},
+                    	
+                    	{
+	                    	name: '实验3',
+	                        type: 'line',
+	                        smooth: true,
+	                        data: ["1","1"],
+	                        itemStyle: {
+				 				normal: {
+		 							label : {
+		 								show:true,
+										position:'top',
+										formatter:'{c}'
+		 							},
+		 							areaStyle:{
+										color:'#ff80bf'
+									},
+									color:'#ff80bf'
+								}
+				 			}
+                    	},
+                    	
+                    	{
+	                    	name: '实验4',
+	                        type: 'line',
+	                        smooth: true,
+	                        data: ['-','-', '-',"3","3"],
+	                        itemStyle: {
+				 				normal: {
+		 							label : {
+		 								show:true,
+										position:'top',
+										formatter:'{c}'
+		 							},
+		 							areaStyle:{
+										color:'#00008b'
+									},
+									color:'#00008b'
+								}
+				 			}
+                    	},
+                    ]
+                }
+
+                // 为echarts对象加载数据
+                myChart1.setOption(option1);
+//                 myChart2.setOption(option2);
+//                 myChart3.setOption(option3);
+                myChart2.setOption(option2);
+                //联动配置
+                myChart1.connect([myChart2]);
+//                 myChart2.connect([myChart1, myChart3, myChart4]);
+//                 myChart3.connect([myChart2, myChart1, myChart4]);
+                myChart2.connect([myChart1]);
+            }
+        );
+    </script>
+</body>

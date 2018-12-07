@@ -52,6 +52,16 @@ public class RootController {
   public String video(){
     return "video";
   }
+  
+  @GetMapping(value="/maps/maps1")
+  public String maps1(){
+    return "maps/maps1";
+  }
+  
+  @GetMapping(value="/maps/maps2")
+  public String maps2(){
+    return "maps/maps2";
+  }
 
 }
 
