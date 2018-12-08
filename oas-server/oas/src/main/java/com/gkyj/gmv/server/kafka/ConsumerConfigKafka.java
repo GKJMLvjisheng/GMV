@@ -64,16 +64,13 @@ public class ConsumerConfigKafka {
         propsMap.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, autoCommitInterval);
         propsMap.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeout);
         propsMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        //propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         propsMap.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         propsMap.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
-        propsMap.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        propsMap.put("value.deserializer", "com.gkyj.gmv.server.kafka.DecodeingKafka");
+        propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "com.gkyj.gmv.server.kafka.DecodeingKafka");
 
         //一次拉取消息数量
-        /*propsMap.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5");
-        propsMap.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        propsMap.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);*/
+        /*propsMap.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5");*/
         return propsMap;
     }
 
