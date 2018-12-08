@@ -88,10 +88,35 @@
 // 	});
 
 $(function(){
+	
 	var url="http://10.0.0.88:1935/live/test.flv";
+	$.ajax({
+
+		   type: 'post',
+		   url: '/api/v1/unicast/sendTestVideo',
+		  // data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   async:false,
+		   success: function (res) {
+		     if (res.code == 0) {
+		    	 console.log(res)
+		    url=res.data;
+		    	console.log(url);
+		     } else {
+		    	 	alert(res.message);
+		     		}
+		   },
+		   error: function (res) {
+			  alert("11"+JSON.stringify(res));
+		   },
+		   complete: function () {
+		   }
+		  });
 	var myPlayer = videojs('my-video');
 	myPlayer.reset();
-	myPlayer.src({ type: "video/flv", src: url }); //重新初始化视频地址
+	myPlayer.src({ type: "video/mp4", src: url }); //重新初始化视频地址
     myPlayer.load(url); 
 // 	connect(undefined,function(msg){
 // 		console.log(msg);
