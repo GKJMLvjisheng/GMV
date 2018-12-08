@@ -207,7 +207,7 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/api/v1/ethWallet/selectContractSymbol", "anon");
 		filterChainDefinitionMap.put(loginUrl, "anon");
 		filterChainDefinitionMap.put("/wbSocket/**", "anon");
-		filterChainDefinitionMap.put("/api/v1/userCenter/sendKafkaInfo", "anon");
+		filterChainDefinitionMap.put("/api/v1/userCenter/sendKafkaInfo/**", "anon");
 		
 		Map<String, Filter> filters = new LinkedHashMap<>();
 		filters.put("onlineSession", onlineSessionFilter());

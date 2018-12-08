@@ -69,7 +69,7 @@ function initTable(data) {
 			},
 			{
 			title : "参数源码",
-			field : "updated",
+			field : "minerPrice",
 			align: 'center',
 			valign: 'middle',
 			width:  '40px',
@@ -120,7 +120,7 @@ function initTable(data) {
  */
 function getData(){
 	var data;
-	var data1={"number": 2};
+	var data1={"number": 1};
 	$.ajax({		
 		url: "/api/v1/load/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
@@ -133,7 +133,7 @@ function getData(){
 //		alert(JSON.stringify(res));
 		if(res.code==0)
 			{data=res.data;
-			console.log("rows:",JSON.stringify(data.loadModelList));
+			console.log("rows:",JSON.stringify(data.rows));
 			}		
 		  else{alert("回显失败！");}			
 		}, 
@@ -148,7 +148,7 @@ function ready(){
     $('#table').bootstrapTable('destroy');
 	 var resData = getData();
 	 console.log(resData);
-	 var data = resData.loadModelList;
+	 var data = resData.rows;
 	 console.log(JSON.stringify(data));
 	 initTable(data);
 }
