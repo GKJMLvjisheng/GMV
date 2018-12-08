@@ -184,9 +184,9 @@ function backward(){
 				var resData=res.data.rows;
 				console.log("111",JSON.stringify(resData));
 				map={};
-				var d = 0 - unitLength();
+/*				var d = 0 - unitLength();
 				console.log(d);
-				progressBtn(d);
+				progressBtn(d);*/
 				backwardLoad(resData,newTime,endTime);
 			}		
 			  else{alert("回显失败！");}			
@@ -232,9 +232,9 @@ function forward(){
 				var resData=res.data.rows;
 				console.log("111",JSON.stringify(resData));
 				map={};
-				var d = unitLength();
+/*				var d = unitLength();
 				console.log(d);
-				progressBtn(d);
+				progressBtn(d);*/
 				forwardLoad(resData,newTime,endTime);
 			}		
 			  else{alert("回显失败！");}			
@@ -254,7 +254,7 @@ function forward(){
 //快进一次1秒
 function fastIncreateTime(flag,t) {
     var t_s = t.getTime();//转化为时间戳毫秒数
-    t.setTime(t_s + 1000 * 1);
+    t.setTime(t_s + 1000 * 2);
     var time=generateTime(flag,t)
     return time     
 }
@@ -262,7 +262,7 @@ function fastIncreateTime(flag,t) {
 //快退一次1秒
 function fastDecreaseTime(flag,t){
 	var t_s = t.getTime();//转化为时间戳毫秒数
-    t.setTime(t_s - 1000 * 1);
+    t.setTime(t_s - 1000 * 2);
     var time=generateTime(flag,t)
     return time
 }

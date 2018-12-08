@@ -5,6 +5,8 @@
 var backwardStatus = 0; //快退标志位
 var forwardStatus = 0; //快退标志位
 var loadT;
+var forwardLoadT;
+var backwardLoadT;
 //表格回显
 $(function(){
 	ready();
@@ -133,7 +135,7 @@ function getData(){
 //		alert(JSON.stringify(res));
 		if(res.code==0)
 			{data=res.data;
-			console.log("rows:",JSON.stringify(data.rows));
+//			console.log("rows:",JSON.stringify(data.rows));
 			}		
 		  else{alert("回显失败！");}			
 		}, 
@@ -149,7 +151,7 @@ function ready(){
 	 var resData = getData();
 	 console.log(resData);
 	 var data = resData.rows;
-	 console.log(JSON.stringify(data));
+//	 console.log(JSON.stringify(data));
 	 initTable(data);
 }
 
@@ -214,12 +216,13 @@ function forwardLoad(data,startTime,endTime){
 	if($("#play span").attr("class") == "glyphicon glyphicon-play"){
 		return;
 	}
-	if(backwardStatus == 1){
+	if(backwardStatus == 1 || forwardStatus == 1){
 		backwardStatus = 0;
+		forwardStatus = 0;
 		return;
 	}
 	request(data,startTime,endTime);
-	setTimeout(function(){
+	forwardLoadT = setTimeout(function(){
 		forwardLoad(data,startTime,endTime);
 	},1000)
 	return;
@@ -230,12 +233,13 @@ function backwardLoad(data,startTime,endTime){
 	if($("#play span").attr("class") == "glyphicon glyphicon-play"){
 		return;
 	}
-	if(forwardStatus == 1){
+	if(backwardStatus == 1 || forwardStatus == 1){
+		backwardStatus = 0;
 		forwardStatus = 0;
 		return;
 	}
 	request(data,startTime,endTime);
-	setTimeout(function(){
+	backwardLoadT = setTimeout(function(){
 		backwardLoad(data,startTime,endTime);
 	},1000)
 	return;
@@ -310,6 +314,8 @@ function playInterval(startTime, endTime){
 			console.log("111",JSON.stringify(data));
 			map={};
 			clearTimeout(loadT);
+			clearTimeout(forwardLoadT);
+			clearTimeout(backwardLoadT);
 			load(data,startTime,endTime);
 		}		
 		  else{alert("回显失败！");}			
@@ -339,7 +345,7 @@ function progressTime(date1, date2){
 	return newTime;
 }
 
-//进度小方块的移动
+//进度向前的移动
 function progressBtn(d){ 
 	var width = Number($('.progress_bar').css("width").replace('px',''));
 	var left = Number($('.progress_btn').css("left").replace('px',''));
