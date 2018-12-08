@@ -257,12 +257,18 @@ function createSeries() {
         series[i].data = map_copy[key];
         mapSize=map_copy[key].length;
         i++;
-    }
-    
+    }    
     if(mapSize<20){
-    	 for(j in series){
- 		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})   //数组开头添加一组数据,因为添加点后自动移除第一个数据了
- 		  	}  
+  	  for(j in series){
+  		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})
+  		  	}
+  	  var xx =Number(map_copy[key][map_copy[key].length-1].x);
+  	  for(var k=1;k<20-mapSize;k++){
+  		  xx = xx+Number(1000);
+  		  for(j in series){
+  			  	series[j].data.push({x:xx,y:[map_copy[key].length-1].y})
+  			  	}
+  	  }
     }else{
     	for(j in series){
     	series[j].data.splice(0,mapSize-20)
@@ -449,6 +455,13 @@ function createDynamicPointSeries() {
 	  for(j in series){
 		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})
 		  	}
+	  var xx =Number(map_copy[key][map_copy[key].length-1].x);
+	  for(var k=1;k<20-mapSize;k++){
+		  xx = xx+Number(1000);
+		  for(j in series){
+			  	series[j].data.push({x:xx,y:[map_copy[key].length-1].y})
+			  	}
+	  }
   }else{
   	for(j in series){
   	series[j].data.splice(0,mapSize-20)
