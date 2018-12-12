@@ -14,7 +14,7 @@ $(function(){
     var y = [];//Y轴
     var xtext = [];//X轴TEXT
 	$.ajax({
-		url: "/api/v1/load/selectLoadMsg",
+		url: "/api/v1/test/selectLoadMsg",
 	    contentType : 'application/json;charset=utf8',
 	    dataType: 'json',
 	    cache: false,
@@ -130,7 +130,7 @@ function allPointCreate(){
 			    "endTime":endTime
 			  };
 			$.ajax({
-				url: "/api/v1/load/selectLoadMsgByPeriod",
+				url: "/api/v1/test/selectLoadMsgByPeriod",
 			    contentType : 'application/json;charset=utf8',
 			    dataType: 'json',
 			    cache: false,
@@ -191,7 +191,7 @@ function dynamicPointCreate(){
 			    "endTime":endTime
 			  };
 			$.ajax({
-				url: "/api/v1/load/selectLoadMsgByPeriod",
+				url: "/api/v1/test/selectLoadMsgByPeriod",
 			    contentType : 'application/json;charset=utf8',
 			    dataType: 'json',
 			    cache: false,
