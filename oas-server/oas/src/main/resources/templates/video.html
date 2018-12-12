@@ -56,7 +56,7 @@
   <body>
   <input type="button"style="display:inline-block" value='订阅' id="real" class="real" onclick="real()" /> 
   <div class="openFlashTips" style="width:300px;position:absolute;top:20px;left:225px;z-Index:9999;color:white">视频无法正常播放，请点击下方启用flash</div>
-<video id="my-video" style="color:black;width:750px;height:350px" class="video-js col-center-block"  controls preload="auto" poster="http://vjs.zencdn.net/v/oceans.png" width="750" height="350"   >
+<video id="my-video" style="color:black;width:750px;height:350px" class="video-js col-center-block"  controls preload="auto" poster="http://vjs.zencdn.net/v/oceans.png" width="750" height="350"  data-setup='{ "html5" : { "nativeTextTracks" : false } }' >
 <!--     <source src="rtmp://10.0.0.88:1935/live/test" type="rtmp/flv" >  -->
      <p  class="vjs-no-js">not support
      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -79,7 +79,7 @@
 
     <script type="text/javascript">
 
-    videojs.options.flash.swf = "js/video/video-js.swf";//flash路径，有一些html播放不了的视频，就需要用到flash播放。这一句话要加在在videojs.js引入之后使用
+    videojs.options.flash.swf = "js/video/VideoJS.swf";//flash路径，有一些html播放不了的视频，就需要用到flash播放。这一句话要加在在videojs.js引入之后使用
    // var mediaSource =videojs.MediaSource({ mode:'html5' });
 //  var myPlayer = videojs('example1');
 // 	videojs("example1").ready(function(){
@@ -88,15 +88,46 @@
 // 	});
 
 $(function(){
-	connect(undefined,function(msg){
-		console.log(msg);
-		url=msg;
-	},"video");
+	
+	var url="http://10.0.0.88:1935/live/test.flv";
+	$.ajax({
+
+		   type: 'post',
+		   url: '/api/v1/unicast/sendTestVideo',
+		  // data: JSON.stringify(data),
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   async:false,
+		   success: function (res) {
+		     if (res.code == 0) {
+		    	 console.log(res)
+		    url=res.data;
+		    	console.log(url);
+		     } else {
+		    	 	alert(res.message);
+		     		}
+		   },
+		   error: function (res) {
+			  alert("11"+JSON.stringify(res));
+		   },
+		   complete: function () {
+		   }
+		  });
+	var myPlayer = videojs('my-video');
+	myPlayer.reset();
+	myPlayer.src({ type: "video/mp4", src: url }); //重新初始化视频地址
+    myPlayer.load(url); 
+// 	connect(undefined,function(msg){
+// 		console.log(msg);
+// 		url=msg;
+// 	},"video");
 });
 	function real()
 	{
 		var url="rtmp://10.0.0.88:1935/live/test";
 		 var myPlayer = videojs('my-video');
+		 myPlayer.reset();
 		 myPlayer.src({ type: "rtmp/flv", src: url }); //重新初始化视频地址
 	     myPlayer.load(url); //重新
 	     var aa=getCurrentType(myPlayer)
