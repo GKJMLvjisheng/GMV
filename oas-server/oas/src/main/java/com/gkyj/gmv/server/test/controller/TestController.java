@@ -50,13 +50,14 @@ public class TestController {
 
 		    LoadInfo putLoadInfo = new LoadInfo();
 	        putLoadInfo.setTestModelList(testModelList);
+		    List<TestModel> modelList=testService.selectLoad();
 	        //获取初始化开始和结束时间
-		    String startTime = testModelList.get(0).getTime();
+		    String startTime = modelList.get(0).getTime();
 		    putLoadInfo.setStartTime(startTime);
-		    Integer listSize = testModelList.size();
-		    String endTime = testModelList.get(listSize-2).getTime();
+		    Integer listSize = modelList.size();
+		    String endTime = modelList.get(listSize-1).getTime();
 		    putLoadInfo.setEndTime(endTime);
-
+            putLoadInfo.setTotal(testModelList.size());
 		return new ResponseEntity.Builder<LoadInfo>()
 				.setData(putLoadInfo)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -103,8 +104,11 @@ public class TestController {
 			String fullLink = mediaServer.getImageHost() + testModel.getPicPath();
 			testModel.setPicPath(fullLink);
 		}
-		return new ResponseEntity.Builder<List<TestModel>>()
-				.setData(testModelList)
+		LoadInfo putLoadInfo = new LoadInfo();
+		putLoadInfo.setTestModelList(testModelList);
+		putLoadInfo.setTotal(testModelList.size());
+		return new ResponseEntity.Builder<LoadInfo>()
+				.setData(putLoadInfo)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}

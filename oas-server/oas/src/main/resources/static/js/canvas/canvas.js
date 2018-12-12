@@ -75,6 +75,7 @@ function quest(){
 		       var data={"startTime":startTimeback,
 		    		"endTime":endTimeQuest};
 		      
+
 		       questAjax(data);
 				startTimeback=increateTime(false,date1,1);
  }  
@@ -83,7 +84,7 @@ function questAjax(data)
 	$.ajax({
 		
 		   type: 'post',
-		   url: '/api/v1/load/selectLoadMsgByPeriod',
+		   url: '/api/v1/test/selectTestMsgByPeriod',
 		   data: JSON.stringify(data),
 		   contentType : 'application/json;charset=utf8',
 		   dataType: 'json',
@@ -91,41 +92,41 @@ function questAjax(data)
 		   async:true,
 		   success: function (res) {
 		     if (res.code == 0) {
-		    	var row=res.data.rows
+		    	var row=res.data.testModelList;
 		    	
 		    	var imgs=[];
 		    	var m=-1;
 		    	var k=0;
 		    	 for(var i=0;i<row.length;i++)
 		    	{ 	
-		    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+		    		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
 			 			{ 
 		    			 row.splice(i,1);
 		 					i--;
 		 				}else{
 		 					imgs[i]=new Image();
-		     		 		imgs[i].src=row[i].loadPicturePath;
+		     		 		imgs[i].src=row[i].picPath;
 
-		   		    	var p=getUrl(row[i].updated);
+		   		    	var p=getUrl(row[i].time);
 		   		    		 
 		   		    		  if(p.photo1.length==0)
 		   		    			{
-		   		    			  localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+		   		    			  localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 		   		    			 
 		   		    			}
 		   		    		  	else if(i>0)
 		   			    		  	{ if(!p.sum)
 		   		    		  			{ 
-		   				    		  		if(row[i].updated==row[i-1].updated)
+		   				    		  		if(row[i].time==row[i-1].time)
 		   					    			  { 
-		   					    			  	localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+		   					    			  	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 		   					    			  	
 		   					    			  	if(i!=row.length-1)
 		   					 		 			{console.log("2222")
-		   					     		 			if(row[i].updated!=row[i+1].updated)
+		   					     		 			if(row[i].time!=row[i+1].time)
 		   					     		 			{  
 		   					     		 				console.log("22223333")
-		   					         		 			localDB.insert("myDB", {time:row[i].updated,sum:i-m});
+		   					         		 			localDB.insert("myDB", {time:row[i].time,sum:i-m});
 		   					         		 			
 		   					         		 			m=i;
 		   					         		 			
@@ -133,7 +134,7 @@ function questAjax(data)
 		   					         		 		}
 		   					 		 			}else{
 		   					 		 			
-		   					 		 				localDB.insert("myDB", {time:row[i].updated,sum:i-m});
+		   					 		 				localDB.insert("myDB", {time:row[i].time,sum:i-m});
 		   					 		 				}
 		   					    			  	
 		   							    	  }
@@ -142,7 +143,7 @@ function questAjax(data)
 		   			    		  	  
 		   			    		  		}
 //		   			    		 else{
-//		   			    			 localDB.update("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+//		   			    			 localDB.update("myDB", {url:row[i].picPath,time:row[i].time});
 //		   			    		 }
 		   			    	   
 		 				}
@@ -167,7 +168,7 @@ var number=2;
  $.ajax({
 
     type: 'post',
-    url: '/api/v1/load/selectLoadMsg',
+    url: '/api/v1/test/selectTestMsg',
     data: JSON.stringify(data),
     contentType : 'application/json;charset=utf8',
     dataType: 'json',
@@ -189,53 +190,55 @@ var number=2;
      	var start=new Date(startTime);
      	var end=new Date(endTime);
      	startTimeback=increateTime(false,start,2);
+
      	console.log(end-start)
      	var max=Number((end-start)/1000)+1;
      	$(".range").attr({'max':max});  
      	end=increateTime(false,end,1);//多了一秒
      	$("#timeStart").val(startTime.substr(startTime.length-8));
      	$("#timeEnd").val(end.substr(endTime.length-8));
-     	var row=res.data.rows;
+     	var row=res.data.testModelList;
      	console.log(row)
      	photo=[];
      	var imgs=[];
      	var m=-1;
      	 for(var i=0;i<row.length;i++)
      	{ 
-     		 console.log("tupian",row[i].loadPicturePath)
-     		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+     		 console.log("tupian",row[i].picPath)
+     		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
      		 	{ row.splice(i,1);
      		 		i--;
      		 	}else{
+
      		 		imgs[i]=new Image();
-     		 		imgs[i].src=row[i].loadPicturePath;
+     		 		imgs[i].src=row[i].picPath;
      		 	
 
-     		 		//localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
-     		 		photo.push(row[i].loadPicturePath)
+     		 		//localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
+     		 		photo.push(row[i].picPath)
      		 		console.log(photo)
 
-     		 		var p=getUrl(row[i].updated)
+     		 		var p=getUrl(row[i].time)
 			    		
 			    		  if(p.photo1.length==0)
 			    			{
-			    			  localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+			    			  localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 			    			 
 			    			}
 			    		  	else if(i>0)
 				    		  	{
 			    		  		 if(!p.sum)
 			    		  			{ 
-					    		  		if(row[i].updated==row[i-1].updated)
+					    		  		if(row[i].time==row[i-1].time)
 						    			  { 
-						    			  	localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+						    			  	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 						    			  	
 						    			  	if(i!=row.length-1)
 						 		 			{console.log("2222")
-						     		 			if(row[i].updated!=row[i+1].updated)
+						     		 			if(row[i].time!=row[i+1].time)
 						     		 			{  
 						     		 				console.log("22223333")
-						         		 			localDB.insert("myDB", {time:row[i].updated,sum:i-m});
+						         		 			localDB.insert("myDB", {time:row[i].time,sum:i-m});
 						     		 				sumSecond=i-m;
 						         		 			m=i;
 						         		 			
@@ -243,7 +246,7 @@ var number=2;
 						         		 		}
 						 		 			}else{
 						 		 			
-						 		 				localDB.insert("myDB", {time:row[i].updated,sum:i-m});
+						 		 				localDB.insert("myDB", {time:row[i].time,sum:i-m});
 						 		 				}
 						    			  	
 								    	  }
@@ -254,7 +257,7 @@ var number=2;
 				    		  	
 				    		  	}
 //				    		 else{
-//				    			 localDB.update("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
+//				    			 localDB.update("myDB", {url:row[i].picPath,time:row[i].time});
 //				    		 }
 			    		 
 			    		 }
@@ -326,8 +329,10 @@ var number=2;
 					"startTime":questTime,
 					"endTime":questTime
 				}
+
 			eventChange=setInterval('changeQuest(questTime)',1000);
 			
+
 				
 		}
 		var picList = getEvent('ibanner_pic' + "1").getElementsByTagName('a');
@@ -450,7 +455,8 @@ function changeThumb(time){
  
  
 
-function getUrl(time){
+function getUrl(time)
+{
 	var photo1=[];
 	var sum="";
 	var data = localDB.select("myDB",time,false);
@@ -460,12 +466,13 @@ function getUrl(time){
 		{
 			 sum=data[data.length-1].Obj.sum;
 			 for(var i=0;i<data.length-1;i++)
-				{photo1.push(data[i].Obj.url);
-				
+				{
+				 photo1.push(data[i].Obj.url);
 				}
 		}else{
 			for(var i=0;i<data.length;i++)
-			{photo1.push(data[i].Obj.url);
+			{
+				photo1.push(data[i].Obj.url);
 			
 			}
 		}
@@ -474,13 +481,15 @@ function getUrl(time){
 	return {photo1,sum};
 	
 }
-    function getEvent(id) {
+    function getEvent(id) 
+    {
     	
         return document.getElementById(id);
     }
    
     
-    function picZ(ibannerIndex) {
+    function picZ(ibannerIndex) 
+    {
         var picList = getEvent('ibanner_pic' + ibannerIndex).getElementsByTagName('a');
         for (var i = 0; i < picList.length; i++) {
             picList[i].style.zIndex = '1';
@@ -488,7 +497,8 @@ function getUrl(time){
     }
    
  var mc=0;
-    function autoBanner(ibannerIndex) {
+    function autoBanner(ibannerIndex) 
+    {
     	//|| !getEvent('ibanner_btn' + ibannerIndex)|| autoKey
         if (!getEvent('ibanner' + ibannerIndex) || !getEvent('ibanner_pic' + ibannerIndex)  ) {
             return;
@@ -710,7 +720,7 @@ function increateSpeed(){
 			$.ajax({
 
 			   type: 'post',
-			   url: '/api/v1/load/selectLoadMsgByPeriod',
+			   url: '/api/v1/test/selectLoadMsgByPeriod',
 			   data: JSON.stringify(data),
 			   contentType : 'application/json;charset=utf8',
 			   dataType: 'json',
@@ -720,18 +730,18 @@ function increateSpeed(){
 			     if (res.code == 0) {
 			    	 console.log(res)
 			    
-			    	var row=res.data.rows;
+			    	var row=res.data.testModelList;
 			    	 sum=0;
 			    	 
 			    	 for(var i=0;i<row.length;i++)
 			    	{ 
-			    		 console.log("tupian",row[i].loadPicturePath)
-			    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+			    		 console.log("tupian",row[i].picPath)
+			    		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
 			    		 	{ row.splice(i,1);
 			    		 		i--;
 			    		 	}else{
-			    		 	localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
-			    		 	photo.push(row[i].loadPicturePath)
+			    		 	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
+			    		 	photo.push(row[i].picPath)
 			    		 	sum++;
 			    		 	}
 			    		
@@ -796,7 +806,7 @@ function reduceSpeed(){
 			$.ajax({
 
 			   type: 'post',
-			   url: '/api/v1/load/selectLoadMsgByPeriod',
+			   url: '/api/v1/test/selectLoadMsgByPeriod',
 			   data: JSON.stringify(data),
 			   contentType : 'application/json;charset=utf8',
 			   dataType: 'json',
@@ -806,18 +816,18 @@ function reduceSpeed(){
 			     if (res.code == 0) {
 			    	 console.log(res)
 			    
-			    	var row=res.data.rows;
+			    	var row=res.data.testModelList;
 			    	 sum=0;
 			    	 
 			    	 for(var i=0;i<row.length;i++)
 			    	{ 
-			    		 console.log("tupian",row[i].loadPicturePath)
-			    		 if(row[i].loadPicturePath.substr(row[i].loadPicturePath.length-4)=="null")
+			    		 console.log("tupian",row[i].picPath)
+			    		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
 			    		 	{ row.splice(i,1);
 			    		 		i--;
 			    		 	}else{
-			    		 	localDB.insert("myDB", {url:row[i].loadPicturePath,time:row[i].updated});
-			    		 	photo.push(row[i].loadPicturePath)
+			    		 	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
+			    		 	photo.push(row[i].picPath)
 			    		 	sum++;
 			    		 	}
 			    		
@@ -863,7 +873,7 @@ function reduceSpeed(){
 	    	
 	    		for(var i=0;i<msg.length;i++)
 	    		{
-	    			photo.push(msg[i].loadPicturePath)
+	    			photo.push(msg[i].picPath)
 	    		}
 	    		$(".range").attr({'max':photo.length});   
 	        	

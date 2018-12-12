@@ -27,8 +27,6 @@ spring.data.cassandra.password: 123456
 spring.data.cassandra.keyspace-name: gmv_db
 spring.data.cassandra.contact-points: 10.0.0.88
 spring.data.cassandra.port: 9042
-
-
 mybatis:
   config-locations: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mapper/*.xml
@@ -66,7 +64,7 @@ shiro:
     validationInterval: 10
 
 server:
-  port: 8088
+  port: 8080
   session-timeout: 1800
   
 media:
@@ -95,7 +93,7 @@ kafka:
     session.timeout: 6000
     auto.commit.interval: 100
     auto.offset.reset: latest
-    group.id: zhl
+    group.id: ym
     concurrency: 1
   producer:
     retries: 0
