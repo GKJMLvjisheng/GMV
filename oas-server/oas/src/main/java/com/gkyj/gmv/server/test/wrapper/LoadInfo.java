@@ -13,5 +13,6 @@ public class LoadInfo implements Serializable {
     @Getter @Setter private String startTime;
     @Getter @Setter private String endTime;
     @Getter @Setter private Integer number;
+    @Getter @Setter private Integer total;
     @Getter @Setter private List<TestModel> testModelList;
 }
