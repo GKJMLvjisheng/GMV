@@ -36,8 +36,7 @@ public class RootController {
   public String videoAndCanvas() {
        
     return "canvas";  }
-
-  
+ 
 //Line
  @GetMapping("/line")
  public String line(HttpServletRequest request, HttpServletResponse response) {
