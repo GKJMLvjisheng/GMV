@@ -14,7 +14,7 @@ $(function(){
     var y = [];//Y轴
     var xtext = [];//X轴TEXT
 	$.ajax({
-		url: "/api/v1/test/selectLoadMsg",
+		url: '/api/v1/test/selectTestMsg',
 	    contentType : 'application/json;charset=utf8',
 	    dataType: 'json',
 	    cache: false,
@@ -25,7 +25,7 @@ $(function(){
 	    	alert(JSON.stringify(res));
 	    	startTimeInitial =res.data.startTime;
 	    	endTime = res.data.endTime;
-	        var data2=res.data.loadModelList;
+	        var data2=res.data.testModelList;
 	        var map={};
 	        var map2 ={};
 	        for (var i in data2){
@@ -130,7 +130,7 @@ function allPointCreate(){
 			    "endTime":endTime
 			  };
 			$.ajax({
-				url: "/api/v1/test/selectLoadMsgByPeriod",
+				url: "/api/v1/test/selectTestMsgByPeriod",
 			    contentType : 'application/json;charset=utf8',
 			    dataType: 'json',
 			    cache: false,
@@ -140,7 +140,7 @@ function allPointCreate(){
 			    processData : false,
 			    success: function(res) {
 			    	//alert(JSON.stringify(res));
-			        var data2=res.data.loadModelList;
+			        var data2=res.data.testModelList;
 			        var map={}
 			        var map4={}
 			        for (var i in data2){
@@ -191,7 +191,7 @@ function dynamicPointCreate(){
 			    "endTime":endTime
 			  };
 			$.ajax({
-				url: "/api/v1/test/selectLoadMsgByPeriod",
+				url: "/api/v1/test/selectTestMsgByPeriod",
 			    contentType : 'application/json;charset=utf8',
 			    dataType: 'json',
 			    cache: false,
@@ -201,7 +201,7 @@ function dynamicPointCreate(){
 			    processData : false,
 			    success: function(res) {
 			    	//alert(JSON.stringify(res));
-			        var data2=res.data.loadModelList;
+			        var data2=res.data.testModelList;
 			        var map={}
 			        var map4={}
 			        for (var i in data2){
