@@ -37,7 +37,7 @@ public class TestController {
 	 */
 	@PostMapping(value = "/selectTestMsg")  
 	@ResponseBody
-	public ResponseEntity<?> selectLoadMsg(@RequestBody LoadInfo loadInfo){
+	public ResponseEntity<?> selectTestMsg(@RequestBody LoadInfo loadInfo){
 
 	    Integer number=loadInfo.getNumber()*4;
 	    //初始化几秒的数据
@@ -67,14 +67,14 @@ public class TestController {
 	
 	/**
 	 * @category 根据时间段去查询载体数据
-	 * @param  startTime endTime
+	 * @param  loadInfo
 	 * @return 
 	 * @throws ParseException 
 	 */
 	@PostMapping(value = "/selectTestMsgByPeriod")
 	@ResponseBody
-	@WriteLog(value="selectLoadMsgByPeriod")
-	public ResponseEntity<?> selectLoadMsgByPeriod(@RequestBody LoadInfo loadInfo) throws ParseException{
+	@WriteLog(value="selectTestMsgByPeriod")
+	public ResponseEntity<?> selectTestMsgByPeriod(@RequestBody LoadInfo loadInfo) throws ParseException{
 
 
 		String startTime = loadInfo.getStartTime();
