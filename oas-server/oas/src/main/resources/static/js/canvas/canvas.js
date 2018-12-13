@@ -60,16 +60,24 @@ function quest(){
 		 return;
 	 }
 	
-		    	var date1 = new Date(startTimeback)
+		    	//var date1 = new Date(startTimeback)
 		       //startTimeback=increateTime(false,date1,2)
-		       //var startTimeback2=increateTime(false,date1,1)
-		       var endTimeQuest=increateTime(false,date1,2);//3秒
+		      
+		       var endTimeQuest=increateTime(false,startTimeback,2);//3秒
 		       console.log("endtime",endTimeQuest)
 		       //console.log("startTimeback2",startTimeback2)
 		       console.log("startTimeback",startTimeback)
+		        //var p=getUrl(startTimeback);
+//		       if(p.photo1.length!=0){
+//		    	   clearInterval(eventQuest);
+//		    	   eventQuest="";
+//		    	   return;
+//		       }
 		      if(startTimeback>endTime){
+		    	  
 		    	  cacheFlag=1;
 		    	  clearInterval(eventQuest);
+		    	  eventQuest="";
 		 		 return;
 		      }
 		       var data={"startTime":startTimeback,
@@ -77,7 +85,7 @@ function quest(){
 		      
 
 		       questAjax(data);
-				startTimeback=increateTime(false,date1,1);
+				startTimeback=increateTime(false,endTimeQuest,1);
  }  
 function questAjax(data)
 {
@@ -104,13 +112,14 @@ function questAjax(data)
 		    			 row.splice(i,1);
 		 					i--;
 		 				}else{
-		 					imgs[i]=new Image();
-		     		 		imgs[i].src=row[i].picPath;
+		 					
 
-		   		    	var p=getUrl(row[i].time);
+		 					  var p=getUrl(row[i].time);
 		   		    		 
 		   		    		  if(p.photo1.length==0)
 		   		    			{
+		   		    			  imgs[i]=new Image();
+		   		    			  imgs[i].src=row[i].picPath;
 		   		    			  localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 		   		    			 
 		   		    			}
@@ -118,14 +127,16 @@ function questAjax(data)
 		   			    		  	{ if(!p.sum)
 		   		    		  			{ 
 		   				    		  		if(row[i].time==row[i-1].time)
-		   					    			  { 
+		   					    			  { imgs[i]=new Image();
+		   				     		 			imgs[i].src=row[i].picPath;
 		   					    			  	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 		   					    			  	
 		   					    			  	if(i!=row.length-1)
-		   					 		 			{console.log("2222")
+		   					 		 			{
 		   					     		 			if(row[i].time!=row[i+1].time)
 		   					     		 			{  
-		   					     		 				console.log("22223333")
+		   					     		 				console.log("22223333",i)
+		   					     		 				console.log("2222",m)
 		   					         		 			localDB.insert("myDB", {time:row[i].time,sum:i-m});
 		   					         		 			
 		   					         		 			m=i;
@@ -138,8 +149,18 @@ function questAjax(data)
 		   					 		 				}
 		   					    			  	
 		   							    	  }
-		   		    		  				}
+		   		    		  				}else{
+				   		    		  				if(i!=row.length-1)
+			   					 		 			{
+			   					     		 			if(row[i].time!=row[i+1].time)
+			   					     		 			{  
+			   					         		 			m=i;
 
+			   					         		 		}
+			   					 		 			}
+				   		    		  			
+		   		    		  				}
+		   			    		  			
 		   			    		  	  
 		   			    		  		}
 //		   			    		 else{
@@ -186,17 +207,18 @@ var number=2;
      	$('#range_speed').val(0);
      	time=0;
      	changeThumb(0);
-     	
+     	console.log(startTime)
      	var start=new Date(startTime);
      	var end=new Date(endTime);
-     	startTimeback=increateTime(false,start,2);
-
-     	console.log(end-start)
+     	console.log(endTime)
+     	startTimeback=increateTime(false,startTime,2);
      	var max=Number((end-start)/1000)+1;
+     	console.log(end-start)
+     	
      	$(".range").attr({'max':max});  
-     	end=increateTime(false,end,1);//多了一秒
+     	var endDisplay=increateTime(false,endTime,1);//多了一秒
      	$("#timeStart").val(startTime.substr(startTime.length-8));
-     	$("#timeEnd").val(end.substr(endTime.length-8));
+     	$("#timeEnd").val(endDisplay.substr(endDisplay.length-8));
      	var row=res.data.testModelList;
      	console.log(row)
      	photo=[];
@@ -210,10 +232,6 @@ var number=2;
      		 		i--;
      		 	}else{
 
-     		 		imgs[i]=new Image();
-     		 		imgs[i].src=row[i].picPath;
-     		 	
-
      		 		//localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
      		 		photo.push(row[i].picPath)
      		 		console.log(photo)
@@ -221,21 +239,24 @@ var number=2;
      		 		var p=getUrl(row[i].time)
 			    		
 			    		  if(p.photo1.length==0)
-			    			{
+			    			{ imgs[i]=new Image();
+		     		 		  imgs[i].src=row[i].picPath;
 			    			  localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 			    			 
 			    			}
 			    		  	else if(i>0)
 				    		  	{
-			    		  		 if(!p.sum)
+			    		  		 if(!p.sum)//已插入
 			    		  			{ 
-					    		  		if(row[i].time==row[i-1].time)
+					    		  		if(row[i].time==row[i-1].time)//第一次插入导致重复
 						    			  { 
+					    		  			imgs[i]=new Image();
+					         		 		imgs[i].src=row[i].picPath;
 						    			  	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
 						    			  	
-						    			  	if(i!=row.length-1)
+						    			  	if(i!=row.length-1)//对i处理
 						 		 			{console.log("2222")
-						     		 			if(row[i].time!=row[i+1].time)
+						     		 			if(row[i].time!=row[i+1].time)//插入sum
 						     		 			{  
 						     		 				console.log("22223333")
 						         		 			localDB.insert("myDB", {time:row[i].time,sum:i-m});
@@ -292,7 +313,8 @@ var number=2;
   //time=0-Number(playInternal/1000);
   //$(".range").attr({'step':playInternal/1000}); 
  } 
- var questTime=0;
+ var eventChange;
+ var questTime;
  function changeSpeed() {
 	 if(eventReal)
 		{$('#range_speed').val(0);
@@ -312,11 +334,12 @@ var number=2;
 			value=sum-1;
 		}
 			
-		var date=new Date(startTime);
+		//var date=new Date(startTime);
 		//var num = new Number(value);
-		 questTime=increateTime(false,date,value);
+		 questTime=increateTime(false,startTime,value);
 		 console.log(questTime);
-		 time=value;//滑动
+		 time=value;//滑动时间
+		 mc=0;//每秒的数据量计算
 		$("#timeStart").val(questTime.substr(questTime.length-8));
 		if(time==0)
 			{init();
@@ -329,11 +352,16 @@ var number=2;
 					"startTime":questTime,
 					"endTime":questTime
 				}
-
-			eventChange=setInterval('changeQuest(questTime)',1000);
-			
+			soloAjax(data);
+			//if(event){
+			questTime=increateTime(false,questTime,1);
+			clearInterval(eventChange);
+			eventChange=setInterval(changeQuest,1000);
+			//}
 
 				
+		}else{
+			photo=p.photo1;	
 		}
 		var picList = getEvent('ibanner_pic' + "1").getElementsByTagName('a');
 		var phoList = getEvent('ibanner_pic' + "1").getElementsByTagName('img');	
@@ -341,24 +369,95 @@ var number=2;
 		 picList[0].style.zIndex = '3';
          picList[0].style.left = '0px';
  }
-function changeQuest(time){
-	console.log(time);
-	var date1 = new Date(questTime)
+ function soloAjax(data){
+		$.ajax({
+
+		    type: 'post',
+		    url: '/api/v1/test/selectTestMsgByPeriod',
+		    data: JSON.stringify(data),
+		    contentType : 'application/json;charset=utf8',
+		    dataType: 'json',
+		    cache: false,
+		    async:false,
+		    success: function (res) {
+		      if (res.code == 0) {
+		   
+		     	var row=res.data.testModelList;
+		     	
+		     	
+		     	var imgs=[];
+		     	var m=-1;
+		     	 for(var i=0;i<row.length;i++)
+		     	{ 
+		     		 console.log("tupian",row[i].picPath)
+		     		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
+		     		 	{ row.splice(i,1);
+		     		 		i--;
+		     		 	}else{
+		     		 		
+		     		 		photo.push(row[i].picPath);
+		     		 		imgs[i]=new Image();
+				     		imgs[i].src=row[i].picPath;//一秒的数据不用判断重复
+					    	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});  	
+				    			  	if(i!=row.length-1)
+				 		 			{
+				     		 			if(row[i].time!=row[i+1].time)
+				     		 			{  
+				     		 				
+				         		 			localDB.insert("myDB", {time:row[i].time,sum:i-m});
+				     		 				sumSecond=i-m;
+				         		 			m=i;
+				         		 			
+				         		 		
+				         		 		}
+				 		 			}else{
+				 		 			
+				 		 				localDB.insert("myDB", {time:row[i].time,sum:i-m});
+				 		 				}
+				    			  	
+//				    			  	 else{
+//						    			 localDB.update("myDB", {url:row[i].picPath,time:row[i].time});
+//						    		 }
+	    		  				}
+	    		 }
+
+		      } else {
+		     	 	alert(res.message);
+		      		}
+		    },
+		    error: function (res) {
+		 	  alert("11"+JSON.stringify(res));
+		    },
+		    complete: function () {
+		    }
+		   });
+ }
+function changeQuest(){
+	
+	//var date1 = new Date(questTime)
   
-    var endTimeQuest=increateTime(false,date1,2);//3秒
+    var endTimeQuest=increateTime(false,questTime,2);//3秒
     console.log("endtime",endTimeQuest)
    
     console.log("startTimechange",questTime)
-   if(questTime>endTime){
- 	  
+    var p=getUrl(questTime);
+    if(p.photo1.length!=0){
+ 	   clearInterval(eventChange);
+ 	  eventChange="";
+ 	   return;
+    }
+   if(endTimeQuest>endTime){
+	   console.log(111)
+	   
  	  clearInterval(eventChange);
+	   eventChange="";
 		 return;
    }
     var data={"startTime":questTime,
  		"endTime":endTimeQuest};
    
     questAjax(data);
-    questTime=increateTime(false,date1,1);
+    questTime=increateTime(false,endTimeQuest,1);
 }
 function changeThumb(time){
 	
@@ -368,21 +467,11 @@ function changeThumb(time){
 	
 	var valStr = value / sum * 100 + "% 100%";
 	
-	
-	var date1 = new Date(startTime)
-	var date2 = new Date(startTime)
-	
-	var start=increateTime(false,date1,parseInt(value))
+
+	var start=increateTime(false,startTime,parseInt(value))
 	console.log(start)
-	//console.log(questTime)
-	var date3 = new Date(questTime);
-	var time2=increateTime(false,date2,1);
-	var quest1=increateTime(false,date3,1);
-	console.log("time2",time2)
-	//var quest2=increateTime(false,date3,1);
-	//var quest3=increateTime(false,date3,1);
-	//if(questTime!=start)
-	//{	
+
+	var time2=increateTime(false,startTime,1);
 	
 	if(value!=0)
 		{//防止初始化拼接
@@ -403,11 +492,6 @@ function changeThumb(time){
 			}
 		}
 	
-
-	
-	
-	//var date1 = new Date(start)
-	//start=reduceTime(false,date1,1)
 	$("#timeStart").val(start.substr(start.length-8))
 	
 	$('#range_speed').css({
@@ -415,6 +499,8 @@ function changeThumb(time){
 	})
 	
 	$('#range_speed').val(value);
+	console.log(value);
+	console.log(valStr);
 }
 
  //将秒数转为00:00格式   
@@ -517,62 +603,70 @@ function getUrl(time)
        // console.log(picList1)
       
        console.log("photo.length",photo.length)
-       
-      
-		if(photo.length==0){
+       if(photo.length==0){
 			if(cacheFlag){
-    		//alert("数据已播完")
-    		 $('#buttonPlay').removeClass('btn2');
-    		clearInterval(event);
-    		clearInterval(eventReal);
-    		event="";
-    		eventReal="";
-    		//var date1 = new Date(startTime)
-    		startTimeback="";
-    			//reduceTime(false,date1,1);
-    		return;
+       		//alert("数据已播完")
+       		 $('#buttonPlay').removeClass('btn2');
+       		clearInterval(event);
+       		clearInterval(eventReal);
+       		event="";
+       		eventReal="";
+       		startTimeback="";
+       			
+       		return;
 			}
 			else{
+				
 				//time=Number(time)-Number(playInternal/(1000*accelerate));
-				mc--;
+				if(mc==0){
+					mc=sumSecond-1;
+					console.log("oooomc",mc)
+					time--;
+				}else{
+					mc--;
+				}
+				
 			}
-    	}else{
-        for (var i = 0; i < phoList.length; i++) {
-        	
-        	
-            phoList[i].src = photo[i]
-            console.log("lujin",phoList[i].src)
-              
-            
-        }
-        //picZ(ibannerIndex);
-        //btnList[0].className = 'current';
-        //picList[currentNum].style.zIndex = '2';
-        picList[0].style.zIndex = '3';
-        picList[0].style.left = '0px';
-        
-        //moveElement('picLi_' + ibannerIndex + '0', 0, 0, 0);
-        //requestAnimationFrame(moveElement);
-        //moveElement();
-    	}
-       photo.splice(0, 1);
-       mc++;  
+   	}else{
+       for (var i = 0; i < phoList.length; i++) {
+       	
+       	
+           phoList[i].src = photo[i]
+           console.log("lujin",phoList[i].src)
+             
+           
+       }
+       //picZ(ibannerIndex);
+       //btnList[0].className = 'current';
+       //picList[currentNum].style.zIndex = '2';
+       picList[0].style.zIndex = '3';
+       picList[0].style.left = '0px';
+       
+       //moveElement('picLi_' + ibannerIndex + '0', 0, 0, 0);
+       //requestAnimationFrame(moveElement);
+       //moveElement();
+   	}
+      photo.splice(0, 1);
+    
+       		mc++;  
             console.log("mc",mc)
 //            if(parseInt(time, 10) === time){
 //            	playInternal=internalChange;
 //            	accelerate=acceleChange;
 //            }
            
-            //time=Number(time)+Number(playInternal/(1000*accelerate));
+            //time=Number(time)+Number(playInternal/(1000*accelerate));//实际一秒显示后端传来的一秒的数据量（后端每秒数据量不一致会导致加速减速出现问题）
          	console.log("time",time)
          	if(!eventReal){
-         		 if(mc==sumSecond)
+         		 if(mc==sumSecond)//每秒的数据量，用mc变量计算，隔离playInternal，保证每张图片显示时间一致
          	//if(parseInt(time, 10) === time)
          	{		time++;
          			 changeThumb(time);
          			 mc=0;
          			 }
          	}
+            
+    		
          	
          	console.log("sumSecond",sumSecond)
          	event=setTimeout('autoBanner("1")', playInternal)
@@ -587,12 +681,12 @@ function getUrl(time)
     			return;
     		}else if($(this).val()==-1)
     			{
-    			internalChange = playInternal*4;
-    			acceleChange=accelerate*4;
+    			playInternal = playInternal*4;
+    			//acceleChange=accelerate*4;
     			}else
     				{
-    				internalChange = playInternal/4;
-    				acceleChange=accelerate/4;
+    				playInternal = playInternal/4;
+    				//acceleChange=accelerate/4;
     				}
 	  
     		
@@ -614,15 +708,15 @@ function getUrl(time)
 			}
 		}
 	}
-    function reduceTime(flag,t,seconds)
-    {//var t = new Date();//你已知的时间
+    function reduceTime(flag,time1,seconds)
+    {	var t = new Date(time1);//你已知的时间
         var t_s = t.getTime();//转化为时间戳毫秒数
         t.setTime(t_s - 1000 * seconds);
         //t.setTime(t.setHours(t.getHours() -8));
         var time=generateTime(flag,t)
         return time}
-    function increateTime(flag,t,seconds) {
-        //var t = new Date();//你已知的时间
+    function increateTime(flag,time1,seconds) {
+        var t = new Date(time1);//你已知的时间
         var t_s = t.getTime();//转化为时间戳毫秒数
         t.setTime(t_s + 1000 * seconds);
         //t.setTime(t.setHours(t.getHours() -8));
@@ -691,76 +785,41 @@ function increateSpeed(){
 	console.log(sum);
 	$('#range_speed').val(value);
 	var valStr = value/sum*100 + "% 100%";
-	console.log(questTime);
-	$('#range_speed').css({
-	  "background-size": valStr
-	}) 
+	
+	
 
 	if(value==sum){
 		
 		value=sum-1;
 	}
-		
-	var date=new Date(startTime);
-	//var num = new Number(value);
-	 questTime=increateTime(false,date,value);
+
+	 var increateQuestTime=increateTime(false,startTime,value);
+	 console.log(increateQuestTime);
 	 time=value;//滑动
-	$("#timeStart").val(questTime.substr(questTime.length-8));
+	 mc=0;
+	$("#timeStart").val(increateQuestTime.substr(increateQuestTime.length-8));
 	if(time==0)
 		{init();
 		return;}
 	photo=[];
-	photo=getUrl(questTime);
-	if(photo==""){
+	var p=getUrl(increateQuestTime);
+	
+	if(p.photo1==""){
 		console.log(5555)
 		var data={
-				"startTime":questTime,
-				"endTime":questTime
+				"startTime":increateQuestTime,
+				"endTime":increateQuestTime
 			}
-			$.ajax({
-
-			   type: 'post',
-			   url: '/api/v1/test/selectLoadMsgByPeriod',
-			   data: JSON.stringify(data),
-			   contentType : 'application/json;charset=utf8',
-			   dataType: 'json',
-			   cache: false,
-			   async:false,
-			   success: function (res) {
-			     if (res.code == 0) {
-			    	 console.log(res)
-			    
-			    	var row=res.data.testModelList;
-			    	 sum=0;
-			    	 
-			    	 for(var i=0;i<row.length;i++)
-			    	{ 
-			    		 console.log("tupian",row[i].picPath)
-			    		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
-			    		 	{ row.splice(i,1);
-			    		 		i--;
-			    		 	}else{
-			    		 	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
-			    		 	photo.push(row[i].picPath)
-			    		 	sum++;
-			    		 	}
-			    		
-			    	}
-			     } else {
-			    	 	alert(res.message);
-			     		}
-			   },
-			   error: function (res) {
-				  alert("11"+JSON.stringify(res));
-			   },
-			   complete: function () {
-			   }
-			  });
-			
+		soloAjax(data);	
+	}else{
+		photo=p.photo1;
 	}
+	$('#range_speed').css({
+		  "background-size": valStr
+		}) 
 	var picList = getEvent('ibanner_pic' + "1").getElementsByTagName('a');
 	var phoList = getEvent('ibanner_pic' + "1").getElementsByTagName('img');	
-	phoList[0].src=photo[0]
+	 phoList[0].src=photo[0]
 	 picList[0].style.zIndex = '3';
      picList[0].style.left = '0px';
 	}
@@ -777,73 +836,37 @@ function reduceSpeed(){
 	console.log(sum);
 	$('#range_speed').val(value);
 	var valStr = value/sum*100 + "% 100%";
-	console.log(questTime);
-	$('#range_speed').css({
-	  "background-size": valStr
-	}) 
+	
 
 	if(value==sum){
 		
 		value=sum-1;
 	}
-		
-	var date=new Date(startTime);
-	//var num = new Number(value);
-	 questTime=increateTime(false,date,value);
+
+	var reducequestTime=increateTime(false,startTime,value);
 	 time=value;//滑动
-	$("#timeStart").val(questTime.substr(questTime.length-8));
+	 mc=0;
+	$("#timeStart").val(reducequestTime.substr(reducequestTime.length-8));
 	if(time==0)
 		{init();
 		return;}
 	photo=[];
-	photo=getUrl(questTime);
-	if(photo==""){
+	var p=getUrl(reducequestTime);
+	if(p.photo1==""){
 		console.log(5555)
 		var data={
-				"startTime":questTime,
-				"endTime":questTime
+				"startTime":reducequestTime,
+				"endTime":reducequestTime
 			}
-			$.ajax({
-
-			   type: 'post',
-			   url: '/api/v1/test/selectLoadMsgByPeriod',
-			   data: JSON.stringify(data),
-			   contentType : 'application/json;charset=utf8',
-			   dataType: 'json',
-			   cache: false,
-			   async:false,
-			   success: function (res) {
-			     if (res.code == 0) {
-			    	 console.log(res)
-			    
-			    	var row=res.data.testModelList;
-			    	 sum=0;
-			    	 
-			    	 for(var i=0;i<row.length;i++)
-			    	{ 
-			    		 console.log("tupian",row[i].picPath)
-			    		 if(row[i].picPath.substr(row[i].picPath.length-4)=="null")
-			    		 	{ row.splice(i,1);
-			    		 		i--;
-			    		 	}else{
-			    		 	localDB.insert("myDB", {url:row[i].picPath,time:row[i].time});
-			    		 	photo.push(row[i].picPath)
-			    		 	sum++;
-			    		 	}
-			    		
-			    	}
-			     } else {
-			    	 	alert(res.message);
-			     		}
-			   },
-			   error: function (res) {
-				  alert("11"+JSON.stringify(res));
-			   },
-			   complete: function () {
-			   }
-			  });
+		soloAjax(data);
 			
+	}else{
+		photo=p.photo1;
 	}
+	console.log(reducequestTime);
+	$('#range_speed').css({
+	  "background-size": valStr
+	}) 
 	var picList = getEvent('ibanner_pic' + "1").getElementsByTagName('a');
 	var phoList = getEvent('ibanner_pic' + "1").getElementsByTagName('img');	
 	phoList[0].src=photo[0]
