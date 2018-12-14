@@ -212,14 +212,14 @@ window.localDB = (new (function(){
             if(select_value){
                 //是否查找全部
                 if(is_select_all === true){
-                    for(var i=all_data.length-1; i>=0; i--){
+                    for(var i=0; i<all_data.length; i++){
                         //全部查找，生成结果集
                         select_result.push(new productObj(i,all_data[i]));
                     }
                 }
                 else{
                     //条件查找
-                    for(var i=all_data.length-1; i>=0; i--){
+                    for(var i=0; i<all_data.length; i++){
                         //如果格式相同，检测值相等情况
                         if( typeof(all_data[i]) === typeof(select_value) ){
                             if(JSON.stringify(all_data[i]) === JSON.stringify(select_value) ){

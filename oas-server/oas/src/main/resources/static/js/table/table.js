@@ -5,6 +5,8 @@
 var backwardStatus = 0; //快退标志位
 var forwardStatus = 0; //快退标志位
 var loadT;
+var forwardLoadT;
+var backwardLoadT;
 //表格回显
 $(function(){
 	ready();
@@ -48,28 +50,28 @@ function initTable(data) {
 		data:data,
 		columns : [{  
 			title: "参数代码",  
-			field: "minerName",
+			field: "parameterId",
 			align: 'center',
 			valign: 'middle', 
 			width:  '40px',
 			},
 			{
 			title : "参数名称",
-			field : "minerDescription",
+			field : "parameter",
 			align: 'center',
 			valign: 'middle',
 			width:  '40px',
 		    },
 			{
 			title : "参数意义",
-			field : "loadPicturePath",
+			field : "picPath",
 			align: 'center',
 			valign: 'middle',
 			width:  '100px',
 			},
 			{
-			title : "参数源码",
-			field : "minerPrice",
+			title : "参数数值",
+			field : "value",
 			align: 'center',
 			valign: 'middle',
 			width:  '40px',
@@ -122,7 +124,7 @@ function getData(){
 	var data;
 	var data1={"number": 1};
 	$.ajax({		
-		url: "/api/v1/load/selectLoadMsg",
+		url: "/api/v1/test/selectTestMsg",
 	    contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -133,7 +135,7 @@ function getData(){
 //		alert(JSON.stringify(res));
 		if(res.code==0)
 			{data=res.data;
-			console.log("rows:",JSON.stringify(data.rows));
+//			console.log("rows:",JSON.stringify(data.rows));
 			}		
 		  else{alert("回显失败！");}			
 		}, 
@@ -147,8 +149,9 @@ function getData(){
 function ready(){
     $('#table').bootstrapTable('destroy');
 	 var resData = getData();
-	 var data = resData.rows;
-	 console.log(JSON.stringify(data));
+	 console.log(resData);
+	 var data = resData.testModelList;
+//	 console.log(JSON.stringify(data));
 	 initTable(data);
 }
 
@@ -164,7 +167,7 @@ function progress(){
 	console.log(time);
 //	alert(time);
 	$.ajax({
-		url: "/api/v1/load/selectLoadMsgByPeriod",
+		url: "/api/v1/test/selectTestMsgByPeriod",
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -174,7 +177,7 @@ function progress(){
 		success: function(res) {
 //		alert(JSON.stringify(res));
 		if(res.code==0){
-			var resData=res.data.rows;
+			var resData=res.data.testModelList;
 			console.log("111",JSON.stringify(resData));
 			map={};
 			load(resData,newTime,endTime);
@@ -202,6 +205,7 @@ function load(data,startTime,endTime){
 	request(data,startTime,endTime);
 	
 	loadT = setTimeout(function(){
+		clearTimeout(loadT);
 		load(data,startTime,endTime);
 	},1000)
 	
@@ -213,12 +217,13 @@ function forwardLoad(data,startTime,endTime){
 	if($("#play span").attr("class") == "glyphicon glyphicon-play"){
 		return;
 	}
-	if(backwardStatus == 1){
+	if(backwardStatus == 1 || forwardStatus == 1){
 		backwardStatus = 0;
+		forwardStatus = 0;
 		return;
 	}
 	request(data,startTime,endTime);
-	setTimeout(function(){
+	forwardLoadT = setTimeout(function(){
 		forwardLoad(data,startTime,endTime);
 	},1000)
 	return;
@@ -229,12 +234,13 @@ function backwardLoad(data,startTime,endTime){
 	if($("#play span").attr("class") == "glyphicon glyphicon-play"){
 		return;
 	}
-	if(forwardStatus == 1){
+	if(backwardStatus == 1 || forwardStatus == 1){
+		backwardStatus = 0;
 		forwardStatus = 0;
 		return;
 	}
 	request(data,startTime,endTime);
-	setTimeout(function(){
+	backwardLoadT = setTimeout(function(){
 		backwardLoad(data,startTime,endTime);
 	},1000)
 	return;
@@ -250,14 +256,14 @@ function request(data,startTime,endTime){
 	}else{
 		//var time_t = data[0].updated;
 		for(var i=0; i<data.length; i++){
-			if(!map.hasOwnProperty(data[i].updated)){
-	        	map[data[i].updated] = Array();
-	        	var arr = map[data[i].updated];
+			if(!map.hasOwnProperty(data[i].time)){
+	        	map[data[i].time] = Array();
+	        	var arr = map[data[i].time];
 		        arr.push(data[i]);
 	        }else{
-	        	var arList = map[data[i].updated];
+	        	var arList = map[data[i].time];
 	        	arList.push(data[i]);
-	        	map[data[i].updated] = arList;
+	        	map[data[i].time] = arList;
 	        }	        	
 //	        console.log("arr:", arr);	    
 		}
@@ -294,7 +300,7 @@ function playInterval(startTime, endTime){
 	var time = {"startTime": startTime};
 	console.log(time);	
 	$.ajax({
-		url: "/api/v1/load/selectLoadMsgByPeriod",
+		url: "/api/v1/test/selectTestMsgByPeriod",
 		contentType : 'application/json;charset=utf8',
 		dataType: 'json',
 		cache: false,
@@ -304,11 +310,31 @@ function playInterval(startTime, endTime){
 		success: function(res) {
 //		alert(JSON.stringify(res));
 		if(res.code==0){
-			data=res.data.rows;
-			data.splice(0,4);
+			data=res.data.testModelList;
+			for(var i=0; i<data.length; i++){
+				if(!map.hasOwnProperty(data[i].time)){
+		        	map[data[i].time] = Array();
+		        	var arr = map[data[i].time];
+			        arr.push(data[i]);
+		        }else{
+		        	var arList = map[data[i].time];
+		        	arList.push(data[i]);
+		        	map[data[i].time] = arList;
+		        }    
+			}
+			for(var i in map){
+				var ii = 0;
+				var length = map[i].length;
+				var len = 2 * length;
+				console.log(len);
+				data.splice(0,len);
+				if(ii == 0) break;
+			}
 			console.log("111",JSON.stringify(data));
 			map={};
 			clearTimeout(loadT);
+			clearTimeout(forwardLoadT);
+			clearTimeout(backwardLoadT);
 			load(data,startTime,endTime);
 		}		
 		  else{alert("回显失败！");}			
@@ -338,7 +364,7 @@ function progressTime(date1, date2){
 	return newTime;
 }
 
-//进度小方块的移动
+//进度向前的移动
 function progressBtn(d){ 
 	var width = Number($('.progress_bar').css("width").replace('px',''));
 	var left = Number($('.progress_btn').css("left").replace('px',''));

@@ -60,8 +60,10 @@ dependencies{
   // https://mvnrepository.com/artifact/org.apache.cassandra/cassandra-all
   // compile group: 'org.apache.cassandra', name: 'cassandra-all', version: '3.11.3'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-cassandra', version: '2.0.0.RELEASE'
-  
-  // https://mvnrepository.com/artifact/org.webjars/highstock
+    // https://mvnrepository.com/artifact/org.cassandraunit/cassandra-unit
+    //testCompile group: 'org.cassandraunit', name: 'cassandra-unit', version: '1.0.1.4'
+
+    // https://mvnrepository.com/artifact/org.webjars/highstock
   compile group: 'org.webjars', name: 'highstock', version: '6.0.3'
   // https://mvnrepository.com/artifact/org.webjars/highcharts
  compile group: 'org.webjars', name: 'highcharts', version: '6.2.0'
