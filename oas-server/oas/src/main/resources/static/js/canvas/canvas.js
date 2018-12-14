@@ -28,7 +28,7 @@ document.write("<script language=javascript src='/js/canvas/animate.js'></script
 	 console.log(event)
 	  if (!event) {
 		   
-		  if($('#range_speed').val()==$('#range_speed').attr("max")||$('#range_speed').val()==0){
+		  if($('#range_speed').val()==$('#range_speed').attr("max")){
 			  init(); 
 			  
 		  }
@@ -67,12 +67,8 @@ function quest(){
 		       console.log("endtime",endTimeQuest)
 		       //console.log("startTimeback2",startTimeback2)
 		       console.log("startTimeback",startTimeback)
-		        //var p=getUrl(startTimeback);
-//		       if(p.photo1.length!=0){
-//		    	   clearInterval(eventQuest);
-//		    	   eventQuest="";
-//		    	   return;
-//		       }
+		        
+		     
 		      if(startTimeback>endTime){
 		    	  
 		    	  cacheFlag=1;
@@ -80,6 +76,12 @@ function quest(){
 		    	  eventQuest="";
 		 		 return;
 		      }
+//		       var p=getUrl(startTimeback);
+//		      if(p.photo1.length!=0){
+//		    	   clearInterval(eventQuest);
+//		    	   eventQuest="";
+//		    	   return;
+//		       }
 		       var data={"startTime":startTimeback,
 		    		"endTime":endTimeQuest};
 		      
@@ -356,6 +358,7 @@ var number=2;
 			//if(event){
 			questTime=increateTime(false,questTime,1);
 			clearInterval(eventChange);
+			
 			eventChange=setInterval(changeQuest,1000);
 			//}
 
@@ -437,22 +440,23 @@ function changeQuest(){
 	//var date1 = new Date(questTime)
   
     var endTimeQuest=increateTime(false,questTime,2);//3秒
-    console.log("endtime",endTimeQuest)
+    console.log("endtimechange",endTimeQuest)
    
     console.log("startTimechange",questTime)
+    if(questTime>endTime){
+ 	   console.log(111)
+ 	   
+  	  clearInterval(eventChange);
+ 	   eventChange="";
+ 		 return;
+    }
     var p=getUrl(questTime);
     if(p.photo1.length!=0){
  	   clearInterval(eventChange);
  	  eventChange="";
  	   return;
     }
-   if(endTimeQuest>endTime){
-	   console.log(111)
-	   
- 	  clearInterval(eventChange);
-	   eventChange="";
-		 return;
-   }
+  
     var data={"startTime":questTime,
  		"endTime":endTimeQuest};
    
@@ -604,13 +608,16 @@ function getUrl(time)
       
        console.log("photo.length",photo.length)
        if(photo.length==0){
-			if(cacheFlag){
+    	   if(eventReal){
+    		   clearInterval(eventReal);
+    		   eventReal="";
+    		   return;
+    	   }
+			if($('#range_speed').val()==$('#range_speed').attr("max")){
        		//alert("数据已播完")
        		 $('#buttonPlay').removeClass('btn2');
        		clearInterval(event);
-       		clearInterval(eventReal);
        		event="";
-       		eventReal="";
        		startTimeback="";
        			
        		return;
@@ -648,7 +655,7 @@ function getUrl(time)
    	}
       photo.splice(0, 1);
     
-       		mc++;  
+       		 
             console.log("mc",mc)
 //            if(parseInt(time, 10) === time){
 //            	playInternal=internalChange;
@@ -658,6 +665,7 @@ function getUrl(time)
             //time=Number(time)+Number(playInternal/(1000*accelerate));//实际一秒显示后端传来的一秒的数据量（后端每秒数据量不一致会导致加速减速出现问题）
          	console.log("time",time)
          	if(!eventReal){
+         		mc++; 
          		 if(mc==sumSecond)//每秒的数据量，用mc变量计算，隔离playInternal，保证每张图片显示时间一致
          	//if(parseInt(time, 10) === time)
          	{		time++;
@@ -777,7 +785,7 @@ function getUrl(time)
 function increateSpeed(){
 	if(eventReal)
 	{return;}
-	if(event){
+	//if(event){
 	var value = Number($('#range_speed').val())+1;
 	
 	var sum=$("#range_speed").attr("max");
@@ -822,12 +830,12 @@ function increateSpeed(){
 	 phoList[0].src=photo[0]
 	 picList[0].style.zIndex = '3';
      picList[0].style.left = '0px';
-	}
+	//}
 }
 function reduceSpeed(){
 	if(eventReal)
 		{return;}
-	if(event){
+	//if(event){
 	var value = Number($('#range_speed').val())-1;
 	if(value==-1)
 		{return;}
@@ -872,7 +880,7 @@ function reduceSpeed(){
 	phoList[0].src=photo[0]
 	 picList[0].style.zIndex = '3';
      picList[0].style.left = '0px';
-	}
+	//}
 }
     var photoReal;
     var eventReal;
@@ -889,13 +897,15 @@ function reduceSpeed(){
     		 startTime="0";
     		 $("#timeStart").val(time0.substr(time0.length-8));
 	         $("#timeEnd").val(time0.substr(time0.length-8));
-	        	
+	        	var imgs=[];
     		connect(undefined,function(msg){
 	    		console.log(msg);
 	    		msg = JSON.parse(msg)
 	    	
 	    		for(var i=0;i<msg.length;i++)
 	    		{
+	    			imgs[i]=new Image();
+		     		imgs[i].src=row[i].picPath;
 	    			photo.push(msg[i].picPath)
 	    		}
 	    		$(".range").attr({'max':photo.length});   
