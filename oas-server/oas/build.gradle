@@ -45,6 +45,7 @@ dependencies{
   compile('com.alibaba:druid-spring-boot-starter:1.1.10')
   compile('org.webjars:jquery:3.1.1')
   compile('org.webjars:bootstrap:3.3.7')
+  compile('org.webjars:Eonasdan-bootstrap-datetimepicker:4.17.47')
   compile group: 'org.webjars.bower', name: 'bootstrap-treeview', version: '1.2.0'
   compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
   compile('eu.bitwalker:UserAgentUtils:1.19')
