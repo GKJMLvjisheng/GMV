@@ -82,6 +82,7 @@ dependencies{
    //cassandra
    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-cassandra', version: '1.5.3.RELEASE'
    compile group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version: '3.5.0'
+   
 }
 
 
