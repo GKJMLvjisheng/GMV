@@ -1,13 +1,11 @@
 
 /* 
- * 以下是曲线func，包括三个函数，一个用于回显，一个用于定时后台取数据动态显示曲线，一个显示实时曲线
+ * 进入网页读取前20秒数进行回显；利用函数allPointCreate()获取最后一圈全部数据，为非实时动态曲线缓存数据
  */
 //通过Ajax获取静态图表数据
-var startTime='';
-var startTimeInitial ='';
-var endTime ="";
-var chart1;
-var arr2 ={};
+var startTime='';          //全局，记录滑动条的时间
+var startTimeInitial ='';  //最后一圈的初始时间
+var endTime ="";           //最后一圈的终止时间
 $(function(){
 	var data1={
 			"number":20
@@ -16,7 +14,7 @@ $(function(){
     var y = [];//Y轴
     var xtext = [];//X轴TEXT
 	$.ajax({
-		url: "/api/v1/load/selectLoadMsg",
+		url: '/api/v1/test/selectTestMsg',
 	    contentType : 'application/json;charset=utf8',
 	    dataType: 'json',
 	    cache: false,
@@ -27,46 +25,42 @@ $(function(){
 	    	alert(JSON.stringify(res));
 	    	startTimeInitial =res.data.startTime;
 	    	endTime = res.data.endTime;
-	        var data2=res.data.rows;
+	        var data2=res.data.testModelList;
 	        var map={};
 	        var map2 ={};
 	        for (var i in data2){
 	        	//alert(JSON.stringify(data2[i]));
 	            var data3 = data2[i];
-	            //alert(JSON.stringify(data3.minerName));
-	            if(!map.hasOwnProperty(data3.minerName)){
-	            	map[data3.minerName] = Array();
-	            	map2[data3.minerName] = Array();
+	            //alert(JSON.stringify(data3.parameter));
+	            if(!map.hasOwnProperty(data3.parameter)){
+	            	map[data3.parameter] = Array();
+	            	map2[data3.parameter] = Array();
 	            	}
-	            var arr = map[data3.minerName];
-	            //var arr2 =map2[data3.minerName]
-	            arr2 =map2[data3.minerName];
+	            var arr = map[data3.parameter];
+	            //var arr2 =map2[data3.parameter]
+	            arr2 =map2[data3.parameter];
 	            arr.push(data3);
-	            if(arr.length == 0){
-	            	//arr[0].x =data3.updated;
-	            	arr[0].y = Number(data3.minerDescription)
-	     	        xtext.push(data3.updated);//给X轴TEXT赋值
-	     	        }else{
-	     	        	//arr[arr.length-1].x =data3.updated;
-	     	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
-	     	        	if(xtext[xtext.length-1]!=data3.updated){
-	     	        		xtext.push(data3.updated);//给X轴TEXT赋值
-	     	        		startTime=xtext[0];
-	     	        		//startTime=xtext[xtext.length-1];
-	     	        		}	     	  
-	     	        	var a ={};
-	    	        	a.x =new Date(xtext[xtext.length-1]).getTime();
-	    				a.y = arr[arr.length - 1].y;
-	    	 	       //arr2.push(a);
-	    	 	       //map2[data3.minerName] = arr2;
-	     	        	}
+ 	        	//arr[arr.length-1].x =data3.time;
+ 	        	arr[arr.length-1].y = Number(data3.value)   //给Y轴赋值
+ 	        	if(xtext[xtext.length-1]!=data3.time){
+ 	        		xtext.push(data3.time);//给X轴TEXT赋值
+ 	        		//startTime=xtext[0];
+ 	        		startTime=xtext[xtext.length-1];   //动态取值的初始时间：startTime+1
+ 	        		
+ 	        		}	     	  
+ 	        	var a ={};
+	        	a.x =new Date(xtext[xtext.length-1]).getTime();
+				a.y = arr[arr.length - 1].y;
+	 	        arr2.push(a);
+	 	        map2[data3.parameter] = arr2;
 	            } 
-	        $("#timeStart").val(startTime.substr(startTime.length-8));
-	        $("#timeEnd").val(endTime.substr(startTime.length-8));
+	        $("#timeStart").val(startTimeInitial.substr(startTimeInitial.length-8));
+	        $("#timeEnd").val(endTime.substr(endTime.length-8));
 	        var options = {
 	        //var chart1 = new Highcharts.Chart({
 	        	chart: {
 	        		renderTo: "container",
+	        		zoomType:"x",
 	                plotBackgroundColor: null,
 	                plotBorderWidth: null,
 	                plotShadow: false,
@@ -125,165 +119,18 @@ $(function(){
 	        	alert("数据获取失败！")
 	        	}
 	        }); 
+	allPointCreate();
     })
-    
-    
-//实时曲线显示
-var realMsg=[];
-var chart;
-var map2={};
-function realTimeCurve(){
-	   connect(undefined,function(msg){
-		console.log(msg);
-		realMsg = JSON.parse(msg);
-		realTimePointCreate();
-		createSeries();
-		generateChart();
-		//activeLastPointToolip(chart);
-	},"topic");   
-}
 
-function realTimePointCreate(){
-var map={};
-var map3 ={};
-for (var i in realMsg){
-	//alert(JSON.stringify(data2[i]));
-    var data3 = realMsg[i];
-    //alert(JSON.stringify(data3.minerName));
-    if(!map.hasOwnProperty(data3.minerName)){
-    	map[data3.minerName] = Array();
-    	//map2[data3.minerName] = Array();
-    	map3[data3.minerName] = Array();
-    	if(map2[data3.minerName] === undefined || map2[data3.minerName].length == 0){			            	
-    		map2[data3.minerName] = Array();
-        	}
-    	}
-    var arr = map[data3.minerName];
-    //var arr2 =map2[data3.minerName];
-    var arr3 =map3[data3.minerName];
-    arr.push(data3);
-	arr[arr.length-1].x = data3.updated;
-	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
-	var a ={};
-	//a.x =new Date(xtext[xtext.length-1]).getTime();
-	a.x =new Date(arr[arr.length-1].x).getTime();
-	a.y = arr[arr.length - 1].y;
-    //arr2.push(a);
-	arr3.push(a);
-    //map2[data3.minerName] = arr2;
-	map3[data3.minerName] = arr3;
-    }
-    //map2["温度"].push(map3["温度"][0]);
-    for(key in map3){
-        //alert(key + map[key]); 
-    	//map2[key].push(map3[key][0]);
-    	var group = map2[key];
-    	group.push(map3[key][0]);
-    	map2[key] = group;
-    }
-    
-};  
-
-Highcharts.setOptions({
-	global: {
-		useUTC: false
-	}
-});
-
-	function activeLastPointToolip(chart) {
-		var points = chart.series[0].points;
-		chart.tooltip.refresh(points[points.length -1]);
-}
-
-function generateChart(){
-	chart = Highcharts.chart('container', {
-		chart: {
-			type: 'spline',
-			marginRight: 10,
-			events: {
-				load: function () {
-					series =this.series
-					var i=0;
-					chart = this;
-					for(key in map2){       
-						var xi =map2[key][map2[key].length-1].x,
-							yi =map2[key][map2[key].length-1].y;
-							series[i].addPoint([xi, yi], true, true);
-							i=i+1;
-					}
-				}
-			}
-		},
-		title: {
-			text: '动态模拟实时数据'
-		},
-		xAxis: {
-			type: 'datetime',
-			tickPixelInterval: 150
-		},
-		yAxis: {
-			title: {
-				text: null
-			}
-		},
-		tooltip: {
-			formatter: function () {
-				return '<b>' + this.series.name + '</b><br/>' +
-					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
-					Highcharts.numberFormat(this.y, 2);
-			}
-		},
-		legend: {
-			//enabled: false,
-			layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            borderWidth: 0
-		},
-		series: createSeries(),
-	});
-}
-
-function createSeries() {	
-	var series = new Array();
-    var i=0;
-    var mapSize;
-    var map_copy = {};
-	$.extend( true , map_copy,map2);
-    for(key in map_copy){
-        //alert(key + map[key]); 
-        series[i] = new Object();
-        series[i].name = key;
-        series[i].data = map_copy[key];
-        mapSize=map_copy[key].length;
-        i++;
-    }
-    
-    if(mapSize<20){
-    	 for(j in series){
- 		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})   //数组开头添加一组数据,因为添加点后自动移除第一个数据了
- 		  	}  
-    }else{
-    	for(j in series){
-    	series[j].data.splice(0,mapSize-20)
-    	}
-    	
-    }   
-    return series;	
-}
-
-//此处往下为动态获取非实时数据，一秒一次，一次一个数据
-
-//动态获取非实时曲线点
-var date;
-var dynamicPointMap ={};
-function dynamicPointCreate(){	
+//获取最后一圈全部数据并存入totalMap中   
+var totalMap={};
+function allPointCreate(){	
 	 var data1 = {
-			    "startTime" : startTime,
-			    "endTime":startTime
+			    "startTime" : startTimeInitial,
+			    "endTime":endTime
 			  };
 			$.ajax({
-				url: "/api/v1/load/selectLoadMsgByPeriod",
+				url: "/api/v1/test/selectTestMsgByPeriod",
 			    contentType : 'application/json;charset=utf8',
 			    dataType: 'json',
 			    cache: false,
@@ -293,87 +140,195 @@ function dynamicPointCreate(){
 			    processData : false,
 			    success: function(res) {
 			    	//alert(JSON.stringify(res));
-			        var data2=res.data.rows;
+			        var data2=res.data.testModelList;
 			        var map={}
 			        var map4={}
 			        for (var i in data2){
 			        	//alert(JSON.stringify(data2[i]));
 			            var data3 = data2[i];
-			            //alert(JSON.stringify(data3.minerName));
-			            if(!map.hasOwnProperty(data3.minerName)){
-			            	map[data3.minerName] = Array();
-			            	map4[data3.minerName] = Array();
-			            	if(dynamicPointMap[data3.minerName] === undefined || dynamicPointMap[data3.minerName].length == 0){			            	
-			            	dynamicPointMap[data3.minerName] = Array();
+			            //alert(JSON.stringify(data3.parameter));
+			            if(!map.hasOwnProperty(data3.parameter)){
+			            	map[data3.parameter] = Array();
+			            	map4[data3.parameter] = Array();
+			            	if(totalMap[data3.parameter] === undefined || totalMap[data3.parameter].length == 0){			            	
+			            		totalMap[data3.parameter] = Array();
 			            	}
 			            }
-			            var arr = map[data3.minerName];
-			            arr4 = map4[data3.minerName];
+			            var arr = map[data3.parameter];
+			            arr4 = map4[data3.parameter];
 			            arr.push(data3);
-			            arr[arr.length-1].x = data3.updated;
-			            date = new Date( data3.updated);			           			           
-		 	        	arr[arr.length-1].y = Number(data3.minerDescription)   //给Y轴赋值
+			            arr[arr.length-1].x = data3.time;
+			            //date = new Date( data3.time);			           			           
+		 	        	arr[arr.length-1].y = Number(data3.value)   //给Y轴赋值
 		 	        	var a ={};
 		 	        	a.x =new Date(arr[arr.length-1].x).getTime();
 		 	        	a.y = arr[arr.length - 1].y;
 		 	        	arr4.push(a);
-		 	        	map4[data3.minerName] = arr4;
-		 	        	//j=Number(map4[data3.minerName].length)-1;
-		 	        	//dynamicPointMap[data3.minerName].push(map4[data3.minerName][j]);
+		 	        	map4[data3.parameter] = arr4;
+		 	        	//j=Number(map4[data3.parameter].length)-1;
+		 	        	//dynamicPointMap[data3.parameter].push(map4[data3.parameter][j]);
 			            }
-			        for(key in map4){
-			            //alert(key + map[key]); 
-			        	var group = dynamicPointMap[key];
-			        	group.push(map4[key][0]);
-			        	dynamicPointMap[key] = group;
-			        }
+			        totalMap =map4;
 			        },
 			        error: function(){
 			        	alert("数据获取失败！")
 			        	}
 			        });  
-}
+}    
+    
+    
+    
+    
+
+/*//此处往下为动态获取非实时数据，一秒一次，一次一个数据
+
+//动态获取非实时曲线点
+var date;
+var dynamicPointMap ={};
+function dynamicPointCreate(){	
+	 var data1 = {
+			    "startTime" : startTime,
+			    "endTime":endTime
+			  };
+			$.ajax({
+				url: "/api/v1/test/selectTestMsgByPeriod",
+			    contentType : 'application/json;charset=utf8',
+			    dataType: 'json',
+			    cache: false,
+			    type: 'post',
+			    data:JSON.stringify(data1),
+			    async : false,
+			    processData : false,
+			    success: function(res) {
+			    	//alert(JSON.stringify(res));
+			        var data2=res.data.testModelList;
+			        var map={}
+			        var map4={}
+			        for (var i in data2){
+			        	//alert(JSON.stringify(data2[i]));
+			            var data3 = data2[i];
+			            //alert(JSON.stringify(data3.parameter));
+			            if(!map.hasOwnProperty(data3.parameter)){
+			            	map[data3.parameter] = Array();
+			            	map4[data3.parameter] = Array();
+			            	if(dynamicPointMap[data3.parameter] === undefined || dynamicPointMap[data3.parameter].length == 0){			            	
+			            	dynamicPointMap[data3.parameter] = Array();
+			            	}
+			            }
+			            var arr = map[data3.parameter];
+			            arr4 = map4[data3.parameter];
+			            arr.push(data3);
+			            arr[arr.length-1].x = data3.time;
+			            //date = new Date( data3.time);			           			           
+		 	        	arr[arr.length-1].y = Number(data3.value)   //给Y轴赋值
+		 	        	var a ={};
+		 	        	a.x =new Date(arr[arr.length-1].x).getTime();
+		 	        	a.y = arr[arr.length - 1].y;
+		 	        	arr4.push(a);
+		 	        	map4[data3.parameter] = arr4;
+		 	        	//j=Number(map4[data3.parameter].length)-1;
+		 	        	//dynamicPointMap[data3.parameter].push(map4[data3.parameter][j]);
+			            }
+			        var i=0;
+			        interval =setInterval(function(){
+			        if(i<=map4[key].length-1){
+			        	for(key in map4){
+				            //alert(key + map[key]); 
+				        	var group = dynamicPointMap[key];
+				        		group.push(map4[key][i]);
+					        	dynamicPointMap[key] = group;
+					        	date=new Date(map4[key][i].x);
+				        }
+			        		generateChart1();
+			        		
+			        		startTime = generateTime(false,date);
+			        		$("#timeStart").val(startTime.substr(startTime.length-8));
+			                //startTime = fastIncreateTime(false,date);
+			                i = i+1;
+			        		if(startTime == endTime){
+			        			clearInterval(interval);	
+			        			$play_span.attr("class","glyphicon glyphicon-play");
+			        			}	
+			        		var d =unitLength();
+			        		if(startTime>startTimeInitial){
+			        			console.log(d);
+			        			progressBtn(d);
+			        		}
+		        	}
+			        }, 1000);
+			        },
+			        error: function(){
+			        	alert("数据获取失败！")
+			        	}
+			        });  
+}*/
 
 //动态曲线显示
 var chart1;
 //创建定时调用
 var interval;    //设置定时器
-
+var $play_span;
 //点击播放后
+var dynamicPointMap = {};
+$.extend( true , dynamicPointMap,totalMap);
 function play(){
-	var startTimeFinal;
-	var endTimeFinal;
-	startTimeFinal = Number(new Date(startTime).getTime());
-	endTimeFinal = Number(new Date(endTime).getTime());
-	if(startTimeFinal>=endTimeFinal){
+	$play_span = $("#play span");
+	//var date = new Date(startTime);
+	//startTime = fastIncreateTime(false,date);  //时间+1秒
+	if(startTime>=endTime){
 		alert("数据已全部播放完");
-	}else{
-		var $play_span = $("#play span");	
+	}else{	
 		if($play_span.attr("class") == "glyphicon glyphicon-play"){
-			$play_span.attr("class","glyphicon glyphicon-pause");	
-		interval =setInterval(function(){
-		dynamicPointCreate();
-		createDynamicPointSeries();
-		generateChart1();
-		if(startTime == endTime){
-			clearInterval(interval);
-			$play_span.attr("class","glyphicon glyphicon-play");
-			}	
-		var d =unitLength();
-		if(startTime>startTimeInitial){
-			console.log(d);
-			progressBtn(d);
-		}		
-		$("#timeStart").val(startTime.substr(startTime.length-8));
-        startTime = fastIncreateTime(false,date);        
-	}, 1000);
+			$play_span.attr("class","glyphicon glyphicon-pause");
+			initialProgressLength();
+			addPointToDynamicMap();
 		}else{
-			clearInterval(interval);
 			$play_span.attr("class","glyphicon glyphicon-play");
+			myStopFunction();
 		}
 	}
 	
 };
+
+function myStopFunction() {
+    clearInterval(interval);
+}
+
+function addPointToDynamicMap(){
+	var slideTime = progressTime();     //取进度条时间
+	var n1 = new Date(startTimeInitial).getTime();
+	var n2 = new Date(slideTime).getTime();
+	var n =(n2 - n1) / 1000 +1 ;
+	for(key in totalMap){
+		dynamicPointMap[key] = totalMap[key].slice(0,n);
+	  }
+	var i=n;
+    interval =setInterval(function(){
+    if(i<=totalMap[key].length-1){
+    	for(key in totalMap){
+            //alert(key + map[key]); 
+        	var group = dynamicPointMap[key];
+        		group.push(totalMap[key][i]);
+	        	dynamicPointMap[key] = group;
+	        	date=new Date(totalMap[key][i].x);
+        }
+    		generateChart1();
+    		
+    		startTime = generateTime(false,date);
+    		$("#timeStart").val(startTime.substr(startTime.length-8));
+            i = i+1;
+    		if(startTime == endTime){
+    			clearInterval(interval);	
+    			$play_span.attr("class","glyphicon glyphicon-play");
+    			}	
+    		var d =unitLength();
+    		if(startTime>startTimeInitial){
+    			console.log(d);
+    			progressBtn(d);
+    		}
+	}
+    }, 1000);
+}
 
 	function activeLastPointToolip(chart1) {
 		var points1 = chart1.series[0].points;
@@ -441,14 +396,21 @@ function createDynamicPointSeries() {
       //alert(key + map[key]); 
       series[i] = new Object();
       series[i].name = key;
-      series[i].data = map_copy[key];
-      mapSize=map_copy[key].length;
+      series[i].data = map_copy[key].slice(0,map_copy[key].length-1);
+      mapSize=map_copy[key].length-1;
       i++;
   }
   if(mapSize<20){
 	  for(j in series){
 		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})
 		  	}
+	  var xx =Number(map_copy[key][map_copy[key].length-1].x);
+	  for(var k=1;k<20-mapSize;k++){
+		  xx = xx+Number(1000);
+		  for(j in series){
+			  	series[j].data.push({x:xx,y:[map_copy[key].length-1].y})
+			  	}
+	  }
   }else{
   	for(j in series){
   	series[j].data.splice(0,mapSize-20)
@@ -463,22 +425,20 @@ function createDynamicPointSeries() {
 *快进
 */
 function forward(){
-	
+	myStopFunction();
+	$play_span = $("#play span");
 	//取此刻进度条上的时间，加1秒，然后判断进行取数据，此刻的开始时间显示图标跟随点击的次数进行变化
 	var clickTimeSlide = progressTime();     //取进度条时间
 	var date = new Date(clickTimeSlide);
-	startTime = fastIncreateTime(false,date);  //时间减1秒
+	startTime = fastIncreateTime(false,date);  //时间+1秒
 	if(startTime<=endTime){
 		$("#timeStart").val(startTime.substr(startTime.length-8));
 		var d = unitLength();
 		console.log(d);
 		progressBtn(d);
-		//初始化表格和数组，从后台取数据
-		chart ={};
-		dynamicPointMap = {};
-		dynamicPointCreate();
-		createDynamicPointSeries();
-		generateChart1();
+		if($play_span.attr("class") == "glyphicon glyphicon-pause"){
+			addPointToDynamicMap();
+		}
 	}else{
 		alert("数据已播放完")
 	}
@@ -489,20 +449,20 @@ function forward(){
 *快退
 */
 function backward(){
+	myStopFunction();
+	$play_span = $("#play span");
+	var clickTimeSlide = progressTime();   //取进度条时间
+	var date = new Date(clickTimeSlide);
 	//首先判断是否在时间轴内
 	if(startTime>startTimeInitial){
-		var clickTimeSlide = progressTime();   //取进度条时间
-		var date = new Date(clickTimeSlide);
 		startTime = fastDecreaseTime(false,date);   //时间减1秒进行取数据显示
 		$("#timeStart").val(startTime.substr(startTime.length-8));
 		var d = 0 - unitLength();
 		console.log(d);
 		progressBtn(d);
-		chart ={};
-		dynamicPointMap = {};
-		dynamicPointCreate();
-		createDynamicPointSeries();
-		generateChart1();
+		if($play_span.attr("class") == "glyphicon glyphicon-pause"){
+			addPointToDynamicMap();
+		}
 	}else{
 		alert("数据已从头开始播放，请点击播放按钮")
 	}
@@ -510,18 +470,18 @@ function backward(){
 
 
 //点击滑动条之后，从此刻开始计时取数据
-function progress(){
+function progress(){	
+	myStopFunction();
+	$play_span = $("#play span");
 	var clickTimeSlide = progressTime();
 	$("#timeStart").val(clickTimeSlide.substr(clickTimeSlide.length-8));
 	startTime = clickTimeSlide;
-	chart ={};
-	dynamicPointMap = {};
-	dynamicPointCreate();
-	createDynamicPointSeries();
-	generateChart1();
+	if($play_span.attr("class") == "glyphicon glyphicon-pause"){
+		addPointToDynamicMap();
+	}
 }
 
-//加一秒1秒   快退一次加1秒
+//加一秒1秒   快进一次加1秒
 function fastIncreateTime(flag,t) {
   var t_s = t.getTime();//转化为时间戳毫秒数
   t.setTime(t_s + 1000 * 1);
@@ -672,3 +632,177 @@ function progressTime(date1, date2){
 	var newTime = generateTime(false,date1);
 	return newTime;
 }
+
+
+
+//初始进度条的位置
+function initialProgressLength(date1, date2){
+	var date1 = new Date(startTimeInitial); 
+	var date2 = new Date(endTime);
+	var s1 = date1.getTime();
+	var s2 = date2.getTime();
+	var timeSum = (s2-s1) / 1000;
+	var s3 = new Date(startTime).getTime();
+	var timeInitialSum =(s3-s1) / 1000;
+	var initialProgressLength = 800 / timeSum * timeInitialSum;
+	$('.progress_btn').css('left', initialProgressLength);
+    $('.progress_bar').animate({width:initialProgressLength},800);
+    $('.text').html(parseInt((initialProgressLength/800)*100) + '%');
+}
+
+
+
+
+//此处往下为实时曲线的绘制  
+//实时曲线显示
+var realMsg=[];
+var chart;
+var realTimeMap={};
+//点击实时播放，调用函数利用kafka推送数据，一秒推送一个
+function realTimeCurve(){
+	   connect(undefined,function(msg){
+		console.log(msg);
+		realMsg = JSON.parse(msg);
+		realTimePointCreate();
+		//createSeries();
+		generateChart();
+		//activeLastPointToolip(chart);
+	},"topic");   
+}
+
+//实时曲线数据点的生成和处理
+function realTimePointCreate(){
+var map={};
+var map3 ={};
+for (var i in realMsg){
+	//alert(JSON.stringify(data2[i]));
+    var data3 = realMsg[i];
+    //alert(JSON.stringify(data3.parameter));
+    if(!map.hasOwnProperty(data3.parameter)){
+    	map[data3.parameter] = Array();
+    	//map2[data3.parameter] = Array();
+    	map3[data3.parameter] = Array();
+    	if(realTimeMap[data3.parameter] === undefined || realTimeMap[data3.parameter].length == 0){			            	
+    		realTimeMap[data3.parameter] = Array();
+        	}
+    	}
+    var arr = map[data3.parameter];
+    //var arr2 =map2[data3.parameter];
+    var arr3 =map3[data3.parameter];
+    arr.push(data3);
+	arr[arr.length-1].x = data3.time;
+	arr[arr.length-1].y = Number(data3.value)   //给Y轴赋值
+	var a ={};
+	//a.x =new Date(xtext[xtext.length-1]).getTime();
+	a.x =new Date(arr[arr.length-1].x).getTime();
+	a.y = arr[arr.length - 1].y;
+    //arr2.push(a);
+	arr3.push(a);
+    //map2[data3.parameter] = arr2;
+	map3[data3.parameter] = arr3;
+    }
+    //map2["温度"].push(map3["温度"][0]);
+    for(key in map3){
+        //alert(key + map[key]); 
+    	//map2[key].push(map3[key][0]);
+    	var group = realTimeMap[key];
+    	group.push(map3[key][0]);
+    	realTimeMap[key] = group;
+    }
+    
+};  
+
+Highcharts.setOptions({
+	global: {
+		useUTC: false
+	}
+});
+
+	function activeLastPointToolip(chart) {
+		var points = chart.series[0].points;
+		chart.tooltip.refresh(points[points.length -1]);
+}
+
+function generateChart(){
+	chart = Highcharts.chart('container', {
+		chart: {
+			type: 'spline',
+			marginRight: 10,
+			events: {
+				load: function () {
+					series =this.series
+					var i=0;
+					chart = this;
+					for(key in realTimeMap){       
+						var xi =realTimeMap[key][realTimeMap[key].length-1].x,
+							yi =realTimeMap[key][realTimeMap[key].length-1].y;
+							series[i].addPoint([xi, yi], true, true);
+							i=i+1;
+					}
+				}
+			}
+		},
+		title: {
+			text: '动态模拟实时数据'
+		},
+		xAxis: {
+			type: 'datetime',
+			tickPixelInterval: 150
+		},
+		yAxis: {
+			title: {
+				text: null
+			}
+		},
+		tooltip: {
+			formatter: function () {
+				return '<b>' + this.series.name + '</b><br/>' +
+					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+					Highcharts.numberFormat(this.y, 2);
+			}
+		},
+		legend: {
+			//enabled: false,
+			layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'top',
+            borderWidth: 0
+		},
+		series: createSeries(),
+	});
+}
+
+function createSeries() {	
+	var series = new Array();
+    var i=0;
+    var mapSize;
+    var map_copy = {};
+	$.extend( true , map_copy,realTimeMap);
+    for(key in map_copy){
+        //alert(key + map[key]); 
+        series[i] = new Object();
+        series[i].name = key;
+        series[i].data = map_copy[key];
+        mapSize=map_copy[key].length;
+        i++;
+    }    
+    if(mapSize<20){
+  	  for(j in series){
+  		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})
+  		  	}
+  	  var xx =Number(map_copy[key][map_copy[key].length-1].x);
+  	  for(var k=1;k<20-mapSize;k++){
+  		  xx = xx+Number(1000);
+  		  for(j in series){
+  			  	series[j].data.push({x:xx,y:[map_copy[key].length-1].y})
+  			  	}
+  	  }
+    }else{
+    	for(j in series){
+    	series[j].data.splice(0,mapSize-20)
+    	}
+    	
+    }   
+    return series;	
+}
+

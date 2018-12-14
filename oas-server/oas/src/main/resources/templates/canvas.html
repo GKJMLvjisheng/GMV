@@ -10,7 +10,9 @@
 
  <script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
   <script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-<!--   <script src="/js/video/video.js" type="text/javascript"></script> -->
+
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+
 <style type="text/css"> 
 * { margin:0; padding:0; }
 /* body { background:#FFF; color:#333; font:12px/1.6em Helvetica, Arial, sans-serif; } */
@@ -252,19 +254,26 @@ position: absolute;
   margin-left: 970px;
   margin-top: -0px;
 }
+.accelerate{
+  position: absolute;
+  width: auto;
+  height: auto;
+  margin-left: 1070px;
+  margin-top: -0px;
+}
 </style>
 
 </head>
 <body>
-<div class="ibanner" style="width:650px; height:250px;" id="ibanner1">
+<div class="ibanner" style="width:650px; height:300px;" id="ibanner1">
 <div class="ibanner_pic" id="ibanner_pic1">
-<a href="#" id="picLi_10"><img style="width:650px; height:250px;" src="" alt="" /></a>
+<a href="#" id="picLi_10"><img style="width:650px; height:300px;" src="" alt="" /></a>
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 <!-- <a href="/jscss/"><img style="width:650px; height:250px;" src="" alt="" /></a> -->
 
 </div>
-
+<!-- <canvas id="canvas" style="width:650px; height:300px;"></canvas> -->
 </div>
 <div  class="col-center-block">
 <!-- <span class='cur'></span> -->
@@ -275,6 +284,11 @@ position: absolute;
 <input type="button"style="display:inline-block" value='00:00:00' id="timeStart" class="time" />
 <input type="button"style="display:inline-block" value='00:00:00' id="timeEnd" class="timeEnd" /> 
 <input type="button"style="display:inline-block" value='订阅' id="real" class="real" onclick="real()" /> 
+<select style="display:inline-block"  id="accelerate" class="accelerate"  > 
+ <option value="0">请选择</option>
+  <option value="-1">慢速</option>
+   <option value="1">快速</option>
+</select>
 </div>
 <br/>
 <!-- <div style="height:20px; background:#EEE;"></div> -->
@@ -289,6 +303,7 @@ position: absolute;
 <!-- <a href="/jscss/"><img style="width:350px; height:125px;" src="http://p1.mb5u.com/texiao/1/20110225160443157.jpg" alt="" /></a> -->
 <!-- </div> -->
 <!-- </div> -->
+ <script src="/js/canvas/exif.js"></script>
  <script src="/js/storage/myStorage.js"></script>
  <script src="/js/storage/localDB.js"></script>
  <script src="/js/canvas/animate.js"></script>
