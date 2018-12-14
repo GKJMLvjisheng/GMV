@@ -93,7 +93,7 @@ kafka:
     session.timeout: 6000
     auto.commit.interval: 100
     auto.offset.reset: latest
-    group.id: qqq
+    group.id: kafka_group
     concurrency: 1
   producer:
     retries: 0
