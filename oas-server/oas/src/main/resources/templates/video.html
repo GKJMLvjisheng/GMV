@@ -10,7 +10,7 @@
    
     
      <link rel="stylesheet" th:href="@{/css/video/video-js.min.css}"  type="text/css">
-<!--       <link rel="stylesheet" th:href="@{/css/video-js.css}"  type="text/css"> -->
+<!--       <link rel="stylesheet" th:href="@{/css/video/video/video-js.css}"  type="text/css"> -->
      <script th:src="@{/js/video/video.min.js}" charset="utf-8"></script>
 <!--        <script th:src="@{/video/video.js}" charset="utf-8"></script> -->
     
@@ -89,11 +89,11 @@
 
 $(function(){
 	
-	var url="http://10.0.0.88:1935/live/test.flv";
+	var url="/test.mp4";
 	$.ajax({
 
 		   type: 'post',
-		   url: '/api/v1/unicast/sendTestVideo',
+		   //url: '/api/v1/unicast/sendTestVideo',
 		  // data: JSON.stringify(data),
 		   contentType : 'application/json;charset=utf8',
 		   dataType: 'json',
@@ -102,7 +102,7 @@ $(function(){
 		   success: function (res) {
 		     if (res.code == 0) {
 		    	 console.log(res)
-		    url=res.data;
+		    	url=res.data;
 		    	console.log(url);
 		     } else {
 		    	 	alert(res.message);

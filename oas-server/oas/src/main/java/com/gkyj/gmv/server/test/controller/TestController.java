@@ -37,7 +37,7 @@ public class TestController {
 	 */
 	@PostMapping(value = "/selectTestMsg")  
 	@ResponseBody
-	public ResponseEntity<?> selectLoadMsg(@RequestBody LoadInfo loadInfo){
+	public ResponseEntity<?> selectTestMsg(@RequestBody LoadInfo loadInfo){
 
 	    Integer number=loadInfo.getNumber()*4;
 	    //初始化几秒的数据
@@ -50,13 +50,14 @@ public class TestController {
 
 		    LoadInfo putLoadInfo = new LoadInfo();
 	        putLoadInfo.setTestModelList(testModelList);
+		    List<TestModel> modelList=testService.selectLoad();
 	        //获取初始化开始和结束时间
-		    String startTime = testModelList.get(0).getTime();
+		    String startTime = modelList.get(0).getTime();
 		    putLoadInfo.setStartTime(startTime);
-		    Integer listSize = testModelList.size();
-		    String endTime = testModelList.get(listSize-2).getTime();
+		    Integer listSize = modelList.size();
+		    String endTime = modelList.get(listSize-1).getTime();
 		    putLoadInfo.setEndTime(endTime);
-
+            putLoadInfo.setTotal(testModelList.size());
 		return new ResponseEntity.Builder<LoadInfo>()
 				.setData(putLoadInfo)
 				.setErrorCode(ErrorCode.SUCCESS)
@@ -66,14 +67,14 @@ public class TestController {
 	
 	/**
 	 * @category 根据时间段去查询载体数据
-	 * @param  startTime endTime
+	 * @param  loadInfo
 	 * @return 
 	 * @throws ParseException 
 	 */
 	@PostMapping(value = "/selectTestMsgByPeriod")
 	@ResponseBody
-	@WriteLog(value="selectLoadMsgByPeriod")
-	public ResponseEntity<?> selectLoadMsgByPeriod(@RequestBody LoadInfo loadInfo) throws ParseException{
+	@WriteLog(value="selectTestMsgByPeriod")
+	public ResponseEntity<?> selectTestMsgByPeriod(@RequestBody LoadInfo loadInfo) throws ParseException{
 
 
 		String startTime = loadInfo.getStartTime();
@@ -103,8 +104,11 @@ public class TestController {
 			String fullLink = mediaServer.getImageHost() + testModel.getPicPath();
 			testModel.setPicPath(fullLink);
 		}
-		return new ResponseEntity.Builder<List<TestModel>>()
-				.setData(testModelList)
+		LoadInfo putLoadInfo = new LoadInfo();
+		putLoadInfo.setTestModelList(testModelList);
+		putLoadInfo.setTotal(testModelList.size());
+		return new ResponseEntity.Builder<LoadInfo>()
+				.setData(putLoadInfo)
 				.setErrorCode(ErrorCode.SUCCESS)
 				.build();
 	}
