@@ -50,7 +50,7 @@ function initTable(data) {
 		data:data,
 		columns : [{  
 			title: "参数代码",  
-			field: "box_id",
+			field: "parameterId",
 			align: 'center',
 			valign: 'middle', 
 			width:  '40px',
@@ -70,7 +70,7 @@ function initTable(data) {
 			width:  '100px',
 			},
 			{
-			title : "参数源码",
+			title : "参数数值",
 			field : "value",
 			align: 'center',
 			valign: 'middle',
