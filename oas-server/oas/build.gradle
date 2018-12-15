@@ -45,6 +45,7 @@ dependencies{
   compile('com.alibaba:druid-spring-boot-starter:1.1.10')
   compile('org.webjars:jquery:3.1.1')
   compile('org.webjars:bootstrap:3.3.7')
+  compile('org.webjars:Eonasdan-bootstrap-datetimepicker:4.17.47')
   compile group: 'org.webjars.bower', name: 'bootstrap-treeview', version: '1.2.0'
   compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
   compile('eu.bitwalker:UserAgentUtils:1.19')
@@ -59,8 +60,10 @@ dependencies{
   // https://mvnrepository.com/artifact/org.apache.cassandra/cassandra-all
   // compile group: 'org.apache.cassandra', name: 'cassandra-all', version: '3.11.3'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-cassandra', version: '2.0.0.RELEASE'
-  
-  // https://mvnrepository.com/artifact/org.webjars/highstock
+    // https://mvnrepository.com/artifact/org.cassandraunit/cassandra-unit
+    //testCompile group: 'org.cassandraunit', name: 'cassandra-unit', version: '1.0.1.4'
+
+    // https://mvnrepository.com/artifact/org.webjars/highstock
   compile group: 'org.webjars', name: 'highstock', version: '6.0.3'
   // https://mvnrepository.com/artifact/org.webjars/highcharts
  compile group: 'org.webjars', name: 'highcharts', version: '6.2.0'
@@ -77,6 +80,11 @@ dependencies{
    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.5.RELEASE'
    compile 'org.eclipse:yasson:1.0'
    compile 'org.glassfish:javax.json:1.0.4'
+   
+   
+   //cassandra
+   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-cassandra', version: '1.5.3.RELEASE'
+   compile group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version: '3.5.0'
    
 }
 

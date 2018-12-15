@@ -11,4 +11,4 @@
 /oas/oas.iml
 /oas/out/
 /rebel.xml
-
+./oas/src/main/resources/application.yml
