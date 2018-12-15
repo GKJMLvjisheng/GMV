@@ -67,14 +67,14 @@ function loadInTime(data){
 		return;
 	}else{
 		for(var i=0; i<data.length; i++){
-			if(!map.hasOwnProperty(data[i].updated)){
-	        	map[data[i].updated] = Array();
-	        	var arr = map[data[i].updated];
+			if(!map.hasOwnProperty(data[i].time)){
+	        	map[data[i].time] = Array();
+	        	var arr = map[data[i].time];
 		        arr.push(data[i]);
 	        }else{
-	        	var arList = map[data[i].updated];
+	        	var arList = map[data[i].time];
 	        	arList.push(data[i]);
-	        	map[data[i].updated] = arList;
+	        	map[data[i].time] = arList;
 	        }	        	
 //	        console.log("arr:", arr);	    
 		}
@@ -123,7 +123,7 @@ function play(){
 		var time = {"startTime": startTime};
 		console.log(time);
 		$.ajax({
-			url: "/api/v1/load/selectLoadMsgByPeriod",
+			url: "/api/v1/test/selectTestMsgByPeriod",
 			contentType : 'application/json;charset=utf8',
 			dataType: 'json',
 			cache: false,
@@ -133,7 +133,7 @@ function play(){
 			success: function(res) {
 //			alert(JSON.stringify(res));
 			if(res.code==0){
-				var resData=res.data.rows;
+				var resData=res.data.testModelList;
 				console.log("111",JSON.stringify(resData));
 				map={};
 				load(resData,startTime,endTime);
@@ -171,7 +171,7 @@ function backward(){
 		console.log(time);
 //			alert(time);
 		$.ajax({
-			url: "/api/v1/load/selectLoadMsgByPeriod",
+			url: "/api/v1/test/selectTestMsgByPeriod",
 			contentType : 'application/json;charset=utf8',
 			dataType: 'json',
 			cache: false,
@@ -181,7 +181,7 @@ function backward(){
 			success: function(res) {
 //				alert(JSON.stringify(res));
 			if(res.code==0){
-				var resData=res.data.rows;
+				var resData=res.data.testModelList;
 				console.log("111",JSON.stringify(resData));
 				map={};
 /*				var d = 0 - unitLength();
@@ -219,7 +219,7 @@ function forward(){
 		console.log(time);
 //		alert(time);
 		$.ajax({
-			url: "/api/v1/load/selectLoadMsgByPeriod",
+			url: "/api/v1/test/selectTestMsgByPeriod",
 			contentType : 'application/json;charset=utf8',
 			dataType: 'json',
 			cache: false,
@@ -229,7 +229,7 @@ function forward(){
 			success: function(res) {
 //			alert(JSON.stringify(res));
 			if(res.code==0){
-				var resData=res.data.rows;
+				var resData=res.data.testModelList;
 				console.log("111",JSON.stringify(resData));
 				map={};
 /*				var d = unitLength();

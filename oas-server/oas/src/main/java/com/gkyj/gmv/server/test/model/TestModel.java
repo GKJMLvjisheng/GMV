@@ -18,6 +18,9 @@ public class TestModel extends BaseEntity {
 	@Column(value = "parameter")
 	private String  parameter;
 
+	@Column(value = "parameter_id")
+	private String  parameterId;
+
 	@Column(value = "pic_path")
 	private String  picPath;
 

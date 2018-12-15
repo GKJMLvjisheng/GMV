@@ -137,3 +137,61 @@
             }
         }
     }
+    //处理方向
+    /*	let orientation = 0;
+		EXIF.getData(imgs[i], function() {
+			EXIF.getAllTags(this);
+		  orientation = EXIF.getTag(this, 'Orientation');
+		});
+		let canvas = document.createElement("canvas");
+		let ctx = canvas.getContext("2d");
+		let width = "650px";
+		let height = "300px";
+		console.log("orientation",orientation)
+		switch(orientation) {
+		    case 0:
+		        //不做任何处理直接画图
+		        canvas.width = width;
+		        canvas.height = height;
+		        ctx.rotate(Math.PI / 2);
+		        ctx.translate(0, -height);
+		        ctx.drawImage(imgs[i], 0, 0)
+		        break;
+		    case 1:
+		        //不做任何处理直接画图
+		        canvas.width = width;
+		        canvas.height = height;
+		        ctx.drawImage(img, 0, 0)
+		        break;
+		    case 6:
+		        //图片顺时针旋转90°
+		        canvas.height = width;
+		        canvas.width = height;
+		        ctx.rotate(Math.PI / 2);
+		        ctx.translate(0, -height);
+		        ctx.drawImage(img, 0, 0)
+		        break;
+		     case 3:
+		        //图片旋转180°
+		        canvas.height = height;
+		        canvas.width = width;
+		        ctx.rotate(Math.PI);
+		        ctx.translate(-width, -height);
+		        ctx.drawImage(img, 0, 0)
+		        break;
+		     case 8:
+		        //图片逆时针旋转90°
+		        canvas.height = width;
+		        canvas.width = height;
+		        ctx.rotate(-Math.PI / 2);
+		        ctx.translate(-height, 0);
+		        ctx.drawImage(img, 0, 0)
+		        break;
+		     case undefined:
+		        //不作任何处理直接画图
+		        canvas.width = width;
+		        canvas.height = height;
+		        ctx.drawImage(img, 0, 0)
+		        break;　　　　
+		} 
+		let ndata=canvas.toDataURL("image/jpeg", 1);*/
