@@ -11,7 +11,7 @@ $(function() {
  */
 function setTimeControl(){
 	$('#time1').datetimepicker({
-        format: 'YYYY-MM-DD',
+        format: 'YYYY-MM-DD HH:mm:ss',
 		locale: moment.locale('zh-cn'),
 		maxDate:todayDate()
 	}).on('dp.change', function (ev) {
@@ -20,15 +20,15 @@ function setTimeControl(){
 	 });
 	 
 	 $('#time2').datetimepicker({
-        format: 'YYYY-MM-DD',
+        format: 'YYYY-MM-DD HH:mm:ss',
 		locale: moment.locale('zh-cn'),
 	}).on('dp.change', function (ev) {
 		var startTime = $("#startTime").val();
 		$('#time2').datetimepicker('minDate',startTime);
  	});
 	 
-	document.getElementById("startTime").value=todayDate();
-	document.getElementById("endTime").value=todayDate(); 
+	document.getElementById("startTime").value=todayDate() + " 00:00:00";
+	document.getElementById("endTime").value=todayDate() + " 23:59:59"; 
 }
 /**
  * 获取今天日期
@@ -123,6 +123,9 @@ function initMaps(){
 				setExtremes: syncExtremes
 			},
 			tickInterval: 1000, //设置横标标尺的间隔长度1s
+			/*labels:{
+				Step: 12,
+			},*/
 	    }],
 
 	    yAxis: [{
@@ -166,11 +169,11 @@ function initMaps(){
 		            	//console.log(e);
 		            	//console.log(e.point.series.name);
 		            	var inStyle = e.point.inStyle;
-		            	if(inStyle == "自动注入"){
-		            		alert("该实验为自动注入，不可修改");
-		            	}else if(inStyle == "手动注入"){
+//		            	if(inStyle == "自动注入"){
+//		            		alert("该实验为自动注入，不可修改");
+//		            	}else if(inStyle == "手动注入"){
 		            		window.open("https://www.baidu.com");
-		            	}		            	  
+//		            	}		            	  
 		            },
 		            //点击图例触发事件
 		        	legendItemClick: function(e) {		        		 
