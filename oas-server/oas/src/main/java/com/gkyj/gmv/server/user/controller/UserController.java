@@ -123,19 +123,19 @@ public class UserController {
             	list.add(a);*/
         		switch(i) {
 	    			case 0:
-	    				a.setParameter("温度");
+	    				a.setParameter("CMPR-RCS 28V电源板1温度");
 	    				a.setValue(new BigDecimal(randomNumber(38,20)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    			case 1:
-	    				a.setParameter("湿度");
+	    				a.setParameter("核心舱湿度");
 	    				a.setValue(new BigDecimal(randomNumber(50,30)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    			case 2:
-	    				a.setParameter("电压");
+	    				a.setParameter("CMPR 100V主电电压");
 	    				a.setValue(new BigDecimal(randomNumber(220,36)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    			case 3:
-	    				a.setParameter("电流");
+	    				a.setParameter("CMPR 110V供电电流");
 	    				a.setValue(new BigDecimal(randomNumber(1,5)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    		}
