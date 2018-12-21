@@ -56,6 +56,10 @@ public class RootController {
   public String maps(){
     return "maps/maps";
   }
+ /* @GetMapping(value="/maps/gantt")
+  public String gantt(){
+    return "maps/gantt";
+  }*/
 }
 
 

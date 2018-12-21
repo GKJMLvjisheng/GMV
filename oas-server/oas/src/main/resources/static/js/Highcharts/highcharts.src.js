@@ -25604,7 +25604,8 @@
 		        .attr({
 		            zIndex: 3
 		        }).add(item.legendGroup);
-
+		        
+		        
 		    },
 
 		    /**
@@ -42100,6 +42101,10 @@
 		        );
 		    },
 
+		    changePoint:function(value){
+		    	 var point = this;
+		    	 point.shapeArgs.x = value;
+		    },
 		    /**
 		     * Runs on mouse over the point. Called internally from mouse and touch
 		     * events.
