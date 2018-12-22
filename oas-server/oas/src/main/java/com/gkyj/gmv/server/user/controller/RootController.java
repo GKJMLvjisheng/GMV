@@ -36,6 +36,10 @@ public class RootController {
   public String videoAndCanvas() {
        
     return "canvas";  }
+  @GetMapping("/container")
+  public String container() {
+       
+    return "container";  }
  
 //Line
  @GetMapping("/line")

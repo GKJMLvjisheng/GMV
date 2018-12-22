@@ -1,0 +1,389 @@
+
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>图片</title>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+<script src="/js/wbsocket.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap-treeview/1.2.0/src/css/bootstrap-treeview.css}"/>
+<link rel="stylesheet" href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.css" />
+<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/bootstrap-treeview/1.2.0/src/js/bootstrap-treeview.js}"></script>
+
+<script th:src="@{/js/table/guide.js}"></script>
+<style>
+  /*css代码*/
+#menu{
+width: 0; /*设置为0 隐藏自定义菜单*/
+height: 125px;
+overflow: hidden; /*隐藏溢出的元素*/
+box-shadow: 0 1px 1px #888,1px 0 1px #ccc;
+position: absolute; /*自定义菜单相对与body元素进行定位*/
+}
+.menu{
+width: 130px;
+height: 25px;
+line-height: 25px;
+padding: 0 10px;
+}
+.epMenu{ width:120px; background:#f0f0f0; position:fixed; left:0; top:0; box-shadow:2px 2px 2px 2px #807878;}
+.epMenu a{ display:block; height:25px; line-height:25px; padding-left:15px; border-top:1px solid #e0e0e0; border-bottom:1px solid #fff; font-family:微软雅黑; font-size:14px; cursor:default;}
+.epMenu a:hover{ background:#fff;}
+
+h1, h2, h3, h4, h5, h6 { font-size:1em; }
+a { color:#0287CA; text-decoration:none; }
+a:hover { text-decoration:underline; }
+ul, li { list-style:none; }
+fieldset, img { border:none; }
+legend { display:none; }
+em, strong, cite, th { font-style:normal; font-weight:normal; }
+ input, textarea, select, button { font:12px Helvetica, Arial, sans-serif; } 
+table { border-collapse:collapse; }
+/* html { overflow:-moz-scrollbars-vertical; }  */
+.ibanner { position:relative; overflow:hidden; margin:2% auto 2% auto; }
+.ibanner_pic {}
+.ibanner_pic a { position:absolute; margin:0 auto 0 auto ; display:block;  overflow:hidden; text-align: center;}
+
+
+input[type=range] {
+width:60%;
+
+}
+ /* 进度条 */  
+.range {   
+    width: 430px;   
+     height: 1rem;    
+/*         background: #2386e4;    */
+background: -webkit-linear-gradient(#61bd12, #61bd12) no-repeat, #ddd;
+    border-radius: 0.5rem;   
+    -webkit-appearance: none !important;   
+      position: relative;     
+/*     top: 3.55rem;    */
+/*     left: 6rem;   */
+     left:2%  ;
+     background-size: 0% 100%;
+    
+}   
+/* 进度滑块 */  
+.range::-webkit-slider-thumb {   
+    width: 1.25rem;   
+    height: 1.25rem;   
+    background: #fff;   
+    border: 1px solid #f18900;   
+    cursor: pointer;   
+    border-radius: 1.25rem;   
+     -webkit-appearance: none !important;    
+}  
+/*  cursor: pointer; 鼠标变成手型,-webkit-appearance: none !important;将原来样式去除*/
+  .col-center-block {
+  position: relative;
+
+      width: 100%;  
+/*  	  height:20%; */
+
+/*       display: block;   */
+
+    margin-left: auto; 
+
+     margin-right: auto; 
+    vertical-align: middle;
+     margin-top: 3%; 
+
+}
+.col-center-block-child-end{
+	clear:both;
+}
+ .btn_middle{
+/*   display: none; */
+cursor: pointer;
+  width: 5%;
+  height: 5%;
+  border-radius: 50%;
+  position: absolute;
+  left: -2%;
+  top: 50%;
+  margin: -3% auto  auto 0;
+  padding: 20px;
+  background: rgba(255,255,255,0.5);
+/*   rgba(255,255,255,0.5);灰色 */
+  line-height: 40px;
+  border: 1px solid #f18900;  
+}
+.ibanner .btn:hover{
+  background: rgba(255,255,255,0.7);
+}
+ .btn_middle:before{
+  border: 15px solid #2386e4;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -3px;
+  width: 0;
+  height: 0;
+  margin-top: -14px;
+}
+
+.btn2:before{
+    border-color: #2386e4;
+    border-style: solid;
+    content: " ";
+    border-width: 12px 2px 10px 5px;
+    content: " ";
+    display: block;
+    margin-left: -2px;
+    width: 0;
+    height: 0;
+    margin-top: -3px;
+}
+.btn2:after{
+    border-color: #2386e4;
+    border-style: solid;
+    content: " ";
+    border-width: 12px 2px 10px 5px;
+    content: " ";
+    display: block;
+    margin-left: 10px;
+    width: 0;
+    height: 0;
+    margin-top: -22px;
+}
+
+.ibanner .btn:before:hover{
+  border-left-color: #fff;
+}
+
+.ibanner.pause .btn{
+  display: block;
+}
+
+.ibanner .state{
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  font-size: 14px;
+  color: #000;
+}
+.ibanner.pause .state{
+  display: none;
+}
+.btnleft{
+/*   display: none; */
+cursor: pointer;
+  width: 1%;
+  height: 1%;
+  border-radius: 50%;
+ position: absolute;
+  left: -10%;
+  top: 50%;
+  margin: -2% auto  auto 0;
+  padding: 15px;
+  background: rgba(255,255,255,0.5);
+  line-height: 40px;
+  border: 1px solid #f18900;  
+}
+.btnleft:before{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -20px;
+  width: 0;
+  height: 0;
+  margin-top: -10px;
+}
+.btnleft:after{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -10px;
+  width: 0;
+  height: 0;
+  margin-top: -20px;
+}
+.btnright{
+/*   display: none; */
+cursor: pointer;
+  width: 1%;
+  height: 1%;
+  border-radius: 50%;
+  position: absolute;
+  left: 8%;
+  top: 50%;
+  margin: -2% auto  auto 0;
+  padding: 15px;
+  background: rgba(255,255,255,0.5);
+  line-height: 40px;
+  border: 1px solid #f18900;  
+}
+.btnright:before{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: -6px;
+  width: 0;
+  height: 0;
+  margin-top: -10px;
+}
+
+.btnright:after{
+  border: 10px solid #2386e4;
+  border-top-color: transparent;
+
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  content: " ";
+  display: block;
+  margin-left: 3px;
+  width: 0;
+  height: 0;
+  margin-top: -20px;
+}
+.time{
+ position: relative; 
+ width: 10%;
+  height: auto;
+  margin-left: 4%;
+/*   margin-top: -1%; */
+}
+.real{
+position: absolute;
+ width: auto;
+  height: auto;
+  margin-left: 770px;
+  margin-top: -0px;
+}
+.timeEnd{
+   position: relative; 
+  width: 10%;
+  height: auto;
+  margin-left: 0%;
+/*   margin-top: -1%; */
+}
+.accelerate{
+ position: absolute;
+  width: auto;
+  height: auto;
+  margin-left: 830px;
+  margin-top: -0px;
+}
+.box {
+    background: #0000FF;
+    width: 0px;
+    height: 0px;
+    position: absolute; 
+    opacity: 0.5;
+    cursor: move;
+}
+.text{
+position: relative;
+margin-left: auto;
+text-Align:center;
+margin-right: auto;
+vertical-align: middle; 
+    
+}
+.page_container{
+/* width:310px; */
+/* height:200px; */
+background-color:#FFFAFA;
+padding-top:10px;
+padding-left:5px;
+padding-right:5px;
+margin-top:10px ;
+margin-left:10px ;
+/*     display:inline-block;     */
+    position:absolute;    
+
+}
+.img_style{
+width:5%;
+height:5%;
+}
+</style>
+</head>
+<body>
+<!-- <div class="row"> -->
+<div class="col-sm-3" style="text-align:left;font-size:12px">
+	<div id="treeview"></div>
+</div>
+<div class="col-sm-9"  id="myDIV" style="font-size:12px;padding:0">
+<!-- <div class="col-sm-4" id="myDIV1"></div> -->
+<!-- <div class="col-sm-4" id="myDIV2"></div> -->
+<!-- <div class="col-sm-4" id="myDIV3"></div> -->
+<!-- <canvas id="canvas" width="400" height="300"> -->
+<!--   </canvas> -->
+</div>
+<!-- </div> -->
+<!--自定义右键菜单html代码-->
+<div id="menu">
+<div class="menu">功能1</div>
+<div class="menu">功能2</div>
+<div class="menu">功能3</div>
+<div class="menu">功能4</div>
+<div class="menu">功能5</div>
+</div>
+
+<div  class="modal fade"  id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div id="modalDialog" class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加容器</h4>
+            </div>
+            <div class="modal-body">
+              <form id="addContainerForm" action="/version" method="post" class="form-horizontal">
+
+						<div class="form-group">
+							<label for="versionCode" class="col-sm-4 control-label">容器名称：</label>
+							<div class="col-sm-6">
+								<input name="versionCode" class="form-control" id="containerName" required="required"  maxlength="20" placeholder="版本号长度最多为20个字符" /></input>
+								<span id='msg_versionCode'></span>
+
+							</div>						
+						</div>
+					
+								
+						<div class="form-group">
+							<label for="versionFile" class="col-sm-4 control-label">版本上传：</label>
+							<div class="col-sm-6">
+								<select  name="type"  class="form-control" id="containerType" >
+								<option>数值容器</option>
+								<option>曲线容器</option>
+								<option>图像容器</option>
+								<option>视频容器</option>
+								</select>
+							</div>
+<!-- 							onblur='checkVersionFile()' -->
+						</div>
+						
+					
+					</form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="generateContainer()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/container/container.js}"></script>
+</body>
+</html>
