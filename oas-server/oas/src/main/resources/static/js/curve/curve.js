@@ -1,7 +1,7 @@
 
-/* 
- * 进入网页读取前20秒数进行回显；利用函数allPointCreate()获取最后一圈全部数据，为非实时动态曲线缓存数据
- */
+ 
+ // 进入网页读取前20秒数进行回显；利用函数allPointCreate()获取最后一圈全部数据，为非实时动态曲线缓存数据
+ 
 //通过Ajax获取静态图表数据
 var startTime='';          //全局，记录滑动条的时间
 var startTimeInitial ='';  //最后一圈的初始时间
@@ -180,7 +180,7 @@ function allPointCreate(){
     
     
 
-/*//此处往下为动态获取非实时数据，一秒一次，一次一个数据
+//此处往下为动态获取非实时数据，一秒一次，一次一个数据
 
 //动态获取非实时曲线点
 var date;
@@ -261,7 +261,7 @@ function dynamicPointCreate(){
 			        	alert("数据获取失败！")
 			        	}
 			        });  
-}*/
+}
 
 //动态曲线显示
 var chart1;
@@ -352,7 +352,7 @@ function generateChart1(){
 							series[i].addPoint([xi, yi], true, true);
 							i=i+1;
 					}
-					activeLastPointToolip(this);
+					//activeLastPointToolip(this);
 				}
 			}
 		},
@@ -421,9 +421,9 @@ function createDynamicPointSeries() {
 
 
 
-/*
-*快进
-*/
+
+//快进
+
 function forward(){
 	myStopFunction();
 	$play_span = $("#play span");
@@ -445,9 +445,9 @@ function forward(){
 }
 
 
-/*
-*快退
-*/
+
+//快退
+
 function backward(){
 	myStopFunction();
 	$play_span = $("#play span");
@@ -547,9 +547,9 @@ function generateTime(flag,now){
 
 
 
-/*
- * 进度条
- */
+
+ // 进度条
+ 
 //var index=0;
 
 $(function(){
@@ -724,7 +724,7 @@ Highcharts.setOptions({
 }
 
 function generateChart(){
-	chart = Highcharts.chart('container', {
+	chart = Highcharts.stockChart('container', {
 		chart: {
 			type: 'spline',
 			marginRight: 10,
@@ -739,9 +739,26 @@ function generateChart(){
 							series[i].addPoint([xi, yi], true, true);
 							i=i+1;
 					}
+					//activeLastPointToolip(this);
 				}
 			}
 		},
+		rangeSelector: {
+			buttons: [{
+					count: 1,
+					type: 'minute',
+					text: '1M'
+			}, {
+					count: 5,
+					type: 'minute',
+					text: '5M'
+			}, {
+					type: 'all',
+					text: 'All'
+			}],
+			inputEnabled: false,
+			selected: 0
+	},
 		title: {
 			text: '动态模拟实时数据'
 		},
@@ -755,11 +772,12 @@ function generateChart(){
 			}
 		},
 		tooltip: {
-			formatter: function () {
+			/*formatter: function () {
 				return '<b>' + this.series.name + '</b><br/>' +
 					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
 					Highcharts.numberFormat(this.y, 2);
-			}
+			}*/
+			split: false
 		},
 		legend: {
 			//enabled: false,
@@ -786,23 +804,88 @@ function createSeries() {
         mapSize=map_copy[key].length;
         i++;
     }    
-    if(mapSize<20){
+    if(mapSize<1000){
   	  for(j in series){
   		  	series[j].data.unshift({x:map_copy[key][0].x,y:map_copy[key][0].y})
   		  	}
-  	  var xx =Number(map_copy[key][map_copy[key].length-1].x);
+  	  /*var xx =Number(map_copy[key][map_copy[key].length-1].x);
   	  for(var k=1;k<20-mapSize;k++){
   		  xx = xx+Number(1000);
   		  for(j in series){
   			  	series[j].data.push({x:xx,y:[map_copy[key].length-1].y})
   			  	}
-  	  }
+  	  }*/
     }else{
     	for(j in series){
-    	series[j].data.splice(0,mapSize-20)
+    	series[j].data.splice(0,mapSize-1000)
     	}
     	
     }   
     return series;	
 }
 
+
+
+
+/*$(function(){
+	Highcharts.setOptions({
+		global : {
+				useUTC : false
+		}
+	});
+	//Create the chart
+	Highcharts.stockChart('container1', {
+		chart : {
+				events : {
+						load : function () {
+								// set up the updating of the chart each second
+								var series = this.series[0];
+								setInterval(function () {
+										var x = (new Date()).getTime(), // current time
+												y = Math.round(Math.random() * 100);
+										series.addPoint([x, y], true, true);
+								}, 1000);
+						}
+				}
+		},
+		rangeSelector: {
+				buttons: [{
+						count: 1,
+						type: 'minute',
+						text: '1M'
+				}, {
+						count: 5,
+						type: 'minute',
+						text: '5M'
+				}, {
+						type: 'all',
+						text: 'All'
+				}],
+				inputEnabled: false,
+				selected: 0
+		},
+		title : {
+				text : 'Live random data'
+		},
+		tooltip: {
+				split: false
+		},
+		exporting: {
+				enabled: false
+		},
+		series : [{
+				name : '随机数据',
+				data : (function () {
+						// generate an array of random data
+						var data = [], time = (new Date()).getTime(), i;
+						for (i = -999; i <= 0; i += 1) {
+								data.push([
+										time + i * 1000,
+										Math.round(Math.random() * 100)
+								]);
+						}
+						return data;
+				}())
+		}]
+	});
+})*/

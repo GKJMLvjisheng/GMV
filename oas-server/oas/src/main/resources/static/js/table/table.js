@@ -50,7 +50,7 @@ function initTable(data) {
 		data:data,
 		columns : [{  
 			title: "参数代码",  
-			field: "box_id",
+			field: "parameterId",
 			align: 'center',
 			valign: 'middle', 
 			width:  '40px',
@@ -70,7 +70,7 @@ function initTable(data) {
 			width:  '100px',
 			},
 			{
-			title : "参数源码",
+			title : "参数数值",
 			field : "value",
 			align: 'center',
 			valign: 'middle',
@@ -205,6 +205,7 @@ function load(data,startTime,endTime){
 	request(data,startTime,endTime);
 	
 	loadT = setTimeout(function(){
+		clearTimeout(loadT);
 		load(data,startTime,endTime);
 	},1000)
 	
@@ -310,7 +311,25 @@ function playInterval(startTime, endTime){
 //		alert(JSON.stringify(res));
 		if(res.code==0){
 			data=res.data.testModelList;
-			data.splice(0,4);
+			for(var i=0; i<data.length; i++){
+				if(!map.hasOwnProperty(data[i].time)){
+		        	map[data[i].time] = Array();
+		        	var arr = map[data[i].time];
+			        arr.push(data[i]);
+		        }else{
+		        	var arList = map[data[i].time];
+		        	arList.push(data[i]);
+		        	map[data[i].time] = arList;
+		        }    
+			}
+			for(var i in map){
+				var ii = 0;
+				var length = map[i].length;
+				var len = 2 * length;
+				console.log(len);
+				data.splice(0,len);
+				if(ii == 0) break;
+			}
 			console.log("111",JSON.stringify(data));
 			map={};
 			clearTimeout(loadT);

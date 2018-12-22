@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ActivitiDemo</title>
+<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<style>
+	div{
+		margin-bottom:5px;
+	}
+	.selectpicker{
+		height:30px;
+	}
+	img{
+		width:85%;
+	}
+	a{
+		display:block;
+		width:100%;
+	}
+	a:focus, a:hover {
+		text-decoration:none;
+	}
+	.main-body{
+		padding-top:10px;
+		width:80%;
+		margin:0 auto;
+	}
+</style>
+</head>
+
+<body>
+	<div class="main-body">
+		<div class="panel-group" id="accordion">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" 
+						   href="#collapseOne">
+							用户管理
+						</a>
+					</h4>
+				</div>
+				<div id="collapseOne" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<button type="button" class="btn btn-default" id="add_group_btn">添加群组</button>
+						<button type="button" class="btn btn-default" id="add_user_btn">添加用户</button>
+						<button type="button" class="btn btn-default" id="get_allGroup_btn">查看所有群组</button>
+						<button type="button" class="btn btn-default" id="get_allUser_btn">查看所有用户</button>
+					</div>
+				</div>
+			</div>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#accordion" 
+						   href="#collapseTwo">
+							流程管理
+						</a>
+					</h4>
+				</div>
+				<div id="collapseTwo" class="panel-collapse collapse in">
+					<div class="panel-body">
+						<button type="button" class="btn btn-default" onclick="createModelFun()">创建模型</button>
+						<button type="button" class="btn btn-default" id="deploy_model_btn">发布删除修改模型</button>
+						<button type="button" class="btn btn-default" id="delete_process_btn">删除流程</button>
+						<button type="button" class="btn btn-default" id="start_appli_btn">开始申请</button>
+						<button type="button" class="btn btn-default" id="get_myAppli_btn">查看我正在进行中的申请</button>
+						<button type="button" class="btn btn-default" id="get_myHistoryAppli_btn">查看我的历史申请</button>
+						<button type="button" class="btn btn-default" id="get_audit_btn">查看需要我审核的申请</button>
+						<button type="button" class="btn btn-default" id="get_historyAudit_btn">查看我的历史审核</button>
+					</div>
+				</div>
+			</div>	
+	</div>
+	</div>
+	
+	<div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog" style="width:900px;">
+	      <div class="modal-content">
+			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel"></h4>
+            </div>
+            <div class="modal-body main-content-body">
+            </div>
+	      </div>
+		</div>
+	</div>
+	<div class="modal fade" id="showModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+	    <div class="modal-dialog" style="width:900px;">
+	      <div class="modal-content">
+			<div class="modal-header">
+               <!--  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> -->
+                <h4 class="modal-title" id="myModalLabel2"></h4>
+            </div>
+            <div class="modal-body second-content-body">
+            </div>
+	      </div>
+		</div>
+	</div>
+</body>
+<script>
+$(function(){
+	$("button").click(function(){
+		var $this = $(this);
+		var _id = $this.attr("id");
+		var _content = "";
+		$("#myModalLabel").text($this.text());
+		switch(_id){
+			case("add_group_btn"):
+				_content = $("<div>").append(generateGroupInput("组标识","group_input_id")).append(generateGroupInput("组名称","group_input_name")).append(generateBtn("提交","submit_group_btn"));
+				_content.append($("</div>"));
+				fullModalAndShow(_content);
+				break;
+			case("add_user_btn"):
+				requestAjax("get","/getAllGroup","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<option value="+res[i].id+">"+res[i].name+"</option>";
+					}
+					_content = $("<div>").append(generateGroupInput("姓名","user_input_name")).append(generateGroupInput("密码","user_input_password")).append(generateSelect("add_user_select","选择一个组标识",_options)).append(generateBtn("提交","submit_user_btn"));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$("#submit_user_btn").click(function(){
+						var info = {
+								"name": $("#user_input_name").val(),
+								"password": $("#user_input_password").val(),
+								"groupId": $("#add_user_select option:selected").val()
+							};
+						requestAjax("post","/addUser",info,function(res){
+							$("#showModal").modal("hide");
+							alert("提交成功");
+						});
+						
+					});
+				});
+				break;
+			case("get_allGroup_btn"):
+				requestAjax("get","/getAllGroup","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item' _type="+res[i].type+"><span>组标识:"+res[i].id+" 组名称:"+res[i].name+"</span><button type='button' class='btn btn-default'>修改</button></li>";
+					}
+					_content = $("<div>").append(generateList("get_allGroup_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+
+					$("#get_allGroup_ul button").click(function(){
+						var _c = $("<div>").append(generateGroupInput("组标识","update_group_input_id")).append(generateGroupInput("组名称","update_group_input_name")).append(generateBtn("提交","submit_updateGroup_btn"));
+						_c.append($("</div>"));
+						$(".second-content-body").html(_c);
+						var _str = $(this).parent().find("span").text();
+						$("#update_group_input_id").val(_str.split(" ")[0].split(":")[1]);
+						$("#update_group_input_name").val(_str.split(" ")[1].split(":")[1]);
+						var _type = $(this).parent().attr("_type");
+			            $("#showModal2").modal({"show":true,"backdrop":true}); 
+			            $("#submit_updateGroup_btn").click(function(){
+			            	var info = {"id":$("#update_group_input_id").val(),"name":$("#update_group_input_name").val(),"type":_type};
+							requestAjax("post","/addOrUpdateGroup",info,function(res){
+								$("#showModal").modal("hide");
+								alert("提交成功");
+								$("#showModal2").modal('hide');
+							});
+			            });
+				
+					 });
+				});
+				break;
+			case("get_allUser_btn"):
+				requestAjax("get","/getAllUser","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item'>用户名:"+res[i].name+" 组标识:"+res[i].groupId+"</li>";
+					}
+					_content = $("<div>").append(generateList("get_allUser_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+				});
+				break;
+			case("get_myAppli_btn"):
+				requestAjax("get","/getMyProcess","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item' processId="+res[i].processId+">理由:"+res[i].reason+" 申请时间:"+res[i].applyTime
+							+" 流程状态:"+res[i].applyStatus+" 审批人:"+res[i].auditor+" 审批结果:"+res[i].result+" 审批时间:"+res[i].auditTime
+							+"<button type='button' class='btn btn-default'>查看流程图</button></li>";
+					}
+					_content = $("<div>").append(generateList("get_myAppli_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$("#get_myAppli_ul button").click(function(){
+						var processId = $(this).parent().attr("processId");
+						postXml(processId);
+					});
+					
+				});
+				
+				break;
+			case("get_myHistoryAppli_btn"):
+				requestAjax("get","/myProjectRecord","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item' processId="+res[i].processId+">理由:"+res[i].reason+" 申请时间:"+res[i].applyTime
+							+" 流程状态:"+res[i].applyStatus+" 审批人:"+res[i].auditor+" 审批结果:"+res[i].result+" 审批时间:"+res[i].auditTime
+							+"<button type='button' class='btn btn-default'>查看流程图</button></li>";
+					}
+					_content = $("<div>").append(generateList("get_myHistoryAppli_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$("#get_myHistoryAppli_ul button").click(function(){
+						var processId = $(this).parent().attr("processId");
+						postXml(processId);
+					});
+				});
+				break;
+			case("get_audit_btn"):
+				requestAjax("get","/myAudit","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item'>流程id:"+res[i].id+" 流程名:"+res[i].name+" 理由:"+res[i].project.reason+" 申请时间:"+res[i].project.applyTime
+							+" 流程状态:"+res[i].project.applyStatus+" 审批人:"+res[i].project.auditor+" 审批结果:"+res[i].project.result+" 审批时间:"+res[i].project.auditTime;
+						_options = _options + "<button type='button' class='btn btn-default'>审批</button></li>";
+					}
+					_content = $("<div>").append(generateList("get_audit_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$("#get_audit_ul button").click(function(){
+						var id = $(this).parent().text().split(" ")[0].replace("流程id:","");
+						var info = {"id":id,"project":{"result":"ok"}};
+						requestAjax("post","/passAudit",info,function(res){
+							$("#showModal").modal("hide");
+							alert("提交成功");
+						});
+					});
+				});
+				break;
+			case("get_historyAudit_btn"):
+				requestAjax("get","/myAuditRecord","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item' processId="+res[i].processId+">理由:"+res[i].reason+" 申请时间:"+res[i].applyTime
+							+" 流程状态:"+res[i].applyStatus+" 审批人:"+res[i].auditor+" 审批结果:"+res[i].result+" 审批时间:"+res[i].auditTime
+							+"<button type='button' class='btn btn-default'>查看流程图</button></li>";
+					}
+					_content = $("<div>").append(generateList("get_myHistoryAppli_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$("#get_myHistoryAppli_ul button").click(function(){
+						var processId = $(this).parent().attr("processId");
+						postXml(processId);
+					});
+				});
+				break;
+			case("start_appli_btn"):
+				requestAjax("get","/findProcessDefinition","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<option class='list-group-item' key="+res[i].key+">"+(res[i].name || res[i].key) +"</option>";
+					}
+					
+					requestAjax("get","/getAllUser","",function(res){
+						var _options2 = "";
+						for(var i in res){
+							_options2 = _options2 + "<option class='list-group-item'>"+res[i].name+"</li>";
+						}
+						_content = $("<div>").append(generateSelect("get_process_select","选择一个流程申请",_options)).append(generateSelect("get_user_select","指派审核人",_options2)).append(generateGroupInput("说明","start_appli_input")).append(generateBtn("提交","submit_appli_btn"));
+						_content.append($("</div>"));
+						fullModalAndShow(_content);
+						
+						$("#submit_appli_btn").click(function(){
+							var info = {"reason":$("#start_appli_input").val(),"keyName":$("#get_process_select option:selected").val(),"auditor":$("#get_user_select option:selected").val()};
+							requestAjax("post","/startProcess",info,function(res){
+								$("#showModal").modal("hide");
+								//setTimeout(function(){
+									alert("提交成功");
+								//},100); 
+							});
+							
+						});
+					});
+					
+					
+					
+					
+				});
+				break;
+			case("deploy_model_btn"):
+				requestAjax("get","/modelList","",function(res){
+					var _options = "";
+					for(var i in res){
+						//var button_str = (res[i].deploymentId == undefined || res[i].deploymentId == null ? "<button type='button' class='btn btn-default publish-model'>发布</button>":"<span class='label label-default' style='font-size:15px;'>已发布</span>");
+						_options = _options + "<li class='list-group-item' modelId="+res[i].id+">流程名:"+res[i].name+"<button type='button' class='btn btn-default publish-model'>发布</button>"+"<button type='button' class='btn btn-default delete-model'>删除</button><button type='button' class='btn btn-default modify-model'>修改</button></li>";
+					}
+					_content = $("<div>").append(generateList("get_allModel_ul",_options));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$(".publish-model").click(function(){
+						var info = {
+								"modelId": $(this).parent().attr("modelId")
+							};
+						requestAjax("post","/deploy",info,function(res){
+							$("#showModal").modal("hide");
+							alert("提交成功");
+						});
+						
+					});
+					$(".delete-model").click(function(){
+						var arr = Array();
+						arr[0] = $(this).parent().attr("modelId");
+						var info = {
+								"ids": arr
+							};
+						requestAjax("post","/deleteModel",info,function(res){
+							$("#showModal").modal("hide");
+							alert("提交成功");
+						});
+						
+					});
+					$(".modify-model").click(function(){
+						window.open("../modeler.html?modelId="+$(this).parent().attr("modelId"));
+					});
+				});
+				break;
+			case("delete_process_btn"):
+				requestAjax("get","/findProcessDefinition","",function(res){
+					var _options = "";
+					for(var i in res){
+						_options = _options + "<li class='list-group-item' key="+res[i].deployId+"><input type='checkbox' name='delete-item'>"+(res[i].name || res[i].key) +"</input></li>";
+					}
+					
+					_content = $("<div>").append(generateList("delete_process_ul",_options)).append(generateBtn("提交","submit_deleteProcess_btn"));
+					_content.append($("</div>"));
+					fullModalAndShow(_content);
+					
+					$("#submit_deleteProcess_btn").click(function(){
+						var ids = Array();
+						var a = $("#delete_process_ul input:checked").each(function(i){
+							ids[i] = $(this).parent().attr("key");
+						});
+						
+						var info = {"ids":ids};
+						requestAjax("post","/deleteProcessDefinition",info,function(res){
+							$("#showModal").modal("hide");
+							alert("提交成功");
+						});
+						
+					});
+				});
+				break;
+			default:
+				console.log("default");
+		}
+	
+		$("#submit_group_btn").click(function(){
+			var info = {"id":$("#group_input_id").val(),"name":$("#group_input_name").val()};
+			requestAjax("post","/addOrUpdateGroup",info,function(res){
+				$("#showModal").modal("hide");
+				alert("提交成功");
+			});
+	
+		 });
+		
+		
+	});
+	
+});
+var createModelFun = function(){
+	window.open("../create");
+}	
+var postXml = function(processId){
+	var xhr = new XMLHttpRequest();
+       xhr.open('post', "/getProcessImg", true);
+       xhr.responseType = "blob";
+       xhr.onload = function() {
+           if (this.status == 200) {
+               var blob = this.response;
+               var img = document.createElement("img");
+               img.onload = function(e) {
+                   window.URL.revokeObjectURL(img.src); 
+               };
+               img.src = window.URL.createObjectURL(blob);
+               $(".second-content-body").html(img);  
+               $("#showModal2").modal({"show":true,"backdrop":true});    
+           }
+       }
+       xhr.send(processId);
+}
+var fullModalAndShow = function(content){
+	$(".main-content-body").html(content);
+	$("#showModal").modal({"show":true,"backdrop":true});
+}
+
+var generateGroupInput = function(title,id){
+	var content = $("<div class='input-group'><span class='input-group-addon'>"+title+"</span><input type='text' class='form-control' id="+id+"></div>");
+	return content;
+}
+var generateBtn = function(title,id){
+	var content = $("<button type='button' class='btn btn-default' id="+id+">"+title+"</button>");
+	return content;
+}
+var generateSelect = function(id,title,options){
+	var content = $("<div class='form-group'><select class='selectpicker show-tick' title="+title+" data-live-search='true' id="+id+"><option>"+title+"</option>"+options+"</select></div>");
+	return content;
+}
+var generateList = function(id,dom){
+	var content = $("<ul class='list-group' id="+id+">"+dom+"</ul>");
+	return content;
+}
+var generateImag = function(data){
+	var content = $("<img src='data:image/gif;'"+data+"></img>");
+	return content;
+}
+var requestAjax = function(type,url,info,func){
+	$.ajax({
+		   type: type,
+		   url: url,
+		   data: JSON.stringify(info) ,
+		   contentType : 'application/json;charset=utf8',
+		   dataType: 'json',
+		   cache: false,
+		   success: function (res) {
+			   func(res);
+		   }
+		  });
+}
+
+</script>
+</html>
+

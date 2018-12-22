@@ -3,12 +3,12 @@ package com.gkyj.gmv.server.user.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cascv.oas.core.common.ErrorCode;
@@ -45,7 +44,9 @@ public class UserController {
   private UserService userService;
   @Autowired
   private KafkaTemplate kafkaTemplate;
-    
+  @Autowired
+  private CassandraTemplate cassandraTemplate;
+   
 	@ApiOperation(value="Login", notes="")
 	@PostMapping(value="/login")
 	@ResponseBody
@@ -123,19 +124,19 @@ public class UserController {
             	list.add(a);*/
         		switch(i) {
 	    			case 0:
-	    				a.setParameter("温度");
+	    				a.setParameter("CMPR-RCS 28V电源板1温度");
 	    				a.setValue(new BigDecimal(randomNumber(38,20)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    			case 1:
-	    				a.setParameter("湿度");
+	    				a.setParameter("核心舱湿度");
 	    				a.setValue(new BigDecimal(randomNumber(50,30)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    			case 2:
-	    				a.setParameter("电压");
+	    				a.setParameter("CMPR 100V主电电压");
 	    				a.setValue(new BigDecimal(randomNumber(220,36)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    			case 3:
-	    				a.setParameter("电流");
+	    				a.setParameter("CMPR 110V供电电流");
 	    				a.setValue(new BigDecimal(randomNumber(1,5)).setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
 	    				break;
 	    		}
