@@ -27,4 +27,5 @@ public class UserModel extends BaseEntity {
 	@Getter @Setter private Integer confirmed;
 	@Getter @Setter private Set<String> roles = new HashSet<>();
 	@Getter @Setter private Set<String> perms = new HashSet<>();
+	@Getter @Setter private String groupId;
 }

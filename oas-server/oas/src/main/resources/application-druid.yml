@@ -30,3 +30,5 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+  activiti:
+    check-process-definitions:false
