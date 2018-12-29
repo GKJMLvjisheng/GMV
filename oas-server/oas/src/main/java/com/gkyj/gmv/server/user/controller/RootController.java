@@ -64,10 +64,10 @@ public class RootController {
   public String activitiDemo(){
     return "activitiDemo";
   }
- /* @GetMapping(value="/maps/gantt")
-  public String gantt(){
-    return "maps/gantt";
-  }*/
+  @GetMapping(value="/maps/side")
+  public String side(){
+    return "maps/side";
+  }
 }
 
 
